@@ -484,6 +484,7 @@ export interface AutomationHistoryDescriptor {
 
 export const automationCommandInputSchemas = {
   'library.create': z.strictObject({
+    useExistingFolder: z.boolean().optional(),
     storageLayout: z.enum(['root', 'assets']).optional(),
     displayName: nonBlankString.max(255),
     selectedParentPath: nonBlankString,
@@ -1748,6 +1749,8 @@ export const automationCommandRegistry = [
       toolName: 'serpent_library_create',
       outputLimit: 1,
       inputSchema: z.strictObject({
+        useExistingFolder: z.boolean().optional(),
+        storageLayout: z.enum(['root', 'assets']).optional(),
         displayName: nonBlankString.max(255),
         selectedParentPath: nonBlankString,
         idempotencyKey: idempotencyKeySchema.optional(),
@@ -1759,6 +1762,7 @@ export const automationCommandRegistry = [
       displayName: input.displayName,
       selectedParentPath: input.selectedParentPath,
       storageLayout: input.storageLayout,
+      useExistingFolder: input.useExistingFolder,
     }),
     projectResult: (result) => {
       const parsed = libraryCreateWorkerResultSchema.safeParse(result);
@@ -3789,7 +3793,7 @@ export function generateAutomationTypeDeclaration(
     '    readonly library: {',
     '      inspect(): Promise<SerpentScriptLibrary>;',
     '      changeSequence(): Promise<{ readonly changeSequence: number }>;',
-    '      create(input: { displayName: string; selectedParentPath: string; idempotencyKey?: string }): Promise<{ readonly libraryId: string; readonly displayName: string }>;',
+    '      create(input: { displayName: string; selectedParentPath: string; storageLayout?: \'root\' | \'assets\'; useExistingFolder?: boolean; idempotencyKey?: string }): Promise<{ readonly libraryId: string; readonly displayName: string }>;',
     '    };',
     '    readonly files: {',
     `      import(input: { sourceKind: 'files' | 'folder'; sourcePaths: readonly string[]; targetFolderId?: string; imageSequenceFps?: number; expandImageSequences?: boolean; idempotencyKey?: string }): Promise<SerpentScriptImportResult>;`,

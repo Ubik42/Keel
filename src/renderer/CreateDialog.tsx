@@ -19,6 +19,8 @@ export interface CreateDialogProps {
   value: string;
   onValueChange: (val: string) => void;
   storageLayout?: 'root' | 'assets';
+  useExistingFolder?: boolean;
+  onUseExistingFolderChange?: (value: boolean) => void;
   onStorageLayoutChange?: (layout: 'root' | 'assets') => void;
   onSubmit: () => void;
   onCancel: () => void;
@@ -56,6 +58,8 @@ export function CreateDialog({
   value,
   onValueChange,
   storageLayout = 'root',
+  useExistingFolder = false,
+  onUseExistingFolderChange,
   onStorageLayoutChange,
   onSubmit,
   onCancel,
@@ -96,11 +100,11 @@ export function CreateDialog({
   const nameHelp =
     isExternalLibrary
       ? t(isBillfish ? "dialog.openBillfishLibrary.help" : "dialog.openEagleLibrary.help")
-      : t("dialog.createLibrary.help");
+      : t(useExistingFolder ? "dialog.createLibrary.existingFolderNameHelp" : "dialog.createLibrary.help");
   const submitLabel =
     isExternalLibrary
       ? t(isBillfish ? "dialog.openBillfishLibrary.submit" : "dialog.openEagleLibrary.submit")
-      : t("dialog.createLibrary.submit");
+      : t(useExistingFolder ? "dialog.createLibrary.chooseExistingFolder" : "dialog.createLibrary.submit");
 
   return (
     <div className="dialog-backdrop" role="presentation">
@@ -136,7 +140,23 @@ export function CreateDialog({
               onSubmit();
             }}
           >
-            <label className="field-label" htmlFor="dialog-name">
+            {phase === "form" ? (
+              <>
+                <label className="field-label" htmlFor="library-create-mode">{t("dialog.createLibrary.creationMode")}</label>
+                <select
+                  className="text-field"
+                  id="library-create-mode"
+                  value={useExistingFolder ? 'existing' : 'new'}
+                  disabled={busy}
+                  onChange={(event) => onUseExistingFolderChange?.(event.target.value === 'existing')}
+                >
+                  <option value="new">{t("dialog.createLibrary.newFolder")}</option>
+                  <option value="existing">{t("dialog.createLibrary.existingFolder")}</option>
+                </select>
+                <p className="field-help">{t(useExistingFolder ? "dialog.createLibrary.existingFolderHelp" : "dialog.createLibrary.newFolderHelp")}</p>
+              </>
+            ) : null}
+            <label className="field-label" htmlFor="dialog-name" style={phase === "form" ? { marginTop: 16 } : undefined}>
               {nameLabel}
             </label>
             <input
@@ -151,7 +171,7 @@ export function CreateDialog({
             {nameHelp.trim() ? (
               <p className="field-help">{nameHelp}</p>
             ) : null}
-            {phase === "form" ? (
+            {phase === "form" && !useExistingFolder ? (
               <>
                 <label className="field-label" htmlFor="library-storage-layout" style={{ marginTop: 16 }}>
                   {t("dialog.createLibrary.storageLayout")}

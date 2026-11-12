@@ -889,6 +889,13 @@ export const en = {
   },
   dialog: {
     createLibrary: {
+      creationMode: "Create from",
+      newFolder: "New folder",
+      existingFolder: "Existing folder",
+      newFolderHelp: "Choose a parent location and create a new library folder using the name below.",
+      existingFolderHelp: "Use the selected folder in place. Keep its files and structure, and store metadata and cache in .serpent.",
+      existingFolderNameHelp: "This is a display name only. The folder keeps its current name.",
+      chooseExistingFolder: "Choose folder and create",
       storageLayout: "Asset storage location",
       storageRoot: "Library root (default)",
       storageAssets: "Assets subfolder",
@@ -2807,6 +2814,7 @@ export const en = {
       INVALID_SMART_COLLECTION_QUERY: "Add a search query or at least one filter before saving a smart collection.",
       IMPORT_NOT_FOUND: "The pending import is no longer valid. Select the files again.",
       IMPORT_APPLY_FAILED: "Import stopped before every file was copied and registered. Nothing was silently overwritten. Check disk space and that the source files are still readable, then retry; already-imported items do not need to be selected again.",
+      LIBRARY_METADATA_EXISTS: "This folder already contains .serpent metadata. Open the existing library or select another folder.",
       LIBRARY_ALREADY_EXISTS: "A file or folder with this name already exists at that location. Choose another name or another parent folder.",
       LIBRARY_ALREADY_OPEN:
         "The selected library and the currently open library have the same library ID. They may be different paths to the same library. Open it as a different library?",

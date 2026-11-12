@@ -53,6 +53,17 @@ test("library.create uses the selected parent directory", async () => {
   expect(selectDirectory).toHaveBeenCalledWith("createLibrary");
 });
 
+test("library.create forwards an existing folder as the exact target", async () => {
+  const selectDirectory = vi.fn(async () => "C:\\Pictures\\Daily");
+  await expect(executeLibraryMainCommand(
+    libraryRequest({ type: "library.create.request", displayName: "Daily", storageLayout: "root", useExistingFolder: true }),
+    libraryRuntime({ selectDirectory }),
+  )).resolves.toEqual({
+    type: "library.create", displayName: "Daily", storageLayout: "root", useExistingFolder: true,
+    selectedParentPath: "C:\\Pictures\\Daily",
+  });
+});
+
 test("library.open uses an explicit library path without a picker", async () => {
   const selectDirectory = vi.fn();
   await expect(executeLibraryMainCommand(

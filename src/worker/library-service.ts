@@ -1160,6 +1160,7 @@ const DEFAULT_IGNORED_ASSET_DIRECTORIES = new Set([
   'node_modules',
 ]);
 const DEFAULT_IGNORED_ASSET_FILES = new Set([
+  '.serpent',
   '.serpentignore',
   '.serpentignore.json',
   '.ds_store',
@@ -47277,7 +47278,10 @@ export class LibraryService {
                 pendingDirectories.push({ absolutePath, relativePath, assetsHidden });
               }
             }
-          } else if (child.isFile() && !directory.assetsHidden) {
+          } else if (
+            child.isFile() && !directory.assetsHidden
+            && !(input.locationKind === 'managed' && isDefaultIgnoredAssetEntry(child.name, 'file'))
+          ) {
             let stat: Stats | BigIntStats;
             try {
               // Keep the existing synchronous stat seam for deterministic tests;
@@ -48281,7 +48285,9 @@ export class LibraryService {
     /** 内部用于「从同步远端恢复库身份」：默认随机生成。 */
     libraryId?: string;
     storageLayout?: LibraryStorageLayout;
+    useExistingFolder?: boolean;
   }): InternalLibrarySummary {
+    if (input.useExistingFolder) return this.initializeExistingFolder(input);
     let finalPath: string;
     try {
       finalPath = targetLibraryPath(input.selectedParentPath, input.displayName);
@@ -48344,6 +48350,66 @@ export class LibraryService {
       } catch (cleanupError) {
         throw new LibraryServiceError('LIBRARY_CLEANUP_FAILED', { cause: cleanupError });
       }
+      throw serviceError(error, 'LIBRARY_NOT_WRITABLE');
+    }
+  }
+
+  private initializeExistingFolder(input: {
+    displayName: string;
+    selectedParentPath: string;
+    libraryId?: string;
+    storageLayout?: LibraryStorageLayout;
+  }): InternalLibrarySummary {
+    if (input.storageLayout === 'assets') throw new LibraryServiceError('INVALID_LIBRARY_PATH');
+    const displayName = input.displayName.trim();
+    if (!displayName || [...displayName].length > 255) throw new LibraryServiceError('INVALID_LIBRARY_NAME');
+    let libraryPath: string;
+    try {
+      const selectedPath = normalizeAbsolutePath(input.selectedParentPath);
+      const stat = lstatSync(selectedPath);
+      if (!stat.isDirectory() || stat.isSymbolicLink()) throw new LibraryServiceError('INVALID_LIBRARY_PATH');
+      libraryPath = realpathSync(selectedPath);
+      if (libraryPath.split(path.sep).some((segment) => segment.toLowerCase() === '.serpent')) {
+        throw new LibraryServiceError('INVALID_LIBRARY_PATH');
+      }
+      accessSync(libraryPath, constants.R_OK | constants.W_OK);
+    } catch (error) {
+      throw serviceError(error, 'INVALID_LIBRARY_PATH');
+    }
+    const metadataPath = path.join(libraryPath, '.serpent');
+    if (readdirSync(libraryPath).some((name) => name.toLowerCase() === '.serpent')) {
+      throw new LibraryServiceError('LIBRARY_METADATA_EXISTS');
+    }
+    let connection: DatabaseConnection | undefined;
+    let ownsMetadata = false;
+    let initialized = false;
+    try {
+      // Exclusive reservation prevents a second initializer from touching this catalog.
+      mkdirSync(metadataPath);
+      ownsMetadata = true;
+      for (const name of REGENERABLE_DIRECTORIES) mkdirSync(path.join(metadataPath, name));
+      writeStorageLayout(libraryPath, 'root');
+      connection = openConfiguredDatabase(databasePath(libraryPath), this.options.sqliteBusyTimeoutMsForTests);
+      migrateDatabase(connection, true, this.options);
+      connection.prepare('INSERT INTO library (library_id, display_name, created_at) VALUES (?, ?, ?)')
+        .run(input.libraryId ?? randomUUID(), displayName, new Date().toISOString());
+      verifyDatabase(connection);
+      connection.close();
+      connection = undefined;
+      initialized = true;
+      // Opening starts the regular asynchronous root scan and directory watcher.
+      return this.openLibrary(libraryPath);
+    } catch (error) {
+      closeIgnoringFailure(connection);
+      if (ownsMetadata && !initialized) {
+        try {
+          // Only metadata created by this call is rolled back. Source files stay in place.
+          removePathWithSyncRetry(metadataPath);
+        } catch (cleanupError) {
+          throw new LibraryServiceError('LIBRARY_CLEANUP_FAILED', { cause: cleanupError });
+        }
+      }
+      if (!ownsMetadata && existsSync(metadataPath)) throw new LibraryServiceError('LIBRARY_METADATA_EXISTS');
       throw serviceError(error, 'LIBRARY_NOT_WRITABLE');
     }
   }

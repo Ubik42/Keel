@@ -1134,6 +1134,7 @@ function AppInner() {
   const [dialog, setDialog] = useState<DialogKind>(null);
   const [createLibraryPhase, setCreateLibraryPhase] =
     useState<CreateLibraryPhase>("start");
+  const [useExistingCreateFolder, setUseExistingCreateFolder] = useState(false);
   const [createStorageLayout, setCreateStorageLayout] = useState<'root' | 'assets'>('root');
   const hadLibraryRef = useRef(false);
   const [dialogValue, setDialogValue] = useState(() => t("shell.myLibrary"));
@@ -6262,7 +6263,7 @@ function AppInner() {
     }
     await runLibraryOpenPipeline(
       "creating",
-      () => api.create({ displayName: dialogValue.trim(), storageLayout: createStorageLayout }),
+      () => api.create({ displayName: dialogValue.trim(), storageLayout: useExistingCreateFolder ? 'root' : createStorageLayout, useExistingFolder: useExistingCreateFolder }),
       t("toast.libraryOpFailed"),
       undefined,
       dialogValue.trim() || null,
@@ -16908,6 +16909,8 @@ function AppInner() {
         phase={createLibraryPhase}
         storageLayout={createStorageLayout}
         onStorageLayoutChange={setCreateStorageLayout}
+        useExistingFolder={useExistingCreateFolder}
+        onUseExistingFolderChange={setUseExistingCreateFolder}
         required={!library}
         value={dialogValue}
         onValueChange={setDialogValue}

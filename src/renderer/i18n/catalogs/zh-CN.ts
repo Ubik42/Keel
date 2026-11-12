@@ -875,6 +875,13 @@ export const zhCN = {
   },
   dialog: {
     createLibrary: {
+      creationMode: "创建方式",
+      newFolder: "新建文件夹",
+      existingFolder: "使用已有文件夹",
+      newFolderHelp: "选择保存位置后，按下方名称新建一个资源库文件夹。",
+      existingFolderHelp: "直接将所选文件夹设为资源库。保留原有文件和目录结构，数据库和缓存保存在 .serpent 中。",
+      existingFolderNameHelp: "名称仅用于应用内显示，文件夹名称保持原样。",
+      chooseExistingFolder: "选择文件夹并创建",
       storageLayout: "素材存放位置",
       storageRoot: "资源库根目录（默认）",
       storageAssets: "Assets 子目录",
@@ -2787,6 +2794,7 @@ export const zhCN = {
       INVALID_SMART_COLLECTION_QUERY: "保存智能合集前请先设置搜索词或至少一个过滤条件。",
       IMPORT_NOT_FOUND: "待处理的导入已失效，请重新选择文件。",
       IMPORT_APPLY_FAILED: "导入在复制或登记完成前停止，没有静默覆盖已有文件。请检查磁盘空间和源文件是否仍可读取后重试；已经导入成功的条目不必再选一次。",
+      LIBRARY_METADATA_EXISTS: "所选文件夹已经包含 .serpent 数据。请使用“打开已有资源库”，或选择另一个文件夹。",
       LIBRARY_ALREADY_EXISTS: "该位置已经存在同名文件或文件夹。请换一个名称，或选择另一个父文件夹。",
       LIBRARY_ALREADY_OPEN:
         "所选资源库和当前打开资源库有相同的资源库ID，可能是同一资源库的不同路径。是否视为不同资源库进行打开。",

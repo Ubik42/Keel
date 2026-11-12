@@ -242,6 +242,8 @@ export function createDesktopAutomationFilePlanApprovalHandler(
             commandId,
             displayName: input.displayName,
             selectedParentPath: input.selectedParentPath,
+            storageLayout: input.storageLayout,
+            useExistingFolder: input.useExistingFolder,
           }), 'utf8').digest('hex'),
           expectedChangeSequence: 0,
           assetStates: [],

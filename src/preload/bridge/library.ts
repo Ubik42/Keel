@@ -133,11 +133,13 @@ export const library: SerpentLibraryApi = Object.freeze({
   async create({
     displayName,
     storageLayout,
+    useExistingFolder,
   }: {
     displayName: string;
     storageLayout?: 'root' | 'assets';
+    useExistingFolder?: boolean;
   }): Promise<LibraryApiResult<RendererLibrarySummary>> {
-    const result = await request({ type: 'library.create.request', displayName, storageLayout });
+    const result = await request({ type: 'library.create.request', displayName, storageLayout, useExistingFolder });
     if (!result.ok) return failure(result);
     if (result.type !== 'library.opened') throw new Error('Unexpected create-library response.');
     return { ok: true as const, value: result.library };
