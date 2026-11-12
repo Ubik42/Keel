@@ -20021,3 +20021,25 @@ body.platform-darwin .app-shell[data-shell-layout="islands"] .toolbar-nav-cluste
   background: var(--danger-muted);
   color: var(--danger);
 }
+
+/* Persistent tag taxonomy and linked asset navigation. */
+.tag-tree-section { margin: 10px 8px 16px; padding-top: 10px; border-top: 1px solid var(--ui-border-subtle, #ddd); }
+.tag-tree-heading { display: flex; align-items: center; gap: 5px; padding: 0 5px 8px; }
+.tag-tree-heading strong { font-size: 12px; font-weight: 650; }
+.tag-tree-total { margin-right: auto; font-size: 11px; opacity: .55; }
+.tag-tree-search { width: 100%; min-width: 0; height: 29px; margin-bottom: 7px; font-size: 12px; }
+.tag-tree-row { display: flex; align-items: center; border-radius: 6px; }
+.tag-tree-row > .nav-row { flex: 1; min-width: 0; padding-left: 4px; }
+.tag-tree-disclosure, .tag-tree-disclosure-spacer { flex: 0 0 17px; width: 17px; height: 28px; }
+.tag-tree-disclosure { display: grid; place-items: center; border: 0; background: transparent; color: inherit; cursor: pointer; }
+.tag-tree-disclosure svg { transform: none; transition: transform 120ms; }
+.tag-tree-disclosure.is-open svg { transform: rotate(90deg); }
+.tag-tree-row.is-drop-target, .tag-tree-root-drop.is-drop-target { background: color-mix(in srgb, var(--ui-accent, #5289ff) 17%, transparent); outline: 1px solid var(--ui-accent, #5289ff); }
+.tag-tree-edit, .tag-tree-confirm { margin: 6px 0 9px; padding: 9px; border: 1px solid var(--ui-border-subtle, #ddd); border-radius: 8px; }
+.tag-tree-edit label { display: block; margin-bottom: 6px; font-size: 12px; }
+.tag-tree-edit .text-field { width: 100%; min-width: 0; }
+.tag-tree-edit-actions { display: flex; justify-content: flex-end; gap: 6px; margin-top: 8px; }
+.tag-tree-edit-actions button { min-height: 26px; padding: 4px 9px; font-size: 12px; }
+.tag-tree-empty, .tag-tree-confirm p { padding: 0 5px; font-size: 12px; line-height: 1.6; opacity: .65; }
+.tag-tree-root-drop { margin-top: 7px; padding: 9px; border: 1px dashed currentColor; border-radius: 6px; font-size: 12px; opacity: .75; }
+@media (prefers-reduced-motion: reduce) { .tag-tree-disclosure svg { transition: none; } }

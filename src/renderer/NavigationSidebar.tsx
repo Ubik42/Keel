@@ -868,6 +868,7 @@ export type FolderTreeExpandActions = {
 // ---------------------------------------------------------------------------
 
 export interface NavigationSidebarProps {
+  tagTree?: ReactNode;
   // --- Library connection ---
   library: RendererLibrarySummary | null;
 
@@ -2951,6 +2952,7 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
             onClick={() => onChoosePluginSidebarView?.(view.id)}
           />
         ))}
+        {props.tagTree}
         <Section
           title={t("nav.folders")}
           search={

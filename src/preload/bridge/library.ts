@@ -1089,15 +1089,15 @@ export const library: SerpentLibraryApi = Object.freeze({
     return { ok: true, value: result.tags };
   },
 
-  async createTag({ libraryId, name }: { libraryId: string; name: string }): Promise<LibraryApiResult<TagSummary & { historyEntryId?: string }>> {
-    const result = await request({ type: 'tag.create.request', libraryId, name });
+  async createTag({ libraryId, name, parentTagId }: { libraryId: string; name: string; parentTagId?: string | null }): Promise<LibraryApiResult<TagSummary & { historyEntryId?: string }>> {
+    const result = await request({ type: 'tag.create.request', libraryId, name, parentTagId });
     if (!result.ok) return failure(result);
     if (result.type !== 'tag.created') throw new Error('Unexpected create-tag response.');
     return { ok: true, value: { ...result.tag, ...(result.historyEntryId ? { historyEntryId: result.historyEntryId } : {}) } };
   },
 
-  async renameTag({ libraryId, tagId, name }: { libraryId: string; tagId: string; name: string }): Promise<LibraryApiResult<TagSummary & { historyEntryId?: string }>> {
-    const result = await request({ type: 'tag.rename.request', libraryId, tagId, name });
+  async renameTag({ libraryId, tagId, name, parentTagId }: { libraryId: string; tagId: string; name: string; parentTagId?: string | null }): Promise<LibraryApiResult<TagSummary & { historyEntryId?: string }>> {
+    const result = await request({ type: 'tag.rename.request', libraryId, tagId, name, parentTagId });
     if (!result.ok) return failure(result);
     if (result.type !== 'tag.renamed') throw new Error('Unexpected rename-tag response.');
     return { ok: true, value: { ...result.tag, ...(result.historyEntryId ? { historyEntryId: result.historyEntryId } : {}) } };

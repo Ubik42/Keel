@@ -1,3 +1,5 @@
+import { TagTreeSidebar } from "./TagTreeSidebar";
+import { descendantTagIds } from "./tag-tree-model";
 import { LocalConfirmationHost, useLocalConfirmation, requestConfirmation } from "./local-confirmation";
 import {
   useCallback,
@@ -6652,7 +6654,10 @@ function AppInner() {
         setExcludeFormatFilter(false);
         return;
       case "tag":
+      case "tag-expression":
         setTagFilter("");
+        setTagFilterExpression("");
+        setTagFilterLastValidExpression("");
         setExcludeTagFilter(false);
         setExcludedTagFilter("");
         setActiveTagId(null);
@@ -6937,12 +6942,13 @@ function AppInner() {
     if (!request.deferReveal) finishWorkspaceNavigation(request);
   }
 
-  async function handleCreateTagInManagement(name: string): Promise<boolean> {
+  async function handleCreateTagInManagement(name: string, parentTagId?: string | null): Promise<boolean> {
     if (!api || !library) return false;
     try {
       const result = await api.createTag({
         libraryId: library.libraryId,
         name,
+        parentTagId,
       });
       if (!result.ok) throw new LibraryOperationError(result.error);
       const tagResult = await api.listTags({ libraryId: library.libraryId });
@@ -6979,11 +6985,7 @@ function AppInner() {
       }
       setAssetMetadata(current => current ? rename(current) : current);
       if (selectedAssetIds.length >= 2) rebuildAndApplyMultiEdit(selectedAssetIds);
-      if (activeTagId === tagId) {
-        setTagFilter(name);
-        setTagFilterExpression(JSON.stringify(name));
-        setTagFilterLastValidExpression(JSON.stringify(name));
-      }
+      if (activeTagId) await chooseTag(activeTagId, undefined, tagResult.value);
       setNotice(t("toast.tagRenamed", { name }), result.value.historyEntryId);
       return true;
     } catch (caught) {
@@ -7008,6 +7010,10 @@ function AppInner() {
       const tagResult = await api.listTags({ libraryId: library.libraryId });
       if (!tagResult.ok) throw new LibraryOperationError(tagResult.error);
       setTags(tagResult.value);
+      if (activeTagId) {
+        if (tagIds.includes(activeTagId)) await chooseFolder('all');
+        else await chooseTag(activeTagId, undefined, tagResult.value);
+      }
       setNotice(
         tagIds.length === 1
           ? t("toast.tagDeleted")
@@ -7042,6 +7048,34 @@ function AppInner() {
       setError(toMessage(caught, t("toast.mergeTagsFailed"), locale));
       return false;
     }
+  }
+
+  async function moveTagInTree(tagId: string, parentTagId: string | null): Promise<boolean> {
+    const tag = tags.find((item) => item.tagId === tagId);
+    if (!api || !library || !tag) return false;
+    try {
+      const result = await api.renameTag({ libraryId: library.libraryId, tagId, name: tag.name, parentTagId });
+      if (!result.ok) throw new LibraryOperationError(result.error);
+      const updated = await api.listTags({ libraryId: library.libraryId });
+      if (!updated.ok) throw new LibraryOperationError(updated.error);
+      setTags(updated.value);
+      if (activeTagId) await chooseTag(activeTagId, undefined, updated.value);
+      setNotice(t('tagTree.moved'), result.value.historyEntryId);
+      return true;
+    } catch (caught) { setError(toMessage(caught, t('tagTree.moveFailed'), locale)); return false; }
+  }
+
+  async function assignAssetsToTreeTag(assetIds: string[], tagId: string): Promise<void> {
+    if (!api || !library || assetIds.length === 0) return;
+    try {
+      const result = await api.assignTags({ libraryId: library.libraryId, assetIds, tagIds: [tagId] });
+      if (!result.ok) throw new LibraryOperationError(result.error);
+      for (const id of assetIds) metadataByAssetRef.current.delete(id);
+      await refreshTagAndMetadataState(assetIds[0]!);
+      const name = tags.find((tag) => tag.tagId === tagId)?.name;
+      if (name) syncBrowseFilterMembershipRef.current({ kind: 'tags', assetIds, addedTagNames: [name], removedTagNames: [] });
+      setNotice(t('toast.tagAdded'), result.value.historyEntryId);
+    } catch (caught) { setError(toMessage(caught, t('tagTree.assignFailed'), locale)); }
   }
 
   // Serpent-eaxs: tag-management AND/OR jump — leave management, scope to all
@@ -7128,6 +7162,7 @@ function AppInner() {
   async function chooseTag(
     tagId: string,
     navigation?: WorkspaceNavigationRequest,
+    tagCatalog: readonly TagSummary[] = tags,
   ) {
     if (!api || !library) return;
     const request = createWorkspaceNavigationRequest(navigation);
@@ -7136,7 +7171,7 @@ function AppInner() {
     const targetLibraryId = library.libraryId;
     const viewSession = ensureLibraryView(targetLibraryId);
     if (!viewSession) return;
-    const tag = tags.find((candidate) => candidate.tagId === tagId);
+    const tag = tagCatalog.find((candidate) => candidate.tagId === tagId);
     if (!tag) {
       setWorkspaceNavigationPending(false);
       return;
@@ -7145,10 +7180,11 @@ function AppInner() {
     await closeAssetPreview(false);
     if (!request.isCurrent() || !isCurrentLibraryView(viewSession)) return;
     try {
+      const includeDescendants = descendantTagIds(tagCatalog, tagId).length > 1;
       const tagExpression = JSON.stringify(tag.name);
       const definition: SearchDefinition = request.browseState
         ? queryDefinitionForWorkspaceBrowseState(request.browseState)
-        : tagBrowseDefinition(tag.name, currentQueryDefinition());
+        : tagBrowseDefinition(tag.name, currentQueryDefinition(), includeDescendants);
       const includeIgnored =
         request.browseState?.showIgnoredItems ?? showIgnoredItems;
       const result = await api.openBrowseSession({
@@ -8025,7 +8061,8 @@ function AppInner() {
     if (exactTag && filtersState.tagFilterMode === "expression"
       && filtersState.tagFilterExpression === JSON.stringify(exactTag.name)) {
       filters.push({ field: "tag", values: [exactTag.name], exclude: false,
-        includeAi: filtersState.includeAiTagFilter });
+        includeAi: filtersState.includeAiTagFilter,
+        ...(descendantTagIds(tags, exactTag.tagId).length > 1 ? { includeDescendants: true } : {}) });
     } else if (filtersState.tagFilterMode === "expression") {
       const parsedTags = parseSearchExpressionDetailed(filtersState.tagFilterExpression ?? "", "tags");
       if (!parsedTags.ok && filtersState.tagFilterLastValidExpression) {
@@ -14633,6 +14670,9 @@ function AppInner() {
       </header>
       <NavigationSidebar
         library={library}
+        tagTree={library ? <TagTreeSidebar key={library.libraryId} libraryId={library.libraryId} tags={tags} activeTagId={activeTagId}
+          onChoose={(id) => void chooseTag(id)} onCreate={handleCreateTagInManagement} onRename={handleRenameTagInManagement}
+          onMove={moveTagInTree} onDelete={handleDeleteTagsInManagement} onAssign={assignAssetsToTreeTag} getAssetDragIds={getManagedAssetDragIds} /> : undefined}
         assetScope={assetScope}
         showTrash={showTrash}
         showTagManagement={showTagManagement}

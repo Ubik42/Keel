@@ -90,6 +90,7 @@ const smartCollectionSnapshotSchema = z.strictObject({
   position: z.number().int().nonnegative(),
 });
 const tagSnapshotSchema = z.strictObject({
+  hierarchy: z.strictObject({ parentTagId: identifierSchema.nullable(), childTagIds: z.array(identifierSchema) }).optional(),
   tagId: identifierSchema,
   libraryId: identifierSchema,
   name: z.string().min(1).max(255),

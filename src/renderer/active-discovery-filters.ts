@@ -215,6 +215,7 @@ export type ClearableFilterId =
   | "color"
   | "format"
   | "tag"
+  | "tag-expression"
   | "rating"
   | "favorite"
   | "source_url"

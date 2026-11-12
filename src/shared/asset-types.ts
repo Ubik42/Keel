@@ -314,6 +314,8 @@ export const browseLayoutEntrySchema = z.strictObject({
 export type BrowseLayoutEntry = z.infer<typeof browseLayoutEntrySchema>;
 
 export const tagSummarySchema = z.strictObject({
+  parentTagId: nonBlankString.nullable().optional(),
+  subtreeAssetCount: z.number().int().nonnegative().optional(),
   tagId: nonBlankString,
   name: nonBlankString,
   assetCount: z.number().int().nonnegative(),
@@ -546,6 +548,7 @@ const categoricalFilterClauseSchema = z.strictObject({
   values: z.array(boundedSearchValue).max(FORMAT_FILTER_VALUES_MAX),
   exclude: z.boolean(),
   /** Include AI-derived values alongside human-authored values (default on). */
+  includeDescendants: z.boolean().optional(),
   includeAi: z.boolean().optional(),
   /**
    * Color filter only: 0–100 similarity. Higher is a tighter HSL box.

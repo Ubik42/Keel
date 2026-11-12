@@ -675,9 +675,10 @@ export const automationCommandInputSchemas = {
   }),
   'tag.list': paginatedInputSchema({}),
   'tag.create': z.strictObject({
+    parentTagId: nonBlankString.nullable().optional(),
     name: nonBlankString.max(255),
   }),
-  'tag.rename': z.strictObject({ tagId: nonBlankString, name: nonBlankString.max(255) }),
+  'tag.rename': z.strictObject({ tagId: nonBlankString, name: nonBlankString.max(255), parentTagId: nonBlankString.nullable().optional() }),
   'tag.delete': z.strictObject({ tagId: nonBlankString }),
   'tag.delete-many': z.strictObject({ tagIds: z.array(nonBlankString).min(1).max(10_000) }),
   'tag.merge': z.strictObject({
@@ -3061,6 +3062,7 @@ export const automationCommandRegistry = [
       type: 'tag.create',
       libraryId,
       name: input.name,
+      parentTagId: input.parentTagId,
     }),
     projectResult: (result) => {
       const parsed = tagCreateWorkerResultSchema.safeParse(result);
@@ -3079,7 +3081,7 @@ export const automationCommandRegistry = [
     requiredCapabilities: ['library.read', 'tag.write'], allowedSources: allInteractiveSources, impact: 'metadata-write', targetScope: 'library', supportsBatch: false,
     supportsDryRun: false, supportsIdempotencyKey: false, supportsCancellation: false, supportsDetach: false, supportsUndo: false, history: { policy: 'reversible', recipeKind: 'tag-snapshot', group: 'single-command' }, atomicity: 'single-transaction', approvalPolicy: 'execution',
     mcp: { public: true, toolName: 'serpent_tag_rename', outputLimit: 1 },
-    toWorkerCommand: (libraryId, input: AutomationCommandInput<'tag.rename'>) => ({ type: 'tag.rename', libraryId, tagId: input.tagId, name: input.name }),
+    toWorkerCommand: (libraryId, input: AutomationCommandInput<'tag.rename'>) => ({ type: 'tag.rename', libraryId, tagId: input.tagId, name: input.name, parentTagId: input.parentTagId }),
     projectResult: (result) => { const parsed = tagRenamedWorkerResultSchema.safeParse(result); return parsed.success ? { id: parsed.data.tag.tagId, name: parsed.data.tag.name, assetCount: parsed.data.tag.assetCount } : undefined; },
   },
   {

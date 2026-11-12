@@ -1269,6 +1269,7 @@ function labelForActiveChip(id: string, t: ReturnType<typeof useT>): string {
     case "format":
       return t("filter.formatField");
     case "tag":
+    case "tag-expression":
       return t("filter.tagField");
     case "rating":
       return t("filter.ratingField");

@@ -295,7 +295,7 @@ const PIXEL_MEDIA_EXTENSION_LIKES = PIXEL_MEDIA_EXTENSIONS
 
 export function buildCatalogFilterWhere(
   filters: FilterClause[],
-  options: { hasAiContent: boolean; hasAiAssetTags: boolean } = {
+  options: { hasAiContent: boolean; hasAiAssetTags: boolean; hasTagHierarchy?: boolean } = {
     hasAiContent: true,
     hasAiAssetTags: true,
   },
@@ -406,15 +406,21 @@ export function buildCatalogFilterWhere(
         const includeAi = filter.includeAi !== false && options.hasAiAssetTags;
         const taggedAssetsSubquery = (nameParamCount: number) => {
           const placeholders = Array.from({ length: nameParamCount }, () => '?').join(',');
+          const tagPredicate = filter.includeDescendants && options.hasTagHierarchy
+            ? `t.tag_id IN (WITH RECURSIVE subtree(tag_id) AS (
+                 SELECT tag_id FROM tags WHERE name COLLATE NOCASE IN (${placeholders})
+                 UNION SELECT h.tag_id FROM tag_hierarchy h JOIN subtree s ON h.parent_tag_id = s.tag_id
+               ) SELECT tag_id FROM subtree)`
+            : `t.name COLLATE NOCASE IN (${placeholders})`;
           const human = `SELECT hat.asset_id FROM human_asset_tags hat
                       JOIN tags t ON t.tag_id = hat.tag_id
-                      WHERE t.name COLLATE NOCASE IN (${placeholders})`;
+                      WHERE ${tagPredicate}`;
           if (!includeAi) return human;
           return `${human}
                     UNION
                     SELECT aat.asset_id FROM ai_asset_tags aat
                       JOIN tags t ON t.tag_id = aat.tag_id
-                      WHERE t.name COLLATE NOCASE IN (${placeholders})`;
+                      WHERE ${tagPredicate}`;
         };
         if (filter.exclude && filter.values.length > 1) {
           conditions.push(`(${filter.values.map(() =>

@@ -554,8 +554,8 @@ export interface SerpentLibraryApi {
   ): () => void;
   // Tags
   listTags(input: { libraryId: string }): Promise<LibraryApiResult<TagSummary[]>>;
-  createTag(input: { libraryId: string; name: string }): Promise<LibraryApiResult<TagSummary & { historyEntryId?: string }>>;
-  renameTag(input: { libraryId: string; tagId: string; name: string }): Promise<LibraryApiResult<TagSummary & { historyEntryId?: string }>>;
+  createTag(input: { libraryId: string; name: string; parentTagId?: string | null }): Promise<LibraryApiResult<TagSummary & { historyEntryId?: string }>>;
+  renameTag(input: { libraryId: string; tagId: string; name: string; parentTagId?: string | null }): Promise<LibraryApiResult<TagSummary & { historyEntryId?: string }>>;
   deleteTag(input: { libraryId: string; tagId: string }): Promise<LibraryApiResult<{ tagId: string; historyEntryId?: string }>>;
   deleteTags(input: { libraryId: string; tagIds: string[] }): Promise<LibraryApiResult<{ deletedTagIds: string[]; historyEntryId?: string }>>;
   mergeTags(input: { libraryId: string; sourceTagIds: string[]; name: string }): Promise<LibraryApiResult<TagSummary & { historyEntryId?: string }>>;

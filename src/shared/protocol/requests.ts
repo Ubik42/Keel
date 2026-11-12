@@ -652,11 +652,13 @@ export const rendererRequestSchema = z.discriminatedUnion('type', [
   }),
   z.strictObject({
     type: z.literal('tag.create.request'),
+    parentTagId: identifierSchema.nullable().optional(),
     libraryId: identifierSchema,
     name: displayNameSchema,
   }),
   z.strictObject({
     type: z.literal('tag.rename.request'),
+    parentTagId: identifierSchema.nullable().optional(),
     libraryId: identifierSchema,
     tagId: identifierSchema,
     name: displayNameSchema,
@@ -1984,11 +1986,13 @@ export const workerCommandSchema = z.discriminatedUnion('type', [
   }),
   z.strictObject({
     type: z.literal('tag.create'),
+    parentTagId: identifierSchema.nullable().optional(),
     libraryId: identifierSchema,
     name: displayNameSchema,
   }),
   z.strictObject({
     type: z.literal('tag.rename'),
+    parentTagId: identifierSchema.nullable().optional(),
     libraryId: identifierSchema,
     tagId: identifierSchema,
     name: displayNameSchema,

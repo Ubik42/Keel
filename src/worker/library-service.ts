@@ -3638,6 +3638,15 @@ const OPERATION_HISTORY_STALE_RETENTION_MS = 180 * 24 * 60 * 60 * 1000;
 
 // Exported for schema-compatibility tests that replay migrations
 // version-by-version (Serpent-verg.4/6).
+const TAG_HIERARCHY_SQL = `
+  CREATE TABLE IF NOT EXISTS tag_hierarchy (
+    tag_id TEXT PRIMARY KEY REFERENCES tags(tag_id) ON DELETE CASCADE,
+    parent_tag_id TEXT REFERENCES tags(tag_id) ON DELETE SET NULL,
+    CHECK (tag_id <> parent_tag_id)
+  );
+  CREATE INDEX IF NOT EXISTS tag_hierarchy_parent ON tag_hierarchy(parent_tag_id);
+`;
+
 export const MIGRATIONS = [
   { version: 1, sql: INITIAL_SCHEMA_SQL, checksum: INITIAL_SCHEMA_CHECKSUM },
   { version: 2, sql: ASSET_SCHEMA_SQL, checksum: ASSET_SCHEMA_CHECKSUM },
@@ -3850,6 +3859,7 @@ export const MIGRATIONS = [
     sql: LINKED_DIRECTORY_INDEX_SQL,
     checksum: createHash('sha256').update(LINKED_DIRECTORY_INDEX_SQL).digest('hex'),
   },
+  { version: 61, sql: TAG_HIERARCHY_SQL, checksum: createHash('sha256').update(TAG_HIERARCHY_SQL).digest('hex') },
 ] as const;
 export const SUPPORTED_SCHEMA_VERSION = MIGRATIONS.at(-1)!.version;
 
@@ -4489,6 +4499,7 @@ interface SmartCollectionHistorySnapshot {
 }
 
 interface TagHistorySnapshot {
+  hierarchy?: { parentTagId: string | null; childTagIds: string[] };
   tagId: string;
   libraryId: string;
   name: string;
@@ -11836,10 +11847,17 @@ export class LibraryService {
         `SELECT asset_id, tag_id FROM human_asset_tags
           WHERE tag_id IN (${placeholders})`,
     });
+    const hierarchy = hasTable(openLibrary.connection, 'tag_hierarchy')
+      ? openLibrary.connection.prepare('SELECT tag_id, parent_tag_id FROM tag_hierarchy WHERE parent_tag_id IS NOT NULL').all() as Array<{ tag_id: string; parent_tag_id: string }>
+      : [];
     return rows.map((row) => ({
       tagId: row.tag_id,
       libraryId: row.library_id,
       name: row.name,
+      ...(hierarchy.some((link) => link.tag_id === row.tag_id || link.parent_tag_id === row.tag_id) ? {
+        hierarchy: { parentTagId: hierarchy.find((link) => link.tag_id === row.tag_id)?.parent_tag_id ?? null,
+          childTagIds: hierarchy.filter((link) => link.parent_tag_id === row.tag_id).map((link) => link.tag_id).sort() },
+      } : {}),
       humanRelations: relations
         .filter((relation) => relation.tag_id === row.tag_id)
         .map((relation) => ({ assetId: relation.asset_id, tagId: relation.tag_id })),
@@ -11861,6 +11879,7 @@ export class LibraryService {
         tagId: candidate.tagId,
         libraryId: candidate.libraryId,
         name: candidate.name,
+        ...(candidate.hierarchy ? { hierarchy: candidate.hierarchy } : {}),
         humanRelations: this.assertHistoryRelations(candidate.humanRelations),
       };
     });
@@ -11902,6 +11921,12 @@ export class LibraryService {
           'INSERT INTO human_asset_tags (asset_id, tag_id) VALUES (?, ?)',
         );
         for (const relation of item.humanRelations) insertRelation.run(relation.assetId, relation.tagId);
+      }
+      if (hasTable(openLibrary.connection, 'tag_hierarchy')) {
+        for (const item of restore) this.setTagParent(openLibrary, item.tagId, item.hierarchy?.parentTagId ?? null);
+        for (const item of restore) {
+          for (const childId of item.hierarchy?.childTagIds ?? []) this.setTagParent(openLibrary, childId, item.tagId);
+        }
       }
     })();
     for (const item of [...expected, ...restore]) {
@@ -16957,6 +16982,7 @@ export class LibraryService {
     const { sql: filterWhere, params: filterParams } = this.buildFilterWhere(filters, {
       hasAiContent,
       hasAiAssetTags,
+      hasTagHierarchy: hasTable(connection, 'tag_hierarchy'),
     });
     const needsDurationMeta =
       filterFields.has('width') ||
@@ -20154,7 +20180,7 @@ export class LibraryService {
 
   // ── Tags ──────────────────────────────────────────────────────────
 
-  createTag(input: { libraryId: string; name: string }): TagSummary {
+  createTag(input: { libraryId: string; name: string; parentTagId?: string | null }): TagSummary {
     const openLibrary = this.requireOpenLibrary(input.libraryId);
     const trimmed = input.name.trim();
     if (trimmed.length === 0) throw new LibraryServiceError('INVALID_FOLDER_NAME');
@@ -20162,11 +20188,11 @@ export class LibraryService {
     const tagId = randomUUID();
     const now = new Date().toISOString();
     try {
-      openLibrary.connection
-        .prepare(
-          'INSERT INTO tags (tag_id, library_id, name, created_at) VALUES (?, ?, ?, ?)',
-        )
-        .run(tagId, openLibrary.summary.libraryId, trimmed, now);
+      openLibrary.connection.transaction(() => {
+        openLibrary.connection.prepare('INSERT INTO tags (tag_id, library_id, name, created_at) VALUES (?, ?, ?, ?)')
+          .run(tagId, openLibrary.summary.libraryId, trimmed, now);
+        if (input.parentTagId != null) this.setTagParent(openLibrary, tagId, input.parentTagId);
+      })();
     } catch (error) {
       if (
         error instanceof Error &&
@@ -20175,9 +20201,9 @@ export class LibraryService {
       ) {
         throw new LibraryServiceError('FOLDER_ALREADY_EXISTS');
       }
-      throw new LibraryServiceError('LIBRARY_NOT_WRITABLE', { cause: error });
+      throw serviceError(error, 'LIBRARY_NOT_WRITABLE');
     }
-    return { tagId, name: trimmed, assetCount: 0 };
+    return { tagId, name: trimmed, assetCount: 0, ...(input.parentTagId ? { parentTagId: input.parentTagId } : {}) };
   }
 
   listTags(libraryId: string): TagSummary[] {
@@ -20219,14 +20245,47 @@ export class LibraryService {
         name: string;
         asset_count: number;
       }>;
-    return rows.map((row) => ({
-      tagId: row.tag_id,
-      name: row.name,
-      assetCount: row.asset_count,
-    }));
+    const tags: TagSummary[] = rows.map((row) => ({ tagId: row.tag_id, name: row.name, assetCount: row.asset_count }));
+    if (!hasTable(connection, 'tag_hierarchy')) return tags;
+    const links = connection.prepare('SELECT tag_id, parent_tag_id FROM tag_hierarchy WHERE parent_tag_id IS NOT NULL')
+      .all() as Array<{ tag_id: string; parent_tag_id: string }>;
+    if (links.length === 0) return tags;
+    const parents = new Map(links.map((link) => [link.tag_id, link.parent_tag_id]));
+    const counts = tagUseSubqueries.length === 0 ? [] : connection.prepare(`
+      WITH RECURSIVE descendants(root, id) AS (
+        SELECT tag_id, tag_id FROM tags WHERE library_id = ?
+        UNION
+        SELECT d.root, h.tag_id FROM descendants d JOIN tag_hierarchy h ON h.parent_tag_id = d.id
+      )
+      SELECT d.root, COUNT(DISTINCT used.asset_id) AS count FROM descendants d
+      LEFT JOIN (${tagUseSubqueries.join(' UNION ')}) used ON used.tag_id = d.id GROUP BY d.root
+    `).all(libraryId) as Array<{ root: string; count: number }>;
+    const subtreeCounts = new Map(counts.map((row) => [row.root, row.count]));
+    return tags.map((tag) => ({ ...tag, ...(parents.has(tag.tagId) ? { parentTagId: parents.get(tag.tagId)! } : {}),
+      subtreeAssetCount: subtreeCounts.get(tag.tagId) ?? 0 }));
   }
 
-  renameTag(input: { libraryId: string; tagId: string; name: string }): TagSummary {
+  private setTagParent(openLibrary: OpenLibrary, tagId: string, parentTagId: string | null): void {
+    if (!hasTable(openLibrary.connection, 'tag_hierarchy')) throw new LibraryServiceError('LIBRARY_NOT_WRITABLE');
+    if (parentTagId !== null) {
+      const parent = openLibrary.connection.prepare('SELECT tag_id FROM tags WHERE tag_id = ? AND library_id = ?')
+        .get(parentTagId, openLibrary.summary.libraryId);
+      if (!parent) throw new LibraryServiceError('FOLDER_NOT_FOUND');
+      const seen = new Set<string>([tagId]);
+      let cursor: string | null = parentTagId;
+      while (cursor !== null) {
+        if (seen.has(cursor)) throw new LibraryServiceError('TAG_HIERARCHY_CYCLE');
+        seen.add(cursor);
+        const row = openLibrary.connection.prepare('SELECT parent_tag_id FROM tag_hierarchy WHERE tag_id = ?')
+          .get(cursor) as { parent_tag_id: string | null } | undefined;
+        cursor = row?.parent_tag_id ?? null;
+      }
+      openLibrary.connection.prepare('INSERT INTO tag_hierarchy(tag_id, parent_tag_id) VALUES (?, ?) ON CONFLICT(tag_id) DO UPDATE SET parent_tag_id = excluded.parent_tag_id')
+        .run(tagId, parentTagId);
+    } else openLibrary.connection.prepare('DELETE FROM tag_hierarchy WHERE tag_id = ?').run(tagId);
+  }
+
+  renameTag(input: { libraryId: string; tagId: string; name: string; parentTagId?: string | null }): TagSummary {
     const openLibrary = this.requireOpenLibrary(input.libraryId);
     const trimmed = input.name.trim();
     if (trimmed.length === 0) throw new LibraryServiceError('INVALID_FOLDER_NAME');
@@ -20246,6 +20305,7 @@ export class LibraryService {
 
     try {
       openLibrary.connection.transaction(() => {
+        if (input.parentTagId !== undefined) this.setTagParent(openLibrary, input.tagId, input.parentTagId);
         openLibrary.connection
           .prepare('UPDATE tags SET name = ? WHERE tag_id = ?')
           .run(trimmed, input.tagId);
@@ -20261,7 +20321,7 @@ export class LibraryService {
       ) {
         throw new LibraryServiceError('FOLDER_ALREADY_EXISTS');
       }
-      throw new LibraryServiceError('LIBRARY_NOT_WRITABLE', { cause: error });
+      throw serviceError(error, 'LIBRARY_NOT_WRITABLE');
     }
 
     this.emitClientAssetsChanged(input.libraryId, affectedAssets.length);
@@ -20275,7 +20335,10 @@ export class LibraryService {
            )`,
       )
       .get(input.tagId, input.tagId) as { count: number };
-    return { tagId: input.tagId, name: trimmed, assetCount: countRow.count };
+    const parent = hasTable(openLibrary.connection, 'tag_hierarchy')
+      ? openLibrary.connection.prepare('SELECT parent_tag_id FROM tag_hierarchy WHERE tag_id = ?').get(input.tagId) as { parent_tag_id: string | null } | undefined
+      : undefined;
+    return { tagId: input.tagId, name: trimmed, assetCount: countRow.count, ...(parent?.parent_tag_id ? { parentTagId: parent.parent_tag_id } : {}) };
   }
 
   deleteTag(input: { libraryId: string; tagId: string }): string {
@@ -35384,7 +35447,7 @@ export class LibraryService {
 
   private buildFilterWhere(
     filters: FilterClause[],
-    options: { hasAiContent: boolean; hasAiAssetTags: boolean } = {
+    options: { hasAiContent: boolean; hasAiAssetTags: boolean; hasTagHierarchy?: boolean } = {
       hasAiContent: true,
       hasAiAssetTags: true,
     },
@@ -35799,7 +35862,7 @@ export class LibraryService {
     const contextualSearchParams = [...legacySearchWhere.params, ...expressionSearchWhere.params];
     const { sql: filterWhere, params: filterParams } = this.buildFilterWhere(
       input.filters ?? [],
-      { hasAiContent, hasAiAssetTags },
+      { hasAiContent, hasAiAssetTags, hasTagHierarchy: hasTable(connection, 'tag_hierarchy') },
     );
 
     // A collection browse is a relational scope, not an asset-id list. Build
