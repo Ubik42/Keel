@@ -74,7 +74,7 @@ describe.runIf(canRun)('real OIIO static-format matrix', () => {
     process.env['SERPENT_OIIO_PATH'] = oiiotoolPath;
     const service = new LibraryService();
     try {
-      const library = service.createLibrary({ displayName: 'RealStaticFormats', selectedParentPath: root });
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'RealStaticFormats', selectedParentPath: root });
       for (const sourcePath of sourcePaths) {
         importNoConflict(service, library.libraryId, sourcePath);
       }
@@ -156,7 +156,7 @@ describe.runIf(canRun)('real OIIO static-format matrix', () => {
       copyFileSync(psdFixturePath!, sourcePath);
       process.env['SERPENT_OIIO_PATH'] = oiiotoolPath;
       const service = new LibraryService();
-      const library = service.createLibrary({ displayName: 'RealPsdFormat', selectedParentPath: root });
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'RealPsdFormat', selectedParentPath: root });
       importNoConflict(service, library.libraryId, sourcePath);
 
       service.enqueueThumbnailJobs(library.libraryId);

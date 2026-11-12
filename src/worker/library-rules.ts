@@ -44,7 +44,9 @@ export function normalizeLibraryName(input: string): string {
 }
 
 export function normalizeFolderName(input: string): string {
-  return normalizePortableName(input, 'INVALID_FOLDER_NAME');
+  const name = normalizePortableName(input, 'INVALID_FOLDER_NAME');
+  if (name.toLowerCase() === '.serpent') throw new LibraryInputError('INVALID_FOLDER_NAME', 'Reserved metadata directory.');
+  return name;
 }
 
 /**
@@ -174,7 +176,9 @@ export function normalizeRelativeAssetPath(input: string): string {
     normalized === '.' ||
     normalized === '..' ||
     normalized.startsWith('../') ||
-    normalized.startsWith('/')
+    normalized.startsWith('/') ||
+    normalized.split('/').some((segment) => segment.toLowerCase() === '.serpent') ||
+    ['.serpentignore', '.serpentignore.json'].includes(normalized.toLowerCase())
   ) {
     throw new LibraryInputError('INVALID_LIBRARY_PATH', 'Invalid relative asset path.');
   }

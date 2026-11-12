@@ -232,7 +232,7 @@ export interface AutomationLibraryBindingHandler {
   onLibraryCreated?(input: {
     executionId: string;
     source: AutomationSource;
-    library: { libraryId: string; displayName: string; libraryPath: string };
+    library: { libraryId: string; displayName: string; libraryPath: string; storageLayout?: 'root' | 'assets' };
   }): void | Promise<void>;
   transitionLibraryContext?(input: {
     executionId: string;
@@ -245,7 +245,7 @@ export interface AutomationLibraryBindingHandler {
   /** Used by existing script/worker integration until all callers migrate. */
   bindLibrary?(input: { executionId: string; libraryId: string }): void | Promise<void>;
   onLibraryClosed?(input: { executionId: string; source: AutomationSource; libraryId: string }): void | Promise<void>;
-  onLibraryRenamed?(input: { executionId: string; source: AutomationSource; library: { libraryId: string; displayName: string; libraryPath: string } }): void | Promise<void>;
+  onLibraryRenamed?(input: { executionId: string; source: AutomationSource; library: { libraryId: string; displayName: string; libraryPath: string; storageLayout?: 'root' | 'assets' } }): void | Promise<void>;
   onLibraryDeleted?(input: { executionId: string; source: AutomationSource; libraryId: string; displayName: string; libraryPath: string }): void | Promise<void>;
   onLibraryImported?(input: { executionId: string; source: AutomationSource; libraryId: string; displayName: string; libraryPath: string }): void | Promise<void>;
 }

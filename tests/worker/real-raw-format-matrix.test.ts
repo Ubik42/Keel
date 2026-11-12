@@ -73,7 +73,7 @@ describe.runIf(canRun)('real LibRaw format matrix', () => {
     });
     process.env['SERPENT_OIIO_PATH'] = oiiotoolPath;
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'RealRawFormats', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'RealRawFormats', selectedParentPath: root });
     for (const sourcePath of sourcePaths) {
       importNoConflict(service, library.libraryId, sourcePath);
     }

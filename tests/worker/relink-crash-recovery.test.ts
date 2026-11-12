@@ -100,7 +100,7 @@ function missingManagedAssetFixture(label: string): {
 } {
   const root = temporaryRoot();
   const service = newService();
-  const created = service.createLibrary({ displayName: label, selectedParentPath: root });
+  const created = service.createLibrary({ storageLayout: 'assets', displayName: label, selectedParentPath: root });
   const sourcePath = path.join(root, 'orig.jpg');
   writeFileSync(sourcePath, 'original bytes');
   const imported = importNoConflict(service, created.libraryId, sourcePath);
@@ -135,7 +135,7 @@ describe('relinkAsset recovery on reopen', () => {
     // ---- SETUP ----
     const root = temporaryRoot();
     const setup = newService();
-    const created = setup.createLibrary({ displayName: 'Relink Crash', selectedParentPath: root });
+    const created = setup.createLibrary({ storageLayout: 'assets', displayName: 'Relink Crash', selectedParentPath: root });
 
     // Import a managed asset
     writeFileSync(path.join(root, 'orig.jpg'), 'original bytes');
@@ -388,7 +388,7 @@ describe('relinkBatchApply recovery on reopen', () => {
     // ---- SETUP: 3 managed assets with different paths ----
     const root = temporaryRoot();
     const setup = newService();
-    const created = setup.createLibrary({ displayName: 'Batch Crash', selectedParentPath: root });
+    const created = setup.createLibrary({ storageLayout: 'assets', displayName: 'Batch Crash', selectedParentPath: root });
 
     // Asset 1: root level
     writeFileSync(path.join(root, 'alpha-one.jpg'), 'bytes1');
@@ -528,7 +528,7 @@ describe('relinkBatchApply recovery on reopen', () => {
     // ---- SETUP ----
     const root = temporaryRoot();
     const setup = newService();
-    const created = setup.createLibrary({ displayName: 'Relink Mismatch', selectedParentPath: root });
+    const created = setup.createLibrary({ storageLayout: 'assets', displayName: 'Relink Mismatch', selectedParentPath: root });
 
     // Import a managed asset
     writeFileSync(path.join(root, 'orig.jpg'), 'original bytes');

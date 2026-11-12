@@ -22,7 +22,7 @@ function libraryWithZip(): { service: LibraryService; libraryId: string; assetId
   const root = mkdtempSync(path.join(tmpdir(), 'serpent-plugin-zip-'));
   roots.push(root);
   const service = new LibraryService();
-  const created = service.createLibrary({ displayName: 'ZipPlugin', selectedParentPath: root });
+  const created = service.createLibrary({ storageLayout: 'assets', displayName: 'ZipPlugin', selectedParentPath: root });
   writeFileSync(path.join(root, 'bundle.zip'), 'not-a-real-archive');
   importNoConflict(service, created.libraryId, path.join(root, 'bundle.zip'));
   const asset = service.listAssets({ libraryId: created.libraryId, recursive: true })[0]!;

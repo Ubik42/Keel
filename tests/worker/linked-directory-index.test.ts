@@ -22,7 +22,7 @@ function setup(options: ConstructorParameters<typeof LibraryService>[0] = {}) {
   writeFileSync(path.join(sourceRoot, 'sample.txt'), 'fixture');
   const service = new LibraryService({ observerFactory: () => ({ close() {} }), ...options });
   services.push(service);
-  const library = service.createLibrary({ displayName: 'DirectoryIndex', selectedParentPath: root });
+  const library = service.createLibrary({ storageLayout: 'assets', displayName: 'DirectoryIndex', selectedParentPath: root });
   const linked = service.importFolderAsLinked({ libraryId: library.libraryId, sourceRootPath: sourceRoot });
   return { root, sourceRoot, service, library, linked };
 }

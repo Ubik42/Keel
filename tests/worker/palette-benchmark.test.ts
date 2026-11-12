@@ -366,7 +366,7 @@ describe.skipIf(!enabled || !benchDirectory)('palette extraction benchmark (manu
     });
 
     service = new LibraryService({ observerFactory: () => ({ close() {} }) });
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Palette benchmark',
       selectedParentPath: temporaryRoot,
     });

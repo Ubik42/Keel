@@ -66,7 +66,7 @@ afterEach(() => {
 describe('database damage recovery (Serpent-dw9a)', () => {
   it('keeps at most two verified rotating backup slots', async () => {
     const service = newService();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Backup Rotation',
       selectedParentPath: temporaryRoot(),
     });
@@ -85,7 +85,7 @@ describe('database damage recovery (Serpent-dw9a)', () => {
 
   it('does not reuse an in-flight snapshot as a forced destructive backup', async () => {
     const service = newService();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Fresh Backup',
       selectedParentPath: temporaryRoot(),
     });
@@ -98,7 +98,7 @@ describe('database damage recovery (Serpent-dw9a)', () => {
 
   it('preserves files when the backup location cannot be written', async () => {
     const service = newService();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Blocked Backup',
       selectedParentPath: temporaryRoot(),
     });
@@ -120,7 +120,7 @@ describe('database damage recovery (Serpent-dw9a)', () => {
 
   it('restores a damaged primary from backup 1 and preserves the damaged file', async () => {
     const service = newService();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Backup Recovery',
       selectedParentPath: temporaryRoot(),
     });
@@ -138,7 +138,7 @@ describe('database damage recovery (Serpent-dw9a)', () => {
 
   it('restores a missing primary from the latest verified backup', async () => {
     const service = newService();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Missing Primary Recovery',
       selectedParentPath: temporaryRoot(),
     });
@@ -154,7 +154,7 @@ describe('database damage recovery (Serpent-dw9a)', () => {
 
   it('restores a missing primary from a newer-schema backup instead of Assets rescue', async () => {
     const service = newService();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Too New Backup',
       selectedParentPath: temporaryRoot(),
     });
@@ -180,7 +180,7 @@ describe('database damage recovery (Serpent-dw9a)', () => {
 
   it('puts the original primary back when Assets rescue cannot create a database', () => {
     const created = newService();
-    const library = created.createLibrary({
+    const library = created.createLibrary({ storageLayout: 'assets',
       displayName: 'Rescue Rollback',
       selectedParentPath: temporaryRoot(),
     });
@@ -201,7 +201,7 @@ describe('database damage recovery (Serpent-dw9a)', () => {
 
   it('rebuilds from Assets when both backups are unusable', async () => {
     const service = newService();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Rescue After Bad Backups',
       selectedParentPath: temporaryRoot(),
     });
@@ -234,7 +234,7 @@ describe('database damage recovery (Serpent-dw9a)', () => {
   it('rebuilds a database from Assets when the primary and backups fail', async () => {
     const service = newService();
     const root = temporaryRoot();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Rescue Recovery',
       selectedParentPath: root,
     });
@@ -282,7 +282,7 @@ describe('database damage recovery (Serpent-dw9a)', () => {
   it('keeps dangling revisions visible and repairs them from the source file', () => {
     const service = newService();
     const root = temporaryRoot();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Dangling Revision Recovery',
       selectedParentPath: root,
     });
@@ -327,7 +327,7 @@ describe('database damage recovery (Serpent-dw9a)', () => {
   it('probes only known recovery locations and verifies a matching candidate', () => {
     const service = newService();
     const root = temporaryRoot();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Recovery Probe',
       selectedParentPath: root,
     });
@@ -371,7 +371,7 @@ describe('database damage recovery (Serpent-dw9a)', () => {
     let now = Date.now();
     const service = new LibraryService({ databaseBackupClock: { now: () => now } });
     services.push(service);
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Throttle Before',
       selectedParentPath: temporaryRoot(),
     });

@@ -204,7 +204,7 @@ describe.skipIf(!enabled)('imported thumbnail normalization benchmark (manual)',
     const benchmarkRssBefore = process.memoryUsage().rss;
 
     for (let round = 0; round < roundCount; round += 1) {
-      const library = service.createLibrary({
+      const library = service.createLibrary({ storageLayout: 'assets',
         displayName: `Imported Thumbnail Benchmark ${round + 1}`,
         selectedParentPath: temporaryRoot,
       });

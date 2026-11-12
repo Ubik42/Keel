@@ -126,7 +126,7 @@ describe('library availability baseline', () => {
   it('creates, closes, reopens, imports, and keeps writes after a full close', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: '可用性基线',
       selectedParentPath: root,
     });
@@ -162,7 +162,7 @@ describe('library availability baseline', () => {
   it('opens a newer-than-supported schema writable and never sets readOnly', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: '未来 schema',
       selectedParentPath: root,
     });
@@ -184,7 +184,7 @@ describe('library availability baseline', () => {
     const syncChecksum = MIGRATIONS.find((migration) => migration.version === 38)!.checksum;
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: '分叉历史',
       selectedParentPath: root,
     });
@@ -229,7 +229,7 @@ describe('library availability baseline', () => {
 
   it('restores a damaged primary from backup and stays writable', async () => {
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: '备份恢复',
       selectedParentPath: temporaryRoot(),
     });
@@ -245,7 +245,7 @@ describe('library availability baseline', () => {
 
   it('rescues from Assets when backups are unusable and stays writable', async () => {
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: '抢救重建',
       selectedParentPath: temporaryRoot(),
     });
@@ -268,7 +268,7 @@ describe('library availability baseline', () => {
 
   it('rescues tampered migration history instead of opening read-only', () => {
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: '篡改历史',
       selectedParentPath: temporaryRoot(),
     });
@@ -284,7 +284,7 @@ describe('library availability baseline', () => {
 
   it('reuses the same path of an already-open catalog without prompting', () => {
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: '同路径重开',
       selectedParentPath: temporaryRoot(),
     });
@@ -296,7 +296,7 @@ describe('library availability baseline', () => {
   it('rejects a second path for an already-open catalog instead of treating it as damage', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: '路径别名源',
       selectedParentPath: root,
     });
@@ -316,7 +316,7 @@ describe('library availability baseline', () => {
   it('opens the chosen path after confirmation instead of keeping the first handle', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: '确认切库源',
       selectedParentPath: root,
     });
@@ -337,11 +337,11 @@ describe('library availability baseline', () => {
   it('closes one library and keeps another library writable', () => {
     const root = temporaryRoot();
     const service = newService();
-    const first = service.createLibrary({
+    const first = service.createLibrary({ storageLayout: 'assets',
       displayName: '切库源',
       selectedParentPath: root,
     });
-    const second = service.createLibrary({
+    const second = service.createLibrary({ storageLayout: 'assets',
       displayName: '切库目标',
       selectedParentPath: root,
     });
@@ -354,7 +354,7 @@ describe('library availability baseline', () => {
   it('rejects a folder that is not a library instead of inventing a read-only handle', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: '缺 Assets',
       selectedParentPath: root,
     });

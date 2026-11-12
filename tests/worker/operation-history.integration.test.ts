@@ -41,7 +41,7 @@ function createLibraryWithAsset(): {
 } {
   const service = new LibraryService();
   services.push(service);
-  const library = service.createLibrary({ displayName: 'History', selectedParentPath: temporaryRoot() });
+  const library = service.createLibrary({ storageLayout: 'assets', displayName: 'History', selectedParentPath: temporaryRoot() });
   const managedFolder = service.createManagedFolder({ libraryId: library.libraryId, name: 'Assets' });
   const assetId = randomUUID();
   const revisionId = randomUUID();

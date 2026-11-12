@@ -50,7 +50,7 @@ describe('two-device sync over a shared WebDAV server (Serpent-xffq)', () => {
     // 机器 A：已有库（displayName + libraryId 决定远端目录名）。
     const serviceA = new LibraryService();
     const rootA = tempRoot();
-    const createdA = serviceA.createLibrary({ displayName: '跨机库', selectedParentPath: rootA });
+    const createdA = serviceA.createLibrary({ storageLayout: 'assets', displayName: '跨机库', selectedParentPath: rootA });
     const libraryId = createdA.libraryId;
     const fileA = path.join(rootA, 'a.txt');
     writeFileSync(fileA, 'hello-from-A');
@@ -69,7 +69,7 @@ describe('two-device sync over a shared WebDAV server (Serpent-xffq)', () => {
     // 机器 B：全新本地库，但沿用同一 libraryId（与 A 指向同一远端目录）。
     const serviceB = new LibraryService();
     const rootB = tempRoot();
-    serviceB.createLibrary({ displayName: '跨机库', selectedParentPath: rootB, libraryId });
+    serviceB.createLibrary({ storageLayout: 'assets', displayName: '跨机库', selectedParentPath: rootB, libraryId });
 
     const engineA = new SyncEngine(createLibrarySyncPort(serviceA), { deviceId: 'device-a' });
     const engineB = new SyncEngine(createLibrarySyncPort(serviceB), { deviceId: 'device-b' });
@@ -140,7 +140,7 @@ describe('two-device sync over a shared WebDAV server (Serpent-xffq)', () => {
 
     const serviceA = new LibraryService();
     const rootA = tempRoot();
-    const createdA = serviceA.createLibrary({ displayName: '文件夹库', selectedParentPath: rootA });
+    const createdA = serviceA.createLibrary({ storageLayout: 'assets', displayName: '文件夹库', selectedParentPath: rootA });
     const libraryId = createdA.libraryId;
     const fileA = path.join(rootA, 'alpha.txt');
     writeFileSync(fileA, 'alpha-nested');
@@ -156,7 +156,7 @@ describe('two-device sync over a shared WebDAV server (Serpent-xffq)', () => {
 
     const serviceB = new LibraryService();
     const rootB = tempRoot();
-    serviceB.createLibrary({ displayName: '文件夹库', selectedParentPath: rootB, libraryId });
+    serviceB.createLibrary({ storageLayout: 'assets', displayName: '文件夹库', selectedParentPath: rootB, libraryId });
 
     const engineA = new SyncEngine(createLibrarySyncPort(serviceA), { deviceId: 'device-a' });
     const engineB = new SyncEngine(createLibrarySyncPort(serviceB), { deviceId: 'device-b' });
@@ -179,7 +179,7 @@ describe('two-device sync over a shared WebDAV server (Serpent-xffq)', () => {
 
     const serviceA = new LibraryService();
     const rootA = tempRoot();
-    const createdA = serviceA.createLibrary({ displayName: '搬目录库', selectedParentPath: rootA });
+    const createdA = serviceA.createLibrary({ storageLayout: 'assets', displayName: '搬目录库', selectedParentPath: rootA });
     const libraryId = createdA.libraryId;
     const fileA = path.join(rootA, 'alpha.txt');
     writeFileSync(fileA, 'alpha-nested-move');
@@ -200,7 +200,7 @@ describe('two-device sync over a shared WebDAV server (Serpent-xffq)', () => {
 
     const serviceB = new LibraryService();
     const rootB = tempRoot();
-    serviceB.createLibrary({ displayName: '搬目录库', selectedParentPath: rootB, libraryId });
+    serviceB.createLibrary({ storageLayout: 'assets', displayName: '搬目录库', selectedParentPath: rootB, libraryId });
 
     const engineA = new SyncEngine(createLibrarySyncPort(serviceA), { deviceId: 'device-a' });
     const engineB = new SyncEngine(createLibrarySyncPort(serviceB), { deviceId: 'device-b' });
@@ -235,7 +235,7 @@ describe('two-device sync over a shared WebDAV server (Serpent-xffq)', () => {
 
     const serviceA = new LibraryService();
     const rootA = tempRoot();
-    const createdA = serviceA.createLibrary({ displayName: '删除库', selectedParentPath: rootA });
+    const createdA = serviceA.createLibrary({ storageLayout: 'assets', displayName: '删除库', selectedParentPath: rootA });
     const libraryId = createdA.libraryId;
     const fileA = path.join(rootA, 'a.txt');
     writeFileSync(fileA, 'delete-me');
@@ -243,7 +243,7 @@ describe('two-device sync over a shared WebDAV server (Serpent-xffq)', () => {
 
     const serviceB = new LibraryService();
     const rootB = tempRoot();
-    serviceB.createLibrary({ displayName: '删除库', selectedParentPath: rootB, libraryId });
+    serviceB.createLibrary({ storageLayout: 'assets', displayName: '删除库', selectedParentPath: rootB, libraryId });
 
     const engineA = new SyncEngine(createLibrarySyncPort(serviceA), { deviceId: 'device-a' });
     const engineB = new SyncEngine(createLibrarySyncPort(serviceB), { deviceId: 'device-b' });

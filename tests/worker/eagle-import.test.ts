@@ -78,7 +78,7 @@ describe('Eagle library import', () => {
         });
       },
     });
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Target',
       selectedParentPath: root,
     });
@@ -99,7 +99,7 @@ describe('Eagle library import', () => {
     const sourceRootPath = writeEagleLibrary(root, 1);
     const service = new LibraryService({ observerFactory: () => ({ close() {} }) });
     try {
-      const library = service.createLibrary({
+      const library = service.createLibrary({ storageLayout: 'assets',
         displayName: 'Eagle orphan',
         selectedParentPath: root,
       });
@@ -136,7 +136,7 @@ describe('Eagle library import', () => {
         }
       },
     });
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Cancel',
       selectedParentPath: root,
     });
@@ -156,7 +156,7 @@ describe('Eagle library import', () => {
     const service = new LibraryService({
       observerFactory: () => ({ close() {} }),
     });
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Thumbs',
       selectedParentPath: root,
     });
@@ -199,7 +199,7 @@ describe('Eagle library import', () => {
         }
       },
     });
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'ByteTotal',
       selectedParentPath: root,
     });
@@ -226,7 +226,7 @@ describe('Eagle library import', () => {
         }
       },
     });
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Progress',
       selectedParentPath: root,
     });
@@ -248,7 +248,7 @@ describe('Eagle library import', () => {
     const unreadable = new LibraryService({
       observerFactory: () => ({ close() {} }),
     });
-    const unreadableLibrary = unreadable.createLibrary({
+    const unreadableLibrary = unreadable.createLibrary({ storageLayout: 'assets',
       displayName: 'Unreadable',
       selectedParentPath: root,
     });
@@ -265,7 +265,7 @@ describe('Eagle library import', () => {
       observerFactory: () => ({ close() {} }),
       failAt: 'crash-during-prepare-stage',
     });
-    const copyLibrary = copyFailed.createLibrary({
+    const copyLibrary = copyFailed.createLibrary({ storageLayout: 'assets',
       displayName: 'CopyFail',
       selectedParentPath: root,
     });
@@ -282,7 +282,7 @@ describe('Eagle library import', () => {
       observerFactory: () => ({ close() {} }),
       failAt: 'after-stage',
     });
-    const registerLibrary = registerFailed.createLibrary({
+    const registerLibrary = registerFailed.createLibrary({ storageLayout: 'assets',
       displayName: 'RegisterFail',
       selectedParentPath: root,
     });

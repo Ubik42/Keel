@@ -31,7 +31,7 @@ describe('managed asset delete progress', () => {
       },
     });
     services.push(service);
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Delete Progress',
       selectedParentPath: root,
     });
@@ -94,7 +94,7 @@ describe('managed asset delete progress', () => {
       },
     });
     services.push(cancelling);
-    const cancelLibrary = cancelling.createLibrary({
+    const cancelLibrary = cancelling.createLibrary({ storageLayout: 'assets',
       displayName: 'Delete Cancel',
       selectedParentPath: root,
     });

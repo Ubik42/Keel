@@ -69,7 +69,7 @@ describe('resolveAssetDragInfos (Serpent-v4jf batched drag priming)', () => {
   it('resolves managed assets in one batch with thumbnail paths matching the single-entry resolvers', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'DragBatch', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'DragBatch', selectedParentPath: root });
 
     const withThumb = path.join(root, 'with-thumb.png');
     const withoutThumb = path.join(root, 'without-thumb.png');
@@ -111,7 +111,7 @@ describe('resolveAssetDragInfos (Serpent-v4jf batched drag priming)', () => {
   it('prefers a ready video poster for thumbnail entries like getThumbnailArtifact', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'DragPoster', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'DragPoster', selectedParentPath: root });
 
     const sourcePath = path.join(root, 'poster.mp4');
     writeFileSync(sourcePath, Buffer.alloc(1024, 0));
@@ -143,7 +143,7 @@ describe('resolveAssetDragInfos (Serpent-v4jf batched drag priming)', () => {
   it('resolves linked assets to their external absolute paths', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'DragLinked', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'DragLinked', selectedParentPath: root });
 
     // importFolderAsLinked expects a directory source.
     const sourceDir = path.join(root, 'link-source');

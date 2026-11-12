@@ -147,7 +147,7 @@ describe('thumbnail queue DB-write batching (Serpent-xoaz)', () => {
         }
       },
     });
-    const created = service.createLibrary({ displayName: 'ClaimYield', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'ClaimYield', selectedParentPath: root });
 
     const sourceDir = path.join(root, 'sources');
     createDistinctPngs(sourceDir, 6);
@@ -167,7 +167,7 @@ describe('thumbnail queue DB-write batching (Serpent-xoaz)', () => {
       sharpFn: instantSharp(),
       onDbStatement: (sql) => statements.push(sql),
     });
-    const created = service.createLibrary({ displayName: 'BatchWrites', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'BatchWrites', selectedParentPath: root });
 
     const jobCount = 48;
     const sourceDir = path.join(root, 'sources');
@@ -218,7 +218,7 @@ describe('thumbnail queue DB-write batching (Serpent-xoaz)', () => {
         if (writeCount === 2) bothWritesStarted();
       }, 80),
     });
-    const created = service.createLibrary({ displayName: 'PreserveVisibleClaim', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'PreserveVisibleClaim', selectedParentPath: root });
     const sourceDir = path.join(root, 'sources');
     createDistinctPngs(sourceDir, 3);
     importFolderNoConflict(service, created.libraryId, sourceDir);
@@ -255,7 +255,7 @@ describe('thumbnail queue DB-write batching (Serpent-xoaz)', () => {
   it('claims overlay-ranked ids before later ids that share the same persistent priority', async () => {
     const root = temporaryRoot();
     const service = new LibraryService({ sharpFn: instantSharp() });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'RankedViewportClaim',
       selectedParentPath: root,
     });
@@ -290,7 +290,7 @@ describe('thumbnail queue DB-write batching (Serpent-xoaz)', () => {
   it('claims jobs outside the overlay after foreground bands have no queued work', async () => {
     const root = temporaryRoot();
     const service = new LibraryService({ sharpFn: instantSharp() });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'OverlayThenPersist',
       selectedParentPath: root,
     });
@@ -326,7 +326,7 @@ describe('thumbnail fill order (Serpent-xoaz)', () => {
   it('drains most-recently-imported assets first (created_at DESC) instead of pure path order', async () => {
     const root = temporaryRoot();
     const service = new LibraryService({ sharpFn: instantSharp() });
-    const created = service.createLibrary({ displayName: 'FillOrder', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'FillOrder', selectedParentPath: root });
 
     const sourceDir = path.join(root, 'sources');
     createDistinctPngs(sourceDir, 6);
@@ -362,7 +362,7 @@ describe('thumbnail fill order (Serpent-xoaz)', () => {
   it('keeps the caller id order for explicit waves regardless of created_at (Serpent-x9xu follow-up)', async () => {
     const root = temporaryRoot();
     const service = new LibraryService({ sharpFn: instantSharp() });
-    const created = service.createLibrary({ displayName: 'ExplicitOrder', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'ExplicitOrder', selectedParentPath: root });
 
     const sourceDir = path.join(root, 'sources');
     createDistinctPngs(sourceDir, 6);
@@ -400,7 +400,7 @@ describe('visible thumbnail admission (Serpent-d6)', () => {
   it('keeps model rendering out of the fast visible wave while preserving order', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'VisibleMediaKinds', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'VisibleMediaKinds', selectedParentPath: root });
 
     const sourceDir = path.join(root, 'sources');
     mkdirSync(sourceDir, { recursive: true });
@@ -450,7 +450,7 @@ describe('visible thumbnail admission (Serpent-d6)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({ displayName: 'VisibleImageFirst', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'VisibleImageFirst', selectedParentPath: root });
 
     const sourceDir = path.join(root, 'sources');
     mkdirSync(sourceDir, { recursive: true });

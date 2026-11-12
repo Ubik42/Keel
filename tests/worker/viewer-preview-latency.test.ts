@@ -41,7 +41,7 @@ describe('viewer source preview latency', () => {
     }) as unknown as NonNullable<LibraryServiceOptions['sharpFn']>;
     const service = new LibraryService({ sharpFn });
     services.push(service);
-    const created = service.createLibrary({ displayName: 'Viewer latency', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Viewer latency', selectedParentPath: root });
     const sourcePath = path.join(root, 'source.png');
     writeFileSync(sourcePath, VALID_PNG);
     importNoConflict(service, created.libraryId, sourcePath);

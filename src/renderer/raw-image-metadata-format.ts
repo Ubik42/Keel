@@ -117,10 +117,11 @@ export function buildRawImageMetadataRows(
   metadata: ExtractedVideoMetadata | null | undefined,
   author: string | null | undefined,
   locale: string,
+  storageLayout: 'root' | 'assets' = 'assets',
 ): RawMetadataRow[] {
   const rows: RawMetadataRow[] = [];
   const extension = /\.([^.]+)$/u.exec(asset.displayName)?.[1]?.toUpperCase() ?? "RAW";
-  const location = asset.locationKind === "managed"
+  const location = asset.locationKind === "managed" && storageLayout === "assets"
     ? `Assets/${asset.relativeFilePath}`
     : asset.relativeFilePath;
   const width = asset.width ?? metadata?.width;

@@ -73,7 +73,7 @@ function createLargeCollectionFixture(): {
   temporaryRoots.push(root);
   const statements: string[] = [];
   const service = newService((sql) => statements.push(sql));
-  const library = service.createLibrary({
+  const library = service.createLibrary({ storageLayout: 'assets',
     displayName: "Collection switch performance",
     selectedParentPath: root,
   });

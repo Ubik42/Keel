@@ -1146,8 +1146,10 @@ export function InspectorPanel(props: InspectorPanelProps) {
       rawImageMetadata,
       displayMetadata?.author || rawImageMetadata?.author,
       locale,
+      library?.storageLayout,
     );
   }, [
+    library?.storageLayout,
     displayMetadata?.author,
     locale,
     rawImageMetadata,

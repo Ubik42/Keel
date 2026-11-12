@@ -61,7 +61,7 @@ describe('local extracted palette artifact', () => {
   it('persists deterministic hex ratios and ignores manual palette writes', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'Palette', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Palette', selectedParentPath: root });
     const source = path.join(root, 'white.png');
     writeFileSync(source, VALID_1X1_PNG);
     const assetId = importAsset(service, library.libraryId, source);
@@ -115,7 +115,7 @@ describe('local extracted palette artifact', () => {
   it('aggregates only already-extracted palettes for recently added assets', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'Recent palette aggregation', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Recent palette aggregation', selectedParentPath: root });
     const source = path.join(root, 'recent.png');
     writeFileSync(source, VALID_1X1_PNG);
     const assetId = importAsset(service, library.libraryId, source);
@@ -147,7 +147,7 @@ describe('local extracted palette artifact', () => {
   it('invalidates the prior revision palette and rebuilds it through the media queue', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'RevisionPalette', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'RevisionPalette', selectedParentPath: root });
     const source = path.join(root, 'revision.png');
     writeFileSync(source, VALID_1X1_PNG);
     const assetId = importAsset(service, library.libraryId, source);
@@ -175,7 +175,7 @@ describe('local extracted palette artifact', () => {
   it('extracts from a ready video poster without reading the original video', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'PosterPalette', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'PosterPalette', selectedParentPath: root });
     const source = path.join(root, 'clip.mp4');
     writeFileSync(source, Buffer.from('not decoded by this test'));
     const assetId = importAsset(service, library.libraryId, source);
@@ -212,7 +212,7 @@ describe('local extracted palette artifact', () => {
   it('queues and extracts a bounded palette directly from a source-direct image', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'SourceDirectPalette', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'SourceDirectPalette', selectedParentPath: root });
     const source = path.join(root, 'small.png');
     writeFileSync(source, VALID_1X1_PNG);
     const assetId = importAsset(service, library.libraryId, source);
@@ -246,7 +246,7 @@ describe('local extracted palette artifact', () => {
   it('does not extract a palette from an audio waveform poster', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'AudioPalette', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'AudioPalette', selectedParentPath: root });
     const source = path.join(root, 'sound.mp3');
     writeFileSync(source, Buffer.from('not decoded by this test'));
     const assetId = importAsset(service, library.libraryId, source);
@@ -276,7 +276,7 @@ describe('local extracted palette artifact', () => {
   it.each(['pdf', 'html', 'obj'])('queues a palette for visual %s assets', async (extension) => {
     const root = temporaryRoot();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'VisualPalette', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'VisualPalette', selectedParentPath: root });
     const source = path.join(root, `visual.${extension}`);
     writeFileSync(source, Buffer.from(`visual ${extension} fixture`));
     const assetId = importAsset(service, library.libraryId, source);
@@ -305,7 +305,7 @@ describe('local extracted palette artifact', () => {
   it('recovers an interrupted palette job on reopen without resetting attempts', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'PaletteRecovery', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'PaletteRecovery', selectedParentPath: root });
     const source = path.join(root, 'recover.png');
     writeFileSync(source, VALID_1X1_PNG);
     const assetId = importAsset(service, library.libraryId, source);
@@ -358,7 +358,7 @@ describe('local extracted palette artifact', () => {
       paletteSharpFn,
       onDiagnostic: (diagnostic) => diagnostics.push(diagnostic),
     });
-    const library = service.createLibrary({ displayName: 'PaletteRetry', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'PaletteRetry', selectedParentPath: root });
     const source = path.join(root, 'retry.png');
     writeFileSync(source, VALID_1X1_PNG);
     const assetId = importAsset(service, library.libraryId, source);

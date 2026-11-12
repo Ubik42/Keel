@@ -78,7 +78,7 @@ function createLibraryWithAssetAndTags(initialDescription?: string, description?
 } {
   const root = temporaryRoot();
   const service = newService();
-  const library = service.createLibrary({ displayName: 'SearchTest', selectedParentPath: root });
+  const library = service.createLibrary({ storageLayout: 'assets', displayName: 'SearchTest', selectedParentPath: root });
 
   const managedFolder = service.createManagedFolder({ libraryId: library.libraryId, name: 'Assets' });
   const assetFileName = 'hero-concept.png';
@@ -475,7 +475,7 @@ describe('CJK tokenization', () => {
   it('searches CJK substrings stored as normalized contextual text', () => {
     const root = temporaryRoot();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'CJK', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'CJK', selectedParentPath: root });
     const libraryId = library.libraryId;
     const libraryPath = library.libraryPath;
 
@@ -674,7 +674,7 @@ describe('bm25 weighting', () => {
   it('ranks filename match above tags match', () => {
     const root = temporaryRoot();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'BM25', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'BM25', selectedParentPath: root });
     const libraryId = library.libraryId;
     const libraryPath = library.libraryPath;
 
@@ -1096,7 +1096,7 @@ describe('search filters', () => {
   it('filters by format with OR', () => {
     const root = temporaryRoot();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'Fmt', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Fmt', selectedParentPath: root });
     const mf = service.createManagedFolder({ libraryId: library.libraryId, name: 'f' });
     service.closeAll();
 
@@ -1616,7 +1616,7 @@ describe('sort', () => {
   it('preserves a linked asset location kind in search results', () => {
     const root = temporaryRoot();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'Linked Search', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Linked Search', selectedParentPath: root });
     const linkedRoot = path.join(root, 'linked-search-source');
     mkdirSync(linkedRoot);
     writeFileSync(path.join(linkedRoot, 'linked.png'), 'linked');

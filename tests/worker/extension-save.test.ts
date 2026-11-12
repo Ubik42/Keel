@@ -38,7 +38,7 @@ const fetchBackedPinnedTransport: PinnedHttpTransport = async ({ headers, signal
 function createTestLibrary(options?: ConstructorParameters<typeof LibraryService>[0]): { service: LibraryService; libraryId: string } {
   const libraryPath = tempDir();
   const service = new LibraryService({ pinnedHttpTransport: fetchBackedPinnedTransport, ...options });
-  const library = service.createLibrary({
+  const library = service.createLibrary({ storageLayout: 'assets',
     displayName: `test-${randomUUID()}`,
     selectedParentPath: libraryPath,
   });

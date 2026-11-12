@@ -55,7 +55,7 @@ describe('open reconciliation performance', () => {
       },
     });
     services.push(service);
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Reconciliation performance',
       selectedParentPath: root,
     });
@@ -106,7 +106,7 @@ describe('open reconciliation performance', () => {
       onDiagnostic: ({ scope }) => diagnostics.push(scope),
     });
     services.push(service);
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Reconciliation cancellation',
       selectedParentPath: root,
     });
@@ -131,7 +131,7 @@ describe('open reconciliation performance', () => {
     roots.push(root);
     const service = new LibraryService({ observerFactory: () => ({ close() {} }) });
     services.push(service);
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Artifact orphan cleanup',
       selectedParentPath: root,
     });
@@ -154,7 +154,7 @@ describe('open reconciliation performance', () => {
     roots.push(root);
     const service = new LibraryService({ observerFactory: () => ({ close() {} }) });
     services.push(service);
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Media close settle',
       selectedParentPath: root,
     });
@@ -212,7 +212,7 @@ describe('open reconciliation performance', () => {
       },
     });
     services.push(service);
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Reconciliation fingerprint boundary',
       selectedParentPath: root,
     });
@@ -256,7 +256,7 @@ describe('open reconciliation performance', () => {
     mkdirSync(linkedRoot);
     const service = new LibraryService({ observerFactory: () => ({ close() {} }) });
     services.push(service);
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Reconciliation path validation',
       selectedParentPath: root,
     });
@@ -302,7 +302,7 @@ describe('open reconciliation performance', () => {
     roots.push(root);
     const service = new LibraryService({ observerFactory: () => ({ close() {} }) });
     services.push(service);
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Reconciliation idle window',
       selectedParentPath: root,
     });
@@ -325,7 +325,7 @@ describe('open reconciliation performance', () => {
     roots.push(root);
     const service = new LibraryService({ observerFactory: () => ({ close() {} }) });
     services.push(service);
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Reconciliation rules',
       selectedParentPath: root,
     });

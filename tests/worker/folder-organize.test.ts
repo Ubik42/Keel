@@ -36,7 +36,7 @@ describe('cloneManagedFolder / moveManagedFolders (Serpent-vgp)', () => {
   it('clones a folder tree with assets as a sibling copy', () => {
     const temp = root();
     const service = newService();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Clone',
       selectedParentPath: temp,
     });
@@ -80,7 +80,7 @@ describe('cloneManagedFolder / moveManagedFolders (Serpent-vgp)', () => {
   it('moves a folder under another parent and rewrites asset paths', () => {
     const temp = root();
     const service = newService();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Move',
       selectedParentPath: temp,
     });
@@ -129,7 +129,7 @@ describe('cloneManagedFolder / moveManagedFolders (Serpent-vgp)', () => {
   it('refuses moving a folder into its own descendant', () => {
     const temp = root();
     const service = newService();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'MoveRefuse',
       selectedParentPath: temp,
     });
@@ -156,7 +156,7 @@ describe('cloneManagedFolder / moveManagedFolders (Serpent-vgp)', () => {
   it('keep-both renames when the destination already has the same folder name', () => {
     const temp = root();
     const service = newService();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'MoveConflict',
       selectedParentPath: temp,
     });

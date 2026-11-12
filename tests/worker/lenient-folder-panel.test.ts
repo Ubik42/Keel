@@ -47,7 +47,7 @@ function libraryWithFolderAndAsset(root: string, displayName: string): {
   libraryPath: string;
 } {
   const service = new LibraryService();
-  const library = service.createLibrary({ displayName, selectedParentPath: root });
+  const library = service.createLibrary({ storageLayout: 'assets', displayName, selectedParentPath: root });
   const folder = service.createManagedFolder({ libraryId: library.libraryId, name: 'Folder' });
   const fixture = path.join(root, 'sample.png');
   writeFileSync(fixture, VALID_1X1_PNG);

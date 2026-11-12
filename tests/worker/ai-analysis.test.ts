@@ -49,7 +49,7 @@ describe('ai_content schema (v7 -> v8 migration)', () => {
   it('creates the ai_content table with expected columns', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'AI Content Table',
       selectedParentPath: root,
     });
@@ -70,7 +70,7 @@ describe('ai_content schema (v7 -> v8 migration)', () => {
   it('has the ai_content_asset_field index', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'AI Index Test',
       selectedParentPath: root,
     });
@@ -87,7 +87,7 @@ describe('ai_content schema (v7 -> v8 migration)', () => {
   it('is idempotent when opening a v8 library', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'AI Idempotent', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'AI Idempotent', selectedParentPath: root });
     service.closeAll();
 
     service.openLibrary(created.libraryPath);
@@ -109,7 +109,7 @@ describe('writeAiAnalysisResult', () => {
   it('writes ai_asset_tags with find-or-create by NOCASE name', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'AI Tags', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'AI Tags', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'test.png'), 'image-data');
     const importResult = importNoConflict(service, created.libraryId, path.join(root, 'test.png'));
@@ -159,7 +159,7 @@ describe('writeAiAnalysisResult', () => {
   it('writes an ai_content row for description', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'AI Content', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'AI Content', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'test.png'), 'image-data');
     const result = importNoConflict(service, created.libraryId, path.join(root, 'test.png'));
@@ -189,7 +189,7 @@ describe('writeAiAnalysisResult', () => {
   it('indexes an AI-generated description for search and removes it when cleared', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'AI Description Search', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'AI Description Search', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'poster.webp'), 'image-data');
     const result = importNoConflict(service, created.libraryId, path.join(root, 'poster.webp'));
@@ -228,7 +228,7 @@ describe('writeAiAnalysisResult', () => {
   it('atomically replaces previous AI content for the same field', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'AI Replace', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'AI Replace', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'test.png'), 'image-data');
     const result = importNoConflict(service, created.libraryId, path.join(root, 'test.png'));
@@ -268,7 +268,7 @@ describe('writeAiAnalysisResult', () => {
   it('replaces enabled AI fields and tags even when the new result omits them', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'AI Complete Replace', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'AI Complete Replace', selectedParentPath: root });
     writeFileSync(path.join(root, 'test.png'), 'image-data');
     const result = importNoConflict(service, created.libraryId, path.join(root, 'test.png'));
     const assetId = result.assets[0]!.assetId;
@@ -306,7 +306,7 @@ describe('writeAiAnalysisResult', () => {
   it('stores enabled description content', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'AI Toggle', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'AI Toggle', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'test.png'), 'image-data');
     const result = importNoConflict(service, created.libraryId, path.join(root, 'test.png'));
@@ -333,7 +333,7 @@ describe('writeAiAnalysisResult', () => {
   it('writes rating into the AI content layer only', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'AI Rating', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'AI Rating', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'test.png'), 'image-data');
     const result = importNoConflict(service, created.libraryId, path.join(root, 'test.png'));
@@ -370,7 +370,7 @@ describe('FTS sync with AI tags', () => {
   it('deduplicates the same human and AI tag and prefers the removable human source', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'AI tag merge', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'AI tag merge', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'same-tag.png'), 'image-data');
     const result = importNoConflict(service, created.libraryId, path.join(root, 'same-tag.png'));
@@ -395,7 +395,7 @@ describe('FTS sync with AI tags', () => {
   it('includes AI tags in asset_search_index tags column', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'AI FTS', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'AI FTS', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'test.png'), 'image-data');
     const result = importNoConflict(service, created.libraryId, path.join(root, 'test.png'));
@@ -439,7 +439,7 @@ describe('resolveAssetFilePath', () => {
   it('resolves a managed asset path and detects image vs video', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'Path Resolve', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Path Resolve', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'image.png'), 'image');
     writeFileSync(path.join(root, 'video.mp4'), 'video');
@@ -462,7 +462,7 @@ describe('resolveAssetFilePath', () => {
   it('throws ASSET_NOT_FOUND for a non-existent asset', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'Missing Asset', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Missing Asset', selectedParentPath: root });
 
     expect(() => service.resolveAssetFilePath(created.libraryId, 'no-such-asset')).toThrow(
       'ASSET_NOT_FOUND',
@@ -480,7 +480,7 @@ describe('listTagNames', () => {
   it('returns all tag names in the library', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'Tag Names', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Tag Names', selectedParentPath: root });
 
     service.createTag({ libraryId: created.libraryId, name: 'TagA' });
     service.createTag({ libraryId: created.libraryId, name: 'tagb' }); // NOCASE dedup
@@ -834,7 +834,7 @@ describe('API key security', () => {
   it('writeAiAnalysisResult never stores the apiKey', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'Key Safety', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Key Safety', selectedParentPath: root });
 
     // The apiKey is passed to the adapter constructor, not to writeAiAnalysisResult.
     // verify writeAiAnalysisResult's result contains no key material.
@@ -873,7 +873,7 @@ describe('video asset analyze-unsupported', () => {
   it('marks video assets as unsupported due to missing contact sheet', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'Video Test', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Video Test', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'clip.mp4'), 'video-data');
     const result = importNoConflict(service, created.libraryId, path.join(root, 'clip.mp4'));
@@ -906,7 +906,7 @@ describe('pendingAiAssets（「AI分析未分析项」运行时判断）', () =>
   it('returns only assets without any ai_content records', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'AI Pending',
       selectedParentPath: root,
     });

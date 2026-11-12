@@ -46,7 +46,7 @@ describe('large-batch import reliability', () => {
 
     const service = new LibraryService();
     try {
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Large Batch',
       selectedParentPath: root,
     });

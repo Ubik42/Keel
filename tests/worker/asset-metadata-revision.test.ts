@@ -31,7 +31,7 @@ describe('asset metadata and content revisions', () => {
     const events: Array<{ source?: string; nativeDragPathsChanged?: true }> = [];
     const service = new LibraryService({ onAssetsChanged: (event) => events.push(event) });
     services.push(service);
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Metadata revision semantics',
       selectedParentPath: root,
     });
@@ -89,7 +89,7 @@ describe('asset metadata and content revisions', () => {
 
     const service = new LibraryService();
     services.push(service);
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Content replacement',
       selectedParentPath: root,
     });
@@ -141,7 +141,7 @@ describe('asset metadata and content revisions', () => {
 
     const service = new LibraryService();
     services.push(service);
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Content read',
       selectedParentPath: root,
     });
@@ -184,7 +184,7 @@ describe('asset metadata and content revisions', () => {
       onAssetsChanged: (event) => events.push(event),
     });
     services.push(service);
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Batch content replacement',
       selectedParentPath: root,
     });
@@ -253,7 +253,7 @@ describe('asset metadata and content revisions', () => {
 
     const service = new LibraryService();
     services.push(service);
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Content staging limit',
       selectedParentPath: root,
     });
@@ -288,7 +288,7 @@ describe('asset metadata and content revisions', () => {
     const events: unknown[] = [];
     const service = new LibraryService({ onAssetsChanged: (event) => events.push(event) });
     services.push(service);
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Batch content fence',
       selectedParentPath: root,
     });
@@ -351,7 +351,7 @@ describe('asset metadata and content revisions', () => {
     });
     let firstAssetId = '';
     services.push(service);
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Batch external change fence',
       selectedParentPath: root,
     });
@@ -403,7 +403,7 @@ describe('asset metadata and content revisions', () => {
 
     const crashing = new LibraryService({ failAt: 'crash-content-replace-batch-after-first-file' });
     services.push(crashing);
-    const library = crashing.createLibrary({
+    const library = crashing.createLibrary({ storageLayout: 'assets',
       displayName: 'Batch content recovery',
       selectedParentPath: root,
     });
@@ -466,7 +466,7 @@ describe('asset metadata and content revisions', () => {
       },
     });
     services.push(service);
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Batch recovery conflict',
       selectedParentPath: root,
     });
@@ -528,7 +528,7 @@ describe('asset metadata and content revisions', () => {
 
     const service = new LibraryService();
     services.push(service);
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Linked content replace',
       selectedParentPath: root,
     });
@@ -572,7 +572,7 @@ describe('asset metadata and content revisions', () => {
 
     const service = new LibraryService();
     services.push(service);
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Mixed batch replace',
       selectedParentPath: root,
     });

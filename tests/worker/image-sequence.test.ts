@@ -42,7 +42,7 @@ function fixture() {
   roots.push(root);
   const service = new LibraryService();
   services.push(service);
-  const library = service.createLibrary({
+  const library = service.createLibrary({ storageLayout: 'assets',
     displayName: "Sequences",
     selectedParentPath: root,
   });

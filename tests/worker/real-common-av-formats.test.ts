@@ -107,7 +107,7 @@ describe.runIf(canRun)('real common audio/video format matrix', () => {
     process.env['SERPENT_FFPROBE_PATH'] = ffprobePath;
     const service = new LibraryService();
     try {
-      const library = service.createLibrary({ displayName: 'RealCommonFormats', selectedParentPath: root });
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'RealCommonFormats', selectedParentPath: root });
       for (const sourcePath of sourcePaths) {
         importNoConflict(service, library.libraryId, sourcePath);
       }

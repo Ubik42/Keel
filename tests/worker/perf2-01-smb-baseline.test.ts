@@ -71,7 +71,7 @@ describeSmb("PERF2-01 optional SMB persist baseline", () => {
     const service = newService();
 
     const createStartedAt = performance.now();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: "PERF2-01 SMB baseline",
       selectedParentPath: root,
     });

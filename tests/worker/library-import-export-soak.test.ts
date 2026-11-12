@@ -305,7 +305,7 @@ beforeAll(() => {
   const noObservers = () => ({ close() {} });
   const service = new LibraryService({ observerFactory: noObservers });
 
-  const library = service.createLibrary({
+  const library = service.createLibrary({ storageLayout: 'assets',
     displayName: 'SoakExportImport',
     selectedParentPath: root,
   });

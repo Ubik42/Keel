@@ -38,7 +38,7 @@ describe('managed ignore configuration', () => {
   it('writes every managed ignore action to .serpentignore and survives reopening', () => {
     const root = temporaryRoot();
     const service = newService();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Managed ignore rules',
       selectedParentPath: root,
     });
@@ -118,7 +118,7 @@ describe('managed ignore configuration', () => {
   it('filters new files during discovery instead of waiting for a database row', () => {
     const root = temporaryRoot();
     const service = newService();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Discovery ignore rules',
       selectedParentPath: root,
     });
@@ -150,7 +150,7 @@ describe('managed ignore configuration', () => {
   it('promotes legacy managed database ignores without revealing them on reopen', () => {
     const root = temporaryRoot();
     const service = newService();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Legacy ignore rules',
       selectedParentPath: root,
     });
@@ -194,7 +194,7 @@ describe('linked ignore configuration', () => {
     writeFileSync(path.join(sourceRoot, 'notes', 'page.png'), 'page');
 
     const service = newService();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Linked ignore rules',
       selectedParentPath: root,
     });
@@ -239,7 +239,7 @@ describe('linked ignore configuration', () => {
     mkdirSync(path.join(sourceRoot, '.111'));
 
     const service = newService();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Empty linked dot folder',
       selectedParentPath: root,
     });
@@ -275,7 +275,7 @@ describe('linked ignore configuration', () => {
     mkdirSync(path.join(sourceRoot, '.111'));
 
     const service = newService();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Ignore empty linked dot folder',
       selectedParentPath: root,
     });
@@ -306,7 +306,7 @@ describe('managed nested dot-folder ignore', () => {
   it('hides 1Test/.111 after .*/ and after a context-menu ignore', () => {
     const root = temporaryRoot();
     const service = newService();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Managed nested dot folder',
       selectedParentPath: root,
     });
@@ -355,7 +355,7 @@ describe('ignore settings preview', () => {
     mkdirSync(path.join(sourceRoot, '.111'));
 
     const service = newService();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Ignore preview library',
       selectedParentPath: root,
     });

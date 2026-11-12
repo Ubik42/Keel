@@ -178,6 +178,7 @@ const aiReliabilitySettingsSchema = z.strictObject({
 export const rendererRequestSchema = z.discriminatedUnion('type', [
   z.strictObject({
     type: z.literal('library.create.request'),
+    storageLayout: z.enum(['root', 'assets']).optional(),
     displayName: displayNameSchema,
   }),
   z.strictObject({
@@ -1516,6 +1517,7 @@ export function parseRendererRequest(input: unknown): RendererRequest {
 export const workerCommandSchema = z.discriminatedUnion('type', [
   z.strictObject({
     type: z.literal('library.create'),
+    storageLayout: z.enum(['root', 'assets']).optional(),
     displayName: displayNameSchema,
     selectedParentPath: selectedPathSchema,
   }),

@@ -65,7 +65,7 @@ describe('sync when previously synced files are missing locally', () => {
     const server = await startMockWebDAVServer();
     const root = { id: 'server', baseUrl: server.baseUrl };
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: '缺文件库', selectedParentPath: tempRoot() });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: '缺文件库', selectedParentPath: tempRoot() });
     const libraryId = created.libraryId;
     const source = path.join(tempRoot(), 'photo.txt');
     writeFileSync(source, 'keep-me-on-cloud');
@@ -101,7 +101,7 @@ describe('sync when previously synced files are missing locally', () => {
     const server = await startMockWebDAVServer();
     const root = { id: 'server', baseUrl: server.baseUrl };
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: '墓碑残留库', selectedParentPath: tempRoot() });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: '墓碑残留库', selectedParentPath: tempRoot() });
     const libraryId = created.libraryId;
     const source = path.join(tempRoot(), 'photo.txt');
     writeFileSync(source, 'still-on-cloud');
@@ -138,7 +138,7 @@ describe('sync when previously synced files are missing locally', () => {
     const server = await startMockWebDAVServer();
     const root = { id: 'server', baseUrl: server.baseUrl };
     const serviceA = new LibraryService();
-    const createdA = serviceA.createLibrary({ displayName: '换路径库', selectedParentPath: tempRoot() });
+    const createdA = serviceA.createLibrary({ storageLayout: 'assets', displayName: '换路径库', selectedParentPath: tempRoot() });
     const libraryId = createdA.libraryId;
     const source = path.join(tempRoot(), 'photo.txt');
     writeFileSync(source, 'original-bytes');

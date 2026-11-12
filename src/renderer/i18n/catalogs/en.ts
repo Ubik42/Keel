@@ -889,6 +889,11 @@ export const en = {
   },
   dialog: {
     createLibrary: {
+      storageLayout: "Asset storage location",
+      storageRoot: "Library root (default)",
+      storageAssets: "Assets subfolder",
+      storageRootHelp: "Store assets directly in the library folder. Added files are detected automatically; metadata and thumbnails stay in .serpent.",
+      storageAssetsHelp: "Store assets in an Assets subfolder, compatible with the upstream Serpent layout.",
       title: "Create library",
       name: "Name",
       help: "",

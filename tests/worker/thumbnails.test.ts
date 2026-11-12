@@ -142,7 +142,7 @@ describe('schema v9 migration', () => {
   it('creates revision_artifacts and jobs tables', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'V9', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'V9', selectedParentPath: root });
 
     const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
     expect(db.pragma('user_version', { simple: true })).toBe(SUPPORTED_SCHEMA_VERSION);
@@ -178,7 +178,7 @@ describe('schema v9 migration', () => {
   it('has unique index on revision_artifacts_current', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'Idx', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Idx', selectedParentPath: root });
 
     const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
     const indexes = (db.prepare("SELECT name FROM sqlite_master WHERE type = 'index' AND name = 'revision_artifacts_current'").all() as Array<{ name: string }>);
@@ -191,7 +191,7 @@ describe('schema v9 migration', () => {
   it('creates .serpent/artifacts directory', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'Artifacts', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Artifacts', selectedParentPath: root });
 
     expect(existsSync(path.join(created.libraryPath, '.serpent', 'artifacts'))).toBe(true);
 
@@ -201,7 +201,7 @@ describe('schema v9 migration', () => {
   it('has jobs_library_status_priority index', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'JobIdx', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'JobIdx', selectedParentPath: root });
 
     const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
     const indexes = (db.prepare("SELECT name FROM sqlite_master WHERE type = 'index' AND name = 'jobs_library_status_priority'").all() as Array<{ name: string }>);
@@ -214,7 +214,7 @@ describe('schema v9 migration', () => {
   it('uses the recent-job ordering index for bounded task-panel pages', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'RecentJobIdx', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'RecentJobIdx', selectedParentPath: root });
 
     const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
     const plan = db.prepare(
@@ -272,7 +272,7 @@ describe('generateThumbnail (sharp)', () => {
   it('imports, thumbnails, and serves a JPEG bitstream with a .jfif filename', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'Jfif', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Jfif', selectedParentPath: root });
     const sourcePath = path.join(root, 'reference.jfif');
     writeFileSync(sourcePath, await createJpegBytes(24, 16));
     importNoConflict(service, created.libraryId, sourcePath);
@@ -304,7 +304,7 @@ describe('generateThumbnail (sharp)', () => {
   it('fails a missing source as ASSET_NOT_FOUND instead of LIBRARY_NOT_WRITABLE', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'MissingThumb', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'MissingThumb', selectedParentPath: root });
     const sourcePath = path.join(root, 'gone.jpg');
     writeFileSync(sourcePath, await createJpegBytes(24, 16));
     importNoConflict(service, created.libraryId, sourcePath);
@@ -324,7 +324,7 @@ describe('generateThumbnail (sharp)', () => {
   it('imports, thumbnails, and serves AVIF as a native image (Serpent-c93c75)', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'Avif', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Avif', selectedParentPath: root });
     const sourcePath = path.join(root, 'poster.avif');
     writeFileSync(sourcePath, await createAvifBytes(24, 16));
     importNoConflict(service, created.libraryId, sourcePath);
@@ -360,7 +360,7 @@ describe('generateThumbnail (sharp)', () => {
   it('uses a bounded plugin artifact from the media queue before native decoding', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'PluginMedia', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'PluginMedia', selectedParentPath: root });
     const sourcePath = path.join(root, 'broken.png');
     createCorruptImage(sourcePath);
     importNoConflict(service, created.libraryId, sourcePath);
@@ -401,7 +401,7 @@ describe('generateThumbnail (sharp)', () => {
   it('serves a plugin image artifact for an otherwise unsupported preview', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'PluginPreview', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'PluginPreview', selectedParentPath: root });
     const sourcePath = path.join(root, 'sample.probe');
     writeFileSync(sourcePath, 'plugin-owned-source');
     importNoConflict(service, created.libraryId, sourcePath);
@@ -427,7 +427,7 @@ describe('generateThumbnail (sharp)', () => {
   it('generates a JPEG thumbnail for an opaque PNG asset (Serpent-thumb-perf)', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'PNG', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'PNG', selectedParentPath: root });
 
     const sourcePath = path.join(root, 'test.png');
     writeFileSync(sourcePath, await createPngBytes(2048, 1024));
@@ -461,7 +461,7 @@ describe('generateThumbnail (sharp)', () => {
   it('keeps WebP for an alpha PNG so transparency survives (Serpent-thumb-perf)', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'AlphaPNG', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'AlphaPNG', selectedParentPath: root });
     const sharp = require('sharp') as (input: {
       create: { width: number; height: number; channels: number; background: Record<string, number> };
     }) => { png(): { toFile(path: string): Promise<unknown> } };
@@ -489,7 +489,7 @@ describe('generateThumbnail (sharp)', () => {
   it('refreshes source dimensions after plugin-style content replacement', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'ReplaceDimensions', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'ReplaceDimensions', selectedParentPath: root });
     const sourcePath = path.join(root, 'upscale.png');
     writeFileSync(sourcePath, await createPngBytes(256, 128));
     importNoConflict(service, created.libraryId, sourcePath);
@@ -523,7 +523,7 @@ describe('generateThumbnail (sharp)', () => {
   it('auto-orients EXIF orientation 6 and writes an sRGB thumbnail', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'Orientation', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Orientation', selectedParentPath: root });
     const sourcePath = path.join(root, 'portrait.jpg');
     const sharp = require('sharp') as (input: unknown) => {
       jpeg(): { withMetadata(metadata: { orientation: number }): { toFile(path: string): Promise<unknown> } };
@@ -563,7 +563,7 @@ describe('generateThumbnail (sharp)', () => {
   it('generates a JPEG thumbnail for a JPEG asset (Serpent-thumb-perf)', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'JPEG', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'JPEG', selectedParentPath: root });
 
     // A real opaque JPEG (the old fixture wrote RGBA PNG bytes with a .jpg
     // name, which reads as an alpha image and would take the webp path).
@@ -617,7 +617,7 @@ describe('generateThumbnail (sharp)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({ displayName: 'TruncatedJPEG', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'TruncatedJPEG', selectedParentPath: root });
     const sourcePath = path.join(root, 'truncated.jpg');
     // The decoder seam is the focus of this test; the mock FFmpeg output
     // represents the recoverable scanlines of a real truncated JPEG.
@@ -643,7 +643,7 @@ describe('generateThumbnail (sharp)', () => {
   it('sets status=failed for corrupt images', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'Corrupt', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Corrupt', selectedParentPath: root });
 
     const sourcePath = path.join(root, 'corrupt.png');
     createCorruptImage(sourcePath);
@@ -669,7 +669,7 @@ describe('generateThumbnail (sharp)', () => {
   it('rejects video generation when FFmpeg is missing without returning an empty artifact ID', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'Video', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Video', selectedParentPath: root });
 
     const sourcePath = path.join(root, 'video.mp4');
     writeFileSync(sourcePath, Buffer.alloc(1024, 0));
@@ -693,7 +693,7 @@ describe('generateThumbnail (sharp)', () => {
   it('rejects EXR assets when oiiotool is missing and writes failed artifact', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'EXR', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'EXR', selectedParentPath: root });
 
     const sourcePath = path.join(root, 'render.exr');
     writeFileSync(sourcePath, Buffer.alloc(1024, 0));
@@ -710,7 +710,7 @@ describe('generateThumbnail (sharp)', () => {
   it('handles non-existent asset gracefully', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'NAsset', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'NAsset', selectedParentPath: root });
 
     await expect(
       service.generateThumbnail({ libraryId: created.libraryId, assetId: 'nonexistent-id' }),
@@ -724,7 +724,7 @@ describe('getThumbnailArtifact', () => {
   it('returns null when no thumbnail exists', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'NoThumb', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'NoThumb', selectedParentPath: root });
 
     const sourcePath = path.join(root, 'test.png');
     createTestImage(sourcePath);
@@ -739,7 +739,7 @@ describe('getThumbnailArtifact', () => {
   it('returns artifact info after generation', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'WithThumb', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'WithThumb', selectedParentPath: root });
 
     const sourcePath = path.join(root, 'test.png');
     createTestImage(sourcePath);
@@ -759,7 +759,7 @@ describe('getThumbnailArtifact', () => {
   it('returns a ready video poster as the card image artifact for native drag previews', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'VideoPoster', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'VideoPoster', selectedParentPath: root });
     const sourcePath = path.join(root, 'test.mp4');
     writeFileSync(sourcePath, Buffer.alloc(1024, 0));
     importNoConflict(service, created.libraryId, sourcePath);
@@ -797,7 +797,7 @@ describe('getThumbnailArtifact', () => {
   it('invalidates old artifacts on content change', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'Invalidate', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Invalidate', selectedParentPath: root });
 
     const assetPath = path.join(root, 'inval.png');
     createTestImage(assetPath);
@@ -834,7 +834,7 @@ describe('preview availability while derivatives are generated', () => {
   it('skips known source-direct images before applying the bounded catalog limit', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'SourceDirectCatalogAdmission',
       selectedParentPath: root,
     });
@@ -872,7 +872,7 @@ describe('preview availability while derivatives are generated', () => {
   it('serves a low-pixel source just above 1 MiB without queuing a thumbnail', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'ImmediateLosslessImagePreview', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'ImmediateLosslessImagePreview', selectedParentPath: root });
     const sourcePath = path.join(root, 'moderately-large.png');
     const encoded = await createPngBytes(1024, 768);
     const targetBytes = Math.floor(1.5 * 1024 * 1024);
@@ -899,7 +899,7 @@ describe('preview availability while derivatives are generated', () => {
   it('serves a bounded native image source and skips its thumbnail job', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'ImmediateImagePreview', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'ImmediateImagePreview', selectedParentPath: root });
     const sourcePath = path.join(root, 'portrait.png');
     writeFileSync(sourcePath, VALID_1X1_PNG);
     importNoConflict(service, created.libraryId, sourcePath);
@@ -927,7 +927,7 @@ describe('preview availability while derivatives are generated', () => {
   it('keeps a generating video proxy untouched while mounting the source first', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'ImmediateVideoPreview',
       selectedParentPath: root,
     });
@@ -970,7 +970,7 @@ describe('preview availability while derivatives are generated', () => {
   it('keeps a failed video proxy as fallback state while mounting the source first', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'FailedProxyFallsToSource',
       selectedParentPath: root,
     });
@@ -1010,7 +1010,7 @@ describe('preview availability while derivatives are generated', () => {
   it('keeps natively playable WAV playback on the source without queuing a proxy', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'ProxyFirstWav',
       selectedParentPath: root,
     });
@@ -1040,7 +1040,7 @@ describe('preview availability while derivatives are generated', () => {
   it('marks an unsupported asset without offering a generatable preview', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'UnsupportedPreview', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'UnsupportedPreview', selectedParentPath: root });
     const sourcePath = path.join(root, 'notes.dat');
     writeFileSync(sourcePath, 'plain text');
     importNoConflict(service, created.libraryId, sourcePath);
@@ -1060,7 +1060,7 @@ describe('enqueueThumbnailJobs', () => {
   it('enqueues jobs for assets missing thumbnails', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'Enqueue', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Enqueue', selectedParentPath: root });
 
     const png1 = path.join(root, 'a.png');
     const png2 = path.join(root, 'b.png');
@@ -1081,7 +1081,7 @@ describe('enqueueThumbnailJobs', () => {
   it('does not enqueue duplicate jobs', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'NoDup', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'NoDup', selectedParentPath: root });
 
     const png = path.join(root, 'nodup.png');
     createTestImage(png);
@@ -1096,7 +1096,7 @@ describe('enqueueThumbnailJobs', () => {
   it('locally invalidates a visible artifact from an older generator before enqueueing', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'StaleGenerator', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'StaleGenerator', selectedParentPath: root });
     const source = path.join(root, 'stale.png');
     createTestImage(source);
     importNoConflict(service, created.libraryId, source);
@@ -1126,7 +1126,7 @@ describe('enqueueThumbnailJobs', () => {
   it('caches ready and failed descriptors until the library sequence changes', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'DescriptorCache', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'DescriptorCache', selectedParentPath: root });
     const source = path.join(root, 'descriptor-cache.png');
     createTestImage(source);
     importNoConflict(service, created.libraryId, source);
@@ -1168,7 +1168,7 @@ describe('enqueueThumbnailJobs', () => {
   it('limits startup work, skips unsupported assets, and prioritizes an explicit visible range', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'VisibleFirst', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'VisibleFirst', selectedParentPath: root });
 
     const assetIds: string[] = [];
     for (let index = 0; index < 6; index += 1) {
@@ -1217,7 +1217,7 @@ describe('enqueueThumbnailJobs', () => {
   it('defers the startup thumbnail enqueue out of library.open but requeues on demand', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'ReopenQueue', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'ReopenQueue', selectedParentPath: root });
     const source = path.join(root, 'reopen.png');
     createTestImage(source);
     importNoConflict(service, created.libraryId, source);
@@ -1253,7 +1253,7 @@ describe('enqueueThumbnailJobs', () => {
   it('limits visible retryable artifact repair to the requested assets', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'ScopedFailedRetry', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'ScopedFailedRetry', selectedParentPath: root });
     for (const name of ['first.png', 'second.png']) {
       const source = path.join(root, name);
       createTestImage(source);
@@ -1309,7 +1309,7 @@ describe('processThumbnailQueue', () => {
       let db: TestDatabaseConnection | undefined;
       let verify: TestDatabaseConnection | undefined;
       try {
-        const created = service.createLibrary({ displayName: 'QueuedSourceDirectProbe', selectedParentPath: root });
+        const created = service.createLibrary({ storageLayout: 'assets', displayName: 'QueuedSourceDirectProbe', selectedParentPath: root });
         const sourcePath = path.join(root, `small.${extension}`);
         writeFileSync(sourcePath, extension === 'png'
           ? await createPngBytes(480, 480)
@@ -1364,7 +1364,7 @@ describe('processThumbnailQueue', () => {
   it('cancels queued metadata jobs for hidden sequence frames', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'HiddenSequenceMetadata',
       selectedParentPath: root,
     });
@@ -1413,7 +1413,7 @@ describe('processThumbnailQueue', () => {
   it('prunes legacy source-direct and current thumbnail rows', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'LegacyAdmissionPrune', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'LegacyAdmissionPrune', selectedParentPath: root });
 
     const sourceDirectPath = path.join(root, 'source-direct.jfif');
     writeFileSync(sourceDirectPath, await createJpegBytes(1, 1));
@@ -1487,7 +1487,7 @@ describe('processThumbnailQueue', () => {
   it('regenerates an obsolete current thumbnail instead of pruning its queued job', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'ObsoleteThumbnailGenerator', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'ObsoleteThumbnailGenerator', selectedParentPath: root });
     const sourcePath = path.join(root, 'obsolete-generator.png');
     // Exceed the source-direct pixel budget so claim-time admission must
     // regenerate instead of serving the source image directly.
@@ -1554,7 +1554,7 @@ describe('processThumbnailQueue', () => {
   it('prunes ready current video posters for legacy generate_thumbnail jobs without decoding', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'ReadyVideoPosterPrune', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'ReadyVideoPosterPrune', selectedParentPath: root });
     const validPath = path.join(root, 'ready.mp4');
     const stalePath = path.join(root, 'stale.mp4');
     const invalidatedPath = path.join(root, 'invalidated.mp4');
@@ -1665,7 +1665,7 @@ describe('processThumbnailQueue', () => {
   it('bounds scoped ready-artifact pruning and skips the unscoped pre-scan', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'BoundedReadyPrune', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'BoundedReadyPrune', selectedParentPath: root });
     for (let index = 0; index < 6; index += 1) {
       const sourcePath = path.join(root, `bounded-${index}.mp4`);
       writeFileSync(sourcePath, Buffer.alloc(1024, index));
@@ -1774,7 +1774,7 @@ describe('processThumbnailQueue', () => {
   it('re-enqueues a missing primary preview found after the startup queue prunes it', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'MissingStartupArtifact', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'MissingStartupArtifact', selectedParentPath: root });
     const sourcePath = path.join(root, 'missing-startup-artifact.png');
     createTestImage(sourcePath);
     importNoConflict(service, created.libraryId, sourcePath);
@@ -1880,7 +1880,7 @@ describe('processThumbnailQueue', () => {
   it('re-enqueues a missing video poster through the reconciliation callback', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'MissingVideoPoster', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'MissingVideoPoster', selectedParentPath: root });
     const sourcePath = path.join(root, 'missing-video-poster.mp4');
     writeFileSync(sourcePath, Buffer.alloc(1024, 0));
     importNoConflict(service, created.libraryId, sourcePath);
@@ -1948,7 +1948,7 @@ describe('processThumbnailQueue', () => {
   it('reports every missing primary asset when reconciliation exceeds one claim wave', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'MissingPrimaryScope', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'MissingPrimaryScope', selectedParentPath: root });
     const assetCount = 101;
     for (let index = 0; index < assetCount; index += 1) {
       const sourcePath = path.join(root, `missing-primary-${index}-x.png`);
@@ -2012,7 +2012,7 @@ describe('processThumbnailQueue', () => {
   it('keeps a reconciliation asset exact while an ordinary queue wave is active', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'ConcurrentMissingPrimary', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'ConcurrentMissingPrimary', selectedParentPath: root });
     const busyModelPath = path.join(root, 'busy-model.glb');
     writeFileSync(busyModelPath, Buffer.from('glTF'));
     importNoConflict(service, created.libraryId, busyModelPath);
@@ -2121,7 +2121,7 @@ describe('processThumbnailQueue', () => {
   it('processes queued jobs', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'Process', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Process', selectedParentPath: root });
 
     const png = path.join(root, 'proc.png');
     createTestImage(png);
@@ -2144,7 +2144,7 @@ describe('processThumbnailQueue', () => {
   it('re-checks the revision at claim and cancels stale work before decoding', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'StaleAdmission', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'StaleAdmission', selectedParentPath: root });
     const firstPath = path.join(root, 'first.png');
     const secondPath = path.join(root, 'second.png');
     createTestImage(firstPath);
@@ -2189,7 +2189,7 @@ describe('processThumbnailQueue', () => {
   it('does not enter a non-visual asset into the palette lane after a thumbnail completes', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'NoAudioPalette', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'NoAudioPalette', selectedParentPath: root });
     const audioPath = path.join(root, 'voice.wav');
     writeFileSync(audioPath, Buffer.alloc(4096, 0));
     importNoConflict(service, created.libraryId, audioPath);
@@ -2227,7 +2227,7 @@ describe('processThumbnailQueue', () => {
         async toFile() { throw new Error('unreachable'); },
       }),
     });
-    const created = service.createLibrary({ displayName: 'SafeMediaFailure', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'SafeMediaFailure', selectedParentPath: root });
     createTestImage(privatePath);
     importNoConflict(service, created.libraryId, privatePath);
 
@@ -2247,7 +2247,7 @@ describe('processThumbnailQueue', () => {
   it('lists and controls media jobs without touching AI jobs', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'MediaControls', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'MediaControls', selectedParentPath: root });
     const png = path.join(root, 'controls.png');
     createTestImage(png);
     importNoConflict(service, created.libraryId, png);
@@ -2306,7 +2306,7 @@ describe('processThumbnailQueue', () => {
     extractAuthorFromExifMock.mockResolvedValue('Queue Author');
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'ExifQueueAuthor', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'ExifQueueAuthor', selectedParentPath: root });
     const png = path.join(root, 'author.png');
     createTestImage(png);
     const { assets } = sharedImportNoConflict(service, created.libraryId, png);
@@ -2325,7 +2325,7 @@ describe('processThumbnailQueue', () => {
   it('recovers running media jobs as queued without resetting attempt_count', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'MediaRecovery', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'MediaRecovery', selectedParentPath: root });
     const png = path.join(root, 'recover.png');
     createTestImage(png);
     importNoConflict(service, created.libraryId, png);
@@ -2349,7 +2349,7 @@ describe('processThumbnailQueue', () => {
   it('preserves an explicit playback-fallback intent across process recovery', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'RecoverExplicitProxy', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'RecoverExplicitProxy', selectedParentPath: root });
     const source = path.join(root, 'recover.mp4');
     writeFileSync(source, Buffer.alloc(1024));
     importNoConflict(service, created.libraryId, source);
@@ -2397,7 +2397,7 @@ describe('processThumbnailQueue', () => {
       },
     };
     const service = new LibraryService({ sharpFn: () => pipeline });
-    const created = service.createLibrary({ displayName: 'MediaCancel', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'MediaCancel', selectedParentPath: root });
     const png = path.join(root, 'late.png');
     createTestImage(png);
     importNoConflict(service, created.libraryId, png);
@@ -2442,7 +2442,7 @@ describe('processThumbnailQueue', () => {
       },
     };
     const service = new LibraryService({ sharpFn: () => pipeline });
-    const created = service.createLibrary({ displayName: 'QueueAbort', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'QueueAbort', selectedParentPath: root });
     const source = path.join(root, 'queued-abort.png');
     createTestImage(source);
     importNoConflict(service, created.libraryId, source);
@@ -2503,7 +2503,7 @@ describe('processThumbnailQueue', () => {
     const targets: Array<{ service: LibraryService; libraryId: string; assetId: string }> = [];
     for (let index = 0; index < 5; index += 1) {
       const service = new LibraryService({ sharpFn });
-      const created = service.createLibrary({ displayName: `SharpLimit-${index}`, selectedParentPath: root });
+      const created = service.createLibrary({ storageLayout: 'assets', displayName: `SharpLimit-${index}`, selectedParentPath: root });
       const source = path.join(root, `limit-${index}.png`);
       createTestImage(source);
       importNoConflict(service, created.libraryId, source);
@@ -2544,7 +2544,7 @@ describe('AssetSummary thumbnail enrichment', () => {
   it('includes thumbnailStatus and mediaType', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'Summary', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Summary', selectedParentPath: root });
 
     const png = path.join(root, 'sum.png');
     createTestImage(png);
@@ -2567,7 +2567,7 @@ describe('AssetSummary thumbnail enrichment', () => {
   it('detects video mediaType', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'VideoSummary', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'VideoSummary', selectedParentPath: root });
 
     const mp4 = path.join(root, 'vid.mp4');
     writeFileSync(mp4, Buffer.alloc(1024, 0));
@@ -2585,7 +2585,7 @@ describe('getArtifactAbsolutePath', () => {
   it('resolves artifact path', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'ResolvePath', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'ResolvePath', selectedParentPath: root });
 
     const png = path.join(root, 'path.png');
     createTestImage(png);
@@ -2611,7 +2611,7 @@ describe('getArtifactAbsolutePath', () => {
   it('reuses validated paths and drops them after artifact invalidation', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'CachedArtifactPath', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'CachedArtifactPath', selectedParentPath: root });
     const png = path.join(root, 'cached.png');
     createTestImage(png);
     importNoConflict(service, created.libraryId, png);
@@ -2638,7 +2638,7 @@ describe('getArtifactAbsolutePath', () => {
     if (process.platform === 'win32') return;
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'SymlinkArtifact', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'SymlinkArtifact', selectedParentPath: root });
     const sourcePath = path.join(root, 'source.png');
     createTestImage(sourcePath);
     importNoConflict(service, created.libraryId, sourcePath);
@@ -2662,7 +2662,7 @@ describe('getArtifactAbsolutePath', () => {
   it('rejects non-existent artifact', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'NoArt', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'NoArt', selectedParentPath: root });
 
     const png = path.join(root, 'noart.png');
     createTestImage(png);
@@ -2680,7 +2680,7 @@ describe('resolveAssetPath', () => {
   it('resolves managed asset path', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'Resolved', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Resolved', selectedParentPath: root });
 
     const png = path.join(root, 'resolve.png');
     createTestImage(png);
@@ -2696,7 +2696,7 @@ describe('resolveAssetPath', () => {
   it('maps native dropped managed and linked paths back to live asset ids', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'DropResolve', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'DropResolve', selectedParentPath: root });
 
     const managedSource = path.join(root, 'managed.png');
     createTestImage(managedSource);
@@ -2786,7 +2786,7 @@ describe('generateThumbnail (animated GIF still page)', () => {
     );
 
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'GIF Still',
       selectedParentPath: root,
     });
@@ -2884,7 +2884,7 @@ describe('animated GIF native playback (Serpent-43d32f)', () => {
     const gifPath = await buildGif(root, 4);
     if (gifPath === '') return; // ffmpeg unavailable in this environment
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'GIF Native', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'GIF Native', selectedParentPath: root });
     importNoConflict(service, created.libraryId, gifPath);
     const asset = service.listAssets({ libraryId: created.libraryId, recursive: true })[0]!;
 
@@ -2912,7 +2912,7 @@ describe('animated GIF native playback (Serpent-43d32f)', () => {
     const gifPath = await buildGif(root, 4);
     if (gifPath === '') return;
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'GIF Retire', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'GIF Retire', selectedParentPath: root });
     importNoConflict(service, created.libraryId, gifPath);
     const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
     const gifAsset = db.prepare(
@@ -2947,7 +2947,7 @@ describe('animated GIF native playback (Serpent-43d32f)', () => {
     const gifPath = await buildGif(root, 1);
     if (gifPath === '') return;
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'GIF Static', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'GIF Static', selectedParentPath: root });
     importNoConflict(service, created.libraryId, gifPath);
     const asset = service.listAssets({ libraryId: created.libraryId, recursive: true })[0]!;
 
@@ -2969,7 +2969,7 @@ describe('visible-wave priority boost (Serpent-azf6)', () => {
   it('raises queued preview jobs of the scheduled assets to the scene priority', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'Boost', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Boost', selectedParentPath: root });
     const source = path.join(root, 'boost.png');
     createTestImage(source);
     importNoConflict(service, created.libraryId, source);
@@ -2996,7 +2996,7 @@ describe('visible-wave priority boost (Serpent-azf6)', () => {
   it('never lowers the priority of an already-higher queued job', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'BoostKeep', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'BoostKeep', selectedParentPath: root });
     const source = path.join(root, 'boost-keep.png');
     createTestImage(source);
     importNoConflict(service, created.libraryId, source);
@@ -3018,7 +3018,7 @@ describe('cover-wave priority (Serpent-d0nv)', () => {
   it('enqueues cover candidates at the cover tier (400) so they beat the visible wave (350)', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'CoverWave', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'CoverWave', selectedParentPath: root });
     const source = path.join(root, 'cover.png');
     createTestImage(source);
     importNoConflict(service, created.libraryId, source);
@@ -3055,7 +3055,7 @@ describe('visible page window covers the whole browse page (Serpent-x9xu)', () =
   it('boosts the entire returned page (300) above the mutation wave and leaves unbrowsed assets at 300', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'VisiblePage', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'VisiblePage', selectedParentPath: root });
 
     // More assets than the page size so a tail of the library is never part
     // of the current page. Each file gets distinct trailing bytes so content
@@ -3138,7 +3138,7 @@ describe('visible-window header probe (Serpent-visible-window)', () => {
   it('returns header-probed dimensions for visible images, persists them as extracted_metadata, and skips non-images', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'VisibleWindowProbe', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'VisibleWindowProbe', selectedParentPath: root });
 
     const sharp = require('sharp') as (input: {
       create: { width: number; height: number; channels: number; background: Record<string, number> };
@@ -3242,7 +3242,7 @@ describe('visible-window header probe (Serpent-visible-window)', () => {
   it('generates a first-page thumbnail for a PDF asset (Serpent-8ca259)', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'PDF', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'PDF', selectedParentPath: root });
 
     // Minimal single-page PDF with the text "Hello PDF" (hand-assembled).
     const pdfBytes = Buffer.from(
@@ -3299,7 +3299,7 @@ describe('visible-window header probe (Serpent-visible-window)', () => {
         };
       },
     });
-    const created = service.createLibrary({ displayName: 'HTML', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'HTML', selectedParentPath: root });
     const sourcePath = path.join(root, 'sample.html');
     writeFileSync(sourcePath, '<!doctype html><html><body>Hello</body></html>');
     importNoConflict(service, created.libraryId, sourcePath);
@@ -3330,7 +3330,7 @@ describe('visible-window header probe (Serpent-visible-window)', () => {
     // job — cards stayed on the generic icon with no artifact row at all.
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'DocEnqueue', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'DocEnqueue', selectedParentPath: root });
     const pdfPath = path.join(root, 'page.pdf');
     writeFileSync(pdfPath, '%PDF-1.4\n%%EOF\n');
     importNoConflict(service, created.libraryId, pdfPath);
@@ -3366,7 +3366,7 @@ describe('visible-window header probe (Serpent-visible-window)', () => {
   it('serves PDF and HTML sources with their real MIME for the viewer (Serpent-8ca259)', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'DocMime', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'DocMime', selectedParentPath: root });
     const pdfPath = path.join(root, 'page.pdf');
     writeFileSync(pdfPath, '%PDF-1.4\n%%EOF\n');
     importNoConflict(service, created.libraryId, pdfPath);

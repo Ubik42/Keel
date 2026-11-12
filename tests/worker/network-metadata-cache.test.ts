@@ -63,7 +63,7 @@ describe('remote library metadata cache', () => {
     const cacheDirectory = path.join(root, 'cache');
     const seedEvents: Array<{ type: string; reason?: string }> = [];
     const seed = newNetworkService(cacheDirectory, seedEvents);
-    const library = seed.createLibrary({
+    const library = seed.createLibrary({ storageLayout: 'assets',
       displayName: 'Metadata perf',
       selectedParentPath: root,
     });
@@ -120,7 +120,7 @@ describe('remote library metadata cache', () => {
     const root = temporaryRoot('serpent-network-metadata-');
     const cacheDirectory = path.join(root, 'user-data', 'library-metadata-cache');
     const service = newNetworkService(cacheDirectory, []);
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Remote metadata',
       selectedParentPath: root,
     });
@@ -185,7 +185,7 @@ describe('remote library metadata cache', () => {
     const root = temporaryRoot('serpent-network-metadata-offline-');
     const cacheDirectory = path.join(root, 'cache');
     const seed = newNetworkService(cacheDirectory, []);
-    const library = seed.createLibrary({
+    const library = seed.createLibrary({ storageLayout: 'assets',
       displayName: 'Offline metadata',
       selectedParentPath: root,
     });
@@ -226,7 +226,7 @@ describe('remote library metadata cache', () => {
     const cacheDirectory = path.join(root, 'cache');
     const seedEvents: Array<{ type: string; reason?: string }> = [];
     const seedService = newNetworkService(cacheDirectory, seedEvents);
-    const library = seedService.createLibrary({
+    const library = seedService.createLibrary({ storageLayout: 'assets',
       displayName: 'External change',
       selectedParentPath: root,
     });
@@ -260,7 +260,7 @@ describe('remote library metadata cache', () => {
     const root = temporaryRoot('serpent-network-metadata-source-unavailable-');
     const cacheDirectory = path.join(root, 'cache');
     const seed = newNetworkService(cacheDirectory, []);
-    const library = seed.createLibrary({
+    const library = seed.createLibrary({ storageLayout: 'assets',
       displayName: 'Source unavailable',
       selectedParentPath: root,
     });
@@ -301,7 +301,7 @@ describe('remote library metadata cache', () => {
     const root = temporaryRoot('serpent-network-metadata-backup-race-');
     const cacheDirectory = path.join(root, 'cache');
     const seed = newNetworkService(cacheDirectory, []);
-    const library = seed.createLibrary({
+    const library = seed.createLibrary({ storageLayout: 'assets',
       displayName: 'Backup race',
       selectedParentPath: root,
     });
@@ -362,7 +362,7 @@ describe('remote library metadata cache', () => {
   it('advances the browse cursor when ignore materialization changes', () => {
     const root = temporaryRoot('serpent-network-metadata-ignore-cursor-');
     const service = newNetworkService(path.join(root, 'cache'), []);
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Ignore cursor',
       selectedParentPath: root,
     });
@@ -388,7 +388,7 @@ describe('remote library metadata cache', () => {
   it('evicts a closed primary instead of serving TypeError from browse and AI enqueue', () => {
     const root = temporaryRoot('serpent-zombie-sqlite-handle-');
     const service = newNetworkService(path.join(root, 'cache'), []);
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Zombie handle',
       selectedParentPath: root,
     });
@@ -413,7 +413,7 @@ describe('remote library metadata cache', () => {
   it('keeps the live network handle usable after a same-catalog open is rejected', () => {
     const root = temporaryRoot('serpent-already-open-network-');
     const service = newNetworkService(path.join(root, 'cache'), []);
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Already open catalog',
       selectedParentPath: root,
     });

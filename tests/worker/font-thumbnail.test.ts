@@ -52,7 +52,7 @@ describe('font thumbnail generation', () => {
         return { png: new Uint8Array(VALID_1X1_PNG), width: 1024, height: 512 };
       },
     });
-    const created = service.createLibrary({ displayName: 'Fonts', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Fonts', selectedParentPath: root });
     const fontPath = path.join(root, 'Sample.ttf');
     // 内容不需要是真字体：这里只验证 Worker 侧的取源与产物落库；
     // 真实字形解码由 E2E（真实 DejaVuSans.ttf）与字体样张页单测覆盖。
@@ -81,7 +81,7 @@ describe('font thumbnail generation', () => {
   it('keeps font artifacts valid under the font generator version only', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'FontsVersion', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'FontsVersion', selectedParentPath: root });
     const fontPath = path.join(root, 'Sample.woff2');
     writeFileSync(fontPath, Buffer.from('wOF2'));
     importNoConflict(service, created.libraryId, fontPath);
@@ -101,7 +101,7 @@ describe('font thumbnail generation', () => {
         height: 512,
       }),
     });
-    const created = service.createLibrary({ displayName: 'FontQueue', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'FontQueue', selectedParentPath: root });
     const fontPath = path.join(root, 'Queued.ttf');
     writeFileSync(fontPath, Buffer.from([0x00, 0x01, 0x00, 0x00]));
     importNoConflict(service, created.libraryId, fontPath);
@@ -125,7 +125,7 @@ describe('font thumbnail generation', () => {
         return { png: new Uint8Array(VALID_1X1_PNG), width: 1024, height: 512 };
       },
     });
-    const created = service.createLibrary({ displayName: 'FontFacts', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'FontFacts', selectedParentPath: root });
     const fontPath = path.join(root, 'DejaVuSans.ttf');
     copyFileSync(
       path.resolve(__dirname, '..', '..', 'resources', 'fonts', 'DejaVuSans.ttf'),
@@ -173,7 +173,7 @@ describe('font thumbnail generation', () => {
         return { png: new Uint8Array(VALID_1X1_PNG), width: 1024, height: 512 };
       },
     });
-    const created = service.createLibrary({ displayName: 'FontCjk', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'FontCjk', selectedParentPath: root });
 
     const chinesePath = path.join(root, 'YaHeiLike.ttf');
     writeFileSync(
@@ -236,7 +236,7 @@ describe('font thumbnail generation', () => {
   it('reports unreadable font data without inventing fields', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'FontBroken', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'FontBroken', selectedParentPath: root });
     const fontPath = path.join(root, 'Broken.ttf');
     writeFileSync(fontPath, Buffer.from([0x00, 0x01, 0x00, 0x00, 0x00, 0x01]));
     importNoConflict(service, created.libraryId, fontPath);

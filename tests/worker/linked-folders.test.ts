@@ -52,7 +52,7 @@ describe('Linked folders schema migration', () => {
   it('migrates a v3 library to v4 with a linked_folders table and linked asset columns', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Linked', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Linked', selectedParentPath: root });
     service.closeAll();
 
     service.openLibrary(created.libraryPath);
@@ -90,7 +90,7 @@ describe('Linked folder import', () => {
     writeFileSync(path.join(sourceRoot, 'sub', 'c.png'), 'ccccc');
 
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Linked', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Linked', selectedParentPath: root });
     const linked = service.importFolderAsLinked({
       libraryId: created.libraryId,
       sourceRootPath: sourceRoot,
@@ -159,7 +159,7 @@ describe('Linked folder import', () => {
     writeFileSync(notePath, 'original');
 
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Linked Text', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Linked Text', selectedParentPath: root });
     service.importFolderAsLinked({
       libraryId: created.libraryId,
       sourceRootPath: sourceRoot,
@@ -204,7 +204,7 @@ describe('Linked folder import', () => {
     writeFileSync(path.join(sourceRoot, 'notes', '2024', 'c.png'), 'ccc');
 
     const service = newService();
-    const created = service.createLibrary({ displayName: 'LinkedTree', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'LinkedTree', selectedParentPath: root });
     const linked = service.importFolderAsLinked({
       libraryId: created.libraryId,
       sourceRootPath: sourceRoot,
@@ -269,7 +269,7 @@ describe('Linked folder import', () => {
 
     const events: Array<{ nativeDragPathsChanged?: true; changedCount: number }> = [];
     const service = newService({ onAssetsChanged: (event) => events.push(event) });
-    const library = service.createLibrary({ displayName: 'LinkedDirectories', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'LinkedDirectories', selectedParentPath: root });
     const linked = service.importFolderAsLinked({
       libraryId: library.libraryId,
       sourceRootPath: sourceRoot,
@@ -364,7 +364,7 @@ describe('Linked folder import', () => {
     );
 
     const service = newService();
-    const created = service.createLibrary({ displayName: 'LinkedDims', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'LinkedDims', selectedParentPath: root });
     const linked = service.importFolderAsLinked({
       libraryId: created.libraryId,
       sourceRootPath: sourceRoot,
@@ -409,7 +409,7 @@ describe('Linked folder import', () => {
     writeFileSync(path.join(sourceRoot, 'a.png'), 'aaa');
 
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Linked', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Linked', selectedParentPath: root });
     service.importFolderAsLinked({
       libraryId: created.libraryId,
       sourceRootPath: sourceRoot,
@@ -445,7 +445,7 @@ describe('Linked folder import', () => {
     writeFileSync(path.join(sourceRoot, 'b.png'), 'bbbb');
 
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Linked', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Linked', selectedParentPath: root });
     const linked = service.importFolderAsLinked({
       libraryId: created.libraryId,
       sourceRootPath: sourceRoot,
@@ -478,7 +478,7 @@ describe('Linked folder import', () => {
     writeFileSync(path.join(sourceRoot, 'a.png'), 'aaa');
 
     const service = newService({ storageKindOverrideForTests: 'network' });
-    const created = service.createLibrary({ displayName: 'NasLinked', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'NasLinked', selectedParentPath: root });
     service.importFolderAsLinked({
       libraryId: created.libraryId,
       sourceRootPath: sourceRoot,
@@ -502,7 +502,7 @@ describe('Linked folder import', () => {
     writeFileSync(path.join(sourceRoot, 'a.png'), 'aaa');
 
     const service = newService({ storageKindOverrideForTests: 'network' });
-    const created = service.createLibrary({ displayName: 'NasLinked', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'NasLinked', selectedParentPath: root });
     service.importFolderAsLinked({ libraryId: created.libraryId, sourceRootPath: sourceRoot });
     service.closeAll();
 
@@ -525,7 +525,7 @@ describe('Linked folder import', () => {
     writeFileSync(path.join(sourceRoot, 'a.png'), 'aaa');
 
     const service = newService({ storageKindOverrideForTests: 'network' });
-    const created = service.createLibrary({ displayName: 'LegacyNasLinked', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'LegacyNasLinked', selectedParentPath: root });
     service.importFolderAsLinked({ libraryId: created.libraryId, sourceRootPath: sourceRoot });
     service.closeAll();
 
@@ -545,7 +545,7 @@ describe('Linked folder import', () => {
     writeFileSync(path.join(sourceRoot, 'a.png'), 'aaa');
 
     const service = newService({ storageKindOverrideForTests: 'network' });
-    const created = service.createLibrary({ displayName: 'NasLinked', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'NasLinked', selectedParentPath: root });
     service.importFolderAsLinked({ libraryId: created.libraryId, sourceRootPath: sourceRoot });
     service.closeAll();
 
@@ -562,7 +562,7 @@ describe('Linked folder import', () => {
     writeFileSync(path.join(sourceRoot, 'a.png'), 'aaa');
 
     const service = newService({ storageKindOverrideForTests: 'network' });
-    const created = service.createLibrary({ displayName: 'NasLinked', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'NasLinked', selectedParentPath: root });
     service.importFolderAsLinked({ libraryId: created.libraryId, sourceRootPath: sourceRoot });
     service.closeAll();
 
@@ -585,7 +585,7 @@ describe('Linked folder import', () => {
     writeFileSync(path.join(sourceRoot, 'a.png'), 'aaa');
 
     const service = newService({ storageKindOverrideForTests: 'network' });
-    const created = service.createLibrary({ displayName: 'NasLinked', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'NasLinked', selectedParentPath: root });
     service.importFolderAsLinked({ libraryId: created.libraryId, sourceRootPath: sourceRoot });
     service.closeAll();
 
@@ -614,7 +614,7 @@ describe('Linked folder import', () => {
 
     const events: Array<{ nativeDragPathsChanged?: true; changedCount: number }> = [];
     const service = newService({ onAssetsChanged: (event) => events.push(event) });
-    const created = service.createLibrary({ displayName: 'Linked', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Linked', selectedParentPath: root });
     const linked = service.importFolderAsLinked({
       libraryId: created.libraryId,
       sourceRootPath: sourceRoot,
@@ -668,7 +668,7 @@ describe('Linked folder import', () => {
     writeFileSync(path.join(sourceRoot, 'Thumbs.db'), 'x');
 
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Linked', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Linked', selectedParentPath: root });
     const linked = service.importFolderAsLinked({
       libraryId: created.libraryId,
       sourceRootPath: sourceRoot,
@@ -691,7 +691,7 @@ describe('Linked folder import', () => {
     symlinkSync(path.join(root, 'secret.png'), path.join(sourceRoot, 'link.png'));
 
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Linked', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Linked', selectedParentPath: root });
     service.importFolderAsLinked({ libraryId: created.libraryId, sourceRootPath: sourceRoot });
 
     const assets = service.listAssets({ libraryId: created.libraryId, recursive: true });
@@ -706,7 +706,7 @@ describe('Linked folder import', () => {
     writeFileSync(path.join(sourceRoot, 'keep.png'), 'keep');
     writeFileSync(path.join(sourceRoot, 'node_modules', 'later.png'), 'later');
     const service = newService();
-    const library = service.createLibrary({ displayName: 'Rules', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Rules', selectedParentPath: root });
     const linked = service.importFolderAsLinked({ libraryId: library.libraryId, sourceRootPath: sourceRoot });
     const original = service.listAssets({ libraryId: library.libraryId, folderId: linked.folderId, recursive: true })[0]!;
     service.setAssetMetadata({ libraryId: library.libraryId, assetId: original.assetId, expectedVersion: 0, description: 'Preserved' });
@@ -739,7 +739,7 @@ describe('Linked folder import', () => {
     mkdirSync(sourceRoot);
     writeFileSync(path.join(sourceRoot, 'a.png'), 'a');
     const service = newService();
-    const library = service.createLibrary({ displayName: 'RulePattern', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'RulePattern', selectedParentPath: root });
     const linked = service.importFolderAsLinked({ libraryId: library.libraryId, sourceRootPath: sourceRoot });
 
     const rejection = (pattern: string, target: 'path' | 'filename' | 'extension') => {
@@ -770,7 +770,7 @@ describe('Linked folder import', () => {
     const source = path.join(importRoot, 'managed.png');
     writeFileSync(source, 'managed bytes');
     const service = newService();
-    const library = service.createLibrary({ displayName: 'Copy', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Copy', selectedParentPath: root });
     const imported = service.prepareOrExecuteImport({
       libraryId: library.libraryId, sourceKind: 'files', sourcePaths: [source],
     });
@@ -809,7 +809,7 @@ describe('Linked folder import', () => {
     writeFileSync(path.join(linkedRoot, 'reference.png'), 'reference bytes');
 
     const service = newService();
-    const library = service.createLibrary({ displayName: 'LinkedToManaged', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'LinkedToManaged', selectedParentPath: root });
     const linked = service.importFolderAsLinked({
       libraryId: library.libraryId,
       sourceRootPath: linkedRoot,
@@ -853,7 +853,7 @@ describe('Linked folder import', () => {
     writeFileSync(path.join(linkedRoot, 'art.png'), 'art bytes');
     const events: Array<{ nativeDragPathsChanged?: true; changedCount: number }> = [];
     const service = newService({ onAssetsChanged: (event) => events.push(event) });
-    const library = service.createLibrary({ displayName: 'Convert', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Convert', selectedParentPath: root });
     const linked = service.importFolderAsLinked({ libraryId: library.libraryId, sourceRootPath: linkedRoot });
     const before = service.listAssets({ libraryId: library.libraryId, folderId: linked.folderId, recursive: true })[0]!;
     service.setAssetMetadata({ libraryId: library.libraryId, assetId: before.assetId, expectedVersion: 0, description: 'Stable description', favorite: true });
@@ -879,7 +879,7 @@ describe('Linked folder import', () => {
     mkdirSync(linkedRoot);
     writeFileSync(path.join(linkedRoot, 'art.png'), 'art bytes');
     const interrupted = newService({ failAt: 'crash-linked-convert-after-filesystem' });
-    const library = interrupted.createLibrary({ displayName: 'Crash Convert', selectedParentPath: root });
+    const library = interrupted.createLibrary({ storageLayout: 'assets', displayName: 'Crash Convert', selectedParentPath: root });
     const linked = interrupted.importFolderAsLinked({ libraryId: library.libraryId, sourceRootPath: linkedRoot });
     expect(() => interrupted.convertLinkedFolderToManaged({
       libraryId: library.libraryId, folderId: linked.folderId,
@@ -904,7 +904,7 @@ describe('Linked folder import', () => {
     writeFileSync(path.join(sourceRoot, 'sub', 'b.png'), 'bbb');
 
     const service = newService();
-    const created = service.createLibrary({ displayName: 'D1-Verify', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'D1-Verify', selectedParentPath: root });
     const linked = service.importFolderAsLinked({
       libraryId: created.libraryId,
       sourceRootPath: sourceRoot,
@@ -946,7 +946,7 @@ describe('Linked folder import', () => {
     writeFileSync(path.join(sourceRoot, 'notes', 'readme.md'), '# hi');
 
     const service = newService();
-    const created = service.createLibrary({ displayName: 'LinkedText', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'LinkedText', selectedParentPath: root });
     const linked = service.importFolderAsLinked({
       libraryId: created.libraryId,
       sourceRootPath: sourceRoot,
@@ -1022,7 +1022,7 @@ describe('Linked folder import', () => {
         return lstatSync(assetPath);
       },
     });
-    const created = service.createLibrary({ displayName: 'D2-Relink', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'D2-Relink', selectedParentPath: root });
     const linked = service.importFolderAsLinked({
       libraryId: created.libraryId,
       sourceRootPath: sourceRoot,
@@ -1069,7 +1069,7 @@ describe('Linked folder import', () => {
     writeFileSync(path.join(incoming, 'new-art.png'), 'fresh bytes');
 
     const service = newService();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'LinkedImport',
       selectedParentPath: root,
     });
@@ -1122,7 +1122,7 @@ describe('Moving managed assets into linked folders', () => {
     mkdirSync(importRoot);
     const source = path.join(importRoot, name);
     writeFileSync(source, content);
-    const library = service.createLibrary({ displayName: 'MoveToLinked', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'MoveToLinked', selectedParentPath: root });
     const imported = service.prepareOrExecuteImport({
       libraryId: library.libraryId,
       sourceKind: 'files',
@@ -1246,7 +1246,7 @@ describe('Linked folder sync diagnostics', () => {
     mkdirSync(linkedRoot);
     writeFileSync(path.join(linkedRoot, 'gone.png'), 'gone bytes');
     const { service, diagnostics } = diagService();
-    const library = service.createLibrary({ displayName: 'Diag', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Diag', selectedParentPath: root });
     service.importFolderAsLinked({ libraryId: library.libraryId, sourceRootPath: linkedRoot });
 
     // 模拟外部删除文件，随后对账
@@ -1267,7 +1267,7 @@ describe('Linked folder sync diagnostics', () => {
     mkdirSync(linkedRoot);
     writeFileSync(path.join(linkedRoot, 'a.png'), 'aaa');
     const { service, diagnostics } = diagService();
-    const library = service.createLibrary({ displayName: 'DiagMove', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'DiagMove', selectedParentPath: root });
     service.importFolderAsLinked({ libraryId: library.libraryId, sourceRootPath: linkedRoot });
 
     // 模拟根内移动：rename a.png → b.png
@@ -1286,7 +1286,7 @@ describe('Linked folder sync diagnostics', () => {
     mkdirSync(linkedRoot);
     writeFileSync(path.join(linkedRoot, 'a.png'), 'aaa');
     const { service, diagnostics } = diagService();
-    const library = service.createLibrary({ displayName: 'Diag2', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Diag2', selectedParentPath: root });
     service.importFolderAsLinked({ libraryId: library.libraryId, sourceRootPath: linkedRoot });
 
     // 模拟链接根目录消失，对账后文件夹转 offline
@@ -1314,7 +1314,7 @@ describe('Linked folder sync diagnostics', () => {
     }
 
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'LinkedBrowsePage',
       selectedParentPath: root,
     });
@@ -1377,7 +1377,7 @@ describe('Nested linked folders (Serpent-316493)', () => {
     writeFileSync(path.join(sourceRoot, 'notes', 'b.png'), 'bbb');
 
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Nested', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Nested', selectedParentPath: root });
     const parent = createManagedFolder(service, created.libraryId, 'Alpha');
 
     const linked = service.importFolderAsLinked({
@@ -1403,7 +1403,7 @@ describe('Nested linked folders (Serpent-316493)', () => {
     writeFileSync(path.join(sourceRoot, 'a.png'), 'aaa');
 
     const service = newService();
-    const created = service.createLibrary({ displayName: 'NestedReopen', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'NestedReopen', selectedParentPath: root });
     const parent = createManagedFolder(service, created.libraryId, 'Alpha');
     service.importFolderAsLinked({
       libraryId: created.libraryId,
@@ -1425,7 +1425,7 @@ describe('Nested linked folders (Serpent-316493)', () => {
     const sourceRoot = path.join(root, 'source');
     mkdirSync(sourceRoot);
     const service = newService();
-    const created = service.createLibrary({ displayName: 'NestedBadParent', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'NestedBadParent', selectedParentPath: root });
 
     let thrown: unknown;
     try {
@@ -1444,7 +1444,7 @@ describe('Nested linked folders (Serpent-316493)', () => {
   it('rejects a source inside the library folder', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'NestedInsideLibrary', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'NestedInsideLibrary', selectedParentPath: root });
 
     let thrown: unknown;
     try {
@@ -1471,7 +1471,7 @@ describe('Nested linked folders (Serpent-316493)', () => {
     writeFileSync(path.join(sourceRoot, 'a.png'), 'aaa');
 
     const service = newService();
-    const created = service.createLibrary({ displayName: 'NestedDuplicates', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'NestedDuplicates', selectedParentPath: root });
     service.importFolderAsLinked({
       libraryId: created.libraryId,
       sourceRootPath: sourceRoot,

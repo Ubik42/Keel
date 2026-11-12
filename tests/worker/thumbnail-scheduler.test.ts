@@ -30,7 +30,7 @@ describe('thumbnail Worker scheduler reconciliation handoff', () => {
     const root = mkdtempSync(path.join(tmpdir(), 'serpent-thumbnail-scheduler-'));
     temporaryRoots.push(root);
     const fixtureService = new LibraryService();
-    const created = fixtureService.createLibrary({
+    const created = fixtureService.createLibrary({ storageLayout: 'assets',
       displayName: 'SchedulerHandoff',
       selectedParentPath: root,
     });

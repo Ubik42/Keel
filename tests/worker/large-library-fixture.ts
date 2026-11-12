@@ -459,7 +459,7 @@ export async function ensureLargeLibraryFixture(
 
   const service = new LibraryService({ observerFactory: () => ({ close() {} }) });
   try {
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: path.basename(outputPath),
       selectedParentPath: path.dirname(outputPath),
     });

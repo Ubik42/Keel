@@ -61,7 +61,7 @@ async function waitFor(
 describe('Automation write fencing integration', () => {
   it('exposes library.change-sequence as a read-only Worker command without taking the write lease', async () => {
     const first = newService();
-    const created = first.createLibrary({
+    const created = first.createLibrary({ storageLayout: 'assets',
       displayName: 'Change sequence command',
       selectedParentPath: temporaryRoot(),
     });
@@ -95,7 +95,7 @@ describe('Automation write fencing integration', () => {
     const first = newService({
       onLibraryChanged: (event) => firstEvents.push(event),
     });
-    const created = first.createLibrary({
+    const created = first.createLibrary({ storageLayout: 'assets',
       displayName: 'Cross-process sequence',
       selectedParentPath: temporaryRoot(),
     });
@@ -120,7 +120,7 @@ describe('Automation write fencing integration', () => {
 
   it('rejects a second bounded writer while another LibraryService holds the lease', async () => {
     const first = newService();
-    const created = first.createLibrary({
+    const created = first.createLibrary({ storageLayout: 'assets',
       displayName: 'Lease busy',
       selectedParentPath: temporaryRoot(),
     });
@@ -145,7 +145,7 @@ describe('Automation write fencing integration', () => {
 
   it('does not let an expired owner renew after another owner reclaims the lease', async () => {
     const first = newService();
-    const created = first.createLibrary({
+    const created = first.createLibrary({ storageLayout: 'assets',
       displayName: 'Expired fencing',
       selectedParentPath: temporaryRoot(),
     });
@@ -168,7 +168,7 @@ describe('Automation write fencing integration', () => {
     const source = path.join(root, 'leased.png');
     writeFileSync(source, 'leased-content');
     const setup = newService();
-    const created = setup.createLibrary({
+    const created = setup.createLibrary({ storageLayout: 'assets',
       displayName: 'Import lease skip',
       selectedParentPath: root,
     });
@@ -228,7 +228,7 @@ describe('Automation write fencing integration', () => {
   it('skips recovering an applying managed-move while a peer still holds the Job lease', async () => {
     const root = temporaryRoot();
     const setup = newService();
-    const created = setup.createLibrary({
+    const created = setup.createLibrary({ storageLayout: 'assets',
       displayName: 'Move lease skip',
       selectedParentPath: root,
     });
@@ -299,7 +299,7 @@ describe('Automation write fencing integration', () => {
   it('releases the managed-move Job lease after a successful apply', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Move lease release',
       selectedParentPath: root,
     });
@@ -333,7 +333,7 @@ describe('Automation write fencing integration', () => {
   it('skips recovering an applying managed-copy while a peer still holds the Job lease', async () => {
     const root = temporaryRoot();
     const setup = newService();
-    const created = setup.createLibrary({
+    const created = setup.createLibrary({ storageLayout: 'assets',
       displayName: 'Copy lease skip',
       selectedParentPath: root,
     });
@@ -404,7 +404,7 @@ describe('Automation write fencing integration', () => {
   it('releases the managed-copy Job lease after a successful apply', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Copy lease release',
       selectedParentPath: root,
     });
@@ -438,7 +438,7 @@ describe('Automation write fencing integration', () => {
   it('skips recovering an applying restore while a peer still holds the Job lease', async () => {
     const root = temporaryRoot();
     const setup = newService();
-    const created = setup.createLibrary({
+    const created = setup.createLibrary({ storageLayout: 'assets',
       displayName: 'Restore lease skip',
       selectedParentPath: root,
     });
@@ -502,7 +502,7 @@ describe('Automation write fencing integration', () => {
   it('releases the restore Job lease after a successful apply', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Restore lease release',
       selectedParentPath: root,
     });
@@ -534,7 +534,7 @@ describe('Automation write fencing integration', () => {
     const source = path.join(root, 'ok.png');
     writeFileSync(source, 'ok');
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Import lease release',
       selectedParentPath: root,
     });

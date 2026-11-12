@@ -1,3 +1,5 @@
+> 本仓库为 Ubik42 的个人开发版。新建资源库默认将素材存放在根目录，保留 Assets 布局选项。[个人版说明](README.local.md)
+
 <div align="center">
 
 [🇺🇸 English](README.en.md) | **🇨🇳 简体中文**

@@ -296,7 +296,7 @@ describe('video (ffprobe + ffmpeg)', () => {
         return await baseSpawn(command, args);
       },
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'VideoProbeQueueReuse',
       selectedParentPath: root,
     });
@@ -363,7 +363,7 @@ describe('video (ffprobe + ffmpeg)', () => {
         return await baseSpawn(command, args);
       },
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'AbandonedVideoProbe',
       selectedParentPath: root,
     });
@@ -439,7 +439,7 @@ describe('video (ffprobe + ffmpeg)', () => {
         return await baseSpawn(command, args);
       },
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'VideoMetadataRevisionReuse',
       selectedParentPath: root,
     });
@@ -527,7 +527,7 @@ describe('video (ffprobe + ffmpeg)', () => {
     const service = new LibraryService({
       spawnFn: createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON }),
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'VideoAiInputIndependence',
       selectedParentPath: root,
     });
@@ -567,7 +567,7 @@ describe('video (ffprobe + ffmpeg)', () => {
     const service = new LibraryService({
       spawnFn: createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON }),
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'VideoProbe',
       selectedParentPath: root,
     });
@@ -671,7 +671,7 @@ describe('video (ffprobe + ffmpeg)', () => {
     const service = new LibraryService({
       spawnFn: createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON }),
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'VideoDimensionEvent',
       selectedParentPath: root,
     });
@@ -707,7 +707,7 @@ describe('video (ffprobe + ffmpeg)', () => {
     const service = new LibraryService({
       spawnFn: createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON }),
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'VideoMetaMissing',
       selectedParentPath: root,
     });
@@ -752,7 +752,7 @@ describe('video (ffprobe + ffmpeg)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'VideoPoster',
       selectedParentPath: root,
     });
@@ -829,7 +829,7 @@ describe('video (ffprobe + ffmpeg)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({ displayName: 'VideoResourcePressure', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'VideoResourcePressure', selectedParentPath: root });
     const sourcePath = path.join(root, 'video.mp4');
     writeFileSync(sourcePath, Buffer.alloc(4096, 0));
     importNoConflict(service, created.libraryId, sourcePath);
@@ -875,7 +875,7 @@ describe('video (ffprobe + ffmpeg)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'ContactSheet',
       selectedParentPath: root,
     });
@@ -953,7 +953,7 @@ describe('video (ffprobe + ffmpeg)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'WebmProxy',
       selectedParentPath: root,
     });
@@ -1059,7 +1059,7 @@ describe('video (ffprobe + ffmpeg)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'EncoderProbe',
       selectedParentPath: root,
     });
@@ -1127,7 +1127,7 @@ describe('video (ffprobe + ffmpeg)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Vp9ProxyFallback',
       selectedParentPath: root,
     });
@@ -1178,7 +1178,7 @@ describe('video (ffprobe + ffmpeg)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'H264RuntimeFallback',
       selectedParentPath: root,
     });
@@ -1237,7 +1237,7 @@ describe('video (ffprobe + ffmpeg)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'DirectSource',
       selectedParentPath: root,
     });
@@ -1297,7 +1297,7 @@ describe('video (ffprobe + ffmpeg)', () => {
   it('uses a ready proxy for MOV in the viewer so non-direct containers can actually preview', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'MovProxyPreview',
       selectedParentPath: root,
     });
@@ -1374,7 +1374,7 @@ describe('video (ffprobe + ffmpeg)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'OversizedH264Proxy',
       selectedParentPath: root,
     });
@@ -1415,7 +1415,7 @@ describe('video (ffprobe + ffmpeg)', () => {
         ffprobeExitCode: 0,
       }),
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'MissingFFmpeg',
       selectedParentPath: root,
     });
@@ -1467,7 +1467,7 @@ describe('video (ffprobe + ffmpeg)', () => {
         enoentCommand: '/fake/ffmpeg',
       }),
     });
-    const created = failedService.createLibrary({
+    const created = failedService.createLibrary({ storageLayout: 'assets',
       displayName: 'AutoRepairVideo',
       selectedParentPath: root,
     });
@@ -1535,7 +1535,7 @@ describe('video (ffprobe + ffmpeg)', () => {
         enoentCommand: '/fake/oiiotool',
       }),
     });
-    const created = failedService.createLibrary({
+    const created = failedService.createLibrary({ storageLayout: 'assets',
       displayName: 'AutoRepairOiio',
       selectedParentPath: root,
     });
@@ -1593,7 +1593,7 @@ describe('video (ffprobe + ffmpeg)', () => {
     const failedService = new LibraryService({
       spawnFn: createMockSpawn({ enoentCommand: '/fake/ffmpeg' }),
     });
-    const created = failedService.createLibrary({
+    const created = failedService.createLibrary({ storageLayout: 'assets',
       displayName: 'AutoRepairAudioProxy',
       selectedParentPath: root,
     });
@@ -1629,7 +1629,7 @@ describe('video (ffprobe + ffmpeg)', () => {
     process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'AutoRepairProbeThrottle',
       selectedParentPath: root,
     });
@@ -1681,7 +1681,7 @@ describe('video (ffprobe + ffmpeg)', () => {
   it('does not automatically retry a non-component thumbnail failure', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'NoAutoRepairForCorruptInput',
       selectedParentPath: root,
     });
@@ -1720,7 +1720,7 @@ describe('video (ffprobe + ffmpeg)', () => {
     process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const service = new LibraryService({ spawnFn: createMockSpawn({}) });
-    const created = service.createLibrary({ displayName: 'VideoRetry', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'VideoRetry', selectedParentPath: root });
     const sourcePath = path.join(root, 'video.mp4');
     writeFileSync(sourcePath, Buffer.alloc(4096, 0));
     importNoConflict(service, created.libraryId, sourcePath);
@@ -1777,7 +1777,7 @@ describe('video (ffprobe + ffmpeg)', () => {
         };
       },
     });
-    const created = service.createLibrary({ displayName: 'VideoRetryFailure', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'VideoRetryFailure', selectedParentPath: root });
     const sourcePath = path.join(root, 'video.mp4');
     writeFileSync(sourcePath, Buffer.alloc(4096, 0));
     importNoConflict(service, created.libraryId, sourcePath);
@@ -1845,7 +1845,7 @@ describe('media execution cancellation and global decoder limits', () => {
         });
       },
     });
-    const created = service.createLibrary({ displayName: 'AbortVideo', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'AbortVideo', selectedParentPath: root });
     const source = path.join(root, 'abort.mp4');
     writeFileSync(source, Buffer.alloc(1024));
     importNoConflict(service, created.libraryId, source);
@@ -1902,7 +1902,7 @@ describe('media execution cancellation and global decoder limits', () => {
         spawnFn,
         availablePhysicalMemoryBytesForTests: () => availableBytes,
       });
-      const created = service.createLibrary({ displayName: `FfmpegLimit-${index}`, selectedParentPath: root });
+      const created = service.createLibrary({ storageLayout: 'assets', displayName: `FfmpegLimit-${index}`, selectedParentPath: root });
       const source = path.join(root, name);
       writeFileSync(source, Buffer.alloc(1024));
       importNoConflict(service, created.libraryId, source);
@@ -1964,7 +1964,7 @@ describe('media execution cancellation and global decoder limits', () => {
         spawnFn,
         availablePhysicalMemoryBytesForTests: () => availableBytes,
       });
-      const created = service.createLibrary({ displayName: `FfmpegDrop-${index}`, selectedParentPath: root });
+      const created = service.createLibrary({ storageLayout: 'assets', displayName: `FfmpegDrop-${index}`, selectedParentPath: root });
       const source = path.join(root, name);
       writeFileSync(source, Buffer.alloc(1024));
       importNoConflict(service, created.libraryId, source);
@@ -2008,7 +2008,7 @@ describe('media execution cancellation and global decoder limits', () => {
     const targets: Array<{ service: LibraryService; libraryId: string; assetId: string }> = [];
     for (const [index, name] of ['one.exr', 'two.exr'].entries()) {
       const service = new LibraryService({ spawnFn });
-      const created = service.createLibrary({ displayName: `OiioLimit-${index}`, selectedParentPath: root });
+      const created = service.createLibrary({ storageLayout: 'assets', displayName: `OiioLimit-${index}`, selectedParentPath: root });
       const source = path.join(root, name);
       writeFileSync(source, Buffer.from('fake-exr'));
       importNoConflict(service, created.libraryId, source);
@@ -2061,7 +2061,7 @@ describe('EXR/TGA (oiiotool)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'EXRThumb',
       selectedParentPath: root,
     });
@@ -2152,7 +2152,7 @@ describe('EXR/TGA (oiiotool)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({ displayName: 'EXRParts', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'EXRParts', selectedParentPath: root });
     const sourcePath = path.join(root, 'layers.exr');
     writeFileSync(sourcePath, Buffer.alloc(4096, 0));
     importNoConflict(service, created.libraryId, sourcePath);
@@ -2196,7 +2196,7 @@ describe('EXR/TGA (oiiotool)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({ displayName: 'OiioFormatMatrix', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'OiioFormatMatrix', selectedParentPath: root });
     const extensions = [
       'bmp', 'ico', 'psd', 'exr', 'tga', 'dng', 'cr2', 'cr3', 'nef', 'arw', 'raf', 'orf', 'rw2', 'raw',
     ];
@@ -2243,7 +2243,7 @@ describe('EXR/TGA (oiiotool)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'TGAThumb',
       selectedParentPath: root,
     });
@@ -2301,7 +2301,7 @@ describe('EXR/TGA (oiiotool)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({ displayName: 'RawMetadata', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'RawMetadata', selectedParentPath: root });
     const sourcePath = path.join(root, 'photo.ARW');
     writeFileSync(sourcePath, Buffer.alloc(4096, 0));
     importNoConflict(service, created.libraryId, sourcePath);
@@ -2382,7 +2382,7 @@ describe('EXR/TGA (oiiotool)', () => {
         }),
       },
     });
-    const created = service.createLibrary({ displayName: 'ImageMetadata', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'ImageMetadata', selectedParentPath: root });
     const sourcePath = path.join(root, 'reference.png');
     writeFileSync(sourcePath, VALID_1X1_PNG);
     importNoConflict(service, created.libraryId, sourcePath);
@@ -2422,7 +2422,7 @@ describe('EXR/TGA (oiiotool)', () => {
         }),
       },
     });
-    const created = service.createLibrary({ displayName: 'ZeroExif', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'ZeroExif', selectedParentPath: root });
     const sourcePath = path.join(root, 'reference.png');
     writeFileSync(sourcePath, VALID_1X1_PNG);
     importNoConflict(service, created.libraryId, sourcePath);
@@ -2501,7 +2501,7 @@ describe('EXR/TGA (oiiotool)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({ displayName: 'RawEmbedded', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'RawEmbedded', selectedParentPath: root });
     const sourcePath = path.join(root, 'embedded.ARW');
     const embeddedJpeg = await (require('sharp') as (input: Buffer) => {
       jpeg(options?: { quality?: number }): { toBuffer(): Promise<Buffer> };
@@ -2568,7 +2568,7 @@ describe('EXR/TGA (oiiotool)', () => {
         },
       },
     });
-    const created = service.createLibrary({ displayName: 'RawQueueLanes', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'RawQueueLanes', selectedParentPath: root });
     const sourcePath = path.join(root, 'queued.ARW');
     const embeddedJpeg = await (require('sharp') as (input: Buffer) => {
       jpeg(options?: { quality?: number }): { toBuffer(): Promise<Buffer> };
@@ -2625,7 +2625,7 @@ describe('EXR/TGA (oiiotool)', () => {
         }),
       },
     });
-    const created = service.createLibrary({ displayName: 'RawMetadataCompleteness', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'RawMetadataCompleteness', selectedParentPath: root });
     const sourcePath = path.join(root, 'header-only.NEF');
     writeFileSync(sourcePath, buildClassicTiffDimensions(8256, 5504));
     importNoConflict(service, created.libraryId, sourcePath);
@@ -2702,7 +2702,7 @@ describe('EXR/TGA (oiiotool)', () => {
         }),
       },
     });
-    const created = service.createLibrary({ displayName: 'RawMetadataBackfill', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'RawMetadataBackfill', selectedParentPath: root });
     for (let index = 0; index < 60; index += 1) {
       writeFileSync(
         path.join(root, `camera-${String(index).padStart(2, '0')}.ARW`),
@@ -2769,7 +2769,7 @@ describe('EXR/TGA (oiiotool)', () => {
         },
       },
     });
-    const created = service.createLibrary({ displayName: 'RawMetadataRetry', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'RawMetadataRetry', selectedParentPath: root });
     const sourcePath = path.join(root, 'retry.CR3');
     writeFileSync(sourcePath, Buffer.from('camera-raw-placeholder'));
     importNoConflict(service, created.libraryId, sourcePath);
@@ -2836,7 +2836,7 @@ describe('EXR/TGA (oiiotool)', () => {
         },
       },
     });
-    const created = service.createLibrary({ displayName: 'RawMetadataCancel', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'RawMetadataCancel', selectedParentPath: root });
     const sourcePath = path.join(root, 'cancel.RAF');
     writeFileSync(sourcePath, Buffer.from('camera-raw-placeholder'));
     importNoConflict(service, created.libraryId, sourcePath);
@@ -2881,7 +2881,7 @@ describe('EXR/TGA (oiiotool)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({ displayName: 'RawNoMetadata', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'RawNoMetadata', selectedParentPath: root });
     const sourcePath = path.join(root, 'without-exif.ARW');
     writeFileSync(sourcePath, Buffer.alloc(4096, 0));
     importNoConflict(service, created.libraryId, sourcePath);
@@ -2919,7 +2919,7 @@ describe('EXR/TGA (oiiotool)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({ displayName: 'RawViewer', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'RawViewer', selectedParentPath: root });
     const sourcePath = path.join(root, 'viewer.ARW');
     writeFileSync(sourcePath, Buffer.alloc(4096, 0));
     importNoConflict(service, created.libraryId, sourcePath);
@@ -2962,7 +2962,7 @@ describe('EXR/TGA (oiiotool)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({ displayName: 'RawViewerRepair', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'RawViewerRepair', selectedParentPath: root });
     const sourcePath = path.join(root, 'repair.ARW');
     writeFileSync(sourcePath, Buffer.alloc(4096, 0));
     importNoConflict(service, created.libraryId, sourcePath);
@@ -3008,7 +3008,7 @@ describe('EXR/TGA (oiiotool)', () => {
         exitCode: 7,
       }),
     });
-    const created = failingService.createLibrary({
+    const created = failingService.createLibrary({ storageLayout: 'assets',
       displayName: 'RawLegacyRepair',
       selectedParentPath: root,
     });
@@ -3095,7 +3095,7 @@ describe('EXR/TGA (oiiotool)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'ComplexTIFF',
       selectedParentPath: root,
     });
@@ -3154,7 +3154,7 @@ describe('EXR/TGA (oiiotool)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({ displayName: 'SmallTIFF', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'SmallTIFF', selectedParentPath: root });
     const sourcePath = path.join(root, 'ordinary.tiff');
     await sharp({
       create: {
@@ -3198,7 +3198,7 @@ describe('EXR/TGA (oiiotool)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({ displayName: 'LargeTga', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'LargeTga', selectedParentPath: root });
     const sourcePath = path.join(root, 'large.tga');
     writeFileSync(sourcePath, buildTgaDimensions(8_192, 8_192));
     importNoConflict(service, created.libraryId, sourcePath);
@@ -3242,7 +3242,7 @@ describe('EXR/TGA (oiiotool)', () => {
     }) => {
       tiff(options?: { compression?: string }): { toFile(path: string): Promise<unknown> };
     };
-    const created = service.createLibrary({ displayName: 'LegacyTIFF', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'LegacyTIFF', selectedParentPath: root });
     const sourcePath = path.join(root, 'legacy.tiff');
     await sharp({
       create: {
@@ -3299,7 +3299,7 @@ describe('EXR/TGA (oiiotool)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({ displayName: 'OiiOViewer', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'OiiOViewer', selectedParentPath: root });
     for (const extension of ['tiff', 'tga', 'psd']) {
       const sourcePath = path.join(root, `source-${extension}.${extension}`);
       writeFileSync(sourcePath, Buffer.from(`fake-${extension}`));
@@ -3331,7 +3331,7 @@ describe('EXR/TGA (oiiotool)', () => {
         exitCode: 7,
       }),
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'TransformFailure',
       selectedParentPath: root,
     });
@@ -3373,7 +3373,7 @@ describe('EXR/TGA (oiiotool)', () => {
         enoentCommand: '/fake/oiiotool-missing',
       }),
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'MissingOIIO',
       selectedParentPath: root,
     });
@@ -3418,7 +3418,7 @@ describe('generateThumbnail dispatch by media type', () => {
   it('dispatches image assets to sharp (existing path)', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'DispatchImage',
       selectedParentPath: root,
     });
@@ -3463,7 +3463,7 @@ describe('generateThumbnail dispatch by media type', () => {
     const service = new LibraryService({
       spawnFn: createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON }),
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'DispatchVideo',
       selectedParentPath: root,
     });
@@ -3533,7 +3533,7 @@ describe('generateThumbnail dispatch by media type', () => {
     const service = new LibraryService({
       spawnFn: createMockSpawn({ oiiotoolExitCode: 0 }),
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'DispatchEXR',
       selectedParentPath: root,
     });
@@ -3574,7 +3574,7 @@ describe('generateThumbnail dispatch by media type', () => {
   it('rejects unsupported formats', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'UnsupportedFormat',
       selectedParentPath: root,
     });
@@ -3605,7 +3605,7 @@ describe('enqueueThumbnailJobs handles all media types', () => {
     const service = new LibraryService({
       spawnFn: createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON }),
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'EnqueueVideo',
       selectedParentPath: root,
     });
@@ -3626,7 +3626,7 @@ describe('enqueueThumbnailJobs handles all media types', () => {
     const service = new LibraryService({
       spawnFn: createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON }),
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'NoReEnqueue',
       selectedParentPath: root,
     });
@@ -3653,7 +3653,7 @@ describe('enqueueThumbnailJobs handles all media types', () => {
     const service = new LibraryService({
       spawnFn: createMockSpawn({ oiiotoolExitCode: 0 }),
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'EnqueueEXR',
       selectedParentPath: root,
     });
@@ -3674,7 +3674,7 @@ describe('enqueueThumbnailJobs handles all media types', () => {
     const service = new LibraryService({
       spawnFn: createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON }),
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'EnqueueAudio',
       selectedParentPath: root,
     });
@@ -3695,7 +3695,7 @@ describe('enqueueThumbnailJobs handles all media types', () => {
     const service = new LibraryService({
       spawnFn: createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON }),
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'AudioPosterOnly',
       selectedParentPath: root,
     });
@@ -3764,7 +3764,7 @@ describe('audio waveform thumbnail (Serpent-13v)', () => {
     const service = new LibraryService({
       spawnFn: createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON }),
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'AudioWaveform',
       selectedParentPath: root,
     });
@@ -3875,7 +3875,7 @@ describe('audio waveform thumbnail (Serpent-13v)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'AudioAlbumCover',
       selectedParentPath: root,
     });
@@ -3976,7 +3976,7 @@ describe('audio waveform thumbnail (Serpent-13v)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'AudioPreviewPreference',
       selectedParentPath: root,
     });
@@ -4054,7 +4054,7 @@ describe('audio waveform thumbnail (Serpent-13v)', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({ displayName: 'AudioProxy', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'AudioProxy', selectedParentPath: root });
     const sourcePath = path.join(root, 'tone.wav');
     writeFileSync(sourcePath, Buffer.alloc(4096, 0));
     importNoConflict(service, created.libraryId, sourcePath);
@@ -4106,7 +4106,7 @@ describe('independent video derivative jobs', () => {
   it('serves only the current revision through the opaque source token', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'CurrentSourceOnly', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'CurrentSourceOnly', selectedParentPath: root });
     const source = path.join(root, 'current.mp4');
     writeFileSync(source, Buffer.alloc(1024));
     importNoConflict(service, created.libraryId, source);
@@ -4163,7 +4163,7 @@ describe('independent video derivative jobs', () => {
         return { stdout: Buffer.alloc(0), stderr: '', exitCode: 0 };
       },
     });
-    const created = service.createLibrary({ displayName: 'PosterFirst', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'PosterFirst', selectedParentPath: root });
     const source = path.join(root, 'slow.avi');
     writeFileSync(source, Buffer.alloc(1024));
     importNoConflict(service, created.libraryId, source);
@@ -4213,7 +4213,7 @@ describe('independent video derivative jobs', () => {
     process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const service = new LibraryService({ spawnFn: createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON }) });
-    const created = service.createLibrary({ displayName: 'StaleDerivative', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'StaleDerivative', selectedParentPath: root });
     const source = path.join(root, 'stale.avi');
     writeFileSync(source, Buffer.alloc(1024));
     importNoConflict(service, created.libraryId, source);
@@ -4252,7 +4252,7 @@ describe('independent video derivative jobs', () => {
     process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const service = new LibraryService({ spawnFn: createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON }) });
-    const created = service.createLibrary({ displayName: 'RecoverDerivative', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'RecoverDerivative', selectedParentPath: root });
     const source = path.join(root, 'recover.avi');
     writeFileSync(source, Buffer.alloc(1024));
     importNoConflict(service, created.libraryId, source);

@@ -26,7 +26,7 @@ function createLibraryWithAsset(service: LibraryService, name: string): {
 } {
   const root = mkdtempSync(path.join(tmpdir(), 'serpent-sync-lib-'));
   roots.push(root);
-  const created = service.createLibrary({ displayName: name, selectedParentPath: root });
+  const created = service.createLibrary({ storageLayout: 'assets', displayName: name, selectedParentPath: root });
   const assetPath = path.join(root, 'source.txt');
   writeFileSync(assetPath, 'hello-sync-integration');
   const prepared = service.prepareOrExecuteImport({

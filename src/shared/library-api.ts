@@ -238,7 +238,7 @@ export interface PluginJobStatus {
 }
 
 export interface SerpentLibraryApi {
-  create(input: { displayName: string }): Promise<LibraryApiResult<RendererLibrarySummary>>;
+  create(input: { displayName: string; storageLayout?: 'root' | 'assets' }): Promise<LibraryApiResult<RendererLibrarySummary>>;
   open(input?: {
     libraryPath?: string;
     replaceExisting?: boolean;

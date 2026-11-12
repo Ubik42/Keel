@@ -73,7 +73,7 @@ describe('pending import lifecycle', () => {
     writeFileSync(source, 'incoming');
     const clock = new ManualImportClock();
     const service = new LibraryService({ importClock: clock });
-    const library = service.createLibrary({ displayName: 'Default TTL', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Default TTL', selectedParentPath: root });
     writeFileSync(path.join(library.libraryPath, 'Assets', 'default-ttl.png'), 'old');
     const plan = service.prepareImport({
       libraryId: library.libraryId,
@@ -102,7 +102,7 @@ describe('pending import lifecycle', () => {
     writeFileSync(source, 'incoming');
     const clock = new ManualImportClock();
     const service = new LibraryService({ importClock: clock, importTtlMs: 1_000 });
-    const library = service.createLibrary({ displayName: 'TTL', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'TTL', selectedParentPath: root });
     writeFileSync(path.join(library.libraryPath, 'Assets', 'same.png'), 'old');
     const plan = service.prepareImport({ libraryId: library.libraryId, sourceKind: 'files', sourcePaths: [source] });
     const operationPath = path.join(library.libraryPath, '.serpent', 'operations', plan.importId);
@@ -132,7 +132,7 @@ describe('pending import lifecycle', () => {
         }
       },
     });
-    const library = service.createLibrary({ displayName: 'Cancel Pending', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Cancel Pending', selectedParentPath: root });
     writeFileSync(path.join(library.libraryPath, 'Assets', 'same.png'), 'old');
     const plan = service.prepareImport({ libraryId: library.libraryId, sourceKind: 'files', sourcePaths: [source] });
     expect(() => service.cancelImport(plan.importId)).not.toThrow();
@@ -152,7 +152,7 @@ describe('pending import lifecycle', () => {
         if (event.type === 'import.progress') events.push(event.phase);
       },
     });
-    const library = service.createLibrary({ displayName: 'Post Commit', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Post Commit', selectedParentPath: root });
     const existing = path.join(library.libraryPath, 'Assets', 'post-commit.png');
     writeFileSync(existing, 'old');
     const plan = service.prepareImport({
@@ -179,7 +179,7 @@ describe('pending import lifecycle', () => {
     writeFileSync(source, 'incoming');
     const clock = new ManualImportClock();
     const service = new LibraryService({ importClock: clock, importTtlMs: 1_000 });
-    const library = service.createLibrary({ displayName: 'Close TTL', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Close TTL', selectedParentPath: root });
     writeFileSync(path.join(library.libraryPath, 'Assets', 'same.png'), 'old');
     const plan = service.prepareImport({ libraryId: library.libraryId, sourceKind: 'files', sourcePaths: [source] });
     service.closeAll();
@@ -195,7 +195,7 @@ describe('pending import lifecycle', () => {
     writeFileSync(first, 'first');
     writeFileSync(second, 'second');
     const crashing = new LibraryService({ failAt: 'crash-during-prepare-stage' });
-    const library = crashing.createLibrary({ displayName: 'Prepare Crash', selectedParentPath: root });
+    const library = crashing.createLibrary({ storageLayout: 'assets', displayName: 'Prepare Crash', selectedParentPath: root });
     expectCode(
       () => crashing.prepareImport({ libraryId: library.libraryId, sourceKind: 'files', sourcePaths: [first, second] }),
       'INVALID_IMPORT_SOURCE',
@@ -221,7 +221,7 @@ describe('pending import lifecycle', () => {
     writeFileSync(first, 'first');
     writeFileSync(second, 'second');
     const crashing = new LibraryService({ failAt: 'crash-during-prepare-stage' });
-    const library = crashing.createLibrary({ displayName: 'Prepare Concurrent', selectedParentPath: root });
+    const library = crashing.createLibrary({ storageLayout: 'assets', displayName: 'Prepare Concurrent', selectedParentPath: root });
     expectCode(
       () => crashing.prepareImport({ libraryId: library.libraryId, sourceKind: 'files', sourcePaths: [first, second] }),
       'INVALID_IMPORT_SOURCE',
@@ -242,7 +242,7 @@ describe('pending import lifecycle', () => {
     const source = path.join(root, 'prepared.png');
     writeFileSync(source, 'source');
     const preparing = new LibraryService();
-    const library = preparing.createLibrary({ displayName: 'Prepared Concurrent', selectedParentPath: root });
+    const library = preparing.createLibrary({ storageLayout: 'assets', displayName: 'Prepared Concurrent', selectedParentPath: root });
     const plan = preparing.prepareImport({
       libraryId: library.libraryId,
       sourceKind: 'files',

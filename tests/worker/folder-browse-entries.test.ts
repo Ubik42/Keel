@@ -42,7 +42,7 @@ describe('folder browse entries', () => {
   it('lists direct child folders with direct asset counts and cover artifact ids', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Browse', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Browse', selectedParentPath: root });
 
     const parent = service.createManagedFolder({ libraryId: library.libraryId, name: 'Parent' });
     const childA = service.createManagedFolder({
@@ -153,7 +153,7 @@ describe('folder browse entries', () => {
   it('caps cover candidates at three per folder and maps them to asset ids (Serpent-d0nv)', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'BrowseCovers', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'BrowseCovers', selectedParentPath: root });
 
     const parent = service.createManagedFolder({ libraryId: library.libraryId, name: 'Parent' });
     const child = service.createManagedFolder({
@@ -216,7 +216,7 @@ describe('folder browse entries', () => {
   it('returns cover candidates without ready thumbnails and the cover scene enqueues them (Serpent-d0nv)', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'BrowseCoverCandidates', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'BrowseCoverCandidates', selectedParentPath: root });
 
     const parent = service.createManagedFolder({ libraryId: library.libraryId, name: 'Parent' });
     const child = service.createManagedFolder({
@@ -282,7 +282,7 @@ describe('folder browse entries', () => {
   it('refreshes recursive ancestor counts after moving an asset between child folders', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'BrowseMove', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'BrowseMove', selectedParentPath: root });
     const parent = service.createManagedFolder({ libraryId: library.libraryId, name: 'Parent' });
     const sourceFolder = service.createManagedFolder({
       libraryId: library.libraryId,
@@ -333,7 +333,7 @@ describe('folder browse entries', () => {
   it('folderEntriesByRefs resolves real entries with covers for managed and linked folders (Serpent-f74e48)', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'BrowseRefs', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'BrowseRefs', selectedParentPath: root });
 
     const parent = service.createManagedFolder({ libraryId: library.libraryId, name: 'Parent' });
     const child = service.createManagedFolder({
@@ -405,7 +405,7 @@ describe('folder browse entries', () => {
   it('pure folders pick up to 4 covers from child folders in round-robin order (Serpent-9021d1)', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'CollageCovers', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'CollageCovers', selectedParentPath: root });
 
     const parent = service.createManagedFolder({ libraryId: library.libraryId, name: 'ParentA' });
     const sub1 = service.createManagedFolder({ libraryId: library.libraryId, parentFolderId: parent.folderId, name: 'Sub1' });
@@ -464,7 +464,7 @@ describe('folder browse entries', () => {
   it('pure folders with 2 child folders round-robin pick 4 covers (Serpent-9021d1)', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'TwoChildCollage', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'TwoChildCollage', selectedParentPath: root });
 
     const parent = service.createManagedFolder({ libraryId: library.libraryId, name: 'ParentTwo' });
     const sub1 = service.createManagedFolder({ libraryId: library.libraryId, parentFolderId: parent.folderId, name: 'SubA' });
@@ -532,7 +532,7 @@ describe('folder browse entries', () => {
   it('counts filtered assets as filtered over the folder subtree', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Filtered counts', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Filtered counts', selectedParentPath: root });
     const parent = service.createManagedFolder({ libraryId: library.libraryId, name: 'Parent' });
     const child = service.createManagedFolder({
       libraryId: library.libraryId,

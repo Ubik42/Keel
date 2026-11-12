@@ -53,3 +53,7 @@ AGENTS.md
 CLAUDE.md
 .beads/
 .github/
+
+# Local fork profile and scratch work
+/work/
+/.local-profile/

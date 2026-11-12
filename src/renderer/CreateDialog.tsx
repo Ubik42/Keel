@@ -18,6 +18,8 @@ export interface CreateDialogProps {
   phase: CreateLibraryPhase;
   value: string;
   onValueChange: (val: string) => void;
+  storageLayout?: 'root' | 'assets';
+  onStorageLayoutChange?: (layout: 'root' | 'assets') => void;
   onSubmit: () => void;
   onCancel: () => void;
   /** Switch from start CTAs into the name form. */
@@ -53,6 +55,8 @@ export function CreateDialog({
   phase,
   value,
   onValueChange,
+  storageLayout = 'root',
+  onStorageLayoutChange,
   onSubmit,
   onCancel,
   onBeginCreate,
@@ -146,6 +150,26 @@ export function CreateDialog({
             />
             {nameHelp.trim() ? (
               <p className="field-help">{nameHelp}</p>
+            ) : null}
+            {phase === "form" ? (
+              <>
+                <label className="field-label" htmlFor="library-storage-layout" style={{ marginTop: 16 }}>
+                  {t("dialog.createLibrary.storageLayout")}
+                </label>
+                <select
+                  className="text-field"
+                  id="library-storage-layout"
+                  value={storageLayout}
+                  disabled={busy}
+                  onChange={(event) => onStorageLayoutChange?.(event.target.value as 'root' | 'assets')}
+                >
+                  <option value="root">{t("dialog.createLibrary.storageRoot")}</option>
+                  <option value="assets">{t("dialog.createLibrary.storageAssets")}</option>
+                </select>
+                <p className="field-help">
+                  {t(storageLayout === 'root' ? "dialog.createLibrary.storageRootHelp" : "dialog.createLibrary.storageAssetsHelp")}
+                </p>
+              </>
             ) : null}
             <div className="dialog-actions">
               {required || phase === "eagle" ? (

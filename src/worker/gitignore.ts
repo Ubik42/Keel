@@ -19,6 +19,7 @@ type IgnoreMatcher = ReturnType<typeof ignore>;
  */
 export type GitIgnoreMatcher = {
   readonly matcher: IgnoreMatcher;
+  readonly managedRoot?: '' | 'Assets';
 };
 
 /**
@@ -27,7 +28,7 @@ export type GitIgnoreMatcher = {
  * tolerant treatment of an unusable pattern without discarding the rest of
  * the user's configuration.
  */
-export function parseGitignore(text: string): GitIgnoreMatcher {
+export function parseGitignore(text: string, managedRoot: '' | 'Assets' = 'Assets'): GitIgnoreMatcher {
   const matcher = ignore({ ignorecase: true });
   for (const line of text.split(/\r?\n/u)) {
     try {
@@ -42,7 +43,7 @@ export function parseGitignore(text: string): GitIgnoreMatcher {
     // the matcher can evaluate one canonical path and still retain Git's
     // ordered positive/negative semantics.  Basename rules (`*.png`, `.*/`)
     // already match at every depth and do not need a second spelling.
-    const qualified = assetsQualifiedPattern(line);
+    const qualified = managedRoot === 'Assets' ? assetsQualifiedPattern(line) : undefined;
     if (qualified === undefined) continue;
     try {
       matcher.add(qualified);
@@ -51,7 +52,7 @@ export function parseGitignore(text: string): GitIgnoreMatcher {
       // not make an otherwise valid ignore file unusable.
     }
   }
-  return { matcher };
+  return { matcher, managedRoot };
 }
 
 function assetsQualifiedPattern(line: string): string | undefined {
@@ -94,6 +95,6 @@ export function gitignoreMatchesPath(
   pathKind: GitIgnorePathKind,
   root: GitIgnoreRootKind = "managed",
 ): boolean {
-  const candidate = candidatePath(relativePath, pathKind, root);
+  const candidate = candidatePath(relativePath, pathKind, compiled.managedRoot === '' ? 'linked' : root);
   return candidate === undefined ? false : compiled.matcher.ignores(candidate);
 }

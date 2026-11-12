@@ -74,7 +74,7 @@ function createLibraryWithAsset(
 } {
   const root = temporaryRoot();
   const service = serviceOptions === undefined ? newService() : newService(serviceOptions);
-  const library = service.createLibrary({ displayName: 'Org', selectedParentPath: root });
+  const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Org', selectedParentPath: root });
 
   // Create a managed folder and an asset on disk + in DB so tags/collections can reference it.
   const managedFolder = service.createManagedFolder({ libraryId: library.libraryId, name: 'Assets' });
@@ -213,7 +213,7 @@ describe('tags', () => {
   it('isolates tag names across libraries', () => {
     const { service, libraryId } = createLibraryWithAsset();
     const root2 = temporaryRoot();
-    const lib2 = service.createLibrary({ displayName: 'Lib2', selectedParentPath: root2 });
+    const lib2 = service.createLibrary({ storageLayout: 'assets', displayName: 'Lib2', selectedParentPath: root2 });
 
     service.createTag({ libraryId, name: 'Shared' });
     // Same name in a different library should succeed.
@@ -867,7 +867,7 @@ describe('collection assets', () => {
   it('preserves a linked asset location kind when listing a collection', () => {
     const root = temporaryRoot();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'Linked Collection', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Linked Collection', selectedParentPath: root });
     const linkedRoot = path.join(root, 'linked-collection-source');
     mkdirSync(linkedRoot);
     writeFileSync(path.join(linkedRoot, 'linked.png'), 'linked');

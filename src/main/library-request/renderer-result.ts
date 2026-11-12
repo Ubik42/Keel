@@ -17,6 +17,7 @@ export function toRendererResult(
       library: {
         libraryId: result.library.libraryId,
         displayName: result.library.displayName,
+        storageLayout: result.library.storageLayout,
         displayPath: result.library.libraryPath,
         // Serpent-033e: read-only degrade for newer-schema libraries.
         readOnly: result.library.readOnly,
@@ -54,6 +55,7 @@ export function toRendererResult(
       library: {
         libraryId: result.library.libraryId,
         displayName: result.library.displayName,
+        storageLayout: result.library.storageLayout,
         displayPath: result.library.libraryPath,
         networkStorage: result.library.networkStorage,
       },
@@ -74,6 +76,7 @@ export function toRendererResult(
       libraries: result.libraries.map((library) => ({
         libraryId: library.libraryId,
         displayName: library.displayName,
+        storageLayout: library.storageLayout,
         displayPath: library.libraryPath,
         networkStorage: library.networkStorage,
       })),

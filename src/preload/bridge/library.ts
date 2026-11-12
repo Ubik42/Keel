@@ -132,10 +132,12 @@ function emitE2eBrowseSessionResponse(
 export const library: SerpentLibraryApi = Object.freeze({
   async create({
     displayName,
+    storageLayout,
   }: {
     displayName: string;
+    storageLayout?: 'root' | 'assets';
   }): Promise<LibraryApiResult<RendererLibrarySummary>> {
-    const result = await request({ type: 'library.create.request', displayName });
+    const result = await request({ type: 'library.create.request', displayName, storageLayout });
     if (!result.ok) return failure(result);
     if (result.type !== 'library.opened') throw new Error('Unexpected create-library response.');
     return { ok: true as const, value: result.library };

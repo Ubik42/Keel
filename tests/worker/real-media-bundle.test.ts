@@ -137,7 +137,7 @@ describe.runIf(hasRealBundle || requireRealMedia)('installed media bundle real-f
     const service = new LibraryService({
       onDiagnostic: (diagnostic) => diagnostics.push(diagnostic),
     });
-    const library = service.createLibrary({ displayName: 'RealMedia', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'RealMedia', selectedParentPath: root });
     const imported = service.prepareOrExecuteImport({
       libraryId: library.libraryId,
       sourceKind: 'files',

@@ -59,7 +59,7 @@ describe('library creation publish retry', () => {
     });
 
     const creatingService = newService();
-    const created = creatingService.createLibrary({
+    const created = creatingService.createLibrary({ storageLayout: 'assets',
       displayName: 'Retry library',
       selectedParentPath: root,
     });
@@ -89,7 +89,7 @@ describe('library creation publish retry', () => {
 
     let thrown: unknown;
     try {
-      newService().createLibrary({
+      newService().createLibrary({ storageLayout: 'assets',
         displayName: 'Blocked library',
         selectedParentPath: root,
       });

@@ -41,6 +41,7 @@ export async function executeLibraryMainCommand(
         ? {
             type: "library.create",
             displayName: request.displayName,
+            storageLayout: request.storageLayout,
             selectedParentPath,
           }
         : undefined;

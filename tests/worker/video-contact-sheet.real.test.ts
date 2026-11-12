@@ -14,7 +14,7 @@ it.skipIf(!process.env.TEST_VIDEO)(
   roots.push(root);
   const src = process.env.TEST_VIDEO!;
   const service = new LibraryService();
-  const created = service.createLibrary({ displayName: 'L', selectedParentPath: root });
+  const created = service.createLibrary({ storageLayout: 'assets', displayName: 'L', selectedParentPath: root });
   service.prepareOrExecuteImport({ libraryId: created.libraryId, sourceKind: 'files', sourcePaths: [src] });
   const asset = service.listAssets({ libraryId: created.libraryId, recursive: true })[0]!;
   service.enqueueThumbnailJobs(created.libraryId, { assetIds: [asset.assetId], limit: 50 });

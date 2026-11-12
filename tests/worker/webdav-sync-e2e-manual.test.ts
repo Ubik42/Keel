@@ -118,7 +118,7 @@ describe.skipIf(!probeUrl)('real WebDAV acceptance (temporary remote library onl
     });
     const rootA = mkdtempSync(path.join(tmpdir(), 'serpent-sync-devA-'));
     roots.push(rootA);
-    const libraryA = serviceA.createLibrary({ displayName: libraryName, selectedParentPath: rootA });
+    const libraryA = serviceA.createLibrary({ storageLayout: 'assets', displayName: libraryName, selectedParentPath: rootA });
     const directoryName = sanitizeSyncDirectoryName(libraryName, libraryA.libraryId);
     assertSafeRemoteDirectory(directoryName);
     const config = rootConfig(directoryName);
@@ -177,7 +177,7 @@ describe.skipIf(!probeUrl)('real WebDAV acceptance (temporary remote library onl
       const serviceB = new LibraryService();
       const rootB = mkdtempSync(path.join(tmpdir(), 'serpent-sync-devB-'));
       roots.push(rootB);
-      const libraryB = serviceB.createLibrary({
+      const libraryB = serviceB.createLibrary({ storageLayout: 'assets',
         displayName: `${libraryName}-b`,
         selectedParentPath: rootB,
       });

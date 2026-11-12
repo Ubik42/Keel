@@ -64,7 +64,7 @@ describe('Automation read-only Worker dispatch', () => {
     roots.push(root);
     const service = new LibraryService();
     services.push(service);
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Automation read only',
       selectedParentPath: root,
     });
@@ -85,7 +85,7 @@ describe('Automation read-only Worker dispatch', () => {
     roots.push(root);
     const service = new LibraryService();
     services.push(service);
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Automation plan',
       selectedParentPath: root,
     });
@@ -170,7 +170,7 @@ describe('Automation read-only Worker dispatch', () => {
     writeFileSync(sourcePath, 'AI result fixture');
     const service = new LibraryService();
     services.push(service);
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Automation AI read only',
       selectedParentPath: root,
     });

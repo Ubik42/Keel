@@ -320,7 +320,7 @@ describe('sync-first v37/v38 migration fork (Serpent-e0dw)', () => {
   it('rewrites swapped v37/v38 checksums and opens the library writable', () => {
     const root = temporaryRoot();
     const creating = newService();
-    const created = creating.createLibrary({
+    const created = creating.createLibrary({ storageLayout: 'assets',
       displayName: 'Swapped history',
       selectedParentPath: root,
     });
@@ -361,7 +361,7 @@ describe('sync-first v37/v38 migration fork (Serpent-e0dw)', () => {
   it('upgrades a sync-first v37 library by applying auto-analysis as canonical v37', () => {
     const root = temporaryRoot();
     const creating = newService();
-    const created = creating.createLibrary({
+    const created = creating.createLibrary({ storageLayout: 'assets',
       displayName: 'Sync-first v37',
       selectedParentPath: root,
     });

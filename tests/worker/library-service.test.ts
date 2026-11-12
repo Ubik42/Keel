@@ -333,7 +333,7 @@ describe('LibraryService lifecycle', () => {
     const root = temporaryRoot();
     const service = newService();
 
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: '  概念设计  ',
       selectedParentPath: root,
     });
@@ -369,7 +369,7 @@ describe('LibraryService lifecycle', () => {
   it('persists a change sequence with committed library mutations and rolls it back with aborted work', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Change sequence', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Change sequence', selectedParentPath: root });
 
     expect(service.getChangeSequence(created.libraryId)).toBe(0);
     service.createTag({ libraryId: created.libraryId, name: 'sequence-tag' });
@@ -388,7 +388,7 @@ describe('LibraryService lifecycle', () => {
   it('exposes the same per-library write lease to independently opened service instances', async () => {
     const root = temporaryRoot();
     const first = newService();
-    const created = first.createLibrary({ displayName: 'Shared writer', selectedParentPath: root });
+    const created = first.createLibrary({ storageLayout: 'assets', displayName: 'Shared writer', selectedParentPath: root });
     const second = newService();
     second.openLibrary(created.libraryPath);
 
@@ -403,7 +403,7 @@ describe('LibraryService lifecycle', () => {
   it('holds SQLite’s real writer mutex for the entire bounded write callback', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Bounded writer', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Bounded writer', selectedParentPath: root });
     const databasePath = path.join(created.libraryPath, '.serpent', 'library.db');
 
     const result = await service.runBoundedWrite(created.libraryId, () => {
@@ -434,7 +434,7 @@ describe('LibraryService lifecycle', () => {
   it('waits for the lease timeout and exposes an occupied lease as LIBRARY_BUSY', async () => {
     const root = temporaryRoot();
     const first = newService();
-    const created = first.createLibrary({ displayName: 'Bounded lease wait', selectedParentPath: root });
+    const created = first.createLibrary({ storageLayout: 'assets', displayName: 'Bounded lease wait', selectedParentPath: root });
     const second = newService();
     second.openLibrary(created.libraryPath);
 
@@ -459,7 +459,7 @@ describe('LibraryService lifecycle', () => {
   it('translates writer-mutex contention after lease acquisition to LIBRARY_BUSY', async () => {
     const root = temporaryRoot();
     const creatingService = newService();
-    const created = creatingService.createLibrary({ displayName: 'Mutex writer', selectedParentPath: root });
+    const created = creatingService.createLibrary({ storageLayout: 'assets', displayName: 'Mutex writer', selectedParentPath: root });
     const databaseFilename = path.join(created.libraryPath, '.serpent', 'library.db');
     let contender: TestDatabaseConnection | undefined;
     const service = newService({
@@ -493,7 +493,7 @@ describe('LibraryService lifecycle', () => {
   it('serializes the v23-to-v25 coordination migrations before verifying schema history', () => {
     const root = temporaryRoot();
     const creatingService = newService();
-    const created = creatingService.createLibrary({ displayName: 'Migration writer', selectedParentPath: root });
+    const created = creatingService.createLibrary({ storageLayout: 'assets', displayName: 'Migration writer', selectedParentPath: root });
     creatingService.closeAll();
 
     const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
@@ -522,7 +522,7 @@ describe('LibraryService lifecycle', () => {
   it('normalizes libraries created with the pre-merge plugin migration history', () => {
     const root = temporaryRoot();
     const creatingService = newService();
-    const created = creatingService.createLibrary({
+    const created = creatingService.createLibrary({ storageLayout: 'assets',
       displayName: 'Legacy plugin migration history',
       selectedParentPath: root,
     });
@@ -572,7 +572,7 @@ describe('LibraryService lifecycle', () => {
   it('serializes overlapping v23-to-v24 migrations from independent Electron processes', async () => {
     const root = temporaryRoot();
     const creatingService = newService();
-    const created = creatingService.createLibrary({
+    const created = creatingService.createLibrary({ storageLayout: 'assets',
       displayName: 'Concurrent migration',
       selectedParentPath: root,
     });
@@ -660,7 +660,7 @@ describe('LibraryService lifecycle', () => {
   it('migrates v13 Label data to v14 without changing unrelated metadata', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Retire Label', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Retire Label', selectedParentPath: root });
     const sourcePath = path.join(root, 'legacy.png');
     writeFileSync(sourcePath, 'legacy image');
     const imported = service.prepareOrExecuteImport({
@@ -865,7 +865,7 @@ describe('LibraryService lifecycle', () => {
   it('closes, moves, and reopens a library without changing its identity', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Reference',
       selectedParentPath: root,
     });
@@ -884,7 +884,7 @@ describe('LibraryService lifecycle', () => {
   it('recreates regenerable directories when reopening a closed library', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Textures',
       selectedParentPath: root,
     });
@@ -906,7 +906,7 @@ describe('LibraryService lifecycle', () => {
   it('rejects a conflicting target without leaving a creation partial', () => {
     const root = temporaryRoot();
     const first = newService();
-    const created = first.createLibrary({
+    const created = first.createLibrary({ storageLayout: 'assets',
       displayName: 'Existing',
       selectedParentPath: root,
     });
@@ -914,7 +914,7 @@ describe('LibraryService lifecycle', () => {
 
     const second = newService();
     expectServiceError(
-      () => second.createLibrary({ displayName: 'Existing', selectedParentPath: root }),
+      () => second.createLibrary({ storageLayout: 'assets', displayName: 'Existing', selectedParentPath: root }),
       'LIBRARY_ALREADY_EXISTS',
     );
     expect(readdirSync(root).sort()).toEqual([path.basename(created.libraryPath)]);
@@ -930,7 +930,7 @@ describe('LibraryService lifecycle', () => {
   it('rescues a missing database from the Assets tree', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'No Database', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'No Database', selectedParentPath: root });
     service.closeAll();
     rmSync(path.join(created.libraryPath, '.serpent', 'library.db'));
 
@@ -942,7 +942,7 @@ describe('LibraryService lifecycle', () => {
   it('rejects a library whose required Assets directory was removed', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Missing Assets', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Missing Assets', selectedParentPath: root });
     service.closeAll();
     rmSync(path.join(created.libraryPath, 'Assets'), { recursive: true });
 
@@ -952,7 +952,7 @@ describe('LibraryService lifecycle', () => {
   it('opens a database created by a newer schema version writable (Serpent-033e)', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Future', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Future', selectedParentPath: root });
     service.closeAll();
     const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
     database.pragma('user_version = 999');
@@ -970,7 +970,7 @@ describe('LibraryService lifecycle', () => {
   it('migrates a valid v1 library through v2 to v3 when opening', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Migration', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Migration', selectedParentPath: root });
     service.closeAll();
     downgradeLibraryToV1(created.libraryPath);
 
@@ -992,7 +992,7 @@ describe('LibraryService lifecycle', () => {
     const source = path.join(root, 'Café.PNG');
     writeFileSync(source, 'asset');
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Portable Migration', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Portable Migration', selectedParentPath: root });
     service.prepareOrExecuteImport({
       libraryId: created.libraryId,
       sourceKind: 'files',
@@ -1016,7 +1016,7 @@ describe('LibraryService lifecycle', () => {
   it('rolls back a failed v2 migration and preserves the v1 version', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Rollback', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Rollback', selectedParentPath: root });
     service.closeAll();
     downgradeLibraryToV1(created.libraryPath, true);
 
@@ -1036,7 +1036,7 @@ describe('LibraryService lifecycle', () => {
   it('does not commit a table-rebuild migration when foreign keys are corrupt', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Foreign Key Rollback', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Foreign Key Rollback', selectedParentPath: root });
     service.closeAll();
     downgradeLibraryToV2(created.libraryPath);
 
@@ -1067,7 +1067,7 @@ describe('LibraryService lifecycle', () => {
   it('rescues a corrupt database without losing the library root', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Corrupt', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Corrupt', selectedParentPath: root });
     service.closeAll();
     writeFileSync(path.join(created.libraryPath, '.serpent', 'library.db'), 'not a sqlite database');
 
@@ -1081,7 +1081,7 @@ describe('LibraryService lifecycle', () => {
   it('recreates regenerable directories after a database rescue', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Read First', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Read First', selectedParentPath: root });
     service.closeAll();
     const previewsPath = path.join(created.libraryPath, '.serpent', 'previews');
     rmSync(previewsPath, { recursive: true });
@@ -1095,7 +1095,7 @@ describe('LibraryService lifecycle', () => {
   it('rescues a tampered migration audit record without latching retries', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Tampered', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Tampered', selectedParentPath: root });
     service.closeAll();
     const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
     database.prepare('UPDATE schema_migrations SET checksum = ? WHERE version = 1').run('bad');
@@ -1120,7 +1120,7 @@ describe('LibraryService lifecycle', () => {
       chmodSync(root, 0o500);
       try {
         expectServiceError(
-          () => service.createLibrary({ displayName: 'Denied', selectedParentPath: root }),
+          () => service.createLibrary({ storageLayout: 'assets', displayName: 'Denied', selectedParentPath: root }),
           'LIBRARY_NOT_WRITABLE',
         );
         expect(readdirSync(root)).toEqual([]);
@@ -1140,7 +1140,7 @@ describe('LibraryService lifecycle', () => {
   it('deletes an open library root from disk and leaves linked sources (Serpent-9i8)', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Delete Me',
       selectedParentPath: root,
     });
@@ -1178,7 +1178,7 @@ describe('LibraryService lifecycle', () => {
   it('cleans up aside roots left by a prior deletion and skips foreign paths (Serpent-65d837)', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Delete Me',
       selectedParentPath: root,
     });

@@ -46,7 +46,7 @@ describe('RAW metadata backfill admission (Serpent-288cd9)', () => {
   it('reports a drained catalogue instead of a capped probe', () => {
     const service = new LibraryService();
     services.push(service);
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'RAW admission',
       selectedParentPath: temporaryRoot(),
     });
@@ -64,7 +64,7 @@ describe('RAW metadata backfill admission (Serpent-288cd9)', () => {
   it('persists exhaustion across reopen and re-arms when the catalog token changes', () => {
     const service = new LibraryService();
     services.push(service);
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'RAW admission persistence',
       selectedParentPath: temporaryRoot(),
     });
@@ -156,7 +156,7 @@ describe('RAW metadata backfill admission (Serpent-288cd9)', () => {
     const service = new LibraryService();
     services.push(service);
     const root = temporaryRoot();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'RAW admission retry cursor',
       selectedParentPath: root,
     });
@@ -241,7 +241,7 @@ describe('RAW metadata backfill admission (Serpent-288cd9)', () => {
   it('does not report drained while the global admission budget is full', () => {
     const service = new LibraryService();
     services.push(service);
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'RAW admission cap',
       selectedParentPath: temporaryRoot(),
     });
@@ -269,7 +269,7 @@ describe('RAW metadata backfill admission (Serpent-288cd9)', () => {
   it('persists a normalized extension that RAW admission can index', () => {
     const service = new LibraryService();
     services.push(service);
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'RAW normalized extension',
       selectedParentPath: temporaryRoot(),
     });

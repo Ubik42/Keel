@@ -35,7 +35,7 @@ describe('entity appearance', () => {
   it('stores catalog appearance on folders and collections without renaming disk', () => {
     const root = temporaryRoot();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'Appearance', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Appearance', selectedParentPath: root });
     const folder = service.createManagedFolder({ libraryId: library.libraryId, name: 'Props' });
     const folderPath = path.join(library.libraryPath, 'Assets', 'Props');
     expect(existsSync(folderPath)).toBe(true);
@@ -102,7 +102,7 @@ describe('entity appearance', () => {
   it('rejects unknown catalog values and missing targets', () => {
     const root = temporaryRoot();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'AppearanceGuard', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'AppearanceGuard', selectedParentPath: root });
     const folder = service.createManagedFolder({ libraryId: library.libraryId, name: 'Guard' });
 
     expectServiceCode(
@@ -132,7 +132,7 @@ describe('entity appearance', () => {
     writeFileSync(path.join(sourceRoot, 'sub', 'b.png'), 'bbbb');
 
     const service = newService();
-    const library = service.createLibrary({ displayName: 'LinkedAppearance', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'LinkedAppearance', selectedParentPath: root });
     const linked = service.importFolderAsLinked({
       libraryId: library.libraryId,
       sourceRootPath: sourceRoot,

@@ -107,7 +107,7 @@ describe('SQLite IN chunking', () => {
     }
 
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Large Import', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Large Import', selectedParentPath: root });
     const plan = service.prepareImport({
       libraryId: library.libraryId,
       sourceKind: 'files',

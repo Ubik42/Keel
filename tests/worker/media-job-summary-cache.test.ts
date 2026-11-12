@@ -63,7 +63,7 @@ describe('media job status summary cache (Serpent-e97c00)', () => {
   it('serves repeated reads from the summary and agrees with the SQL path', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Media summary cache',
       selectedParentPath: root,
     });
@@ -79,7 +79,7 @@ describe('media job status summary cache (Serpent-e97c00)', () => {
   it('converges to new counts after a job write instead of serving the stale summary', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Media summary convergence',
       selectedParentPath: root,
     });
@@ -115,7 +115,7 @@ describe('media job status summary cache (Serpent-e97c00)', () => {
   it('reads status counts from the maintained table instead of grouping job history', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Media summary table lookup',
       selectedParentPath: root,
     });
@@ -144,7 +144,7 @@ describe('media job status summary cache (Serpent-e97c00)', () => {
   it('pages the recent media job list with a created_at/job_id cursor', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Media job cursor pages',
       selectedParentPath: root,
     });

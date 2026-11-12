@@ -129,7 +129,7 @@ describe('managed asset watcher', () => {
     const observers = observerHarness();
     const scheduler = new ManualScheduler();
     const service = newService({ observerFactory: observers.factory, scheduler });
-    const library = service.createLibrary({ displayName: 'Observed', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Observed', selectedParentPath: root });
 
     expect(observers.roots).toEqual([path.join(library.libraryPath, 'Assets')]);
     observers.callbacks[0]!();
@@ -151,7 +151,7 @@ describe('managed asset watcher', () => {
     const observers = observerHarness();
     const scheduler = new ManualScheduler();
     const service = newService({ observerFactory: observers.factory, scheduler });
-    const library = service.createLibrary({ displayName: 'Storm', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Storm', selectedParentPath: root });
     const plan = service.prepareImport({ libraryId: library.libraryId, sourceKind: 'files', sourcePaths: [source] });
     service.resolveImport({ importId: plan.importId, suspectedDuplicate: 'skip', nameConflict: 'keep-both' });
     rmSync(path.join(library.libraryPath, 'Assets', 'watched.png'));
@@ -192,7 +192,7 @@ describe('managed asset watcher', () => {
         return 'watcher-fingerprint';
       },
     });
-    const library = service.createLibrary({ displayName: 'Trailing refresh', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Trailing refresh', selectedParentPath: root });
     const plan = service.prepareImport({
       libraryId: library.libraryId,
       sourceKind: 'files',
@@ -241,7 +241,7 @@ describe('managed asset watcher', () => {
         return 'closing-fingerprint';
       },
     });
-    const library = service.createLibrary({ displayName: 'Close watcher', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Close watcher', selectedParentPath: root });
     const plan = service.prepareImport({
       libraryId: library.libraryId,
       sourceKind: 'files',
@@ -276,7 +276,7 @@ describe('managed asset watcher', () => {
       watchNotifyClock: clock,
       onAssetsChanged: (event) => events.push(event),
     });
-    const library = service.createLibrary({ displayName: 'Overwrite', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Overwrite', selectedParentPath: root });
     const plan = service.prepareImport({ libraryId: library.libraryId, sourceKind: 'files', sourcePaths: [source] });
     const before = service.resolveImport({ importId: plan.importId, suspectedDuplicate: 'skip', nameConflict: 'keep-both' }).assets[0]!;
     events.length = 0;
@@ -319,7 +319,7 @@ describe('managed asset watcher', () => {
       onDiagnostic: (diagnostic) => diagnostics.push(diagnostic),
     });
     services.push(service);
-    const library = service.createLibrary({ displayName: 'Errors', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Errors', selectedParentPath: root });
     // Ensure the open discovery path reaches the injected refresh override;
     // an empty library legitimately has no refresh transaction to fail.
     writeFileSync(path.join(library.libraryPath, 'Assets', 'refresh-target.txt'), 'refresh');
@@ -369,7 +369,7 @@ describe('managed asset watcher', () => {
       scheduler,
       onDiagnostic: (diagnostic) => diagnostics.push(diagnostic),
     });
-    const library = service.createLibrary({ displayName: 'Diagnostics', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Diagnostics', selectedParentPath: root });
 
     observers.errorCallbacks[0]!(causes.native);
     expect(() => observers.callbacks[0]!()).not.toThrow();
@@ -379,7 +379,7 @@ describe('managed asset watcher', () => {
       observerFactory: () => { throw causes.start; },
       onDiagnostic: (diagnostic) => diagnostics.push(diagnostic),
     });
-    const unobserved = startService.createLibrary({ displayName: 'Startup', selectedParentPath: root });
+    const unobserved = startService.createLibrary({ storageLayout: 'assets', displayName: 'Startup', selectedParentPath: root });
     expect(() => startService.closeLibrary(unobserved.libraryId)).not.toThrow();
 
     expect(diagnostics.map(({ scope, error }) => ({ scope, error }))).toEqual([
@@ -397,7 +397,7 @@ describe('managed asset watcher', () => {
       observerFactory: () => { throw new Error('watch failure'); },
       onDiagnostic: () => { throw new Error('diagnostic failure'); },
     });
-    expect(() => service.createLibrary({ displayName: 'Best effort', selectedParentPath: root })).not.toThrow();
+    expect(() => service.createLibrary({ storageLayout: 'assets', displayName: 'Best effort', selectedParentPath: root })).not.toThrow();
     service.closeAll();
   });
 
@@ -411,7 +411,7 @@ describe('managed asset watcher', () => {
       scheduler,
       onAssetsChanged: (event) => events.push(event),
     });
-    const library = service.createLibrary({ displayName: 'Managed watch', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Managed watch', selectedParentPath: root });
     const folder = service.createManagedFolder({
       libraryId: library.libraryId,
       name: 'FolderA',
@@ -451,7 +451,7 @@ describe('managed asset watcher', () => {
       watcherStableFileWindowMs: 0,
       onAssetsChanged: (event) => events.push(event),
     });
-    const library = service.createLibrary({ displayName: 'Network scan', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Network scan', selectedParentPath: root });
 
     // A network-backed managed root has no high-frequency fs.watch observer.
     expect(observers.roots).toEqual([]);
@@ -510,7 +510,7 @@ describe('managed asset watcher', () => {
       reconciliationStarted();
       await reconciliationGate;
     });
-    const library = service.createLibrary({ displayName: 'Network backpressure', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Network backpressure', selectedParentPath: root });
 
     // The network timer starts one debounced reconciliation, but does not
     // independently enqueue another periodic scan while that work is pending.
@@ -546,7 +546,7 @@ describe('linked folder watcher', () => {
       watcherStableFileWindowMs: 0,
       onAssetsChanged: (event) => events.push(event),
     });
-    const library = service.createLibrary({ displayName: 'Linked changed file', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Linked changed file', selectedParentPath: root });
     const linked = service.importFolderAsLinked({
       libraryId: library.libraryId,
       sourceRootPath: linkedRoot,
@@ -605,7 +605,7 @@ describe('linked folder watcher', () => {
       watcherStableFileWindowMs: 0,
       onAssetsChanged: (event) => events.push(event),
     });
-    const library = service.createLibrary({ displayName: 'Scoped linked refresh', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Scoped linked refresh', selectedParentPath: root });
     service.importFolderAsLinked({ libraryId: library.libraryId, sourceRootPath: firstLinkedRoot });
     service.importFolderAsLinked({ libraryId: library.libraryId, sourceRootPath: secondLinkedRoot });
 
@@ -659,7 +659,7 @@ describe('linked folder watcher', () => {
       scheduler,
       onAssetsChanged: (event) => events.push(event),
     });
-    const library = service.createLibrary({ displayName: 'Linked watch', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Linked watch', selectedParentPath: root });
     const linked = service.importFolderAsLinked({
       libraryId: library.libraryId,
       sourceRootPath: linkedRoot,
@@ -713,7 +713,7 @@ describe('linked folder watcher', () => {
       scheduler,
       watcherStableFileWindowMs: 0,
     });
-    const library = service.createLibrary({ displayName: 'Linked move', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Linked move', selectedParentPath: root });
     const linked = service.importFolderAsLinked({
       libraryId: library.libraryId,
       sourceRootPath: linkedRoot,
@@ -791,7 +791,7 @@ describe('linked folder watcher', () => {
     writeFileSync(path.join(linkedRoot, 'a.png'), 'a');
     const observers = observerHarness();
     const service = newService({ observerFactory: observers.factory });
-    const library = service.createLibrary({ displayName: 'Lifecycle', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Lifecycle', selectedParentPath: root });
     const linked = service.importFolderAsLinked({
       libraryId: library.libraryId,
       sourceRootPath: linkedRoot,
@@ -838,7 +838,7 @@ describe('linked folder watcher', () => {
       scheduler,
       onDiagnostic: (diagnostic) => diagnostics.push(diagnostic),
     });
-    const library = service.createLibrary({ displayName: 'Ignore', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Ignore', selectedParentPath: root });
     const linked = service.importFolderAsLinked({ libraryId: library.libraryId, sourceRootPath: linkedRoot });
 
     mkdirSync(path.join(linkedRoot, '.git'));

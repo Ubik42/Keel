@@ -1,3 +1,5 @@
+import { managedStoragePath, readStorageLayout, writeStorageLayout } from './library-storage-layout';
+import type { LibraryStorageLayout } from '../shared/library-storage-layout';
 import { randomUUID, createHash } from 'node:crypto';
 import {
   accessSync,
@@ -1002,7 +1004,13 @@ interface DatabaseConstructor {
 const Database = BetterSqlite3 as DatabaseConstructor;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/iu;
 
-const REQUIRED_DIRECTORIES = ['Assets'] as const;
+function requiredDirectories(libraryPath: string): string[] {
+  try {
+    return readStorageLayout(libraryPath) === 'root' ? [] : ['Assets'];
+  } catch (cause) {
+    throw new LibraryServiceError('NOT_A_LIBRARY', { cause });
+  }
+}
 const REGENERABLE_DIRECTORIES = ['previews', 'revisions', 'trash', 'artifacts'] as const;
 const DATABASE_BACKUP_DIRECTORY = 'backups';
 const DATABASE_BACKUP_INTERVAL_MS = 24 * 60 * 60 * 1_000;
@@ -1144,6 +1152,7 @@ const DEFAULT_LINKED_FOLDER_RULES: ReadonlyArray<Omit<LinkedFolderRule, 'ruleId'
 ];
 
 const DEFAULT_IGNORED_ASSET_DIRECTORIES = new Set([
+  '.serpent',
   '.git',
   '.hg',
   '.svn',
@@ -1151,11 +1160,15 @@ const DEFAULT_IGNORED_ASSET_DIRECTORIES = new Set([
   'node_modules',
 ]);
 const DEFAULT_IGNORED_ASSET_FILES = new Set([
+  '.serpentignore',
+  '.serpentignore.json',
   '.ds_store',
   'desktop.ini',
   'thumbs.db',
 ]);
 const ALWAYS_IGNORED_ASSET_FILES = new Set([
+  '.serpentignore',
+  '.serpentignore.json',
   '.ds_store',
   'desktop.ini',
   'thumbs.db',
@@ -5968,8 +5981,8 @@ export function openConfiguredDatabase(
   }
 }
 
-function createDirectoryLayout(libraryPath: string): void {
-  mkdirSync(path.join(libraryPath, 'Assets'));
+function createDirectoryLayout(libraryPath: string, layout: LibraryStorageLayout): void {
+  if (layout === 'assets') mkdirSync(path.join(libraryPath, 'Assets'));
   const serpentPath = path.join(libraryPath, '.serpent');
   mkdirSync(serpentPath);
   for (const directoryName of REGENERABLE_DIRECTORIES) {
@@ -7753,7 +7766,7 @@ export class LibraryService {
           byte_size: number;
           modified_at: string;
         }>;
-      const assetsRoot = path.join(libraryPath, 'Assets');
+      const assetsRoot = managedStoragePath(libraryPath);
       for (const row of rows) {
         const targetPath = path.resolve(assetsRoot, ...row.relative_file_path.split('/'));
         if (!pathIsWithin(assetsRoot, targetPath)) continue;
@@ -8085,7 +8098,12 @@ export class LibraryService {
       const assetsPath = this.assetsPath(openLibrary);
       const observer = observerFactory(
         assetsPath,
-        () => this.scheduleAssetRefresh(libraryId),
+        (event) => {
+          const filename = event?.filename?.toString().replaceAll('\\', '/');
+          const firstSegment = filename?.split('/')[0]?.toLowerCase();
+          if (firstSegment === '.serpent' || firstSegment === '.serpentignore') return;
+          this.scheduleAssetRefresh(libraryId);
+        },
         (error) => this.diagnose('asset-watcher.error', error, { libraryId, assetsPath }),
       );
       this.watchByLibraryId.set(libraryId, { observer });
@@ -9948,7 +9966,7 @@ export class LibraryService {
       }
       this.noteClientFilesystemMutation();
     }
-    const rules = parseGitignore(migratedText);
+    const rules = parseGitignore(migratedText, openLibrary.summary.storageLayout === 'root' ? '' : 'Assets');
     // Keep discovery and the materialized table on the same rule snapshot.
     // Discovery can see a file before it has a database row, so it must not
     // rely on gitignore_ignored_paths alone.
@@ -10113,7 +10131,7 @@ export class LibraryService {
     for (const row of legacyRows) {
       let rule: string | undefined;
       try {
-        rule = this.managedGitignoreRule(row.relative_path, row.path_kind);
+        rule = this.managedGitignoreRule(row.relative_path, row.path_kind, openLibrary.summary.storageLayout);
       } catch {
         // A malformed legacy row must not prevent the rest of the library
         // from opening; valid rows are still promoted to the config file.
@@ -12858,7 +12876,7 @@ export class LibraryService {
   }
 
   private folderPath(openLibrary: OpenLibrary, relativePath: string): string {
-    const assetsPath = path.join(openLibrary.summary.libraryPath, 'Assets');
+    const assetsPath = this.assetsPath(openLibrary);
     const assetsStat = lstatSync(assetsPath);
     if (!assetsStat.isDirectory() || assetsStat.isSymbolicLink()) {
       throw new LibraryServiceError('INVALID_LIBRARY_PATH');
@@ -13012,7 +13030,7 @@ export class LibraryService {
     openLibrary: OpenLibrary,
     relativePath: string,
   ): Promise<string> {
-    const assetsPath = path.join(openLibrary.summary.libraryPath, 'Assets');
+    const assetsPath = this.assetsPath(openLibrary);
     const assetsStat = await lstatAsync(assetsPath);
     if (!assetsStat.isDirectory() || assetsStat.isSymbolicLink()) {
       throw new LibraryServiceError('INVALID_LIBRARY_PATH');
@@ -13210,7 +13228,7 @@ export class LibraryService {
   }
 
   private assetsPath(openLibrary: OpenLibrary): string {
-    return path.join(openLibrary.summary.libraryPath, 'Assets');
+    return managedStoragePath(openLibrary.summary.libraryPath, openLibrary.summary.storageLayout ?? 'assets');
   }
 
   private targetFolder(openLibrary: OpenLibrary, folderId?: string): ManagedFolderRow | undefined {
@@ -24147,7 +24165,7 @@ export class LibraryService {
         }>
       ).map((row) => [row.folder_id, row.absolute_root_path] as const),
     );
-    const root = path.join(openLibrary.summary.libraryPath, 'Assets');
+    const root = this.assetsPath(openLibrary);
     const key = (input: string): string => {
       const normalized = normalizeAbsolutePath(input);
       if (process.platform !== 'win32') return normalized;
@@ -24200,7 +24218,7 @@ export class LibraryService {
     // Serpent-316493: the folder panel's blank area is the library root — its
     // context menu resolves to the Assets directory that holds top-level files.
     if (isLibraryRootFolderId(folderId)) {
-      const assetsPath = path.join(openLibrary.summary.libraryPath, 'Assets');
+      const assetsPath = this.assetsPath(openLibrary);
       if (!directoryExists(assetsPath)) throw new LibraryServiceError('FOLDER_NOT_FOUND');
       return assetsPath;
     }
@@ -32544,6 +32562,7 @@ export class LibraryService {
         libraryId: library.library_id,
         displayName: library.display_name,
         libraryPath: normalizedPath,
+        storageLayout: readStorageLayout(normalizedPath),
         readOnly: true,
         networkStorage: true,
         libraryVersion: loaded.manifest.schemaVersion,
@@ -42957,6 +42976,7 @@ export class LibraryService {
     locationKind: 'managed' | 'linked',
     relativePath: string,
     pathKind: 'asset' | 'folder' | 'extension',
+    layout: LibraryStorageLayout = 'assets',
   ): string | undefined {
     const normalized = pathKind === 'extension'
       ? relativePath.trim().replace(/^\.+/u, '').toLowerCase()
@@ -42964,7 +42984,7 @@ export class LibraryService {
     if (!normalized) return undefined;
     if (pathKind === 'extension') return `*.${normalized}`;
     const suffix = pathKind === 'folder' ? '/' : '';
-    return locationKind === 'managed'
+    return locationKind === 'managed' && layout === 'assets'
       ? `Assets/${normalized}${suffix}`
       : `${normalized}${suffix}`;
   }
@@ -42972,8 +42992,9 @@ export class LibraryService {
   private managedGitignoreRule(
     relativePath: string,
     pathKind: 'asset' | 'folder' | 'extension',
+    layout: LibraryStorageLayout = 'assets',
   ): string | undefined {
-    return this.ignoreGitignoreRule('managed', relativePath, pathKind);
+    return this.ignoreGitignoreRule('managed', relativePath, pathKind, layout);
   }
 
   listIgnoredPaths(libraryId: string): IgnoredPath[] {
@@ -43098,7 +43119,7 @@ export class LibraryService {
     return diffGitignoreHits(
       this.collectGitignorePreviewCandidates(openLibrary),
       openLibrary.gitignoreMatcher,
-      parseGitignore(content),
+      parseGitignore(content, openLibrary.summary.storageLayout === 'root' ? '' : 'Assets'),
     );
   }
 
@@ -43261,7 +43282,7 @@ export class LibraryService {
       // File-backed ignore: one .serpentignore for managed and linked trees.
       // An empty linked-root path still uses explicit_ignored_paths because
       // there is no relative path to write into the ignore file.
-      const rule = this.ignoreGitignoreRule(input.locationKind, relativePath, input.pathKind);
+      const rule = this.ignoreGitignoreRule(input.locationKind, relativePath, input.pathKind, openLibrary.summary.storageLayout);
       if (rule !== undefined) this.updateGitignoreRule(openLibrary, rule, input.ignored);
       if (input.locationKind === 'linked' && !input.ignored) {
         openLibrary.connection.prepare(
@@ -48259,6 +48280,7 @@ export class LibraryService {
     selectedParentPath: string;
     /** 内部用于「从同步远端恢复库身份」：默认随机生成。 */
     libraryId?: string;
+    storageLayout?: LibraryStorageLayout;
   }): InternalLibrarySummary {
     let finalPath: string;
     try {
@@ -48283,7 +48305,9 @@ export class LibraryService {
 
     try {
       mkdirSync(partialPath);
-      createDirectoryLayout(partialPath);
+      const layout = input.storageLayout ?? 'root';
+      createDirectoryLayout(partialPath, layout);
+      writeStorageLayout(partialPath, layout);
       connection = openConfiguredDatabase(
         databasePath(partialPath),
         this.options.sqliteBusyTimeoutMsForTests,
@@ -48527,7 +48551,7 @@ export class LibraryService {
       // Missing metadata is recoverable when Assets and .serpent are present;
       // the ladder will decide whether a backup or Assets rescue is possible.
     }
-    return realDirectoryExists(path.join(libraryPath, 'Assets')) &&
+    return realDirectoryExists(managedStoragePath(libraryPath)) &&
       realDirectoryExists(serpentPath);
   }
 
@@ -48676,13 +48700,13 @@ export class LibraryService {
       quarantineDirectory,
       `recovery-report-${Date.now()}-${randomUUID()}.json`,
     );
-    const recoveredAssetCount = countRecoverableAssetFiles(path.join(libraryPath, 'Assets'));
+    const recoveredAssetCount = countRecoverableAssetFiles(managedStoragePath(libraryPath));
     try {
       writeFileSync(reportPath, JSON.stringify({
         version: 1,
         mode: 'rescue',
         libraryPath,
-        recoveredFrom: 'Assets',
+        recoveredFrom: readStorageLayout(libraryPath) === 'root' ? '.' : 'Assets',
         recoveredAssetCount,
         metadataRecovered: false,
         metadataLosses: ['collections', 'tags', 'ratings', 'descriptions', 'source-links'],
@@ -48854,6 +48878,7 @@ export class LibraryService {
       libraryId: input.library.library_id,
       displayName: input.library.display_name,
       libraryPath: input.canonicalPath,
+      storageLayout: readStorageLayout(input.canonicalPath),
       readOnly: false,
       ...(input.networkStorage ? { networkStorage: true } : {}),
       storageKind: input.storageKind ?? 'unknown',
@@ -48916,7 +48941,7 @@ export class LibraryService {
       changeSubscription,
       preservedRelinkPathIdentities: new Set(),
       gitignoreText: initialGitignoreText,
-      gitignoreMatcher: parseGitignore(initialGitignoreText === '\u0000' ? '' : initialGitignoreText),
+      gitignoreMatcher: parseGitignore(initialGitignoreText === '\u0000' ? '' : initialGitignoreText, summary.storageLayout === 'root' ? '' : 'Assets'),
       gitignoreMaterialized: false,
       ...(activeNetworkMetadataCache ? { networkMetadataCache: activeNetworkMetadataCache } : {}),
     };
@@ -49095,7 +49120,7 @@ export class LibraryService {
       if (existing) this.evictDeadOpenLibrary(alreadyOpenId, existing);
     }
 
-    for (const directoryName of REQUIRED_DIRECTORIES) {
+    for (const directoryName of requiredDirectories(canonicalPath)) {
       if (!realDirectoryExists(path.join(canonicalPath, directoryName))) {
         throw new LibraryServiceError('NOT_A_LIBRARY');
       }
@@ -49284,7 +49309,7 @@ export class LibraryService {
     const alreadyOpenId = this.openIdByPath.get(canonicalPath);
     if (alreadyOpenId) return this.openById.get(alreadyOpenId)!.summary;
 
-    for (const directoryName of REQUIRED_DIRECTORIES) {
+    for (const directoryName of requiredDirectories(canonicalPath)) {
       if (!realDirectoryExists(path.join(canonicalPath, directoryName))) {
         throw new LibraryServiceError('NOT_A_LIBRARY');
       }
@@ -49317,6 +49342,7 @@ export class LibraryService {
         libraryId: library.library_id,
         displayName: library.display_name,
         libraryPath: canonicalPath,
+        storageLayout: readStorageLayout(canonicalPath),
         ...(networkStorage ? { networkStorage: true } : {}),
       };
       this.openById.set(summary.libraryId, {
@@ -50317,8 +50343,22 @@ export class LibraryService {
         return count;
       }
 
-      // Walk Assets/.
-      await walkDir(path.join(libPath, 'Assets'), 'Assets');
+      // Preserve the selected storage layout in folder and ZIP exports.
+      if (openLibrary.summary.storageLayout === 'root') {
+        for (const child of readdirSync(libPath, { withFileTypes: true })) {
+          if (child.name.toLowerCase() === '.serpent' || ['.serpentignore', '.serpentignore.json'].includes(child.name.toLowerCase())) continue;
+          if (child.isSymbolicLink()) continue;
+          const sourcePath = path.join(libPath, child.name);
+          if (child.isDirectory()) await walkDir(sourcePath, child.name);
+          else if (child.isFile()) entries.push({ sourcePath, relativePath: child.name, byteSize: lstatSync(sourcePath).size });
+        }
+      } else {
+        await walkDir(this.assetsPath(openLibrary), 'Assets');
+      }
+      const layoutMarker = path.join(libPath, '.serpent', 'storage-layout.json');
+      if (existsSync(layoutMarker)) {
+        entries.push({ sourcePath: layoutMarker, relativePath: '.serpent/storage-layout.json', byteSize: statSync(layoutMarker).size });
+      }
 
       // Keep the library-scoped ignore source of truth with folder exports.
       const gitignoreFile = existingIgnoreConfigPath(libPath);
@@ -50426,9 +50466,11 @@ export class LibraryService {
         // does not mistake the copy for an external revision and invalidate
         // the ready artifact rows from the consistent DB snapshot.
         const sourceStat = statSync(entry.sourcePath);
-        const managedRelativePath = entry.relativePath.startsWith('Assets/')
-          ? entry.relativePath.slice('Assets/'.length)
-          : undefined;
+        const managedRelativePath = openLibrary.summary.storageLayout === 'root'
+          ? entry.relativePath
+          : entry.relativePath.startsWith('Assets/')
+            ? entry.relativePath.slice('Assets/'.length)
+            : undefined;
         utimesSync(
           destPath,
           sourceStat.atime,
@@ -50555,7 +50597,7 @@ export class LibraryService {
       }
 
       // Validate Assets/ exists (real directory, not symlink).
-      const assetsPath = path.join(input.sourceFolderPath, 'Assets');
+      const assetsPath = managedStoragePath(input.sourceFolderPath);
       if (!realDirectoryExists(assetsPath)) {
         throw new LibraryServiceError('NOT_A_LIBRARY');
       }
@@ -50948,8 +50990,22 @@ export class LibraryService {
         }
       };
 
-      // Walk Assets/.
-      await walkDir(path.join(libPath, 'Assets'), 'Assets');
+      // Preserve the selected storage layout in folder and ZIP exports.
+      if (openLibrary.summary.storageLayout === 'root') {
+        for (const child of readdirSync(libPath, { withFileTypes: true })) {
+          if (child.name.toLowerCase() === '.serpent' || ['.serpentignore', '.serpentignore.json'].includes(child.name.toLowerCase())) continue;
+          if (child.isSymbolicLink()) continue;
+          const sourcePath = path.join(libPath, child.name);
+          if (child.isDirectory()) await walkDir(sourcePath, child.name);
+          else if (child.isFile()) entries.push({ sourcePath, relativePath: child.name, byteSize: lstatSync(sourcePath).size });
+        }
+      } else {
+        await walkDir(this.assetsPath(openLibrary), 'Assets');
+      }
+      const layoutMarker = path.join(libPath, '.serpent', 'storage-layout.json');
+      if (existsSync(layoutMarker)) {
+        entries.push({ sourcePath: layoutMarker, relativePath: '.serpent/storage-layout.json', byteSize: statSync(layoutMarker).size });
+      }
 
       const gitignoreFile = existingIgnoreConfigPath(libPath);
       if (gitignoreFile) {
@@ -51294,7 +51350,7 @@ export class LibraryService {
             const hasDatabase = manifest.entries.some(
               (entry) => !entry.isDirectory && entry.name === '.serpent/library.db',
             );
-            if (!hasAssetFiles || !hasDatabase) {
+            if (!hasDatabase || (!hasAssetFiles && !manifest.entries.some((entry) => entry.name === '.serpent/storage-layout.json'))) {
               manifestValidationError = new LibraryServiceError('NOT_A_LIBRARY', {
                 reason: 'NOT_A_LIBRARY',
               });
@@ -51408,7 +51464,7 @@ export class LibraryService {
     }
 
     // Validate Assets/ exists (real directory, not symlink).
-    const assetsPath = path.join(sourceFolderPath, 'Assets');
+    const assetsPath = managedStoragePath(sourceFolderPath);
     if (!realDirectoryExists(assetsPath)) {
       throw new LibraryServiceError('NOT_A_LIBRARY');
     }
@@ -51595,7 +51651,7 @@ export class LibraryService {
     const openLibrary = this.requireOpenLibrary(libraryId);
     const { libraryPath, displayName } = openLibrary.summary;
 
-    for (const directoryName of REQUIRED_DIRECTORIES) {
+    for (const directoryName of requiredDirectories(libraryPath)) {
       if (!realDirectoryExists(path.join(libraryPath, directoryName))) {
         throw new LibraryServiceError('NOT_A_LIBRARY');
       }

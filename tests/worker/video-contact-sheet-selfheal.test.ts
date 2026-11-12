@@ -78,7 +78,7 @@ describe('contact sheet self-heal for conversion-registered videos', () => {
 
     const service = new LibraryService();
     services.push(service);
-    const created = service.createLibrary({ displayName: 'CS Selfheal', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'CS Selfheal', selectedParentPath: root });
     service.prepareOrExecuteImport({ libraryId: created.libraryId, sourceKind: 'files', sourcePaths: [videoPath] });
     const asset = service.listAssets({ libraryId: created.libraryId, recursive: true })
       .find((entry) => entry.assetId)!;
@@ -135,7 +135,7 @@ describe('contact sheet self-heal for conversion-registered videos', () => {
 
     const service = new LibraryService();
     services.push(service);
-    const created = service.createLibrary({ displayName: 'CS Doomed', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'CS Doomed', selectedParentPath: root });
     service.prepareOrExecuteImport({ libraryId: created.libraryId, sourceKind: 'files', sourcePaths: [videoPath] });
     const asset = service.listAssets({ libraryId: created.libraryId, recursive: true })
       .find((entry) => entry.assetId)!;
@@ -200,7 +200,7 @@ describe('contact sheet self-heal for conversion-registered videos', () => {
       },
     });
     services.push(service);
-    const created = service.createLibrary({ displayName: 'CS Hermetic', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'CS Hermetic', selectedParentPath: root });
     const sourcePath = path.join(root, 'video.mp4');
     writeFileSync(sourcePath, Buffer.alloc(4096, 0));
     service.prepareOrExecuteImport({ libraryId: created.libraryId, sourceKind: 'files', sourcePaths: [sourcePath] });

@@ -111,7 +111,7 @@ describe('LibraryService export', () => {
         return true;
       },
     });
-    const created = service.createLibrary({ displayName: 'Semantic Export Test', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Semantic Export Test', selectedParentPath: root });
     const folder = service.createManagedFolder({ libraryId: created.libraryId, name: 'Assets' });
     const displayName = 'asset.txt';
     const relativePath = `${folder.relativePath}/${displayName}`;
@@ -216,7 +216,7 @@ describe('LibraryService export', () => {
   it('exports a library with Assets, revisions, trash, and library.db', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Export Test', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Export Test', selectedParentPath: root });
 
     // Add some content.
     const assetPath = path.join(root, 'sample.png');
@@ -260,7 +260,7 @@ describe('LibraryService export', () => {
   it('excludes previews and operations directories', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Exclude Test', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Exclude Test', selectedParentPath: root });
 
     // Create fake preview/operations content.
     mkdirSync(path.join(created.libraryPath, '.serpent', 'previews'), { recursive: true });
@@ -289,7 +289,7 @@ describe('LibraryService export', () => {
   it('includes .serpent/artifacts so import keeps ready thumbnails (Serpent-pxd)', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Artifacts Export',
       selectedParentPath: root,
     });
@@ -350,7 +350,7 @@ describe('LibraryService export', () => {
   it('invalidates ready artifacts missing on disk so thumbnails requeue (Serpent-pxd)', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Missing Artifacts',
       selectedParentPath: root,
     });
@@ -410,7 +410,7 @@ describe('LibraryService export', () => {
   it('rejects export destination inside the library', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Inside Export', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Inside Export', selectedParentPath: root });
 
     const destInsideLibrary = path.join(created.libraryPath, 'export-output');
     await expectServiceErrorAsync(
@@ -435,7 +435,7 @@ describe('LibraryService export', () => {
       }
       const root = temporaryRoot();
       const service = newService();
-      const created = service.createLibrary({ displayName: 'Folder Cross-Drive Export', selectedParentPath: root });
+      const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Folder Cross-Drive Export', selectedParentPath: root });
 
       const assetPath = path.join(root, 'sample.png');
       writeFileSync(assetPath, Buffer.alloc(256));
@@ -460,7 +460,7 @@ describe('LibraryService export', () => {
   it('rejects export when library is not open', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Closed Export', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Closed Export', selectedParentPath: root });
     service.closeAll();
 
     await expectServiceErrorAsync(
@@ -476,7 +476,7 @@ describe('LibraryService export', () => {
   it('never merges into or deletes a pre-existing export destination', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Owned Export', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Owned Export', selectedParentPath: root });
     const destPath = path.join(root, 'existing-export');
     const sentinelPath = path.join(destPath, 'keep-me.txt');
     mkdirSync(destPath);
@@ -506,7 +506,7 @@ describe('LibraryService export', () => {
         }
       },
     });
-    const created = service.createLibrary({ displayName: 'Failed Export', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Failed Export', selectedParentPath: root });
     const source = path.join(root, 'source.txt');
     writeFileSync(source, 'asset');
     service.prepareOrExecuteImport({
@@ -532,7 +532,7 @@ describe('LibraryService export', () => {
     mkdirSync(linkedRoot);
     writeFileSync(path.join(linkedRoot, 'linked.png'), 'linked');
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Complete Export', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Complete Export', selectedParentPath: root });
     service.importFolderAsLinked({ libraryId: created.libraryId, sourceRootPath: linkedRoot });
     rmSync(linkedRoot, { force: true, recursive: true });
     service.refreshManagedAssets(created.libraryId);
@@ -559,7 +559,7 @@ describe('LibraryService export', () => {
     writeFileSync(path.join(firstRoot, 'first.png'), 'first');
     writeFileSync(path.join(secondRoot, 'second.png'), 'second');
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Linked Backup', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Linked Backup', selectedParentPath: root });
     const first = service.importFolderAsLinked({ libraryId: created.libraryId, sourceRootPath: firstRoot, displayName: 'References' });
     const second = service.importFolderAsLinked({ libraryId: created.libraryId, sourceRootPath: secondRoot, displayName: 'References' });
     const destinationPath = path.join(root, 'linked-export');
@@ -582,7 +582,7 @@ describe('LibraryService import folder', () => {
   it('validates a valid library source', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Import Validate', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Import Validate', selectedParentPath: root });
     service.closeAll();
 
     const info = service.validateImportSource(created.libraryPath);
@@ -593,7 +593,7 @@ describe('LibraryService import folder', () => {
   it('rejects source without Assets directory', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'No Assets', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'No Assets', selectedParentPath: root });
     service.closeAll();
     rmSync(path.join(created.libraryPath, 'Assets'), { recursive: true });
 
@@ -606,7 +606,7 @@ describe('LibraryService import folder', () => {
   it('rejects source without database', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'No DB', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'No DB', selectedParentPath: root });
     service.closeAll();
     rmSync(path.join(created.libraryPath, '.serpent', 'library.db'));
 
@@ -619,7 +619,7 @@ describe('LibraryService import folder', () => {
   it('rejects source with symlink at root', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Symlink', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Symlink', selectedParentPath: root });
     service.closeAll();
 
     // Symlinks cannot be reliably tested on all platforms; skip if not supported.
@@ -643,7 +643,7 @@ describe('LibraryService import folder', () => {
   it('rejects a nested symbolic link instead of silently dropping it', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Nested Symlink', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Nested Symlink', selectedParentPath: root });
     service.closeAll();
     const nested = path.join(created.libraryPath, 'Assets', 'nested');
     const external = path.join(root, 'external.txt');
@@ -660,7 +660,7 @@ describe('LibraryService import folder', () => {
   it('imports a library in place', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'In Place Import', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'In Place Import', selectedParentPath: root });
     service.closeAll();
 
     const result = await service.importLibraryFromFolder({
@@ -679,7 +679,7 @@ describe('LibraryService import folder', () => {
   it('imports a library by copying to a new location', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Copy Import', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Copy Import', selectedParentPath: root });
     service.closeAll();
 
     const copyParent = path.join(root, 'copied-libs');
@@ -716,7 +716,7 @@ describe('LibraryService import folder', () => {
         }
       },
     });
-    const created = service.createLibrary({ displayName: 'Counted Copy', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Counted Copy', selectedParentPath: root });
     writeFileSync(path.join(created.libraryPath, 'Assets', 'copy-progress.txt'), 'copy progress');
     service.closeAll();
 
@@ -751,7 +751,7 @@ describe('LibraryService import folder', () => {
   it('never merges into or deletes a pre-existing copied-library destination', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Copy Ownership', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Copy Ownership', selectedParentPath: root });
     service.closeAll();
     const copyParent = path.join(root, 'copy-parent');
     const existingDestination = path.join(copyParent, path.basename(created.libraryPath));
@@ -781,7 +781,7 @@ describe('LibraryService import folder', () => {
         }
       },
     });
-    const created = service.createLibrary({ displayName: 'Failed Copy', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Failed Copy', selectedParentPath: root });
     service.closeAll();
     databaseToRemove = path.join(created.libraryPath, '.serpent', 'library.db');
     const copyParent = path.join(root, 'copy-parent');
@@ -808,7 +808,7 @@ describe('Export progress events', () => {
       },
     });
 
-    const created = service.createLibrary({ displayName: 'Progress Export', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Progress Export', selectedParentPath: root });
 
     // Add some assets.
     const assetPath = path.join(root, 'test.png');
@@ -839,7 +839,7 @@ describe('Export progress events', () => {
     const root = temporaryRoot();
     const service = newService();
 
-    service.createLibrary({ displayName: 'Cancel Export', selectedParentPath: root });
+    service.createLibrary({ storageLayout: 'assets', displayName: 'Cancel Export', selectedParentPath: root });
 
     expectServiceError(
       () => service.cancelExport('nonexistent'),
@@ -872,7 +872,7 @@ describe('Export progress events', () => {
         }
       },
     });
-    const created = service.createLibrary({ displayName: 'Live Cancel Export', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Live Cancel Export', selectedParentPath: root });
     for (let index = 0; index < 20; index += 1) {
       writeFileSync(path.join(created.libraryPath, 'Assets', `asset-${index}.bin`), Buffer.alloc(4096));
     }
@@ -897,7 +897,7 @@ describe('Export progress events', () => {
   it('announces an import id before completion and removes only its owned copy on cancellation', async () => {
     const root = temporaryRoot();
     const sourceService = newService();
-    const created = sourceService.createLibrary({ displayName: 'Live Cancel Import', selectedParentPath: root });
+    const created = sourceService.createLibrary({ storageLayout: 'assets', displayName: 'Live Cancel Import', selectedParentPath: root });
     for (let index = 0; index < 20; index += 1) {
       writeFileSync(path.join(created.libraryPath, 'Assets', `asset-${index}.bin`), Buffer.alloc(4096));
     }

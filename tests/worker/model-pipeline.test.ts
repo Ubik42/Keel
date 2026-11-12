@@ -85,7 +85,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
   it('classifies imported T1 model formats as model with no thumbnail artifact', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'Models', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Models', selectedParentPath: root });
 
     for (const filename of MODEL_FORMATS) {
       importNoConflict(service, created.libraryId, createSourceFile(root, `models/${filename}`));
@@ -113,7 +113,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
   it('resolves a model preview to the original source URL contract', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'Models', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Models', selectedParentPath: root });
 
     importNoConflict(service, created.libraryId, createSourceFile(root, 'characters/hero.fbx'));
     importNoConflict(service, created.libraryId, createSourceFile(root, 'props/chair.glb'));
@@ -149,7 +149,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
   it('degrades generateThumbnail to a no-op for models without writing failures', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'Models', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Models', selectedParentPath: root });
 
     importNoConflict(service, created.libraryId, createSourceFile(root, 'robot.fbx'));
     const asset = service.listAssets({ libraryId: created.libraryId, recursive: true })[0]!;
@@ -182,7 +182,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
   it('enqueues model thumbnail jobs through the same queue as images', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'Models', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Models', selectedParentPath: root });
 
     importNoConflict(service, created.libraryId, createSourceFile(root, 'scene.fbx'));
     importNoConflict(service, created.libraryId, createSourceFile(root, 'poster.png'));
@@ -219,7 +219,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
     it('renders a model job via the offscreen renderer and stores the artifact', async () => {
       const root = temporaryRoot();
       const service = new LibraryService();
-      const created = service.createLibrary({ displayName: 'Models', selectedParentPath: root });
+      const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Models', selectedParentPath: root });
 
       importNoConflict(service, created.libraryId, createSourceFile(root, 'robot.glb'));
       const asset = service.listAssets({ libraryId: created.libraryId, recursive: true })[0]!;
@@ -280,7 +280,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
     it('does not re-enqueue a model whose thumbnail is already ready', async () => {
       const root = temporaryRoot();
       const service = new LibraryService();
-      const created = service.createLibrary({ displayName: 'Models', selectedParentPath: root });
+      const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Models', selectedParentPath: root });
 
       importNoConflict(service, created.libraryId, createSourceFile(root, 'robot.glb'));
       const asset = service.listAssets({ libraryId: created.libraryId, recursive: true })[0]!;
@@ -298,7 +298,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
     it('records a typed failure artifact and benign error code when the render fails', async () => {
       const root = temporaryRoot();
       const service = new LibraryService();
-      const created = service.createLibrary({ displayName: 'Models', selectedParentPath: root });
+      const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Models', selectedParentPath: root });
 
       importNoConflict(service, created.libraryId, createSourceFile(root, 'robot.glb'));
       const asset = service.listAssets({ libraryId: created.libraryId, recursive: true })[0]!;
@@ -337,7 +337,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
     it('keeps the legacy benign no-op when no renderer is wired', async () => {
       const root = temporaryRoot();
       const service = new LibraryService();
-      const created = service.createLibrary({ displayName: 'Models', selectedParentPath: root });
+      const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Models', selectedParentPath: root });
 
       importNoConflict(service, created.libraryId, createSourceFile(root, 'robot.glb'));
       const asset = service.listAssets({ libraryId: created.libraryId, recursive: true })[0]!;
@@ -361,7 +361,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
     it('passes oversized models to the renderer without a source-size gate', async () => {
       const root = temporaryRoot();
       const service = new LibraryService();
-      const created = service.createLibrary({ displayName: 'Models', selectedParentPath: root });
+      const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Models', selectedParentPath: root });
 
       const hugePath = createSourceFile(root, 'huge.glb');
       // Sparse fixture keeps the test cheap while still exercising the former
@@ -390,7 +390,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
     it('discards a late render result when the job is cancelled mid-render', async () => {
       const root = temporaryRoot();
       const service = new LibraryService();
-      const created = service.createLibrary({ displayName: 'Models', selectedParentPath: root });
+      const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Models', selectedParentPath: root });
 
       importNoConflict(service, created.libraryId, createSourceFile(root, 'robot.glb'));
       const asset = service.listAssets({ libraryId: created.libraryId, recursive: true })[0]!;
@@ -438,7 +438,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
     it('renders four views and tiles them into a sheet', async () => {
       const root = temporaryRoot();
       const service = new LibraryService();
-      const created = service.createLibrary({ displayName: 'ModelsAI', selectedParentPath: root });
+      const created = service.createLibrary({ storageLayout: 'assets', displayName: 'ModelsAI', selectedParentPath: root });
       importNoConflict(service, created.libraryId, createSourceFile(root, 'robot.glb'));
       const asset = service.listAssets({ libraryId: created.libraryId, recursive: true })[0]!;
 
@@ -474,7 +474,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
     it('returns an empty payload when the model directory holds only the model', () => {
       const root = temporaryRoot();
       const service = new LibraryService();
-      const created = service.createLibrary({ displayName: 'Models', selectedParentPath: root });
+      const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Models', selectedParentPath: root });
 
       importNoConflict(service, created.libraryId, createSourceFile(root, 'solo/robot.fbx'));
       const model = service.listAssets({ libraryId: created.libraryId, recursive: true })[0]!;
@@ -488,7 +488,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
     it('lists same-directory and recursive subdirectory companions with relative paths', () => {
       const root = temporaryRoot();
       const service = new LibraryService();
-      const created = service.createLibrary({ displayName: 'Models', selectedParentPath: root });
+      const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Models', selectedParentPath: root });
 
       // The imported folder keeps its own name as the library-root prefix.
       const sourceDir = path.join(root, 'props');
@@ -527,7 +527,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
     it('never returns assets outside the model directory (out-of-bounds rejection)', () => {
       const root = temporaryRoot();
       const service = new LibraryService();
-      const created = service.createLibrary({ displayName: 'Models', selectedParentPath: root });
+      const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Models', selectedParentPath: root });
 
       const sourceDir = path.join(root, 'tree');
       createSourceFile(sourceDir, 'a/robot.fbx');
@@ -559,7 +559,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
     it('resolves companions for root-level models', () => {
       const root = temporaryRoot();
       const service = new LibraryService();
-      const created = service.createLibrary({ displayName: 'Models', selectedParentPath: root });
+      const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Models', selectedParentPath: root });
 
       const sourceDir = path.join(root, 'flat');
       createSourceFile(sourceDir, 'robot.obj');
@@ -587,7 +587,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
     it('rejects non-model assets and unknown asset ids', () => {
       const root = temporaryRoot();
       const service = new LibraryService();
-      const created = service.createLibrary({ displayName: 'Models', selectedParentPath: root });
+      const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Models', selectedParentPath: root });
 
       importNoConflict(service, created.libraryId, createSourceFile(root, 'notes.txt'));
       const textAsset = service.listAssets({ libraryId: created.libraryId, recursive: true })[0]!;

@@ -21,7 +21,7 @@ describe('BrowseSession', () => {
     roots.push(root);
     const service = new LibraryService();
     services.push(service);
-    const library = service.createLibrary({ displayName: 'BrowseSession', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'BrowseSession', selectedParentPath: root });
     const firstSource = path.join(root, 'b.png');
     const secondSource = path.join(root, 'a.png');
     writeFileSync(firstSource, 'first');

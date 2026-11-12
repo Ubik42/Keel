@@ -43,7 +43,7 @@ describe("readTextAsset encoding", () => {
   it("decodes a GBK Windows readme as Chinese text", () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: "Text Encoding",
       selectedParentPath: root,
     });

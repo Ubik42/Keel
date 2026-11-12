@@ -39,7 +39,7 @@ describe('managed folders', () => {
   it('creates nested database folders that map exactly to disk', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Folders', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Folders', selectedParentPath: root });
 
     const parent = service.createManagedFolder({ libraryId: library.libraryId, name: '  UI  ' });
     const child = service.createManagedFolder({
@@ -65,7 +65,7 @@ describe('managed folders', () => {
   it('rejects unsafe names, missing parents, and disk conflicts', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Rules', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Rules', selectedParentPath: root });
 
     expectServiceCode(
       () => service.createManagedFolder({ libraryId: library.libraryId, name: 'bad:name' }),
@@ -94,7 +94,7 @@ describe('deleteEmptyManagedFolders (Serpent-dcb1 / MCP 接管)', () => {
   it('deletes empty folders on disk and DB, and rejects non-empty batches wholesale', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'EmptyCleanup', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'EmptyCleanup', selectedParentPath: root });
 
     const emptyFolder = service.createManagedFolder({
       libraryId: created.libraryId,

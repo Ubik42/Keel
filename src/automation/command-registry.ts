@@ -484,6 +484,7 @@ export interface AutomationHistoryDescriptor {
 
 export const automationCommandInputSchemas = {
   'library.create': z.strictObject({
+    storageLayout: z.enum(['root', 'assets']).optional(),
     displayName: nonBlankString.max(255),
     selectedParentPath: nonBlankString,
     idempotencyKey: idempotencyKeySchema.optional(),
@@ -1369,6 +1370,7 @@ const mediaJobsAutomationResultSchema = paginatedResultSchema(mediaJobSchema).ex
 
 export const automationCommandResultSchemas = {
   'library.create': z.strictObject({
+    storageLayout: z.enum(['root', 'assets']).optional(),
     libraryId: nonBlankString,
     displayName: nonBlankString,
     contextRevision: z.number().int().nonnegative().optional(),
@@ -1756,6 +1758,7 @@ export const automationCommandRegistry = [
       type: 'library.create',
       displayName: input.displayName,
       selectedParentPath: input.selectedParentPath,
+      storageLayout: input.storageLayout,
     }),
     projectResult: (result) => {
       const parsed = libraryCreateWorkerResultSchema.safeParse(result);

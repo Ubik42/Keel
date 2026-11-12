@@ -23,7 +23,7 @@ describe('importNoConflict helper (Serpent-op48 / library dedup)', () => {
     roots.push(root);
     const service = new LibraryService();
     services.push(service);
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Helper Dedup',
       selectedParentPath: root,
     });

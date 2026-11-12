@@ -875,6 +875,11 @@ export const zhCN = {
   },
   dialog: {
     createLibrary: {
+      storageLayout: "素材存放位置",
+      storageRoot: "资源库根目录（默认）",
+      storageAssets: "Assets 子目录",
+      storageRootHelp: "素材直接存放在资源库目录中。放入文件后可自动识别；数据库和缩略图保存在隐藏的 .serpent 目录中。",
+      storageAssetsHelp: "素材统一存放在 Assets 子目录中，兼容原版 Serpent 的资源库结构。",
       title: "创建资源库",
       name: "名称",
       help: "",

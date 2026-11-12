@@ -70,7 +70,7 @@ describe('writable open for newer-schema libraries', () => {
   it('opens a newer-schema library writable with version info', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Newer库', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Newer库', selectedParentPath: root });
     // createLibrary already opened the library; drop the handle so the
     // reopen below exercises the version probe from scratch.
     service.closeAll();
@@ -93,7 +93,7 @@ describe('writable open for newer-schema libraries', () => {
   it('keeps filesystem mutations available on a newer-schema library', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: '可写磁盘', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: '可写磁盘', selectedParentPath: root });
     const source = path.join(root, 'protected.png');
     writeFileSync(source, Buffer.from('protected asset'));
     const folder = service.createManagedFolder({
@@ -131,7 +131,7 @@ describe('writable open for newer-schema libraries', () => {
   it('keeps the normal open path writable (no false read-only flag)', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: '普通库', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: '普通库', selectedParentPath: root });
 
     const summary = service.openLibrary(created.libraryPath);
     expect(summary.readOnly).toBeFalsy();
@@ -147,7 +147,7 @@ describe('writable open for newer-schema libraries', () => {
   it('closes a newer-schema library and opens a different writable library', () => {
     const root = temporaryRoot();
     const service = newService();
-    const newerCreated = service.createLibrary({
+    const newerCreated = service.createLibrary({ storageLayout: 'assets',
       displayName: '新 schema 切库源',
       selectedParentPath: root,
     });
@@ -158,7 +158,7 @@ describe('writable open for newer-schema libraries', () => {
     expect(newer.readOnly).toBeFalsy();
     expect(() => service.cancelJobs(newer.libraryId)).not.toThrow();
 
-    const writable = service.createLibrary({
+    const writable = service.createLibrary({ storageLayout: 'assets',
       displayName: '可写切库目标',
       selectedParentPath: root,
     });

@@ -20,7 +20,7 @@ describe('plugin derived-field materialization', () => {
     const root = mkdtempSync(path.join(tmpdir(), 'serpent-plugin-derived-fields-'));
     roots.push(root);
     const service = new LibraryService();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Derived Fields',
       selectedParentPath: root,
     });

@@ -210,7 +210,7 @@ describe('Billfish library import', () => {
       observerFactory: () => ({ close() {} }),
     });
     try {
-      const library = service.createLibrary({
+      const library = service.createLibrary({ storageLayout: 'assets',
         displayName: 'Target',
         selectedParentPath: root,
       });
@@ -296,7 +296,7 @@ describe('Billfish library import', () => {
       observerFactory: () => ({ close() {} }),
     });
     try {
-      const library = service.createLibrary({
+      const library = service.createLibrary({ storageLayout: 'assets',
         displayName: 'Billfish 3 Target',
         selectedParentPath: root,
       });
@@ -367,7 +367,7 @@ describe('Billfish library import', () => {
       },
     });
     try {
-      const library = service.createLibrary({
+      const library = service.createLibrary({ storageLayout: 'assets',
         displayName: 'ByteTotal',
         selectedParentPath: root,
       });

@@ -107,7 +107,7 @@ function createLibraryWithAssets(count: number): {
 } {
   const root = temporaryRoot();
   const service = new LibraryService();
-  const library = service.createLibrary({ displayName: 'Ratings', selectedParentPath: root });
+  const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Ratings', selectedParentPath: root });
   const managedFolder = service.createManagedFolder({ libraryId: library.libraryId, name: 'Assets' });
   const assetIds = Array.from({ length: count }, () =>
     insertAsset(library.libraryPath, managedFolder));
@@ -268,7 +268,7 @@ describe('batch asset rating', () => {
   it('searches through the automation-only read dispatcher then commits its rating through the bounded write fence', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Automation ratings', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Automation ratings', selectedParentPath: root });
     const managedFolder = service.createManagedFolder({ libraryId: library.libraryId, name: 'Assets' });
     const matchedAssetId = insertAsset(library.libraryPath, managedFolder, 'Ser-reference.png');
     insertAsset(library.libraryPath, managedFolder, 'not-a-match.png');

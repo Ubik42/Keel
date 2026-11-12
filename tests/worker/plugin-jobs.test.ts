@@ -20,7 +20,7 @@ describe('plugin job repository via LibraryService', () => {
     const root = mkdtempSync(path.join(tmpdir(), 'serpent-plugin-jobs-'));
     roots.push(root);
     const service = new LibraryService();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Plugin Jobs',
       selectedParentPath: root,
     });
@@ -172,7 +172,7 @@ describe('plugin job repository via LibraryService', () => {
     const root = mkdtempSync(path.join(tmpdir(), 'serpent-plugin-job-controls-'));
     roots.push(root);
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Plugin Job Controls', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Plugin Job Controls', selectedParentPath: root });
     const packageHash = 'b'.repeat(64);
     const owner = {
       ownerPluginId: 'com.serpent.job-controls',
@@ -245,7 +245,7 @@ describe('plugin job repository via LibraryService', () => {
     const root = mkdtempSync(path.join(tmpdir(), 'serpent-plugin-job-recovery-'));
     roots.push(root);
     const crashed = new LibraryService();
-    const library = crashed.createLibrary({ displayName: 'Plugin Job Recovery', selectedParentPath: root });
+    const library = crashed.createLibrary({ storageLayout: 'assets', displayName: 'Plugin Job Recovery', selectedParentPath: root });
     const packageHash = 'c'.repeat(64);
     const owner = {
       ownerPluginId: 'com.serpent.job-recovery',
@@ -369,7 +369,7 @@ describe('plugin job repository via LibraryService', () => {
     const root = mkdtempSync(path.join(tmpdir(), 'serpent-plugin-job-inactive-recovery-'));
     roots.push(root);
     const crashed = new LibraryService();
-    const library = crashed.createLibrary({ displayName: 'Plugin Job Inactive Recovery', selectedParentPath: root });
+    const library = crashed.createLibrary({ storageLayout: 'assets', displayName: 'Plugin Job Inactive Recovery', selectedParentPath: root });
     const packageHash = 'd'.repeat(64);
     const owner = {
       ownerPluginId: 'com.serpent.job-recovery',
@@ -453,7 +453,7 @@ describe('plugin job repository via LibraryService', () => {
     const root = mkdtempSync(path.join(tmpdir(), 'serpent-plugin-job-same-session-'));
     roots.push(root);
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Plugin Job Same Session', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Plugin Job Same Session', selectedParentPath: root });
     const packageHash = 'e'.repeat(64);
     const job = service.enqueuePluginJob({
       libraryId: library.libraryId,

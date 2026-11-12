@@ -52,7 +52,7 @@ describe('open synced library from a WebDAV server (Serpent-xffq)', () => {
     // 机器 A：上传一个库到服务器。
     const serviceA = new LibraryService();
     const rootA = tempRoot();
-    const createdA = serviceA.createLibrary({ displayName: '远端库', selectedParentPath: rootA });
+    const createdA = serviceA.createLibrary({ storageLayout: 'assets', displayName: '远端库', selectedParentPath: rootA });
     const libraryId = createdA.libraryId;
     const dirName = sanitizeSyncDirectoryName('远端库', libraryId);
     const fileA = path.join(rootA, 'dir', 'a.txt');
@@ -82,7 +82,7 @@ describe('open synced library from a WebDAV server (Serpent-xffq)', () => {
     // 机器 B：以远端身份创建本地空库并拉取全部资产。
     const serviceB = new LibraryService();
     const rootB = tempRoot();
-    const openedB = serviceB.createLibrary({
+    const openedB = serviceB.createLibrary({ storageLayout: 'assets',
       displayName: remoteLibs[0]!.displayName,
       selectedParentPath: rootB,
       libraryId: remoteLibs[0]!.libraryId,

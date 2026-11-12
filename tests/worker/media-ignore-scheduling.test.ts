@@ -59,7 +59,7 @@ function buildLinkedFixture(name: string): IgnoreFixture {
 
   const service = new LibraryService();
   services.push(service);
-  const created = service.createLibrary({ displayName: `Ignore ${name}`, selectedParentPath: root });
+  const created = service.createLibrary({ storageLayout: 'assets', displayName: `Ignore ${name}`, selectedParentPath: root });
   const linked = service.importFolderAsLinked({
     libraryId: created.libraryId,
     sourceRootPath: sourceDir,

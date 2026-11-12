@@ -20,7 +20,7 @@ describe('desktop ingestion through the existing import transaction', () => {
     writeFileSync(path.join(source, 'Characters', 'hero.txt'), 'hero');
 
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Desktop Drop', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Desktop Drop', selectedParentPath: root });
     const target = service.createManagedFolder({ libraryId: library.libraryId, name: 'Project' });
     const completion = service.prepareOrExecuteImport({
       libraryId: library.libraryId,
@@ -43,7 +43,7 @@ describe('desktop ingestion through the existing import transaction', () => {
     writeFileSync(path.join(source, 'Characters', 'hero.txt'), 'incoming hero');
 
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Desktop Folder Merge', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Desktop Folder Merge', selectedParentPath: root });
     const target = service.createManagedFolder({ libraryId: library.libraryId, name: 'Project' });
     const existing = service.createManagedFolder({
       libraryId: library.libraryId,
@@ -80,7 +80,7 @@ describe('desktop ingestion through the existing import transaction', () => {
     const source = path.join(root, 'Clipboard 2026-07-13T12-34-56Z.png');
     writeFileSync(source, Buffer.from('clipboard-png'));
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Clipboard', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Clipboard', selectedParentPath: root });
     const collection = service.createCollection({ libraryId: library.libraryId, name: 'Moodboard' });
     const completion = service.prepareOrExecuteImport({
       libraryId: library.libraryId,

@@ -174,7 +174,7 @@ describe('retryable failed derived artifacts (Serpent-5xbg)', () => {
   it('does not auto-reenqueue a video proxy failure', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: '重试库', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: '重试库', selectedParentPath: root });
     service.closeAll();
     const dbPath = path.join(created.libraryPath, '.serpent', 'library.db');
     insertFailedAsset(created.libraryPath, {
@@ -194,7 +194,7 @@ describe('retryable failed derived artifacts (Serpent-5xbg)', () => {
   it('keeps failed contact sheets terminal — AI analysis regenerates on demand (Serpent-140fe2)', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: '联系表重试库', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: '联系表重试库', selectedParentPath: root });
     service.closeAll();
     const dbPath = path.join(created.libraryPath, '.serpent', 'library.db');
     insertFailedAsset(created.libraryPath, {
@@ -216,7 +216,7 @@ describe('retryable failed derived artifacts (Serpent-5xbg)', () => {
   it('never retries permanent failures (missing source, unsupported format)', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: '永久失败库', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: '永久失败库', selectedParentPath: root });
     service.closeAll();
     const dbPath = path.join(created.libraryPath, '.serpent', 'library.db');
     insertFailedAsset(created.libraryPath, {
@@ -242,7 +242,7 @@ describe('retryable failed derived artifacts (Serpent-5xbg)', () => {
   it('respects the backoff window (recent failures wait)', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: '节流库', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: '节流库', selectedParentPath: root });
     service.closeAll();
     const dbPath = path.join(created.libraryPath, '.serpent', 'library.db');
     insertFailedAsset(created.libraryPath, {
@@ -262,7 +262,7 @@ describe('retryable failed derived artifacts (Serpent-5xbg)', () => {
   it('does not retry when the source asset is missing on disk', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: '源缺失库', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: '源缺失库', selectedParentPath: root });
     service.closeAll();
     const dbPath = path.join(created.libraryPath, '.serpent', 'library.db');
     insertFailedAsset(created.libraryPath, {
@@ -283,7 +283,7 @@ describe('retryable failed derived artifacts (Serpent-5xbg)', () => {
   it('keeps video proxy retry explicit and idempotent', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: '幂等库', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: '幂等库', selectedParentPath: root });
     service.closeAll();
     const dbPath = path.join(created.libraryPath, '.serpent', 'library.db');
     insertFailedAsset(created.libraryPath, {

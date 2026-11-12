@@ -60,7 +60,7 @@ function newLibraryWithOneAsset(root: string): {
   libraryPath: string;
 } {
   const service = new LibraryService();
-  const library = service.createLibrary({ displayName: 'Mutation', selectedParentPath: root });
+  const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Mutation', selectedParentPath: root });
   const fixture = path.join(root, 'sample.png');
   writeFileSync(fixture, VALID_1X1_PNG);
   const imported = service.prepareOrExecuteImport({

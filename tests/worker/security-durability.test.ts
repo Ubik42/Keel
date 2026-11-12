@@ -46,7 +46,7 @@ describe('database and path hardening', () => {
   it('rejects a crafted operation id before it can escape the operations directory', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Crafted', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Crafted', selectedParentPath: root });
     service.closeAll();
     const sentinel = path.join(root, 'sentinel.txt');
     writeFileSync(sentinel, 'keep');
@@ -67,7 +67,7 @@ describe('database and path hardening', () => {
   it('rejects a restore manifest path escape without moving either file', () => {
     const root = temporaryRoot();
     const setup = new LibraryService();
-    const library = setup.createLibrary({ displayName: 'Restore Manifest Escape', selectedParentPath: root });
+    const library = setup.createLibrary({ storageLayout: 'assets', displayName: 'Restore Manifest Escape', selectedParentPath: root });
     setup.closeAll();
 
     const operationId = '33333333-3333-4333-8333-333333333333';
@@ -105,7 +105,7 @@ describe('database and path hardening', () => {
   it('uses WAL, FULL synchronous mode, and foreign key enforcement', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Pragmas', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Pragmas', selectedParentPath: root });
     service.closeAll();
     const database = openConfiguredDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
     expect(database.pragma('journal_mode', { simple: true })).toBe('wal');
@@ -136,7 +136,7 @@ describe('database and path hardening', () => {
     const external = path.join(root, 'external');
     const source = path.join(root, 'source.png');
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Links', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Links', selectedParentPath: root });
     const folder = service.createManagedFolder({ libraryId: library.libraryId, name: 'Target' });
     rmSync(path.join(library.libraryPath, 'Assets', 'Target'), { recursive: true });
     symlinkSync(external, path.join(library.libraryPath, 'Assets', 'Target'));
@@ -155,7 +155,7 @@ describe('database and path hardening', () => {
   it('rejects a symlinked operations root without reading or deleting the victim directory', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Operations Link', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Operations Link', selectedParentPath: root });
     service.closeAll();
     const victim = path.join(root, 'victim');
     mkdirSync(victim);
@@ -169,7 +169,7 @@ describe('database and path hardening', () => {
   it('rejects symlinked .serpent metadata and library.db files', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Metadata Links', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Metadata Links', selectedParentPath: root });
     service.closeAll();
     const database = path.join(library.libraryPath, '.serpent', 'library.db');
     const databaseBackup = path.join(root, 'library-backup.db');
@@ -193,7 +193,7 @@ describe('database and path hardening', () => {
     rmSync(originalDir, { force: true, recursive: true });
     rmSync(incomingDir, { force: true, recursive: true });
     const setup = new LibraryService();
-    const library = setup.createLibrary({ displayName: 'Rollback Failure', selectedParentPath: root });
+    const library = setup.createLibrary({ storageLayout: 'assets', displayName: 'Rollback Failure', selectedParentPath: root });
     writeFileSync(path.join(root, 'same.png'), 'old');
     const first = setup.prepareImport({ libraryId: library.libraryId, sourceKind: 'files', sourcePaths: [path.join(root, 'same.png')] });
     setup.resolveImport({ importId: first.importId, suspectedDuplicate: 'skip', nameConflict: 'keep-both' });
@@ -231,7 +231,7 @@ describe('database and path hardening', () => {
     const source = path.join(root, 'same.png');
     writeFileSync(source, 'old');
     const setup = new LibraryService();
-    const library = setup.createLibrary({ displayName: 'Recovery Failure', selectedParentPath: root });
+    const library = setup.createLibrary({ storageLayout: 'assets', displayName: 'Recovery Failure', selectedParentPath: root });
     const first = setup.prepareImport({ libraryId: library.libraryId, sourceKind: 'files', sourcePaths: [source] });
     setup.resolveImport({ importId: first.importId, suspectedDuplicate: 'skip', nameConflict: 'keep-both' });
     setup.closeAll();

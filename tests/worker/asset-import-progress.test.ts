@@ -28,7 +28,7 @@ describe('managed asset import progress', () => {
         if (event.type === 'import.progress') events.push(event);
       },
     });
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Import Progress',
       selectedParentPath: root,
     });
@@ -54,7 +54,7 @@ describe('managed asset import progress', () => {
         }
       },
     });
-    const cancelLibrary = cancelling.createLibrary({
+    const cancelLibrary = cancelling.createLibrary({ storageLayout: 'assets',
       displayName: 'Import Cancel',
       selectedParentPath: root,
     });
@@ -100,7 +100,7 @@ describe('managed asset import progress', () => {
         setTimeout(waitThenStop, 0);
       },
     });
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Import Stop',
       selectedParentPath: root,
     });
@@ -141,7 +141,7 @@ describe('linked folder import progress', () => {
         if (event.type === 'import.progress') events.push(event);
       },
     });
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Linked Import Progress',
       selectedParentPath: root,
     });

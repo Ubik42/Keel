@@ -68,7 +68,7 @@ describe('asset listing', () => {
   it('returns an empty list for a new library and validates folder scope', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Assets', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Assets', selectedParentPath: root });
 
     expect(service.listAssets({ libraryId: library.libraryId, recursive: true })).toEqual([]);
     expectServiceCode(
@@ -85,7 +85,7 @@ describe('pending import plans', () => {
     const source = path.join(root, 'direct.png');
     writeFileSync(source, 'direct');
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Direct', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Direct', selectedParentPath: root });
 
     const result = service.prepareOrExecuteImport({
       libraryId: library.libraryId,
@@ -110,7 +110,7 @@ describe('pending import plans', () => {
     writeFileSync(firstSource, 'shared bytes');
     writeFileSync(secondSource, 'shared bytes');
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Batch dedupe', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Batch dedupe', selectedParentPath: root });
 
     const plan = prepareConflict(service, {
       libraryId: library.libraryId,
@@ -135,7 +135,7 @@ describe('pending import plans', () => {
     const source = path.join(root, 'planned.png');
     writeFileSync(source, 'before');
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Automation plan', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Automation plan', selectedParentPath: root });
 
     const plan = service.previewAutomationImport({
       libraryId: library.libraryId,
@@ -191,7 +191,7 @@ describe('pending import plans', () => {
     const secondSource = path.join(root, 'duplicate-copy.png');
     writeFileSync(secondSource, 'same content');
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Automation conflicts', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Automation conflicts', selectedParentPath: root });
 
     const first = service.prepareOrExecuteImport({
       libraryId: library.libraryId,
@@ -231,7 +231,7 @@ describe('pending import plans', () => {
     writeFileSync(path.join(source, 'cover.png'), 'cover');
     writeFileSync(path.join(source, 'UI', 'button.svg'), '<svg/>');
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Library', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Library', selectedParentPath: root });
 
     const plan = prepareConflict(service, {
       libraryId: library.libraryId,
@@ -268,7 +268,7 @@ describe('pending import plans', () => {
     writeFileSync(path.join(source, 'node_modules', 'package', 'index.js'), 'dependency');
     writeFileSync(path.join(source, 'shots', 'hero.png'), 'hero');
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'IgnoredMetadata', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'IgnoredMetadata', selectedParentPath: root });
 
     const completion = service.prepareOrExecuteImport({
       libraryId: library.libraryId,
@@ -290,7 +290,7 @@ describe('pending import plans', () => {
     mkdirSync(source);
     writeFileSync(path.join(source, longFileName), 'reference');
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Long names', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Long names', selectedParentPath: root });
 
     const completion = service.prepareOrExecuteImport({
       libraryId: library.libraryId,
@@ -318,7 +318,7 @@ describe('pending import plans', () => {
     writeFileSync(firstSource, 'old');
     writeFileSync(secondSource, 'new content');
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: `Portable ${firstName}`, selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: `Portable ${firstName}`, selectedParentPath: root });
     const initial = service.prepareOrExecuteImport({
       libraryId: library.libraryId,
       sourceKind: 'files',
@@ -356,7 +356,7 @@ describe('pending import plans', () => {
     writeFileSync(first, 'one');
     writeFileSync(second, 'different');
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Batch identity', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Batch identity', selectedParentPath: root });
 
     const plan = prepareConflict(service, {
       libraryId: library.libraryId,
@@ -382,7 +382,7 @@ describe('pending import plans', () => {
     const source = path.join(root, 'literal\\segment.png');
     writeFileSync(source, 'source');
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Backslash', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Backslash', selectedParentPath: root });
 
     let thrown: unknown;
     try {
@@ -413,7 +413,7 @@ describe('pending import plans', () => {
     writeFileSync(first, 'old');
     writeFileSync(second, 'new content');
     const setup = new LibraryService();
-    const created = setup.createLibrary({ displayName: `Long copy ${fileName.length}`, selectedParentPath: root });
+    const created = setup.createLibrary({ storageLayout: 'assets', displayName: `Long copy ${fileName.length}`, selectedParentPath: root });
     setup.prepareOrExecuteImport({
       libraryId: created.libraryId,
       sourceKind: 'files',
@@ -457,7 +457,7 @@ describe('pending import plans', () => {
     writeFileSync(path.join(firstSource, 'same.png'), 'same');
     writeFileSync(path.join(secondSource, 'same.png'), 'different');
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Library', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Library', selectedParentPath: root });
     writeFileSync(path.join(library.libraryPath, 'Assets', 'same.png'), 'same');
 
     // Same destination basename wins as name-conflict even when bytes match
@@ -491,7 +491,7 @@ describe('pending import plans', () => {
   it('surfaces the colliding asset name + thumbnail in name-conflict examples (Serpent-793k)', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Library', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Library', selectedParentPath: root });
     const firstSource = mkdtempSync(path.join(root, 'first-'));
     const secondSource = mkdtempSync(path.join(root, 'second-'));
     writeFileSync(path.join(firstSource, 'model.fbx'), 'aaa');
@@ -525,7 +525,7 @@ describe('pending import plans', () => {
   it('detects content duplicates for 3D files under a different name (Serpent-vqg9)', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Library', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Library', selectedParentPath: root });
     const sourceDir = mkdtempSync(path.join(root, 'src-'));
     writeFileSync(path.join(sourceDir, 'model.fbx'), 'same-fbx-bytes');
     writeFileSync(path.join(sourceDir, 'copy.fbx'), 'same-fbx-bytes');
@@ -563,7 +563,7 @@ describe('pending import plans', () => {
   it('does not treat other same-size files as content duplicates', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Library', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Library', selectedParentPath: root });
     const sourceDir = mkdtempSync(path.join(root, 'src-'));
     writeFileSync(path.join(sourceDir, 'alpha.bin'), 'same-size-a');
     writeFileSync(path.join(sourceDir, 'beta.bin'), 'same-size-b');
@@ -601,7 +601,7 @@ describe('pending import plans', () => {
   it('still detects library duplicates when stored fingerprints are missing', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Library', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Library', selectedParentPath: root });
     const sourceDir = mkdtempSync(path.join(root, 'src-'));
     writeFileSync(path.join(sourceDir, 'model.fbx'), 'legacy-fingerprint-bytes');
     writeFileSync(path.join(sourceDir, 'copy.fbx'), 'legacy-fingerprint-bytes');
@@ -634,7 +634,7 @@ describe('pending import plans', () => {
   it('carries the existing asset thumbnail in name-conflict examples when ready (Serpent-793k)', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Library', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Library', selectedParentPath: root });
     const srcDir = mkdtempSync(path.join(root, 'src-'));
     const firstSource = path.join(srcDir, 'same.png');
     const secondSource = path.join(srcDir, 'other.png');
@@ -681,7 +681,7 @@ describe('pending import plans', () => {
   it('carries a video poster in name and content conflict examples', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Video conflicts', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Video conflicts', selectedParentPath: root });
     const sourceDir = mkdtempSync(path.join(root, 'source-'));
     const collideDir = mkdtempSync(path.join(root, 'collide-'));
     const originalBytes = Buffer.from('original-video-bytes');
@@ -742,7 +742,7 @@ describe('pending import plans', () => {
   it('detects library-wide suspected duplicates across folders via byteSize and SHA-256', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Library', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Library', selectedParentPath: root });
     const folderA = service.createManagedFolder({
       libraryId: library.libraryId,
       name: 'folder-a',
@@ -800,7 +800,7 @@ describe('pending import plans', () => {
     writeFileSync(outside, 'outside');
     symlinkSync(outside, path.join(source, 'linked.png'));
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Library', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Library', selectedParentPath: root });
 
     expectServiceCode(
       () => prepareConflict(service, { libraryId: library.libraryId, sourceKind: 'folder', sourcePaths: [source] }),
@@ -824,7 +824,7 @@ describe('pending import plans', () => {
     writeFileSync(outside, 'outside');
     symlinkSync(outside, path.join(source, 'linked.png'));
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Skip Mix', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Skip Mix', selectedParentPath: root });
 
     const prepared = service.prepareImport({
       libraryId: library.libraryId,
@@ -862,7 +862,7 @@ describe('pending import plans', () => {
         symlinkSync(outside, sourcePath);
       },
     });
-    const library = service.createLibrary({ displayName: 'Symlink Swap', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Symlink Swap', selectedParentPath: root });
 
     let thrown: unknown;
     try {
@@ -892,7 +892,7 @@ describe('pending import plans', () => {
         utimesSync(sourcePath, new Date(1_000), new Date(1_000));
       },
     });
-    const library = service.createLibrary({ displayName: 'Changing Source', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Changing Source', selectedParentPath: root });
 
     let thrown: unknown;
     try {
@@ -917,7 +917,7 @@ describe('pending import plans', () => {
     const source = path.join(root, 'snapshot.png');
     writeFileSync(source, 'snapshot');
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Snapshot', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Snapshot', selectedParentPath: root });
     const plan = prepareConflict(service, {
       libraryId: library.libraryId,
       sourceKind: 'files',
@@ -944,7 +944,7 @@ describe('pending import plans', () => {
     const source = path.join(root, 'Empty Tree');
     mkdirSync(path.join(source, 'Nested', 'Leaf'), { recursive: true });
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Folders', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Folders', selectedParentPath: root });
     const plan = prepareConflict(service, {
       libraryId: library.libraryId,
       sourceKind: 'folder',
@@ -980,7 +980,7 @@ describe('pending import plans', () => {
     const source = path.join(root, 'source.png');
     writeFileSync(source, 'source');
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Library', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Library', selectedParentPath: root });
     const first = prepareConflict(service, {
       libraryId: library.libraryId,
       sourceKind: 'files',
@@ -1015,7 +1015,7 @@ describe('pending import plans', () => {
     const source = path.join(root, 'source.png');
     writeFileSync(source, 'source');
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Library', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Library', selectedParentPath: root });
     const plan = prepareConflict(service, {
       libraryId: library.libraryId,
       sourceKind: 'files',
@@ -1066,7 +1066,7 @@ describe('pending import plans', () => {
     writeFileSync(originalSource, 'same-content');
     writeFileSync(duplicateSource, 'same-content');
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Duplicates', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Duplicates', selectedParentPath: root });
     const initial = prepareConflict(service, {
       libraryId: library.libraryId,
       sourceKind: 'files',
@@ -1122,7 +1122,7 @@ describe('pending import plans', () => {
     writeFileSync(originalSource, 'same-content');
     writeFileSync(duplicateSource, 'same-content');
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'MergeDuplicates', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'MergeDuplicates', selectedParentPath: root });
     const initial = prepareConflict(service, {
       libraryId: library.libraryId,
       sourceKind: 'files',
@@ -1165,7 +1165,7 @@ describe('pending import plans', () => {
     writeFileSync(originalSource, 'old');
     writeFileSync(incomingSource, 'new content');
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Conflicts', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Conflicts', selectedParentPath: root });
     const initial = prepareConflict(service, { libraryId: library.libraryId, sourceKind: 'files', sourcePaths: [originalSource] });
     const initialAsset = service.resolveImport({ importId: initial.importId, suspectedDuplicate: 'skip', nameConflict: 'keep-both' }).assets[0]!;
 
@@ -1191,7 +1191,7 @@ describe('pending import plans', () => {
     const source = path.join(root, 'source.png');
     writeFileSync(source, 'source');
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Decisions', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Decisions', selectedParentPath: root });
     const plan = prepareConflict(service, { libraryId: library.libraryId, sourceKind: 'files', sourcePaths: [source] });
 
     expectServiceCode(
@@ -1208,7 +1208,7 @@ describe('pending import plans', () => {
   it('preserves an already registered file while recovering an applying import', () => {
     const root = temporaryRoot();
     const setup = new LibraryService();
-    const library = setup.createLibrary({ displayName: 'Applying Recovery', selectedParentPath: root });
+    const library = setup.createLibrary({ storageLayout: 'assets', displayName: 'Applying Recovery', selectedParentPath: root });
     setup.closeAll();
 
     const operationId = randomUUID();
@@ -1277,7 +1277,7 @@ describe('pending import plans', () => {
   it('deletes an applying import destination that has no assets row', () => {
     const root = temporaryRoot();
     const setup = new LibraryService();
-    const library = setup.createLibrary({ displayName: 'Applying Orphan', selectedParentPath: root });
+    const library = setup.createLibrary({ storageLayout: 'assets', displayName: 'Applying Orphan', selectedParentPath: root });
     setup.closeAll();
 
     const operationId = randomUUID();
@@ -1333,7 +1333,7 @@ describe('pending import plans', () => {
     writeFileSync(originalSource, 'old');
     writeFileSync(incomingSource, 'incoming content');
     const setup = new LibraryService();
-    const created = setup.createLibrary({ displayName: `Rollback ${failAt}`, selectedParentPath: root });
+    const created = setup.createLibrary({ storageLayout: 'assets', displayName: `Rollback ${failAt}`, selectedParentPath: root });
     const initialPlan = setup.prepareImport({ libraryId: created.libraryId, sourceKind: 'files', sourcePaths: [originalSource] });
     const initialAsset = setup.resolveImport({ importId: initialPlan.importId, suspectedDuplicate: 'skip', nameConflict: 'keep-both' }).assets[0]!;
     setup.closeAll();
@@ -1361,7 +1361,7 @@ describe('pending import plans', () => {
     const source = path.join(root, 'committed.png');
     writeFileSync(source, 'committed bytes');
     const service = new LibraryService({ failAt: 'committed-cleanup' });
-    const library = service.createLibrary({ displayName: 'Committed Cleanup', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Committed Cleanup', selectedParentPath: root });
     const plan = prepareConflict(service, { libraryId: library.libraryId, sourceKind: 'files', sourcePaths: [source] });
 
     const completion = service.resolveImport({
@@ -1388,7 +1388,7 @@ describe('pending import plans', () => {
     const source = path.join(root, 'listed.png');
     writeFileSync(source, 'listed bytes');
     const service = new LibraryService({ failAt: 'committed-result-list' });
-    const library = service.createLibrary({ displayName: 'Committed Result', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Committed Result', selectedParentPath: root });
     const plan = prepareConflict(service, { libraryId: library.libraryId, sourceKind: 'files', sourcePaths: [source] });
 
     expect(service.resolveImport({
@@ -1418,7 +1418,7 @@ describe('pending import plans', () => {
     writeFileSync(first, 'first');
     writeFileSync(second, 'second');
     const service = new LibraryService({ failAt: 'after-first-place' });
-    const library = service.createLibrary({ displayName: 'Partial Batch', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Partial Batch', selectedParentPath: root });
     const plan = prepareConflict(service, {
       libraryId: library.libraryId,
       sourceKind: 'files',
@@ -1448,7 +1448,7 @@ describe('pending import plans', () => {
       writeFileSync(originalSource, 'old');
       writeFileSync(incomingSource, 'incoming content');
       const setup = new LibraryService();
-      const created = setup.createLibrary({ displayName: `Crash ${failAt}`, selectedParentPath: root });
+      const created = setup.createLibrary({ storageLayout: 'assets', displayName: `Crash ${failAt}`, selectedParentPath: root });
       const initialPlan = setup.prepareImport({ libraryId: created.libraryId, sourceKind: 'files', sourcePaths: [originalSource] });
       const initialAsset = setup.resolveImport({ importId: initialPlan.importId, suspectedDuplicate: 'skip', nameConflict: 'keep-both' }).assets[0]!;
       setup.closeAll();
@@ -1477,7 +1477,7 @@ describe('pending import plans', () => {
     const source = path.join(root, 'new.png');
     writeFileSync(source, 'new');
     const setup = new LibraryService();
-    const created = setup.createLibrary({ displayName: 'Crash New', selectedParentPath: root });
+    const created = setup.createLibrary({ storageLayout: 'assets', displayName: 'Crash New', selectedParentPath: root });
     setup.closeAll();
     const crashing = new LibraryService({ failAt: 'crash-after-place' });
     const opened = crashing.openLibrary(created.libraryPath);
@@ -1503,7 +1503,7 @@ describe('managed asset refresh', () => {
     const source = path.join(root, 'refresh.png');
     writeFileSync(source, 'first');
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Refresh', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Refresh', selectedParentPath: root });
     const plan = prepareConflict(service, { libraryId: library.libraryId, sourceKind: 'files', sourcePaths: [source] });
     const initial = service.resolveImport({ importId: plan.importId, suspectedDuplicate: 'skip', nameConflict: 'keep-both' }).assets[0]!;
     const managedPath = path.join(library.libraryPath, 'Assets', 'refresh.png');
@@ -1567,7 +1567,7 @@ describe('managed asset refresh', () => {
     const source = path.join(root, 'portable.png');
     writeFileSync(source, 'portable bytes');
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Portable', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Portable', selectedParentPath: root });
     const plan = prepareConflict(service, { libraryId: library.libraryId, sourceKind: 'files', sourcePaths: [source] });
     service.resolveImport({ importId: plan.importId, suspectedDuplicate: 'skip', nameConflict: 'keep-both' });
     const managedPath = path.join(library.libraryPath, 'Assets', 'portable.png');
@@ -1607,7 +1607,7 @@ describe('managed asset refresh', () => {
         return lstatSync(assetPath);
       },
     });
-    const library = service.createLibrary({ displayName: `Refresh ${code}`, selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: `Refresh ${code}`, selectedParentPath: root });
     const plan = prepareConflict(service, { libraryId: library.libraryId, sourceKind: 'files', sourcePaths: [source] });
     const initial = service.resolveImport({ importId: plan.importId, suspectedDuplicate: 'skip', nameConflict: 'keep-both' }).assets[0]!;
     rejectStats = true;
@@ -1639,7 +1639,7 @@ describe('managed asset refresh', () => {
         return lstatSync(assetPath);
       },
     });
-    const library = service.createLibrary({ displayName: 'Refresh ENOTDIR', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Refresh ENOTDIR', selectedParentPath: root });
     const plan = prepareConflict(service, { libraryId: library.libraryId, sourceKind: 'files', sourcePaths: [source] });
     service.resolveImport({ importId: plan.importId, suspectedDuplicate: 'skip', nameConflict: 'keep-both' });
     missing = true;
@@ -1657,7 +1657,7 @@ describe('explicit path boundaries (Serpent-8b5b.3)', () => {
   it('rejects importing a filesystem root as a folder source', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Boundary', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Boundary', selectedParentPath: root });
 
     expectServiceCode(
       () => prepareConflict(service, {
@@ -1682,7 +1682,7 @@ describe('explicit path boundaries (Serpent-8b5b.3)', () => {
   it('rejects an empty or relative import source path', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Boundary2', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Boundary2', selectedParentPath: root });
 
     expectServiceCode(
       () => prepareConflict(service, { libraryId: library.libraryId, sourceKind: 'folder', sourcePaths: [''] }),
@@ -1700,7 +1700,7 @@ describe('explicit path boundaries (Serpent-8b5b.3)', () => {
   it.skipIf(process.platform !== 'win32')('rejects Windows drive and UNC roots as import sources', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'WinBoundary', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'WinBoundary', selectedParentPath: root });
 
     expectServiceCode(
       () => prepareConflict(service, { libraryId: library.libraryId, sourceKind: 'folder', sourcePaths: ['C:\\'] }),
@@ -1719,7 +1719,7 @@ describe('Windows path hardening (Serpent-8b5b.7 review)', () => {
     const service = new LibraryService();
     const longParent = path.join(temporaryRoot(), 'x'.repeat(260));
     expectServiceCode(
-      () => service.createLibrary({ displayName: 'Long', selectedParentPath: longParent }),
+      () => service.createLibrary({ storageLayout: 'assets', displayName: 'Long', selectedParentPath: longParent }),
       'INVALID_LIBRARY_PATH',
     );
     service.closeAll();
@@ -1733,7 +1733,7 @@ describe('Windows path hardening (Serpent-8b5b.7 review)', () => {
     // created on Windows, so the portable-path guard is asserted on POSIX.
     writeFileSync(path.join(source, 'bad|name.png'), 'x');
     const service = new LibraryService();
-    const library = service.createLibrary({ displayName: 'Boundary3', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Boundary3', selectedParentPath: root });
     expectServiceCode(
       () => prepareConflict(service, { libraryId: library.libraryId, sourceKind: 'folder', sourcePaths: [source] }),
       'INVALID_IMPORT_SOURCE',

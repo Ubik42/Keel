@@ -161,7 +161,7 @@ beforeAll(() => {
   const root = mkdtempSync(path.join(tmpdir(), 'serpent-search-performance-'));
   const noObservers = () => ({ close() {} });
   const service = new SearchPerfLibraryService({ observerFactory: noObservers });
-  const library = service.createLibrary({
+  const library = service.createLibrary({ storageLayout: 'assets',
     displayName: 'SearchPerformance',
     selectedParentPath: root,
   });

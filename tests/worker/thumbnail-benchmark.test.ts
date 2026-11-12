@@ -87,7 +87,7 @@ describe.skipIf(process.env.SERPENT_THUMB_BENCH !== '1')('thumbnail generation b
     const root = mkdtempSync(path.join(tmpdir(), 'serpent-thumb-bench-'));
     temporaryRoots.push(root);
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'Bench', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Bench', selectedParentPath: root });
     const sourceDir = path.join(root, 'sources');
     await buildSourceAssets(sourceDir, 60);
 

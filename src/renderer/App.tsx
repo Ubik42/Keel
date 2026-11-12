@@ -1134,6 +1134,7 @@ function AppInner() {
   const [dialog, setDialog] = useState<DialogKind>(null);
   const [createLibraryPhase, setCreateLibraryPhase] =
     useState<CreateLibraryPhase>("start");
+  const [createStorageLayout, setCreateStorageLayout] = useState<'root' | 'assets'>('root');
   const hadLibraryRef = useRef(false);
   const [dialogValue, setDialogValue] = useState(() => t("shell.myLibrary"));
   const [conflicts, setConflicts] = useState<ImportConflictPlan | null>(null);
@@ -6261,7 +6262,7 @@ function AppInner() {
     }
     await runLibraryOpenPipeline(
       "creating",
-      () => api.create({ displayName: dialogValue.trim() }),
+      () => api.create({ displayName: dialogValue.trim(), storageLayout: createStorageLayout }),
       t("toast.libraryOpFailed"),
       undefined,
       dialogValue.trim() || null,
@@ -16905,6 +16906,8 @@ function AppInner() {
         busy={busy}
         open={dialog === "library"}
         phase={createLibraryPhase}
+        storageLayout={createStorageLayout}
+        onStorageLayoutChange={setCreateStorageLayout}
         required={!library}
         value={dialogValue}
         onValueChange={setDialogValue}

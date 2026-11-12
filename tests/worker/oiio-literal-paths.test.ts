@@ -23,7 +23,7 @@ function setup(options: ConstructorParameters<typeof LibraryService>[0] = {}) {
   mkdirSync(sourceRoot);
   const service = new LibraryService({ observerFactory: () => ({ close() {} }), ...options });
   services.push(service);
-  const library = service.createLibrary({ displayName: 'LiteralPaths', selectedParentPath: parent });
+  const library = service.createLibrary({ storageLayout: 'assets', displayName: 'LiteralPaths', selectedParentPath: parent });
   return { root, sourceRoot, service, library };
 }
 

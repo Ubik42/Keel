@@ -510,6 +510,7 @@ export function LibrarySettingsDialog({
                     <div className="app-settings-row-copy">
                       <strong>{t("settings.libraryLocation")}</strong>
                       <span className="library-settings-path">{library.displayPath}</span>
+                      <span>{t(library.storageLayout === 'root' ? "dialog.createLibrary.storageRoot" : "dialog.createLibrary.storageAssets")}</span>
                     </div>
                   </div>
                   <div className="app-settings-card-divider" />

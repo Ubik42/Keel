@@ -105,6 +105,7 @@ export function parseWorkerControlMessage(input: unknown): WorkerControlMessage 
 export const internalLibrarySummarySchema = z.strictObject({
   libraryId: nonBlankString,
   displayName: nonBlankString,
+  storageLayout: z.enum(['root', 'assets']).optional(),
   libraryPath: nonBlankString,
   // Serpent-033e: the library was written by a newer Serpent build than the
   // running one. Desktop still opens it writable (additive schema; extra
@@ -130,6 +131,7 @@ export type InternalLibrarySummary = z.infer<typeof internalLibrarySummarySchema
 export const rendererLibrarySummarySchema = z.strictObject({
   libraryId: nonBlankString,
   displayName: nonBlankString,
+  storageLayout: z.enum(['root', 'assets']).optional(),
   displayPath: nonBlankString,
   readOnly: z.boolean().optional(),
   networkStorage: z.boolean().optional(),

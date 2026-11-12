@@ -279,7 +279,7 @@ describe('imported thumbnail normalization', () => {
       observerFactory: () => ({ close() {} }),
     });
     try {
-      const library = service.createLibrary({ displayName: 'Target', selectedParentPath: root });
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Target', selectedParentPath: root });
       const result = await service.importEagleLibrary({
         libraryId: library.libraryId,
         sourceRootPath: writeEagleLibrary(root, thumbnail),
@@ -300,7 +300,7 @@ describe('imported thumbnail normalization', () => {
       observerFactory: () => ({ close() {} }),
     });
     try {
-      const library = service.createLibrary({ displayName: 'Target', selectedParentPath: root });
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Target', selectedParentPath: root });
       await service.importEagleLibrary({
         libraryId: library.libraryId,
         sourceRootPath: writeEagleLibrary(root, thumbnail),
@@ -365,7 +365,7 @@ describe('imported thumbnail normalization', () => {
       observerFactory: () => ({ close() {} }),
     });
     try {
-      const library = service.createLibrary({ displayName: 'Target', selectedParentPath: root });
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Target', selectedParentPath: root });
       await service.importEagleLibrary({
         libraryId: library.libraryId,
         sourceRootPath: writeEagleLibrary(root, thumbnail, {
@@ -394,7 +394,7 @@ describe('imported thumbnail normalization', () => {
       observerFactory: () => ({ close() {} }),
     });
     try {
-      const library = service.createLibrary({ displayName: 'Target', selectedParentPath: root });
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Target', selectedParentPath: root });
       await service.importEagleLibrary({
         libraryId: library.libraryId,
         sourceRootPath: writeEagleLibrary(root, thumbnail),
@@ -453,7 +453,7 @@ describe('imported thumbnail normalization', () => {
       observerFactory: () => ({ close() {} }),
     });
     try {
-      const library = service.createLibrary({ displayName: 'Target', selectedParentPath: root });
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Target', selectedParentPath: root });
       await service.importEagleLibrary({
         libraryId: library.libraryId,
         sourceRootPath: writeEagleLibrary(root, validSource, {
@@ -492,7 +492,7 @@ describe('imported thumbnail normalization', () => {
       observerFactory: () => ({ close() {} }),
     });
     try {
-      const library = service.createLibrary({ displayName: 'Target', selectedParentPath: root });
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Target', selectedParentPath: root });
       await service.importEagleLibrary({
         libraryId: library.libraryId,
         sourceRootPath: writeEagleLibrary(root, thumbnail),
@@ -524,7 +524,7 @@ describe('imported thumbnail normalization', () => {
       observerFactory: () => ({ close() {} }),
     });
     try {
-      const library = service.createLibrary({ displayName: 'Target', selectedParentPath: root });
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Target', selectedParentPath: root });
       const result = await service.importBillfishLibrary({
         libraryId: library.libraryId,
         sourceRootPath: writeBillfishLibrary(root, thumbnail),
@@ -545,7 +545,7 @@ describe('imported thumbnail normalization', () => {
       observerFactory: () => ({ close() {} }),
     });
     try {
-      const library = service.createLibrary({ displayName: 'Target', selectedParentPath: root });
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Target', selectedParentPath: root });
       const result = await service.importEagleLibrary({
         libraryId: library.libraryId,
         sourceRootPath: writeEagleLibrary(root, thumbnail, { includeVideo: true }),
@@ -570,7 +570,7 @@ describe('imported thumbnail normalization', () => {
       observerFactory: () => ({ close() {} }),
     });
     try {
-      const library = service.createLibrary({ displayName: 'Target', selectedParentPath: root });
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Target', selectedParentPath: root });
       await service.importEagleLibrary({
         libraryId: library.libraryId,
         sourceRootPath: writeEagleLibrary(root, thumbnail, {
@@ -625,7 +625,7 @@ describe('imported thumbnail normalization', () => {
       observerFactory: () => ({ close() {} }),
     });
     try {
-      const library = service.createLibrary({ displayName: 'Target', selectedParentPath: root });
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Target', selectedParentPath: root });
       await service.importEagleLibrary({
         libraryId: library.libraryId,
         sourceRootPath: writeEagleLibrary(root, thumbnail, {
@@ -680,7 +680,7 @@ describe('imported thumbnail normalization', () => {
       sharpFn: recordingSharp,
     });
     try {
-      const library = service.createLibrary({ displayName: 'Target', selectedParentPath: root });
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Target', selectedParentPath: root });
       await service.importEagleLibrary({
         libraryId: library.libraryId,
         sourceRootPath: writeEagleLibrary(root, thumbnail, {
@@ -728,7 +728,7 @@ describe('imported thumbnail normalization', () => {
       observerFactory: () => ({ close() {} }),
     });
     try {
-      const library = service.createLibrary({ displayName: 'Target', selectedParentPath: root });
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Target', selectedParentPath: root });
       await service.importEagleLibrary({
         libraryId: library.libraryId,
         sourceRootPath: writeEagleLibrary(root, thumbnail, {
@@ -779,7 +779,7 @@ describe('imported thumbnail normalization', () => {
       sharpFn: cancellingSharp,
     });
     try {
-      const library = service.createLibrary({ displayName: 'Target', selectedParentPath: root });
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Target', selectedParentPath: root });
       libraryId = library.libraryId;
       await service.importEagleLibrary({
         libraryId,
@@ -879,7 +879,7 @@ describe('imported thumbnail normalization', () => {
       sharpFn: switchingSharp,
     });
     try {
-      const library = service.createLibrary({ displayName: 'Target', selectedParentPath: root });
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Target', selectedParentPath: root });
       databasePath = path.join(library.libraryPath, '.serpent', 'library.db');
       await service.importEagleLibrary({
         libraryId: library.libraryId,
@@ -942,7 +942,7 @@ describe('imported thumbnail normalization', () => {
     const service = new LibraryService({
       observerFactory: () => ({ close() {} }),
     });
-    const library = service.createLibrary({ displayName: 'Target', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Target', selectedParentPath: root });
     const sourceRootPath = writeEagleLibrary(root, thumbnail, {
       thumbnail: oversizedAnimatedGif(),
       thumbnailExtension: 'gif',
@@ -1000,7 +1000,7 @@ describe('imported thumbnail normalization', () => {
       observerFactory: () => ({ close() {} }),
     });
     try {
-      const library = service.createLibrary({ displayName: 'Target', selectedParentPath: root });
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Target', selectedParentPath: root });
       await service.importEagleLibrary({
         libraryId: library.libraryId,
         sourceRootPath: writeEagleLibrary(root, thumbnail, {
@@ -1069,7 +1069,7 @@ describe('imported thumbnail normalization', () => {
     };
     const service = new LibraryService(options);
     try {
-      const library = service.createLibrary({ displayName: 'Target', selectedParentPath: root });
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Target', selectedParentPath: root });
       await service.importEagleLibrary({
         libraryId: library.libraryId,
         sourceRootPath: writeEagleLibrary(root, thumbnail),
@@ -1123,7 +1123,7 @@ describe('imported thumbnail normalization', () => {
       sharpFn: resourceSharp,
     });
     try {
-      const library = service.createLibrary({ displayName: 'Target', selectedParentPath: root });
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Target', selectedParentPath: root });
       await service.importEagleLibrary({
         libraryId: library.libraryId,
         sourceRootPath: writeEagleLibrary(root, thumbnail),
@@ -1180,7 +1180,7 @@ describe('imported thumbnail normalization', () => {
       sharpFn: stealingSharp,
     });
     try {
-      const library = service.createLibrary({ displayName: 'Target', selectedParentPath: root });
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Target', selectedParentPath: root });
       databasePath = path.join(library.libraryPath, '.serpent', 'library.db');
       await service.importEagleLibrary({
         libraryId: library.libraryId,
@@ -1235,7 +1235,7 @@ describe('imported thumbnail normalization', () => {
     let assetId!: string;
     let jobId!: string;
     try {
-      const library = service.createLibrary({ displayName: 'Target', selectedParentPath: root });
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Target', selectedParentPath: root });
       libraryPath = library.libraryPath;
       libraryId = library.libraryId;
       await service.importEagleLibrary({

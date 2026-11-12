@@ -567,6 +567,13 @@ if (
   app.commandLine.appendSwitch("use-angle", "swiftshader");
 }
 
+// A local fork may keep a stable profile separate from the installed release.
+const forkUserDataPath = process.env.SERPENT_USER_DATA_PATH;
+if (forkUserDataPath && path.isAbsolute(forkUserDataPath)) {
+  mkdirSync(forkUserDataPath, { recursive: true });
+  app.setPath("userData", forkUserDataPath);
+}
+
 if (process.env.SERPENT_E2E === "1") {
   const explicitUserDataPath = process.env.SERPENT_E2E_USER_DATA_PATH;
   app.setPath(
@@ -2913,6 +2920,7 @@ async function reopenLibrariesAfterFailedReplacement(
         library: {
           libraryId: opened.library.libraryId,
           displayName: opened.library.displayName,
+          storageLayout: opened.library.storageLayout,
           displayPath: opened.library.libraryPath,
         },
         source: "replacement-restore",
@@ -4594,6 +4602,7 @@ async function executeMcpLibraryContextCommand(input: {
         library: {
           libraryId: selected.libraryId,
           displayName: selected.displayName,
+          storageLayout: selected.storageLayout,
           displayPath: selected.libraryPath,
           ...(selected.readOnly === undefined ? {} : { readOnly: selected.readOnly }),
           ...(selected.networkStorage === undefined ? {} : { networkStorage: selected.networkStorage }),
@@ -4614,6 +4623,7 @@ async function executeMcpLibraryContextCommand(input: {
       library: {
         libraryId: selected.libraryId,
         displayName: selected.displayName,
+        storageLayout: selected.storageLayout,
         displayPath: selected.libraryPath,
       },
     });
@@ -5343,6 +5353,7 @@ async function startApplication(): Promise<void> {
             library: {
               libraryId: library.libraryId,
               displayName: library.displayName,
+              storageLayout: library.storageLayout,
               displayPath: library.libraryPath,
             },
           });
@@ -5369,6 +5380,7 @@ async function startApplication(): Promise<void> {
             library: {
               libraryId: library.libraryId,
               displayName: library.displayName,
+              storageLayout: library.storageLayout,
               displayPath: library.libraryPath,
             },
           });
@@ -5452,6 +5464,7 @@ async function startApplication(): Promise<void> {
             library: {
               libraryId: boundLibrary.libraryId,
               displayName: boundLibrary.displayName,
+              storageLayout: boundLibrary.storageLayout,
               displayPath: boundLibrary.libraryPath,
             },
           });

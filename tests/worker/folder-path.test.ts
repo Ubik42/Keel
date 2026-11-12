@@ -53,7 +53,7 @@ describe('resolveFolderPath (REQ-MENU-006)', () => {
   it('resolves a managed folder to the library Assets root plus its relative path', () => {
     const temp = root();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'FolderPath', selectedParentPath: temp });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'FolderPath', selectedParentPath: temp });
     const top = service.createManagedFolder({ libraryId: library.libraryId, name: 'a' });
     const nested = service.createManagedFolder({
       libraryId: library.libraryId,
@@ -70,7 +70,7 @@ describe('resolveFolderPath (REQ-MENU-006)', () => {
   it('rejects a managed folder whose directory is missing on disk', () => {
     const temp = root();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'FolderPath', selectedParentPath: temp });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'FolderPath', selectedParentPath: temp });
     const folder = service.createManagedFolder({ libraryId: library.libraryId, name: 'gone' });
 
     // External deletion not yet reconciled by a refresh: the shell action must
@@ -90,7 +90,7 @@ describe('resolveFolderPath (REQ-MENU-006)', () => {
     writeFileSync(path.join(sourceRoot, 'a.png'), 'aaa');
 
     const service = newService();
-    const library = service.createLibrary({ displayName: 'FolderPath', selectedParentPath: temp });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'FolderPath', selectedParentPath: temp });
     const linked = service.importFolderAsLinked({
       libraryId: library.libraryId,
       sourceRootPath: sourceRoot,
@@ -108,7 +108,7 @@ describe('resolveFolderPath (REQ-MENU-006)', () => {
     writeFileSync(path.join(sourceRoot, 'a.png'), 'aaa');
 
     const service = newService();
-    const library = service.createLibrary({ displayName: 'FolderPath', selectedParentPath: temp });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'FolderPath', selectedParentPath: temp });
     const linked = service.importFolderAsLinked({
       libraryId: library.libraryId,
       sourceRootPath: sourceRoot,
@@ -129,7 +129,7 @@ describe('resolveFolderPath (REQ-MENU-006)', () => {
     writeFileSync(path.join(sourceRoot, 'a.png'), 'aaa');
 
     const service = newService();
-    const library = service.createLibrary({ displayName: 'FolderPath', selectedParentPath: temp });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'FolderPath', selectedParentPath: temp });
     const linked = service.importFolderAsLinked({
       libraryId: library.libraryId,
       sourceRootPath: sourceRoot,
@@ -161,7 +161,7 @@ describe('resolveFolderPath (REQ-MENU-006)', () => {
     writeFileSync(path.join(sourceRoot, 'a.png'), 'aaa');
 
     const service = newService();
-    const library = service.createLibrary({ displayName: 'FolderPath', selectedParentPath: temp });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'FolderPath', selectedParentPath: temp });
     const linked = service.importFolderAsLinked({
       libraryId: library.libraryId,
       sourceRootPath: sourceRoot,
@@ -188,7 +188,7 @@ describe('resolveFolderPath (REQ-MENU-006)', () => {
   it('rejects an unknown folder id', () => {
     const temp = root();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'FolderPath', selectedParentPath: temp });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'FolderPath', selectedParentPath: temp });
 
     expectCode(
       () => service.resolveFolderPath(library.libraryId, 'folder-does-not-exist'),

@@ -611,7 +611,7 @@ describe('fbx worker command — model.convert-fbx', () => {
   it('converts an imported asset to a cached model_glb artifact', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'FbxLib', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'FbxLib', selectedParentPath: root });
     const assetId = importAsset(service, library.libraryId, CUBE_FBX);
 
     const first = await handleFbxConvertCommand(service, {
@@ -645,7 +645,7 @@ describe('fbx worker command — model.convert-fbx', () => {
   it('serves the cached artifact without reconverting on repeat calls', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'FbxLib2', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'FbxLib2', selectedParentPath: root });
     const assetId = importAsset(service, library.libraryId, CUBE_FBX);
 
     const first = await handleFbxConvertCommand(service, {
@@ -667,7 +667,7 @@ describe('fbx worker command — model.convert-fbx', () => {
   it('deduplicates concurrent conversions of the same asset (single-flight)', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'FbxLib3', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'FbxLib3', selectedParentPath: root });
     const assetId = importAsset(service, library.libraryId, SUZANNE_FBX);
 
     const [a, b, c] = await Promise.all([
@@ -686,7 +686,7 @@ describe('fbx worker command — model.convert-fbx', () => {
   it('invalidates the cache when the source file changes revision', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'FbxLib4', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'FbxLib4', selectedParentPath: root });
     const assetId = importAsset(service, library.libraryId, CUBE_FBX);
 
     const first = await handleFbxConvertCommand(service, {
@@ -723,7 +723,7 @@ describe('fbx worker command — model.convert-fbx', () => {
   it('returns FBX_SOURCE_NOT_FOUND for an unknown asset', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'FbxLib5', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'FbxLib5', selectedParentPath: root });
     const result = await handleFbxConvertCommand(service, {
       libraryId: library.libraryId,
       assetId: 'does-not-exist',
@@ -736,7 +736,7 @@ describe('fbx worker command — model.convert-fbx', () => {
   it('routes conversion failures as typed error codes', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'FbxLib6', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'FbxLib6', selectedParentPath: root });
     const badPath = path.join(root, 'broken.fbx');
     writeFileSync(badPath, Buffer.from('garbage bytes, not fbx'));
     const assetId = importAsset(service, library.libraryId, badPath);

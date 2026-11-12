@@ -37,7 +37,7 @@ describe('linked import thumbnail admission', () => {
     }
 
     const service = new LibraryService();
-    const library = service.createLibrary({
+    const library = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Linked Thumb Admit',
       selectedParentPath: root,
     });

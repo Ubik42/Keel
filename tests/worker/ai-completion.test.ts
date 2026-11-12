@@ -422,7 +422,7 @@ describe('clearAiContent', () => {
   } {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'AI Clear Test',
       selectedParentPath: root,
     });
@@ -685,7 +685,7 @@ describe('enqueueAiAnalysisJobs', () => {
   it('enqueues AI analysis jobs for image assets', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'AI Enqueue', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'AI Enqueue', selectedParentPath: root });
     const libraryId = created.libraryId;
 
     const sourceDir = path.join(root, 'sources');
@@ -710,7 +710,7 @@ describe('enqueueAiAnalysisJobs', () => {
   it('enqueues video analysis when its contact sheet is ready without a poster', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'AI No Video', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'AI No Video', selectedParentPath: root });
     const libraryId = created.libraryId;
 
     const sourceDir = path.join(root, 'sources');
@@ -749,7 +749,7 @@ describe('enqueueAiAnalysisJobs', () => {
   it('reconciles every ready video input when no asset ids are supplied', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'AI Reconcile', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'AI Reconcile', selectedParentPath: root });
     const libraryId = created.libraryId;
     const sourceDir = path.join(root, 'sources');
     mkdirSync(sourceDir, { recursive: true });
@@ -789,7 +789,7 @@ describe('enqueueAiAnalysisJobs', () => {
   it('does not enqueue duplicate jobs for same asset', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'AI No Dup', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'AI No Dup', selectedParentPath: root });
     const libraryId = created.libraryId;
 
     const sourceDir = path.join(root, 'sources');
@@ -811,7 +811,7 @@ describe('enqueueAiAnalysisJobs', () => {
   it('treats an asset with existing AI content as an idempotent skip', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'AI Existing', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'AI Existing', selectedParentPath: root });
     const libraryId = created.libraryId;
     const sourceDir = path.join(root, 'sources');
     mkdirSync(sourceDir, { recursive: true });
@@ -849,7 +849,7 @@ describe('enqueueAiAnalysisJobs', () => {
   it('resumes an explicitly paused job when manual analysis requests it again', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'AI Resume Paused', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'AI Resume Paused', selectedParentPath: root });
     const libraryId = created.libraryId;
     const sourceDir = path.join(root, 'sources');
     mkdirSync(sourceDir, { recursive: true });
@@ -876,7 +876,7 @@ describe('enqueueAiAnalysisJobs', () => {
   it('enqueues jobs for specific assetIds', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'AI Specific', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'AI Specific', selectedParentPath: root });
     const libraryId = created.libraryId;
 
     const sourceDir = path.join(root, 'sources');
@@ -899,7 +899,7 @@ describe('enqueueAiAnalysisJobs', () => {
   it('enqueues linked image assets when scoped to the linked folder', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'AI Linked', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'AI Linked', selectedParentPath: root });
     const linkedRoot = path.join(root, 'linked');
     mkdirSync(linkedRoot);
     createPngFile(linkedRoot, 'linked.png');
@@ -927,7 +927,7 @@ describe('AI job queue management', () => {
   ): { service: LibraryService; libraryId: string; jobId: string; assetId: string; root: string; libraryPath: string } {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({ displayName: 'AI Queue', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'AI Queue', selectedParentPath: root });
     const libraryId = created.libraryId;
 
     const sourceDir = path.join(root, 'sources');

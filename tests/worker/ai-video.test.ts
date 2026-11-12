@@ -100,7 +100,7 @@ describe('getCurrentArtifact', () => {
   it('returns ready artifact when a ready artifact exists for the current revision', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Art Ready',
       selectedParentPath: root,
     });
@@ -161,7 +161,7 @@ describe('getCurrentArtifact', () => {
   it('returns artifact with status info even when status is failed', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Art Failed',
       selectedParentPath: root,
     });
@@ -206,7 +206,7 @@ describe('getCurrentArtifact', () => {
   it('returns null when no artifact of the given kind exists', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Art None',
       selectedParentPath: root,
     });
@@ -232,7 +232,7 @@ describe('getCurrentArtifact', () => {
   it('returns null when the asset has no current revision', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Art NoRev',
       selectedParentPath: root,
     });
@@ -257,7 +257,7 @@ describe('resolveAssetFilePath — video detection', () => {
   it('identifies .mp4 as video with isVideo = true', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'VidDetect',
       selectedParentPath: root,
     });
@@ -281,7 +281,7 @@ describe('resolveAssetFilePath — video detection', () => {
   it('returns isVideo = false for image assets', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'ImgDetect',
       selectedParentPath: root,
     });
@@ -310,7 +310,7 @@ describe('video AI analysis — full flow with ready artifacts', () => {
   it('builds AiAnalysisRequest with poster (imageBase64) and contact sheet (contactSheetBase64)', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'VideoFull',
       selectedParentPath: root,
     });
@@ -481,7 +481,7 @@ describe('video AI analysis — full flow with ready artifacts', () => {
   it('writes ai_asset_tags and verifies they have revision_id set', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'VideoTagRev',
       selectedParentPath: root,
     });
@@ -539,7 +539,7 @@ describe('video AI analysis — CONTACT_SHEET_REQUIRED', () => {
   it('returns null from getCurrentArtifact when contact_sheet is missing (blocks analysis)', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'NoSheet',
       selectedParentPath: root,
     });
@@ -564,7 +564,7 @@ describe('video AI analysis — CONTACT_SHEET_REQUIRED', () => {
   it('returns status=failed from getCurrentArtifact when contact_sheet failed (blocks analysis)', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'FailSheet',
       selectedParentPath: root,
     });
@@ -607,7 +607,7 @@ describe('video AI analysis — CONTACT_SHEET_REQUIRED', () => {
   it('returns null from getCurrentArtifact when video_poster is missing (blocks analysis)', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'NoPoster',
       selectedParentPath: root,
     });
@@ -637,7 +637,7 @@ describe('unsupported format', () => {
   it('resolveAssetFilePath returns mime that is neither image/ nor video/ for .txt', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'TxtFile',
       selectedParentPath: root,
     });

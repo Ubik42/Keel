@@ -43,7 +43,7 @@ perfDescribe('semantic SQLite retrieval performance (explicit opt-in)', () => {
     temporaryRoots.push(root);
     const service = new LibraryService();
     services.push(service);
-    const library = service.createLibrary({ displayName: 'Temporary semantic perf library', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Temporary semantic perf library', selectedParentPath: root });
     const folders = [
       service.createManagedFolder({ libraryId: library.libraryId, name: 'SubsetA' }),
       service.createManagedFolder({ libraryId: library.libraryId, name: 'SubsetB' }),

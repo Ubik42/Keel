@@ -135,7 +135,7 @@ describe('schema v8->v9 migration', () => {
   it('creates a new library at schema v9', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'V9 Test',
       selectedParentPath: root,
     });
@@ -171,7 +171,7 @@ describe('schema v8->v9 migration', () => {
   it('migrates a v8 library to v9 when opening', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'V8 to V9',
       selectedParentPath: root,
     });
@@ -210,7 +210,7 @@ describe('schema v8->v9 migration', () => {
   it('is idempotent when reopening a v9 database', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Idemp V9', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Idemp V9', selectedParentPath: root });
     service.closeAll();
     service.openLibrary(created.libraryPath);
     const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
@@ -230,7 +230,7 @@ describe('downgrade helpers still work with v9', () => {
   it('downgrade to v1 then re-migrate through v9', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Downgrade', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Downgrade', selectedParentPath: root });
     writeFileSync(path.join(root, 'test.png'), 'data');
     void importNoConflict(service, created.libraryId, path.join(root, 'test.png'));
     service.closeAll();
@@ -290,7 +290,7 @@ describe('trashAssets (soft delete)', () => {
       source?: string;
     }> = [];
     const service = newService({ onAssetsChanged: (event) => events.push(event) });
-    const created = service.createLibrary({ displayName: 'Trash Events', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Trash Events', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'event.jpg'), 'event');
     const imported = importNoConflict(service, created.libraryId, path.join(root, 'event.jpg'));
@@ -333,7 +333,7 @@ describe('trashAssets (soft delete)', () => {
   it('moves managed asset to .serpent/trash/ and sets deleted_at', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Trash Test', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Trash Test', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'photo.jpg'), 'data');
     const r = importNoConflict(service, created.libraryId, path.join(root, 'photo.jpg'));
@@ -362,7 +362,7 @@ describe('trashAssets (soft delete)', () => {
   it('records trashed_from_folder_id when asset was in a folder', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Folder Trash', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Folder Trash', selectedParentPath: root });
 
     const folder = service.createManagedFolder({ libraryId: created.libraryId, name: 'SubFolder' });
     writeFileSync(path.join(root, 'nested.png'), 'data');
@@ -379,7 +379,7 @@ describe('trashAssets (soft delete)', () => {
   it('rejects trashing non-managed assets', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Linked Reject', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Linked Reject', selectedParentPath: root });
 
     mkdirSync(path.join(root, 'linked-src'), { recursive: true });
     writeFileSync(path.join(root, 'linked-src', 'f.txt'), 'x');
@@ -399,7 +399,7 @@ describe('trashAssets (soft delete)', () => {
   it('moves already-missing managed assets to trash without a source file', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Missing Trash', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Missing Trash', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'gone.jpg'), 'data');
     const r = importNoConflict(service, created.libraryId, path.join(root, 'gone.jpg'));
@@ -421,7 +421,7 @@ describe('trashAssets (soft delete)', () => {
   it('rejects trashing an already-trashed asset', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Double Trash', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Double Trash', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'single.jpg'), 'x');
     const r = importNoConflict(service, created.libraryId, path.join(root, 'single.jpg'));
@@ -437,7 +437,7 @@ describe('trashAssets (soft delete)', () => {
   it('rejects trashing a nonexistent asset', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'No Asset', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'No Asset', selectedParentPath: root });
 
     expectServiceError(
       () => service.trashAssets({ libraryId: created.libraryId, assetIds: ['00000000-0000-0000-0000-000000000000'] }),
@@ -449,7 +449,7 @@ describe('trashAssets (soft delete)', () => {
   it('rolls back filesystem if DB operation fails', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Rollback', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Rollback', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'rollback-test.jpg'), 'data');
     const r = importNoConflict(service, created.libraryId, path.join(root, 'rollback-test.jpg'));
@@ -470,7 +470,7 @@ describe('listTrash', () => {
   it('lists only trashed assets with remaining days', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Trash List', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Trash List', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'keep.jpg'), 'keep');
     void importNoConflict(service, created.libraryId, path.join(root, 'keep.jpg'));
@@ -496,7 +496,7 @@ describe('listTrash', () => {
   it('returns empty list when no trashed assets', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Empty Trash', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Empty Trash', selectedParentPath: root });
     expect(service.listTrash(created.libraryId)).toEqual([]);
     service.closeAll();
   });
@@ -525,7 +525,7 @@ describe('trash preview artifacts (BUG-TRASH-001)', () => {
   it('keeps the thumbnail resolvable and decodable after trashing', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Trash Preview', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Trash Preview', selectedParentPath: root });
     const assetId = await importWithReadyThumbnail(service, created.libraryId, path.join(root, 'preview.png'));
 
     // Control: while active, the thumbnail is served through the artifact path.
@@ -582,7 +582,7 @@ describe('trash preview artifacts (BUG-TRASH-001)', () => {
   it('exposes thumbnail state through listTrash consistently with the trash search scope', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Trash List Preview', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Trash List Preview', selectedParentPath: root });
     const assetId = await importWithReadyThumbnail(service, created.libraryId, path.join(root, 'listed.png'));
 
     service.trashAssets({ libraryId: created.libraryId, assetIds: [assetId] });
@@ -599,7 +599,7 @@ describe('trash preview artifacts (BUG-TRASH-001)', () => {
   it('keeps the same preview resolvable through trash and restore', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Restore Preview', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Restore Preview', selectedParentPath: root });
     const assetId = await importWithReadyThumbnail(service, created.libraryId, path.join(root, 'roundtrip.png'));
     const artifactId = service.listAssets({ libraryId: created.libraryId, recursive: true })[0]!.thumbnailArtifactId!;
     const originalBytes = readFileSync(service.getArtifactAbsolutePath(created.libraryId, artifactId, 'preview'));
@@ -628,7 +628,7 @@ describe('trash preview artifacts (BUG-TRASH-001)', () => {
   it('stops serving artifacts once the asset is permanently deleted', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Purge Preview', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Purge Preview', selectedParentPath: root });
     const assetId = await importWithReadyThumbnail(service, created.libraryId, path.join(root, 'purged.png'));
     const artifactId = service.listAssets({ libraryId: created.libraryId, recursive: true })[0]!.thumbnailArtifactId!;
 
@@ -652,7 +652,7 @@ describe('restoreAssets', () => {
   it('restores to original location', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Restore Orig', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Restore Orig', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'restore-me.jpg'), 'data');
     const r = importNoConflict(service, created.libraryId, path.join(root, 'restore-me.jpg'));
@@ -673,7 +673,7 @@ describe('restoreAssets', () => {
   it('previewRestoreAssets reports no conflicts when the original path is free (Serpent-0hnx)', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Preview Free', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Preview Free', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'restore-me.jpg'), 'data');
     const assetId = importNoConflict(service, created.libraryId, path.join(root, 'restore-me.jpg')).assets[0]!.assetId;
@@ -688,7 +688,7 @@ describe('restoreAssets', () => {
   it('previewRestoreAssets reports conflicts when the original path is occupied (Serpent-0hnx)', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Preview Conflict', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Preview Conflict', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'clash.jpg'), 'trashed');
     const assetId = importNoConflict(service, created.libraryId, path.join(root, 'clash.jpg')).assets[0]!.assetId;
@@ -704,7 +704,7 @@ describe('restoreAssets', () => {
   it('readTextAsset reads trashed text from the trash store (Serpent-hv6n)', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Trash Text', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Trash Text', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'note.txt'), 'hello from trash');
     const assetId = importNoConflict(service, created.libraryId, path.join(root, 'note.txt')).assets[0]!.assetId;
@@ -724,7 +724,7 @@ describe('restoreAssets', () => {
   it('reuses text previews by revision and invalidates them after save (Serpent-29125f)', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Text Preview Cache', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Text Preview Cache', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'note.txt'), 'cached text');
     const assetId = importNoConflict(service, created.libraryId, path.join(root, 'note.txt')).assets[0]!.assetId;
@@ -762,7 +762,7 @@ describe('restoreAssets', () => {
   it('restores to a specified target folder', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Restore Target', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Restore Target', selectedParentPath: root });
 
     const targetFolder = service.createManagedFolder({ libraryId: created.libraryId, name: 'Target' });
     writeFileSync(path.join(root, 'move-me.jpg'), 'data');
@@ -780,7 +780,7 @@ describe('restoreAssets', () => {
   it('handles name conflict with keep-both (default)', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Conflict', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Conflict', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'clash.png'), 'first');
     void importNoConflict(service, created.libraryId, path.join(root, 'clash.png'));
@@ -805,7 +805,7 @@ describe('restoreAssets', () => {
   it('skips a conflicting restore without removing the trashed asset', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Skip Restore', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Skip Restore', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'clash.png'), 'first');
     const first = importNoConflict(service, created.libraryId, path.join(root, 'clash.png')).assets[0]!;
@@ -830,7 +830,7 @@ describe('restoreAssets', () => {
   it('replaces a conflicting active asset while preserving the restored identity', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Replace Restore', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Replace Restore', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'clash.png'), 'restored-content');
     const restoredIdentity = importNoConflict(service, created.libraryId, path.join(root, 'clash.png')).assets[0]!;
@@ -857,7 +857,7 @@ describe('restoreAssets', () => {
   ] as const)('rolls back keep-both restore journal on reopen after %s without orphaning its destination', (failAt) => {
     const root = temporaryRoot();
     const setup = newService();
-    const created = setup.createLibrary({ displayName: `Restore Journal ${failAt}`, selectedParentPath: root });
+    const created = setup.createLibrary({ storageLayout: 'assets', displayName: `Restore Journal ${failAt}`, selectedParentPath: root });
 
     writeFileSync(path.join(root, 'clash.png'), 'trashed-content');
     const trashed = importNoConflict(setup, created.libraryId, path.join(root, 'clash.png')).assets[0]!;
@@ -895,7 +895,7 @@ describe('restoreAssets', () => {
   ] as const)('restores the replaced active asset on reopen after %s', (failAt) => {
     const root = temporaryRoot();
     const setup = newService();
-    const created = setup.createLibrary({ displayName: `Replace Journal ${failAt}`, selectedParentPath: root });
+    const created = setup.createLibrary({ storageLayout: 'assets', displayName: `Replace Journal ${failAt}`, selectedParentPath: root });
 
     writeFileSync(path.join(root, 'clash.png'), 'restored-content');
     const restoredIdentity = importNoConflict(setup, created.libraryId, path.join(root, 'clash.png')).assets[0]!;
@@ -927,7 +927,7 @@ describe('restoreAssets', () => {
   it('keeps the committed restored identity after a crash immediately following the database commit', () => {
     const root = temporaryRoot();
     const setup = newService();
-    const created = setup.createLibrary({ displayName: 'Committed Restore Journal', selectedParentPath: root });
+    const created = setup.createLibrary({ storageLayout: 'assets', displayName: 'Committed Restore Journal', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'clash.png'), 'restored-content');
     const restoredIdentity = importNoConflict(setup, created.libraryId, path.join(root, 'clash.png')).assets[0]!;
@@ -960,7 +960,7 @@ describe('restoreAssets', () => {
   it('restores explicitly to the library root instead of the original folder', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Explicit Root Restore', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Explicit Root Restore', selectedParentPath: root });
     const folder = service.createManagedFolder({ libraryId: created.libraryId, name: 'Original' });
 
     writeFileSync(path.join(root, 'root-target.jpg'), 'data');
@@ -977,7 +977,7 @@ describe('restoreAssets', () => {
   it('falls back to root when original folder is gone', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Folder Gone', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Folder Gone', selectedParentPath: root });
 
     const folder = service.createManagedFolder({ libraryId: created.libraryId, name: 'WillBeGone' });
     writeFileSync(path.join(root, 'orphan.jpg'), 'data');
@@ -999,7 +999,7 @@ describe('restoreAssets', () => {
   it('automation recovery restores only a vacant original path and never falls back to root', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Strict Automation Restore', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Strict Automation Restore', selectedParentPath: root });
     const folder = service.createManagedFolder({ libraryId: created.libraryId, name: 'Original' });
     writeFileSync(path.join(root, 'recover.png'), 'data');
     const asset = importNoConflict(service, created.libraryId, path.join(root, 'recover.png'), folder.folderId).assets[0]!;
@@ -1018,7 +1018,7 @@ describe('restoreAssets', () => {
   it('automation recovery skips occupied or missing original folders without moving the asset elsewhere', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Strict Automation Skip', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Strict Automation Skip', selectedParentPath: root });
     const folder = service.createManagedFolder({ libraryId: created.libraryId, name: 'Original' });
     writeFileSync(path.join(root, 'occupied.png'), 'data');
     const occupied = importNoConflict(service, created.libraryId, path.join(root, 'occupied.png'), folder.folderId).assets[0]!;
@@ -1060,7 +1060,7 @@ describe('restoreAssets', () => {
   it('rejects an automation file-operation plan when the library changes after preview', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Automation Plan Fence', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Automation Plan Fence', selectedParentPath: root });
     writeFileSync(path.join(root, 'planned.png'), 'data');
     const asset = importNoConflict(service, created.libraryId, path.join(root, 'planned.png')).assets[0]!;
 
@@ -1110,7 +1110,7 @@ describe('restoreAssets', () => {
   it('rejects an automation file-operation plan with no asset ids', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Empty Automation Plan', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Empty Automation Plan', selectedParentPath: root });
 
     expectServiceError(() => service.validateAutomationFileOperationPlan({
       libraryId: created.libraryId,
@@ -1126,7 +1126,7 @@ describe('restoreAssets', () => {
   it('rejects an automation file-operation plan with mismatched asset states', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Mismatched Automation Plan', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Mismatched Automation Plan', selectedParentPath: root });
     writeFileSync(path.join(root, 'planned.png'), 'data');
     const asset = importNoConflict(service, created.libraryId, path.join(root, 'planned.png')).assets[0]!;
 
@@ -1144,7 +1144,7 @@ describe('restoreAssets', () => {
   it('previews and validates an automation plan for rename-file with complete newFileName', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Rename File Plan', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Rename File Plan', selectedParentPath: root });
     writeFileSync(path.join(root, 'video.mp4'), 'video-payload');
     const asset = importNoConflict(service, created.libraryId, path.join(root, 'video.mp4')).assets[0]!;
 
@@ -1183,7 +1183,7 @@ describe('restoreAssets', () => {
   it('rejects restoring an active (non-trashed) asset', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Active Restore', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Active Restore', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'active.jpg'), 'data');
     const r = importNoConflict(service, created.libraryId, path.join(root, 'active.jpg'));
@@ -1198,7 +1198,7 @@ describe('restoreAssets', () => {
   it('rejects duplicate asset ids before creating a restore journal', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Duplicate Restore', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Duplicate Restore', selectedParentPath: root });
     writeFileSync(path.join(root, 'duplicate.jpg'), 'data');
     const asset = importNoConflict(service, created.libraryId, path.join(root, 'duplicate.jpg')).assets[0]!;
     service.trashAssets({ libraryId: created.libraryId, assetIds: [asset.assetId] });
@@ -1218,7 +1218,7 @@ describe('deleteAssetsPermanent', () => {
   it('removes trash file and DB row with cascade', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Perm Delete', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Perm Delete', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'delete-me.jpg'), 'data');
     const r = importNoConflict(service, created.libraryId, path.join(root, 'delete-me.jpg'));
@@ -1245,7 +1245,7 @@ describe('deleteAssetsPermanent', () => {
   it('skips already-deleted trash directory (ENOENT ok)', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'ENOENT', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'ENOENT', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'gone-already.jpg'), 'data');
     const r = importNoConflict(service, created.libraryId, path.join(root, 'gone-already.jpg'));
@@ -1264,7 +1264,7 @@ describe('deleteAssetsPermanent', () => {
   it('rejects deleting an active asset', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Active Del', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Active Del', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'active-perm.jpg'), 'data');
     const r = importNoConflict(service, created.libraryId, path.join(root, 'active-perm.jpg'));
@@ -1279,7 +1279,7 @@ describe('deleteAssetsPermanent', () => {
   it('rejects a mixed or duplicate batch before deleting any trash entry', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Permanent Batch Validation', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Permanent Batch Validation', selectedParentPath: root });
     writeFileSync(path.join(root, 'trashed.jpg'), 'trashed');
     const trashed = importNoConflict(service, created.libraryId, path.join(root, 'trashed.jpg')).assets[0]!;
     writeFileSync(path.join(root, 'active.jpg'), 'active');
@@ -1319,7 +1319,7 @@ describe('deleteAssetsPermanent', () => {
       },
       onDiagnostic: ({ scope }) => diagnostics.push(scope),
     });
-    const created = service.createLibrary({ displayName: 'Permanent Partial Result', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Permanent Partial Result', selectedParentPath: root });
     writeFileSync(path.join(root, 'busy.jpg'), 'busy');
     const busy = importNoConflict(service, created.libraryId, path.join(root, 'busy.jpg')).assets[0]!;
     writeFileSync(path.join(root, 'deletable.jpg'), 'deletable');
@@ -1347,7 +1347,7 @@ describe('emptyTrash', () => {
   it('permanently deletes all trashed assets and folder tombstones', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Empty Trash', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Empty Trash', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'a.jpg'), 'a');
     writeFileSync(path.join(root, 'b.jpg'), 'b');
@@ -1372,7 +1372,7 @@ describe('emptyTrash', () => {
         rmSync(trashPath, { force: true, recursive: true });
       },
     });
-    const created = service.createLibrary({
+    const created = service.createLibrary({ storageLayout: 'assets',
       displayName: 'Empty Trash Partial',
       selectedParentPath: root,
     });
@@ -1418,7 +1418,7 @@ describe('purgeExpiredTrash', () => {
   it('purges assets older than 30 days', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Purge Test', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Purge Test', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'old.jpg'), 'data');
     const r = importNoConflict(service, created.libraryId, path.join(root, 'old.jpg'));
@@ -1441,7 +1441,7 @@ describe('purgeExpiredTrash', () => {
   it('does not purge assets younger than 30 days', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Recent', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Recent', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'recent.jpg'), 'data');
     const r = importNoConflict(service, created.libraryId, path.join(root, 'recent.jpg'));
@@ -1457,7 +1457,7 @@ describe('purgeExpiredTrash', () => {
   it('runs on library open without blocking', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Open Purge', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Open Purge', selectedParentPath: root });
     service.closeAll();
     service.openLibrary(created.libraryPath);
     expect(service.listTrash(created.libraryId)).toEqual([]);
@@ -1475,7 +1475,7 @@ describe('purgeExpiredTrash', () => {
         rmSync(trashPath, { force: true, recursive: true });
       },
     });
-    const created = service.createLibrary({ displayName: 'Purge Partial', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Purge Partial', selectedParentPath: root });
     writeFileSync(path.join(root, 'old-busy.jpg'), 'busy');
     const busy = importNoConflict(service, created.libraryId, path.join(root, 'old-busy.jpg')).assets[0]!;
     writeFileSync(path.join(root, 'old-delete.jpg'), 'delete');
@@ -1504,7 +1504,7 @@ describe('deleteLinkedAssets', () => {
   it('deletes linked asset DB row when deleteSourceFile is false', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Linked Del', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Linked Del', selectedParentPath: root });
 
     mkdirSync(path.join(root, 'linked-del'), { recursive: true });
     writeFileSync(path.join(root, 'linked-del', 'to-delete.txt'), 'x');
@@ -1524,7 +1524,7 @@ describe('deleteLinkedAssets', () => {
   it('clears a missing linked source from the index without treating it as a trash failure', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Missing Linked Del', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Missing Linked Del', selectedParentPath: root });
     const linkedRoot = path.join(root, 'missing-linked-del');
     const sourcePath = path.join(linkedRoot, 'already-gone.txt');
     mkdirSync(linkedRoot);
@@ -1550,7 +1550,7 @@ describe('deleteLinkedAssets', () => {
         rmSync(sourcePath, { force: true });
       },
     });
-    const created = service.createLibrary({ displayName: 'Linked Src', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Linked Src', selectedParentPath: root });
 
     mkdirSync(path.join(root, 'linked-del-src'), { recursive: true });
     writeFileSync(path.join(root, 'linked-del-src', 'keep.txt'), 'x');
@@ -1581,7 +1581,7 @@ describe('deleteLinkedAssets', () => {
         throw new Error('Source deletion was rejected.');
       },
     });
-    const created = service.createLibrary({ displayName: 'Linked Trash Failure', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Linked Trash Failure', selectedParentPath: root });
     const linkedRoot = path.join(root, 'linked-trash-failure');
     const sourcePath = path.join(linkedRoot, 'preserve.txt');
     mkdirSync(linkedRoot);
@@ -1628,7 +1628,7 @@ describe('deleteLinkedAssets', () => {
         rmSync(sourcePath, { force: true });
       },
     });
-    const created = service.createLibrary({ displayName: 'Linked Partial Delete', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Linked Partial Delete', selectedParentPath: root });
     const linkedRoot = path.join(root, 'linked-partial-trash');
     mkdirSync(linkedRoot);
     writeFileSync(path.join(linkedRoot, 'ok.txt'), 'ok');
@@ -1665,7 +1665,7 @@ describe('deleteLinkedAssets', () => {
         rmSync(sourcePath, { force: true });
       },
     });
-    const created = service.createLibrary({ displayName: 'Linked Delete Transaction', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Linked Delete Transaction', selectedParentPath: root });
     const linkedRoot = path.join(root, 'linked-trash-transaction');
     mkdirSync(linkedRoot);
     writeFileSync(path.join(linkedRoot, 'one.txt'), 'one');
@@ -1733,7 +1733,7 @@ describe('deleteLinkedAssets', () => {
         throw new Error('injected helper exit after delete');
       },
     });
-    const created = service.createLibrary({ displayName: 'Move Then Throw', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Move Then Throw', selectedParentPath: root });
     const linkedRoot = path.join(root, 'move-then-throw-source');
     mkdirSync(linkedRoot);
     writeFileSync(path.join(linkedRoot, 'one.txt'), 'one');
@@ -1760,7 +1760,7 @@ describe('deleteLinkedAssets', () => {
   it('rejects duplicate linked asset IDs before performing any deletion', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Linked Duplicate IDs', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Linked Duplicate IDs', selectedParentPath: root });
     const linkedRoot = path.join(root, 'linked-duplicate-ids');
     mkdirSync(linkedRoot);
     writeFileSync(path.join(linkedRoot, 'one.txt'), 'one');
@@ -1779,7 +1779,7 @@ describe('deleteLinkedAssets', () => {
   it('does not infer an in-flight source was trashed while its linked root is offline', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Linked Offline Recovery', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Linked Offline Recovery', selectedParentPath: root });
     const linkedRoot = path.join(root, 'linked-offline-recovery');
     const offlineRoot = path.join(root, 'linked-offline-recovery-disconnected');
     mkdirSync(linkedRoot);
@@ -1841,7 +1841,7 @@ describe('deleteLinkedAssets', () => {
     () => {
       const root = temporaryRoot();
       const service = newService();
-      const created = service.createLibrary({ displayName: 'Linked Symlink Recovery', selectedParentPath: root });
+      const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Linked Symlink Recovery', selectedParentPath: root });
       const linkedRoot = path.join(root, 'linked-symlink-recovery');
       const nestedRoot = path.join(linkedRoot, 'nested');
       const replacementRoot = path.join(root, 'replacement-target');
@@ -1893,7 +1893,7 @@ describe('deleteLinkedAssets', () => {
     async () => {
       const root = temporaryRoot();
       const service = newService();
-      const created = service.createLibrary({ displayName: 'Real Linked Delete', selectedParentPath: root });
+      const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Real Linked Delete', selectedParentPath: root });
       const linkedRoot = path.join(root, 'real-linked-delete');
       const sourcePath = path.join(linkedRoot, `serpent-delete-${randomUUID()}.txt`);
       mkdirSync(linkedRoot);
@@ -1917,7 +1917,7 @@ describe('deleteLinkedAssets', () => {
   it('rejects deleting a managed asset with linked delete', async () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Managed via Linked', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Managed via Linked', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'managed.jpg'), 'data');
     const r = importNoConflict(service, created.libraryId, path.join(root, 'managed.jpg'));
@@ -1936,7 +1936,7 @@ describe('relinkAsset (single missing asset)', () => {
     const root = temporaryRoot();
     const events: Array<{ nativeDragPathsChanged?: true; changedCount: number }> = [];
     const service = newService({ onAssetsChanged: (event) => events.push(event) });
-    const created = service.createLibrary({ displayName: 'Relink', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Relink', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'orig-relink.jpg'), 'orig');
     const r = importNoConflict(service, created.libraryId, path.join(root, 'orig-relink.jpg'));
@@ -1970,7 +1970,7 @@ describe('relinkAsset (single missing asset)', () => {
   it('copies replacement bytes back to the managed path across refresh and reopen', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Managed Relink Persistence', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Managed Relink Persistence', selectedParentPath: root });
 
     const sourcePath = path.join(root, 'managed-persistence.jpg');
     writeFileSync(sourcePath, 'old-managed-bytes');
@@ -2010,7 +2010,7 @@ describe('relinkAsset (single missing asset)', () => {
   it('preserves metadata and tags after relink', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Relink Meta', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Relink Meta', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'with-meta.jpg'), 'data');
     const r = importNoConflict(service, created.libraryId, path.join(root, 'with-meta.jpg'));
@@ -2035,7 +2035,7 @@ describe('relinkAsset (single missing asset)', () => {
   it('rejects relinking an available asset', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Avail Relink', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Avail Relink', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'available.jpg'), 'data');
     const r = importNoConflict(service, created.libraryId, path.join(root, 'available.jpg'));
@@ -2051,7 +2051,7 @@ describe('relinkAsset (single missing asset)', () => {
   it('rejects relinking to a path inside the managed space', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Escape', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Escape', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'escape.jpg'), 'data');
     const r = importNoConflict(service, created.libraryId, path.join(root, 'escape.jpg'));
@@ -2071,7 +2071,7 @@ describe('relinkAsset (single missing asset)', () => {
   it('rejects relinking to a nonexistent file', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Ghost', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Ghost', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'ghost.jpg'), 'data');
     const r = importNoConflict(service, created.libraryId, path.join(root, 'ghost.jpg'));
@@ -2090,7 +2090,7 @@ describe('relinkAsset (single missing asset)', () => {
   it('rejects relinking a trashed asset', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Trashed Relink', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Trashed Relink', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'trashed-relink.jpg'), 'data');
     const r = importNoConflict(service, created.libraryId, path.join(root, 'trashed-relink.jpg'));
@@ -2107,7 +2107,7 @@ describe('relinkAsset (single missing asset)', () => {
   it('does not mark a linked asset available when its linked root is offline', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Offline Linked Relink', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Offline Linked Relink', selectedParentPath: root });
     const linkedRoot = path.join(root, 'offline-linked-root');
     mkdirSync(linkedRoot, { recursive: true });
     writeFileSync(path.join(linkedRoot, 'linked.jpg'), 'linked');
@@ -2141,7 +2141,7 @@ describe('relinkBatchPreview', () => {
   it('returns matched/unmatched counts without absolute paths', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Batch Preview', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Batch Preview', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'batch1.jpg'), 'data');
     void importNoConflict(service, created.libraryId, path.join(root, 'batch1.jpg'));
@@ -2176,7 +2176,7 @@ describe('relinkBatchPreview', () => {
   it('shows unmatched when files are missing in new root', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Unmatched', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Unmatched', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'only.jpg'), 'data');
     void importNoConflict(service, created.libraryId, path.join(root, 'only.jpg'));
@@ -2196,7 +2196,7 @@ describe('relinkBatchPreview', () => {
   it('recovers a uniquely renamed-folder asset by basename', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Same Name Recovery', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Same Name Recovery', selectedParentPath: root });
     const folder = service.createManagedFolder({ libraryId: created.libraryId, name: 'original' });
     const source = path.join(root, 'same-name.jpg');
     writeFileSync(source, 'original bytes');
@@ -2230,7 +2230,7 @@ describe('relinkBatchPreview', () => {
   it('uses content fingerprints to disambiguate multiple same-name candidates', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Fingerprint Recovery', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Fingerprint Recovery', selectedParentPath: root });
     const firstFolder = service.createManagedFolder({ libraryId: created.libraryId, name: 'first' });
     const secondFolder = service.createManagedFolder({ libraryId: created.libraryId, name: 'second' });
     const source = path.join(root, 'fingerprint.jpg');
@@ -2274,7 +2274,7 @@ describe('relinkBatchPreview', () => {
   it('rejects a nonexistent new root', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Bad Root', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Bad Root', selectedParentPath: root });
 
     expectServiceError(
       () => service.relinkBatchPreview({ libraryId: created.libraryId, newRootPath: path.join(root, 'nonexistent') }),
@@ -2286,7 +2286,7 @@ describe('relinkBatchPreview', () => {
   it('treats one basename candidate for two assets as ambiguous', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Ambiguous Batch Preview', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Ambiguous Batch Preview', selectedParentPath: root });
     const firstFolder = service.createManagedFolder({ libraryId: created.libraryId, name: 'first' });
     const secondFolder = service.createManagedFolder({ libraryId: created.libraryId, name: 'second' });
     const source = path.join(root, 'shared.jpg');
@@ -2330,7 +2330,7 @@ describe('relinkBatchApply', () => {
     const root = temporaryRoot();
     const events: Array<{ nativeDragPathsChanged?: true; changedCount: number }> = [];
     const service = newService({ onAssetsChanged: (event) => events.push(event) });
-    const created = service.createLibrary({ displayName: 'Batch Apply', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Batch Apply', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'match.jpg'), 'data');
     void importNoConflict(service, created.libraryId, path.join(root, 'match.jpg'));
@@ -2365,7 +2365,7 @@ describe('relinkBatchApply', () => {
   it('copies matched bytes to each managed path across refresh and reopen', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Batch Managed Persistence', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Batch Managed Persistence', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'root-file.jpg'), 'old-root');
     const rootImport = importNoConflict(service, created.libraryId, path.join(root, 'root-file.jpg'));
@@ -2417,7 +2417,7 @@ describe('relinkBatchApply', () => {
   it('follow-up batch apply after single relink restores sibling missing assets', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Follow Up Batch', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Follow Up Batch', selectedParentPath: root });
     const folder = service.createManagedFolder({ libraryId: created.libraryId, name: 'sub' });
 
     writeFileSync(path.join(root, 'a.jpg'), 'a');
@@ -2466,7 +2466,7 @@ describe('relinkBatchApply', () => {
   it('keepMetadata=true preserves human and AI metadata, tags, and collections', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Keep Meta', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Keep Meta', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'keepmeta.jpg'), 'data');
     const r = importNoConflict(service, created.libraryId, path.join(root, 'keepmeta.jpg'));
@@ -2512,7 +2512,7 @@ describe('relinkBatchApply', () => {
   it('keepMetadata=false clears human and AI metadata, tags, and collections', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Clear Meta', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Clear Meta', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'clearmeta.jpg'), 'data');
     const r = importNoConflict(service, created.libraryId, path.join(root, 'clearmeta.jpg'));
@@ -2561,7 +2561,7 @@ describe('relinkBatchApply', () => {
   it('creates only one file_operations row for the entire batch', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Batch FO', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Batch FO', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'fo1.jpg'), 'data');
     void importNoConflict(service, created.libraryId, path.join(root, 'fo1.jpg'));
@@ -2591,7 +2591,7 @@ describe('relinkBatchApply', () => {
   it('updates a moved linked asset path and remains available after refresh', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Batch Linked Move', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Batch Linked Move', selectedParentPath: root });
     const linkedRoot = path.join(root, 'batch-linked-root');
     const oldFolder = path.join(linkedRoot, 'old');
     const newFolder = path.join(linkedRoot, 'new');
@@ -2639,7 +2639,7 @@ describe('active assets should not expose trashed fields', () => {
   it('active assets have null deletedAt/trashedFromPath/remainingDays', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Active Nulls', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Active Nulls', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'active-null.jpg'), 'data');
     void importNoConflict(service, created.libraryId, path.join(root, 'active-null.jpg'));
@@ -2657,7 +2657,7 @@ describe('refreshManagedAssets skips trashed assets', () => {
   it('does not reconcile files for trashed assets', () => {
     const root = temporaryRoot();
     const service = newService();
-    const created = service.createLibrary({ displayName: 'Skip Trash', selectedParentPath: root });
+    const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Skip Trash', selectedParentPath: root });
 
     writeFileSync(path.join(root, 'skip-refresh.jpg'), 'data');
     const r = importNoConflict(service, created.libraryId, path.join(root, 'skip-refresh.jpg'));

@@ -148,7 +148,7 @@ describe('import destination and content lookup acceleration', () => {
     writeFileSync(differentCopySource, 'bad-content!');
 
     let service = newService();
-    const library = service.createLibrary({ displayName: 'Content lookup', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Content lookup', selectedParentPath: root });
     const initial = prepareConflict(service, {
       libraryId: library.libraryId,
       sourceKind: 'files',
@@ -248,7 +248,7 @@ describe('import destination and content lookup acceleration', () => {
       writeFileSync(managedSource, 'managed bytes');
 
       const service = newService();
-      const library = service.createLibrary({ displayName: 'Location scope', selectedParentPath: root });
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Location scope', selectedParentPath: root });
       service.importFolderAsLinked({ libraryId: library.libraryId, sourceRootPath: linkedRoot });
       const plan = prepareConflict(service, {
         libraryId: library.libraryId,
@@ -285,7 +285,7 @@ describe('import destination and content lookup acceleration', () => {
     writeFileSync(firstSource, 'first bytes');
     writeFileSync(secondSource, 'second bytes');
     const service = newService();
-    const library = service.createLibrary({ displayName: 'Trash identity', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Trash identity', selectedParentPath: root });
     const initial = prepareConflict(service, {
       libraryId: library.libraryId,
       sourceKind: 'files',
@@ -329,7 +329,7 @@ describe('import destination and content lookup acceleration', () => {
         injected = true;
       },
     });
-    const serviceLibrary = service.createLibrary({ displayName: 'Unicode orphan', selectedParentPath: root });
+    const serviceLibrary = service.createLibrary({ storageLayout: 'assets', displayName: 'Unicode orphan', selectedParentPath: root });
     libraryPath = serviceLibrary.libraryPath;
     const plan = prepareConflict(service, {
       libraryId: serviceLibrary.libraryId,
@@ -361,7 +361,7 @@ describe('import destination and content lookup acceleration', () => {
         if (injectAtApply) writeFileSync(lateExternalPath, 'late external');
       },
     });
-    const library = service.createLibrary({ displayName: 'Prompt race', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Prompt race', selectedParentPath: root });
     const plan = prepareConflict(service, {
       libraryId: library.libraryId,
       sourceKind: 'files',
@@ -409,7 +409,7 @@ describe('import destination and content lookup acceleration', () => {
       observerFactory: () => ({ close() {} }),
       beforeImportDestinationApply: () => writeFileSync(externalPath, 'external bytes'),
     });
-    const library = service.createLibrary({ displayName: 'Guard cleanup', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Guard cleanup', selectedParentPath: root });
     const plan = prepareConflict(service, {
       libraryId: library.libraryId,
       sourceKind: 'folder',
@@ -441,7 +441,7 @@ describe('import destination and content lookup acceleration', () => {
     const service = newService({
       beforeImportDestinationApply: () => writeFileSync(externalPath, 'external bytes'),
     });
-    const library = service.createLibrary({ displayName: 'Bulk apply race', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Bulk apply race', selectedParentPath: root });
     const plan = service.prepareImport({
       libraryId: library.libraryId,
       sourceKind: 'files',
@@ -473,7 +473,7 @@ describe('import destination and content lookup acceleration', () => {
       mkdirSync(path.dirname(source));
       writeFileSync(source, 'imported bytes');
       const service = newService({ observerFactory: () => ({ close() {} }) });
-      const library = service.createLibrary({ displayName: 'Bulk orphan', selectedParentPath: root });
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Bulk orphan', selectedParentPath: root });
       const orphanPath = path.join(library.libraryPath, 'Assets', orphanName);
       writeFileSync(orphanPath, 'external bytes');
 
@@ -515,7 +515,7 @@ describe('import destination and content lookup acceleration', () => {
     writeFileSync(initialSource, 'initial bytes');
     writeFileSync(replacementSource, 'new bytes');
     const service = newService();
-    const library = service.createLibrary({ displayName: 'Missing managed file', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Missing managed file', selectedParentPath: root });
     const initial = prepareConflict(service, {
       libraryId: library.libraryId,
       sourceKind: 'files',
@@ -559,7 +559,7 @@ describe('import destination and content lookup acceleration', () => {
       writeFileSync(replacementSource, 'replacement bytes');
 
       const service = newService({ observerFactory: () => ({ close() {} }) });
-      const library = service.createLibrary({ displayName: 'NULL current revision', selectedParentPath: root });
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'NULL current revision', selectedParentPath: root });
       const initial = prepareConflict(service, {
         libraryId: library.libraryId,
         sourceKind: 'files',

@@ -39,7 +39,7 @@ describe('semantic SQLite Worker handler', () => {
     roots.push(root);
     const service = new LibraryService();
     services.push(service);
-    const library = service.createLibrary({ displayName: 'Video preview fixture', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Video preview fixture', selectedParentPath: root });
     const folder = service.createManagedFolder({ libraryId: library.libraryId, name: 'Assets' });
     const assetId = randomUUID();
     const revisionId = randomUUID();
@@ -167,7 +167,7 @@ describe('semantic SQLite Worker handler', () => {
     roots.push(root);
     const service = new LibraryService();
     services.push(service);
-    const library = service.createLibrary({ displayName: 'Large purge fixture', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Large purge fixture', selectedParentPath: root });
     const assetIds = Array.from({ length: 100_001 }, (_, index) => `fixture-${index}`);
     const catalog = {
       getBrowseChangeSequence: () => 1,
@@ -200,7 +200,7 @@ describe('semantic SQLite Worker handler', () => {
     roots.push(root);
     const service = new LibraryService();
     services.push(service);
-    const library = service.createLibrary({ displayName: 'Purge snapshot fixture', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Purge snapshot fixture', selectedParentPath: root });
     const folder = service.createManagedFolder({ libraryId: library.libraryId, name: 'Assets' });
     const relativePath = `${folder.relativePath}/queued.txt`;
     const filePath = path.join(library.libraryPath, relativePath);
@@ -238,7 +238,7 @@ describe('semantic SQLite Worker handler', () => {
     roots.push(root);
     const service = new LibraryService();
     services.push(service);
-    const library = service.createLibrary({ displayName: 'Rebuild fixture', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Rebuild fixture', selectedParentPath: root });
     const sidecar = path.join(library.libraryPath, '.serpent', 'semantic', 'index.sqlite');
     const core = path.join(library.libraryPath, '.serpent', 'library.db');
     const prior = new SemanticIndexStore({ libraryPath: library.libraryPath, libraryId: library.libraryId,
@@ -308,7 +308,7 @@ describe('semantic SQLite Worker handler', () => {
     roots.push(root);
     const service = new LibraryService();
     services.push(service);
-    const library = service.createLibrary({ displayName: 'Legacy migration fixture', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Legacy migration fixture', selectedParentPath: root });
     const folder = service.createManagedFolder({ libraryId: library.libraryId, name: 'Assets' });
     const relativePath = `${folder.relativePath}/legacy.png`;
     const absolutePath = path.join(library.libraryPath, 'Assets', relativePath);
@@ -398,7 +398,7 @@ describe('semantic SQLite Worker handler', () => {
     roots.push(root);
     const service = new LibraryService();
     services.push(service);
-    const library = service.createLibrary({ displayName: 'Temporary handler fixture', selectedParentPath: root });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Temporary handler fixture', selectedParentPath: root });
     const folder = service.createManagedFolder({ libraryId: library.libraryId, name: 'Assets' });
     const displayName = 'sample.txt';
     const relativePath = `${folder.relativePath}/${displayName}`;

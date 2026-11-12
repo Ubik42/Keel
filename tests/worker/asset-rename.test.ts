@@ -62,7 +62,7 @@ describe('asset file rename (REQ-MENU-002)', () => {
   it('renames a managed asset on disk and syncs DB row and search index without a new revision', () => {
     const temp = root();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'Rename', selectedParentPath: temp });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Rename', selectedParentPath: temp });
     const folder = service.createManagedFolder({ libraryId: library.libraryId, name: 'Shots' });
     const nestedSource = path.join(temp, 'alpha.png');
     const rootSource = path.join(temp, 'root.png');
@@ -141,7 +141,7 @@ describe('asset file rename (REQ-MENU-002)', () => {
     writeFileSync(path.join(sourceRoot, 'sub', 'beta.png'), 'linked-beta');
 
     const service = newService();
-    const library = service.createLibrary({ displayName: 'LinkedRename', selectedParentPath: temp });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'LinkedRename', selectedParentPath: temp });
     service.importFolderAsLinked({ libraryId: library.libraryId, sourceRootPath: sourceRoot });
     const assets = service.listAssets({ libraryId: library.libraryId, recursive: true });
     const top = assets.find((asset) => asset.relativeFilePath === 'alpha.png')!;
@@ -181,7 +181,7 @@ describe('asset file rename (REQ-MENU-002)', () => {
   it('accepts a complete file name when the user intentionally changes the extension', () => {
     const temp = root();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'RenameExtension', selectedParentPath: temp });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'RenameExtension', selectedParentPath: temp });
     const source = path.join(temp, 'source.png');
     writeFileSync(source, 'not-an-image');
     const asset = importFile(service, library.libraryId, source).assets[0]!;
@@ -202,7 +202,7 @@ describe('asset file rename (REQ-MENU-002)', () => {
   it('batch-renames independent assets and reports local naming conflicts without rolling back prior successes', () => {
     const temp = root();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'Batch Rename', selectedParentPath: temp });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Batch Rename', selectedParentPath: temp });
     const firstSource = path.join(temp, 'first.png');
     const secondSource = path.join(temp, 'second.png');
     const occupiedSource = path.join(temp, 'occupied.png');
@@ -242,7 +242,7 @@ describe('asset file rename (REQ-MENU-002)', () => {
   it('rejects renames onto tracked, case-variant, and untracked conflicting names', () => {
     const temp = root();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'Conflicts', selectedParentPath: temp });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Conflicts', selectedParentPath: temp });
     const folder = service.createManagedFolder({ libraryId: library.libraryId, name: 'Dupes' });
     const alphaSource = path.join(temp, 'alpha.png');
     const bravoSource = path.join(temp, 'bravo.png');
@@ -293,7 +293,7 @@ describe('asset file rename (REQ-MENU-002)', () => {
   it('rejects renames for missing, trashed, and offline assets', () => {
     const temp = root();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'States', selectedParentPath: temp });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'States', selectedParentPath: temp });
     const missingSource = path.join(temp, 'missing.png');
     const trashedSource = path.join(temp, 'trashed.png');
     writeFileSync(missingSource, 'missing');
@@ -333,7 +333,7 @@ describe('asset file rename (REQ-MENU-002)', () => {
     writeFileSync(path.join(offlineRoot, 'held.png'), 'held');
 
     const service = newService();
-    const library = service.createLibrary({ displayName: 'LinkedStates', selectedParentPath: temp });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'LinkedStates', selectedParentPath: temp });
     service.importFolderAsLinked({ libraryId: library.libraryId, sourceRootPath: missingRoot });
     service.importFolderAsLinked({ libraryId: library.libraryId, sourceRootPath: offlineRoot });
     const assets = service.listAssets({ libraryId: library.libraryId, recursive: true });
@@ -363,7 +363,7 @@ describe('asset file rename (REQ-MENU-002)', () => {
   it('treats an identical name (including case) as a successful no-op', () => {
     const temp = root();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'Noop', selectedParentPath: temp });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Noop', selectedParentPath: temp });
     const folder = service.createManagedFolder({ libraryId: library.libraryId, name: 'Same' });
     const source = path.join(temp, 'echo.png');
     writeFileSync(source, 'echo');
@@ -399,7 +399,7 @@ describe('asset file rename (REQ-MENU-002)', () => {
   it('renames when only the case changes against itself', () => {
     const temp = root();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'CaseChange', selectedParentPath: temp });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'CaseChange', selectedParentPath: temp });
     const folder = service.createManagedFolder({ libraryId: library.libraryId, name: 'Case' });
     const source = path.join(temp, 'foxtrot.png');
     writeFileSync(source, 'foxtrot');
@@ -418,7 +418,7 @@ describe('asset file rename (REQ-MENU-002)', () => {
   it('rejects invalid base names with a typed error and trims surrounding whitespace', () => {
     const temp = root();
     const service = newService();
-    const library = service.createLibrary({ displayName: 'Names', selectedParentPath: temp });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Names', selectedParentPath: temp });
     const source = path.join(temp, 'plain.png');
     writeFileSync(source, 'plain');
     const asset = importFile(service, library.libraryId, source).assets[0]!;
@@ -480,7 +480,7 @@ describe('asset file rename (REQ-MENU-002)', () => {
     const events: Array<{ type: string; source?: string; changedCount: number; libraryId: string }> = [];
     const temp = root();
     const service = newService({ onAssetsChanged: (event) => events.push(event) });
-    const library = service.createLibrary({ displayName: 'RenameNotify', selectedParentPath: temp });
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'RenameNotify', selectedParentPath: temp });
     const source = path.join(temp, 'clip.mp4');
     writeFileSync(source, 'fake-mp4');
     const asset = importFile(service, library.libraryId, source).assets[0]!;
