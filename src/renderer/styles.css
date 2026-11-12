@@ -20043,3 +20043,14 @@ body.platform-darwin .app-shell[data-shell-layout="islands"] .toolbar-nav-cluste
 .tag-tree-empty, .tag-tree-confirm p { padding: 0 5px; font-size: 12px; line-height: 1.6; opacity: .65; }
 .tag-tree-root-drop { margin-top: 7px; padding: 9px; border: 1px dashed currentColor; border-radius: 6px; font-size: 12px; opacity: .75; }
 @media (prefers-reduced-motion: reduce) { .tag-tree-disclosure svg { transition: none; } }
+
+.asset-card[data-tag-drop-target="true"] { outline: 3px solid var(--ui-action-accent); outline-offset: 2px; }
+.tag-tree-appearance { margin: 8px 0; padding: 9px; border: 1px solid var(--ui-border-subtle, #ddd); border-radius: 8px; font-size: 12px; }
+.tag-tree-appearance-picker { max-height: 300px; overflow: auto; margin-top: 8px; }
+.tag-tree-appearance .tag-tree-edit-actions { flex-wrap: wrap; }
+.interface-scale-controls { display: flex; align-items: center; gap: 16px; width: 100%; }
+.interface-scale-controls > :first-child { flex: 1; }
+.interface-scale-controls output { min-width: 44px; font-variant-numeric: tabular-nums; }
+.app-shell .dimension-filter-bar .dimension-filter-dims .dimension-filter-btn { min-width: 34px; min-height: 34px; }
+.dimension-filter-more-section { grid-column: 1 / -1; min-width: 0; }
+.dimension-filter-more-section > summary { padding: 10px 0; font-weight: 600; cursor: pointer; }

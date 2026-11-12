@@ -1,3 +1,4 @@
+import type { EntityAppearance as TagAppearance } from '../../shared/entity-appearance';
 // A sandboxed preload cannot load `node:crypto` — importing it here makes the
 // whole preload fail (`Unable to load preload script`), which leaves the
 // renderer without the `serpent` bridge. Web Crypto is available in the
@@ -1089,15 +1090,15 @@ export const library: SerpentLibraryApi = Object.freeze({
     return { ok: true, value: result.tags };
   },
 
-  async createTag({ libraryId, name, parentTagId }: { libraryId: string; name: string; parentTagId?: string | null }): Promise<LibraryApiResult<TagSummary & { historyEntryId?: string }>> {
-    const result = await request({ type: 'tag.create.request', libraryId, name, parentTagId });
+  async createTag({ libraryId, name, parentTagId, appearance }: { libraryId: string; name: string; parentTagId?: string | null; appearance?: TagAppearance | null }): Promise<LibraryApiResult<TagSummary & { historyEntryId?: string }>> {
+    const result = await request({ type: 'tag.create.request', libraryId, name, parentTagId, appearance });
     if (!result.ok) return failure(result);
     if (result.type !== 'tag.created') throw new Error('Unexpected create-tag response.');
     return { ok: true, value: { ...result.tag, ...(result.historyEntryId ? { historyEntryId: result.historyEntryId } : {}) } };
   },
 
-  async renameTag({ libraryId, tagId, name, parentTagId }: { libraryId: string; tagId: string; name: string; parentTagId?: string | null }): Promise<LibraryApiResult<TagSummary & { historyEntryId?: string }>> {
-    const result = await request({ type: 'tag.rename.request', libraryId, tagId, name, parentTagId });
+  async renameTag({ libraryId, tagId, name, parentTagId, appearance }: { libraryId: string; tagId: string; name: string; parentTagId?: string | null; appearance?: TagAppearance | null }): Promise<LibraryApiResult<TagSummary & { historyEntryId?: string }>> {
+    const result = await request({ type: 'tag.rename.request', libraryId, tagId, name, parentTagId, appearance });
     if (!result.ok) return failure(result);
     if (result.type !== 'tag.renamed') throw new Error('Unexpected rename-tag response.');
     return { ok: true, value: { ...result.tag, ...(result.historyEntryId ? { historyEntryId: result.historyEntryId } : {}) } };

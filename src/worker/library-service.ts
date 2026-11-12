@@ -1,3 +1,4 @@
+import { randomTagAppearance } from '../shared/tag-appearance';
 import { managedStoragePath, readStorageLayout, writeStorageLayout } from './library-storage-layout';
 import type { LibraryStorageLayout } from '../shared/library-storage-layout';
 import { randomUUID, createHash } from 'node:crypto';
@@ -3647,6 +3648,13 @@ const TAG_HIERARCHY_SQL = `
   CREATE INDEX IF NOT EXISTS tag_hierarchy_parent ON tag_hierarchy(parent_tag_id);
 `;
 
+const TAG_APPEARANCE_SQL = `
+  CREATE TABLE IF NOT EXISTS tag_appearance (
+    tag_id TEXT PRIMARY KEY REFERENCES tags(tag_id) ON DELETE CASCADE,
+    appearance_json TEXT NOT NULL
+  );
+`;
+
 export const MIGRATIONS = [
   { version: 1, sql: INITIAL_SCHEMA_SQL, checksum: INITIAL_SCHEMA_CHECKSUM },
   { version: 2, sql: ASSET_SCHEMA_SQL, checksum: ASSET_SCHEMA_CHECKSUM },
@@ -3860,6 +3868,7 @@ export const MIGRATIONS = [
     checksum: createHash('sha256').update(LINKED_DIRECTORY_INDEX_SQL).digest('hex'),
   },
   { version: 61, sql: TAG_HIERARCHY_SQL, checksum: createHash('sha256').update(TAG_HIERARCHY_SQL).digest('hex') },
+  { version: 62, sql: TAG_APPEARANCE_SQL, checksum: createHash('sha256').update(TAG_APPEARANCE_SQL).digest('hex') },
 ] as const;
 export const SUPPORTED_SCHEMA_VERSION = MIGRATIONS.at(-1)!.version;
 
@@ -4499,6 +4508,7 @@ interface SmartCollectionHistorySnapshot {
 }
 
 interface TagHistorySnapshot {
+  appearance?: EntityAppearance | null;
   hierarchy?: { parentTagId: string | null; childTagIds: string[] };
   tagId: string;
   libraryId: string;
@@ -11854,6 +11864,7 @@ export class LibraryService {
       tagId: row.tag_id,
       libraryId: row.library_id,
       name: row.name,
+      ...(this.getTagAppearance(openLibrary, row.tag_id) ? { appearance: this.getTagAppearance(openLibrary, row.tag_id) } : {}),
       ...(hierarchy.some((link) => link.tag_id === row.tag_id || link.parent_tag_id === row.tag_id) ? {
         hierarchy: { parentTagId: hierarchy.find((link) => link.tag_id === row.tag_id)?.parent_tag_id ?? null,
           childTagIds: hierarchy.filter((link) => link.parent_tag_id === row.tag_id).map((link) => link.tag_id).sort() },
@@ -11879,6 +11890,7 @@ export class LibraryService {
         tagId: candidate.tagId,
         libraryId: candidate.libraryId,
         name: candidate.name,
+        ...(candidate.appearance !== undefined ? { appearance: candidate.appearance } : {}),
         ...(candidate.hierarchy ? { hierarchy: candidate.hierarchy } : {}),
         humanRelations: this.assertHistoryRelations(candidate.humanRelations),
       };
@@ -11922,6 +11934,7 @@ export class LibraryService {
         );
         for (const relation of item.humanRelations) insertRelation.run(relation.assetId, relation.tagId);
       }
+      for (const item of restore) this.setTagAppearance(openLibrary, item.tagId, item.appearance ?? null);
       if (hasTable(openLibrary.connection, 'tag_hierarchy')) {
         for (const item of restore) this.setTagParent(openLibrary, item.tagId, item.hierarchy?.parentTagId ?? null);
         for (const item of restore) {
@@ -20180,7 +20193,7 @@ export class LibraryService {
 
   // ── Tags ──────────────────────────────────────────────────────────
 
-  createTag(input: { libraryId: string; name: string; parentTagId?: string | null }): TagSummary {
+  createTag(input: { libraryId: string; name: string; parentTagId?: string | null; appearance?: EntityAppearance | null }): TagSummary {
     const openLibrary = this.requireOpenLibrary(input.libraryId);
     const trimmed = input.name.trim();
     if (trimmed.length === 0) throw new LibraryServiceError('INVALID_FOLDER_NAME');
@@ -20192,6 +20205,7 @@ export class LibraryService {
         openLibrary.connection.prepare('INSERT INTO tags (tag_id, library_id, name, created_at) VALUES (?, ?, ?, ?)')
           .run(tagId, openLibrary.summary.libraryId, trimmed, now);
         if (input.parentTagId != null) this.setTagParent(openLibrary, tagId, input.parentTagId);
+        if (hasTable(openLibrary.connection, 'tag_appearance') || input.appearance !== undefined) this.setTagAppearance(openLibrary, tagId, input.appearance === undefined ? randomTagAppearance() : input.appearance);
       })();
     } catch (error) {
       if (
@@ -20203,7 +20217,7 @@ export class LibraryService {
       }
       throw serviceError(error, 'LIBRARY_NOT_WRITABLE');
     }
-    return { tagId, name: trimmed, assetCount: 0, ...(input.parentTagId ? { parentTagId: input.parentTagId } : {}) };
+    return { tagId, name: trimmed, assetCount: 0, ...(input.parentTagId ? { parentTagId: input.parentTagId } : {}), ...(this.getTagAppearance(openLibrary, tagId) ? { appearance: this.getTagAppearance(openLibrary, tagId)! } : {}) };
   }
 
   listTags(libraryId: string): TagSummary[] {
@@ -20245,7 +20259,13 @@ export class LibraryService {
         name: string;
         asset_count: number;
       }>;
-    const tags: TagSummary[] = rows.map((row) => ({ tagId: row.tag_id, name: row.name, assetCount: row.asset_count }));
+    const appearances = new Map<string, EntityAppearance>();
+    if (hasTable(connection, 'tag_appearance')) {
+      const stored = connection.prepare('SELECT tag_id, appearance_json FROM tag_appearance').all() as Array<{ tag_id: string; appearance_json: string }>;
+      for (const item of stored) { try { const appearance = sanitizeEntityAppearance(JSON.parse(item.appearance_json)); if (appearance) appearances.set(item.tag_id, appearance); } catch { /* Ignore malformed appearance metadata. */ } }
+    }
+    const tags: TagSummary[] = rows.map((row) => ({ tagId: row.tag_id, name: row.name, assetCount: row.asset_count,
+      ...(appearances.has(row.tag_id) ? { appearance: appearances.get(row.tag_id)! } : {}) }));
     if (!hasTable(connection, 'tag_hierarchy')) return tags;
     const links = connection.prepare('SELECT tag_id, parent_tag_id FROM tag_hierarchy WHERE parent_tag_id IS NOT NULL')
       .all() as Array<{ tag_id: string; parent_tag_id: string }>;
@@ -20263,6 +20283,23 @@ export class LibraryService {
     const subtreeCounts = new Map(counts.map((row) => [row.root, row.count]));
     return tags.map((tag) => ({ ...tag, ...(parents.has(tag.tagId) ? { parentTagId: parents.get(tag.tagId)! } : {}),
       subtreeAssetCount: subtreeCounts.get(tag.tagId) ?? 0 }));
+  }
+
+  private getTagAppearance(openLibrary: OpenLibrary, tagId: string): EntityAppearance | null {
+    if (!hasTable(openLibrary.connection, 'tag_appearance')) return null;
+    const row = openLibrary.connection.prepare('SELECT appearance_json FROM tag_appearance WHERE tag_id = ?').get(tagId) as { appearance_json: string } | undefined;
+    try { return row ? sanitizeEntityAppearance(JSON.parse(row.appearance_json)) : null; } catch { return null; }
+  }
+
+  private setTagAppearance(openLibrary: OpenLibrary, tagId: string, value: EntityAppearance | null): void {
+    const parsed = parseWritableAppearance(value);
+    if (!parsed.ok) throw new LibraryServiceError('INVALID_APPEARANCE');
+    if (!hasTable(openLibrary.connection, 'tag_appearance')) {
+      if (parsed.appearance) throw new LibraryServiceError('LIBRARY_NOT_WRITABLE');
+      return;
+    }
+    if (parsed.appearance) openLibrary.connection.prepare('INSERT INTO tag_appearance(tag_id, appearance_json) VALUES (?, ?) ON CONFLICT(tag_id) DO UPDATE SET appearance_json = excluded.appearance_json').run(tagId, JSON.stringify(parsed.appearance));
+    else openLibrary.connection.prepare('DELETE FROM tag_appearance WHERE tag_id = ?').run(tagId);
   }
 
   private setTagParent(openLibrary: OpenLibrary, tagId: string, parentTagId: string | null): void {
@@ -20285,7 +20322,7 @@ export class LibraryService {
     } else openLibrary.connection.prepare('DELETE FROM tag_hierarchy WHERE tag_id = ?').run(tagId);
   }
 
-  renameTag(input: { libraryId: string; tagId: string; name: string; parentTagId?: string | null }): TagSummary {
+  renameTag(input: { libraryId: string; tagId: string; name: string; parentTagId?: string | null; appearance?: EntityAppearance | null }): TagSummary {
     const openLibrary = this.requireOpenLibrary(input.libraryId);
     const trimmed = input.name.trim();
     if (trimmed.length === 0) throw new LibraryServiceError('INVALID_FOLDER_NAME');
@@ -20306,6 +20343,7 @@ export class LibraryService {
     try {
       openLibrary.connection.transaction(() => {
         if (input.parentTagId !== undefined) this.setTagParent(openLibrary, input.tagId, input.parentTagId);
+        if (input.appearance !== undefined) this.setTagAppearance(openLibrary, input.tagId, input.appearance);
         openLibrary.connection
           .prepare('UPDATE tags SET name = ? WHERE tag_id = ?')
           .run(trimmed, input.tagId);
@@ -20338,7 +20376,7 @@ export class LibraryService {
     const parent = hasTable(openLibrary.connection, 'tag_hierarchy')
       ? openLibrary.connection.prepare('SELECT parent_tag_id FROM tag_hierarchy WHERE tag_id = ?').get(input.tagId) as { parent_tag_id: string | null } | undefined
       : undefined;
-    return { tagId: input.tagId, name: trimmed, assetCount: countRow.count, ...(parent?.parent_tag_id ? { parentTagId: parent.parent_tag_id } : {}) };
+    return { tagId: input.tagId, name: trimmed, assetCount: countRow.count, ...(parent?.parent_tag_id ? { parentTagId: parent.parent_tag_id } : {}), ...(this.getTagAppearance(openLibrary, input.tagId) ? { appearance: this.getTagAppearance(openLibrary, input.tagId) } : {}) };
   }
 
   deleteTag(input: { libraryId: string; tagId: string }): string {
@@ -20443,6 +20481,7 @@ export class LibraryService {
             'INSERT INTO tags (tag_id, library_id, name, created_at) VALUES (?, ?, ?, ?)',
           )
           .run(newTagId, openLibrary.summary.libraryId, trimmed, now);
+        if (hasTable(openLibrary.connection, 'tag_appearance')) this.setTagAppearance(openLibrary, newTagId, randomTagAppearance());
 
         const insertHuman = openLibrary.connection.prepare(
           'INSERT OR IGNORE INTO human_asset_tags (asset_id, tag_id) VALUES (?, ?)',
@@ -22445,6 +22484,7 @@ export class LibraryService {
           if (!tag) {
             const tagId = randomUUID();
             insertTag.run(tagId, openLibrary.summary.libraryId, trimmed, now);
+            if (hasTable(openLibrary.connection, 'tag_appearance')) this.setTagAppearance(openLibrary, tagId, randomTagAppearance());
             tag = { tag_id: tagId, name: trimmed };
           }
 
@@ -44955,7 +44995,10 @@ export class LibraryService {
             'SELECT tag_id FROM tags WHERE library_id = ? AND name = ? COLLATE NOCASE LIMIT 1',
           )
           .get(openLibrary.summary.libraryId, name) as { tag_id: string } | undefined;
-        if (inserted) tagIdsByName.set(name, inserted.tag_id);
+        if (inserted) {
+          tagIdsByName.set(name, inserted.tag_id);
+          if (inserted.tag_id === tagId && hasTable(openLibrary.connection, 'tag_appearance')) this.setTagAppearance(openLibrary, tagId, randomTagAppearance());
+        }
       }
     })();
   }
@@ -45046,7 +45089,10 @@ export class LibraryService {
             'SELECT tag_id FROM tags WHERE library_id = ? AND name = ? COLLATE NOCASE LIMIT 1',
           )
           .get(openLibrary.summary.libraryId, name) as { tag_id: string } | undefined;
-        if (inserted) tagIdsByName.set(name, inserted.tag_id);
+        if (inserted) {
+          tagIdsByName.set(name, inserted.tag_id);
+          if (inserted.tag_id === tagId && hasTable(openLibrary.connection, 'tag_appearance')) this.setTagAppearance(openLibrary, tagId, randomTagAppearance());
+        }
       }
     })();
   }

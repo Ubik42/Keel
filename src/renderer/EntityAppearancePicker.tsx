@@ -3,6 +3,7 @@ import {
   ENTITY_APPEARANCE_COLOR_IDS,
   ENTITY_APPEARANCE_EMOJI_GROUPS,
   ENTITY_APPEARANCE_ICON_GROUPS,
+  ENTITY_APPEARANCE_ICON_IDS,
   type EntityAppearance,
 } from "../shared/entity-appearance";
 import { AppearanceGlyph, appearanceColorVar, CHROME_APPEARANCE_ICONS } from "./AppearanceGlyph";
@@ -62,7 +63,7 @@ export function EntityAppearancePicker({
       <div className="appearance-picker-colors" role="listbox" aria-label={t("appearance.colorLabel")}>
         <button
           className={`appearance-picker-swatch is-none${current?.colorId ? "" : " is-selected"}`}
-          data-hover-tip={t("appearance.colorNone")}
+          data-hover-tip={t("appearance.colorNone")} aria-label={t("appearance.colorNone")}
           onClick={() => setColor(null)}
           type="button"
         />
@@ -70,7 +71,7 @@ export function EntityAppearancePicker({
           <button
             className={`appearance-picker-swatch${current?.colorId === colorId ? " is-selected" : ""}`}
             data-hover-tip={t(`appearance.color.${colorId}` as "appearance.color.blue")}
-            key={colorId}
+            key={colorId} aria-label={t(`appearance.color.${colorId}` as "appearance.color.blue")}
             onClick={() => setColor(colorId)}
             style={{ background: appearanceColorVar(colorId) }}
             type="button"
@@ -88,7 +89,7 @@ export function EntityAppearancePicker({
                   <button
                     aria-pressed={selected}
                     className={`appearance-picker-cell${selected ? " is-selected" : ""}`}
-                    key={emoji}
+                    key={emoji} aria-label={emoji}
                     onClick={() => setGlyph("emoji", emoji)}
                     type="button"
                   >
@@ -110,7 +111,7 @@ export function EntityAppearancePicker({
                   <button
                     aria-pressed={selected}
                     className={`appearance-picker-cell${selected ? " is-selected" : ""}`}
-                    key={iconId}
+                    key={iconId} aria-label={t("appearance.iconOption", { index: ENTITY_APPEARANCE_ICON_IDS.indexOf(iconId) + 1 })}
                     onClick={() => setGlyph("icon", iconId)}
                     type="button"
                   >

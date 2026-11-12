@@ -1,3 +1,4 @@
+import { loadInterfaceScale, saveInterfaceScale } from './interface-scale';
 import { isImeKeyboardEvent } from "./ime-safe-dismiss";
 import { setShellLayout, useShellLayout } from "./ui/use-shell-layout";
 import { useState, type ReactNode } from "react";
@@ -417,6 +418,7 @@ export function AssetsSettingsPage({
 }
 
 export function AppearanceSettingsPage(): ReactNode {
+  const [interfaceScale, setInterfaceScale] = useState(loadInterfaceScale);
   const shellLayout = useShellLayout();
   const t = useT();
   const { preferences: fontSizePrefs, setPreference: setFontSizePreference } = useFontSize();
@@ -454,6 +456,14 @@ export function AppearanceSettingsPage(): ReactNode {
       </div>
       <div className="app-settings-card-divider" />
       <ThemeColorSettings />
+      <div className="app-settings-card-divider" />
+      <div className="app-settings-row app-settings-row-stack">
+        <div className="app-settings-row-copy"><strong>{t('settings.interfaceScale')}</strong><span>{t('settings.interfaceScaleHint')}</span></div>
+        <div className="interface-scale-controls">
+          <Slider aria-label={t('settings.interfaceScale')} min={75} max={200} step={5} value={interfaceScale} valueText={`${interfaceScale}%`} onValueChange={(value) => setInterfaceScale(saveInterfaceScale(value))} />
+          <output>{interfaceScale}%</output><button className="secondary-button" type="button" onClick={() => setInterfaceScale(saveInterfaceScale(100))}>{t('settings.interfaceScaleReset')}</button>
+        </div>
+      </div>
       <div className="app-settings-card-divider" />
       <div className="app-settings-row app-settings-row-stack">
         <div className="app-settings-row-copy">

@@ -1,3 +1,5 @@
+import { AppearanceGlyph } from './AppearanceGlyph';
+import { TAG_DRAG_TYPE } from './tag-drag-drop';
 /**
  * Chip-grid tag management workspace (Serpent-eaxs / REQ-TAG-010–013 redo;
  * supersedes the rolled-back Serpent-36il attempt).
@@ -377,6 +379,8 @@ export function TagManagementWorkspace({
                     ),
                   );
                 }}
+                draggable={!renaming}
+                onDragStart={(event) => { event.dataTransfer.setData(TAG_DRAG_TYPE, tag.tagId); event.dataTransfer.effectAllowed = "copyMove"; }}
                 onContextMenu={(event) => openMenu(event, tag.tagId)}
                 onDoubleClick={() => {
                   if (!renaming) onOpenTag(tag.tagId);
@@ -391,7 +395,7 @@ export function TagManagementWorkspace({
                 tabIndex={0}
                 data-hover-tip={t("tagMgmt.openHint")}
               >
-                <Icon name="tag" size={13} />
+                <AppearanceGlyph appearance={tag.appearance} fallback="tag" size={15} />
                 {renaming ? (
                   <input
                     aria-label={t("tagMgmt.rename")}

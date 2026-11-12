@@ -1,3 +1,6 @@
+import { AppearanceGlyph } from './AppearanceGlyph';
+import { TAG_DRAG_TYPE } from './tag-drag-drop';
+import type { EntityAppearance } from '../shared/entity-appearance';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { ContextMenu, ContextMenuBackdrop, ContextMenuItem, useContextMenu } from './context-menu';
 import { Icon } from './Icons';
@@ -8,6 +11,7 @@ export interface InspectorTagChipProps {
   id: string;
   name: string;
   color?: string;
+  appearance?: EntityAppearance | null;
   source?: string;
   showAiBadge: boolean;
   editing: boolean;
@@ -16,7 +20,7 @@ export interface InspectorTagChipProps {
   onRename?: (name: string) => Promise<boolean>;
 }
 
-export function InspectorTagChip({ id, name, color, source, showAiBadge, editing, onFilter, onRemove, onRename }: InspectorTagChipProps) {
+export function InspectorTagChip({ id, name, color, appearance, source, showAiBadge, editing, onFilter, onRemove, onRename }: InspectorTagChipProps) {
   const { t } = useLocale();
   const { active, open } = useContextMenu();
   const [renaming, setRenaming] = useState(false);
@@ -41,7 +45,8 @@ export function InspectorTagChip({ id, name, color, source, showAiBadge, editing
   const modifier = /Mac/i.test(navigator.platform) ? '⌘' : 'Ctrl';
   const shortcut = t('inspector.tagFilterGesture', { modifier });
   return <>
-    <span className={`tag-chip inspector-tag-chip${editing ? ' is-editing' : ''}`} data-source={source}
+    <span className={`tag-chip inspector-tag-chip${editing ? ' is-editing' : ''}`} data-source={source} draggable={!editing && !renaming}
+      onDragStart={event => { event.dataTransfer.setData(TAG_DRAG_TYPE, id); event.dataTransfer.effectAllowed = "copyMove"; }}
       style={{ borderColor: color, '--tag-chip-color': color } as CSSProperties}
       onContextMenu={event => {
         event.preventDefault(); event.stopPropagation();
@@ -49,7 +54,7 @@ export function InspectorTagChip({ id, name, color, source, showAiBadge, editing
       }}>
       {source === 'ai' && showAiBadge
         ? <span className="inspector-ai-badge inspector-ai-badge-inline" aria-label={t('inspector.aiBadge')} data-hover-tip={t('inspector.aiBadge')}>AI</span>
-        : source !== 'ai' ? <span className="tag-chip-dot" style={{ background: color }} /> : null}
+        : source !== 'ai' ? appearance ? <AppearanceGlyph appearance={appearance} fallback="tag" size={13} /> : <span className="tag-chip-dot" style={{ background: color }} /> : null}
       {renaming ? <input className="inspector-tag-rename" aria-label={t('tagMgmt.rename')}
         ref={input} value={draft} readOnly={saving} maxLength={80} size={Math.max(2, Array.from(draft).length)}
         onChange={event => { attemptedValue.current = null; setDraft(event.target.value); }} onBlur={() => { void submit("blur"); }}

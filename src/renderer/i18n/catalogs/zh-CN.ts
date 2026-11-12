@@ -245,6 +245,9 @@ export const zhCN = {
     tagManagement: "标签管理"
   },
   tagTree: {
+    appearance: "颜色和图标",
+    randomAppearance: "随机外观",
+    appearanceSaved: "标签外观已更新",
     title: "标签",
     search: "搜索标签",
     create: "新建标签",
@@ -678,6 +681,7 @@ export const zhCN = {
     }
   },
   appearance: {
+    iconOption: "图标 {index}",
     title: "图标与颜色",
     colorLabel: "颜色",
     colorNone: "默认颜色",
@@ -1927,6 +1931,9 @@ export const zhCN = {
     mcpCredentialAclCleanupFailed: "无法保护新建的 MCP 客户端凭据密钥文件（{systemCode}），清理也失败（{cleanupCode}）。请检查并移除该文件后重启。位置：{path}。",
     mcpOperationFailed: "MCP 操作未能完成。",
     fontSize: "字体大小",
+    interfaceScale: "界面缩放",
+    interfaceScaleHint: "同时调整图标、按钮、文字和间距，立即生效并记住设置。",
+    interfaceScaleReset: "恢复 100%",
     fontSizeHint: "只调整 Serpent 界面文字，不改变系统或显示器缩放。",
     fontSizeCompact: "紧凑",
     fontSizeDefault: "默认",

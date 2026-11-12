@@ -1,3 +1,4 @@
+import { applyInterfaceScale, loadInterfaceScale } from './interface-scale';
 import '@fontsource-variable/noto-sans-sc/index.css';
 // Windows-only HarmonyOS face; vite aliases this to an empty stub on macOS/Linux
 // so darwin npm start does not require harmonyos-sans-sc-webfont-splitted.
@@ -50,6 +51,7 @@ applyRadiusPreferences(loadRadiusPreferences());
 // Apply the user's typography scale before React mounts to avoid a default-size
 // flash. This is app typography, separate from OS/Chromium display scaling.
 applyFontSizePreferences(loadFontSizePreferences());
+applyInterfaceScale(loadInterfaceScale());
 
 const root = document.getElementById('root');
 

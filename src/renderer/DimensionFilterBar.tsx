@@ -71,21 +71,8 @@ export type DimensionId =
 
 type RangeState = { min: string; max: string; exclude: boolean };
 
-/** Bundled "more" popover fields toggled together by REQ-FILTER-021. */
-type MoreFilterState = {
-  favoriteFilter: "any" | "yes" | "no";
-  sourceUrlFilter: "any" | "yes" | "no";
-  availabilityFilter: "any" | "available" | "missing";
-  excludeAvailabilityFilter: boolean;
-  longEdgeRange: RangeState;
-  widthRange: RangeState;
-  heightRange: RangeState;
-  durationRange: RangeState;
-};
-
 const HOVER_OPEN_DELAY_MS = 500;
 const HOVER_CLOSE_DELAY_MS = 150;
-const EMPTY_RANGE: RangeState = { min: "", max: "", exclude: false };
 
 export type DimensionFilterBarProps = {
   disabled?: boolean;
@@ -222,7 +209,7 @@ function DimensionButton({
       onClick={onClick}
       type="button"
     >
-      <Icon name={icon} size={14} />
+      <Icon name={icon} size={18} />
       <span className="dimension-filter-btn-label">{label}</span>
     </button>
   );
@@ -299,9 +286,7 @@ export function DimensionFilterBar(props: DimensionFilterBarProps) {
 
   const [openDimension, setOpenDimension] = useState<DimensionId | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
-  const colorDimRef = useRef<HTMLDivElement>(null);
   const tagsDimRef = useRef<HTMLDivElement>(null);
-  const shapeDimRef = useRef<HTMLDivElement>(null);
   const ratingDimRef = useRef<HTMLDivElement>(null);
   const formatDimRef = useRef<HTMLDivElement>(null);
   const moreDimRef = useRef<HTMLDivElement>(null);
@@ -481,17 +466,8 @@ export function DimensionFilterBar(props: DimensionFilterBarProps) {
   // dimension button clears its live filter value (remembering it) when
   // active, or restores the remembered value when inactive; see
   // dimension-enable-toggle.ts.
-  const colorToggleRef = useRef(
-    new DimensionEnableToggle<{ colorFilter: string; exclude: boolean }>(),
-  );
   const tagsToggleRef = useRef(
     new DimensionEnableToggle<{ includes: string[]; excludes: string[]; expression: string }>(),
-  );
-  const shapeToggleRef = useRef(
-    new DimensionEnableToggle<{
-      range: RangeState;
-      presets: RangeStrings[];
-    }>(),
   );
   const ratingToggleRef = useRef(
     new DimensionEnableToggle<{ ratingFilter: string; exclude: boolean }>(),
@@ -499,7 +475,6 @@ export function DimensionFilterBar(props: DimensionFilterBarProps) {
   const formatToggleRef = useRef(
     new DimensionEnableToggle<{ formatFilter: string; exclude: boolean }>(),
   );
-  const moreToggleRef = useRef(new DimensionEnableToggle<MoreFilterState>());
 
   const chips = buildActiveFilterChips(snapshot, {
     textFormatLabel: t("filter.formatText"),
@@ -570,6 +545,7 @@ export function DimensionFilterBar(props: DimensionFilterBarProps) {
     otherFormatTokens,
   );
   const moreActive =
+    colorActive || shapeActive ||
     favoriteFilter !== "any" ||
     sourceUrlFilter !== "any" ||
     availabilityFilter !== "any" ||
@@ -585,18 +561,6 @@ export function DimensionFilterBar(props: DimensionFilterBarProps) {
   // REQ-FILTER-021: click toggles a dimension's filter on/off, remembering
   // the cleared value so a second click restores it (hover, wired via the
   // pointer/focus effect above, opens the settings popover instead).
-  const handleColorDimensionClick = () => {
-    colorToggleRef.current.toggle(
-      colorActive,
-      { colorFilter, exclude: excludeColorFilter },
-      { colorFilter: "", exclude: false },
-      (value) => {
-        setColorFilter(value.colorFilter);
-        setExcludeColorFilter(value.exclude);
-      },
-    );
-  };
-
   // REQ-FILTER-020: record newly-added tag names into the recency store
   // before forwarding to the caller's onTagNamesChange. Only additions are
   // recorded — removing a tag from the selection should not affect its
@@ -640,18 +604,6 @@ export function DimensionFilterBar(props: DimensionFilterBarProps) {
     );
   };
 
-  const handleShapeDimensionClick = () => {
-    shapeToggleRef.current.toggle(
-      shapeActive,
-      { range: aspectRatioRange, presets: [...aspectRatioRanges] },
-      { range: EMPTY_RANGE, presets: [] },
-      (value) => {
-        setAspectRatioRange(value.range);
-        setAspectRatioRanges(value.presets);
-      },
-    );
-  };
-
   const handleRatingDimensionClick = () => {
     ratingToggleRef.current.toggle(
       ratingActive,
@@ -677,76 +629,12 @@ export function DimensionFilterBar(props: DimensionFilterBarProps) {
   };
 
   const handleMoreDimensionClick = () => {
-    moreToggleRef.current.toggle(
-      moreActive,
-      {
-        favoriteFilter,
-        sourceUrlFilter,
-        availabilityFilter,
-        excludeAvailabilityFilter,
-        longEdgeRange,
-        widthRange,
-        heightRange,
-        durationRange,
-      },
-      {
-        favoriteFilter: "any",
-        sourceUrlFilter: "any",
-        availabilityFilter: "any",
-        excludeAvailabilityFilter: false,
-        longEdgeRange: EMPTY_RANGE,
-        widthRange: EMPTY_RANGE,
-        heightRange: EMPTY_RANGE,
-        durationRange: EMPTY_RANGE,
-      },
-      (value) => {
-        setFavoriteFilter(value.favoriteFilter);
-        setSourceUrlFilter(value.sourceUrlFilter);
-        setAvailabilityFilter(value.availabilityFilter);
-        setExcludeAvailabilityFilter(value.excludeAvailabilityFilter);
-        setLongEdgeRange(value.longEdgeRange);
-        setWidthRange(value.widthRange);
-        setHeightRange(value.heightRange);
-        setDurationRange(value.durationRange);
-      },
-    );
+    setOpenDimension("more");
   };
 
   return (
     <div className="dimension-filter-bar" ref={rootRef}>
       <div className="dimension-filter-dims" role="toolbar" aria-label={t("filter.dimensions")}>
-        <div className="dimension-filter-dim" data-dimension="color" ref={colorDimRef}>
-          <DimensionButton
-            active={colorActive}
-            disabled={controlsDisabled}
-            excluding={excludeColorFilter && colorActive}
-            icon="palette"
-            label={t("filter.dimColor")}
-            onClick={handleColorDimensionClick}
-            open={openDimension === "color"}
-          />
-          {openDimension === "color" && (
-            <PortaledPopover
-              anchorRef={colorDimRef}
-              className="dimension-filter-popover is-color-filter"
-              data-dimension="color"
-              role="dialog"
-            >
-              <ColorFilterPopover
-                colorFilter={colorFilter}
-                colorFilterPrefs={colorFilterPrefs}
-                colorSimilarity={colorSimilarity}
-                disabled={controlsDisabled}
-                excludeColorFilter={excludeColorFilter}
-                onColorFilterPrefsChange={onColorFilterPrefsChange}
-                setColorFilter={setColorFilter}
-                setColorSimilarity={setColorSimilarity}
-                setExcludeColorFilter={setExcludeColorFilter}
-              />
-            </PortaledPopover>
-          )}
-        </div>
-
         <div className="dimension-filter-dim" data-dimension="tags" ref={tagsDimRef}>
           <DimensionButton
             active={tagActive}
@@ -791,65 +679,6 @@ export function DimensionFilterBar(props: DimensionFilterBarProps) {
                 </label>
               </div>
               <p className="dimension-filter-hint">{t("filter.tagClickHint")}</p>
-            </PortaledPopover>
-          )}
-        </div>
-
-        <div className="dimension-filter-dim" data-dimension="shape" ref={shapeDimRef}>
-          <DimensionButton
-            active={shapeActive}
-            disabled={controlsDisabled}
-            icon="shapes"
-            label={t("filter.dimShape")}
-            onClick={handleShapeDimensionClick}
-            open={openDimension === "shape"}
-          />
-          {openDimension === "shape" && (
-            <PortaledPopover
-              anchorRef={shapeDimRef}
-              className="dimension-filter-popover"
-              data-dimension="shape"
-              role="dialog"
-            >
-              <FilterPresetChips
-                disabled={controlsDisabled}
-                label={t("filter.orientation")}
-                onToggle={applyShapePreset}
-                presets={ORIENTATION_PRESETS.map((preset) => ({
-                  label:
-                    preset.id === "landscape"
-                      ? t("filter.landscape")
-                      : t("filter.portrait"),
-                  range: preset.range,
-                }))}
-                selected={shapeSelectedRanges}
-              />
-              <FilterPresetChips
-                disabled={controlsDisabled}
-                label={t("filter.aspectRatioPresets")}
-                onToggle={applyShapePreset}
-                presets={ASPECT_RATIO_PRESETS.map((preset) => ({
-                  label: preset.label,
-                  range: aspectRatioPresetRange(preset),
-                }))}
-                selected={shapeSelectedRanges}
-              />
-              <TechnicalRangeFilter
-                label={t("filter.aspectRatio")}
-                range={aspectRatioRange}
-                setRange={(next) => {
-                  setAspectRatioRange(next);
-                  const resolved =
-                    typeof next === "function" ? next(aspectRatioRange) : next;
-                  setAspectRatioRanges(
-                    resolved.min || resolved.max
-                      ? [{ min: resolved.min, max: resolved.max }]
-                      : [],
-                  );
-                }}
-                step="0.01"
-              />
-              <p className="dimension-filter-hint">{t("filter.shiftMultiSelectHint")}</p>
             </PortaledPopover>
           )}
         </div>
@@ -1064,6 +893,7 @@ export function DimensionFilterBar(props: DimensionFilterBarProps) {
 
         <div className="dimension-filter-dim" data-dimension="more" ref={moreDimRef}>
           <DimensionButton
+            active={moreActive}
             disabled={controlsDisabled}
             icon="menu"
             label={t("filter.dimMore")}
@@ -1077,6 +907,63 @@ export function DimensionFilterBar(props: DimensionFilterBarProps) {
               data-dimension="more"
               role="dialog"
             >
+              <details className="dimension-filter-more-section">
+                <summary>{t('filter.dimColor')}</summary>
+              <ColorFilterPopover
+                colorFilter={colorFilter}
+                colorFilterPrefs={colorFilterPrefs}
+                colorSimilarity={colorSimilarity}
+                disabled={controlsDisabled}
+                excludeColorFilter={excludeColorFilter}
+                onColorFilterPrefsChange={onColorFilterPrefsChange}
+                setColorFilter={setColorFilter}
+                setColorSimilarity={setColorSimilarity}
+                setExcludeColorFilter={setExcludeColorFilter}
+              />
+              </details>
+              <details className="dimension-filter-more-section">
+                <summary>{t('filter.dimShape')}</summary>
+              <FilterPresetChips
+                disabled={controlsDisabled}
+                label={t("filter.orientation")}
+                onToggle={applyShapePreset}
+                presets={ORIENTATION_PRESETS.map((preset) => ({
+                  label:
+                    preset.id === "landscape"
+                      ? t("filter.landscape")
+                      : t("filter.portrait"),
+                  range: preset.range,
+                }))}
+                selected={shapeSelectedRanges}
+              />
+              <FilterPresetChips
+                disabled={controlsDisabled}
+                label={t("filter.aspectRatioPresets")}
+                onToggle={applyShapePreset}
+                presets={ASPECT_RATIO_PRESETS.map((preset) => ({
+                  label: preset.label,
+                  range: aspectRatioPresetRange(preset),
+                }))}
+                selected={shapeSelectedRanges}
+              />
+              <TechnicalRangeFilter
+                label={t("filter.aspectRatio")}
+                range={aspectRatioRange}
+                setRange={(next) => {
+                  setAspectRatioRange(next);
+                  const resolved =
+                    typeof next === "function" ? next(aspectRatioRange) : next;
+                  setAspectRatioRanges(
+                    resolved.min || resolved.max
+                      ? [{ min: resolved.min, max: resolved.max }]
+                      : [],
+                  );
+                }}
+                step="0.01"
+              />
+              <p className="dimension-filter-hint">{t("filter.shiftMultiSelectHint")}</p>
+
+              </details>
               <label>
                 {t("filter.favoriteField")}
                 <Select

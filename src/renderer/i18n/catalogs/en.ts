@@ -257,6 +257,9 @@ export const en = {
     tagManagement: "Tag management"
   },
   tagTree: {
+    appearance: "Color and icon",
+    randomAppearance: "Random appearance",
+    appearanceSaved: "Tag appearance updated",
     title: "Tags",
     search: "Search tags",
     create: "New tag",
@@ -692,6 +695,7 @@ export const en = {
     }
   },
   appearance: {
+    iconOption: "Icon {index}",
     title: "Icon & color",
     colorLabel: "Color",
     colorNone: "Default color",
@@ -1946,6 +1950,9 @@ export const en = {
     mcpCredentialAclCleanupFailed: "Could not secure the new MCP client credential key file ({systemCode}), and cleanup failed ({cleanupCode}). Check and remove the file, then restart. Location: {path}.",
     mcpOperationFailed: "The MCP operation could not finish.",
     fontSize: "Font size",
+    interfaceScale: "Interface scale",
+    interfaceScaleHint: "Scale icons, buttons, text and spacing together. Changes apply immediately and are saved.",
+    interfaceScaleReset: "Reset to 100%",
     fontSizeHint: "Adjust Serpent UI text without changing OS or display scaling.",
     fontSizeCompact: "Compact",
     fontSizeDefault: "Default",

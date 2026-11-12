@@ -1,3 +1,5 @@
+import { TAG_DRAG_TYPE } from './tag-drag-drop';
+import type { EntityAppearance as TagAppearance } from '../shared/entity-appearance';
 import { TagTreeSidebar } from "./TagTreeSidebar";
 import { descendantTagIds } from "./tag-tree-model";
 import { LocalConfirmationHost, useLocalConfirmation, requestConfirmation } from "./local-confirmation";
@@ -1286,6 +1288,7 @@ function AppInner() {
 
   // Tags
   const [tags, setTags] = useState<TagSummary[]>([]);
+  const [tagDropTargetId, setTagDropTargetId] = useState<string | null>(null);
   const [activeTagId, setActiveTagId] = useState<string | null>(null);
 
   // Collections
@@ -6965,6 +6968,7 @@ function AppInner() {
   async function handleRenameTagInManagement(
     tagId: string,
     name: string,
+    appearance?: TagAppearance | null,
   ): Promise<boolean> {
     if (!api || !library) return false;
     try {
@@ -6972,6 +6976,7 @@ function AppInner() {
         libraryId: library.libraryId,
         tagId,
         name,
+        appearance,
       });
       if (!result.ok) throw new LibraryOperationError(result.error);
       const tagResult = await api.listTags({ libraryId: library.libraryId });
@@ -6986,7 +6991,7 @@ function AppInner() {
       setAssetMetadata(current => current ? rename(current) : current);
       if (selectedAssetIds.length >= 2) rebuildAndApplyMultiEdit(selectedAssetIds);
       if (activeTagId) await chooseTag(activeTagId, undefined, tagResult.value);
-      setNotice(t("toast.tagRenamed", { name }), result.value.historyEntryId);
+      setNotice(appearance === undefined ? t("toast.tagRenamed", { name }) : t("tagTree.appearanceSaved"), result.value.historyEntryId);
       return true;
     } catch (caught) {
       setError(tagRenameError(caught, locale));
@@ -14672,6 +14677,7 @@ function AppInner() {
         library={library}
         tagTree={library ? <TagTreeSidebar key={library.libraryId} libraryId={library.libraryId} tags={tags} activeTagId={activeTagId}
           onChoose={(id) => void chooseTag(id)} onCreate={handleCreateTagInManagement} onRename={handleRenameTagInManagement}
+          onAppearance={(id, appearance) => handleRenameTagInManagement(id, tags.find((tag) => tag.tagId === id)?.name ?? "", appearance)}
           onMove={moveTagInTree} onDelete={handleDeleteTagsInManagement} onAssign={assignAssetsToTreeTag} getAssetDragIds={getManagedAssetDragIds} /> : undefined}
         assetScope={assetScope}
         showTrash={showTrash}
@@ -15528,6 +15534,7 @@ function AppInner() {
                       data-hover-tip={canvasPrefs.fields.name ? undefined : asset.displayName}
                       aria-pressed={selectedIdSet.has(asset.assetId)}
                       className={`asset-card${selectedIdSet.has(asset.assetId) ? " is-selected" : ""}${asset.availability === "missing" ? " is-missing" : ""}${corruptAsset ? " is-corrupt" : ""}${asset.deletedAt ? " is-trashed" : ""}${renamingThisAsset ? " is-renaming" : ""}`}
+                      data-tag-drop-target={tagDropTargetId === asset.assetId || undefined}
                       data-asset-id={asset.assetId}
                       data-asset-name={asset.displayName}
                       data-media-type={asset.mediaType}
@@ -15600,8 +15607,12 @@ function AppInner() {
                         dragPreviewRef.current = null;
                       }}
                       onDragOver={(event) => {
+                        if (!showTrash && event.dataTransfer.types.includes(TAG_DRAG_TYPE)) {
+                          event.preventDefault(); event.stopPropagation(); event.dataTransfer.dropEffect = 'copy'; setTagDropTargetId(asset.assetId); return;
+                        }
                         if (draggedMemberId) event.preventDefault();
                       }}
+                      onDragLeave={() => setTagDropTargetId(null)}
                       onDragStart={(event) => {
                         // Collection member reorder keeps its own drag path.
                         if (activeCollectionId && !collectionRecursive) {
@@ -15675,6 +15686,12 @@ function AppInner() {
                         );
                       }}
                       onDrop={(event) => {
+                        if (!showTrash && event.dataTransfer.types.includes(TAG_DRAG_TYPE)) {
+                          event.preventDefault(); event.stopPropagation(); setTagDropTargetId(null);
+                          const tagId = event.dataTransfer.getData(TAG_DRAG_TYPE);
+                          if (tags.some((tag) => tag.tagId === tagId)) void assignAssetsToTreeTag(selectedIdSet.has(asset.assetId) ? [...selectedAssetIds] : [asset.assetId], tagId);
+                          return;
+                        }
                         if (!draggedMemberId) return;
                         event.preventDefault();
                         void reorderCollectionMember(

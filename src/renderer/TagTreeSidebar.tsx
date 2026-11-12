@@ -7,7 +7,11 @@ import { ContextMenu, ContextMenuBackdrop, ContextMenuItem, ContextMenuSection }
 import { resolveInternalAssetDropIds, supportsManagedAssetDrag } from './asset-drag-drop';
 import { descendantTagIds, tagTreeRows } from './tag-tree-model';
 
-const TAG_DRAG_TYPE = 'application/x-serpent-tag';
+import { TAG_DRAG_TYPE } from './tag-drag-drop';
+import { EntityAppearancePicker } from './EntityAppearancePicker';
+import { AppearanceGlyph, appearanceColorVar } from './AppearanceGlyph';
+import { randomTagAppearance } from '../shared/tag-appearance';
+import type { EntityAppearance } from '../shared/entity-appearance';
 type Draft = { tagId?: string; parentTagId: string | null; value: string };
 export interface TagTreeSidebarProps {
   libraryId: string;
@@ -17,12 +21,14 @@ export interface TagTreeSidebarProps {
   onCreate: (name: string, parentTagId?: string | null) => Promise<boolean>;
   onRename: (tagId: string, name: string) => Promise<boolean>;
   onMove: (tagId: string, parentTagId: string | null) => Promise<boolean>;
+  onAppearance: (tagId: string, appearance: EntityAppearance | null) => Promise<boolean>;
   onDelete: (ids: string[]) => Promise<boolean>;
   onAssign: (ids: string[], tagId: string) => Promise<void>;
   getAssetDragIds: () => readonly string[] | null;
 }
 export function TagTreeSidebar(props: TagTreeSidebarProps) {
   const t = useT();
+  const [appearanceDraft, setAppearanceDraft] = useState<{ id: string; value: EntityAppearance | null } | null>(null);
   const [query, setQuery] = useState('');
   const storageKey = `serpent.tag-tree.collapsed.${props.libraryId}`;
   const [collapsed, setCollapsed] = useState<Set<string>>(() => {
@@ -88,6 +94,11 @@ export function TagTreeSidebar(props: TagTreeSidebarProps) {
       <strong>{t('tagTree.delete')} · {byId.get(confirmDelete)?.name}</strong><p>{t('tagTree.deleteHelp')}</p>
       <div className="tag-tree-edit-actions"><button className="secondary-button" type="button" onClick={() => setConfirmDelete(null)}>{t('common.cancel')}</button><button className="danger-button" type="button" disabled={saving} onClick={() => { setSaving(true); void props.onDelete([confirmDelete]).then((ok) => { if (ok) setConfirmDelete(null); }).finally(() => setSaving(false)); }}>{t('tagTree.delete')}</button></div>
     </div>}
+    {appearanceDraft && <div className="tag-tree-appearance" role="group" aria-label={t('tagTree.appearance')}>
+      <strong>{byId.get(appearanceDraft.id)?.name} · {t('tagTree.appearance')}</strong>
+      <div className="tag-tree-appearance-picker"><EntityAppearancePicker value={appearanceDraft.value} onChange={(value) => setAppearanceDraft({ ...appearanceDraft, value })} /></div>
+      <div className="tag-tree-edit-actions"><button className="secondary-button" type="button" onClick={() => setAppearanceDraft({ ...appearanceDraft, value: randomTagAppearance() })}>{t('tagTree.randomAppearance')}</button><button className="secondary-button" type="button" onClick={() => setAppearanceDraft(null)}>{t('common.cancel')}</button><button className="primary-button" type="button" disabled={saving} onClick={() => { setSaving(true); void props.onAppearance(appearanceDraft.id, appearanceDraft.value).then((ok) => { if (ok) setAppearanceDraft(null); }).finally(() => setSaving(false)); }}>{t('common.save')}</button></div>
+    </div>}
     <div className="tag-tree-list" role="tree" aria-label={t('tagTree.title')} onKeyDown={(event) => {
       if (event.target instanceof HTMLInputElement || isImeKeyboardEvent(event)) return;
       const items = [...event.currentTarget.querySelectorAll<HTMLElement>('[role="treeitem"]')];
@@ -97,7 +108,7 @@ export function TagTreeSidebar(props: TagTreeSidebarProps) {
       {rows.map(({ tag, depth, hasChildren, expanded }) => <div className={`tag-tree-row${dropTarget === tag.tagId ? ' is-drop-target' : ''}`} key={tag.tagId} style={{ paddingLeft: depth * 14 }} onDragOver={(event) => { if (canDrop(event, tag.tagId)) { event.preventDefault(); event.stopPropagation(); setDropTarget(tag.tagId); event.dataTransfer.dropEffect = event.dataTransfer.types.includes(TAG_DRAG_TYPE) ? 'move' : 'copy'; } }} onDragLeave={() => setDropTarget(null)} onDrop={(event) => { if (canDrop(event, tag.tagId)) void drop(event, tag.tagId); }}>
         {hasChildren ? <button className={`tag-tree-disclosure${expanded ? ' is-open' : ''}`} type="button" aria-label={t(expanded ? 'tagTree.collapse' : 'tagTree.expand', { name: tag.name })} onClick={() => toggle(tag.tagId)}><Icon name="chevron" size={12} /></button> : <span className="tag-tree-disclosure-spacer" />}
         <button className={`nav-row${props.activeTagId === tag.tagId ? ' is-active' : ''}`} role="treeitem" aria-level={depth + 1} aria-selected={props.activeTagId === tag.tagId} aria-expanded={hasChildren ? expanded : undefined} aria-label={tag.name} title={t('tagTree.rowHelp', { name: tag.name })} data-tag-id={tag.tagId} type="button" draggable={!saving} disabled={saving} onDragStart={(event) => { event.dataTransfer.setData(TAG_DRAG_TYPE, tag.tagId); event.dataTransfer.effectAllowed = 'move'; setDraggedId(tag.tagId); }} onDragEnd={() => { setDraggedId(null); setDropTarget(null); }} onClick={() => props.onChoose(tag.tagId)} onKeyDown={(event) => { if (event.key === 'ArrowRight' && hasChildren && !expanded) { event.preventDefault(); toggle(tag.tagId); } if (event.key === 'ArrowLeft' && hasChildren && expanded) { event.preventDefault(); toggle(tag.tagId); } if (event.key === 'F2') { event.preventDefault(); setDraft({ tagId: tag.tagId, parentTagId: tag.parentTagId ?? null, value: tag.name }); } }} onContextMenu={(event) => { event.preventDefault(); event.stopPropagation(); setMenu({ id: tag.tagId, x: event.clientX, y: event.clientY }); }}>
-          <Icon name="tag" size={14} /><span className="nav-row-label">{tag.name}</span><span className="nav-count" aria-hidden="true">{tag.subtreeAssetCount ?? tag.assetCount}</span>
+          <AppearanceGlyph appearance={tag.appearance} fallback="tag" size={16} /><span className="nav-row-label" style={{ color: appearanceColorVar(tag.appearance?.colorId) }}>{tag.name}</span><span className="nav-count" aria-hidden="true">{tag.subtreeAssetCount ?? tag.assetCount}</span>
         </button>
       </div>)}
     </div>
@@ -105,6 +116,7 @@ export function TagTreeSidebar(props: TagTreeSidebarProps) {
     {draggedId && <div className={`tag-tree-root-drop${dropTarget === '__root' ? ' is-drop-target' : ''}`} onDragOver={(event) => { if (canDrop(event, null)) { event.preventDefault(); setDropTarget('__root'); } }} onDragLeave={() => setDropTarget(null)} onDrop={(event) => void drop(event, null)}>{t('tagTree.moveToRoot')}</div>}
     {menu && menuTag && <ContextMenuBackdrop onClose={() => setMenu(null)}><ContextMenu position={{ x: menu.x, y: menu.y }} ariaLabel={t('tagTree.menu')}>
       <ContextMenuSection>
+        <ContextMenuItem label={t('tagTree.appearance')} onAction={() => { setAppearanceDraft({ id: menuTag.tagId, value: menuTag.appearance ?? null }); setMenu(null); }} />
         <ContextMenuItem label={t('tagTree.createChild')} onAction={() => { setDraft({ parentTagId: menuTag.tagId, value: '' }); setMenu(null); }} />
         <ContextMenuItem label={t('tagTree.rename')} onAction={() => { setDraft({ tagId: menuTag.tagId, parentTagId: menuTag.parentTagId ?? null, value: menuTag.name }); setMenu(null); }} />
         {menuTag.parentTagId && <ContextMenuItem label={t('tagTree.moveToRoot')} onAction={() => { setMenu(null); setSaving(true); void props.onMove(menuTag.tagId, null).finally(() => setSaving(false)); }} />}

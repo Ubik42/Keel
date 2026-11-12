@@ -124,12 +124,12 @@ describe("DimensionFilterBar hover opening", () => {
       );
     });
 
-    const colorButton = [...container.querySelectorAll<HTMLButtonElement>("button")]
-      .find((button) => button.textContent?.includes("Color"));
-    expect(colorButton).toBeDefined();
+    const tagButton = [...container.querySelectorAll<HTMLButtonElement>("button")]
+      .find((button) => button.textContent?.includes("Tags"));
+    expect(tagButton).toBeDefined();
 
     await act(async () => {
-      colorButton?.dispatchEvent(new PointerEvent("pointerover", { bubbles: true }));
+      tagButton?.dispatchEvent(new PointerEvent("pointerover", { bubbles: true }));
     });
     expect(document.body.querySelector("[data-dimension-filter-popover]")).toBeNull();
 
@@ -158,10 +158,10 @@ describe("DimensionFilterBar hover opening", () => {
         ),
       );
     });
-    const freshColorButton = [...container.querySelectorAll<HTMLButtonElement>("button")]
-      .find((button) => button.textContent?.includes("Color"));
+    const freshTagButton = [...container.querySelectorAll<HTMLButtonElement>("button")]
+      .find((button) => button.textContent?.includes("Tags"));
     await act(async () => {
-      freshColorButton?.focus();
+      freshTagButton?.focus();
     });
     expect(document.body.querySelector("[data-dimension-filter-popover]")).not.toBeNull();
   });
@@ -182,13 +182,13 @@ describe("DimensionFilterBar hover opening", () => {
       );
     });
 
-    const colorButton = [...container.querySelectorAll<HTMLButtonElement>("button")]
-      .find((button) => button.textContent?.includes("Color"));
-    expect(colorButton).toBeDefined();
+    const tagButton = [...container.querySelectorAll<HTMLButtonElement>("button")]
+      .find((button) => button.textContent?.includes("Tags"));
+    expect(tagButton).toBeDefined();
     const outside = document.createElement("div");
 
     await act(async () => {
-      colorButton?.dispatchEvent(new PointerEvent("pointerover", { bubbles: true }));
+      tagButton?.dispatchEvent(new PointerEvent("pointerover", { bubbles: true }));
       vi.advanceTimersByTime(500);
     });
     expect(document.body.querySelector("[data-dimension-filter-popover]")).not.toBeNull();
@@ -197,8 +197,8 @@ describe("DimensionFilterBar hover opening", () => {
     // while the same dimension is already open. Leaving must cancel that
     // delayed open before the close timer runs.
     await act(async () => {
-      colorButton?.dispatchEvent(new PointerEvent("pointerover", { bubbles: true }));
-      colorButton?.dispatchEvent(
+      tagButton?.dispatchEvent(new PointerEvent("pointerover", { bubbles: true }));
+      tagButton?.dispatchEvent(
         new PointerEvent("pointerout", { bubbles: true, relatedTarget: outside }),
       );
       vi.advanceTimersByTime(150);
@@ -232,7 +232,7 @@ describe("DimensionFilterBar hover opening", () => {
       );
     });
 
-    const labelled = ["Color", "Tags", "Shape", "Rating", "Favorites only"];
+    const labelled = ["Tags", "Rating", "Favorites only", "More"];
     const glyphs = labelled.map((label) => {
       const button = [...container!.querySelectorAll<HTMLButtonElement>("button")]
         .find((candidate) => candidate.textContent?.includes(label));
@@ -278,7 +278,7 @@ describe("DimensionFilterBar hover opening", () => {
     document.body.querySelector("[data-dimension-filter-popover]")?.remove();
   });
 
-  it("does not highlight More when a bundled filter is on", async () => {
+  it("highlights More when a bundled filter is on", async () => {
     container = document.createElement("div");
     document.body.append(container);
     root = createRoot(container);
@@ -299,8 +299,8 @@ describe("DimensionFilterBar hover opening", () => {
 
     const more = [...container.querySelectorAll<HTMLButtonElement>("button")]
       .find((button) => button.textContent?.includes("More"));
-    expect(more?.classList.contains("is-active")).toBe(false);
+    expect(more?.classList.contains("is-active")).toBe(true);
     expect(more?.classList.contains("is-excluding")).toBe(false);
-    expect(more?.getAttribute("aria-pressed")).toBeNull();
+    expect(more?.getAttribute("aria-pressed")).toBe("true");
   });
 });

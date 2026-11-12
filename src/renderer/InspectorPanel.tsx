@@ -1,3 +1,4 @@
+import { appearanceColorVar } from './AppearanceGlyph';
 import {
   useState,
   useMemo,
@@ -1259,7 +1260,7 @@ export function InspectorPanel(props: InspectorPanelProps) {
             <ContextMenuProvider key={tagSelectionKey}>
             <div className={`tag-chips-container${editingTags ? " is-editing-tags" : ""}`}>
               {displayedTags.filter(tag => !tagEditor.removed.includes(tag.id)).map((tag) => (
-                <InspectorTagChip key={tag.id} id={tag.id} name={tag.name} color={tagColor(tag.id)}
+                <InspectorTagChip key={tag.id} id={tag.id} name={tag.name} appearance={allTags.find((item) => item.tagId === tag.id)?.appearance} color={appearanceColorVar(allTags.find((item) => item.tagId === tag.id)?.appearance?.colorId) ?? tagColor(tag.id)}
                   source={tag.source} showAiBadge={showAiBadges} editing={editingTags}
                   onRename={!editingTags && onRenameTag ? name => onRenameTag(tag.id, name) : undefined}
                   onFilter={onFilterTag ? () => onFilterTag(tag.id) : undefined}

@@ -1,3 +1,4 @@
+import { entityAppearanceSchema } from '../shared/entity-appearance';
 import { z } from 'zod';
 
 import type { HistoryRecipe } from './operation-history';
@@ -90,6 +91,7 @@ const smartCollectionSnapshotSchema = z.strictObject({
   position: z.number().int().nonnegative(),
 });
 const tagSnapshotSchema = z.strictObject({
+  appearance: entityAppearanceSchema.optional(),
   hierarchy: z.strictObject({ parentTagId: identifierSchema.nullable(), childTagIds: z.array(identifierSchema) }).optional(),
   tagId: identifierSchema,
   libraryId: identifierSchema,

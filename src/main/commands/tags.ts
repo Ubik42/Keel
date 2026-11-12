@@ -12,6 +12,7 @@ export function executeTagMainCommand(
         libraryId: request.libraryId,
         name: request.name,
         parentTagId: request.parentTagId,
+        appearance: request.appearance,
       };
     case "tag.rename.request":
       return {
@@ -20,6 +21,7 @@ export function executeTagMainCommand(
         tagId: request.tagId,
         name: request.name,
         parentTagId: request.parentTagId,
+        appearance: request.appearance,
       };
     case "tag.delete.request":
       return {

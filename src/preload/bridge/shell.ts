@@ -1,4 +1,4 @@
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, webFrame } from 'electron';
 
 import type { ApplicationMenuCommand, ApplicationMenuCommandEvent } from '../../shared/application-menu';
 import {
@@ -133,6 +133,10 @@ export function parseReadAppLogResult(input: unknown): ReadAppLogResult {
 }
 
 export const shell: SerpentShellApi = Object.freeze({
+  setInterfaceScale(percent: number) {
+    if (!Number.isFinite(percent)) return;
+    webFrame.setZoomFactor(Math.max(75, Math.min(200, percent)) / 100);
+  },
   async openExternalUrl(url: string) {
     const result: unknown = await ipcRenderer.invoke(OPEN_EXTERNAL_URL_CHANNEL, { url });
     return parseOpenExternalUrlResult(result);

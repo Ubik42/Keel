@@ -314,6 +314,7 @@ export const browseLayoutEntrySchema = z.strictObject({
 export type BrowseLayoutEntry = z.infer<typeof browseLayoutEntrySchema>;
 
 export const tagSummarySchema = z.strictObject({
+  appearance: entityAppearanceSchema.optional(),
   parentTagId: nonBlankString.nullable().optional(),
   subtreeAssetCount: z.number().int().nonnegative().optional(),
   tagId: nonBlankString,

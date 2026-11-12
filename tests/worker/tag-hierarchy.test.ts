@@ -82,3 +82,31 @@ describe('persistent tag hierarchy', () => {
     expect(service.listTags(libraryId).find((tag) => tag.tagId === child.tagId)?.parentTagId).toBeUndefined();
   });
 });
+
+
+describe('tag appearance', () => {
+  it('creates a random appearance and preserves edits on reopen', () => {
+    const { service, library, libraryId, create } = fixture();
+    const tag = create('彩色标签');
+    expect(tag.appearance?.glyphKind).toBe('icon');
+    expect(tag.appearance?.glyphValue).toBeTruthy();
+    expect(tag.appearance?.colorId).toBeTruthy();
+    const appearance = { glyphKind: 'emoji' as const, glyphValue: '🎨', colorId: 'blue' as const };
+    service.renameTag({ libraryId, tagId: tag.tagId, name: tag.name, appearance });
+    service.closeAll(); service.openLibrary(library.libraryPath);
+    expect(service.listTags(libraryId).find(item => item.tagId === tag.tagId)?.appearance).toEqual(appearance);
+  });
+  it('restores appearance after undo, redo and deletion undo', async () => {
+    const { service, libraryId, create } = fixture();
+    const tag = create('外观历史'); const original = tag.appearance;
+    const appearance = { glyphKind: 'emoji' as const, glyphValue: '🎨', colorId: 'blue' as const };
+    const id = await bounded(service, { type: 'tag.rename', libraryId, tagId: tag.tagId, name: tag.name, appearance });
+    const current = () => service.listTags(libraryId).find(item => item.tagId === tag.tagId)?.appearance;
+    expect(current()).toEqual(appearance);
+    await service.undoOperationHistory({ libraryId, expectedHistoryEntryId: id }); expect(current()).toEqual(original);
+    await service.redoOperationHistory({ libraryId, expectedHistoryEntryId: id }); expect(current()).toEqual(appearance);
+    const deletion = await bounded(service, { type: 'tag.delete', libraryId, tagId: tag.tagId });
+    await service.undoOperationHistory({ libraryId, expectedHistoryEntryId: deletion }); expect(current()).toEqual(appearance);
+    service.renameTag({ libraryId, tagId: tag.tagId, name: tag.name, appearance: null }); expect(current()).toBeUndefined();
+  });
+});

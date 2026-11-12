@@ -652,12 +652,14 @@ export const rendererRequestSchema = z.discriminatedUnion('type', [
   }),
   z.strictObject({
     type: z.literal('tag.create.request'),
+    appearance: entityAppearanceSchema.optional(),
     parentTagId: identifierSchema.nullable().optional(),
     libraryId: identifierSchema,
     name: displayNameSchema,
   }),
   z.strictObject({
     type: z.literal('tag.rename.request'),
+    appearance: entityAppearanceSchema.optional(),
     parentTagId: identifierSchema.nullable().optional(),
     libraryId: identifierSchema,
     tagId: identifierSchema,
@@ -1986,12 +1988,14 @@ export const workerCommandSchema = z.discriminatedUnion('type', [
   }),
   z.strictObject({
     type: z.literal('tag.create'),
+    appearance: entityAppearanceSchema.optional(),
     parentTagId: identifierSchema.nullable().optional(),
     libraryId: identifierSchema,
     name: displayNameSchema,
   }),
   z.strictObject({
     type: z.literal('tag.rename'),
+    appearance: entityAppearanceSchema.optional(),
     parentTagId: identifierSchema.nullable().optional(),
     libraryId: identifierSchema,
     tagId: identifierSchema,
