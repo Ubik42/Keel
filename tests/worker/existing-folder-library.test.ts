@@ -51,7 +51,7 @@ describe('initialize an existing folder as a library', () => {
   it('supports an empty existing folder without a nested library directory', () => {
     const { folder, service } = fixture();
     service.createLibrary({ displayName: 'Empty', selectedParentPath: folder, useExistingFolder: true });
-    expect(readdirSync(folder)).toEqual(['.serpent']);
+    expect(readdirSync(folder).sort()).toEqual(process.platform === 'win32' ? ['.serpent', 'desktop.ini'] : ['.serpent']);
   });
 
   it('refuses existing metadata and leaves every pre-existing file intact', () => {

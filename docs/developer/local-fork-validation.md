@@ -63,3 +63,14 @@
 - 标签树真实界面回归通过。新增真实界面检查通过，覆盖随机外观、手动修改外观、标签拖到图片、更多筛选、125% 原生缩放和重新加载后的恢复。
 - 打包及运行时文件完整性检查通过。打包程序通过相同界面检查，并验证多选图片批量打标。检查使用临时资源库。
 - 扩展运行 AI 分析测试时，27 项通过、1 项失败：`OpenAIVendorAdapter Responses compatibility > cleans up an unreadable probe response so a later request cannot hang`，期望 `invalid_response`，实际返回连接失败分类。本次未修改该适配器或此断言；未将这一批次记为全部通过。
+
+
+## 0.3.5-ubik.5：Windows 资源库图标
+
+- 本机可写库在创建和打开时设置 Serpent 文件夹图标，保存独立 `.ico` 和相对路径 `desktop.ini`；使用 Windows Shell 通知刷新图标。
+- 保留原始 `desktop.ini` 的一次性备份及其他设置，兼容 Billfish 的 Hidden/System 属性；通过 r+ 打开现有文件，避免覆盖打开失败。
+- 根目录添加 System 属性，保留已有属性。只读与网络库不写入图标。
+- 素材扫描排除旧 Billfish `.bf` 缓存目录，原数据保留。
+- Windows 图标与原位建库、根目录布局的 19 项检查通过，包含 Billfish 系统文件覆盖、备份、设置保留、重复打开与缓存排除。
+- 三个实际本机目录完成原位索引；对照前后的源文件清单，文件路径、大小和修改时间一致。操作前对已有数据库作一致性备份。
+- 类型检查、修改文件 ESLint、打包及运行时完整性检查通过。Windows Shell 已实际确认三个目录的图标均来自各自 `.serpent/library.ico`。

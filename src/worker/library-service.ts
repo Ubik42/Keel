@@ -1,3 +1,4 @@
+import { ensureWindowsLibraryIcon } from './windows-library-icon';
 import { randomTagAppearance } from '../shared/tag-appearance';
 import { managedStoragePath, readStorageLayout, writeStorageLayout } from './library-storage-layout';
 import type { LibraryStorageLayout } from '../shared/library-storage-layout';
@@ -1154,6 +1155,7 @@ const DEFAULT_LINKED_FOLDER_RULES: ReadonlyArray<Omit<LinkedFolderRule, 'ruleId'
 
 const DEFAULT_IGNORED_ASSET_DIRECTORIES = new Set([
   '.serpent',
+  '.bf',
   '.git',
   '.hg',
   '.svn',
@@ -49123,6 +49125,10 @@ export class LibraryService {
     registeredOpenLibrary.value = openLibrary;
     this.openById.set(summary.libraryId, openLibrary);
     this.openIdByPath.set(input.canonicalPath, summary.libraryId);
+    if (!input.networkStorage) {
+      try { ensureWindowsLibraryIcon(input.canonicalPath); }
+      catch (error) { this.diagnose('library.folder-icon', error, { libraryPath: input.canonicalPath }); }
+    }
     if (!input.startServices) return summary;
     const adoptStageLog = process.env.SERPENT_OPEN_STAGE_LOG === '1';
     let adoptMark = adoptStageLog ? performance.now() : 0;

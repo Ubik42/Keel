@@ -12,3 +12,6 @@
 
 - 标签外观保存在 tag_appearance（迁移 62），沿用 tag.create/tag.rename 的可撤销事务。新标签缺省随机赋予颜色与图标。
 - 界面缩放使用 preload webFrame.setZoomFactor，范围 75%–200%，保存于独立配置；字体大小单独控制。
+
+- Windows 本机可写库创建或打开时自动设置便携的资源库图标。保留旧 desktop.ini 备份及其他节；更新 Billfish 的隐藏系统 desktop.ini 必须使用 r+ 打开，避免 CREATE_ALWAYS 失败。根目录使用 System 属性，避免新增 ReadOnly 属性影响目录删除。
+- 原位接管 Billfish 目录时保留 .bf，并从素材扫描中排除。
