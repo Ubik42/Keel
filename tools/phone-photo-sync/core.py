@@ -188,7 +188,8 @@ class Archive:
                     temporary.unlink()
                     stats['reusedContent'] += 1
                 else:
-                    relative = safe_relative(self.config['device_folder']) / safe_relative(path)
+                    device_folder = self.config.get('device_folder', '')
+                    relative = (safe_relative(device_folder) if device_folder else Path()) / safe_relative(path)
                     target = self.root / relative
                     if not target.resolve().is_relative_to(self.root):
                         raise ValueError('目标路径超出资源库')
@@ -221,7 +222,7 @@ class Archive:
         return stats
 
     def export(self):
-        records = self.root / '_管理' / '同步记录' / safe_relative(self.config['device_folder'])
+        records = self.root / '_管理' / '同步记录' / safe_relative(self.config.get('display_name') or self.config.get('device_folder') or '手机')
         records.mkdir(parents=True, exist_ok=True)
         with (records / '手机照片路径对应表.csv').open('w',encoding='utf-8-sig',newline='') as output:
             writer = csv.writer(output)

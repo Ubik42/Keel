@@ -30,6 +30,13 @@ class SyncTests(unittest.TestCase):
         self.assertEqual(self.run_sync([item])['newContent'],1)
         self.assertEqual(self.run_sync([item])['unchanged'],1)
         self.assertEqual(self.reads,1)
+    def test_root_layout_keeps_device_name_only_in_management_records(self):
+        self.config['device_folder']=''
+        self.config['display_name']='phone'
+        self.run_sync([self.entry('DCIM/a.jpg',b'photo')])
+        self.assertTrue((self.root/'DCIM/a.jpg').is_file())
+        self.assertTrue((self.root/'_管理/同步记录/phone/手机照片路径对应表.csv').is_file())
+        self.assertFalse((self.root/'phone').exists())
     def test_duplicate_and_renamed_phone_file_keep_one_content(self):
         a=self.entry('DCIM/a.jpg',b'photo');b=self.entry('Pictures/b.jpg',b'photo')
         result=self.run_sync([a,b])
