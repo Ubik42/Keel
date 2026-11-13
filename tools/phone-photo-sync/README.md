@@ -1,6 +1,6 @@
 # 手机照片固定更新
 
-固定资源库为 `D:\Pictures\手机同步`，设备照片位于其下的 `一加 Ace 5`。桌面的“更新手机照片”和库根目录的同名快捷方式指向本目录生成的 EXE。
+固定资源库为 `D:\Pictures\手机同步`，设备照片位于其下的 `一加 Ace 5`。桌面的“更新手机照片”和库内 `_管理` 文件夹的同名快捷方式指向本目录生成的 EXE。
 
 ## 日常使用
 
@@ -40,3 +40,5 @@ node scripts/run-phone-catalog.mjs --build
 ```powershell
 python -m unittest discover -s tools/phone-photo-sync/tests -v
 ```
+
+库根目录只放照片分类与 `_管理`。更新快捷方式、使用说明和 `同步记录/一加 Ace 5` 集中在 `_管理`，并由 `.serpentignore` 排除。`电脑旧照片` 是合并旧电脑目录时保留的独有内容，与手机原目录分开。

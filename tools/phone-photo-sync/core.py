@@ -133,7 +133,7 @@ class Archive:
         for row in self.db.execute('SELECT * FROM objects WHERE scope="library"'):
             by_path[str(self.resolve(row)).casefold()] = row
         for directory, dirs, files in os.walk(self.root, followlinks=False):
-            dirs[:] = [name for name in dirs if name not in {'.serpent','.bf','_同步记录'} and not (Path(directory)/name).is_symlink() and not getattr(Path(directory)/name,'is_junction',lambda:False)()]
+            dirs[:] = [name for name in dirs if name not in {'.serpent','.bf','_同步记录','_管理'} and not (Path(directory)/name).is_symlink() and not getattr(Path(directory)/name,'is_junction',lambda:False)()]
             for name in files:
                 path = Path(directory) / name
                 if path.suffix.lower() not in MEDIA or path.is_symlink():
@@ -221,7 +221,7 @@ class Archive:
         return stats
 
     def export(self):
-        records = self.root / self.config['device_folder'] / '_同步记录'
+        records = self.root / '_管理' / '同步记录' / safe_relative(self.config['device_folder'])
         records.mkdir(parents=True, exist_ok=True)
         with (records / '手机照片路径对应表.csv').open('w',encoding='utf-8-sig',newline='') as output:
             writer = csv.writer(output)
