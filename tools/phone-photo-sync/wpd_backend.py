@@ -141,4 +141,3 @@ class Phone:
   self._closed.set()
   try:self.dev.Close()
   finally:self._kernel.ReleaseMutex(self._mutex);self._kernel.CloseHandle(self._mutex)
-
