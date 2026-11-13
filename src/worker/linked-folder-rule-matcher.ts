@@ -16,7 +16,7 @@ export function compileLinkedFolderRules(rules: readonly LinkedFolderRule[]): (n
     let ignored = false;
     for (const rule of compiled) {
       const matches = rule.target === 'path'
-        ? value === rule.pattern || value.startsWith(`${rule.pattern}/`)
+        ? rule.pattern === '**' || value === rule.pattern || value.startsWith(`${rule.pattern}/`)
         : rule.target === 'filename'
           ? filename === rule.pattern
           : rule.target === 'extension'

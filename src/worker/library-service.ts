@@ -19732,6 +19732,7 @@ export class LibraryService {
      * In-process tests keep the default and still see watchers immediately.
      */
     reconcileWatchers?: boolean;
+    initialRules?: LinkedFolderRule[];
   }): LinkedFolderSummary {
     const openLibrary = this.requireOpenLibrary(input.libraryId);
     let sourceRoot: string;
@@ -19822,7 +19823,10 @@ export class LibraryService {
 
     const folderId = randomUUID();
     const importId = randomUUID();
-    const defaultRules = DEFAULT_LINKED_FOLDER_RULES.map((rule) => ({ ...rule, ruleId: randomUUID() }));
+    if (input.initialRules && (input.initialRules.length > 200 || new Set(input.initialRules.map((rule) => rule.ruleId)).size !== input.initialRules.length)) throw new LibraryServiceError('INVALID_SELECTION');
+    const defaultRules = input.initialRules
+      ? input.initialRules.map((rule) => this.normalizeLinkedFolderRule(rule))
+      : DEFAULT_LINKED_FOLDER_RULES.map((rule) => ({ ...rule, ruleId: randomUUID() }));
     let lastProgressAt = 0;
     const emitLinkedProgress = (
       phase: ImportProgressEvent['phase'],
@@ -42850,6 +42854,7 @@ export class LibraryService {
       throw new LibraryServiceError('INVALID_FOLDER_NAME');
     }
     if (rule.target === 'path') {
+      if (pattern === '**') return { ...rule, pattern };
       try {
         return { ...rule, pattern: normalizeRelativeAssetPath(pattern) };
       } catch (error) {
@@ -43508,6 +43513,8 @@ export class LibraryService {
         throw new LibraryServiceError('INVALID_IMPORT_SOURCE', { cause: error });
       }
       for (const child of children) {
+        if (child.isDirectory() && ['.serpent', '.bf'].includes(child.name.toLowerCase())) continue;
+        if (child.isFile() && isDefaultIgnoredAssetEntry(child.name, 'file')) continue;
         const childRelative =
           relativeDirectory === ''
             ? child.name
@@ -47380,6 +47387,8 @@ export class LibraryService {
             );
           } else if (child.isDirectory()) {
             if (
+              !['.serpent', '.bf'].includes(child.name.toLowerCase())
+              &&
               !(input.locationKind === 'managed' && isDefaultIgnoredAssetEntry(child.name, 'directory'))
               && !input.isDirectoryIgnored?.(relativePath)
             ) {
@@ -47391,7 +47400,7 @@ export class LibraryService {
             }
           } else if (
             child.isFile() && !directory.assetsHidden
-            && !(input.locationKind === 'managed' && isDefaultIgnoredAssetEntry(child.name, 'file'))
+            && !isDefaultIgnoredAssetEntry(child.name, 'file')
           ) {
             let stat: Stats | BigIntStats;
             try {

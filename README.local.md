@@ -68,3 +68,10 @@ npm run package
 新增 `tests/e2e/root-library-layout.test.ts`，验证中文创建界面、默认选择、可选布局、布局传递，以及根目录外部文件的自动识别。
 
 原版 Worker 测试显式使用 `storageLayout: 'assets'`，保留其原有路径断言。既有库可用性检查继续使用 `npm run test:library-availability`。
+
+
+## 手机照片固定更新
+
+“手机同步”使用固定根目录资源库。桌面的“更新手机照片”提供增量更新：按设备绑定，跳过未变化文件，以 SHA-256 复用内容，保留历史和改动版本，并保存中断进度。状态在库的 `.serpent/phone-sync`，工具源码在 `tools/phone-photo-sync`。
+
+链接文件夹的路径规则支持 `**` 表示全部路径，可先排除全部再包含具体原文件；首次链接即可指定规则。另一 Serpent 库的 `.serpent`、Billfish `.bf` 及保留元数据文件排除在链接扫描之外。

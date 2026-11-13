@@ -15,3 +15,6 @@
 
 - Windows 本机可写库创建或打开时自动设置便携的资源库图标。保留旧 desktop.ini 备份及其他节；更新 Billfish 的隐藏系统 desktop.ini 必须使用 r+ 打开，避免 CREATE_ALWAYS 失败。根目录使用 System 属性，避免新增 ReadOnly 属性影响目录删除。
 - 原位接管 Billfish 目录时保留 .bf，并从素材扫描中排除。
+
+- 手机照片更新工具在 tools/phone-photo-sync。更新只读手机，状态保存在库 .serpent/phone-sync；设备对象 ID 按连接重取，内容按 SHA-256 去重，历史及本地改动版本保留。
+- 链接目录支持路径规则 ** 作为全部路径；先排除全部再包含具体文件，引用共享原图。链接扫描跳过 .serpent、.bf 和保留元数据。

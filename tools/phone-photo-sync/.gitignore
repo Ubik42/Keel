@@ -1,0 +1,7 @@
+runtime/
+__pycache__/
+*.exe
+launcher.json
+catalog.cjs
+catalog-*.js
+pdf-*.js
