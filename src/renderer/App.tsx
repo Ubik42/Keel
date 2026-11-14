@@ -1428,8 +1428,8 @@ function AppInner() {
     if (!searchHistoryLibraryId) return;
     setStoredSearchHistory({ libraryId: searchHistoryLibraryId, queries });
   }
-  const [formatFilter, setFormatFilter] = useState("");
-  const [excludeFormatFilter, setExcludeFormatFilter] = useState(false);
+  const [formatFilter, setFormatFilter] = useState("text");
+  const [excludeFormatFilter, setExcludeFormatFilter] = useState(true);
   const [colorFilter, setColorFilter] = useState("");
   const [colorSimilarity, setColorSimilarity] = useState(
     () => loadColorFilterPreferences().similarity,
@@ -6589,8 +6589,8 @@ function AppInner() {
 
   function clearDiscoveryControls() {
     setSearchValue("");
-    setFormatFilter("");
-    setExcludeFormatFilter(false);
+    setFormatFilter("text");
+    setExcludeFormatFilter(true);
     setColorFilter("");
     setExcludeColorFilter(false);
     setTagFilter("");

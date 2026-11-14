@@ -130,8 +130,8 @@ export function createDefaultWorkspaceTabBrowseState(
   return {
     searchValue: "",
     filters: {
-      formatFilter: "",
-      excludeFormatFilter: false,
+      formatFilter: "text",
+      excludeFormatFilter: true,
       colorFilter: "",
       excludeColorFilter: false,
       colorSimilarity: DEFAULT_COLOR_SIMILARITY,

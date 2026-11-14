@@ -42,7 +42,9 @@ describe("workspace tabs", () => {
 
   it("detects browse state that will trigger an asynchronous discovery refresh", () => {
     const defaults = createDefaultWorkspaceTabBrowseState();
-    expect(workspaceTabBrowseStateHasDiscoveryInput(defaults)).toBe(false);
+    expect(defaults.filters.formatFilter).toBe("text");
+    expect(defaults.filters.excludeFormatFilter).toBe(true);
+    expect(workspaceTabBrowseStateHasDiscoveryInput(defaults)).toBe(true);
     expect(workspaceTabBrowseStateHasDiscoveryInput({
       ...defaults,
       searchValue: "blue metal",
