@@ -1,3 +1,4 @@
+const showLegacyGroups = false;
 import {
   useCallback,
   useEffect,
@@ -3004,6 +3005,7 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
             <p className="nav-empty">{t("nav.openLibraryFoldersHint")}</p>
           )}
         </Section>
+        {showLegacyGroups && <>
         <Section
           title={t("nav.collections")}
           search={
@@ -3108,6 +3110,7 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
             <p className="nav-empty">{t("nav.openLibrarySmartHint")}</p>
           )}
         </Section>
+        </>}
       </nav>
     </PaneSurface>
   );

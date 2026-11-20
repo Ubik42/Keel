@@ -289,6 +289,14 @@ function automaticMediaAdmissionAllowed(libraryId: string): boolean {
 // packaged utility process can otherwise exit cleanly immediately after ready.
 const processLifetime = setInterval(() => {}, 60 * 60_000);
 
+const automaticTaskTimer=setInterval(()=>{
+ for(const libraryId of libraryService.listOpenLibraryIds()){
+  void interactiveScheduler.schedule({requestId:`automatic-tasks:${libraryId}`,lane:'maintenance',libraryId},
+   ()=>libraryService.runAutomaticTasks(libraryId,undefined,false,()=>interactiveScheduler.yieldAdmission(`automatic-tasks:${libraryId}`))).catch(error=>console.error('automatic-tasks',error));
+ }
+},30000);
+automaticTaskTimer.unref();
+
 function requestPluginMediaProvider(input: Omit<PluginMediaProviderRequest, 'type' | 'requestId'>): Promise<PluginMediaProviderResult> {
   const requestId = randomUUID();
   return new Promise((resolve) => {
@@ -2669,6 +2677,10 @@ async function handleRequestWithoutWriteLease(request: WorkerRequest): Promise<W
       }
       return result;
     }
+    case 'automatic-task.list':return {ok:true,type:'automatic-task.result',tasks:libraryService.listAutomaticTasks(request.command.libraryId)};
+    case 'automatic-task.set':return {ok:true,type:'automatic-task.result',tasks:libraryService.setAutomaticTask(request.command)};
+    case 'automatic-task.delete':return {ok:true,type:'automatic-task.result',tasks:libraryService.deleteAutomaticTask(request.command)};
+    case 'automatic-task.run':await libraryService.runAutomaticTasks(request.command.libraryId,request.command.taskId,true,()=>interactiveScheduler.yieldAdmission(request.requestId));return {ok:true,type:'automatic-task.result',tasks:libraryService.listAutomaticTasks(request.command.libraryId)};
     case 'tag.list':
     case 'tag.create':
     case 'tag.rename':

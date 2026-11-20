@@ -3397,6 +3397,10 @@ async function commandFor(
         createNativeDialogHost,
       });
     }
+    case 'automatic-task.list.request':return {type:'automatic-task.list',libraryId:request.libraryId};
+    case 'automatic-task.set.request':return {type:'automatic-task.set',libraryId:request.libraryId,config:request.config};
+    case 'automatic-task.delete.request':return {type:'automatic-task.delete',libraryId:request.libraryId,taskId:request.taskId};
+    case 'automatic-task.run.request':return {type:'automatic-task.run',libraryId:request.libraryId,taskId:request.taskId};
     case "tag.list.request":
     case "tag.create.request":
     case "tag.rename.request":

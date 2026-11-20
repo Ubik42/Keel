@@ -1,3 +1,4 @@
+import type { AutomaticTaskConfig } from '../../shared/automatic-tasks';
 import type { EntityAppearance as TagAppearance } from '../../shared/entity-appearance';
 // A sandboxed preload cannot load `node:crypto` — importing it here makes the
 // whole preload fail (`Unable to load preload script`), which leaves the
@@ -1097,6 +1098,22 @@ export const library: SerpentLibraryApi = Object.freeze({
     return { ok: true, value: { ...result.tag, ...(result.historyEntryId ? { historyEntryId: result.historyEntryId } : {}) } };
   },
 
+  async listAutomaticTasks(input: {libraryId: string}) {
+    const r=await request({type:'automatic-task.list.request',...input});
+    if(!r.ok)return r;if(r.type!=='automatic-task.result')throw Error('Unexpected task result');return {ok:true as const,value:r.tasks};
+  },
+  async setAutomaticTask(input: {libraryId: string;config:AutomaticTaskConfig}) {
+    const r=await request({type:'automatic-task.set.request',...input});
+    if(!r.ok)return r;if(r.type!=='automatic-task.result')throw Error('Unexpected task result');return {ok:true as const,value:r.tasks};
+  },
+  async deleteAutomaticTask(input: {libraryId: string;taskId:string}) {
+    const r=await request({type:'automatic-task.delete.request',...input});
+    if(!r.ok)return r;if(r.type!=='automatic-task.result')throw Error('Unexpected task result');return {ok:true as const,value:r.tasks};
+  },
+  async runAutomaticTask(input: {libraryId: string;taskId:string}) {
+    const r=await request({type:'automatic-task.run.request',...input});
+    if(!r.ok)return r;if(r.type!=='automatic-task.result')throw Error('Unexpected task result');return {ok:true as const,value:r.tasks};
+  },
   async renameTag({ libraryId, tagId, name, parentTagId, appearance }: { libraryId: string; tagId: string; name: string; parentTagId?: string | null; appearance?: TagAppearance | null }): Promise<LibraryApiResult<TagSummary & { historyEntryId?: string }>> {
     const result = await request({ type: 'tag.rename.request', libraryId, tagId, name, parentTagId, appearance });
     if (!result.ok) return failure(result);

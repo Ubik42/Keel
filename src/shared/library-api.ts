@@ -1,3 +1,4 @@
+import type { AutomaticTask, AutomaticTaskConfig } from './automatic-tasks';
 import type { EntityAppearance as TagAppearance } from './entity-appearance';
 import type { EmbeddingInstallProgress } from "./embedding/install-progress";
 import type { EmbeddingGemmaTier, EmbeddingIndexSnapshot, EmbeddingModelSummary, SemanticSearchModelId } from './embedding/profile';
@@ -555,6 +556,10 @@ export interface SerpentLibraryApi {
   ): () => void;
   // Tags
   listTags(input: { libraryId: string }): Promise<LibraryApiResult<TagSummary[]>>;
+  listAutomaticTasks(input: {libraryId: string}): Promise<LibraryApiResult<AutomaticTask[]>>;
+  setAutomaticTask(input: {libraryId: string; config: AutomaticTaskConfig}): Promise<LibraryApiResult<AutomaticTask[]>>;
+  deleteAutomaticTask(input: {libraryId: string; taskId: string}): Promise<LibraryApiResult<AutomaticTask[]>>;
+  runAutomaticTask(input: {libraryId: string; taskId: string}): Promise<LibraryApiResult<AutomaticTask[]>>;
   createTag(input: { libraryId: string; name: string; parentTagId?: string | null; appearance?: TagAppearance | null }): Promise<LibraryApiResult<TagSummary & { historyEntryId?: string }>>;
   renameTag(input: { libraryId: string; tagId: string; name: string; parentTagId?: string | null; appearance?: TagAppearance | null }): Promise<LibraryApiResult<TagSummary & { historyEntryId?: string }>>;
   deleteTag(input: { libraryId: string; tagId: string }): Promise<LibraryApiResult<{ tagId: string; historyEntryId?: string }>>;

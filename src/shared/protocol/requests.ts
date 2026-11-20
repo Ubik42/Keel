@@ -1,3 +1,4 @@
+import { automaticTaskConfigSchema } from '../automatic-tasks';
 import { z } from 'zod';
 
 import {
@@ -645,6 +646,25 @@ export const rendererRequestSchema = z.discriminatedUnion('type', [
     libraryId: identifierSchema,
     folderId: identifierSchema,
     targetFolderId: optionalIdentifierSchema,
+  }),
+  z.strictObject({
+    type: z.literal('automatic-task.list.request'),
+    libraryId: identifierSchema,
+  }),
+  z.strictObject({
+    type: z.literal('automatic-task.set.request'),
+    libraryId: identifierSchema,
+    config: automaticTaskConfigSchema,
+  }),
+  z.strictObject({
+    type: z.literal('automatic-task.delete.request'),
+    libraryId: identifierSchema,
+    taskId: identifierSchema,
+  }),
+  z.strictObject({
+    type: z.literal('automatic-task.run.request'),
+    libraryId: identifierSchema,
+    taskId: identifierSchema,
   }),
   z.strictObject({
     type: z.literal('tag.list.request'),
@@ -1981,6 +2001,25 @@ export const workerCommandSchema = z.discriminatedUnion('type', [
     libraryId: identifierSchema,
     folderId: identifierSchema,
     targetFolderId: optionalIdentifierSchema,
+  }),
+  z.strictObject({
+    type: z.literal('automatic-task.list'),
+    libraryId: identifierSchema,
+  }),
+  z.strictObject({
+    type: z.literal('automatic-task.set'),
+    libraryId: identifierSchema,
+    config: automaticTaskConfigSchema,
+  }),
+  z.strictObject({
+    type: z.literal('automatic-task.delete'),
+    libraryId: identifierSchema,
+    taskId: identifierSchema,
+  }),
+  z.strictObject({
+    type: z.literal('automatic-task.run'),
+    libraryId: identifierSchema,
+    taskId: identifierSchema,
   }),
   z.strictObject({
     type: z.literal('tag.list'),

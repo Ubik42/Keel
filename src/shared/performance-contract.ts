@@ -209,6 +209,9 @@ const MUTATION_COMMANDS = new Set([
   'tag.merge',
   'tag.assign',
   'tag.remove',
+  'automatic-task.list',
+  'automatic-task.set',
+  'automatic-task.delete',
   'collection.create',
   'collection.update',
   'collection.reorder',
@@ -353,6 +356,7 @@ const BACKGROUND_SECONDARY_COMMANDS = new Set([
 ]);
 
 const MAINTENANCE_COMMANDS = new Set([
+  'automatic-task.run',
   'sync.poll-remote',
   'library.change-sequence',
   'library.recovery-report',

@@ -1,3 +1,4 @@
+import { AutomaticTasksDialog } from './AutomaticTasksDialog';
 import { TAG_DRAG_TYPE } from './tag-drag-drop';
 import type { EntityAppearance as TagAppearance } from '../shared/entity-appearance';
 import { TagTreeSidebar } from "./TagTreeSidebar";
@@ -1894,6 +1895,7 @@ function AppInner() {
   const [appLogOpen, setAppLogOpen] = useState(false);
   const [libraryRecoveryDialogOpen, setLibraryRecoveryDialogOpen] =
     useState(false);
+  const [automaticTasksOpen, setAutomaticTasksOpen] = useState(false);
   const [scriptSandboxPreviewOpen, setScriptSandboxPreviewOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
   const [appUpdateCheck, setAppUpdateCheck] = useState<AppUpdateCheckResult | null>(null);
@@ -14709,11 +14711,11 @@ function AppInner() {
       </header>
       <NavigationSidebar
         library={library}
-        tagTree={library ? <TagTreeSidebar key={library.libraryId} libraryId={library.libraryId} tags={tags} activeTagId={activeTagId}
+        tagTree={library ? <><TagTreeSidebar key={library.libraryId} libraryId={library.libraryId} tags={tags} activeTagId={activeTagId}
           pinnedTagId={pinnedTagId} onPin={(id) => void togglePinnedTag(id)}
           onChoose={(id) => void chooseTag(id)} onCreate={handleCreateTagInManagement} onRename={handleRenameTagInManagement}
           onAppearance={(id, appearance) => handleRenameTagInManagement(id, tags.find((tag) => tag.tagId === id)?.name ?? "", appearance)}
-          onMove={moveTagInTree} onDelete={handleDeleteTagsInManagement} onAssign={assignAssetsToTreeTag} getAssetDragIds={getManagedAssetDragIds} /> : undefined}
+          onMove={moveTagInTree} onDelete={handleDeleteTagsInManagement} onAssign={assignAssetsToTreeTag} getAssetDragIds={getManagedAssetDragIds} /><button type="button" className="nav-row" onClick={() => setAutomaticTasksOpen(true)}><Icon name="activity" size={16} /><span className="nav-row-label">自动任务</span></button></> : undefined}
         assetScope={assetScope}
         showTrash={showTrash}
         showTagManagement={showTagManagement}
@@ -14741,9 +14743,9 @@ function AppInner() {
         filteredFolderCounts={showTrash ? null : filteredFolderCounts}
         trashedAssetCount={trashedAssetCount}
         folders={folders}
-        collections={collections}
+        collections={[]}
         collectionTree={collectionTree}
-        smartCollections={smartCollections}
+        smartCollections={[]}
         linkedFolders={linkedFolders}
         showCollectionInput={showCollectionInput}
         collectionInputValue={collectionInputValue}
@@ -16938,6 +16940,7 @@ function AppInner() {
           recovery={library.recovery}
         />
       )}
+      {library && api && <AutomaticTasksDialog key={library.libraryId} api={api} libraryId={library.libraryId} open={automaticTasksOpen} currentQueryJson={JSON.stringify(currentQueryDefinition())} tags={tags} folders={folders} onClose={() => setAutomaticTasksOpen(false)} onOpenScripts={() => {setAutomaticTasksOpen(false);setScriptSandboxPreviewOpen(true);}} onChanged={async()=>{const r=await api.listTags({libraryId:library.libraryId});if(r.ok)setTags(r.value);}} />}
       <ScriptSandboxPreviewDialog
         automation={(window as RendererWindow).serpent?.automation}
         libraryId={library?.libraryId ?? null}
@@ -17206,10 +17209,10 @@ function AppInner() {
         pluginApi={(window as RendererWindow).serpent?.plugins}
         pluginContributionRefreshKey={pluginContributionRefreshKey}
         tags={tags}
-        collections={collections}
+        collections={[]}
         linkedFolders={linkedFolders}
         managedFolders={folders}
-        smartCollections={smartCollections}
+        smartCollections={[]}
         activeCollectionId={activeCollectionId}
         assets={visibleAssets}
         menuSkipScope={menuSkipScope}

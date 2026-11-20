@@ -20058,3 +20058,13 @@ body.platform-darwin .app-shell[data-shell-layout="islands"] .toolbar-nav-cluste
 .app-shell .dimension-filter-bar .dimension-filter-dims .dimension-filter-btn { min-width: 34px; min-height: 34px; }
 .dimension-filter-more-section { grid-column: 1 / -1; min-width: 0; }
 .dimension-filter-more-section > summary { padding: 10px 0; font-weight: 600; cursor: pointer; }
+
+.automatic-tasks-dialog { width: min(780px, calc(100vw - 48px)); max-height: calc(100vh - 64px); overflow: auto; }
+.automatic-task-toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.automatic-task-card, .automatic-task-conditions { padding: 14px; margin: 12px 0; border: 1px solid var(--ui-border-subtle, #ddd); border-radius: 10px; }
+.automatic-task-card > div:first-child { display: flex; justify-content: space-between; gap: 12px; }
+.automatic-task-card p, .automatic-task-conditions p { font-size: 13px; line-height: 1.6; margin: 8px 0; }
+.automatic-task-editor { display: grid; gap: 12px; padding-top: 12px; }
+.automatic-task-editor .field { display: grid; gap: 6px; }
+.automatic-task-tags { display: flex; gap: 10px 16px; flex-wrap: wrap; max-height: 180px; overflow: auto; }
+.automatic-task-tags label { display: flex; align-items: center; gap: 5px; }

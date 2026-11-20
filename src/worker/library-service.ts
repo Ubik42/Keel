@@ -1,3 +1,4 @@
+import { AUTOMATIC_TASKS_SQL, automaticTaskConfigSchema, type AutomaticTask, type AutomaticTaskConfig } from '../shared/automatic-tasks';
 import { ensureWindowsLibraryIcon } from './windows-library-icon';
 import { randomTagAppearance } from '../shared/tag-appearance';
 import { managedStoragePath, readStorageLayout, writeStorageLayout } from './library-storage-layout';
@@ -3871,6 +3872,7 @@ export const MIGRATIONS = [
   },
   { version: 61, sql: TAG_HIERARCHY_SQL, checksum: createHash('sha256').update(TAG_HIERARCHY_SQL).digest('hex') },
   { version: 62, sql: TAG_APPEARANCE_SQL, checksum: createHash('sha256').update(TAG_APPEARANCE_SQL).digest('hex') },
+  { version: 63, sql: AUTOMATIC_TASKS_SQL, checksum: createHash('sha256').update(AUTOMATIC_TASKS_SQL).digest('hex') },
 ] as const;
 export const SUPPORTED_SCHEMA_VERSION = MIGRATIONS.at(-1)!.version;
 
@@ -6994,6 +6996,7 @@ export class LibraryService {
   /** App setting: audio grid thumbnails use cover art when the file has one. */
   private audioPreviewPrefersCover = true;
   private readonly openById = new Map<string, OpenLibrary>();
+  private readonly runningAutomaticTasks = new Set<string>();
   private readonly openIdByPath = new Map<string, string>();
   /**
    * Serpent-4bdd26: prepared-statement cache keyed by `libraryId\0sql`.
@@ -20228,6 +20231,304 @@ export class LibraryService {
       throw serviceError(error, 'LIBRARY_NOT_WRITABLE');
     }
     return { tagId, name: trimmed, assetCount: 0, ...(input.parentTagId ? { parentTagId: input.parentTagId } : {}), ...(this.getTagAppearance(openLibrary, tagId) ? { appearance: this.getTagAppearance(openLibrary, tagId)! } : {}) };
+  }
+
+  /** One-time additive migration; original group records remain for compatibility. */
+  private migrateLegacyGroups(openLibrary: OpenLibrary): void {
+    const db = openLibrary.connection;
+    if (openLibrary.readOnly || !hasTable(db, "legacy_group_migrations"))
+      return;
+    const libraryId = openLibrary.summary.libraryId;
+    const migrate = (kind: string, id: string, name: string): string => {
+      const old = db
+        .prepare(
+          "SELECT tag_id FROM legacy_group_migrations WHERE kind=? AND legacy_id=?",
+        )
+        .get(kind, id) as { tag_id: string } | undefined;
+      if (old) return old.tag_id;
+      let label = name;
+      if (
+        db
+          .prepare("SELECT 1 FROM tags WHERE library_id=? AND name=?")
+          .get(libraryId, label)
+      )
+        label = `${name}（${kind === "collection" ? "旧合集" : "旧智能合集"} ${id.slice(0, 8)}）`;
+      const tagId = randomUUID();
+      db.prepare(
+        "INSERT INTO tags(tag_id,library_id,name,created_at) VALUES(?,?,?,?)",
+      ).run(tagId, libraryId, label, new Date().toISOString());
+      this.setTagAppearance(openLibrary, tagId, randomTagAppearance());
+      db.prepare(
+        "INSERT INTO legacy_group_migrations(kind,legacy_id,tag_id) VALUES(?,?,?)",
+      ).run(kind, id, tagId);
+      return tagId;
+    };
+    db.transaction(() => {
+      const groups = db
+        .prepare(
+          "SELECT collection_id,parent_id,name FROM collections WHERE library_id=?",
+        )
+        .all(libraryId) as {
+        collection_id: string;
+        parent_id: string | null;
+        name: string;
+      }[];
+      const newlyMigrated = groups.filter(
+        (g) =>
+          !db
+            .prepare(
+              "SELECT 1 FROM legacy_group_migrations WHERE kind='collection' AND legacy_id=?",
+            )
+            .get(g.collection_id),
+      );
+      const mapped = new Map(
+        groups.map((g) => [
+          g.collection_id,
+          migrate("collection", g.collection_id, g.name),
+        ]),
+      );
+      for (const g of newlyMigrated) {
+        const tagId = mapped.get(g.collection_id)!;
+        if (g.parent_id && mapped.has(g.parent_id))
+          this.setTagParent(openLibrary, tagId, mapped.get(g.parent_id)!);
+        const members = db
+          .prepare(
+            "SELECT asset_id FROM collection_assets WHERE collection_id=?",
+          )
+          .all(g.collection_id) as { asset_id: string }[];
+        for (const member of members) {
+          db.prepare(
+            "INSERT OR IGNORE INTO human_asset_tags(asset_id,tag_id) VALUES(?,?)",
+          ).run(member.asset_id, tagId);
+          this.syncAssetSearchContent(db, member.asset_id);
+        }
+      }
+      const smart = db
+        .prepare(
+          "SELECT collection_id,name,query_definition_json FROM smart_collections WHERE library_id=?",
+        )
+        .all(libraryId) as {
+        collection_id: string;
+        name: string;
+        query_definition_json: string;
+      }[];
+      for (const g of smart) {
+        if (
+          db
+            .prepare(
+              "SELECT 1 FROM legacy_group_migrations WHERE kind='smart' AND legacy_id=?",
+            )
+            .get(g.collection_id)
+        )
+          continue;
+        const tagId = migrate("smart", g.collection_id, g.name);
+        const taskId = randomUUID();
+        const config: AutomaticTaskConfig = {
+          taskId,
+          name: g.name,
+          enabled: false,
+          trigger: "library-change",
+          queryDefinitionJson: g.query_definition_json,
+          recursive: true,
+          action: { type: "add-tags", tagIds: [tagId] },
+        };
+        db.prepare(
+          "INSERT INTO automatic_tasks(task_id,config_json) VALUES(?,?)",
+        ).run(taskId, JSON.stringify(config));
+        db.prepare(
+          "UPDATE legacy_group_migrations SET task_id=? WHERE kind='smart' AND legacy_id=?",
+        ).run(taskId, g.collection_id);
+      }
+    })();
+  }
+
+  listAutomaticTasks(libraryId: string): AutomaticTask[] {
+    const openLibrary = this.requireOpenLibrary(libraryId);
+    if (!hasTable(openLibrary.connection, "automatic_tasks")) return [];
+    this.migrateLegacyGroups(openLibrary);
+    const rows = openLibrary.connection
+      .prepare("SELECT * FROM automatic_tasks ORDER BY rowid")
+      .all() as {
+      task_id: string;
+      config_json: string;
+      last_run_at: string | null;
+      last_added: number;
+      last_error: string | null;
+    }[];
+    return rows.map((row) => ({
+      ...automaticTaskConfigSchema.parse(JSON.parse(row.config_json)),
+      taskId: row.task_id,
+      lastRunAt: row.last_run_at,
+      lastAdded: row.last_added,
+      lastError: row.last_error,
+    }));
+  }
+
+  setAutomaticTask(input: {
+    libraryId: string;
+    config: AutomaticTaskConfig;
+  }): AutomaticTask[] {
+    const openLibrary = this.requireOpenLibrary(input.libraryId);
+    this.assertLibraryWritable(openLibrary);
+    const config = automaticTaskConfigSchema.parse(input.config);
+    const definition = smartCollectionQueryDefinitionSchema.parse(
+      JSON.parse(config.queryDefinitionJson),
+    );
+    if (!(
+      definition.filters?.length ||
+      definition.search?.clauses?.length ||
+      definition.search?.expression?.root
+    ))
+      throw new LibraryServiceError("INVALID_SELECTION");
+    for (const tagId of config.action.tagIds)
+      if (
+        !openLibrary.connection
+          .prepare("SELECT 1 FROM tags WHERE tag_id=? AND library_id=?")
+          .get(tagId, input.libraryId)
+      )
+        throw new LibraryServiceError("FOLDER_NOT_FOUND");
+    const taskId = config.taskId ?? randomUUID();
+    openLibrary.connection
+      .prepare(
+        `INSERT INTO automatic_tasks(task_id,config_json) VALUES(?,?) ON CONFLICT(task_id) DO UPDATE SET config_json=excluded.config_json,last_sequence=-1,last_error=NULL`,
+      )
+      .run(
+        taskId,
+        JSON.stringify({
+          ...config,
+          taskId,
+          queryDefinitionJson: JSON.stringify(definition),
+        }),
+      );
+    this.emitClientAssetsChanged(input.libraryId, 0);
+    return this.listAutomaticTasks(input.libraryId);
+  }
+
+  deleteAutomaticTask(input: {
+    libraryId: string;
+    taskId: string;
+  }): AutomaticTask[] {
+    const openLibrary = this.requireOpenLibrary(input.libraryId);
+    this.assertLibraryWritable(openLibrary);
+    openLibrary.connection
+      .prepare("DELETE FROM automatic_tasks WHERE task_id=?")
+      .run(input.taskId);
+    this.emitClientAssetsChanged(input.libraryId, 0);
+    return this.listAutomaticTasks(input.libraryId);
+  }
+
+  /** Background rules use the same query and tag mutation kernels as interactive actions. */
+  async runAutomaticTasks(
+    libraryId: string,
+    taskId?: string,
+    force = false,
+    admissionYield?: () => Promise<void>,
+  ): Promise<void> {
+    const openLibrary = this.requireOpenLibrary(libraryId);
+    if (
+      openLibrary.readOnly ||
+      !hasTable(openLibrary.connection, "automatic_tasks")
+    )
+      return;
+    if (this.runningAutomaticTasks.has(libraryId)) {
+      if (force) throw new LibraryServiceError("VERSION_CONFLICT");
+      return;
+    }
+    this.runningAutomaticTasks.add(libraryId);
+    try {
+      for (const task of this.listAutomaticTasks(libraryId)) {
+        if (taskId && task.taskId !== taskId) continue;
+        if (!force && (!task.enabled || task.trigger !== "library-change"))
+          continue;
+        const db = openLibrary.connection;
+        const stored = db
+          .prepare(
+            "SELECT config_json,last_sequence FROM automatic_tasks WHERE task_id=?",
+          )
+          .get(task.taskId) as
+          { config_json: string; last_sequence: number } | undefined;
+        if (
+          !stored ||
+          (!force && stored.last_sequence === this.getChangeSequence(libraryId))
+        )
+          continue;
+        const stillCurrent = () =>
+          this.openById.get(libraryId) === openLibrary &&
+          (
+            db
+              .prepare(
+                "SELECT config_json FROM automatic_tasks WHERE task_id=?",
+              )
+              .get(task.taskId) as { config_json: string } | undefined
+          )?.config_json === stored.config_json;
+        let added = 0;
+        try {
+          const definition = smartCollectionQueryDefinitionSchema.parse(
+            JSON.parse(task.queryDefinitionJson),
+          );
+          for (const id of task.action.tagIds)
+            if (!db.prepare("SELECT 1 FROM tags WHERE tag_id=?").get(id))
+              throw Error("目标标签已删除，请重新选择。");
+          const ids: string[] = [];
+          for (let offset = 0; ; offset += 200) {
+            if (!stillCurrent()) break;
+            const page = this.searchAssets({
+              libraryId,
+              query: definition.search ?? null,
+              filters: definition.filters,
+              sort: definition.sort,
+              scope: task.folderId
+                ? {
+                    kind: "folder",
+                    folderId: task.folderId,
+                    recursive: task.recursive,
+                  }
+                : null,
+              idsOnly: true,
+              idsPage: true,
+              limit: 200,
+              offset,
+            });
+            const batch = page.assetIds ?? [];
+            ids.push(...batch);
+            if (offset + batch.length >= page.total || !batch.length) break;
+            await new Promise<void>((resolve) => setImmediate(resolve));
+            await admissionYield?.();
+          }
+          for (let offset = 0; offset < ids.length; offset += 64) {
+            if (!stillCurrent()) break;
+            added += this.assignTags({
+              libraryId,
+              assetIds: ids.slice(offset, offset + 64),
+              tagIds: task.action.tagIds,
+            }).assignedCount;
+            await new Promise<void>((resolve) => setImmediate(resolve));
+            await admissionYield?.();
+          }
+          if (stillCurrent())
+            db.prepare(
+              "UPDATE automatic_tasks SET last_run_at=?,last_added=?,last_error=NULL,last_sequence=? WHERE task_id=?",
+            ).run(
+              new Date().toISOString(),
+              added,
+              this.getChangeSequence(libraryId),
+              task.taskId,
+            );
+        } catch (error) {
+          if (stillCurrent())
+            db.prepare(
+              "UPDATE automatic_tasks SET last_run_at=?,last_added=?,last_error=? WHERE task_id=?",
+            ).run(
+              new Date().toISOString(),
+              added,
+              error instanceof Error ? error.message : String(error),
+              task.taskId,
+            );
+        }
+      }
+    } finally {
+      this.runningAutomaticTasks.delete(libraryId);
+    }
   }
 
   listTags(libraryId: string): TagSummary[] {
