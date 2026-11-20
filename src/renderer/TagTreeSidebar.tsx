@@ -17,6 +17,8 @@ export interface TagTreeSidebarProps {
   libraryId: string;
   tags: readonly TagSummary[];
   activeTagId: string | null;
+  pinnedTagId: string | null;
+  onPin: (tagId: string) => void;
   onChoose: (tagId: string) => void;
   onCreate: (name: string, parentTagId?: string | null) => Promise<boolean>;
   onRename: (tagId: string, name: string) => Promise<boolean>;
@@ -106,10 +108,12 @@ export function TagTreeSidebar(props: TagTreeSidebarProps) {
       if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); items[Math.max(0, Math.min(items.length - 1, index + (event.key === 'ArrowDown' ? 1 : -1)))]?.focus(); }
     }}>
       {rows.map(({ tag, depth, hasChildren, expanded }) => <div className={`tag-tree-row${dropTarget === tag.tagId ? ' is-drop-target' : ''}`} key={tag.tagId} style={{ paddingLeft: depth * 14 }} onDragOver={(event) => { if (canDrop(event, tag.tagId)) { event.preventDefault(); event.stopPropagation(); setDropTarget(tag.tagId); event.dataTransfer.dropEffect = event.dataTransfer.types.includes(TAG_DRAG_TYPE) ? 'move' : 'copy'; } }} onDragLeave={() => setDropTarget(null)} onDrop={(event) => { if (canDrop(event, tag.tagId)) void drop(event, tag.tagId); }}>
+        {Array.from({ length: depth }, (_, level) => <span key={level} className="tag-tree-guide" aria-hidden="true" style={{ left: level * 14 + 8 }} />)}
         {hasChildren ? <button className={`tag-tree-disclosure${expanded ? ' is-open' : ''}`} type="button" aria-label={t(expanded ? 'tagTree.collapse' : 'tagTree.expand', { name: tag.name })} onClick={() => toggle(tag.tagId)}><Icon name="chevron" size={12} /></button> : <span className="tag-tree-disclosure-spacer" />}
         <button className={`nav-row${props.activeTagId === tag.tagId ? ' is-active' : ''}`} role="treeitem" aria-level={depth + 1} aria-selected={props.activeTagId === tag.tagId} aria-expanded={hasChildren ? expanded : undefined} aria-label={tag.name} title={t('tagTree.rowHelp', { name: tag.name })} data-tag-id={tag.tagId} type="button" draggable={!saving} disabled={saving} onDragStart={(event) => { event.dataTransfer.setData(TAG_DRAG_TYPE, tag.tagId); event.dataTransfer.effectAllowed = 'move'; setDraggedId(tag.tagId); }} onDragEnd={() => { setDraggedId(null); setDropTarget(null); }} onClick={() => props.onChoose(tag.tagId)} onKeyDown={(event) => { if (event.key === 'ArrowRight' && hasChildren && !expanded) { event.preventDefault(); toggle(tag.tagId); } if (event.key === 'ArrowLeft' && hasChildren && expanded) { event.preventDefault(); toggle(tag.tagId); } if (event.key === 'F2') { event.preventDefault(); setDraft({ tagId: tag.tagId, parentTagId: tag.parentTagId ?? null, value: tag.name }); } }} onContextMenu={(event) => { event.preventDefault(); event.stopPropagation(); setMenu({ id: tag.tagId, x: event.clientX, y: event.clientY }); }}>
           <AppearanceGlyph appearance={tag.appearance} fallback="tag" size={16} /><span className="nav-row-label" style={{ color: appearanceColorVar(tag.appearance?.colorId) }}>{tag.name}</span><span className="nav-count" aria-hidden="true">{tag.subtreeAssetCount ?? tag.assetCount}</span>
         </button>
+        <button type="button" className={`tag-tree-pin${props.pinnedTagId === tag.tagId ? ' is-pinned' : ''}`} aria-label={`${t(props.pinnedTagId === tag.tagId ? 'tagTree.unpin' : 'tagTree.pin')}：${tag.name}`} aria-pressed={props.pinnedTagId === tag.tagId} title={t(props.pinnedTagId === tag.tagId ? 'tagTree.unpinHelp' : 'tagTree.pinHelp')} onClick={() => props.onPin(tag.tagId)}>{t(props.pinnedTagId === tag.tagId ? 'tagTree.pinnedButton' : 'tagTree.pinButton')}</button>
       </div>)}
     </div>
     {rows.length === 0 && <p className="tag-tree-empty">{t(query ? 'tagTree.noMatches' : 'tagTree.empty')}</p>}

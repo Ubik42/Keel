@@ -245,6 +245,12 @@ export const zhCN = {
     tagManagement: "标签管理"
   },
   tagTree: {
+    pin: "固定标签过滤",
+    unpin: "取消固定标签过滤",
+    pinButton: "固定",
+    pinnedButton: "已固定",
+    pinHelp: "固定标签过滤；切换文件夹时继续按此标签筛选",
+    unpinHelp: "取消固定标签过滤",
     appearance: "颜色和图标",
     randomAppearance: "随机外观",
     appearanceSaved: "标签外观已更新",

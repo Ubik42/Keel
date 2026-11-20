@@ -20028,7 +20028,11 @@ body.platform-darwin .app-shell[data-shell-layout="islands"] .toolbar-nav-cluste
 .tag-tree-heading strong { font-size: 12px; font-weight: 650; }
 .tag-tree-total { margin-right: auto; font-size: 11px; opacity: .55; }
 .tag-tree-search { width: 100%; min-width: 0; height: 29px; margin-bottom: 7px; font-size: 12px; }
-.tag-tree-row { display: flex; align-items: center; border-radius: 6px; }
+.tag-tree-row { position: relative; display: flex; align-items: center; border-radius: 6px; }
+.tag-tree-guide { position: absolute; top: 0; bottom: 0; border-left: 1.5px solid currentColor; opacity: .3; pointer-events: none; }
+.tag-tree-pin { flex: 0 0 42px; min-height: 28px; margin-left: 3px; padding: 2px; border: 1px solid transparent; border-radius: 5px; background: transparent; color: inherit; font-size: 11px; cursor: pointer; opacity: .65; }
+.tag-tree-pin:hover, .tag-tree-pin:focus-visible { opacity: 1; background: color-mix(in srgb, currentColor 10%, transparent); }
+.tag-tree-pin.is-pinned { opacity: 1; color: var(--ui-accent, #5289ff); background: color-mix(in srgb, var(--ui-accent, #5289ff) 13%, transparent); border-color: currentColor; }
 .tag-tree-row > .nav-row { flex: 1; min-width: 0; padding-left: 4px; }
 .tag-tree-disclosure, .tag-tree-disclosure-spacer { flex: 0 0 17px; width: 17px; height: 28px; }
 .tag-tree-disclosure { display: grid; place-items: center; border: 0; background: transparent; color: inherit; cursor: pointer; }

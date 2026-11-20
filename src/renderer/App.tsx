@@ -782,6 +782,7 @@ type QueryNumericRangeState = {
   exclude: boolean;
 };
 type QueryFilterSnapshot = {
+  pinnedTagId?: string | null;
   formatFilter: string;
   excludeFormatFilter: boolean;
   tagFilter: string;
@@ -1290,6 +1291,7 @@ function AppInner() {
   const [tags, setTags] = useState<TagSummary[]>([]);
   const [tagDropTargetId, setTagDropTargetId] = useState<string | null>(null);
   const [activeTagId, setActiveTagId] = useState<string | null>(null);
+  const [storedPinnedTagId, setPinnedTagId] = useState<string | null>(null);
 
   // Collections
   const [collections, setCollections] = useState<CollectionSummary[]>([]);
@@ -1440,6 +1442,7 @@ function AppInner() {
   const [tagFilterExpression, setTagFilterExpression] = useState("");
   const [tagFilterMode, setTagFilterMode] = useState<"selection" | "expression">("expression");
   const [tagFilterLastValidExpression, setTagFilterLastValidExpression] = useState("");
+  const pinnedTagId = tagFilterMode === "expression" && tags.some(tag => tag.tagId === storedPinnedTagId && tagFilterExpression === JSON.stringify(tag.name)) ? storedPinnedTagId : null;
   const [excludeTagFilter, setExcludeTagFilter] = useState(false);
   const [excludedTagFilter, setExcludedTagFilter] = useState("");
   const [includeAiTagFilter, setIncludeAiTagFilter] = useState(true);
@@ -5645,6 +5648,7 @@ function AppInner() {
     return {
       searchValue,
       filters: {
+        pinnedTagId,
         formatFilter,
         excludeFormatFilter,
         colorFilter,
@@ -5859,6 +5863,7 @@ function AppInner() {
   }
 
   function applyWorkspaceTabBrowseState(state: WorkspaceTabBrowseState) {
+    setPinnedTagId(state.filters.pinnedTagId ?? null);
     setSearchValue(state.searchValue);
     setFormatFilter(state.filters.formatFilter);
     setExcludeFormatFilter(state.filters.excludeFormatFilter);
@@ -6588,6 +6593,7 @@ function AppInner() {
   }
 
   function clearDiscoveryControls() {
+    setPinnedTagId(null);
     setSearchValue("");
     setFormatFilter("text");
     setExcludeFormatFilter(true);
@@ -6617,6 +6623,7 @@ function AppInner() {
   }
 
   function clearDiscoveryFiltersOnly() {
+    setPinnedTagId(null);
     setFormatFilter("");
     setExcludeFormatFilter(false);
     setColorFilter("");
@@ -6714,6 +6721,13 @@ function AppInner() {
     const viewSession = ensureLibraryView(targetLibraryId);
     if (!viewSession) return;
     const folderId = scope === "all" || scope === "root" ? undefined : scope;
+    const leavingTagBrowse = !request.browseState && activeTagId !== null && pinnedTagId !== activeTagId;
+    const folderBrowseState = captureWorkspaceTabBrowseState();
+    if (leavingTagBrowse) {
+      folderBrowseState.filters = { ...folderBrowseState.filters, pinnedTagId: null,
+        tagFilter: "", tagFilterExpression: "", tagFilterLastValidExpression: "",
+        excludeTagFilter: false, excludedTagFilter: "" };
+    }
     const recursive = request.browseState
       ? request.browseState.folderRecursive
       : scope !== "all" && scope !== "root"
@@ -6737,7 +6751,7 @@ function AppInner() {
       await loadContent({ ...library, libraryId: targetLibraryId }, scope, {
         showIgnored: request.browseState?.showIgnoredItems ?? showIgnoredItems,
         folderRecursive: recursive,
-        discovery: queryDefinitionForNavigationRequest(request),
+        discovery: leavingTagBrowse ? queryDefinitionForWorkspaceBrowseState(folderBrowseState) : queryDefinitionForNavigationRequest(request),
         // Ordinary navigation keeps sidebar queries out of the hot path for
         // large libraries. A destructive mutation that removed the current
         // folder opts in once so the deleted row cannot remain visible.
@@ -6767,6 +6781,10 @@ function AppInner() {
       setShowTagManagement(false);
       setActivePluginSidebarViewId(null);
       setAssetScope(scope);
+      if (leavingTagBrowse) {
+        setTagFilter(""); setTagFilterExpression(""); setTagFilterLastValidExpression("");
+        setExcludeTagFilter(false); setExcludedTagFilter(""); setPinnedTagId(null);
+      }
       folderRecursiveRef.current = recursive;
       setFolderRecursive(recursive);
       clearAssetSelection();
@@ -7255,6 +7273,19 @@ function AppInner() {
         setUiState("ready");
       }
     }
+  }
+
+  async function togglePinnedTag(tagId: string) {
+    if (pinnedTagId === tagId) {
+      setPinnedTagId(null);
+      if (!activeTagId) {
+        setTagFilter(""); setTagFilterExpression(""); setTagFilterLastValidExpression("");
+        setExcludeTagFilter(false); setExcludedTagFilter("");
+      }
+      return;
+    }
+    await chooseTag(tagId);
+    setPinnedTagId(tagId);
   }
 
   async function assignAssetToTag(assetId: string, tagId: string) {
@@ -8008,6 +8039,7 @@ function AppInner() {
     } = {},
   ): SearchDefinition {
     const filtersState = overrides.filtersSnapshot ?? {
+      pinnedTagId,
       formatFilter,
       excludeFormatFilter,
       tagFilter,
@@ -8062,7 +8094,8 @@ function AppInner() {
         values: formatValues,
         exclude: filtersState.excludeFormatFilter,
       });
-    const exactTag = activeTagId ? tags.find(tag => tag.tagId === activeTagId) : undefined;
+    const exactTagId = filtersState.pinnedTagId ?? activeTagId;
+    const exactTag = exactTagId ? tags.find(tag => tag.tagId === exactTagId) : undefined;
     if (exactTag && filtersState.tagFilterMode === "expression"
       && filtersState.tagFilterExpression === JSON.stringify(exactTag.name)) {
       filters.push({ field: "tag", values: [exactTag.name], exclude: false,
@@ -8205,6 +8238,7 @@ function AppInner() {
       sortField: state.sortField,
       sortOrder: state.sortOrder,
       filtersSnapshot: {
+        pinnedTagId: state.filters.pinnedTagId,
         formatFilter: state.filters.formatFilter,
         excludeFormatFilter: state.filters.excludeFormatFilter,
         tagFilter: state.filters.tagFilter,
@@ -14676,6 +14710,7 @@ function AppInner() {
       <NavigationSidebar
         library={library}
         tagTree={library ? <TagTreeSidebar key={library.libraryId} libraryId={library.libraryId} tags={tags} activeTagId={activeTagId}
+          pinnedTagId={pinnedTagId} onPin={(id) => void togglePinnedTag(id)}
           onChoose={(id) => void chooseTag(id)} onCreate={handleCreateTagInManagement} onRename={handleRenameTagInManagement}
           onAppearance={(id, appearance) => handleRenameTagInManagement(id, tags.find((tag) => tag.tagId === id)?.name ?? "", appearance)}
           onMove={moveTagInTree} onDelete={handleDeleteTagsInManagement} onAssign={assignAssetsToTreeTag} getAssetDragIds={getManagedAssetDragIds} /> : undefined}
@@ -15184,6 +15219,7 @@ function AppInner() {
             tagFilterLastValidExpression={tagFilterLastValidExpression}
             tagFilterMode={tagFilterMode}
             setTagFilterExpression={(value) => {
+              setPinnedTagId(null);
               setTagFilterExpression(value);
               if (parseSearchExpressionDetailed(value, "tags").ok) setTagFilterLastValidExpression(value);
             }}

@@ -12,6 +12,7 @@ export interface WorkspaceTabBrowseFilters {
   excludeColorFilter: boolean;
   colorSimilarity: number;
   tagFilter: string;
+  pinnedTagId?: string | null;
   tagFilterExpression?: string;
   tagFilterMode?: "selection" | "expression";
   tagFilterLastValidExpression?: string;

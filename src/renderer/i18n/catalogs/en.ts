@@ -257,6 +257,12 @@ export const en = {
     tagManagement: "Tag management"
   },
   tagTree: {
+    pin: "Pin tag filter",
+    unpin: "Unpin tag filter",
+    pinButton: "Pin",
+    pinnedButton: "Pinned",
+    pinHelp: "Keep this tag filter when switching folders",
+    unpinHelp: "Unpin this tag filter",
     appearance: "Color and icon",
     randomAppearance: "Random appearance",
     appearanceSaved: "Tag appearance updated",
