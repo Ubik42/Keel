@@ -126,3 +126,10 @@
 - 类型检查、修改文件 ESLint、打包和运行时完整性检查通过；App.tsx 保留两个既有 Hook 依赖警告。
 - 开源参考与后续脚本任务边界见 task-presentation-research.md。本轮保持既有规则执行器，通用脚本绑定与 AI 生成尚未接入。
 - 手机更新的库索引辅助程序会按版本和关键源文件变化刷新构建缓存，避免数据库升级后仍使用旧版库引擎；已重建当前辅助程序并验证缓存复用。
+
+## Windows 启动入口修复
+
+- 原开始菜单和桌面快捷方式使用 cmd.exe /c Start-Serpent.cmd，命令行控制台因此短暂显示。
+- 新增 Windows GUI 子系统入口 Start-Serpent.exe，直接启动开发版 EXE，并设置既有独立配置路径和 development 发行标记。快捷方式改为直接指向该入口。
+- launcher:build 可重建入口，Windows 打包后自动重建。编译产物留在本机，源代码与构建脚本纳入版本控制。
+- 实际通过开始菜单快捷方式验证，进程链为 Start-Serpent.exe → Serpent.exe，监测窗口内 cmd.exe/conhost.exe/OpenConsole.exe 启动数为 0；GUI 子系统标记为 2，程序响应正常。修改文件 ESLint 无错误。

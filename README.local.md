@@ -51,7 +51,7 @@
 
 源码目录：`D:\manage\_tools\Serpent`。
 
-双击 `Start-Serpent.cmd` 打开打包后的程序，或使用桌面的“Serpent 开发版”快捷方式。配置单独保存在工程的 `.local-profile`，自动更新关闭。原发行版的配置保持独立。
+双击 `Start-Serpent.exe` 无控制台启动打包后的程序（命令行入口保留 `Start-Serpent.cmd`），或使用桌面的“Serpent 开发版”快捷方式。配置单独保存在工程的 `.local-profile`，自动更新关闭。原发行版的配置保持独立。
 
 ```powershell
 npm ci

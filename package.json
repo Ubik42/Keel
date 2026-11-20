@@ -11,6 +11,7 @@
     "node": ">=24 <25"
   },
   "scripts": {
+    "launcher:build": "node scripts/build-desktop-launcher.mjs",
     "start": "node scripts/dev-start.mjs",
     "prestart": "node scripts/ensure-native.mjs && node scripts/patch-dev-electron-name.mjs",
     "start:forge": "electron-forge start",

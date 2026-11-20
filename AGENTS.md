@@ -1,7 +1,7 @@
 # 本地开发约定
 
 - 本仓库是 Ubik42/Serpent 的个人版本。默认直接在 main 分支开发并推送 origin；upstream 保留 dolag233/Serpent，用于获取上游更新。
-- 工程固定在 D:\manage\_tools\Serpent。开发版使用独立配置目录，启动入口为 Start-Serpent.cmd。
+- 工程固定在 D:\manage\_tools\Serpent。开发版使用独立配置目录，图形启动入口为 Start-Serpent.exe，命令行入口保留 Start-Serpent.cmd。
 - 新建资源库默认 storageLayout=root，用户可以选择 assets。没有 storage-layout.json 的旧库按 Assets 模式打开。现有库的布局不自动转换。
 - useExistingFolder=true 时，在所选现有目录中创建根目录资源库。只创建 .serpent；已有元数据时拒绝覆盖；初始化失败只清理本次创建的元数据。
 - 标签层级保存在 tag_hierarchy，父标签筛选通过 includeDescendants 的递归 SQL 包含后代。调整层级沿用 tag.create/tag.rename 的可撤销事务；不得拼接标签路径改写原名，也不得形成循环。

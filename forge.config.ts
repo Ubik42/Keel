@@ -65,6 +65,9 @@ const config: ForgeConfig = {
     },
     postPackage: async (_forgeConfig, packageResult) => {
       nativeMediaPlatform(packageResult.platform, packageResult.arch);
+      if (process.platform === 'win32' && packageResult.platform === 'win32') {
+        runNodeGate('scripts/build-desktop-launcher.mjs', []);
+      }
       for (const outputPath of packageResult.outputPaths) {
         runNodeGate('scripts/verify-package.mjs', [], {
           SERPENT_PACKAGE_ROOT: outputPath,
