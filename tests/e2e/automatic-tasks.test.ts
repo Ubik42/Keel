@@ -91,7 +91,7 @@ test("independent automatic tasks replace group entries and apply tags manually 
         { timeout: 20000 },
       )
       .toBe(2);
-    await window.getByRole("button", { name: "自动任务", exact: true }).click();
+    await window.getByRole("button", { name: "新建任务", exact: true }).click();
     const dialog = window.getByRole("dialog", {
       name: "自动任务",
       exact: true,

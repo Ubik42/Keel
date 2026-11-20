@@ -238,4 +238,60 @@ describe("independent automatic tasks", () => {
     service.openLibrary(library.libraryPath);
     expect(service.listAutomaticTasks(id)).toHaveLength(1);
   });
+  it("persists task grouping and execution order without changing rules or existing labels", () => {
+    const { service, library } = fixture();
+    const libraryId = library.libraryId;
+    const tag = service.createTag({ libraryId, name: "目标" });
+    const first = service.setAutomaticTask({
+      libraryId,
+      config: rule(tag.tagId, { name: "一", enabled: false }),
+    })[0]!;
+    const second = service
+      .setAutomaticTask({
+        libraryId,
+        config: rule(tag.tagId, { name: "二", trigger: "manual" }),
+      })
+      .find((t) => t.name === "二")!;
+    const groupId = "00000000-0000-4000-8000-000000000001";
+    const layout = {
+      groups: [
+        { groupId, name: "整理", taskIds: [second.taskId, first.taskId] },
+      ],
+      ungroupedTaskIds: [],
+    };
+    expect(service.setAutomaticTaskLayout({ libraryId, layout })).toEqual(
+      layout,
+    );
+    expect(service.listAutomaticTasks(libraryId).map((t) => t.name)).toEqual([
+      "二",
+      "一",
+    ]);
+    service.closeLibrary(libraryId);
+    service.openLibrary(library.libraryPath);
+    expect(service.getAutomaticTaskLayout(libraryId)).toEqual(layout);
+    expect(
+      service
+        .listAutomaticTasks(libraryId)
+        .find((t) => t.taskId === first.taskId)?.enabled,
+    ).toBe(false);
+    expect(() =>
+      service.setAutomaticTaskLayout({
+        libraryId,
+        layout: {
+          groups: [
+            { groupId, name: "整理", taskIds: [first.taskId, first.taskId] },
+          ],
+          ungroupedTaskIds: [],
+        },
+      }),
+    ).toThrow();
+    expect(service.getAutomaticTaskLayout(libraryId)).toEqual(layout);
+    service.deleteAutomaticTask({ libraryId, taskId: second.taskId });
+    expect(
+      service.getAutomaticTaskLayout(libraryId).groups[0]!.taskIds,
+    ).toEqual([first.taskId]);
+    expect(service.listAutomaticTasks(libraryId)[0]!.action.tagIds).toEqual([
+      tag.tagId,
+    ]);
+  });
 });

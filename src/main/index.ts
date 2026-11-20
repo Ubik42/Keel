@@ -3397,6 +3397,8 @@ async function commandFor(
         createNativeDialogHost,
       });
     }
+    case 'automatic-task.layout.get.request':return {type:'automatic-task.layout.get',libraryId:request.libraryId};
+    case 'automatic-task.layout.set.request':return {type:'automatic-task.layout.set',libraryId:request.libraryId,layout:request.layout};
     case 'automatic-task.list.request':return {type:'automatic-task.list',libraryId:request.libraryId};
     case 'automatic-task.set.request':return {type:'automatic-task.set',libraryId:request.libraryId,config:request.config};
     case 'automatic-task.delete.request':return {type:'automatic-task.delete',libraryId:request.libraryId,taskId:request.taskId};

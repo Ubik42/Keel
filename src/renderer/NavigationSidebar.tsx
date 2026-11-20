@@ -870,6 +870,7 @@ export type FolderTreeExpandActions = {
 
 export interface NavigationSidebarProps {
   tagTree?: ReactNode;
+  automaticTasks?: ReactNode;
   // --- Library connection ---
   library: RendererLibrarySummary | null;
 
@@ -3005,6 +3006,7 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
             <p className="nav-empty">{t("nav.openLibraryFoldersHint")}</p>
           )}
         </Section>
+        {props.automaticTasks}
         {showLegacyGroups && <>
         <Section
           title={t("nav.collections")}

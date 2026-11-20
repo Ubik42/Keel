@@ -1,4 +1,4 @@
-import type { AutomaticTaskConfig } from '../../shared/automatic-tasks';
+import type { AutomaticTaskConfig, AutomaticTaskLayout } from '../../shared/automatic-tasks';
 import type { EntityAppearance as TagAppearance } from '../../shared/entity-appearance';
 // A sandboxed preload cannot load `node:crypto` — importing it here makes the
 // whole preload fail (`Unable to load preload script`), which leaves the
@@ -1098,6 +1098,8 @@ export const library: SerpentLibraryApi = Object.freeze({
     return { ok: true, value: { ...result.tag, ...(result.historyEntryId ? { historyEntryId: result.historyEntryId } : {}) } };
   },
 
+  async getAutomaticTaskLayout(input:{libraryId:string}){const r=await request({type:'automatic-task.layout.get.request',...input});if(!r.ok)return r;if(r.type!=='automatic-task.layout')throw Error('Unexpected task layout result');return {ok:true as const,value:r.layout};},
+  async setAutomaticTaskLayout(input:{libraryId:string;layout:AutomaticTaskLayout}){const r=await request({type:'automatic-task.layout.set.request',...input});if(!r.ok)return r;if(r.type!=='automatic-task.layout')throw Error('Unexpected task layout result');return {ok:true as const,value:r.layout};},
   async listAutomaticTasks(input: {libraryId: string}) {
     const r=await request({type:'automatic-task.list.request',...input});
     if(!r.ok)return r;if(r.type!=='automatic-task.result')throw Error('Unexpected task result');return {ok:true as const,value:r.tasks};

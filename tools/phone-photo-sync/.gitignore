@@ -3,5 +3,6 @@ __pycache__/
 *.exe
 launcher.json
 catalog.cjs
+.catalog-build-key
 catalog-*.js
 pdf-*.js

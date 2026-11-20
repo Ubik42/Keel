@@ -1,4 +1,4 @@
-import type { AutomaticTask, AutomaticTaskConfig } from './automatic-tasks';
+import type { AutomaticTask, AutomaticTaskConfig, AutomaticTaskLayout } from './automatic-tasks';
 import type { EntityAppearance as TagAppearance } from './entity-appearance';
 import type { EmbeddingInstallProgress } from "./embedding/install-progress";
 import type { EmbeddingGemmaTier, EmbeddingIndexSnapshot, EmbeddingModelSummary, SemanticSearchModelId } from './embedding/profile';
@@ -556,6 +556,8 @@ export interface SerpentLibraryApi {
   ): () => void;
   // Tags
   listTags(input: { libraryId: string }): Promise<LibraryApiResult<TagSummary[]>>;
+  getAutomaticTaskLayout(input:{libraryId:string}):Promise<LibraryApiResult<AutomaticTaskLayout>>;
+  setAutomaticTaskLayout(input:{libraryId:string;layout:AutomaticTaskLayout}):Promise<LibraryApiResult<AutomaticTaskLayout>>;
   listAutomaticTasks(input: {libraryId: string}): Promise<LibraryApiResult<AutomaticTask[]>>;
   setAutomaticTask(input: {libraryId: string; config: AutomaticTaskConfig}): Promise<LibraryApiResult<AutomaticTask[]>>;
   deleteAutomaticTask(input: {libraryId: string; taskId: string}): Promise<LibraryApiResult<AutomaticTask[]>>;

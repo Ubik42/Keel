@@ -1,4 +1,4 @@
-import { automaticTaskSchema } from '../automatic-tasks';
+import { automaticTaskSchema, automaticTaskLayoutSchema } from '../automatic-tasks';
 import { z } from 'zod';
 
 import { EMBEDDING_HTTP_ADAPTERS } from '../embedding/http-service';
@@ -1031,6 +1031,7 @@ const assetOperationSuccessSchemas = [
     type: z.literal('tag.list'),
     tags: z.array(tagSummarySchema),
   }),
+  z.strictObject({ok:z.literal(true),type:z.literal('automatic-task.layout'),layout:automaticTaskLayoutSchema}),
   z.strictObject({ ok: z.literal(true), type: z.literal('automatic-task.result'), tasks: z.array(automaticTaskSchema) }),
   z.strictObject({
     ok: z.literal(true),

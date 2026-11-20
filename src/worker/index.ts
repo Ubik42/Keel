@@ -2677,6 +2677,8 @@ async function handleRequestWithoutWriteLease(request: WorkerRequest): Promise<W
       }
       return result;
     }
+    case 'automatic-task.layout.get':return {ok:true,type:'automatic-task.layout',layout:libraryService.getAutomaticTaskLayout(request.command.libraryId)};
+    case 'automatic-task.layout.set':return {ok:true,type:'automatic-task.layout',layout:libraryService.setAutomaticTaskLayout(request.command)};
     case 'automatic-task.list':return {ok:true,type:'automatic-task.result',tasks:libraryService.listAutomaticTasks(request.command.libraryId)};
     case 'automatic-task.set':return {ok:true,type:'automatic-task.result',tasks:libraryService.setAutomaticTask(request.command)};
     case 'automatic-task.delete':return {ok:true,type:'automatic-task.result',tasks:libraryService.deleteAutomaticTask(request.command)};

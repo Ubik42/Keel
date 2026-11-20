@@ -211,6 +211,7 @@ const MUTATION_COMMANDS = new Set([
   'tag.remove',
   'automatic-task.list',
   'automatic-task.set',
+  'automatic-task.layout.set',
   'automatic-task.delete',
   'collection.create',
   'collection.update',

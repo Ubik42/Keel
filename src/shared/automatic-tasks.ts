@@ -31,3 +31,47 @@ CREATE TABLE IF NOT EXISTS legacy_group_migrations (
  task_id TEXT, PRIMARY KEY(kind,legacy_id)
 );
 `;
+
+export const automaticTaskLayoutSchema = z
+  .strictObject({
+    groups: z
+      .array(
+        z.strictObject({
+          groupId: z.string().uuid(),
+          name: z.string().trim().min(1).max(255),
+          taskIds: z.array(z.string().uuid()).max(10000),
+        }),
+      )
+      .max(200),
+    ungroupedTaskIds: z.array(z.string().uuid()).max(10000),
+  })
+  .refine((layout) => {
+    const ids = [
+      ...layout.ungroupedTaskIds,
+      ...layout.groups.flatMap((g) => g.taskIds),
+    ];
+    return (
+      new Set(ids).size === ids.length &&
+      new Set(layout.groups.map((g) => g.groupId)).size === layout.groups.length
+    );
+  }, "Task and group identities must be unique");
+export type AutomaticTaskLayout = z.infer<typeof automaticTaskLayoutSchema>;
+export const AUTOMATIC_TASK_LAYOUT_SQL = `
+CREATE TABLE IF NOT EXISTS automatic_task_layout (
+ id INTEGER PRIMARY KEY CHECK(id=1), layout_json TEXT NOT NULL
+);
+`;
+export function automaticTaskToConfig(
+  task: AutomaticTask,
+): AutomaticTaskConfig {
+  return {
+    taskId: task.taskId,
+    name: task.name,
+    enabled: task.enabled,
+    trigger: task.trigger,
+    queryDefinitionJson: task.queryDefinitionJson,
+    folderId: task.folderId,
+    recursive: task.recursive,
+    action: task.action,
+  };
+}

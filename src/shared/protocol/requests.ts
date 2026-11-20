@@ -1,4 +1,4 @@
-import { automaticTaskConfigSchema } from '../automatic-tasks';
+import { automaticTaskConfigSchema, automaticTaskLayoutSchema } from '../automatic-tasks';
 import { z } from 'zod';
 
 import {
@@ -647,6 +647,8 @@ export const rendererRequestSchema = z.discriminatedUnion('type', [
     folderId: identifierSchema,
     targetFolderId: optionalIdentifierSchema,
   }),
+  z.strictObject({type:z.literal('automatic-task.layout.get.request'),libraryId:identifierSchema}),
+  z.strictObject({type:z.literal('automatic-task.layout.set.request'),libraryId:identifierSchema,layout:automaticTaskLayoutSchema}),
   z.strictObject({
     type: z.literal('automatic-task.list.request'),
     libraryId: identifierSchema,
@@ -2002,6 +2004,8 @@ export const workerCommandSchema = z.discriminatedUnion('type', [
     folderId: identifierSchema,
     targetFolderId: optionalIdentifierSchema,
   }),
+  z.strictObject({type:z.literal('automatic-task.layout.get'),libraryId:identifierSchema}),
+  z.strictObject({type:z.literal('automatic-task.layout.set'),libraryId:identifierSchema,layout:automaticTaskLayoutSchema}),
   z.strictObject({
     type: z.literal('automatic-task.list'),
     libraryId: identifierSchema,

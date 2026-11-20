@@ -5,6 +5,7 @@ import type {
   AutomaticTask,
   AutomaticTaskConfig,
 } from "../shared/automatic-tasks";
+import { automaticTaskToConfig } from "../shared/automatic-tasks";
 import { DialogShell } from "./ui/patterns";
 
 function describeConditions(value: string): string {
@@ -56,6 +57,7 @@ export function AutomaticTasksDialog(props: {
   api: SerpentLibraryApi;
   libraryId: string;
   open: boolean;
+  initialTaskId?: string | null;
   currentQueryJson: string;
   tags: readonly TagSummary[];
   folders: readonly ManagedFolderSummary[];
@@ -74,6 +76,20 @@ export function AutomaticTasksDialog(props: {
       if (!alive) return;
       if (r.ok) {
         setTasks(r.value);
+        if (open && props.initialTaskId === null)
+          setDraft({
+            name: "",
+            enabled: true,
+            trigger: "library-change",
+            queryDefinitionJson: props.currentQueryJson,
+            folderId: null,
+            recursive: true,
+            action: { type: "add-tags", tagIds: [] },
+          });
+        else if (open && props.initialTaskId) {
+          const task = r.value.find((t) => t.taskId === props.initialTaskId);
+          if (task) setDraft(automaticTaskToConfig(task));
+        }
         await props.onChanged();
       } else setError(r.error.message);
     });
@@ -89,7 +105,7 @@ export function AutomaticTasksDialog(props: {
     };
     // Refresh callbacks do not own this library-scoped subscription.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [api, libraryId, open]);
+  }, [api, libraryId, open, props.initialTaskId]);
   async function perform(
     action: () => ReturnType<SerpentLibraryApi["listAutomaticTasks"]>,
   ) {
@@ -149,9 +165,6 @@ export function AutomaticTasksDialog(props: {
             }
           >
             新建任务
-          </button>
-          <button className="secondary-button" onClick={props.onOpenScripts}>
-            打开脚本工具
           </button>
         </div>
         {draft ? (

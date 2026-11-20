@@ -1,4 +1,4 @@
-import { AUTOMATIC_TASKS_SQL, automaticTaskConfigSchema, type AutomaticTask, type AutomaticTaskConfig } from '../shared/automatic-tasks';
+import { AUTOMATIC_TASKS_SQL, AUTOMATIC_TASK_LAYOUT_SQL, automaticTaskLayoutSchema, type AutomaticTaskLayout, automaticTaskConfigSchema, type AutomaticTask, type AutomaticTaskConfig } from '../shared/automatic-tasks';
 import { ensureWindowsLibraryIcon } from './windows-library-icon';
 import { randomTagAppearance } from '../shared/tag-appearance';
 import { managedStoragePath, readStorageLayout, writeStorageLayout } from './library-storage-layout';
@@ -3873,6 +3873,7 @@ export const MIGRATIONS = [
   { version: 61, sql: TAG_HIERARCHY_SQL, checksum: createHash('sha256').update(TAG_HIERARCHY_SQL).digest('hex') },
   { version: 62, sql: TAG_APPEARANCE_SQL, checksum: createHash('sha256').update(TAG_APPEARANCE_SQL).digest('hex') },
   { version: 63, sql: AUTOMATIC_TASKS_SQL, checksum: createHash('sha256').update(AUTOMATIC_TASKS_SQL).digest('hex') },
+  { version: 64, sql: AUTOMATIC_TASK_LAYOUT_SQL, checksum: createHash('sha256').update(AUTOMATIC_TASK_LAYOUT_SQL).digest('hex') },
 ] as const;
 export const SUPPORTED_SCHEMA_VERSION = MIGRATIONS.at(-1)!.version;
 
@@ -20342,6 +20343,66 @@ export class LibraryService {
     })();
   }
 
+  getAutomaticTaskLayout(libraryId: string): AutomaticTaskLayout {
+    const { connection: db } = this.requireOpenLibrary(libraryId);
+    if (!hasTable(db, "automatic_tasks"))
+      return { groups: [], ungroupedTaskIds: [] };
+    const stored = hasTable(db, "automatic_task_layout")
+      ? (db
+          .prepare("SELECT layout_json FROM automatic_task_layout WHERE id=1")
+          .get() as { layout_json: string } | undefined)
+      : undefined;
+    const layout = stored
+      ? automaticTaskLayoutSchema.parse(JSON.parse(stored.layout_json))
+      : { groups: [], ungroupedTaskIds: [] };
+    const ids = new Set(
+      (
+        db
+          .prepare("SELECT task_id FROM automatic_tasks ORDER BY rowid")
+          .all() as { task_id: string }[]
+      ).map((r) => r.task_id),
+    );
+    const placed = new Set<string>();
+    const keep = (values: string[]) =>
+      values.filter((id) => {
+        if (!ids.has(id) || placed.has(id)) return false;
+        placed.add(id);
+        return true;
+      });
+    const groups = layout.groups.map((g) => ({
+      ...g,
+      taskIds: keep(g.taskIds),
+    }));
+    const ungroupedTaskIds = keep(layout.ungroupedTaskIds);
+    for (const id of ids) if (!placed.has(id)) ungroupedTaskIds.push(id);
+    return { groups, ungroupedTaskIds };
+  }
+  setAutomaticTaskLayout(input: {
+    libraryId: string;
+    layout: AutomaticTaskLayout;
+  }): AutomaticTaskLayout {
+    const library = this.requireOpenLibrary(input.libraryId);
+    this.assertLibraryWritable(library);
+    const layout = automaticTaskLayoutSchema.parse(input.layout);
+    const ids = [
+      ...layout.ungroupedTaskIds,
+      ...layout.groups.flatMap((g) => g.taskIds),
+    ];
+    for (const id of ids)
+      if (
+        !library.connection
+          .prepare("SELECT 1 FROM automatic_tasks WHERE task_id=?")
+          .get(id)
+      )
+        throw new LibraryServiceError("VERSION_CONFLICT");
+    library.connection
+      .prepare(
+        "INSERT INTO automatic_task_layout(id,layout_json) VALUES(1,?) ON CONFLICT(id) DO UPDATE SET layout_json=excluded.layout_json",
+      )
+      .run(JSON.stringify(layout));
+    return this.getAutomaticTaskLayout(input.libraryId);
+  }
+
   listAutomaticTasks(libraryId: string): AutomaticTask[] {
     const openLibrary = this.requireOpenLibrary(libraryId);
     if (!hasTable(openLibrary.connection, "automatic_tasks")) return [];
@@ -20355,13 +20416,22 @@ export class LibraryService {
       last_added: number;
       last_error: string | null;
     }[];
-    return rows.map((row) => ({
+    const tasks = rows.map((row) => ({
       ...automaticTaskConfigSchema.parse(JSON.parse(row.config_json)),
       taskId: row.task_id,
       lastRunAt: row.last_run_at,
       lastAdded: row.last_added,
       lastError: row.last_error,
     }));
+    const layout = this.getAutomaticTaskLayout(libraryId);
+    const ordered = [
+      ...layout.groups.flatMap((g) => g.taskIds),
+      ...layout.ungroupedTaskIds,
+    ];
+    const positions = new Map(ordered.map((id, index) => [id, index]));
+    return tasks.sort(
+      (a, b) => (positions.get(a.taskId) ?? 0) - (positions.get(b.taskId) ?? 0),
+    );
   }
 
   setAutomaticTask(input: {
