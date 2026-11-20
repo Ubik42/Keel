@@ -867,7 +867,7 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
           );
         })()}
         {activeContextMenu.descriptor.type === "trash" && (
-          <ContextMenuSection label={t("command.group.delete")}>
+          <ContextMenuSection>
             <ContextMenuItem
               danger
               disabled={
@@ -1456,7 +1456,7 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
                 || removeFromLibraryItem
                 || folderPluginItems("delete", "before").length > 0
                 || folderPluginItems("delete", "after").length > 0) && (
-                <ContextMenuSection label={t("command.group.delete")}>
+                <ContextMenuSection>
                   <PluginMenuItems
                     items={folderPluginItems("delete", "before")}
                     onRun={(item) => runPluginCommand(item, { folderIds: [desc.folderId] })}
@@ -2014,7 +2014,7 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
                   )}
             </ContextMenuSection>
             )}
-            <ContextMenuSection label={t("command.group.delete")}>
+            <ContextMenuSection>
               {moveToTrashItem && (
                 <ContextMenuItem
                   icon={<Icon name="trash" size={14} />}
@@ -2550,7 +2550,7 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
                     onRun={(item) => runPluginCommand(item, { assetIds: [assetId] })}
                   />
                 </ContextMenuSection>
-                <ContextMenuSection label={t("command.group.delete")}>
+                <ContextMenuSection>
                   <PluginMenuItems
                     items={pluginItemsForHostGroup(pluginAssetMenuPlacement, "delete", "before")}
                     onRun={(item) => runPluginCommand(item, { assetIds: [assetId] })}

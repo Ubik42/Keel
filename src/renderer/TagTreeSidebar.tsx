@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type DragEvent } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState, type DragEvent } from 'react';
 import type { TagSummary } from '../shared/asset-types';
 import { Icon } from './Icons';
 import { useT } from './i18n';
@@ -38,6 +38,7 @@ export function TagTreeSidebar(props: TagTreeSidebarProps) {
   });
   const [draft, setDraft] = useState<Draft | null>(null);
   const [saving, setSaving] = useState(false);
+  const submitting = useRef(false);
   const [menu, setMenu] = useState<{ id: string; x: number; y: number } | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [draggedId, setDraggedId] = useState<string | null>(null);
@@ -50,14 +51,20 @@ export function TagTreeSidebar(props: TagTreeSidebarProps) {
     setCollapsed((previous) => { const next = new Set(previous); if (next.has(id)) next.delete(id); else next.add(id); return next; });
   }
   async function submit() {
-    if (!draft?.value.trim() || saving) return;
+    if (!draft?.value.trim() || saving || submitting.current) return;
+    submitting.current = true;
     setSaving(true);
     try {
       const success = draft.tagId
         ? await props.onRename(draft.tagId, draft.value.trim())
         : await props.onCreate(draft.value.trim(), draft.parentTagId);
       if (success) { setDraft(null); setQuery(''); if (draft.parentTagId) setCollapsed((previous) => new Set([...previous].filter((id) => id !== draft.parentTagId))); }
-    } finally { setSaving(false); }
+    } finally { submitting.current = false; setSaving(false); }
+  }
+  function beginDraft(next: Draft) {
+    setQuery('');
+    if (next.parentTagId) setCollapsed((previous) => new Set([...previous].filter((id) => id !== next.parentTagId)));
+    setDraft(next);
   }
   function canDrop(event: DragEvent, targetId: string | null) {
     if (saving) return false;
@@ -77,21 +84,24 @@ export function TagTreeSidebar(props: TagTreeSidebarProps) {
       }
     } finally { setSaving(false); }
   }
+  function renderDraft(depth: number) {
+    if (!draft) return null;
+    return <form className="tag-tree-inline-edit" style={{ marginLeft: depth * 14 }} onSubmit={(event) => { event.preventDefault(); void submit(); }}>
+      <AppearanceGlyph fallback="tag" size={16} />
+      <input autoFocus aria-label={t('tagTree.name')} className="text-field" maxLength={255} disabled={saving} value={draft.value} onChange={(event) => setDraft({ ...draft, value: event.target.value })} onKeyDown={(event) => { if (isImeKeyboardEvent(event)) { if (event.key === 'Enter') event.preventDefault(); return; } if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); setDraft(null); } }} />
+      <button type="submit" className="tiny-action" aria-label={t('common.save')} title={t('common.save')} disabled={saving || !draft.value.trim()}><Icon name="check" size={14} /></button>
+      <button type="button" className="tiny-action" aria-label={t('common.cancel')} title={t('common.cancel')} disabled={saving} onClick={() => setDraft(null)}><Icon name="close" size={14} /></button>
+    </form>;
+  }
   const menuTag = menu ? byId.get(menu.id) : undefined;
   return <section className="tag-tree-section" aria-label={t('tagTree.title')}>
     <div className="tag-tree-heading">
       <strong>{t('tagTree.title')}</strong><span className="tag-tree-total">{props.tags.length}</span>
+      <label className="sidebar-heading-search"><Icon name="search" size={13} /><input aria-label={t('tagTree.search')} placeholder={t('tagTree.search')} value={query} onChange={(event) => setQuery(event.target.value)} /></label>
       <button className="tiny-action" type="button" aria-label={t('tagTree.expandAll')} title={t('tagTree.expandAll')} onClick={() => setCollapsed(new Set())}><Icon name="chevron" size={13} /></button>
       <button className="tiny-action" type="button" aria-label={t('tagTree.collapseAll')} title={t('tagTree.collapseAll')} onClick={() => setCollapsed(new Set(props.tags.map((tag) => tag.tagId)))}><Icon name="minus" size={13} /></button>
-      <button className="tiny-action" type="button" aria-label={t('tagTree.create')} title={t('tagTree.create')} disabled={saving} onClick={() => setDraft({ parentTagId: null, value: '' })}><Icon name="plus" size={14} /></button>
+      <button className="tiny-action" type="button" aria-label={t('tagTree.create')} title={t('tagTree.create')} disabled={saving} onClick={() => beginDraft({ parentTagId: null, value: '' })}><Icon name="plus" size={14} /></button>
     </div>
-    <input className="text-field tag-tree-search" aria-label={t('tagTree.search')} placeholder={t('tagTree.search')} value={query} onChange={(event) => setQuery(event.target.value)} />
-    {draft && <form className="tag-tree-edit" onSubmit={(event) => { event.preventDefault(); void submit(); }}>
-      <label htmlFor="tag-tree-name">{draft.tagId ? t('tagTree.rename') : draft.parentTagId ? t('tagTree.createChild') : t('tagTree.create')}</label>
-      {draft.parentTagId && <span className="field-help">{byId.get(draft.parentTagId)?.name}</span>}
-      <input autoFocus id="tag-tree-name" aria-label={t('tagTree.name')} className="text-field" maxLength={255} disabled={saving} value={draft.value} onChange={(event) => setDraft({ ...draft, value: event.target.value })} onKeyDown={(event) => { if (isImeKeyboardEvent(event)) return; if (event.key === 'Escape') { event.stopPropagation(); setDraft(null); } }} />
-      <div className="tag-tree-edit-actions"><button type="button" className="secondary-button" onClick={() => setDraft(null)} disabled={saving}>{t('common.cancel')}</button><button className="primary-button" disabled={saving || !draft.value.trim()} type="submit">{t('common.save')}</button></div>
-    </form>}
     {confirmDelete && <div className="tag-tree-confirm" role="alert">
       <strong>{t('tagTree.delete')} · {byId.get(confirmDelete)?.name}</strong><p>{t('tagTree.deleteHelp')}</p>
       <div className="tag-tree-edit-actions"><button className="secondary-button" type="button" onClick={() => setConfirmDelete(null)}>{t('common.cancel')}</button><button className="danger-button" type="button" disabled={saving} onClick={() => { setSaving(true); void props.onDelete([confirmDelete]).then((ok) => { if (ok) setConfirmDelete(null); }).finally(() => setSaving(false)); }}>{t('tagTree.delete')}</button></div>
@@ -107,22 +117,23 @@ export function TagTreeSidebar(props: TagTreeSidebarProps) {
       const index = items.indexOf(event.target as HTMLElement);
       if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); items[Math.max(0, Math.min(items.length - 1, index + (event.key === 'ArrowDown' ? 1 : -1)))]?.focus(); }
     }}>
-      {rows.map(({ tag, depth, hasChildren, expanded }) => <div className={`tag-tree-row${dropTarget === tag.tagId ? ' is-drop-target' : ''}`} key={tag.tagId} style={{ paddingLeft: depth * 14 }} onDragOver={(event) => { if (canDrop(event, tag.tagId)) { event.preventDefault(); event.stopPropagation(); setDropTarget(tag.tagId); event.dataTransfer.dropEffect = event.dataTransfer.types.includes(TAG_DRAG_TYPE) ? 'move' : 'copy'; } }} onDragLeave={() => setDropTarget(null)} onDrop={(event) => { if (canDrop(event, tag.tagId)) void drop(event, tag.tagId); }}>
+      {rows.map(({ tag, depth, hasChildren, expanded }) => <Fragment key={tag.tagId}>{draft?.tagId === tag.tagId ? renderDraft(depth) : <div className={`tag-tree-row${dropTarget === tag.tagId ? ' is-drop-target' : ''}`} key={tag.tagId} style={{ paddingLeft: depth * 14 }} onDragOver={(event) => { if (canDrop(event, tag.tagId)) { event.preventDefault(); event.stopPropagation(); setDropTarget(tag.tagId); event.dataTransfer.dropEffect = event.dataTransfer.types.includes(TAG_DRAG_TYPE) ? 'move' : 'copy'; } }} onDragLeave={() => setDropTarget(null)} onDrop={(event) => { if (canDrop(event, tag.tagId)) void drop(event, tag.tagId); }}>
         {Array.from({ length: depth }, (_, level) => <span key={level} className="tag-tree-guide" aria-hidden="true" style={{ left: level * 14 + 8 }} />)}
         {hasChildren ? <button className={`tag-tree-disclosure${expanded ? ' is-open' : ''}`} type="button" aria-label={t(expanded ? 'tagTree.collapse' : 'tagTree.expand', { name: tag.name })} onClick={() => toggle(tag.tagId)}><Icon name="chevron" size={12} /></button> : <span className="tag-tree-disclosure-spacer" />}
         <button className={`nav-row${props.activeTagId === tag.tagId ? ' is-active' : ''}`} role="treeitem" aria-level={depth + 1} aria-selected={props.activeTagId === tag.tagId} aria-expanded={hasChildren ? expanded : undefined} aria-label={tag.name} title={t('tagTree.rowHelp', { name: tag.name })} data-tag-id={tag.tagId} type="button" draggable={!saving} disabled={saving} onDragStart={(event) => { event.dataTransfer.setData(TAG_DRAG_TYPE, tag.tagId); event.dataTransfer.effectAllowed = 'move'; setDraggedId(tag.tagId); }} onDragEnd={() => { setDraggedId(null); setDropTarget(null); }} onClick={() => props.onChoose(tag.tagId)} onKeyDown={(event) => { if (event.key === 'ArrowRight' && hasChildren && !expanded) { event.preventDefault(); toggle(tag.tagId); } if (event.key === 'ArrowLeft' && hasChildren && expanded) { event.preventDefault(); toggle(tag.tagId); } if (event.key === 'F2') { event.preventDefault(); setDraft({ tagId: tag.tagId, parentTagId: tag.parentTagId ?? null, value: tag.name }); } }} onContextMenu={(event) => { event.preventDefault(); event.stopPropagation(); setMenu({ id: tag.tagId, x: event.clientX, y: event.clientY }); }}>
           <AppearanceGlyph appearance={tag.appearance} fallback="tag" size={16} /><span className="nav-row-label" style={{ color: appearanceColorVar(tag.appearance?.colorId) }}>{tag.name}</span><span className="nav-count" aria-hidden="true">{tag.subtreeAssetCount ?? tag.assetCount}</span>
         </button>
         <button type="button" className={`tag-tree-pin${props.pinnedTagId === tag.tagId ? ' is-pinned' : ''}`} aria-label={`${t(props.pinnedTagId === tag.tagId ? 'tagTree.unpin' : 'tagTree.pin')}：${tag.name}`} aria-pressed={props.pinnedTagId === tag.tagId} title={t(props.pinnedTagId === tag.tagId ? 'tagTree.unpinHelp' : 'tagTree.pinHelp')} onClick={() => props.onPin(tag.tagId)}>{t(props.pinnedTagId === tag.tagId ? 'tagTree.pinnedButton' : 'tagTree.pinButton')}</button>
-      </div>)}
+      </div>}{draft && !draft.tagId && draft.parentTagId === tag.tagId && renderDraft(depth + 1)}</Fragment>)}
+      {draft && !draft.tagId && !draft.parentTagId && renderDraft(0)}
     </div>
-    {rows.length === 0 && <p className="tag-tree-empty">{t(query ? 'tagTree.noMatches' : 'tagTree.empty')}</p>}
+    {rows.length === 0 && !draft && <p className="tag-tree-empty">{t(query ? 'tagTree.noMatches' : 'tagTree.empty')}</p>}
     {draggedId && <div className={`tag-tree-root-drop${dropTarget === '__root' ? ' is-drop-target' : ''}`} onDragOver={(event) => { if (canDrop(event, null)) { event.preventDefault(); setDropTarget('__root'); } }} onDragLeave={() => setDropTarget(null)} onDrop={(event) => void drop(event, null)}>{t('tagTree.moveToRoot')}</div>}
     {menu && menuTag && <ContextMenuBackdrop onClose={() => setMenu(null)}><ContextMenu position={{ x: menu.x, y: menu.y }} ariaLabel={t('tagTree.menu')}>
       <ContextMenuSection>
         <ContextMenuItem label={t('tagTree.appearance')} onAction={() => { setAppearanceDraft({ id: menuTag.tagId, value: menuTag.appearance ?? null }); setMenu(null); }} />
-        <ContextMenuItem label={t('tagTree.createChild')} onAction={() => { setDraft({ parentTagId: menuTag.tagId, value: '' }); setMenu(null); }} />
-        <ContextMenuItem label={t('tagTree.rename')} onAction={() => { setDraft({ tagId: menuTag.tagId, parentTagId: menuTag.parentTagId ?? null, value: menuTag.name }); setMenu(null); }} />
+        <ContextMenuItem label={t('tagTree.createChild')} onAction={() => { beginDraft({ parentTagId: menuTag.tagId, value: '' }); setMenu(null); }} />
+        <ContextMenuItem label={t('tagTree.rename')} onAction={() => { beginDraft({ tagId: menuTag.tagId, parentTagId: menuTag.parentTagId ?? null, value: menuTag.name }); setMenu(null); }} />
         {menuTag.parentTagId && <ContextMenuItem label={t('tagTree.moveToRoot')} onAction={() => { setMenu(null); setSaving(true); void props.onMove(menuTag.tagId, null).finally(() => setSaving(false)); }} />}
       </ContextMenuSection>
       <ContextMenuSection><ContextMenuItem danger label={t('tagTree.delete')} onAction={() => { setMenu(null); setConfirmDelete(menuTag.tagId); }} /></ContextMenuSection>

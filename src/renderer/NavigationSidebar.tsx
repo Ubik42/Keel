@@ -583,6 +583,7 @@ function Section({
   /** Search control sitting immediately to the right of the section title. */
   search?: {
     open: boolean;
+    alwaysVisible?: boolean;
     query: string;
     label: string;
     placeholder: string;
@@ -597,15 +598,24 @@ function Section({
   const primaryLabel = actionLabel ?? t("nav.addSection", { title });
   const linkLabel = secondaryLabel ?? t("nav.secondaryAction", { title });
   useEffect(() => {
-    if (!search?.open) return;
+    if (!search?.open || search.alwaysVisible) return;
     searchInputRef.current?.focus();
-  }, [search?.open]);
+  }, [search?.open, search?.alwaysVisible]);
   return (
     <section className="nav-section">
       <div className="nav-section-heading">
         <span className="nav-section-title-row">
           <span>{title}</span>
-          {search ? (
+          {search?.alwaysVisible ? (
+            <label className="sidebar-heading-search">
+              <Icon name="search" size={13} />
+              <input aria-label={search.label} placeholder={search.placeholder} ref={searchInputRef} value={search.query} onChange={(event) => search.onQueryChange(event.target.value)} onKeyDown={(event) => {
+                if (event.key === 'Escape' && !shouldHoldDismissForIme({ composing: event.nativeEvent.isComposing, keyEvent: event })) {
+                  event.preventDefault(); event.stopPropagation(); search.onClose();
+                }
+              }} />
+            </label>
+          ) : search ? (
             <IconActionButton
               className={search.open ? "tiny-action is-active" : "tiny-action"}
               icon="search"
@@ -644,7 +654,7 @@ function Section({
           </span>
         )}
       </div>
-      {search ? (
+      {search && !search.alwaysVisible ? (
         <div
           className={`nav-section-search-slot${search.open ? " is-open" : ""}`}
           aria-hidden={search.open ? undefined : true}
@@ -2961,6 +2971,7 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
             library
               ? {
                   open: folderSearchOpen,
+                  alwaysVisible: true,
                   query: folderSearchQuery,
                   label: t("nav.searchFolders"),
                   placeholder: t("nav.searchNamePlaceholder"),

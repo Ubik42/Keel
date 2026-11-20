@@ -20096,3 +20096,16 @@ body.platform-darwin .app-shell[data-shell-layout="islands"] .toolbar-nav-cluste
 .automatic-task-section-menu button { text-align:left;padding:6px;border:0;background:transparent;color:inherit;cursor:pointer; }
 .automatic-task-group-editor { display:grid;gap:6px;padding:6px; }.automatic-task-group-editor .text-field{width:100%;min-width:0}.automatic-task-group-editor > div{display:flex;gap:6px;}
 .automatic-task-error { font-size:11px;color:#d95555;line-height:1.5; }
+
+/* Persistent sidebar search and editing at the tag's tree position. */
+.sidebar-heading-search { display: flex; align-items: center; gap: 4px; flex: 1 1 70px; min-width: 36px; height: 25px; padding: 0 4px; border: 1px solid transparent; border-radius: 5px; color: inherit; }
+.sidebar-heading-search:focus-within { border-color: var(--ui-accent, #5289ff); background: color-mix(in srgb, currentColor 5%, transparent); }
+.sidebar-heading-search svg { flex-shrink: 0; }
+.sidebar-heading-search input { width: 100%; min-width: 0; padding: 0; border: 0; outline: none; background: transparent; color: inherit; font: inherit; font-size: 11px; }
+.nav-section-title-row:has(.sidebar-heading-search) { flex: 1; }
+.nav-section-title-row > span:first-child, .tag-tree-heading > strong { flex-shrink: 0; }
+.tag-tree-heading { gap: 2px; padding-bottom: 5px; }
+.tag-tree-total { margin-right: 2px; }
+.tag-tree-inline-edit { display: flex; align-items: center; gap: 3px; min-height: 30px; padding: 2px 3px 2px 17px; }
+.tag-tree-inline-edit > .text-field { flex: 1; min-width: 0; width: 0; height: 26px; padding: 2px 5px; font-size: 12px; }
+.tag-tree-inline-edit > svg, .tag-tree-inline-edit > button { flex-shrink: 0; }
