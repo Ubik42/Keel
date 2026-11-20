@@ -14011,6 +14011,9 @@ export class LibraryService {
     const destinationPath = path.join(parentDirectoryPath, name);
     const now = new Date().toISOString();
     let renamed = false;
+    // A yielded scan may still hold source paths from before this rename.
+    // Fence it before the disk/DB mutation so it cannot recreate old rows.
+    this.cancelReconciliationForClientMutation(input.libraryId);
     try {
       renameSync(sourcePath, destinationPath);
       renamed = true;
@@ -14212,6 +14215,7 @@ export class LibraryService {
   } {
     const openLibrary = this.requireOpenLibrary(input.libraryId);
     this.assertLibraryWritable(openLibrary);
+    this.cancelReconciliationForClientMutation(input.libraryId);
     if (
       input.folderIds.length === 0 ||
       new Set(input.folderIds).size !== input.folderIds.length
