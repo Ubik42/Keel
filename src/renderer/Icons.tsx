@@ -43,6 +43,7 @@ export type IconName =
   | "loader"
   | "menu"
   | "minus"
+  | "pin"
   | "palette"
   | "play"
   | "plus"
@@ -95,6 +96,7 @@ const iconPaths: Record<IconName, ReactNode> = {
       <path d="M12 22V12" />
     </>
   ),
+  pin: <><path d="m16 3 5 5-4 1-3 5v3l-2 2-7-7 2-2h3l5-3z" /><path d="m2 22 6-6" /></>,
   check: <path d="M20 6 9 17l-5-5" />,
   clipboard: (
     <>

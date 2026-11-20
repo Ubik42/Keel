@@ -20030,7 +20030,7 @@ body.platform-darwin .app-shell[data-shell-layout="islands"] .toolbar-nav-cluste
 .tag-tree-search { width: 100%; min-width: 0; height: 29px; margin-bottom: 7px; font-size: 12px; }
 .tag-tree-row { position: relative; display: flex; align-items: center; border-radius: 6px; }
 .tag-tree-guide { position: absolute; top: 0; bottom: 0; border-left: 1.5px solid currentColor; opacity: .3; pointer-events: none; }
-.tag-tree-pin { flex: 0 0 42px; min-height: 28px; margin-left: 3px; padding: 2px; border: 1px solid transparent; border-radius: 5px; background: transparent; color: inherit; font-size: 11px; cursor: pointer; opacity: .65; }
+.tag-tree-pin { display: grid; place-items: center; flex: 0 0 24px; min-height: 28px; margin-left: 3px; padding: 2px; border: 1px solid transparent; border-radius: 5px; background: transparent; color: inherit; font-size: 11px; cursor: pointer; opacity: .65; }
 .tag-tree-pin:hover, .tag-tree-pin:focus-visible { opacity: 1; background: color-mix(in srgb, currentColor 10%, transparent); }
 .tag-tree-pin.is-pinned { opacity: 1; color: var(--ui-accent, #5289ff); background: color-mix(in srgb, var(--ui-accent, #5289ff) 13%, transparent); border-color: currentColor; }
 .tag-tree-row > .nav-row { flex: 1; min-width: 0; padding-left: 4px; }
@@ -20109,3 +20109,5 @@ body.platform-darwin .app-shell[data-shell-layout="islands"] .toolbar-nav-cluste
 .tag-tree-inline-edit { display: flex; align-items: center; gap: 3px; min-height: 30px; padding: 2px 3px 2px 17px; }
 .tag-tree-inline-edit > .text-field { flex: 1; min-width: 0; width: 0; height: 26px; padding: 2px 5px; font-size: 12px; }
 .tag-tree-inline-edit > svg, .tag-tree-inline-edit > button { flex-shrink: 0; }
+
+.tag-tree-pin.is-pinned svg { fill: currentColor; }

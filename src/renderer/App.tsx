@@ -14716,7 +14716,7 @@ function AppInner() {
           pinnedTagId={pinnedTagId} onPin={(id) => void togglePinnedTag(id)}
           onChoose={(id) => void chooseTag(id)} onCreate={handleCreateTagInManagement} onRename={handleRenameTagInManagement}
           onAppearance={(id, appearance) => handleRenameTagInManagement(id, tags.find((tag) => tag.tagId === id)?.name ?? "", appearance)}
-          onMove={moveTagInTree} onDelete={handleDeleteTagsInManagement} onAssign={assignAssetsToTreeTag} getAssetDragIds={getManagedAssetDragIds} /> : undefined}
+          onMove={moveTagInTree} onDelete={handleDeleteTagsInManagement} onAssign={assignAssetsToTreeTag} getAssetDragIds={getManagedAssetDragIds} isInternalAssetDrag={isInternalAssetDrag} onResolveManagedAssetDrop={resolveManagedAssetDrop} /> : undefined}
         automaticTasks={library && api ? <AutomaticTasksSidebar key={library.libraryId} api={api} libraryId={library.libraryId} systemBusy={backgroundJobsActive} onCreate={()=>{setAutomaticTaskEditorId(null);setAutomaticTasksOpen(true);}} onEdit={id=>{setAutomaticTaskEditorId(id);setAutomaticTasksOpen(true);}} onOpenRuns={openMediaJobs} onOpenScripts={()=>setScriptSandboxPreviewOpen(true)} /> : undefined}
         assetScope={assetScope}
         showTrash={showTrash}
@@ -15712,7 +15712,7 @@ function AppInner() {
                         if (!showTrash && event.dataTransfer.types.includes(TAG_DRAG_TYPE)) {
                           event.preventDefault(); event.stopPropagation(); setTagDropTargetId(null);
                           const tagId = event.dataTransfer.getData(TAG_DRAG_TYPE);
-                          if (tags.some((tag) => tag.tagId === tagId)) void assignAssetsToTreeTag(selectedIdSet.has(asset.assetId) ? [...selectedAssetIds] : [asset.assetId], tagId);
+                          if (tags.some((tag) => tag.tagId === tagId)) void assignAssetsToTreeTag([asset.assetId], tagId);
                           return;
                         }
                         if (!draggedMemberId) return;

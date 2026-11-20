@@ -4,7 +4,7 @@ import { Icon } from './Icons';
 import { useT } from './i18n';
 import { isImeKeyboardEvent } from './ime-safe-dismiss';
 import { ContextMenu, ContextMenuBackdrop, ContextMenuItem, ContextMenuSection } from './context-menu';
-import { resolveInternalAssetDropIds, supportsManagedAssetDrag } from './asset-drag-drop';
+import { resolveInternalAssetDropIds, resolveManagedDropEffect, supportsManagedAssetDrag } from './asset-drag-drop';
 import { descendantTagIds, tagTreeRows } from './tag-tree-model';
 
 import { TAG_DRAG_TYPE } from './tag-drag-drop';
@@ -27,6 +27,8 @@ export interface TagTreeSidebarProps {
   onDelete: (ids: string[]) => Promise<boolean>;
   onAssign: (ids: string[], tagId: string) => Promise<void>;
   getAssetDragIds: () => readonly string[] | null;
+  isInternalAssetDrag: () => boolean;
+  onResolveManagedAssetDrop: (files: File[]) => Promise<string[] | null>;
 }
 export function TagTreeSidebar(props: TagTreeSidebarProps) {
   const t = useT();
@@ -69,17 +71,20 @@ export function TagTreeSidebar(props: TagTreeSidebarProps) {
   function canDrop(event: DragEvent, targetId: string | null) {
     if (saving) return false;
     if (event.dataTransfer.types.includes(TAG_DRAG_TYPE)) return !draggedId || !targetId || !descendantTagIds(props.tags, draggedId).includes(targetId);
-    return targetId !== null && (supportsManagedAssetDrag(event.dataTransfer) || Boolean(props.getAssetDragIds()?.length));
+    return targetId !== null && (supportsManagedAssetDrag(event.dataTransfer) || Boolean(props.getAssetDragIds()?.length) || (event.dataTransfer.types.includes('Files') && props.isInternalAssetDrag()));
   }
   async function drop(event: DragEvent, targetId: string | null) {
     event.preventDefault(); event.stopPropagation(); setDropTarget(null);
     const sourceId = event.dataTransfer.getData(TAG_DRAG_TYPE);
+    const files = Array.from(event.dataTransfer.files);
+    const internalAssetDrag = props.isInternalAssetDrag();
     setDraggedId(null);
     setSaving(true);
     try {
       if (sourceId) await props.onMove(sourceId, targetId);
       else if (targetId) {
-        const ids = resolveInternalAssetDropIds(event.dataTransfer, props.getAssetDragIds());
+        const ids = resolveInternalAssetDropIds(event.dataTransfer, props.getAssetDragIds())
+          ?? (internalAssetDrag && files.length ? await props.onResolveManagedAssetDrop(files) : null);
         if (ids?.length) await props.onAssign(ids, targetId);
       }
     } finally { setSaving(false); }
@@ -117,13 +122,13 @@ export function TagTreeSidebar(props: TagTreeSidebarProps) {
       const index = items.indexOf(event.target as HTMLElement);
       if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); items[Math.max(0, Math.min(items.length - 1, index + (event.key === 'ArrowDown' ? 1 : -1)))]?.focus(); }
     }}>
-      {rows.map(({ tag, depth, hasChildren, expanded }) => <Fragment key={tag.tagId}>{draft?.tagId === tag.tagId ? renderDraft(depth) : <div className={`tag-tree-row${dropTarget === tag.tagId ? ' is-drop-target' : ''}`} key={tag.tagId} style={{ paddingLeft: depth * 14 }} onDragOver={(event) => { if (canDrop(event, tag.tagId)) { event.preventDefault(); event.stopPropagation(); setDropTarget(tag.tagId); event.dataTransfer.dropEffect = event.dataTransfer.types.includes(TAG_DRAG_TYPE) ? 'move' : 'copy'; } }} onDragLeave={() => setDropTarget(null)} onDrop={(event) => { if (canDrop(event, tag.tagId)) void drop(event, tag.tagId); }}>
+      {rows.map(({ tag, depth, hasChildren, expanded }) => <Fragment key={tag.tagId}>{draft?.tagId === tag.tagId ? renderDraft(depth) : <div className={`tag-tree-row${dropTarget === tag.tagId ? ' is-drop-target' : ''}`} key={tag.tagId} style={{ paddingLeft: depth * 14 }} onDragOver={(event) => { if (canDrop(event, tag.tagId)) { event.preventDefault(); event.stopPropagation(); setDropTarget(tag.tagId); event.dataTransfer.dropEffect = event.dataTransfer.types.includes(TAG_DRAG_TYPE) ? 'move' : (resolveManagedDropEffect('copy', event.dataTransfer.effectAllowed) ?? 'none'); } }} onDragLeave={() => setDropTarget(null)} onDrop={(event) => { if (canDrop(event, tag.tagId)) void drop(event, tag.tagId); }}>
         {Array.from({ length: depth }, (_, level) => <span key={level} className="tag-tree-guide" aria-hidden="true" style={{ left: level * 14 + 8 }} />)}
         {hasChildren ? <button className={`tag-tree-disclosure${expanded ? ' is-open' : ''}`} type="button" aria-label={t(expanded ? 'tagTree.collapse' : 'tagTree.expand', { name: tag.name })} onClick={() => toggle(tag.tagId)}><Icon name="chevron" size={12} /></button> : <span className="tag-tree-disclosure-spacer" />}
-        <button className={`nav-row${props.activeTagId === tag.tagId ? ' is-active' : ''}`} role="treeitem" aria-level={depth + 1} aria-selected={props.activeTagId === tag.tagId} aria-expanded={hasChildren ? expanded : undefined} aria-label={tag.name} title={t('tagTree.rowHelp', { name: tag.name })} data-tag-id={tag.tagId} type="button" draggable={!saving} disabled={saving} onDragStart={(event) => { event.dataTransfer.setData(TAG_DRAG_TYPE, tag.tagId); event.dataTransfer.effectAllowed = 'move'; setDraggedId(tag.tagId); }} onDragEnd={() => { setDraggedId(null); setDropTarget(null); }} onClick={() => props.onChoose(tag.tagId)} onKeyDown={(event) => { if (event.key === 'ArrowRight' && hasChildren && !expanded) { event.preventDefault(); toggle(tag.tagId); } if (event.key === 'ArrowLeft' && hasChildren && expanded) { event.preventDefault(); toggle(tag.tagId); } if (event.key === 'F2') { event.preventDefault(); setDraft({ tagId: tag.tagId, parentTagId: tag.parentTagId ?? null, value: tag.name }); } }} onContextMenu={(event) => { event.preventDefault(); event.stopPropagation(); setMenu({ id: tag.tagId, x: event.clientX, y: event.clientY }); }}>
+        <button className={`nav-row${props.activeTagId === tag.tagId ? ' is-active' : ''}`} role="treeitem" aria-level={depth + 1} aria-selected={props.activeTagId === tag.tagId} aria-expanded={hasChildren ? expanded : undefined} aria-label={tag.name} title={t('tagTree.rowHelp', { name: tag.name })} data-tag-id={tag.tagId} type="button" draggable={!saving} disabled={saving} onDragStart={(event) => { event.dataTransfer.setData(TAG_DRAG_TYPE, tag.tagId); event.dataTransfer.effectAllowed = 'copyMove'; setDraggedId(tag.tagId); }} onDragEnd={() => { setDraggedId(null); setDropTarget(null); }} onClick={() => props.onChoose(tag.tagId)} onKeyDown={(event) => { if (event.key === 'ArrowRight' && hasChildren && !expanded) { event.preventDefault(); toggle(tag.tagId); } if (event.key === 'ArrowLeft' && hasChildren && expanded) { event.preventDefault(); toggle(tag.tagId); } if (event.key === 'F2') { event.preventDefault(); setDraft({ tagId: tag.tagId, parentTagId: tag.parentTagId ?? null, value: tag.name }); } }} onContextMenu={(event) => { event.preventDefault(); event.stopPropagation(); setMenu({ id: tag.tagId, x: event.clientX, y: event.clientY }); }}>
           <AppearanceGlyph appearance={tag.appearance} fallback="tag" size={16} /><span className="nav-row-label" style={{ color: appearanceColorVar(tag.appearance?.colorId) }}>{tag.name}</span><span className="nav-count" aria-hidden="true">{tag.subtreeAssetCount ?? tag.assetCount}</span>
         </button>
-        <button type="button" className={`tag-tree-pin${props.pinnedTagId === tag.tagId ? ' is-pinned' : ''}`} aria-label={`${t(props.pinnedTagId === tag.tagId ? 'tagTree.unpin' : 'tagTree.pin')}：${tag.name}`} aria-pressed={props.pinnedTagId === tag.tagId} title={t(props.pinnedTagId === tag.tagId ? 'tagTree.unpinHelp' : 'tagTree.pinHelp')} onClick={() => props.onPin(tag.tagId)}>{t(props.pinnedTagId === tag.tagId ? 'tagTree.pinnedButton' : 'tagTree.pinButton')}</button>
+        <button type="button" className={`tag-tree-pin${props.pinnedTagId === tag.tagId ? ' is-pinned' : ''}`} aria-label={`${t(props.pinnedTagId === tag.tagId ? 'tagTree.unpin' : 'tagTree.pin')}：${tag.name}`} aria-pressed={props.pinnedTagId === tag.tagId} title={t(props.pinnedTagId === tag.tagId ? 'tagTree.unpinHelp' : 'tagTree.pinHelp')} onClick={() => props.onPin(tag.tagId)}><Icon name="pin" size={14} /></button>
       </div>}{draft && !draft.tagId && draft.parentTagId === tag.tagId && renderDraft(depth + 1)}</Fragment>)}
       {draft && !draft.tagId && !draft.parentTagId && renderDraft(0)}
     </div>
