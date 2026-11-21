@@ -2,7 +2,7 @@
 
 ## Create, open, and configure a library
 
-On first launch choose **Create library**, pick a location, and enter a display name. A library contains managed assets, its database, and a `.serpent/` working directory. The display name does not move the library directory.
+On first launch choose **Create library**, pick a location, and enter a display name. A library contains managed assets, its database, and a `.keel/` working directory. The display name does not move the library directory.
 
 Use the upper-left **Main menu → Library** to create, open, import, or export libraries. **Library settings** lets you rename the current library, see its location, and edit its ignore configuration. A description field is not implemented yet.
 
@@ -26,8 +26,8 @@ The `?` help explains `*`, `?`, `**`, a trailing `/` for directories, a leading 
 **Open library** → **Open external library…** → choose **Eagle** or **Billfish**:
 
 1. Pick the source library (an Eagle/Billfish library folder or its archive);
-2. choose where Serpent should create the local library;
-3. Serpent converts the source and creates a local library at the destination (a large Eagle library can take several minutes on first conversion).
+2. choose where Keel should create the local library;
+3. Keel converts the source and creates a local library at the destination (a large Eagle library can take several minutes on first conversion).
 
 After conversion, browsing, search, tags, AI analysis, and everything else work exactly like a local library, and the original files are left untouched.
 
@@ -35,7 +35,7 @@ After conversion, browsing, search, tags, AI analysis, and everything else work 
 
 ## Import assets
 
-Drop one or more files, folders, or a mixed selection into Serpent, or use **Import files** / **Import folder**. Folder imports are recursive. The browser extension can save web images and videos from the context menu or by drag-and-drop.
+Drop one or more files, folders, or a mixed selection into Keel, or use **Import files** / **Import folder**. Folder imports are recursive. The browser extension can save web images and videos from the context menu or by drag-and-drop.
 
 The current product registry includes:
 
@@ -46,7 +46,7 @@ The current product registry includes:
 - 3D: FBX, OBJ, GLTF, GLB, STL (FBX is converted to a viewable GLB)
 - Text: TXT, Markdown, JSON, CSV, XML, YAML, and common source/config formats
 
-Serpent copies managed files into the library and assigns a stable asset ID. Name or content duplicates open a conflict dialog. Thumbnails, technical metadata, and eligible AI analysis are generated in the background, so you can keep browsing immediately.
+Keel copies managed files into the library and assigns a stable asset ID. Name or content duplicates open a conflict dialog. Thumbnails, technical metadata, and eligible AI analysis are generated in the background, so you can keep browsing immediately.
 
 #### Sequence-frame import
 
@@ -58,7 +58,7 @@ In the dialog, adjust the frame range and FPS, then choose whether to import onl
 
 ## Workspace tabs
 
-Serpent supports multi-tab parallel browsing at the top of the window:
+Keel supports multi-tab parallel browsing at the top of the window:
 
 ![Workspace tabs](../assets/ui/serpent-tab.png)
 
@@ -87,7 +87,7 @@ A folder can use a chosen cover, or return to the automatic one. The library roo
 - **From a file**: **From file** in the same menu picks an image on disk. PNG, JPEG, WebP, GIF, BMP, and TIFF are accepted.
 - **From the current image**: Right-click an image asset and choose **Set as folder cover**. Images that sit in the library root, non-image assets, and items in Trash do not offer this command.
 - **Restore the default**: When a folder already has a custom cover, the menu includes **Restore default cover**, which returns to the automatic cover.
-- The cover is stored in that library and remains after restart. Serpent reports an error when disk space is too low, or when the chosen file is not one of the image types above.
+- The cover is stored in that library and remains after restart. Keel reports an error when disk space is too low, or when the chosen file is not one of the image types above.
 
 ## Browse and organize
 
@@ -143,7 +143,7 @@ Normal `Delete` / macOS `⌘⌫` moves an asset or folder to Trash. Windows `Shi
 
 ## WebDAV cloud sync
 
-Serpent can sync a library across machines over WebDAV: configure servers globally, bind each library, set auto-sync and the poll interval, and open remote synced libraries. See [Sync and external libraries](sync.md).
+Keel can sync a library across machines over WebDAV: configure servers globally, bind each library, set auto-sync and the poll interval, and open remote synced libraries. See [Sync and external libraries](sync.md).
 
 ## Appearance: New UI
 
@@ -160,10 +160,10 @@ Adjust the interface in **Settings → Appearance**. The switch on the theme row
 
 ## Launch at login
 
-**Launch at login** in **Settings → General** opens the installed Serpent after you sign in to this computer.
+**Launch at login** in **Settings → General** opens the installed Keel after you sign in to this computer.
 
-- Installed macOS and Windows builds register Serpent with the system login items.
-- If macOS has not allowed it yet, the switch stays on and Settings asks you to enable Serpent under Login Items in System Settings.
+- Installed macOS and Windows builds register Keel with the system login items.
+- If macOS has not allowed it yet, the switch stays on and Settings asks you to enable Keel under Login Items in System Settings.
 - If registration fails, Settings asks you to check Login Items or Startup Apps in system settings, then try again.
 - Linux does not offer this yet. Settings shows "This system does not provide launch at login" and does not show a switch.
 - An unpackaged development run only remembers the switch. It does not register the current program as a login item.

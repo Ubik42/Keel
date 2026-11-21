@@ -4,13 +4,15 @@
 
 </div>
 
-# Serpent
+# Keel
 
 <div align="center">
 
 <img src="docs/assets/ui/Serpent-Logo.png" alt="Serpent-Logo" width="30%" />
 
 </div>
+
+Keel is developed from [dolag233/Serpent](https://github.com/dolag233/Serpent) (MIT) and maintained separately since 2026-11-21. The homepage, download and extension links below still point to the upstream project.
 
 Open-source (MIT), cross-platform (macOS / Windows / Linux) digital asset manager for game artists, film and post-production teams, and designers.
 
@@ -23,8 +25,8 @@ Import, browse, search, tag, collect, preview 3D models (FBX/OBJ/GLB and more), 
 + **Massive asset support.** Most video, image, and audio formats, plus 3D models and text assets.
 + **Asset management.** Tags, ratings, descriptions, fast filtering and search, and collections.
 + **Workspace tabs.** Keep several folders, collections, or searches open at once, each with its own place, query, and selection.
-+ **Plugin system.** Extend Serpent with plugins.
-+ **Scripting & MCP.** Control Serpent with scripts, and let agents connect and automate through MCP.
++ **Plugin system.** Extend Keel with plugins.
++ **Scripting & MCP.** Control Keel with scripts, and let agents connect and automate through MCP.
 + **AI analysis.** Built-in AI module analyzes images, videos, and 3D assets.
 + **New UI.** Appearance settings switch between the New UI and the legacy layout, and can edit themes plus background and panel opacity.
 + **Semantic search (experimental).** Find images and text by meaning, and find similar assets.
@@ -41,7 +43,7 @@ Import, browse, search, tag, collect, preview 3D models (FBX/OBJ/GLB and more), 
 
 Download the latest release package from [GitHub Releases](https://github.com/dolag233/Serpent/releases).
 
-**macOS**: download `Serpent-darwin-arm64-<version>-package.dmg` (or portable `.zip`) and drag Serpent into Applications. On first launch, if macOS prompts "cannot verify the developer", right-click the app → select Open (first time only), or run:
+**macOS**: download `Serpent-darwin-arm64-<version>-package.dmg` (or portable `.zip`) and drag Keel into Applications. On first launch, if macOS prompts "cannot verify the developer", right-click the app → select Open (first time only), or run:
 
 ```bash
 xattr -cr /Applications/Serpent.app
@@ -49,7 +51,7 @@ xattr -cr /Applications/Serpent.app
 
 **Windows**: download the installer package `Serpent-win-x86-64-<version>-setup.zip` (extract and run the included installer), or download the portable version `Serpent-win-x86-64-<version>-portable.zip` (extract and run directly). Unsigned builds show a SmartScreen warning on first run — choose "More info → Run anyway".
 
-**Linux**: download `Serpent-linux-x86-64-<version>.AppImage`, `chmod +x`, then run. Needs FUSE (`libfuse2`); without FUSE use `--appimage-extract-and-run`. The package includes `ffmpeg`, `ffprobe`, and `oiiotool`, so video and professional-image previews do not depend on the system PATH. `SERPENT_FFMPEG_PATH` / `SERPENT_OIIO_PATH` can still point at another copy.
+**Linux**: download `Serpent-linux-x86-64-<version>.AppImage`, `chmod +x`, then run. Needs FUSE (`libfuse2`); without FUSE use `--appimage-extract-and-run`. The package includes `ffmpeg`, `ffprobe`, and `oiiotool`, so video and professional-image previews do not depend on the system PATH. `KEEL_FFMPEG_PATH` / `KEEL_OIIO_PATH` can still point at another copy.
 
 **Browser extension**: download it from the [browser extension releases](https://github.com/dolag233/Serpent-Extension/releases). See the [Browser Extension User Guide](docs/user-guide/browser-extension.en.md) for installation and setup instructions.
 
@@ -78,12 +80,12 @@ The full build, packaging and release flow is in the [developer docs](docs/devel
 
 ### Linux (x64 / arm64)
 
-Linux follows the Windows-style shell: a frameless window with Serpent's own title bar (minimize / maximize / close, drag, double-click to maximize, edge resize), the in-app main menu (≡) instead of a native menu bar, and Windows 11-style rounded corners when a compositor is running (square corners otherwise).
+Linux follows the Windows-style shell: a frameless window with Keel's own title bar (minimize / maximize / close, drag, double-click to maximize, edge resize), the in-app main menu (≡) instead of a native menu bar, and Windows 11-style rounded corners when a compositor is running (square corners otherwise).
 
 Differences from Windows (current implementation):
 
 - **No system tray**: the close button quits the app (it does not hide to the notification area like on Windows).
-- **Media tools**: `npm start` does not ship a media bundle. Until `media:ensure` has run, it uses `ffmpeg` / `ffprobe` / `oiiotool` from `PATH` (`SERPENT_FFMPEG_PATH` / `SERPENT_OIIO_PATH` override). The linux-x64 pinned bundle is ready in `bundle-lock.json` and is packed into the release AppImage. linux-arm64 uses the same path, but its zip is not promoted yet, so a release package cannot be produced.
+- **Media tools**: `npm start` does not ship a media bundle. Until `media:ensure` has run, it uses `ffmpeg` / `ffprobe` / `oiiotool` from `PATH` (`KEEL_FFMPEG_PATH` / `KEEL_OIIO_PATH` override). The linux-x64 pinned bundle is ready in `bundle-lock.json` and is packed into the release AppImage. linux-arm64 uses the same path, but its zip is not promoted yet, so a release package cannot be produced.
 - **Display**: tested on Debian 13 (X11 / xfwm4) and under a nested Wayland compositor; native Wayland sessions still need dedicated acceptance — day-to-day use is X11 / XWayland. x86_64 and aarch64 share this.
 
 Prerequisites (Debian/Ubuntu):
@@ -99,8 +101,8 @@ Environment switches:
 
 | Variable | Effect |
 | --- | --- |
-| `SERPENT_SOFTWARE_GL=1` | Software WebGL (SwiftShader) for machines with no usable GPU / GL driver (VMs, remote desktops), so the 3D viewer can render |
-| `SERPENT_LINUX_ROUNDED_CORNERS=0` / `1` | Force square / rounded window corners (the default is auto: rounded only when a compositor is running) |
+| `KEEL_SOFTWARE_GL=1` | Software WebGL (SwiftShader) for machines with no usable GPU / GL driver (VMs, remote desktops), so the 3D viewer can render |
+| `KEEL_LINUX_ROUNDED_CORNERS=0` / `1` | Force square / rounded window corners (the default is auto: rounded only when a compositor is running) |
 
 #### AppImage (Linux)
 
@@ -112,14 +114,14 @@ chmod +x out/make/appimage/Serpent-*.AppImage && ./out/make/appimage/Serpent-*.A
 
 The release pipeline `npm run release:make` prefers `make:appimage:docker` and renames the artifact to `Serpent-linux-x86-64-<version>.AppImage` or `Serpent-linux-arm64-<version>.AppImage` (same naming contract as macOS/Windows assets). Both architectures share the glibc baseline, FUSE requirement, and X11/Wayland limits. aarch64 cannot produce a release package until its media zip is promoted.
 
-The release AppImage bundles the pinned media tools (`ffmpeg` / `ffprobe` / `oiiotool`) and does not require them on the system PATH. `SERPENT_FFMPEG_PATH` / `SERPENT_OIIO_PATH` still override. Running it needs FUSE (`libfuse2`); without FUSE use `--appimage-extract-and-run`. When unprivileged user namespaces are unavailable (some containers; Ubuntu 24.04 AppArmor policy), the launcher falls back to `--no-sandbox`.
+The release AppImage bundles the pinned media tools (`ffmpeg` / `ffprobe` / `oiiotool`) and does not require them on the system PATH. `KEEL_FFMPEG_PATH` / `KEEL_OIIO_PATH` still override. Running it needs FUSE (`libfuse2`); without FUSE use `--appimage-extract-and-run`. When unprivileged user namespaces are unavailable (some containers; Ubuntu 24.04 AppArmor policy), the launcher falls back to `--no-sandbox`.
 
 ## Documentation
 
 | Doc | Content |
 | --- | --- |
 | [User guide](docs/user-guide/README.en.md) | Install, import, browse, search (including experimental semantic search), New UI, tags, collections, 3D viewer, troubleshooting |
-| [Online docs](https://serpent.dolag.work/docs/user-guide/) | The latest user guide in your browser |
+| [Online docs](https://keel.dolag.work/docs/user-guide/) | The latest user guide in your browser |
 | [Developer docs](docs/developer/README.en.md) | Setup, build & packaging, architecture, testing |
 | [Contributing Guide](docs/developer/contributing.en.md) | Open source collaboration, environment setup, and Pull Request workflow |
 | [Extension author manual](docs/manual/README.md) | Plugins / scripts / MCP |

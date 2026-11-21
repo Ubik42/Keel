@@ -14,7 +14,7 @@
 ## macOS
 
 1. 下载对应架构的 `Serpent-darwin-arm64-<版本>-package.dmg`（或 Intel 架构对应安装包）。
-2. 打开 DMG，将 Serpent 拖到「应用程序」。
+2. 打开 DMG，将 Keel 拖到「应用程序」。
 
 当前开发版若未签名公证，首次打开时右键应用选择「打开」并确认。若系统仍阻止，可以在终端清除隔离属性：
 
@@ -45,7 +45,7 @@ chmod +x Serpent-linux-x86-64-<版本>.AppImage
 运行依赖：
 
 - **FUSE**（`libfuse2`）。没有 FUSE 时加 `--appimage-extract-and-run`。x86_64 与 aarch64 相同。
-- 发布用 AppImage 内置与 macOS、Windows 相同的 `ffmpeg`、`ffprobe` 和 `oiiotool`（`oiiotool` 含 LibRaw / OCIO）。视频预览和专业图像格式一般不需要再安装系统里的这些程序。`SERPENT_FFMPEG_PATH` 和 `SERPENT_OIIO_PATH` 仍可改用其他路径。aarch64 安装包要等对应媒体包晋升后才会出现在 Releases。
+- 发布用 AppImage 内置与 macOS、Windows 相同的 `ffmpeg`、`ffprobe` 和 `oiiotool`（`oiiotool` 含 LibRaw / OCIO）。视频预览和专业图像格式一般不需要再安装系统里的这些程序。`KEEL_FFMPEG_PATH` 和 `KEEL_OIIO_PATH` 仍可改用其他路径。aarch64 安装包要等对应媒体包晋升后才会出现在 Releases。
 - Debian/Ubuntu 示例：`sudo apt install libfuse2`。从源码运行且还没有媒体包时，才需要系统 `ffmpeg`。
 
 当前 Linux 行为与限制：
@@ -54,7 +54,7 @@ chmod +x Serpent-linux-x86-64-<版本>.AppImage
 - **没有系统托盘**：关闭窗口会退出应用（不会像 Windows 那样隐藏到通知区域）。
 - **登录时启动**暂不提供。详见[基本使用](basics.md)。
 - 已在 Debian 13（X11）和嵌套 Wayland 合成器下测试；原生 Wayland 会话仍待专项验收。x86_64 与 aarch64 使用同一套限制。
-- 无可用 GPU / GL 时可设置 `SERPENT_SOFTWARE_GL=1` 启用软件 WebGL。圆角可用 `SERPENT_LINUX_ROUNDED_CORNERS=0` / `1` 强制关闭或开启。
+- 无可用 GPU / GL 时可设置 `KEEL_SOFTWARE_GL=1` 启用软件 WebGL。圆角可用 `KEEL_LINUX_ROUNDED_CORNERS=0` / `1` 强制关闭或开启。
 
 卸载：删除 AppImage 文件即可。资源库目录独立于应用文件，不会随之删除。
 

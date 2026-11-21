@@ -20,7 +20,7 @@ flowchart TB
     M -->|Worker protocol| W[Library Worker<br/>SQLite + filesystem owner]
     W --> DB[(library.db)]
     W --> AS[Assets/]
-    W --> AR[.serpent/artifacts/]
+    W --> AR[.keel/artifacts/]
     M -.-> O[Offscreen window<br/>3D thumbnail rendering]
     O --> AR
 ```
@@ -60,8 +60,8 @@ docs/              # documentation (this tree, ADRs, specs, QA)
 
 ## Data layer
 
-- Each library is one SQLite database (`.serpent/library.db`) with versioned schema migrations (`MIGRATIONS`, currently v33)
-- Asset files live in `Assets/`; derived data (thumbnails/proxies) in `.serpent/artifacts/`
+- Each library is one SQLite database (`.keel/library.db`) with versioned schema migrations (`MIGRATIONS`, currently v33)
+- Asset files live in `Assets/`; derived data (thumbnails/proxies) in `.keel/artifacts/`
 - **Data-compatibility discipline**: migrations are add-only (no dropping/renaming existing tables, columns, indexes or triggers); new builds must open old libraries (lenient reads — missing columns degrade to defaults, never crash); Desktop does not offer read-only libraries — damage is repaired from backups then Assets rescue. Library availability is the hardest baseline: any library-related change must fully run `npm run test:library-availability`. See [ADR-0028](https://github.com/dolag233/Serpent/blob/dolag_dev/docs/internal/adr/0028-schema-compatibility-read-only-degrade.md) and [0031](https://github.com/dolag233/Serpent/blob/dolag_dev/docs/internal/implementation/0031-schema-compatibility-guarantee.md)
 
 ## Media pipeline

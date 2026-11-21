@@ -1,11 +1,11 @@
 # 本地开发约定
 
 - 本仓库基于 dolag233/Serpent（MIT），2026-11-21 起独立开发，不再合并上游，正在改名为 Keel（元数据目录 `.keel`）。长期任务入口为 GOAL.md，计划与进度记录在 docs/进度.md。默认直接在 main 分支开发，推送只在用户要求时进行；upstream 只作参考。
-- 工程固定在 D:\Manage\_tools\Keel（2026-11-21 由 Serpent 目录改名）。开发版使用独立配置目录，图形启动入口为 Start-Serpent.exe，命令行入口保留 Start-Serpent.cmd。
+- 工程固定在 D:\Manage\_tools\Keel（2026-11-21 由 Keel 目录改名）。开发版使用独立配置目录，图形启动入口为 Start-Keel.exe，命令行入口保留 Start-Keel.cmd。
 - 新建资源库默认 storageLayout=root，用户可以选择 assets。没有 storage-layout.json 的旧库按 Assets 模式打开。现有库的布局不自动转换。
-- useExistingFolder=true 时，在所选现有目录中创建根目录资源库。只创建 .serpent；已有元数据时拒绝覆盖；初始化失败只清理本次创建的元数据。
+- useExistingFolder=true 时，在所选现有目录中创建根目录资源库。只创建 .keel；已有元数据时拒绝覆盖；初始化失败只清理本次创建的元数据。
 - 标签层级保存在 tag_hierarchy，父标签筛选通过 includeDescendants 的递归 SQL 包含后代。调整层级沿用 tag.create/tag.rename 的可撤销事务；不得拼接标签路径改写原名，也不得形成循环。
-- .serpent 和 .serpentignore 是保留路径。扫描、目录监听、导入、移动与恢复必须保护数据库、缓存和忽略配置。
+- .keel 和 .keelignore 是保留路径（旧库的 .serpent 与 .serpentignore 同样保留，打开时迁移）。扫描、目录监听、导入、移动与恢复必须保护数据库、缓存和忽略配置。
 - 路径改动需要覆盖导入、扫描、监听、回收站恢复及文件夹/ZIP 导出。旧版测试显式选择 assets，新布局由 root-library-layout 测试覆盖。
 - 界面使用简体中文，沿用现有组件和样式。说明简洁，先讲行为和影响。
 - 用户真实资源库只用于明确授权的操作。开发和测试使用隔离目录。
@@ -16,8 +16,8 @@
 - Windows 本机可写库创建或打开时自动设置便携的资源库图标。保留旧 desktop.ini 备份及其他节；更新 Billfish 的隐藏系统 desktop.ini 必须使用 r+ 打开，避免 CREATE_ALWAYS 失败。根目录使用 System 属性，避免新增 ReadOnly 属性影响目录删除。
 - 原位接管 Billfish 目录时保留 .bf，并从素材扫描中排除。
 
-- 手机照片更新工具在 tools/phone-photo-sync。更新只读手机，状态保存在库 .serpent/phone-sync；设备对象 ID 按连接重取，内容按 SHA-256 去重，历史及本地改动版本保留。
-- 链接目录支持路径规则 ** 作为全部路径；先排除全部再包含具体文件，引用共享原图。链接扫描跳过 .serpent、.bf 和保留元数据。
+- 手机照片更新工具在 tools/phone-photo-sync。更新只读手机，状态保存在库 .keel/phone-sync；设备对象 ID 按连接重取，内容按 SHA-256 去重，历史及本地改动版本保留。
+- 链接目录支持路径规则 ** 作为全部路径；先排除全部再包含具体文件，引用共享原图。链接扫描跳过 .keel、.serpent、.bf 和保留元数据。
 - 标签树普通点击属于标签浏览；切换文件夹时移除该浏览标签条件。右侧固定按钮才启用跨文件夹标签过滤；固定状态属于工作区浏览快照，父标签过滤包含后代。
 - 托管目录重命名、移动前必须取消在途和待执行的对账扫描，防止异步旧路径快照在完成操作后重建旧目录索引；保留整目录 rename 与数据库失败时的回退。
 - 自动任务独立于标签：迁移 63 的 automatic_tasks 保存触发、查询、目录范围、动作和状态；标签不承载任务配置。首个动作 add-tags 只补加关联，禁止将暂停/删除任务解释为移除已有标签。

@@ -1,8 +1,8 @@
-# Serpent MCP API 参考
+# Keel MCP API 参考
 
 ## 连接
 
-Serpent MCP 是由运行中的 Serpent Desktop 提供的 loopback Streamable HTTP 服务：
+Keel MCP 是由运行中的 Keel Desktop 提供的 loopback Streamable HTTP 服务：
 
 ```text
 POST http://127.0.0.1:<port>/mcp
@@ -73,16 +73,16 @@ Agent 工作流始终传显式路径，不调用原生文件选择器：
 }
 ```
 
-`keel_library_create` 使用 `selectedParentPath`。Main/Worker 会进行路径规范化、存在性、类型、权限和 Serpent 边界校验；路径错误直接作为 MCP 错误返回。客户端不能提交 Worker 命令、SQL、计划证明或任意内部字段。
+`keel_library_create` 使用 `selectedParentPath`。Main/Worker 会进行路径规范化、存在性、类型、权限和 Keel 边界校验；路径错误直接作为 MCP 错误返回。客户端不能提交 Worker 命令、SQL、计划证明或任意内部字段。
 
 Windows 路径必须按 Windows 语义传递：盘符、反斜杠、UNC、长路径、大小写不敏感、保留名和 junction/reparse point 均由 Main/Worker 校验。
 
 ## 权限模式
 
-权限绑定 MCP credential，跨 transport 重连、Serpent 重启和多个客户端连接保持一致。设置页里每个凭据有：复制 Agent 连接信息、权限档选择、删除按钮；主界面可以添加新客户端。两种权限档：
+权限绑定 MCP credential，跨 transport 重连、Keel 重启和多个客户端连接保持一致。设置页里每个凭据有：复制 Agent 连接信息、权限档选择、删除按钮；主界面可以添加新客户端。两种权限档：
 
 - **自动（Auto）**：普通读取、写标签、创建文件夹/合集、导入、可恢复整理等日常操作直接执行，不弹出人类权限窗口；危险操作仍需 Agent 二阶段确认。默认档。
-- **完全（Full Access）**：受信任客户端可直接执行所有普通和可恢复操作；开启时设置页会弹出红色危险提示，用户确认后生效。危险操作仍需 Agent 二阶段确认，Serpent 始终保留路径、目标、版本和 Worker 安全校验。
+- **完全（Full Access）**：受信任客户端可直接执行所有普通和可恢复操作；开启时设置页会弹出红色危险提示，用户确认后生效。危险操作仍需 Agent 二阶段确认，Keel 始终保留路径、目标、版本和 Worker 安全校验。
 
 权限档不能由 MCP 参数、环境变量或配置文件覆盖。撤销 credential 或停止服务会立即阻断后续调用。
 
@@ -97,7 +97,7 @@ Desktop 是 Agent 工作的非阻塞投影。需要向用户解释阶段、目�
 ```json
 {
   "level": "info",
-  "logger": "serpent.library",
+  "logger": "keel.library",
   "data": {
     "type": "library.changed",
     "libraryId": "<stable-id>",

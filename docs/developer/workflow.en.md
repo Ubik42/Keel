@@ -1,6 +1,6 @@
 # Branching and Development Workflow
 
-This document is for contributors and maintainers participating in Serpent development. It explains the repository's long-lived branching architecture, external contribution workflow, and internal maintainer practices.
+This document is for contributors and maintainers participating in Keel development. It explains the repository's long-lived branching architecture, external contribution workflow, and internal maintainer practices.
 
 ## 1. Branch Roles: `main` and `dolag_dev`
 
@@ -17,7 +17,7 @@ This document is for contributors and maintainers participating in Serpent devel
 
 ## 2. External Contributor Workflow (GitHub Collaboration)
 
-The recommended workflow for external developers participating in Serpent:
+The recommended workflow for external developers participating in Keel:
 
 ### 2.1 Preparation
 
@@ -25,7 +25,7 @@ The recommended workflow for external developers participating in Serpent:
 2. Clone your forked repository to your local development environment (do not place it on SMB/NAS network shares):
    ```bash
    git clone https://github.com/<your-username>/Serpent.git
-   cd Serpent
+   cd Keel
    ```
 3. Follow the [Setup Guide](setup.en.md) to configure Node.js 24 and dependencies:
    ```bash

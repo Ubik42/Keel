@@ -1,6 +1,6 @@
-# Serpent 插件开发与发布指南
+# Keel 插件开发与发布指南
 
-本文面向准备实际开发、联调和发布 Serpent 插件的人类开发者。文档以当前仓库的
+本文面向准备实际开发、联调和发布 Keel 插件的人类开发者。文档以当前仓库的
 `plugin-manifest.ts`、`plugin-sdk.ts`、Plugin Manager API 和测试 fixture 为准；当前平台仍处于开发态，
 未在本文中承诺尚未实现的能力。
 
@@ -9,7 +9,7 @@
 | 文档 | 用途 |
 | --- | --- |
 | 本文 | Manifest、生命周期、Contribution、Job、设置、发布前测试 |
-| [插件 API 参考](api-reference.md) | `serpent.*` 方法、权限和错误码 |
+| [插件 API 参考](api-reference.md) | `keel.*` 方法、权限和错误码 |
 | [插件分发与更新](distribution-and-updates.md) | 安装通道、平台 token、GitHub Release 文件名 |
 | [插件开发最佳实践](best-practices.md) | 成品包、ZIP 路径、Job 进度、内容分块、原生二进制 |
 | 官方插件参考实现 | [Renamer](https://github.com/dolag233/Serpent-Plugin-Renamer)（非受限模式 UI 插件）、[MediaConverter](https://github.com/dolag233/Serpent-Plugin-MediaConverter)（媒体转码与通用包）、[ImageUpscaler](https://github.com/dolag233/Serpent-Plugin-ImageUpscaler)（非受限原生二进制与分流包） |
@@ -37,7 +37,7 @@ SQL 或宿主 DOM。
 
 ```text
 my-plugin/
-  serpent-plugin.json       # 必需，Manifest v1
+  keel-plugin.json       # 必需，Manifest v1
   entry/main.js             # 必需，runtime.entry 指向它
   README.md                 # 建议；社区详情英文/回退
   README.zh-CN.md           # 建议；社区详情中文优先
@@ -58,11 +58,11 @@ my-plugin/
   "id": "com.example.hello",
   "version": "1.0.0",
   "name": "Hello",
-  "description": "A small Serpent plugin.",
+  "description": "A small Keel plugin.",
   "author": "Example",
   "license": "MIT",
   "engines": {
-    "serpent": ">=0.1.0 <1.0.0",
+    "keel": ">=0.1.0 <1.0.0",
     "pluginApi": 1
   },
   "runtime": {
@@ -121,14 +121,14 @@ Manifest 是 strict schema：未知字段、重复权限、重复 Contribution I
 ### restricted
 
 `restricted` 运行在可终止的 QuickJS 隔离环境中：没有 Node built-ins、`process`、环境变量、任意 import、
-原生文件系统、数据库或宿主 DOM。插件只能通过声明权限后可用的 `serpent.*` API 工作。适合一般菜单、领域操作、
+原生文件系统、数据库或宿主 DOM。插件只能通过声明权限后可用的 `keel.*` API 工作。适合一般菜单、领域操作、
 Provider 和 Job。
 
 ### unrestricted
 
 `unrestricted` 运行在每个实例独立的 Node.js UtilityProcess 中，拥有 Node、文件系统、网络、子进程和依赖的完整能力。
-它仍应优先通过 `serpent.*` 操作 Serpent 领域对象，但权限清单不能拦截插件绕过 Gateway 直接调用 Node 的行为；权限同时
-是 Serpent API 的能力控制和对用户的风险披露，不是沙箱承诺。需要原生模块时可声明：
+它仍应优先通过 `keel.*` 操作 Keel 领域对象，但权限清单不能拦截插件绕过 Gateway 直接调用 Node 的行为；权限同时
+是 Keel API 的能力控制和对用户的风险披露，不是沙箱承诺。需要原生模块时可声明：
 
 ```jsonc
 "runtime": {
@@ -335,7 +335,7 @@ default 必须在 minimum/maximum 内，slider 的 step 必须大于 0。静态�
 可选 `entry` 指向包内 HTML。`ui.entry` 是包级 UI 入口；页面通过 typed bridge 使用 Host/后端能力，不能注入 React、访问宿主 DOM 或 Node。
 插件设置字段已经使用 Host 内部 UI library 的统一 primitives；插件仍不能把宿主 CSS class 当作 API。更复杂的 Host-rendered
 结构化 UI descriptor 使用 `contributes.ui`，设计与字段限制见 [`0029 UI 标准化执行方案与插件原生 UI 契约`](https://github.com/dolag233/Serpent/blob/dolag_dev/docs/internal/implementation/0029-ui-standardization-execution-and-plugin-ui-contract.md)。
-标准表单默认使用 `serpent.ui.openDialog({ title, render })` 的 widget kit。复杂界面或交互、WebGL、第三方页面仍使用受支持的
+标准表单默认使用 `keel.ui.openDialog({ title, render })` 的 widget kit。复杂界面或交互、WebGL、第三方页面仍使用受支持的
 HTML/iframe 对话框 `openDialog({ dialogId, payload })`；这是正式的一等路径，不是准备删除的临时逃生口。Manifest JSON 仍不是
 对话框 UI 语言。
 
@@ -385,8 +385,8 @@ Job 先在 Manifest 声明：
 重试来重新入队，且中断 Job 可以由当前相同插件包的新实例接管。`interrupted` 是 Host 状态，插件的完成回调不能伪造这个状态。
 大文件、模型和缓存不要塞进 storage。
 
-`serpent.storage` 是插件命名空间 KV，小配置使用 `scope: "user" | "library"`；按权限 `storage.read`/`storage.write` 控制。
-`serpent.data.getDirectory({ scope })` 返回插件数据根：用户级为 `{userData}/plugin-files/<pluginId>/`，库级为
+`keel.storage` 是插件命名空间 KV，小配置使用 `scope: "user" | "library"`；按权限 `storage.read`/`storage.write` 控制。
+`keel.data.getDirectory({ scope })` 返回插件数据根：用户级为 `{userData}/plugin-files/<pluginId>/`，库级为
 `<库根>/.serpent/plugin-files/<pluginId>/`。库未打开时不能取得库级目录。受限模式没有 Node fs；unrestricted 才能在该目录下用 fs，
 也不要把返回路径当作可写入库 Assets 的通道。
 
@@ -432,14 +432,14 @@ Host 的「后台任务 → 插件任务」会把 `completed/total` 与百分比
 运行中的 Job 还会出现在主界面画布上方的非阻塞活动条中，工具栏「后台任务」入口会显示活动标记；用户无需先打开任务对话框才能发现插件正在工作。完成、失败或取消后的最近结果会短暂保留，并可从活动条进入完整任务面板。
 
 `forLibrary()` 返回领域 API 和 Job 的 enqueue/report/cancel/pause/resume/retry，但不返回 events、hooks、providers、storage、data、
-commands 或 handler 注册；handler 必须在实例级 `serpent.jobs` 注册。library 实例不能借此越过自己的库边界。
+commands 或 handler 注册；handler 必须在实例级 `keel.jobs` 注册。library 实例不能借此越过自己的库边界。
 
 命令可通过 `contributes.commands[].mcp.export: true` 或顶层 `mcp.expose: ["command-id"]` 导出。插件激活后会成为 MCP 候选工具，但 MCP 连接仍须请求本地写入配置；插件命令目前按可能产生副作用处理，只导出有界、可校验的命令，不暴露 eval、秘密或任意 Node 接口。
 插件 MCP 调用还必须提供至少一个非空的 `assetIds`、`folderIds` 或 `collectionIds` 数组；空数组会在 JSON Schema 和 Host 运行时两层拒绝。
 
 ## 11. Hook、Provider 与输入
 
-Hook 在 Manifest 中声明 `id`、`event`、`blocking`。当前实现首发事件是 `asset.trash`；运行时 `serpent.hooks.onWill` 返回：
+Hook 在 Manifest 中声明 `id`、`event`、`blocking`。当前实现首发事件是 `asset.trash`；运行时 `keel.hooks.onWill` 返回：
 
 ```js
 { action: 'allow' }
@@ -448,14 +448,14 @@ Hook 在 Manifest 中声明 `id`、`event`、`blocking`。当前实现首发事�
 ```
 
 阻断必须同时声明 `blocking: true` 和 `hook.blocking` 权限；Hook 在 Execution Plan 预检阶段运行，不在 SQLite 事务/文件锁内等待，
-超时默认 fail-open。事件订阅使用 `serpent.events.on('library.changed' | 'asset.changed' | '*', handler)`；事件至少一次投递，
+超时默认 fail-open。事件订阅使用 `keel.events.on('library.changed' | 'asset.changed' | '*', handler)`；事件至少一次投递，
 请按 `eventId` 去重。
 
 Provider 支持 `preview`、`thumbnail`、`metadata`、`import`、`export`、`ai`、`derived-field`、`search`。Manifest 必须声明适配扩展名
 或 MIME；derived-field 必须有 `fieldId` 和 `fieldType`。返回值受严格大小限制，不能返回路径、secret、token 或大对象；搜索应优先
 物化字段，不能在 Renderer 中逐资产同步调用插件。
 
-`thumbnail` 提供器声明的扩展名会进入缩略图队列。导入、扫描或插件激活之后，Serpent 自动调用它生成卡片图，用户不必逐个打开文件。内置格式仍由 Serpent 自己生成；提供器只补充尚未支持的扩展名，失败或超时时卡片保持通用图标。
+`thumbnail` 提供器声明的扩展名会进入缩略图队列。导入、扫描或插件激活之后，Keel 自动调用它生成卡片图，用户不必逐个打开文件。内置格式仍由 Keel 自己生成；提供器只补充尚未支持的扩展名，失败或超时时卡片保持通用图标。
 
 `preview` 提供器在打开查看器时被调用。它返回一张图时，查看器按图片显示这张图。没有提供器、或提供器没有返回图时，仍是不支持内置预览。
 
@@ -475,17 +475,17 @@ quarantine。`dispose` 应可重复调用且不依赖当前 UI。
 - 用 `menu-command-probe/` 验证 asset/folder/collection/workspace 菜单、快捷键、Inspector、Viewer、settings。
 - 用 `iframe-workspace-probe/` 验证 sidebar/workspace/inspector/viewer/settings iframe；用 `job-probe/`、`hook-blocking-probe/`、
   `preview-thumbnail-probe/`、`derived-field-probe/` 验证对应扩展点。
-- Electron E2E 必须后台运行并使用临时 `SERPENT_E2E_USER_DATA_PATH`；持久化必须以完整退出并重新启动为边界。
+- Electron E2E 必须后台运行并使用临时 `KEEL_E2E_USER_DATA_PATH`；持久化必须以完整退出并重新启动为边界。
 - 发布前重新打包当前 HEAD；不能用旧包证明当前包可运行。macOS/Windows 和 Computer Use 未执行时必须明确标记“未验证”。
 
 ### 发布清单
 
-1. `serpent-plugin.json` 通过当前 schema，权限最小化，所有 Contribution ID 唯一。
+1. `keel-plugin.json` 通过当前 schema，权限最小化，所有 Contribution ID 唯一。
 2. 包内入口、UI、README、LICENSE 和依赖均已编译并可脱机运行；没有 install/build/postinstall 依赖。
 3. restricted/unrestricted 风险、需要的文件/网络/原生能力在 README 和发布说明中清楚披露。
 4. 插件社区、本地文件夹、ZIP、GitHub Release ZIP 均安装、信任、激活、停用、升级、卸载过。
 5. 已测试升级 staging、失败恢复、Job 中断后的显式重试、完整重启以及 user/library 两种安装范围。
-6. 发布版本保持稳定 `id`，并记录支持的 Serpent SemVer 与 Plugin API 版本。
+6. 发布版本保持稳定 `id`，并记录支持的 Keel SemVer 与 Plugin API 版本。
 7. ZIP 条目名、平台 asset 文件名和原生二进制执行位按 [最佳实践](best-practices.md) 核对。
 
 ## 13. 明确不应写入插件的能力

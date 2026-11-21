@@ -20,7 +20,7 @@ flowchart TB
     M -->|Worker protocol| W[Library Worker<br/>SQLite + filesystem owner]
     W --> DB[(library.db)]
     W --> AS[Assets/]
-    W --> AR[.serpent/artifacts/]
+    W --> AR[.keel/artifacts/]
     M -.-> O[Offscreen window<br/>3D thumbnail rendering]
     O --> AR
 ```
@@ -60,8 +60,8 @@ docs/              # 文档（本目录、ADR、实施规格、QA）
 
 ## 数据层
 
-- 每个资源库一个 SQLite 数据库（`.serpent/library.db`），schema 版本化迁移（`MIGRATIONS`，当前 v33）
-- 资产文件存 `Assets/`，派生数据（缩略图/代理）存 `.serpent/artifacts/`
+- 每个资源库一个 SQLite 数据库（`.keel/library.db`），schema 版本化迁移（`MIGRATIONS`，当前 v33）
+- 资产文件存 `Assets/`，派生数据（缩略图/代理）存 `.keel/artifacts/`
 - **数据兼容纪律**：迁移只加不改（禁删改现有表/列/索引/触发器）；新代码必须能打开旧库（宽容读取：缺列降级默认值，不崩溃）；Desktop 不提供只读资源库，损坏走备份再 Assets 抢救。资源库可用性是项目最重要底线，相关改动必须完整跑完 `npm run test:library-availability`。见 [ADR-0028](https://github.com/dolag233/Serpent/blob/dolag_dev/docs/internal/adr/0028-schema-compatibility-read-only-degrade.md) 与 [0031](https://github.com/dolag233/Serpent/blob/dolag_dev/docs/internal/implementation/0031-schema-compatibility-guarantee.md)
 
 ## 媒体管线

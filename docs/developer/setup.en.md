@@ -16,9 +16,9 @@
 
 - Git, PowerShell
 - Visual Studio Build Tools: "Desktop development with C++" workload + Windows SDK (required to compile native module `better-sqlite3`)
-- **Inno Setup 6** (required when building the Windows installer package `SerpentSetup.exe`):
-  - Recommended (no admin rights required): Fetch `Tools.InnoSetup` via NuGet, extract `ISCC.exe` into `%LOCALAPPDATA%\SerpentTools\inno\tools\`;
-  - Official installer: Install official Inno Setup 6 and set environment variable `SERPENT_INNO_TOOLS` to the directory containing `ISCC.exe` (or add it to system `PATH`);
+- **Inno Setup 6** (required when building the Windows installer package `KeelSetup.exe`):
+  - Recommended (no admin rights required): Fetch `Tools.InnoSetup` via NuGet, extract `ISCC.exe` into `%LOCALAPPDATA%\KeelTools\inno\tools\`;
+  - Official installer: Install official Inno Setup 6 and set environment variable `KEEL_INNO_TOOLS` to the directory containing `ISCC.exe` (or add it to system `PATH`);
   - Not needed if only running dev mode (`npm start`) or creating portable builds (`npm run package`).
 - Media component builds (only when rebuilding underlying binaries): `scripts/media-build/win32-x64.ps1` (vcpkg)
 
@@ -27,7 +27,7 @@
 - Compiler toolchain and Python (`better-sqlite3`): on Debian/Ubuntu, `sudo apt install build-essential python3`
 - **Media tools**: the linux-x64 pinned bundle is ready in `bundle-lock.json`. linux-arm64 uses the same acquire/verify path, but its lock entry is still `build-required` (no promoted zip yet). `npm ci` does not install the media bundle. Until `media:ensure` or `release:media` has run, `npm start` still uses `ffmpeg` / `ffprobe` from `PATH`, with optional `openimageio-tools` (`oiiotool`) for EXR/RAW/PSD. The release AppImage packs that bundle in.
 - AppImage release builds should use Docker (`npm run make:appimage:docker` targets Ubuntu 22.04 / glibc 2.35 and follows the host architecture, the same baseline for x86_64 and aarch64); without Docker use host `npm run make:appimage`. FUSE and X11/Wayland limits are the same on both architectures.
-- Useful env vars: `SERPENT_SOFTWARE_GL=1` (software WebGL without a GPU), `SERPENT_LINUX_ROUNDED_CORNERS=0|1` (force square/rounded corners), `SERPENT_FFMPEG_PATH` / `SERPENT_OIIO_PATH` (override PATH lookup)
+- Useful env vars: `KEEL_SOFTWARE_GL=1` (software WebGL without a GPU), `KEEL_LINUX_ROUNDED_CORNERS=0|1` (force square/rounded corners), `KEEL_FFMPEG_PATH` / `KEEL_OIIO_PATH` (override PATH lookup)
 
 ## First build
 
@@ -43,27 +43,27 @@ npm start
 
 `npm ci` does **not** install FFmpeg/ffprobe/OpenImageIO. Without them, normal development and image import still work; video thumbnails/proxies fail with `FFMPEG_REQUIRED`, and EXR/TGA/complex TIFF need OpenImageIO.
 
-Packaged builds use the controlled media bundle (FFmpeg 8.1 LGPL-only + OpenImageIO 3.1.12.0); gates verify provenance and hashes (`bundle-lock.json` promotion status + `source-lock.json` version match). For local development you can point at any trusted FFmpeg via `SERPENT_FFMPEG_PATH` (needs the required filters/encoders; `ffprobe` in the same directory; GPL builds are local-dev only):
+Packaged builds use the controlled media bundle (FFmpeg 8.1 LGPL-only + OpenImageIO 3.1.12.0); gates verify provenance and hashes (`bundle-lock.json` promotion status + `source-lock.json` version match). For local development you can point at any trusted FFmpeg via `KEEL_FFMPEG_PATH` (needs the required filters/encoders; `ffprobe` in the same directory; GPL builds are local-dev only):
 
 ```bash
 # macOS
-export SERPENT_FFMPEG_PATH="$HOME/tools/ffmpeg/ffmpeg"
+export KEEL_FFMPEG_PATH="$HOME/tools/ffmpeg/ffmpeg"
 npm start
 ```
 
 ```powershell
 # Windows
-$env:SERPENT_FFMPEG_PATH = 'C:\tools\ffmpeg\ffmpeg.exe'
+$env:KEEL_FFMPEG_PATH = 'C:\tools\ffmpeg\ffmpeg.exe'
 npm start
 ```
 
 ```bash
 # Linux (or rely on distro ffmpeg already on PATH)
-export SERPENT_FFMPEG_PATH=/usr/bin/ffmpeg
+export KEEL_FFMPEG_PATH=/usr/bin/ffmpeg
 npm start
 ```
 
-Quit Serpent completely before retrying (single-instance lock; a second `npm start` does not replace a running process).
+Quit Keel completely before retrying (single-instance lock; a second `npm start` does not replace a running process).
 
 ## Common commands
 

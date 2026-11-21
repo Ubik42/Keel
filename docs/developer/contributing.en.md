@@ -1,8 +1,8 @@
-# Contributing to Serpent
+# Contributing to Keel
 
-Thank you for your interest in contributing to Serpent!
+Thank you for your interest in contributing to Keel!
 
-Serpent is an open-source (MIT licensed), cross-platform digital asset management desktop application. Whether you are contributing code, documentation, automated tests, translations, UI/UX improvements, or bug reports, your contributions help make the project better.
+Keel is an open-source (MIT licensed), cross-platform digital asset management desktop application. Whether you are contributing code, documentation, automated tests, translations, UI/UX improvements, or bug reports, your contributions help make the project better.
 
 This document describes how to participate in the project's development and community collaboration. For more detailed technical architecture and local build instructions, see the [Developer Documentation](README.en.md).
 
@@ -25,7 +25,7 @@ If you encounter unexpected errors, performance bottlenecks, or bugs while runni
 ### When reporting a bug, please provide:
 
 1. **Environment**: Operating system (macOS / Windows / Linux) and version, system architecture (`arm64` / `x64`).
-2. **Application version**: Serpent version string or Git commit hash.
+2. **Application version**: Keel version string or Git commit hash.
 3. **Reproduction steps**: Clear, step-by-step instructions so maintainers can reproduce the behavior locally.
 4. **Expected vs. actual behavior**: What you expected to happen versus what actually occurred.
 5. **Error output and logs**: Relevant error prompts, console stack traces, or sanitized diagnostic logs (via **Main Menu → About → View Diagnostic Logs**).
@@ -45,7 +45,7 @@ If you encounter unexpected errors, performance bottlenecks, or bugs while runni
 2. **Clone locally**:
    ```bash
    git clone https://github.com/<your-username>/Serpent.git
-   cd Serpent
+   cd Keel
    ```
    *Note: Clone to a local APFS or NTFS disk; do not develop directly on network shares or SMB/NAS mounts.*
 3. **Configure the development environment**:
@@ -99,7 +99,7 @@ If you encounter unexpected errors, performance bottlenecks, or bugs while runni
 
 ## 4. Architectural and Design Constraints
 
-When writing code, keep Serpent's core architectural constraints in mind:
+When writing code, keep Keel's core architectural constraints in mind:
 
 1. **Process model invariants**:
    - `Renderer` runs in a sandboxed environment with no direct Node.js, filesystem, or SQL access.
@@ -118,4 +118,4 @@ When writing code, keep Serpent's core architectural constraints in mind:
 
 All merged contributions are credited in [`CONTRIBUTORS.md`](https://github.com/dolag233/Serpent/blob/main/CONTRIBUTORS.md) in the root directory.
 
-Thank you for contributing to Serpent!
+Thank you for contributing to Keel!

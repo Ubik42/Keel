@@ -1,8 +1,8 @@
 # Browser extension
 
-Save web images or videos into a Serpent library with **context-menu saving** and **drag-and-drop saving**. Supports Chrome / Edge (Chromium) and Firefox.
+Save web images or videos into a Keel library with **context-menu saving** and **drag-and-drop saving**. Supports Chrome / Edge (Chromium) and Firefox.
 
-Media is downloaded by the **browser** (with cookies and the page Referer) and uploaded to the local Serpent app, bypassing most hotlink protections. Keep Serpent running with a library open — the extension connects to `127.0.0.1` only; there is no remote server.
+Media is downloaded by the **browser** (with cookies and the page Referer) and uploaded to the local Keel app, bypassing most hotlink protections. Keep Keel running with a library open — the extension connects to `127.0.0.1` only; there is no remote server.
 
 ## Installation
 
@@ -27,26 +27,26 @@ Media is downloaded by the **browser** (with cookies and the page Referer) and u
 
 ## Usage
 
-1. Start Serpent and open a library.
+1. Start Keel and open a library.
 2. The extension toolbar icon turns **colored** when connected and stays **gray** when not.
-3. **Context-menu save**: right-click an image or video on a web page → “Save to Serpent” → choose a target folder (recent saves/browses → separator → root → top-level folders; subfolders expand level by level).
+3. **Context-menu save**: right-click an image or video on a web page → “Save to Keel” → choose a target folder (recent saves/browses → separator → root → top-level folders; subfolders expand level by level).
 4. **Drag-and-drop save**: drag an image and a tree-shaped save menu opens — hover `›` on a folder with children to enter its level, `‹` to go back, release outside the panel or press `Esc` to cancel.
-5. A “Saving to Serpent” bubble shows progress on the page.
+5. A “Saving to Keel” bubble shows progress on the page.
 
 ### Options page
 
 Right-click the extension icon → Options to toggle:
 
 - Notifications (system notification for save results)
-- Focus Serpent after saving
+- Focus Keel after saving
 - Reveal the saved asset in the library
 - The drag-and-drop tree menu on web images/videos
 
 ## Troubleshooting
 
-**“Cannot connect to Serpent”**
+**“Cannot connect to Keel”**
 
-Make sure Serpent is running with a library open. Gray icon = disconnected; colored = connected.
+Make sure Keel is running with a library open. Gray icon = disconnected; colored = connected.
 
 **“forbidden origin” (403) when saving**
 
@@ -62,10 +62,10 @@ You installed an unsigned zip. Use the **`-signed.xpi`** file from the releases 
 
 **Does the extension access all websites? Is it safe?**
 
-The extension requests “access to all websites” — required to save images/videos from any page. It only connects to the local Serpent app (`127.0.0.1`, fixed ports) and never sends data to remote servers. The code is open source (MIT).
+The extension requests “access to all websites” — required to save images/videos from any page. It only connects to the local Keel app (`127.0.0.1`, fixed ports) and never sends data to remote servers. The code is open source (MIT).
 
 ## Privacy
 
 - The extension does not collect or upload any personal data.
-- Saves are initiated by you; media files are uploaded directly to your local Serpent app.
+- Saves are initiated by you; media files are uploaded directly to your local Keel app.
 - The only stored record (recently used folders) lives in the browser’s local `storage`.

@@ -24,7 +24,7 @@ Run the same recovery explicitly with:
 npm run media:ensure
 ```
 
-Set `SERPENT_MEDIA_AUTO_ACQUIRE=0` in an offline environment to make a failed
+Set `KEEL_MEDIA_AUTO_ACQUIRE=0` in an offline environment to make a failed
 verification stop immediately instead of downloading.
 
 ## Release pipeline (release:local)
@@ -64,7 +64,7 @@ flowchart LR
 The media bundle must be "promoted" (built and registered in `bundle-lock.json` with an immutable URL + hashes) before the formal pipeline runs. If local artifacts already match `source-lock.json`, you can skip provenance:
 
 ```bash
-SERPENT_MEDIA_SKIP_PROVENANCE=1 npm run release:local -- --skip-verify --skip-media
+KEEL_MEDIA_SKIP_PROVENANCE=1 npm run release:local -- --skip-verify --skip-media
 ```
 
 > `SKIP_PROVENANCE` is for local trials only. Formal releases must go through promotion.
@@ -79,7 +79,7 @@ npm run release:local -- --skip-verify --build-media-locally
 
 - Version lives in `package.json` (semver)
 - Bump with `npm version patch|minor|major` (tags automatically)
-- Every pipeline run prints `Serpent v<version>`; checksum manifests carry the version header
+- Every pipeline run prints `Keel v<version>`; checksum manifests carry the version header
 
 ### Platforms
 
@@ -88,33 +88,33 @@ npm run release:local -- --skip-verify --build-media-locally
 ### Linux AppImage
 
 ```bash
-npm run make:appimage           # host → out/make/appimage/Serpent-<ver>-x86_64.AppImage or Serpent-<ver>-aarch64.AppImage
+npm run make:appimage           # host → out/make/appimage/Serpent-<ver>-x86_64.AppImage or Keel-<ver>-aarch64.AppImage
 npm run make:appimage:docker    # Ubuntu 22.04 / glibc 2.35 baseline; container arch follows the host (preferred for release)
 npm run release:make            # prefers docker and renames to Serpent-linux-x86-64-<ver>.AppImage or Serpent-linux-arm64-<ver>.AppImage
 ```
 
-- linux-x64 and linux-arm64 ship the same pinned media bundle contract as macOS/Windows (`ffmpeg` / `ffprobe` / `oiiotool`). `package` runs `media:ensure` in `prePackage`. linux-x64 is `ready` in `bundle-lock.json`. linux-arm64 is still `build-required`: `media-v0.1.2` has no `serpent-media-linux-arm64.zip`. Until `scripts/media-build/linux-arm64.sh` runs on native aarch64 and the URL plus SHA-256 are written back, `media:acquire` fails closed and a release AppImage cannot be produced. Local trials can set `SERPENT_MEDIA_SKIP_PROVENANCE=1` or pass `--build-media-locally`.
+- linux-x64 and linux-arm64 ship the same pinned media bundle contract as macOS/Windows (`ffmpeg` / `ffprobe` / `oiiotool`). `package` runs `media:ensure` in `prePackage`. linux-x64 is `ready` in `bundle-lock.json`. linux-arm64 is still `build-required`: `media-v0.1.2` has no `serpent-media-linux-arm64.zip`. Until `scripts/media-build/linux-arm64.sh` runs on native aarch64 and the URL plus SHA-256 are written back, `media:acquire` fails closed and a release AppImage cannot be produced. Local trials can set `KEEL_MEDIA_SKIP_PROVENANCE=1` or pass `--build-media-locally`.
 - Build Linux media bundles inside an `ubuntu:22.04` container with `scripts/media-build/linux-*.sh` (stock GCC) so `ffmpeg`/`ffprobe`/`oiiotool` need at most GLIBC 2.35, matching the AppImage's 22.04 baseline. Check with `objdump -T <bin> | grep -o 'GLIBC_[0-9.]*' | sort -uV | tail -1` before publishing. linux-x64 is currently `media-v0.1.3` (22.04 rebuild, same sources/config as `media-v0.1.2`).
 - The glibc baseline matches x86_64 (Ubuntu 22.04 / 2.35). Needs FUSE (`libfuse2`); without FUSE use `--appimage-extract-and-run`. X11 / Wayland limits match x86_64.
 - Release upload names match the in-app updater: `Serpent-linux-x86-64-<ver>.AppImage` or `Serpent-linux-arm64-<ver>.AppImage` (plus a sibling `.sha256`). Checksum manifests are `SHA256SUMS-linux-x64.txt` / `SHA256SUMS-linux-arm64.txt`.
 
 ### Windows installer (Inno Setup)
 
-The Windows installer `SerpentSetup.exe` is built with **Inno Setup 6** (script `assets/inno/serpentsetup.iss`, outputting to `out/make/inno/SerpentSetup.exe`):
+The Windows installer `KeelSetup.exe` is built with **Inno Setup 6** (script `assets/inno/serpentsetup.iss`, outputting to `out/make/inno/KeelSetup.exe`):
 
 #### 1. Install Inno Setup compiler dependency (ISCC.exe)
 
 Running `npm run make:inno` requires `ISCC.exe`, which can be prepared in one of two ways:
 
 - **No admin rights required (recommended)**:
-  Download `Tools.InnoSetup` from NuGet, extract it, and place the directory containing `ISCC.exe` in `%LOCALAPPDATA%\SerpentTools\inno\tools` (the build script looks here by default).
+  Download `Tools.InnoSetup` from NuGet, extract it, and place the directory containing `ISCC.exe` in `%LOCALAPPDATA%\KeelTools\inno\tools` (the build script looks here by default).
 - **Official installer**:
-  Install official Inno Setup 6 and set environment variable `SERPENT_INNO_TOOLS` to the absolute path containing `ISCC.exe` (e.g., `C:\Program Files (x86)\Inno Setup 6`), or add that folder to system `PATH`.
+  Install official Inno Setup 6 and set environment variable `KEEL_INNO_TOOLS` to the absolute path containing `ISCC.exe` (e.g., `C:\Program Files (x86)\Inno Setup 6`), or add that folder to system `PATH`.
 
 #### 2. Build commands
 
 ```bash
-# 1. Package the application first (generates out/Serpent-win32-x64)
+# 1. Package the application first (generates out/Keel-win32-x64)
 npm run package
 
 # 2. Run the Inno installer build script
@@ -122,7 +122,7 @@ npm run make:inno
 ```
 
 - Multilingual: language selection dialog on launch (defaults to system language), English + Simplified Chinese
-- Wizard with install-path selection (default `C:\Program Files\Serpent`), Start Menu / desktop shortcuts
+- Wizard with install-path selection (default `C:\Program Files\Keel`), Start Menu / desktop shortcuts
 - Per-machine install (UAC elevation), automatic uninstaller `unins000.exe` and Apps & Features entry
 
 > History: Squirrel (no wizard / no path selection / uninstall leftovers) and WiX MSI (MSI language switching requires a custom bootstrapper, confirmed by the community) were both tried and rolled back — see the [Windows packaging development log](https://github.com/dolag233/Serpent/blob/dolag_dev/docs/internal/development/2026-08-08-windows-packaging-and-squirrel-installer-development-log.md).

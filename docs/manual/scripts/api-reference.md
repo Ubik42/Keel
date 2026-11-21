@@ -30,7 +30,7 @@ Host 命令失败会以异常方式进入脚本的 `catch`。错误对象至少�
 
 ```ts
 try {
-  await serpent.assets.setRating(assetIds, 4);
+  await keel.assets.setRating(assetIds, 4);
 } catch (error) {
   if (error.code === 'AUTOMATION_CAPABILITY_DENIED') {
     console.log('当前脚本没有所需权限');
@@ -61,7 +61,7 @@ try {
 未绑定资源库时可调用；成功后宿主绑定新库。
 
 ```ts
-serpent.library.create({
+keel.library.create({
   displayName: string,          // 非空，最长 255
   selectedParentPath: string,  // 非空；由用户选择的父目录
   idempotencyKey?: string,     // 非空白，最长 128
@@ -75,7 +75,7 @@ serpent.library.create({
 ### `files.import(input)`
 
 ```ts
-serpent.files.import({
+keel.files.import({
   sourceKind: 'files' | 'folder',
   sourcePaths: readonly string[], // 由用户/调用者提供的路径；结果不回显路径
   targetFolderId?: string,
@@ -108,7 +108,7 @@ type ImportResult =
 ### `folders.list(input?)`
 
 ```ts
-serpent.folders.list({ limit?: number; offset?: number }): Promise<Page<{
+keel.folders.list({ limit?: number; offset?: number }): Promise<Page<{
   id: string; parentId: string | null; name: string;
 }>>
 ```
@@ -118,7 +118,7 @@ serpent.folders.list({ limit?: number; offset?: number }): Promise<Page<{
 ### `folders.create(name, parentFolderId?)`
 
 ```ts
-serpent.folders.create(
+keel.folders.create(
   name: string,
   parentFolderId?: string | null,
 ): Promise<{ id: string; parentId: string | null; name: string }>
@@ -135,7 +135,7 @@ serpent.folders.create(
 ### `assets.search(input)`
 
 ```ts
-serpent.assets.search({
+keel.assets.search({
   query: string | null,
   limit?: number,
   offset?: number,
@@ -150,7 +150,7 @@ serpent.assets.search({
 ### `assets.list(input?)`
 
 ```ts
-serpent.assets.list({
+keel.assets.list({
   folderId?: string,
   recursive?: boolean, // 默认 false
   assetIds?: readonly string[], // 最多 200，按 ID 查询，跳过 folder/recursive 范围
@@ -196,7 +196,7 @@ serpent.assets.list({
 ### `assets.setMetadata(input)`
 
 ```ts
-serpent.assets.setMetadata({
+keel.assets.setMetadata({
   assetId: string,
   expectedVersion: number,
   description?: string | null,  // 最长 10,000
@@ -218,7 +218,7 @@ serpent.assets.setMetadata({
 ### `assets.readContent(assetId, options?)`
 
 ```ts
-serpent.assets.readContent(assetId, { maxBytes?: number }): Promise<{
+keel.assets.readContent(assetId, { maxBytes?: number }): Promise<{
   assetId: string; revisionId: string; byteSize: number;
   dataBase64: string; truncated: boolean; mimeType: string | null;
 }>
@@ -229,7 +229,7 @@ serpent.assets.readContent(assetId, { maxBytes?: number }): Promise<{
 ### `assets.replaceContent(assetId, dataBase64, options?)`
 
 ```ts
-serpent.assets.replaceContent(assetId, dataBase64, {
+keel.assets.replaceContent(assetId, dataBase64, {
   expectedRevisionId?: string,
   mimeHint?: string,
 }): Promise<{ assetId: string; revisionId: string; byteSize: number }>
@@ -240,7 +240,7 @@ serpent.assets.replaceContent(assetId, dataBase64, {
 ### `assets.stageContent(assetId, dataBase64, options?)`
 
 ```ts
-serpent.assets.stageContent(assetId, dataBase64, {
+keel.assets.stageContent(assetId, dataBase64, {
   stagingToken?: string,
   complete?: boolean, // 默认 false
 }): Promise<{ stagingToken: string; assetId: string; byteSize: number; complete: boolean }>
@@ -255,7 +255,7 @@ serpent.assets.stageContent(assetId, dataBase64, {
 ### `assets.moveToFolder(assetIds, targetFolderId, options?)`
 
 ```ts
-serpent.assets.moveToFolder(assetIds, targetFolderId, {
+keel.assets.moveToFolder(assetIds, targetFolderId, {
   conflictStrategy?: 'keep-both' | 'replace' | 'skip',
 }): Promise<{
   movedCount: number; skippedCount: number;
@@ -279,7 +279,7 @@ serpent.assets.moveToFolder(assetIds, targetFolderId, {
 
 ### `assets.moveToTrash(assetIds)`
 
-返回 `{ trashedCount: number; operationId: string }`。需要计划确认；这是移入 Serpent 回收站，不是永久删除。命令提交后，Console 宿主会同时收到 Worker 生成的 `historyEntryId`，撤回/重做走资源库统一操作历史；`operationId` 只是文件转换恢复日志引用，脚本正文不能拿它重放操作。
+返回 `{ trashedCount: number; operationId: string }`。需要计划确认；这是移入 Keel 回收站，不是永久删除。命令提交后，Console 宿主会同时收到 Worker 生成的 `historyEntryId`，撤回/重做走资源库统一操作历史；`operationId` 只是文件转换恢复日志引用，脚本正文不能拿它重放操作。
 
 ## `trash`
 
@@ -316,7 +316,7 @@ serpent.assets.moveToFolder(assetIds, targetFolderId, {
 ### `palettes.mostFrequent(input?)`
 
 ```ts
-serpent.palettes.mostFrequent({ days?: number; limit?: number }): Promise<{
+keel.palettes.mostFrequent({ days?: number; limit?: number }): Promise<{
   days: number; assetCount: number; paletteAssetCount: number;
   colors: readonly { hex: string; weight: number; assetCount: number }[];
 }>
@@ -329,7 +329,7 @@ serpent.palettes.mostFrequent({ days?: number; limit?: number }): Promise<{
 ### `ui.notify(input)`
 
 ```ts
-serpent.ui.notify({
+keel.ui.notify({
   severity: 'info' | 'warning' | 'error',
   message: string, // 1..500
   mode?: 'toast' | 'dialog', // 默认 toast
@@ -352,14 +352,14 @@ serpent.ui.notify({
 Desktop Console 自己还通过 typed Host bridge 管理脚本文件和执行生命周期。这组方法供 Console/宿主 UI 使用，**不会注入脚本正文**；脚本正文不能调用 `open()`、`start()` 或 `command()` 来绕过当前运行授权。
 
 ```ts
-interface SerpentAutomationScriptApi {
+interface KeelAutomationScriptApi {
   open(): Promise<AutomationScriptFileResult>;
   save(input: { source: string }): Promise<AutomationScriptFileResult>;
   recentList(): Promise<AutomationRecentScriptsListResult>;
   openRecent(input: { handle: string }): Promise<AutomationScriptFileResult>;
   start(input: { libraryId: string | null; source: string; scriptId?: string }): Promise<AutomationScriptStartResult>;
   execute(input: { executionId: string }): Promise<AutomationScriptExecuteResult>;
-  command(input: { executionId: string; commandId: SerpentAutomationCommandId; input: unknown }): Promise<AutomationScriptCommandResult>;
+  command(input: { executionId: string; commandId: KeelAutomationCommandId; input: unknown }): Promise<AutomationScriptCommandResult>;
   complete(input: { executionId: string; succeeded: boolean; cancelled?: boolean }): Promise<void>;
   cancel(input: { executionId: string }): Promise<void>;
   history(input: { libraryId: string; limit?: number }): Promise<AutomationScriptHistoryResult>;
@@ -367,8 +367,8 @@ interface SerpentAutomationScriptApi {
 }
 ```
 
-`scriptId`、`handle` 和 `executionId` 都是由 Main 签发的 opaque ID，不是路径、授权凭据或可自行生成的替代值。`undoGroupId` 仅为旧版本执行记录保留的兼容参数；新执行不把 Main JSON Undo Group 当作恢复权威，统一使用资源库 Worker 的 `historyEntryId`。文件 API 只处理 `.serpent.js` / `.serpent.ts`，源文本上限 64 KiB；结果中的文件名和错误码可供 UI 展示，但绝对路径不会返回给 Renderer 或脚本正文。
+`scriptId`、`handle` 和 `executionId` 都是由 Main 签发的 opaque ID，不是路径、授权凭据或可自行生成的替代值。`undoGroupId` 仅为旧版本执行记录保留的兼容参数；新执行不把 Main JSON Undo Group 当作恢复权威，统一使用资源库 Worker 的 `historyEntryId`。文件 API 只处理 `.keel.js` / `.keel.ts`，源文本上限 64 KiB；结果中的文件名和错误码可供 UI 展示，但绝对路径不会返回给 Renderer 或脚本正文。
 
 ## 不是当前脚本 API 的东西
 
-`serpent.jobs`、`execution.status`、MCP 的 `keel_execution_status`、资源库变更通知、MCP resource URI、`keel_desktop_*` 工具以及插件的 `setup`/events/hooks/providers/jobs/input/storage 都不是当前 Desktop Console 脚本公共 API。Registry 或 `automation-api.d.ts` 出现某个命令，不等于 guest API 已投影该命令；新增命令必须同时更新 Registry、Gateway、guest 投影、类型声明、测试和文档。
+`keel.jobs`、`execution.status`、MCP 的 `keel_execution_status`、资源库变更通知、MCP resource URI、`keel_desktop_*` 工具以及插件的 `setup`/events/hooks/providers/jobs/input/storage 都不是当前 Desktop Console 脚本公共 API。Registry 或 `automation-api.d.ts` 出现某个命令，不等于 guest API 已投影该命令；新增命令必须同时更新 Registry、Gateway、guest 投影、类型声明、测试和文档。

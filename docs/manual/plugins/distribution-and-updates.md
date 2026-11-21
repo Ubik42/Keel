@@ -9,14 +9,14 @@
 
 ## 1. 安装通道（产品面）
 
-| 通道 | 用户操作 | Serpent 行为 |
+| 通道 | 用户操作 | Keel 行为 |
 | --- | --- | --- |
 | **插件社区** | 设置 → 插件 → 打开插件社区，选官方/已认证插件安装 | Main 拉 GitHub raw `catalog.v1.json`，按条目钉死的 Release ZIP + sha256 安装；**禁止 zipball** |
 | **本地文件夹** | 高级安装：选择已构建的插件目录 | 校验清单与 `runtime.entry` 后拷贝进安装根 |
 | **本地 ZIP** | 高级安装：选择符合规范的 `.zip` | 解压后同上校验 |
 | **GitHub** | 高级安装：粘贴 `https://github.com/owner/repo` 或 Release 页 URL | **优先**取匹配当前平台的 **Release asset ZIP**；没有规范 asset 时才回退源码 zipball（仅此高级通道） |
 
-Serpent **不预装**任何插件。社区目录失败时使用上次缓存，并标明「未更新」。
+Keel **不预装**任何插件。社区目录失败时使用上次缓存，并标明「未更新」。
 
 认证 ≠ 信任：无限制插件仍走 ADR-0026 确认。社区安装钉死 `releaseTag` / `fileName` / `sha256`，不跟随 GitHub 最新 Release 自动更新。
 
@@ -88,7 +88,7 @@ userData/plugins/<pluginId>/
 根目录（或 ZIP 解压后唯一顶层目录）须含：
 
 ```text
-serpent-plugin.json
+keel-plugin.json
 README.md
 README.zh-CN.md          # 可选；社区详情中文优先
 README.en.md             # 可选；社区详情英文优先
@@ -105,7 +105,7 @@ LICENSE
 - 中文：`README.zh-CN.md` → `README.zh.md` → `README.md`
 - 英文：`README.en.md` → `README.md`
 
-图片不会嵌进 Serpent 窗口；相对路径会变成可在浏览器打开的 GitHub 链接。目录可选 `author`；缺省时详情作者显示 GitHub owner。
+图片不会嵌进 Keel 窗口；相对路径会变成可在浏览器打开的 GitHub 链接。目录可选 `author`；缺省时详情作者显示 GitHub owner。
 
 ### 3.1 ZIP 条目路径
 
@@ -113,8 +113,8 @@ Host 用 adm-zip **读取** ZIP，不在 Windows 上提供 `zip` 命令。条目
 
 - 使用 `/` 分隔目录，例如 `entry/main.js`。
 - 不要使用 `\`、盘符、前导 `/`、`..`。
-- 不要把当前目录写成路径段：`./serpent-plugin.json` 会被旧版 Host 拒绝（`PLUGIN_ARCHIVE_INVALID`：absolute or traversing path）。当前 Host 会去掉 `./` 并把 `\` 换成 `/`，但发布包仍应写出不含这些前缀的路径。
-- 允许 ZIP 内有且仅有一层包裹目录（`my-plugin/serpent-plugin.json`）；解压后会剥掉该前缀。
+- 不要把当前目录写成路径段：`./keel-plugin.json` 会被旧版 Host 拒绝（`PLUGIN_ARCHIVE_INVALID`：absolute or traversing path）。当前 Host 会去掉 `./` 并把 `\` 换成 `/`，但发布包仍应写出不含这些前缀的路径。
+- 允许 ZIP 内有且仅有一层包裹目录（`my-plugin/keel-plugin.json`）；解压后会剥掉该前缀。
 - 禁止符号链接。
 
 Windows 上 `tar -a -c -f out.zip -C dist .` 会稳定写出 `./` 前缀；`Compress-Archive` 可能写出反斜杠。不要依赖这两条命令直接作为 Release 产物。打包方式见 [最佳实践 §8](best-practices.md#8-成品包与-zip-条目名)。参考实现：纯 JS/通用包参考 [Serpent-Plugin-MediaConverter](https://github.com/dolag233/Serpent-Plugin-MediaConverter) 或 [Serpent-Plugin-Renamer](https://github.com/dolag233/Serpent-Plugin-Renamer)；平台原生二进制分流包参考 [Serpent-Plugin-ImageUpscaler](https://github.com/dolag233/Serpent-Plugin-ImageUpscaler)。
@@ -168,9 +168,9 @@ Serpent 内置的“插件社区”面向所有用户提供可发现、可一键
 
 ### 5.1 插件分类与认证层级
 
-- **官方插件（Official Plugins）**：由 Serpent 核心团队直接开发、维护与发布的插件，在社区目录中标记有官方徽章。
-- **官方认证插件（Verified Community Plugins）**：由第三方开源作者或社区团队开发，经过 Serpent 官方安全审查、包结构规范验证和功能可用性检验后，正式收录入官方目录的插件。
-- **未认证插件 / 高级安装**：由用户直接通过本地 ZIP、本地目录或粘贴任意 GitHub URL 安装的插件。Serpent 允许用户自由安装，但在安装时会显示未认证警告。
+- **官方插件（Official Plugins）**：由 Keel 核心团队直接开发、维护与发布的插件，在社区目录中标记有官方徽章。
+- **官方认证插件（Verified Community Plugins）**：由第三方开源作者或社区团队开发，经过 Keel 官方安全审查、包结构规范验证和功能可用性检验后，正式收录入官方目录的插件。
+- **未认证插件 / 高级安装**：由用户直接通过本地 ZIP、本地目录或粘贴任意 GitHub URL 安装的插件。Keel 允许用户自由安装，但在安装时会显示未认证警告。
 
 ### 5.2 认证插件准入标准
 
@@ -178,7 +178,7 @@ Serpent 内置的“插件社区”面向所有用户提供可发现、可一键
 
 1. **完全开源**：插件源码必须公开发布于 GitHub 仓库，并使用宽松的开源许可证（如 MIT、Apache-2.0、BSD-3-Clause 等）。
 2. **制品不可变性与规范命名**：必须使用 GitHub Release 分发成品包，Asset 文件名必须严格遵循 `{pluginId}-{version}-{platformToken}.zip` 规范（见 §4.2），且包内包含编译后的成品代码（严禁要求用户环境执行 `npm install` 或动态构建）。
-3. **最小权限原则**：Manifest（`serpent-plugin.json`）中仅声明插件实现功能所必须的权限，不得申请无关权限。
+3. **最小权限原则**：Manifest（`keel-plugin.json`）中仅声明插件实现功能所必须的权限，不得申请无关权限。
 4. **透明披露与沙箱安全**：
    - 优先推荐 `restricted` 受限模式；
    - 若使用 `unrestricted` 非受限模式，必须在 Manifest 及 README 中如实声明所有本地进程调用、网络请求目的、数据存储位置及原生模块依赖，严禁静默执行未经用户许可的外部行为；
@@ -247,7 +247,7 @@ flowchart TD
 
 ### 5.5 下架与违规撤回政策（Revocation）
 
-为保护所有最终用户的资产与设备安全，若已收录的认证插件出现以下情况，Serpent 团队保留立即下架的权利：
+为保护所有最终用户的资产与设备安全，若已收录的认证插件出现以下情况，Keel 团队保留立即下架的权利：
 - 发现存在未披露的安全漏洞、高危网络外联行为或恶意代码；
 - 插件依赖的外部服务失效且作者长期未维护修复；
 - 收到知识产权或开源许可侵权投诉并经核实。

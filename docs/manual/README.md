@@ -1,6 +1,6 @@
-# Serpent 用户手册：插件、脚本与 MCP
+# Keel 用户手册：插件、脚本与 MCP
 
-这组手册面向希望为 Serpent 编写插件、自动化脚本或 MCP 客户端的用户和开发者。它描述的是当前仓库已经提供的开发态接口；实现尚未发布为独立 SDK，示例应在 Serpent 仓库根目录、Node.js 24 环境中运行。
+这组手册面向希望为 Keel 编写插件、自动化脚本或 MCP 客户端的用户和开发者。它描述的是当前仓库已经提供的开发态接口；实现尚未发布为独立 SDK，示例应在 Keel 仓库根目录、Node.js 24 环境中运行。
 
 `docs/manual/` 是面向扩展作者发布的用户手册目录；架构决策、实施规格、开发日志和 QA 记录仍分别位于 `dolag_dev` 的 [`docs/internal/adr/`](https://github.com/dolag233/Serpent/tree/dolag_dev/docs/internal/adr)、[`docs/internal/implementation/`](https://github.com/dolag233/Serpent/tree/dolag_dev/docs/internal/implementation)、[`docs/internal/development/`](https://github.com/dolag233/Serpent/tree/dolag_dev/docs/internal/development) 和 [`docs/internal/qa/`](https://github.com/dolag233/Serpent/tree/dolag_dev/docs/internal/qa)（不随网站发布）。
 
@@ -18,7 +18,7 @@
 
 - 需要菜单、设置页、工具栏、查看器入口或插件自己的沙盒 UI：使用插件。
 - 需要一次性批处理、可保存的用户脚本或复用现有 Action：使用自动化脚本。
-- 需要让外部 Agent 或 MCP Host 调用 Serpent：使用 MCP。
+- 需要让外部 Agent 或 MCP Host 调用 Keel：使用 MCP。
 - 需要执行真实业务操作时，优先寻找现有 Script/MCP Action；插件 UI 负责触发和展示，插件本身不应绕过 Host 直接访问数据库或资源库文件。
 
 ## 当前边界
@@ -26,7 +26,7 @@
 - 脚本运行在 QuickJS 隔离进程中，不提供 Node.js 内置模块、任意文件系统、SQLite、任意网络或 Library Worker 句柄。
 - 插件的受限运行模式同样只能使用 Host 暴露的 API；无限制插件可以自行管理外部进程和模型，但 Host 不提供通用 GPU、CPU、内存或 VRAM 调度接口。
 - MCP 是 Desktop 内嵌的本机 loopback Streamable HTTP 服务，不是远程服务。服务默认关闭，用户可在设置中启停、设置自动启动、复制客户端配置和撤销 credential；写入能力受本机授权和高风险操作确认共同控制。
-- MCP 不假设用户安装 Node.js、npm 或任何命令行启动器；客户端只需使用设置页复制的 endpoint 和 credential 连接正在运行的 Serpent Desktop。
+- MCP 不假设用户安装 Node.js、npm 或任何命令行启动器；客户端只需使用设置页复制的 endpoint 和 credential 连接正在运行的 Keel Desktop。
 - 当前发布文档覆盖开发态入口。打包后的 MCP 生命周期、Windows 和跨平台发布旅程仍需以当前 QA 证据为准，不能仅凭本地开发态测试宣称已验证。
 
 ## 共同的安全和可靠性约定
@@ -46,4 +46,4 @@
 
 ## 文档状态
 
-这些页面是随 Serpent 源码版本控制的发布文档，不代表已经完成所有平台验收。涉及打包、Windows、完整退出重启或真实桌面操作的声明，必须同时查看项目状态和 QA 文档中的当次证据。
+这些页面是随 Keel 源码版本控制的发布文档，不代表已经完成所有平台验收。涉及打包、Windows、完整退出重启或真实桌面操作的声明，必须同时查看项目状态和 QA 文档中的当次证据。

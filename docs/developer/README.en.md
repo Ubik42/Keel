@@ -1,12 +1,12 @@
 # Developer Docs
 
-For people who want to build Serpent locally or become contributors: setup, architecture, testing, packaging, and how to participate. These pages ship on `main`. They are not the slice logs or internal specs in `docs/internal/`.
+For people who want to build Keel locally or become contributors: setup, architecture, testing, packaging, and how to participate. These pages ship on `main`. They are not the slice logs or internal specs in `docs/internal/`.
 
 Developer documentation is split into two parts.
 
 ## Part 1: Software development
 
-For developers working on Serpent itself: architecture, building from source, testing.
+For developers working on Keel itself: architecture, building from source, testing.
 
 - [Setup](setup.md) — dependencies, first build, development environment
 - [Build & packaging](build-packaging.md) — package / make / release pipeline / signing

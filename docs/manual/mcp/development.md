@@ -1,6 +1,6 @@
-# Serpent MCP 开发指南
+# Keel MCP 开发指南
 
-Serpent MCP 由 Desktop Main 进程内嵌提供，仅监听 `127.0.0.1` 的 Streamable HTTP。它服务于不应安装 Node/npm 的美术和设计师；客户端只需粘贴设置页复制的配置。
+Keel MCP 由 Desktop Main 进程内嵌提供，仅监听 `127.0.0.1` 的 Streamable HTTP。它服务于不应安装 Node/npm 的美术和设计师；客户端只需粘贴设置页复制的配置。
 
 ## 用户侧启用
 
@@ -85,6 +85,6 @@ Permission Broker 只读取 credential 权限档，不保存 transport session g
 - Host/Origin、token 撤销、端口生命周期和输出预算；
 - Worker 计划、版本、幂等、取消和崩溃恢复。
 
-Electron E2E 必须后台运行并隔离 `SERPENT_E2E_USER_DATA_PATH`。完成大型 MCP 改动后，主 agent 还要使用真实 Serpent Desktop 做独立 UI/设置验收；自动化通过不能代替人眼验收。
+Electron E2E 必须后台运行并隔离 `KEEL_E2E_USER_DATA_PATH`。完成大型 MCP 改动后，主 agent 还要使用真实 Keel Desktop 做独立 UI/设置验收；自动化通过不能代替人眼验收。
 
 Windows 当前没有 runner，macOS 通过不能写成 Windows 通过。审查至少覆盖 Node `path`、`fs` 原子替换、loopback 绑定、端口错误、Electron 生命周期、Windows 用户目录和 packaged 资源路径。

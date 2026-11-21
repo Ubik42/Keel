@@ -1,7 +1,7 @@
-# Serpent 插件 API 参考
+# Keel 插件 API 参考
 
 本参考对应当前 Plugin API `1`、Manifest `1`。它描述可发布插件可依赖的 schema 和 Guest API；实现仍在开发态，
-未列出的字段和方法不应被插件使用。restricted 与 unrestricted 共享同一套 `serpent.*` API；后者只是额外拥有 Node 能力。
+未列出的字段和方法不应被插件使用。restricted 与 unrestricted 共享同一套 `keel.*` API；后者只是额外拥有 Node 能力。
 
 ## 1. 入口上下文
 
@@ -18,7 +18,7 @@ interface PluginSetupContext {
   pluginInstanceId: string;
   installationScope: 'user' | 'library';
   instanceScope: { kind: 'global' } | { kind: 'library' };
-  serpent: SerpentPluginApi;
+  keel: KeelPluginApi;
   subscriptions: { add(value: (() => void) | { dispose(): void }): void };
   signal: AbortSignal;
 }
@@ -39,7 +39,7 @@ interface PluginManifest {
   author: string;
   license: string;
   repository?: `https://github.com/${string}/${string}`;
-  engines: { serpent: string; pluginApi: 1 };
+  engines: { keel: string; pluginApi: 1 };
   runtime: PluginRuntime;
   ui?: { entry: string };
   permissions: PluginPermission[];
@@ -236,7 +236,7 @@ interface PluginContributionContext {
 }
 ```
 
-它只用于 UI 条件，不是资产对象，也不是功能 API。`selection.ref` 是 Host 管理的引用；完整对象请调用 `serpent.assets`。
+它只用于 UI 条件，不是资产对象，也不是功能 API。`selection.ref` 是 Host 管理的引用；完整对象请调用 `keel.assets`。
 
 ### Invocation Context
 
@@ -285,21 +285,21 @@ Host 必须为 `invocation.selection.assets` 填充以下字段。插件应直�
 
 以下为当前生成 SDK 的公共面，所有方法均返回 Promise 或受约束的 AsyncIterable；具体领域输入/输出继续服从 Gateway schema。
 
-### `serpent.assets`
+### `keel.assets`
 
 ```ts
-serpent.assets.search({ query: string | null, limit?: number, offset?: number }): Promise<unknown>
-serpent.assets.readContent(assetId, { maxBytes?: number }): Promise<{
+keel.assets.search({ query: string | null, limit?: number, offset?: number }): Promise<unknown>
+keel.assets.readContent(assetId, { maxBytes?: number }): Promise<{
   assetId: string; revisionId: string; byteSize: number; dataBase64: string;
   truncated: boolean; mimeType: string | null;
 }>
-serpent.assets.replaceContent(assetId, dataBase64, options?): Promise<{
+keel.assets.replaceContent(assetId, dataBase64, options?): Promise<{
   assetId: string; revisionId: string; byteSize: number;
 }>
-serpent.assets.stageContent(assetId, dataBase64, options?): Promise<{
+keel.assets.stageContent(assetId, dataBase64, options?): Promise<{
   assetId: string; stagingToken: string; byteSize: number; complete: boolean;
 }>
-serpent.assets.replaceContentBatch(items): Promise<{ operationId: string; items: unknown[] }>
+keel.assets.replaceContentBatch(items): Promise<{ operationId: string; items: unknown[] }>
 ```
 
 `readContent` 有字节上限并可能返回 `truncated`；`replaceContent` 接受托管（managed）与链接（linked）可用资产，须 `content.write`，并经过计划确认。
@@ -315,10 +315,10 @@ serpent.assets.replaceContentBatch(items): Promise<{ operationId: string; items:
 其他领域面与 Automation Gateway 对齐，包括 folders、tags、metadata、library、files、clipboard、secrets、net、ai。
 使用哪个命令必须同时满足对应 permission；当前实现不向插件提供任意 SQL 或库绝对路径读写。
 
-### `serpent.forLibrary`
+### `keel.forLibrary`
 
 ```ts
-const scoped = serpent.forLibrary(libraryId);
+const scoped = keel.forLibrary(libraryId);
 await scoped.assets.search({ query: null, limit: 20, offset: 0 });
 await scoped.jobs.enqueue({ handlerId: 'process', payload: { assetIds } });
 ```
@@ -326,15 +326,15 @@ await scoped.jobs.enqueue({ handlerId: 'process', payload: { assetIds } });
 global 插件必须显式绑定已打开库；library 插件只能绑定自己的库。Scoped API 不包含 `forLibrary`、events、hooks、jobs 注册、providers、
 storage、data、commands、input 或 contributions，只保留领域面和 Job 的 `enqueue`、`reportProgress`、`cancel`、`pause`、`resume`、`retry`。
 
-### `serpent.storage` 与 `serpent.data`
+### `keel.storage` 与 `keel.data`
 
 ```ts
-await serpent.storage.get(key, { scope: 'user' | 'library' });
-await serpent.storage.set(key, value, { scope: 'user' | 'library' });
-await serpent.storage.delete(key, { scope: 'user' | 'library' });
-await serpent.storage.listKeys({ scope: 'user' | 'library' });
+await keel.storage.get(key, { scope: 'user' | 'library' });
+await keel.storage.set(key, value, { scope: 'user' | 'library' });
+await keel.storage.delete(key, { scope: 'user' | 'library' });
+await keel.storage.listKeys({ scope: 'user' | 'library' });
 
-const { path, scope } = await serpent.data.getDirectory({ scope: 'user' | 'library' });
+const { path, scope } = await keel.data.getDirectory({ scope: 'user' | 'library' });
 ```
 
 storage 是小型命名空间 KV，需要 `storage.read`/`storage.write`。data 需要 `data.files`，返回的路径是插件专属目录：
@@ -351,12 +351,12 @@ storage 的公开返回值是裸值，不带 IPC 包装层：
 只有 `data.getDirectory` 保留 `{ path, scope }` 结构。不要读取 `{ value }`、`{ ok }`、`{ deleted }` 或 `{ keys }`；这些是 Host
 内部传输结果，不属于插件 API 契约。
 
-### `serpent.ui` 与 `serpent.media`
+### `keel.ui` 与 `keel.media`
 
 ```ts
-await serpent.ui.notify({ severity: 'info', message: '…', title?: string });
+await keel.ui.notify({ severity: 'info', message: '…', title?: string });
 
-const result = await serpent.ui.openDialog({
+const result = await keel.ui.openDialog({
   title: '媒体压缩',
   submitLabel: '开始处理',
   render(ui) {
@@ -382,7 +382,7 @@ const result = await serpent.ui.openDialog({
 });
 // result 是各控件 id 对应的当前值；取消或关闭时为 null。
 
-const { ffmpegPath, ffprobePath } = await serpent.media.getBinaryPaths();
+const { ffmpegPath, ffprobePath } = await keel.media.getBinaryPaths();
 ```
 
 `openDialog({ title, render })` 需要 `ui.dialogs`，widget kit 是标准表单的默认路径。`render` 在插件进程里执行，产出有界
@@ -394,47 +394,47 @@ widget 树；Host 用已有 primitive（`DialogShell` / `Field` / `Select` / `Sw
 `ui.tabs({ id, value, tabs: [{ id, label, children }], onChange })`；Host 会负责绘制可访问的标签页并只展示当前面板。
 这个路径不使用 HTML/CSS，也不把 Manifest JSON 当作对话框 UI 语言。对于复杂界面或交互、WebGL、第三方页面，HTML/iframe
 对话框 `openDialog({ dialogId, payload })` 是受支持的一等路径，并引用 `contributes.dialogs` 的 local id；它是复杂 UI 的正式能力，
-不是待删除的临时方案。`getBinaryPaths` 需要 `media.binaries`，返回宿主内置（或 `SERPENT_FFMPEG_PATH` 覆盖）的 FFmpeg/ffprobe 绝对路径；
+不是待删除的临时方案。`getBinaryPaths` 需要 `media.binaries`，返回宿主内置（或 `KEEL_FFMPEG_PATH` 覆盖）的 FFmpeg/ffprobe 绝对路径；
 插件不要再让用户填写路径，也不要捆绑第二套 FFmpeg。这两条命令不读写资源库，**全局插件可以直接调用，不必先
-`serpent.forLibrary()`**。
+`keel.forLibrary()`**。
 
 #### 宿主媒体二进制与 FFmpeg 方言
 
-- 使用 `serpent.media.getBinaryPaths()` 获取宿主的 `ffmpegPath` 和 `ffprobePath`；不要捆绑第二套 FFmpeg，也不要让用户填写路径。
+- 使用 `keel.media.getBinaryPaths()` 获取宿主的 `ffmpegPath` 和 `ffprobePath`；不要捆绑第二套 FFmpeg，也不要让用户填写路径。
 - 当前捆绑二进制锁定为 FFmpeg 8.x，来源锁见 `resources/media-binaries/bundle-lock.json`，媒体包版本为 `media-v0.1.2`。
 - ffprobe JSON 输出使用 `-output_format json` 或 `-of json`；不要使用 `-print-format`，FFmpeg 8 会拒绝该写法。
 - 编码前始终在运行时执行 `ffmpeg -encoders` 探测，不要假设存在 `libx264` 或 `libx265`。非 GPL 构建会禁用这些编码器，Windows 常见可用的是 `libopenh264`；GPL 与非 GPL 构建差异见 `tests/unit/media-binaries.test.ts`。
 - 只有实际支持 CRF 的编码器才传 CRF 参数；不要把 CRF 当作所有编码器的通用选项。
 - 当前不提供 `getCapabilities()` API。
 
-### `serpent.events` 与 `serpent.hooks`
+### `keel.events` 与 `keel.hooks`
 
 ```ts
-serpent.events.on('library.changed' | 'asset.changed' | '*', async (event) => {
+keel.events.on('library.changed' | 'asset.changed' | '*', async (event) => {
   // event.eventId、kind、libraryId、occurredAt、causeChain、summary
 });
-await serpent.events.next();
+await keel.events.next();
 
-serpent.hooks.onWill('asset.trash', async (context) => ({ action: 'allow' }));
+keel.hooks.onWill('asset.trash', async (context) => ({ action: 'allow' }));
 ```
 
 事件至少一次投递，按 `eventId` 去重。当前 Hook 事件只有 `asset.trash`，返回 `allow`、`warn` 或带 code/message 的 `block`；阻断需 Manifest
 声明 blocking 且拥有 `hook.blocking`，运行在预检阶段而非事务内。Hook 默认 2 秒超时并 fail-open。
 
-### `serpent.jobs`
+### `keel.jobs`
 
 ```ts
-serpent.jobs.registerHandler('process', async (payload, job, signal) => {
+keel.jobs.registerHandler('process', async (payload, job, signal) => {
   signal.throwIfAborted();
 });
-const { jobId } = await serpent.jobs.enqueue({
+const { jobId } = await keel.jobs.enqueue({
   handlerId: 'process', payload: { assetIds }, recoveryStrategy: 'checkpoint'
 });
-await serpent.jobs.reportProgress({ jobId, completed: 1, total: 10, phase: 'processing', message: 'done' });
-await serpent.jobs.cancel({ jobId, reason: 'user-requested' });
-await serpent.jobs.pause({ jobId, checkpoint: { cursor: 'asset-42' } });
-await serpent.jobs.resume({ jobId });
-await serpent.jobs.retry({ jobId, retryInput: { onlyFailed: true } });
+await keel.jobs.reportProgress({ jobId, completed: 1, total: 10, phase: 'processing', message: 'done' });
+await keel.jobs.cancel({ jobId, reason: 'user-requested' });
+await keel.jobs.pause({ jobId, checkpoint: { cursor: 'asset-42' } });
+await keel.jobs.resume({ jobId });
+await keel.jobs.retry({ jobId, retryInput: { onlyFailed: true } });
 ```
 
 Job handler 必须在 Manifest `contributes.jobs` 中存在。`recoveryStrategy` 为 `idempotent` 或 `checkpoint`；只有 checkpoint handler 可暂停/恢复。
@@ -444,17 +444,17 @@ Host 不对 Job handler 设置统一的墙钟超时。插件应自行决定处�
 
 Job 运行或排队时，Host 主界面会显示一个非阻塞的插件任务活动条，工具栏的「后台任务」入口同步显示活动标记。点击「后台运行」或关闭按钮只收起前台提示，Job 继续执行，仍可从工具栏打开完整任务面板。任务完成、失败或取消后，任务面板中的历史状态仍可查看。
 
-### `serpent.commands`、`providers`、`input` 与日志
+### `keel.commands`、`providers`、`input` 与日志
 
 ```ts
-serpent.commands.register('inspect', async (context) => { /* 使用冻结目标 */ });
-serpent.providers.register('preview', { id: 'probe', compute: async (batch, context) => [] });
-serpent.providers.registerSearch({ id: 'search', search: async (request, signal) => [] });
+keel.commands.register('inspect', async (context) => { /* 使用冻结目标 */ });
+keel.providers.register('preview', { id: 'probe', compute: async (batch, context) => [] });
+keel.providers.registerSearch({ id: 'search', search: async (request, signal) => [] });
 
-const capture = await serpent.input.capture({ scope: 'viewer', keyboard: true, pointer: false });
+const capture = await keel.input.capture({ scope: 'viewer', keyboard: true, pointer: false });
 for await (const event of capture.events) { /* bounded input */ }
 capture.release();
-serpent.console.log('message', { safe: true });
+keel.console.log('message', { safe: true });
 ```
 
 Provider kind 为 `preview`、`thumbnail`、`metadata`、`import`、`export`、`ai`、`derived-field` 或 `search`。Manifest 对 Provider 的
@@ -513,7 +513,7 @@ Host-rendered Plugin UI Contract v1 通过 `contributes.ui` 提供 settings grou
 仓库 fixture 是可执行示例：`standard-host-probe`、`trusted-host-probe`、`menu-command-probe`、`unrestricted-settings-probe`、
 `iframe-workspace-probe`、`job-probe`、`hook-blocking-probe`、`preview-thumbnail-probe`、`derived-field-probe`、`input-capture-probe`。
 实现新插件时至少补充对应 fixture/单测，并执行相关 `tests/unit`、`tests/worker` 和后台 Electron E2E；E2E 使用临时
-`SERPENT_E2E_USER_DATA_PATH`，完整退出再启动才能证明持久化恢复。packaged、Windows 或 Computer Use 未执行时必须写明未验证。
+`KEEL_E2E_USER_DATA_PATH`，完整退出再启动才能证明持久化恢复。packaged、Windows 或 Computer Use 未执行时必须写明未验证。
 
 ## 9. 当前开发态限制
 

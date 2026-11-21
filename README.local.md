@@ -1,4 +1,4 @@
-# Serpent 个人开发版
+# Keel 个人开发版
 
 基于 dolag233/Serpent，维护仓库为 https://github.com/Ubik42/Serpent 。直接在 `main` 开发；`origin` 指向个人 fork，`upstream` 指向原版。
 
@@ -9,17 +9,17 @@
 - **资源库根目录（默认）**：素材直接放在资源库中，保留自己的文件夹结构。外部放入的文件由目录监听或“刷新磁盘变化”加入索引。
 - **Assets 子目录**：沿用原版结构，导入的素材存放在 `Assets`。
 
-数据库、缩略图、回收站和操作记录仍存放在 `.serpent`。布局保存在 `.serpent/storage-layout.json`，版本为 1。没有布局标记的旧库按 `Assets` 模式打开，现有素材和路径保持原样。现有库的布局转换需要单独开发。
+数据库、缩略图、回收站和操作记录仍存放在 `.keel`。布局保存在 `.keel/storage-layout.json`，版本为 1。没有布局标记的旧库按 `Assets` 模式打开，现有素材和路径保持原样。现有库的布局转换需要单独开发。
 
 ## 使用已有文件夹
 
 在“创建资源库”中将“创建方式”设为“使用已有文件夹”，填写显示名称，再点击“选择文件夹并创建”。选中的目录会直接成为资源库，目录中的素材自动加入索引，原文件的位置、内容和目录结构保持原样。显示名称不会重命名所选目录。
 
-此模式使用根目录布局，只在所选目录中创建 `.serpent`。已有 `.serpent` 时会提示使用“打开已有资源库”，保留原有库数据。数据库初始化失败时，只清理本次创建的元数据。
+此模式使用根目录布局，只在所选目录中创建 `.keel`。已有 `.keel` 时会提示使用“打开已有资源库”，保留原有库数据。数据库初始化失败时，只清理本次创建的元数据。
 
 自动化接口可使用 `library.create({ displayName, selectedParentPath, useExistingFolder: true })`；此时 `selectedParentPath` 指向要原位初始化的目录。可以省略 `storageLayout` 或设为 `root`。
 
-根目录布局由此个人版支持；与原版交换资源库时，使用 Assets 布局。`.serpent` 与 `.serpentignore` 为保留路径，排除在素材扫描和用户文件操作之外。
+根目录布局由此个人版支持；与原版交换资源库时，使用 Assets 布局。`.keel` 与 `.keelignore` 为保留路径，排除在素材扫描和用户文件操作之外。
 
 ## 树形标签与素材联动
 
@@ -43,15 +43,15 @@
 
 ## Windows 资源库文件夹图标
 
-新建或打开本机可写资源库时，自动把资源管理器中的文件夹图标设为 Serpent。图标保存在 `.serpent/library.ico`，根目录的隐藏系统文件 `desktop.ini` 使用相对路径引用，资源库移动后仍可使用。
+新建或打开本机可写资源库时，自动把资源管理器中的文件夹图标设为 Keel。图标保存在 `.keel/library.ico`，根目录的隐藏系统文件 `desktop.ini` 使用相对路径引用，资源库移动后仍可使用。
 
-旧 `desktop.ini` 在首次替换时备份到 `.serpent/desktop.ini.before-serpent`；其他文件夹显示设置继续保留。旧 Billfish 的 `.bf` 数据保留，并排除在素材索引之外。网络库和只读缓存库跳过图标写入。
+旧 `desktop.ini` 在首次替换时备份到 `.keel/desktop.ini.before-serpent`；其他文件夹显示设置继续保留。旧 Billfish 的 `.bf` 数据保留，并排除在素材索引之外。网络库和只读缓存库跳过图标写入。
 
 ## 本机使用
 
-源码目录：`D:\manage\_tools\Serpent`。
+源码目录：`D:\manage\_tools\Keel`。
 
-双击 `Start-Serpent.exe` 无控制台启动打包后的程序（命令行入口保留 `Start-Serpent.cmd`），或使用桌面的“Serpent 开发版”快捷方式。配置单独保存在工程的 `.local-profile`，自动更新关闭。原发行版的配置保持独立。
+双击 `Start-Keel.exe` 无控制台启动打包后的程序（命令行入口保留 `Start-Keel.cmd`），或使用桌面的“Keel 开发版”快捷方式。配置单独保存在工程的 `.local-profile`，自动更新关闭。原发行版的配置保持独立。
 
 ```powershell
 npm ci
@@ -59,7 +59,7 @@ npm run rebuild:native
 npm run package
 ```
 
-日常调试可使用 `npm start`；需要独立配置时设置 `SERPENT_USER_DATA_PATH` 为绝对路径。
+日常调试可使用 `npm start`；需要独立配置时设置 `KEEL_USER_DATA_PATH` 为绝对路径。
 
 ## 验证
 
@@ -72,9 +72,9 @@ npm run package
 
 ## 手机照片固定更新
 
-“手机同步”使用固定根目录资源库。桌面的“更新手机照片”提供增量更新：按设备绑定，跳过未变化文件，以 SHA-256 复用内容，保留历史和改动版本，并保存中断进度。状态在库的 `.serpent/phone-sync`，工具源码在 `tools/phone-photo-sync`。
+“手机同步”使用固定根目录资源库。桌面的“更新手机照片”提供增量更新：按设备绑定，跳过未变化文件，以 SHA-256 复用内容，保留历史和改动版本，并保存中断进度。状态在库的 `.keel/phone-sync`，工具源码在 `tools/phone-photo-sync`。
 
-链接文件夹的路径规则支持 `**` 表示全部路径，可先排除全部再包含具体原文件；首次链接即可指定规则。另一 Serpent 库的 `.serpent`、Billfish `.bf` 及保留元数据文件排除在链接扫描之外。
+链接文件夹的路径规则支持 `**` 表示全部路径，可先排除全部再包含具体原文件；首次链接即可指定规则。另一 Keel 库的 `.keel`、Billfish `.bf` 及保留元数据文件排除在链接扫描之外。
 
 手机库的工具入口、说明与记录集中在 `_管理`，并排除素材索引。手机的 DCIM、Pictures 等目录直接放在库根目录，更新沿用相同布局。
 

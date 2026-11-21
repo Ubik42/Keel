@@ -1,4 +1,4 @@
-# Serpent media binary bundles
+# Keel media binary bundles
 
 This directory contains only trust metadata. Large executables are never copied
 from a developer's `PATH` and are intentionally ignored by Git.

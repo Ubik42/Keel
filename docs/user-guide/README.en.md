@@ -1,6 +1,6 @@
 # User Guide
 
-A Serpent usage guide for end users. For Chinese, switch the site language; in the repository see `README.md`.
+A Keel usage guide for end users. For Chinese, switch the site language; in the repository see `README.md`.
 
 - [Install](installation.md) — macOS / Windows / Linux, upgrades
 - [Basics](basics.md) — libraries, importing, workspace tabs, folder covers, the New UI, launch at login, browsing layouts, tags, collections, and the viewer
@@ -14,7 +14,7 @@ A Serpent usage guide for end users. For Chinese, switch the site language; in t
 
 ## Quick start
 
-1. Install Serpent (see [Install](installation.md))
+1. Install Keel (see [Install](installation.md))
 2. Launch the app and create a local library
 3. Drag images, videos, audio, 3D models, or text into the window, or click Import
 4. Assets appear on the canvas. Double-click to open the viewer; right-click for more actions. Thumbnails, metadata, and AI analysis complete progressively in the background
@@ -25,7 +25,7 @@ Data stays in your local library directory; for syncing across machines, use Web
 
 A typical workspace has library navigation on the left, the asset canvas in the center, and the Inspector on the right. On Windows and Linux, the upper-left Main menu contains File, Edit, Library, Window, About, and Settings (where you can view diagnostic logs and check for updates under About); macOS provides equivalent commands in the native system menu. Import, search, filtering, and sorting stay in the top toolbar.
 
-![Serpent library overview](../assets/ui/Serpent-Preview.png)
+![Keel library overview](../assets/ui/Serpent-Preview.png)
 
 See [Basics](basics.md) for the complete workflow.
 

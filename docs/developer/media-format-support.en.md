@@ -1,6 +1,6 @@
 # Media Format Support Guide
 
-This guide is for developers working on Serpent itself. Adding an extension to one list only makes one entry point recognize it; a format is supported only after import, thumbnails, the viewer, filters, and related protocols are checked.
+This guide is for developers working on Keel itself. Adding an extension to one list only makes one entry point recognize it; a format is supported only after import, thumbnails, the viewer, filters, and related protocols are checked.
 
 ## 1. Start with the shared registry
 
@@ -37,7 +37,7 @@ Chromium native rendering is an optimization, not sufficient proof of product su
 4. For animation, multi-frame, RAW, HDR, or 3D, define viewer semantics first: playback, first frame, frame controls, color space, missing materials, and so on.
 5. Update this developer documentation and the human acceptance checklist. “The backend library can theoretically read it” is not evidence of support.
 
-`.blend` is not in the product format table: there is no reliable public mesh parser for Blender 3–4.x, and Serpent does not bundle Blender. Files can still be imported and show as an unknown type. Export glTF or FBX from Blender when a 3D preview is needed. FBX / OBJ / glTF / GLB / STL still use the WebGL viewer.
+`.blend` is not in the product format table: there is no reliable public mesh parser for Blender 3–4.x, and Keel does not bundle Blender. Files can still be imported and show as an unknown type. Export glTF or FBX from Blender when a 3D preview is needed. FBX / OBJ / glTF / GLB / STL still use the WebGL viewer.
 
 ## 4. Test matrix
 

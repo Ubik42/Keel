@@ -180,8 +180,8 @@ function dockerAvailable() {
 }
 
 /**
- * AppImage maker writes Serpent-<ver>-x86_64.AppImage or
- * Serpent-<ver>-aarch64.AppImage. Release uploads use the same naming contract
+ * AppImage maker writes Keel-<ver>-x86_64.AppImage or
+ * Keel-<ver>-aarch64.AppImage. Release uploads use the same naming contract
  * as macOS/Windows: Keel-linux-x86-64-<ver>.AppImage or
  * Keel-linux-arm64-<ver>.AppImage.
  */
@@ -190,7 +190,7 @@ function finalizeLinuxAppImageArtifact() {
   const archLabel = process.arch === 'arm64' ? 'aarch64' : 'x86_64';
   const releaseArch = process.arch === 'arm64' ? 'arm64' : 'x86-64';
   const appimageDir = path.join(repoRoot, 'out', 'make', 'appimage');
-  const produced = path.join(appimageDir, `Serpent-${version}-${archLabel}.AppImage`);
+  const produced = path.join(appimageDir, `Keel-${version}-${archLabel}.AppImage`);
   const canonical = path.join(appimageDir, `Keel-linux-${releaseArch}-${version}.AppImage`);
   if (!existsSync(produced)) {
     console.error(`[release:make] Expected AppImage at ${produced}`);
@@ -257,7 +257,7 @@ function main() {
 
   // Every release phase runs against an explicit semver from package.json;
   // bump with `npm version patch|minor|major` before releasing.
-  console.log(`[release] Serpent v${currentVersion()} on ${releasePlatformKey()}`);
+  console.log(`[release] Keel v${currentVersion()} on ${releasePlatformKey()}`);
 
   const options = {
     skipVerify: flags.has('--skip-verify'),

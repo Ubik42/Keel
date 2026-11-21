@@ -12,7 +12,7 @@
 
 - [Windmill 自动生成界面](https://www.windmill.dev/docs/core_concepts/auto_generated_uis)：脚本的输入定义可以成为参数表单，适合“一个任务对应一个脚本，用户通过配置使用”的方向。[脚本入门](https://www.windmill.dev/docs/getting_started/scripts_quickstart)与[流程编辑器](https://www.windmill.dev/docs/flows/flow_editor)将执行代码与输入配置区分。这里参考脚本参数和运行结果的组织方式。
 - [Activepieces](https://github.com/activepieces/activepieces)：社区版 MIT，提供动作配置、模板和测试能力。参考其面向普通用户的配置方式。
-- [React JSON Schema Form](https://github.com/rjsf-team/react-jsonschema-form)：Apache-2.0，可按 JSON Schema 生成和验证 React 表单。如果未来任务动作种类显著增加，可使用自定义组件映射 Serpent 的目录、标签和文件选择器。
+- [React JSON Schema Form](https://github.com/rjsf-team/react-jsonschema-form)：Apache-2.0，可按 JSON Schema 生成和验证 React 表单。如果未来任务动作种类显著增加，可使用自定义组件映射 Keel 的目录、标签和文件选择器。
 - [React Flow](https://reactflow.dev/)：MIT 的节点编辑器组件，适合图结构应用。本轮采用参数配置方案，不引入节点画布依赖。
 
 以上是产品与组件参考；本轮没有安装或嵌入这些平台，也没有增加第三方前端依赖。

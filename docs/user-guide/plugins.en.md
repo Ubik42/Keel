@@ -1,13 +1,13 @@
 # Plugin features
 
-Plugins add tools, menus, or workflows to Serpent. They are not ordinary library assets and can be enabled or disabled at any time.
+Plugins add tools, menus, or workflows to Keel. They are not ordinary library assets and can be enabled or disabled at any time.
 
 ## Install a plugin
 
 Official plugins and verified third-party community plugins can be installed in one click from the built-in Plugin Community:
 
-- **Official plugins**: Developed and maintained directly by the Serpent team, identified with an official badge.
-- **Verified plugins**: Built by open-source community developers, audited for security and usability by the Serpent team, and included in the official catalog.
+- **Official plugins**: Developed and maintained directly by the Keel team, identified with an official badge.
+- **Verified plugins**: Built by open-source community developers, audited for security and usability by the Keel team, and included in the official catalog.
 
 1. Open **Settings → Plugins** and choose **Browse community**.
 2. Browse or search. Click a card to see the author, version, repository, permission declarations, and readme; click **Install** and choose **User-wide** or **This library**.
@@ -35,9 +35,9 @@ The plugin appears in the plugin list after installation. Follow the plugin auth
 ## Enable and disable
 
 - Turn on **Enable** on the plugin card.
-- The first time you enable a library plugin, Serpent asks whether you trust it. Only approve a source you trust.
+- The first time you enable a library plugin, Keel asks whether you trust it. Only approve a source you trust.
 - Turn **Enable** off whenever you do not need the plugin.
-- Click **Reload** after changing plugin settings; Serpent does not need to restart.
+- Click **Reload** after changing plugin settings; Keel does not need to restart.
 
 If the same plugin is installed both user-wide and in the library, the plugin list shows which version is active and lets you switch or disable it.
 
@@ -49,6 +49,6 @@ Uninstalling a plugin does not remove personal settings it may have saved. Reins
 
 ## If a plugin does not work
 
-Check that it was installed in the intended scope, then reopen plugin settings. If it still does not work, contact the plugin author with your Serpent version, operating system, and plugin name. Never include an API key or other private data in a report.
+Check that it was installed in the intended scope, then reopen plugin settings. If it still does not work, contact the plugin author with your Keel version, operating system, and plugin name. Never include an API key or other private data in a report.
 
 Developers should read the [plugin developer manual](../manual/README.md).

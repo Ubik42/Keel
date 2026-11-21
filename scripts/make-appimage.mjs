@@ -5,7 +5,7 @@
  *   npm run make:appimage                 # package + AppImage
  *   npm run make:appimage -- --skip-package
  *
- * Output: out/make/appimage/Serpent-<version>-<arch>.AppImage
+ * Output: out/make/appimage/Keel-<version>-<arch>.AppImage
  *
  * The AppImage bundles Electron, native modules, and the pinned media binaries
  * for this host (`linux-x64` or `linux-arm64`: `resources/ffmpeg` and

@@ -1,4 +1,4 @@
-# Serpent Documentation
+# Keel Documentation
 
 Documentation is organized into two parts: **Public documentation** (distributed with the product) and **Internal development records** (for development process, not distributed).
 

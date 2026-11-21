@@ -25,8 +25,8 @@ npm run verify:mainline      # release gate combo (test + perf + e2e)
 
 - **Data-compatibility tests** (`tests/worker/schema-*`): lenient reads (missing/extra/renamed columns), migration atomicity, failure injection, upgrade/downgrade chains, migration-discipline static gate — keep them green when touching `MIGRATIONS` or read paths
 - **Packaging gates**: `prepackage`/`premake` verify media and ufbx; `verify:package` verifies the output
-- **E2E isolation**: packaged E2E uses a temp `SERPENT_E2E_USER_DATA_PATH` and never touches real config; dialogs are mocked (match the bilingual titles)
-- **Test environment**: `SERPENT_E2E=1` enables isolation mode (isolated userData, E2E dialog paths, …)
+- **E2E isolation**: packaged E2E uses a temp `KEEL_E2E_USER_DATA_PATH` and never touches real config; dialogs are mocked (match the bilingual titles)
+- **Test environment**: `KEEL_E2E=1` enables isolation mode (isolated userData, E2E dialog paths, …)
 
 ## Writing tests
 

@@ -14,7 +14,7 @@ Use [Serpent Releases](https://github.com/dolag233/Serpent/releases) for current
 ## macOS
 
 1. Download the matching `Serpent-darwin-arm64-<version>-package.dmg` (or Intel build).
-2. Open the DMG and drag Serpent to Applications.
+2. Open the DMG and drag Keel to Applications.
 
 Unsigned development builds may trigger Gatekeeper. Verify the source, then right-click the app, choose Open, and confirm. If it is still blocked, clear quarantine from Terminal:
 
@@ -45,7 +45,7 @@ chmod +x Serpent-linux-x86-64-<version>.AppImage
 Runtime dependencies:
 
 - **FUSE** (`libfuse2`). Without FUSE, add `--appimage-extract-and-run`. The same requirement applies to x86_64 and aarch64.
-- The released AppImage ships the same `ffmpeg`, `ffprobe`, and `oiiotool` binaries as macOS and Windows (`oiiotool` includes LibRaw / OCIO). Video previews and professional image formats do not normally need those tools installed on the system. `SERPENT_FFMPEG_PATH` and `SERPENT_OIIO_PATH` can still point at another copy. The aarch64 asset appears on Releases after its media bundle is promoted.
+- The released AppImage ships the same `ffmpeg`, `ffprobe`, and `oiiotool` binaries as macOS and Windows (`oiiotool` includes LibRaw / OCIO). Video previews and professional image formats do not normally need those tools installed on the system. `KEEL_FFMPEG_PATH` and `KEEL_OIIO_PATH` can still point at another copy. The aarch64 asset appears on Releases after its media bundle is promoted.
 - Debian/Ubuntu example: `sudo apt install libfuse2`. A source checkout that has not acquired the media bundle still needs system `ffmpeg`.
 
 Current Linux behavior and limits:
@@ -54,7 +54,7 @@ Current Linux behavior and limits:
 - **No system tray**: closing the window quits the app (unlike Windows, which hides to the notification area).
 - **Launch at login** is not offered yet. See [Basics](basics.md).
 - Tested on Debian 13 (X11) and under a nested Wayland compositor; native Wayland sessions still need dedicated acceptance. x86_64 and aarch64 share these limits.
-- Set `SERPENT_SOFTWARE_GL=1` for software WebGL when no usable GPU / GL driver is available. Force square / rounded corners with `SERPENT_LINUX_ROUNDED_CORNERS=0` / `1`.
+- Set `KEEL_SOFTWARE_GL=1` for software WebGL when no usable GPU / GL driver is available. Force square / rounded corners with `KEEL_LINUX_ROUNDED_CORNERS=0` / `1`.
 
 To uninstall, delete the AppImage. Library directories are separate from the app file and are not removed with it.
 

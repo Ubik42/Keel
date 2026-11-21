@@ -16,14 +16,14 @@
 
 | 需要 | 选择 |
 | --- | --- |
-| 只用 `serpent.*` 读写领域对象、设置、通知 | `runtime.mode: "restricted"` |
+| 只用 `keel.*` 读写领域对象、设置、通知 | `runtime.mode: "restricted"` |
 | 子进程、原生 `.node` / `.bin`、自己的模型文件、任意 `fs`/`net` | `runtime.mode: "unrestricted"` |
 | 命令/Job 在整个应用会话里注册一次，可服务多个库 | `runtime.instanceScope: "global"` |
 | 每个打开的库各有一份隔离状态 | `runtime.instanceScope: "library"` |
 
 `unrestricted` 仍必须走 Gateway 改资产。权限清单不能拦住插件直接调 Node，但 `assets.readContent` / `stageContent` / `replaceContentBatch` 仍然受权限和确认计划约束。不要用 `fs` 绕过 Gateway 直接覆盖资源库 `Assets/` 或链接源目录。
 
-Image Upscaler 使用 `unrestricted` + `global`：Upscayl 需要子进程和本地模型，命令与 Job handler 在会话内只注册一次，跨库时用 `serpent.forLibrary(libraryId)`。
+Image Upscaler 使用 `unrestricted` + `global`：Upscayl 需要子进程和本地模型，命令与 Job handler 在会话内只注册一次，跨库时用 `keel.forLibrary(libraryId)`。
 
 ## 2. 入口只使用 setup / dispose
 
@@ -43,7 +43,7 @@ exports.dispose = async function dispose(reason) {
 };
 ```
 
-`global` 实例没有「当前库」隐含值。命令 handler 从冻结的 `context.invocation.libraryId` 取值，再 `serpent.forLibrary(libraryId)`。不要把安装范围 `user`/`library` 当成目标库。
+`global` 实例没有「当前库」隐含值。命令 handler 从冻结的 `context.invocation.libraryId` 取值，再 `keel.forLibrary(libraryId)`。不要把安装范围 `user`/`library` 当成目标库。
 
 ## 3. 命令、菜单与 Invocation
 
@@ -57,7 +57,7 @@ Host 发布 `selection.mediaKinds`、`selection.extensions`、`selection.mixed` 
 
 ## 4. Job、进度与取消
 
-Manifest 先声明 Job，`recovery` 只能是 `idempotent` 或 `checkpoint`。handler 在实例级 `serpent.jobs.registerHandler` 注册；`enqueue` / `reportProgress` 走目标库的 `forLibrary(...)`。
+Manifest 先声明 Job，`recovery` 只能是 `idempotent` 或 `checkpoint`。handler 在实例级 `keel.jobs.registerHandler` 注册；`enqueue` / `reportProgress` 走目标库的 `forLibrary(...)`。
 
 进度协议：
 
@@ -84,7 +84,7 @@ Manifest 先声明 Job，`recovery` 只能是 `idempotent` 或 `checkpoint`。ha
 
 Image Upscaler 先把整批图推理并 stage 完，再调用一次 `replaceContentBatch`，让 Host 只弹出一次统一替换确认。任一项失败则整批不提交。
 
-大选择集不要塞进 Job payload。可以把请求元数据（资产 ID、参数）写到 `serpent.data.getDirectory()` 下的文件，Job payload 只带文件名。路径必须是数据目录内的相对名，禁止 `..`。
+大选择集不要塞进 Job payload。可以把请求元数据（资产 ID、参数）写到 `keel.data.getDirectory()` 下的文件，Job payload 只带文件名。路径必须是数据目录内的相对名，禁止 `..`。
 
 ## 6. 设置用 Host 原生字段
 
@@ -96,7 +96,7 @@ DOM、React 或 Node。
 
 ## 7. 原生二进制、模型与数据目录
 
-`serpent.data.getDirectory({ scope: "user" | "library" })` 才是插件可写的数据根：
+`keel.data.getDirectory({ scope: "user" | "library" })` 才是插件可写的数据根：
 
 ```text
 {userData}/plugin-files/<pluginId>/
@@ -123,9 +123,9 @@ ZIP 内路径必须是相对 POSIX 路径：
 
 | 可接受 | 会失败或依赖 Host 兼容 |
 | --- | --- |
-| `serpent-plugin.json` | `./serpent-plugin.json`（Windows `tar -c .` 常见） |
+| `keel-plugin.json` | `./keel-plugin.json`（Windows `tar -c .` 常见） |
 | `entry/main.js` | `entry\\main.js`（Compress-Archive 常见） |
-| 可选的唯一顶层目录 `my-plugin/serpent-plugin.json` | `/abs/path`、`C:\\...`、`../escape` |
+| 可选的唯一顶层目录 `my-plugin/keel-plugin.json` | `/abs/path`、`C:\\...`、`../escape` |
 
 禁止符号链接。`node_modules/.bin` 下的 shim 链接不要打进包；需要的依赖以普通文件形式捆绑。
 
@@ -133,10 +133,10 @@ Windows 没有 Info-ZIP 的 `zip` 命令。GitHub Actions `windows-latest` 一�
 
 推荐：在 Node 里遍历 `dist/`，用正斜杠写入条目名（Image Upscaler 的 `scripts/posix-zip.js`）。macOS 上的 `zip -r out.zip .`（在 `dist/` 内执行）通常不会写出 `./`。打完后至少抽查：
 
-- 存在 `serpent-plugin.json`、`README.md`、`LICENSE` 和 `runtime.entry`；
+- 存在 `keel-plugin.json`、`README.md`、`LICENSE` 和 `runtime.entry`；
 - 没有任何条目以 `./` 开头或包含 `\`、`..`。
 
-当前 Host 会把 `./` 和 `\` 规范化后再校验，作者仍应按上表写出干净路径，以便旧版 Serpent 和本地 ZIP 安装都能通过。
+当前 Host 会把 `./` 和 `\` 规范化后再校验，作者仍应按上表写出干净路径，以便旧版 Keel 和本地 ZIP 安装都能通过。
 
 体积与数量上限见 Host `defaultPluginPackageLimits`（归档、单文件、解压总字节、文件数）。原生运行时很容易接近单文件上限，发布前按平台分开打包。
 
@@ -150,13 +150,13 @@ Windows 没有 Info-ZIP 的 `zip` 命令。GitHub Actions `windows-latest` 一�
 
 `version` 不含前导 `v`；tag 可以是 `v0.1.0`。有原生代码时为每个支持的平台各上传一个 ZIP，不要让 Windows 用户下载到 `darwin-arm64` 包。纯 JS 插件可只上传 `…-any.zip`。
 
-清单需要 `repository` 字段，且正好是 `https://github.com/owner/repo`。用户在 Serpent 里粘贴仓库 URL 或 Release 页后，Host 按当前 `platform-arch` 匹配 asset，没有再回退 `any`。
+清单需要 `repository` 字段，且正好是 `https://github.com/owner/repo`。用户在 Keel 里粘贴仓库 URL 或 Release 页后，Host 按当前 `platform-arch` 匹配 asset，没有再回退 `any`。
 
 Image Upscaler 用 GitHub Actions 的 `macos-latest` 与 `windows-latest` 矩阵分别 `npm run build` 和 `npm run package:release`，再把两个 ZIP 发到同一个 Release。本机可用 `npm run build && npm run package:release` 验证当前平台包。
 
 ## 10. 发布前最短核对
 
-1. `serpent-plugin.json` 通过当前 schema；权限只包含实际用到的项。
+1. `keel-plugin.json` 通过当前 schema；权限只包含实际用到的项。
 2. 入口是 `setup`/`dispose`；命令从 `context.invocation` 读目标库和选择。
 3. Job 的 `completed/total` 在长时间步骤中会前进；`phase`/`message` 不含路径和内部 ID。
 4. 大内容按 1 MiB 二进制上限分块 staging；整批一次 `replaceContentBatch`。
@@ -164,4 +164,4 @@ Image Upscaler 用 GitHub Actions 的 `macos-latest` 与 `windows-latest` 矩阵
 6. 每个平台 ZIP 的条目名都是相对 POSIX 路径，文件名符合 `{pluginId}-{version}-{platformToken}.zip`。
 7. 用本地文件夹、本地 ZIP、GitHub 三种通道各装一次，并完成信任、启用、停用。
 
-对照实现时直接看 Image Upscaler 的 `serpent-plugin.json`、`src/plugin.js`、`src/content-staging.js`、`scripts/build.mjs`、`scripts/posix-zip.js` 和 `.github/workflows/release.yml`。
+对照实现时直接看 Image Upscaler 的 `keel-plugin.json`、`src/plugin.js`、`src/content-staging.js`、`scripts/build.mjs`、`scripts/posix-zip.js` 和 `.github/workflows/release.yml`。

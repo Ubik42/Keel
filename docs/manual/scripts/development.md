@@ -1,29 +1,29 @@
 # Desktop Console 脚本开发指南
 
-本文面向在 Serpent Desktop 的“自动化脚本”Console 中编写实际脚本的开发者。脚本是一次性、受控的 JavaScript/TypeScript 批处理；它通过注入的 `serpent` 领域 API 调用 Automation Command Gateway，不是 Node 程序，也不是通用命令行。
+本文面向在 Keel Desktop 的“自动化脚本”Console 中编写实际脚本的开发者。脚本是一次性、受控的 JavaScript/TypeScript 批处理；它通过注入的 `serpent` 领域 API 调用 Automation Command Gateway，不是 Node 程序，也不是通用命令行。
 
 API 版本：`AUTOMATION_API_VERSION = 1`。本文以当前 Console 实际注入的 `src/scripting/serpent-guest-api.ts`、Registry 和 E2E 行为为准。逐项签名见 [脚本 API 参考](api-reference.md)；编辑器类型提示见 [`docs/internal/skills/serpent-automation/automation-api.d.ts`](https://github.com/dolag233/Serpent/blob/dolag_dev/docs/internal/skills/serpent-automation/automation-api.d.ts)。类型声明由 Registry 生成/校验，但个别 Registry 命令尚未投影到 Console，见“实现差异”。
 
 ## 先跑起来
 
-打开资源库后，从“更多工具”→“自动化脚本”打开 Console。未打开资源库时，创建资源库面板不提供脚本入口。需要在无库状态下创建资源库或导入导出库时，应使用设置中配置好的 MCP 全局命令；`library.create` 返回 `libraryId` 后，后续库级调用仍需显式传入该 ID，Serpent 不会把它隐式写入 MCP 会话。
+打开资源库后，从“更多工具”→“自动化脚本”打开 Console。未打开资源库时，创建资源库面板不提供脚本入口。需要在无库状态下创建资源库或导入导出库时，应使用设置中配置好的 MCP 全局命令；`library.create` 返回 `libraryId` 后，后续库级调用仍需显式传入该 ID，Keel 不会把它隐式写入 MCP 会话。
 
 Console 运行的是脚本正文，最简单的入口是顶层 `return`：
 
 ```ts
-const page = await serpent.assets.search({ query: 'tag:抽象', limit: 50 });
+const page = await keel.assets.search({ query: 'tag:抽象', limit: 50 });
 return { count: page.items.length, total: page.total };
 ```
 
 脚本执行一次就是一个 Automation Execution。每次运行都是新的沙箱：上一次运行定义的函数、变量和 Promise 不会保留。需要辅助函数时，把函数和调用放在同一次运行中。
 
-支持 `.serpent.js` 和 `.serpent.ts`。TypeScript 在受控运行时内转译为 ES2022；这是脚本正文，不是 ES module。不要写 `import`、`export`、动态 `import()`、`eval`、`Function` 或 `globalThis`。保存脚本只是保存源文本，不会把它变成插件，也不会获得额外权限。
+支持 `.keel.js` 和 `.keel.ts`。TypeScript 在受控运行时内转译为 ES2022；这是脚本正文，不是 ES module。不要写 `import`、`export`、动态 `import()`、`eval`、`Function` 或 `globalThis`。保存脚本只是保存源文本，不会把它变成插件，也不会获得额外权限。
 
 ## 可用全局与库绑定
 
 脚本只应依赖以下环境：
 
-- `serpent`：唯一的 Serpent 领域对象。其命名空间和方法见 API 参考。
+- `serpent`：唯一的 Keel 领域对象。其命名空间和方法见 API 参考。
 - 标准 ES2022 语言能力：变量、条件、循环、函数、对象、数组、`Promise`、JSON、日期和数学等；具体可用性仍受隔离运行时限制。
 - `console.log(value)`、`console.info(value)`、`console.warn(value)`、`console.error(value)`：写入本次运行的脚本输出，输出受总量限制。
 
@@ -34,12 +34,12 @@ return { count: page.items.length, total: page.total };
 ## JS 与 TS 的写法
 
 ```js
-const page = await serpent.assets.search({ query: 'name:rain', limit: 20 });
+const page = await keel.assets.search({ query: 'name:rain', limit: 20 });
 return page.items.map((asset) => asset.id);
 ```
 
 ```ts
-const page = await serpent.assets.search({ query: 'name:rain', limit: 20 });
+const page = await keel.assets.search({ query: 'name:rain', limit: 20 });
 const ids: string[] = page.items.map((asset) => asset.id);
 return { ids, hasMore: page.hasMore };
 ```
@@ -55,10 +55,10 @@ return { ids, hasMore: page.hasMore };
 5. 对关键结果重新查询，或读取 `library.changeSequence()` 验证资源库已发生预期变化。
 
 ```ts
-const page = await serpent.assets.search({ query: 'name:reference', limit: 200, offset: 0 });
+const page = await keel.assets.search({ query: 'name:reference', limit: 200, offset: 0 });
 const result = page.items.length === 0
   ? { updatedCount: 0, skipped: [] }
-  : await serpent.assets.setRating(page.items.map((asset) => asset.id), 4);
+  : await keel.assets.setRating(page.items.map((asset) => asset.id), 4);
 return { matched: page.total, ...result };
 ```
 
@@ -70,7 +70,7 @@ return { matched: page.total, ...result };
 async function allSearch(query: string | null) {
   const items = [];
   for (let offset = 0; ; ) {
-    const page = await serpent.assets.search({ query, limit: 200, offset });
+    const page = await keel.assets.search({ query, limit: 200, offset });
     items.push(...page.items);
     if (!page.hasMore || page.items.length === 0) return items;
     offset += page.items.length;
@@ -82,7 +82,7 @@ Console 的脚本源最多 64 KiB；脚本输出逐行收集，单行最多 16 K
 
 ## 搜索语法
 
-`serpent.assets.search({ query })` 使用与工具栏相同的文本搜索语法；`query` 可为字符串或 `null`。`null` 表示当前资源库的非回收站资产。支持空格 AND、`|` OR、`-` 排除、引号短语和字段限定；字段别名包括 `name`/`filename`、`tag`/`tags`、`desc`/`description`、`source`/`url`/`link`/`source_url`、`author`、`path`/`folder`/`folder_path`、`meta`/`metadata`/`metadata_text`。搜索是包含匹配，例如 `rain` 可能命中 `rainbow`，要更严格请使用更长 token 或多字段组合。
+`keel.assets.search({ query })` 使用与工具栏相同的文本搜索语法；`query` 可为字符串或 `null`。`null` 表示当前资源库的非回收站资产。支持空格 AND、`|` OR、`-` 排除、引号短语和字段限定；字段别名包括 `name`/`filename`、`tag`/`tags`、`desc`/`description`、`source`/`url`/`link`/`source_url`、`author`、`path`/`folder`/`folder_path`、`meta`/`metadata`/`metadata_text`。搜索是包含匹配，例如 `rain` 可能命中 `rainbow`，要更严格请使用更长 token 或多字段组合。
 
 当前 Console 还接受 Registry 的结构化搜索对象，由宿主归一化；若没有明确需要，优先用字符串查询。搜索仍只返回分页资产摘要和可选摘要，不返回磁盘路径。
 
@@ -112,7 +112,7 @@ Console 的脚本源最多 64 KiB；脚本输出逐行收集，单行最多 16 K
 
 ## 保存、打开和最近脚本
 
-“保存脚本”只接受 `.serpent.js` 或 `.serpent.ts`，源文本上限 64 KiB。文件选择由 Main 完成；Console 只收到文件名、源文本和 Main 签发的临时句柄，不收到绝对路径。打开脚本、保存脚本和从最近脚本列表打开都走同一校验。
+“保存脚本”只接受 `.keel.js` 或 `.keel.ts`，源文本上限 64 KiB。文件选择由 Main 完成；Console 只收到文件名、源文本和 Main 签发的临时句柄，不收到绝对路径。打开脚本、保存脚本和从最近脚本列表打开都走同一校验。
 
 句柄绑定当前窗口、当前脚本源文本和当前保存内容。编辑文本后，旧句柄不能用来冒充已保存脚本以继承授权；窗口销毁时句柄也会释放。最近列表只保存可重新打开的文件名/句柄关系，不把路径交给脚本。
 
@@ -136,6 +136,6 @@ Console 的脚本源最多 64 KiB；脚本输出逐行收集，单行最多 16 K
 
 插件运行时拥有另一套长期生命周期 API（如 `setup`、事件、Hook、Provider、插件 Job、输入捕获和插件存储）。这些来自 `plugin-guest-realm.ts`，不属于 Desktop Console 脚本公共 API；插件也不能用常驻脚本替代。
 
-当前 Registry/类型声明还描述了 `execution.status`、`media.jobs.list`、`ai.jobs.status`、`ai.enqueue` 等命令，但 Desktop Console 的实际 `serpent` guest 投影当前未注入 `jobs` 或执行状态命名空间；不要在 Console 脚本中依赖 `serpent.jobs` 或 `serpent.execution`。类型声明的宽类型也不代表 Console 已提供稳定字段。
+当前 Registry/类型声明还描述了 `execution.status`、`media.jobs.list`、`ai.jobs.status`、`ai.enqueue` 等命令，但 Desktop Console 的实际 `serpent` guest 投影当前未注入 `jobs` 或执行状态命名空间；不要在 Console 脚本中依赖 `keel.jobs` 或 `keel.execution`。类型声明的宽类型也不代表 Console 已提供稳定字段。
 
 未承诺的能力包括通用 CLI、`serpent run`/`serpent repl`、任意 filesystem、SQLite、Shell、网络、MCP JSON-RPC 特有通知/资源引用、Desktop DOM/像素控制和永久删除。MCP 的 `keel_desktop_*` 是附着 Desktop 的工具，不会出现在 Console 的 `serpent` 对象中。

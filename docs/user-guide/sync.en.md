@@ -1,6 +1,6 @@
 # WebDAV Cloud Sync
 
-Serpent can sync a library across machines over WebDAV. Configure servers globally, bind each library individually, and Serpent syncs both ways automatically: local changes upload, remote changes pull.
+Keel can sync a library across machines over WebDAV. Configure servers globally, bind each library individually, and Keel syncs both ways automatically: local changes upload, remote changes pull.
 
 ## Sync overview
 

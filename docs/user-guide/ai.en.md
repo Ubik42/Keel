@@ -1,6 +1,6 @@
 # AI analysis
 
-Serpent’s AI analysis connects to a cloud AI service that you provide. Prepare a provider account, API key, a vision-capable model, and check the provider’s pricing first.
+Keel’s AI analysis connects to a cloud AI service that you provide. Prepare a provider account, API key, a vision-capable model, and check the provider’s pricing first.
 
 ## Configure AI
 
@@ -67,4 +67,4 @@ If a video contact sheet or thumbnail is not ready, retry media generation from 
 
 ## Privacy and cost
 
-Serpent does not upload an entire library or provide AI search. Only explicitly submitted, supported assets are sent to the selected provider; check its privacy terms and pricing before enabling AI.
+Keel does not upload an entire library or provide AI search. Only explicitly submitted, supported assets are sent to the selected provider; check its privacy terms and pricing before enabling AI.

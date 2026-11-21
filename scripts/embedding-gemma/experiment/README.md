@@ -1,6 +1,6 @@
 # EmbeddingGemma 2 image-search experiment
 
-This is a small, standalone comparison tool for the three existing Unsloth GGUF profiles. It does not open a Serpent library, write a database, or download model files. It launches one local `llama-server` at a time and stops it before loading the next profile.
+This is a small, standalone comparison tool for the three existing Unsloth GGUF profiles. It does not open a Keel library, write a database, or download model files. It launches one local `llama-server` at a time and stops it before loading the next profile.
 
 ## Prepare the files
 
