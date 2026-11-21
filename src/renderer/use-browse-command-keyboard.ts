@@ -33,7 +33,6 @@ export type UseBrowseCommandKeyboardArgs = {
   readonly platform: CommandPlatform;
   readonly previewOpen: boolean;
   readonly showTrash: boolean;
-  readonly activeCollectionId: string | null;
   readonly libraryOpen: boolean;
   readonly busy: boolean;
   readonly selectedAsset: AssetSummary | undefined;
@@ -55,7 +54,6 @@ export type UseBrowseCommandKeyboardArgs = {
     folderIds: readonly string[],
   ) => void;
   readonly onPermanentDelete: (assetIds: readonly string[]) => void;
-  readonly onRemoveFromCurrentCollection: (assetIds: readonly string[]) => void;
   readonly onRefreshDisk: () => void;
 };
 
@@ -67,7 +65,6 @@ export function useBrowseCommandKeyboard(
     platform,
     previewOpen,
     showTrash,
-    activeCollectionId,
     libraryOpen,
     busy,
     selectedAsset,
@@ -86,7 +83,6 @@ export function useBrowseCommandKeyboard(
     onShowInLibraryFolder,
     onDiskDelete,
     onPermanentDelete,
-    onRemoveFromCurrentCollection,
     onRefreshDisk,
   } = args;
 
@@ -126,7 +122,6 @@ export function useBrowseCommandKeyboard(
         if (trashDelete) {
           const plan = planAssetDeleteShortcut({
             showTrash,
-            activeCollectionId,
             libraryOpen,
             selectedAssets: [viewed],
           });
@@ -137,16 +132,12 @@ export function useBrowseCommandKeyboard(
             onPermanentDelete([...plan.assetIds]);
             return;
           }
-          if (plan.type === "remove-from-collection") {
-            onRemoveFromCurrentCollection([...plan.assetIds]);
-            return;
-          }
           if (plan.type === "trash-managed") onTrashManaged([...plan.assetIds]);
         }
         return;
       }
 
-      // Sidebar rows own their folder/collection shortcuts while focused.
+      // Sidebar rows own their folder shortcuts while focused.
       if (document.activeElement?.closest(".nav-tree-row")) {
         return;
       }
@@ -239,7 +230,6 @@ export function useBrowseCommandKeyboard(
       ) {
         const plan = planAssetDeleteShortcut({
           showTrash,
-          activeCollectionId,
           libraryOpen,
           selectedAssets,
         });
@@ -248,10 +238,6 @@ export function useBrowseCommandKeyboard(
           event.preventDefault();
           if (plan.type === "permanent-delete") {
             onPermanentDelete([...plan.assetIds]);
-            return;
-          }
-          if (plan.type === "remove-from-collection") {
-            onRemoveFromCurrentCollection([...plan.assetIds]);
             return;
           }
           if (plan.type === "trash-managed") {
@@ -323,7 +309,6 @@ export function useBrowseCommandKeyboard(
     platform,
     previewOpen,
     showTrash,
-    activeCollectionId,
     libraryOpen,
     busy,
     selectedAsset,
@@ -342,7 +327,6 @@ export function useBrowseCommandKeyboard(
     onShowInLibraryFolder,
     onDiskDelete,
     onPermanentDelete,
-    onRemoveFromCurrentCollection,
     onRefreshDisk,
   ]);
 }

@@ -66,7 +66,6 @@ export const mutationReceiptChangesSchema = z.strictObject({
   deletedFolderIds: boundedIdListSchema.optional(),
   deletedAssetIds: boundedIdListSchema.optional(),
   affectedFolderIds: boundedIdListSchema.optional(),
-  affectedCollectionIds: boundedIdListSchema.optional(),
   affectedTagIds: boundedIdListSchema.optional(),
   affectedScopeKeys: z.array(z.string().min(1).max(512)).max(MUTATION_RECEIPT_MAX_ENTITY_IDS).optional(),
 });
@@ -213,16 +212,6 @@ const MUTATION_COMMANDS = new Set([
   'automatic-task.set',
   'automatic-task.layout.set',
   'automatic-task.delete',
-  'collection.create',
-  'collection.update',
-  'collection.reorder',
-  'collection.delete',
-  'collection.assets.add',
-  'collection.assets.remove',
-  'collection.assets.reorder',
-  'smart-collection.create',
-  'smart-collection.update',
-  'smart-collection.delete',
   'ai.configure',
   'ai.set-concurrency-limit',
   'ai.clear-content',
@@ -253,7 +242,7 @@ const VIEWER_UPGRADE_COMMANDS = new Set([
 ]);
 
 /**
- * The user is waiting on this result: folder/collection switch, search, and
+ * The user is waiting on this result: folder switch, search, and
  * the first browse page. These keep the exclusive `interactive-control` slot.
  *
  * Cheap path lookups and 1s status polls used to live here (or fall through
@@ -268,8 +257,6 @@ const INTERACTIVE_CONTROL_COMMANDS = new Set([
   'folder.browse-entries',
   'folder.list-trashed',
   'linked-folder.list',
-  'collection.list',
-  'collection.assets.list',
   'browse.session.open',
   'browse.session.page',
   'browse.session.ids',
@@ -383,7 +370,7 @@ export function performanceLaneForCommand(command: WorkerCommandLike): Performan
 export function performanceInteractionKeyForCommand(command: WorkerCommandLike): string | undefined {
   if (command.type === 'asset.thumbnail.visible-window') return 'visible-window';
   if (command.type === 'sync.asset-card-status') return 'sync-card-status';
-  // Rapid folder/collection clicks must drop the previous queued open, not
+  // Rapid folder clicks must drop the previous queued open, not
   // run them back-to-back on a high-latency network volume.
   if (command.type === 'browse.session.open') return 'browse-session';
   if (command.type === 'ignore.gitignore.preview') return 'ignore-preview';

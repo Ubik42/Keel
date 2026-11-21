@@ -99,7 +99,7 @@ type ScopeState = {
   slots: number;
   scrollHeight: number;
   allAssetCount: string | null;
-  folderOrCollectionRows: number;
+  navRowCount: number;
   navText: string;
 };
 
@@ -114,7 +114,7 @@ async function readScope(window: Page): Promise<ScopeState> {
       slots: document.querySelectorAll("[data-layout-index]").length,
       scrollHeight: canvas?.scrollHeight ?? -1,
       allAssetCount: labels[0] ? (nav?.innerText.split("\n")[1] ?? null) : null,
-      folderOrCollectionRows: labels.length,
+      navRowCount: labels.length,
       navText: (nav?.innerText ?? "").replace(/\s+/g, " ").slice(0, 220),
     };
   });
@@ -348,7 +348,7 @@ test("measures wheel scrolling and a real library switch", async () => {
         await expect(window.locator(".asset-card").first()).toBeVisible({ timeout: 90_000 });
         switchFirstCardMs = Date.now() - switchStartedAt;
         await expect
-          .poll(async () => (await readScope(window)).folderOrCollectionRows, { timeout: 90_000 })
+          .poll(async () => (await readScope(window)).navRowCount, { timeout: 90_000 })
           .toBeGreaterThan(4);
         switchToSidebarMs = Date.now() - switchStartedAt;
       } catch {

@@ -131,11 +131,9 @@ interface AssetPreviewModalProps {
   onToggleVideoTransportOnApproach?: () => void;
   canTrashAsset?: boolean;
   canDiskDeleteAsset?: boolean;
-  canRemoveFromCollection?: boolean;
   canPermanentDelete?: boolean;
   onTrashAsset?: () => void;
   onDiskDeleteAsset?: () => void;
-  onRemoveFromCollection?: () => void;
   onPermanentDelete?: () => void;
 }
 
@@ -255,11 +253,9 @@ const AssetPreviewModalContent = forwardRef<
     onToggleVideoTransportOnApproach,
     canTrashAsset = false,
     canDiskDeleteAsset = false,
-    canRemoveFromCollection = false,
     canPermanentDelete = false,
     onTrashAsset,
     onDiskDeleteAsset,
-    onRemoveFromCollection,
     onPermanentDelete,
   },
   ref,
@@ -1688,12 +1684,10 @@ const AssetPreviewModalContent = forwardRef<
             canTrash={canTrashAsset}
             canDiskDelete={canDiskDeleteAsset}
             canPermanentDelete={canPermanentDelete}
-            canRemoveFromCollection={canRemoveFromCollection}
             diskDeleteLinked={asset.locationKind === "linked"}
             onTrash={() => onTrashAsset?.()}
             onDiskDelete={() => onDiskDeleteAsset?.()}
             onPermanentDelete={() => onPermanentDelete?.()}
-            onRemoveFromCollection={() => onRemoveFromCollection?.()}
           />
         ) : null}
       </ShellSurface>

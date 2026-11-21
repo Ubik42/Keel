@@ -49,7 +49,7 @@ async function createAndEnterSidebarFolder(window: Page, folderName: string) {
   }
 }
 
-test('pastes a Main-owned clipboard image into the current folder and collection', async () => {
+test('pastes a Main-owned clipboard image into the current folder', async () => {
   const temporaryRoot = mkdtempSync(path.join(tmpdir(), 'serpent-desktop-ingestion-e2e-'));
   const clipboardSource = path.join(temporaryRoot, 'clipboard.png');
   // Valid 1x1 transparent PNG. Main decodes it as a native image and writes a
@@ -84,12 +84,7 @@ test('pastes a Main-owned clipboard image into the current folder and collection
 
     await createAndEnterSidebarFolder(window, '项目');
 
-    await window.getByRole('button', { name: '添加合集' }).click();
-    await window.getByPlaceholder('新建合集').fill('情绪板');
-    await window.getByPlaceholder('新建合集').press('Enter');
-    await window.getByRole('button', { name: '情绪板' }).click();
-
-    const firstPaste = await pasteClipboardImage(window, '项目', '情绪板');
+    const firstPaste = await pasteClipboardImage(window, '项目');
     expect(firstPaste.ok).toBe(true);
     // The pasted filename also appears in the Inspector hero title, so scope to
     // the canvas asset card to avoid a strict-mode violation.
@@ -102,9 +97,8 @@ test('pastes a Main-owned clipboard image into the current folder and collection
     expect(importedNames).toHaveLength(1);
     expect(existsSync(path.join(projectDirectory, importedNames[0]!))).toBe(true);
 
-    // A second paste deterministically enters the existing conflict flow. The
-    // pending opaque import keeps its collection destination until resolution.
-    const secondPaste = await pasteClipboardImage(window, '项目', '情绪板');
+    // A second paste deterministically enters the existing conflict flow.
+    const secondPaste = await pasteClipboardImage(window, '项目');
     expect(secondPaste.ok).toBe(true);
     if (secondPaste.value?.importId) {
       const resolved = await resolveClipboardConflict(window, secondPaste.value.importId);
@@ -326,24 +320,21 @@ test('returns specific safe desktop-ingestion errors and records their diagnosti
 async function pasteClipboardImage(
   window: Page,
   folderName?: string,
-  collectionName?: string,
 ): Promise<{
   ok: boolean;
   value?: { importId?: string };
   error?: { code: string; message?: string };
 }> {
-  return window.evaluate(async ({ folderName: targetFolderName, collectionName: targetCollectionName }) => {
+  return window.evaluate(async ({ folderName: targetFolderName }) => {
     interface Result<T> { ok: boolean; value?: T; error?: { code: string; message?: string } }
     const bridge = globalThis as typeof globalThis & {
       serpent: {
         library: {
           listOpen(): Promise<Result<Array<{ libraryId: string }>>>;
           listFolders(input: { libraryId: string }): Promise<Result<Array<{ folderId: string; name: string }>>>;
-          listCollections(input: { libraryId: string }): Promise<Result<Array<{ collectionId: string; name: string }>>>;
           pasteClipboardImage(input: {
             libraryId: string;
             targetFolderId?: string;
-            targetCollectionId?: string;
           }): Promise<Result<{ importId?: string }>>;
         };
       };
@@ -355,16 +346,11 @@ async function pasteClipboardImage(
     const targetFolderId = targetFolderName === undefined
       ? undefined
       : folders.value?.find((folder) => folder.name === targetFolderName)?.folderId;
-    const collections = await bridge.serpent.library.listCollections({ libraryId });
-    const targetCollectionId = targetCollectionName === undefined
-      ? undefined
-      : collections.value?.find((collection) => collection.name === targetCollectionName)?.collectionId;
     return bridge.serpent.library.pasteClipboardImage({
       libraryId,
       ...(targetFolderId === undefined ? {} : { targetFolderId }),
-      ...(targetCollectionId === undefined ? {} : { targetCollectionId }),
     });
-  }, { folderName, collectionName });
+  }, { folderName });
 }
 
 async function resolveClipboardConflict(window: Page, importId: string): Promise<boolean> {

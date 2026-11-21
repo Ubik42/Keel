@@ -1087,7 +1087,7 @@ export class PluginActivationCoordinator {
         }));
     }
     const targets = input.target === undefined
-      ? (['menus.asset', 'menus.folder', 'menus.collection', 'menus.workspace'] as const)
+      ? (['menus.asset', 'menus.folder', 'menus.workspace'] as const)
       : [input.target];
     return targets.flatMap((target) => listMenuContributions(this.options.contributions!, target))
       .filter((contribution) => activeInstanceIds.has(contribution.pluginInstanceId))
@@ -1131,7 +1131,6 @@ export class PluginActivationCoordinator {
     commandId?: string;
     assetIds?: readonly string[];
     folderIds?: readonly string[];
-    collectionIds?: readonly string[];
     invocation?: PluginInvocationContext;
     timeoutMs?: number;
   }): Promise<{ complete: PluginCommandComplete; timedOut: boolean }> {
@@ -1182,12 +1181,10 @@ export class PluginActivationCoordinator {
     );
     const assetIds = cloneNonEmptyIds(input.assetIds);
     const folderIds = cloneNonEmptyIds(input.folderIds);
-    const collectionIds = cloneNonEmptyIds(input.collectionIds);
     const context = freezePluginCommandContext({
       targetLibraryId: targetLibrary.data,
       ...(assetIds === undefined ? {} : { assetIds }),
       ...(folderIds === undefined ? {} : { folderIds }),
-      ...(collectionIds === undefined ? {} : { collectionIds }),
       ...(input.invocation === undefined ? {} : { invocation: input.invocation }),
     });
     return activeRecord.mode === 'restricted'

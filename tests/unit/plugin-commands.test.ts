@@ -10,7 +10,7 @@ import {
 } from '../../src/plugins/plugin-commands';
 
 describe('plugin command context', () => {
-  it('accepts optional asset, folder, and collection ids', () => {
+  it('accepts optional asset and folder ids', () => {
     expect(pluginCommandContextSchema.parse({
       targetLibraryId: 'library-1',
       assetIds: ['asset-1'],
@@ -19,10 +19,10 @@ describe('plugin command context', () => {
       targetLibraryId: 'library-1',
       folderIds: ['folder-1'],
     })).toEqual({ targetLibraryId: 'library-1', folderIds: ['folder-1'] });
-    expect(pluginCommandContextSchema.parse({
+    expect(() => pluginCommandContextSchema.parse({
       targetLibraryId: 'library-1',
       collectionIds: ['collection-1'],
-    })).toEqual({ targetLibraryId: 'library-1', collectionIds: ['collection-1'] });
+    })).toThrow();
     expect(pluginCommandInvokeSchema.parse({
       invokeId: '11111111-1111-4111-8111-111111111111',
       commandId: 'probe.write-folder',
@@ -88,7 +88,7 @@ describe('plugin command timeout pause', () => {
 
 
 describe('plugin command context', () => {
-  it('accepts optional asset, folder, and collection ids', () => {
+  it('accepts optional asset and folder ids', () => {
     expect(pluginCommandContextSchema.parse({
       targetLibraryId: 'library-1',
       assetIds: ['asset-1'],
@@ -97,10 +97,10 @@ describe('plugin command context', () => {
       targetLibraryId: 'library-1',
       folderIds: ['folder-1'],
     })).toEqual({ targetLibraryId: 'library-1', folderIds: ['folder-1'] });
-    expect(pluginCommandContextSchema.parse({
+    expect(() => pluginCommandContextSchema.parse({
       targetLibraryId: 'library-1',
       collectionIds: ['collection-1'],
-    })).toEqual({ targetLibraryId: 'library-1', collectionIds: ['collection-1'] });
+    })).toThrow();
     expect(pluginCommandInvokeSchema.parse({
       invokeId: '11111111-1111-4111-8111-111111111111',
       commandId: 'probe.write-folder',

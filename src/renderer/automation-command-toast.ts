@@ -101,10 +101,6 @@ export function automationCommandToast(
     }
     case 'tag.remove':
       return info(locale, 'toast.tagRemoved', undefined, historyEntryId);
-    case 'collection.assets.add':
-      return info(locale, 'toast.addedToCollection', undefined, historyEntryId);
-    case 'collection.assets.remove':
-      return info(locale, 'toast.removedFromCollection', undefined, historyEntryId);
     default:
       return undefined;
   }

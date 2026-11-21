@@ -348,20 +348,6 @@ export const tagCooccurrenceGraphSchema = z.strictObject({
 
 export type TagCooccurrenceGraph = z.infer<typeof tagCooccurrenceGraphSchema>;
 
-export const collectionSummarySchema = z.strictObject({
-  collectionId: nonBlankString,
-  parentId: nonBlankString.nullable(),
-  name: nonBlankString,
-  description: nonBlankString.nullable(),
-  coverAssetId: nonBlankString.nullable(),
-  position: z.number().int().nonnegative(),
-  assetCount: z.number().int().nonnegative(),
-  childCollectionCount: z.number().int().nonnegative(),
-  appearance: entityAppearanceSchema.optional(),
-});
-
-export type CollectionSummary = z.infer<typeof collectionSummarySchema>;
-
 export const assetMetadataResultSchema = z.strictObject({
   assetId: nonBlankString,
   description: nonBlankString.nullable(),
@@ -641,18 +627,6 @@ export const searchScopeSchema = z.discriminatedUnion('kind', [
     recursive: z.boolean(),
   }),
   z.strictObject({
-    kind: z.literal('collection'),
-    collectionId: nonBlankString,
-    recursive: z.boolean(),
-  }),
-  z.strictObject({
-    // A smart collection is a stored query, not a materialized asset list.
-    // Search resolves the saved definition in the Worker and ANDs the live
-    // user query/filter state with it so the current browse scope is retained.
-    kind: z.literal('smart_collection'),
-    collectionId: nonBlankString,
-  }),
-  z.strictObject({
     kind: z.literal('trash'),
   }),
 ]);
@@ -713,6 +687,7 @@ export const searchQuerySchema = searchQueryDefinitionSchema;
 
 export type SearchQuery = Exclude<z.infer<typeof searchQuerySchema>, null>;
 
+/** 保存的查询定义：自动任务的 queryDefinitionJson 与旧智能合集迁移共用。 */
 export const smartCollectionQueryDefinitionSchema = z.strictObject({
   search: searchQueryDefinitionSchema.unwrap().optional(),
   filters: z.array(filterClauseSchema).max(16).optional(),
@@ -746,15 +721,3 @@ export const aiSearchPlanSchema = z.strictObject({
 });
 
 export type AiSearchPlan = z.infer<typeof aiSearchPlanSchema>;
-
-export const smartCollectionSummarySchema = z.strictObject({
-  collectionId: nonBlankString,
-  name: nonBlankString,
-  queryDefinition: nonBlankString,
-  position: z.number().int().nonnegative(),
-  /** Live match count for the saved query (CU-M6); computed via search total. */
-  assetCount: z.number().int().nonnegative(),
-  appearance: entityAppearanceSchema.optional(),
-});
-
-export type SmartCollectionSummary = z.infer<typeof smartCollectionSummarySchema>;

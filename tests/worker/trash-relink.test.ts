@@ -2463,7 +2463,7 @@ describe('relinkBatchApply', () => {
     service.closeAll();
   });
 
-  it('keepMetadata=true preserves human and AI metadata, tags, and collections', () => {
+  it('keepMetadata=true preserves human and AI metadata and tags', () => {
     const root = temporaryRoot();
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Keep Meta', selectedParentPath: root });
@@ -2509,7 +2509,7 @@ describe('relinkBatchApply', () => {
     service.closeAll();
   });
 
-  it('keepMetadata=false clears human and AI metadata, tags, and collections', () => {
+  it('keepMetadata=false clears human and AI metadata and tags', () => {
     const root = temporaryRoot();
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Clear Meta', selectedParentPath: root });
@@ -2531,9 +2531,6 @@ describe('relinkBatchApply', () => {
       enabledFields: { description: true, tags: true, rating: false },
     });
 
-    const col = service.createCollection({ libraryId: created.libraryId, name: 'Clear Col' });
-    service.addCollectionAssets({ libraryId: created.libraryId, collectionId: col.collectionId, assetIds: [assetId] });
-
     rmSync(path.join(created.libraryPath, 'Assets', 'clearmeta.jpg'));
     service.refreshManagedAssets(created.libraryId);
 
@@ -2550,7 +2547,6 @@ describe('relinkBatchApply', () => {
     expect(meta.sourcePageUrl).toBeNull();
 
     expect(service.listTags(created.libraryId).find((t) => t.name === 'clear-tag')!.assetCount).toBe(0);
-    expect(service.listCollectionAssets({ libraryId: created.libraryId, collectionId: col.collectionId, recursive: false })).toHaveLength(0);
     expect(service.getAiContent(created.libraryId, assetId)).toHaveLength(0);
     const clearDb = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
     expect((clearDb.prepare('SELECT COUNT(*) AS count FROM ai_asset_tags WHERE asset_id = ?').get(assetId) as { count: number }).count).toBe(0);

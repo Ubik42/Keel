@@ -102,13 +102,6 @@ export type BrowsePageDefinition =
       rankedPageSize?: SemanticSearchPageSize;
       /** Image whose vector is the query. Absent for text semantic search. */
       similaritySourceAssetId?: string;
-    }
-  | {
-      kind: "smart-collection";
-      libraryId: string;
-      collectionId: string;
-      sessionId?: string;
-      target: "assets";
     };
 
 export type BrowseFirstPage = {
@@ -253,14 +246,6 @@ export async function fetchBrowseScopeIds(options: {
       ? result.value
       : null;
   }
-  if (definition.kind === "smart-collection") {
-    const result = await api.executeSmartCollection({
-      libraryId: definition.libraryId,
-      collectionId: definition.collectionId,
-      idsOnly: true,
-    });
-    return result.ok ? (result.value.assetIds ?? []) : null;
-  }
   const result = await api.searchAssets({
     libraryId: definition.libraryId,
     query: definition.query,
@@ -280,21 +265,15 @@ export async function fetchBrowseLayout(options: {
 }): Promise<BrowseLayoutEntry[] | null> {
   const { api, definition } = options;
   if (definition.kind === "search" && definition.rankedAssetIds) return null;
-  const result = definition.kind === "smart-collection"
-    ? await api.executeSmartCollection({
-        libraryId: definition.libraryId,
-        collectionId: definition.collectionId,
-        layoutOnly: true,
-      })
-    : await api.searchAssets({
-        libraryId: definition.libraryId,
-        query: definition.query,
-        filters: definition.filters ?? undefined,
-        scope: definition.scope ?? undefined,
-        sort: definition.sort ?? undefined,
-        showIgnored: definition.showIgnored,
-        layoutOnly: true,
-      });
+  const result = await api.searchAssets({
+    libraryId: definition.libraryId,
+    query: definition.query,
+    filters: definition.filters ?? undefined,
+    scope: definition.scope ?? undefined,
+    sort: definition.sort ?? undefined,
+    showIgnored: definition.showIgnored,
+    layoutOnly: true,
+  });
   return result.ok && result.value.layout !== undefined
     ? result.value.layout
     : null;
@@ -370,39 +349,6 @@ export function registerBrowseSearchPage(
       ...(input.rankedPageSize ? { rankedPageSize: input.rankedPageSize } : {}),
       ...(input.similaritySourceAssetId ? { similaritySourceAssetId: input.similaritySourceAssetId } : {}),
       target: input.target ?? "assets",
-    },
-    {
-      items: input.items,
-      total: input.total,
-      offset: input.offset,
-      sessionId: input.sessionId,
-      snippets: input.snippets,
-    },
-  );
-}
-
-export type BrowseSmartCollectionPageRegistration = {
-  libraryId: string;
-  collectionId: string;
-  sessionId?: string;
-  items: AssetSummary[];
-  total: number;
-  offset: number;
-  snippets?: Array<{ assetId: string; text: string }>;
-};
-
-/** Shared registration for smart-collection first pages (Serpent-ws4k). */
-export function registerBrowseSmartCollectionPage(
-  beginPage: BeginBrowsePage,
-  input: BrowseSmartCollectionPageRegistration,
-): void {
-  beginPage(
-    {
-      kind: "smart-collection",
-      libraryId: input.libraryId,
-      collectionId: input.collectionId,
-      ...(input.sessionId ? { sessionId: input.sessionId } : {}),
-      target: "assets",
     },
     {
       items: input.items,
@@ -733,23 +679,16 @@ export function useBrowsePagination(
       setLoadingMore(true);
       try {
         const fetchLivePage = () =>
-          definition.kind === "smart-collection"
-            ? api.executeSmartCollection({
-                libraryId: definition.libraryId,
-                collectionId: definition.collectionId,
-                limit,
-                offset,
-              })
-            : api.searchAssets({
-                libraryId: definition.libraryId,
-                query: definition.query,
-                filters: definition.filters ?? undefined,
-                scope: definition.scope ?? undefined,
-                sort: definition.sort ?? undefined,
-                showIgnored: definition.showIgnored,
-                limit,
-                offset,
-              });
+          api.searchAssets({
+            libraryId: definition.libraryId,
+            query: definition.query,
+            filters: definition.filters ?? undefined,
+            scope: definition.scope ?? undefined,
+            sort: definition.sort ?? undefined,
+            showIgnored: definition.showIgnored,
+            limit,
+            offset,
+          });
         let result = await fetchRankedBrowsePage({ api, definition, offset, limit })
           ?? (
             browseWindowQueryMode({ sessionId: definition.sessionId }) === "session"

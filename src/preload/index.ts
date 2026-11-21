@@ -45,8 +45,7 @@ const e2eDiagnostics = Object.freeze({
       !Number.isInteger(delayMs) ||
       delayMs < 0 ||
       delayMs > 5_000 ||
-      (target.folderId === undefined) ===
-        (target.smartCollectionId === undefined)
+      typeof target.folderId !== 'string'
     ) {
       throw new Error('Invalid E2E browse-session delay.');
     }

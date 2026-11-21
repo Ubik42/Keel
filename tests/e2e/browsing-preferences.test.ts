@@ -1059,34 +1059,6 @@ test("maintains consistent preferences, accessible names, zoom behavior, and avo
     ).toBeVisible();
     await window.keyboard.press("Escape");
 
-    // --- Collection scope ---
-    // Create a collection and add the asset to it
-    await window.getByRole("button", { name: "添加合集" }).click();
-    await window
-      .getByPlaceholder("新建合集")
-      .fill("偏好测试合集");
-    await window
-      .getByPlaceholder("新建合集")
-      .press("Enter");
-    await expect(
-      window.getByRole("button", { name: /偏好测试合集/ }),
-    ).toBeVisible();
-
-    // Creating a collection intentionally enters the new collection scope.
-    // Return to the library-wide scope before adding the existing asset.
-    await window.getByRole("button", { name: "所有资产", exact: true }).click();
-    await expect(cardById).toBeVisible();
-
-    await cardById.click({ button: "right" });
-    await window.getByRole("menuitem", { name: "添加到合集" }).hover();
-    await window.getByRole("option", { name: "偏好测试合集" }).click();
-    await expect(window.locator(".workspace-notice")).toContainText("资产已加入合集");
-
-    // Navigate to collection scope through sidebar and verify consistency
-    await window.getByRole("button", { name: /偏好测试合集/ }).click();
-    await assertToggleStates("true", "false", "false", "true");
-    await assertHiddenFieldPresentation(true);
-
     // Return to 所有资产
     await window.getByRole("button", { name: "所有资产", exact: true }).click();
     await assertHiddenFieldPresentation(true);
@@ -1109,37 +1081,6 @@ test("maintains consistent preferences, accessible names, zoom behavior, and avo
     });
     expect(libraryId).toBeTruthy();
     if (!libraryId) throw new Error("Could not determine library ID");
-
-    const smartCollectionCreated = await window.evaluate(
-      ({ libId }) =>
-        (
-          globalThis as unknown as {
-            serpent: {
-              library: {
-                createSmartCollection(input: {
-                  libraryId: string;
-                  name: string;
-                  queryDefinitionJson: string;
-                }): Promise<{ ok: boolean }>;
-              };
-            };
-          }
-        ).serpent.library.createSmartCollection({
-          libraryId: libId,
-          name: "偏好测试智能合集",
-          queryDefinitionJson: JSON.stringify({ filters: [{ field: "format", values: ["png"], exclude: false }] }),
-        }),
-      { libId: libraryId },
-    );
-    expect(smartCollectionCreated.ok).toBe(true);
-
-    // Re-entering the normal scope refreshes organization summaries in the sidebar.
-    await window.getByRole("button", { name: "所有资产", exact: true }).click();
-    await window
-      .getByRole("button", { name: /偏好测试智能合集/ })
-      .click();
-    await assertToggleStates("true", "false", "false", "true");
-    await assertHiddenFieldPresentation(true);
 
     // Trash an asset so we can navigate to trash scope
     await window.evaluate(

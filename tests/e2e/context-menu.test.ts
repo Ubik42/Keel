@@ -212,28 +212,15 @@ test("context menu clamps at viewport edges", async () => {
       expect(menuBox.y + menuBox.height).toBeLessThanOrEqual(viewport.height + 2);
     }
 
-    // Create a collection to test organization menu clamping.
-    // (The sidebar no longer enumerates tags — REQ-TAG-001 — so the
-    // collection row is the remaining organization menu entry.)
+    // The sidebar trash row has its own menu; check it clamps too.
     // First Escape: close context menu (selection preserved — correct behavior)
     await window.keyboard.press("Escape");
     // Second Escape: clear the selection so the sidebar is unambiguous
     await window.keyboard.press("Escape");
-    await window.getByRole("button", { name: "添加合集" }).click();
-    await window.getByPlaceholder("新建合集").fill("Clamp Collection");
-    await window.getByPlaceholder("新建合集").press("Enter");
-    await expect(window.getByRole("button", { name: /Clamp Collection/ })).toBeVisible();
-
-    // Collection creation enters the new empty scope; the asset-menu check
-    // below is intentionally back in the library-wide scope.
-    await window.getByRole("button", { name: "所有资产", exact: true }).click();
-    await expect(assetCard).toBeVisible();
-
-    // Open organization context menu on the collection
-    await window.getByRole("button", { name: /Clamp Collection/ }).click({ button: "right" });
+    await window.getByRole("button", { name: "回收站", exact: true }).click({ button: "right" });
     await expect(window.getByRole("menu")).toBeVisible({ timeout: 5_000 });
 
-    // Assert organization menu is within viewport
+    // Assert sidebar menu is within viewport
     const orgMenu = window.getByRole("menu");
     const orgMenuBox = await orgMenu.boundingBox();
     if (orgMenuBox && viewport) {
@@ -245,9 +232,6 @@ test("context menu clamps at viewport edges", async () => {
 
     // Verify menu still works after testing
     await window.keyboard.press("Escape");
-    // 创建合集后 scope 自动进入合集（新行为）——回到「所有资产」再验证
-    // 资产菜单仍然可用。
-    await window.getByRole("button", { name: "所有资产", exact: true }).click();
     await assetCard.click({ button: "right" });
     await expect(window.getByRole("menu")).toBeVisible({ timeout: 5_000 });
     await expect(window.getByRole("menuitem", { name: "用默认应用打开" })).toBeVisible();
@@ -282,40 +266,25 @@ test("single-menu enforcement — opening new context menu closes existing one",
     const assetCard = window.locator('[data-asset-id]').first();
     await expect(assetCard).toBeVisible({ timeout: 15_000 });
 
-    // Create a collection for dual-menu testing.
-    // (The sidebar no longer enumerates tags — REQ-TAG-001 — so the
-    // collection row is the remaining organization menu entry.)
-    // 导入 reveal 会选中资产——先 Escape 清除选择（对齐 122 的两次 Escape
-    // 惯例），否则「添加合集」的输入框不出现（2026-08-12 实测）。
+    // 导入 reveal 会选中资产——先 Escape 清除选择。
     await window.keyboard.press("Escape");
     await window.keyboard.press("Escape");
-    await window.getByRole("button", { name: "添加合集" }).click();
-    await window.getByPlaceholder("新建合集").fill("Single Test Collection");
-    await window.getByPlaceholder("新建合集").press("Enter");
-    await expect(window.getByRole("button", { name: /Single Test Collection/ })).toBeVisible();
-
-    // Collection creation enters the new empty scope; both asset-menu steps
-    // intentionally operate from the library-wide scope.
-    await window.getByRole("button", { name: "所有资产", exact: true }).click();
-    await expect(assetCard).toBeVisible();
 
     // Step 1: Open context menu on the asset card
-    // 创建合集后 scope 自动进入合集——回到「所有资产」再右键资产卡片。
-    await window.getByRole("button", { name: "所有资产", exact: true }).click();
     await assetCard.click({ button: "right" });
     await expect(window.getByRole("menu")).toBeVisible({ timeout: 5_000 });
     await expect(window.getByRole("menuitem", { name: "用默认应用打开" })).toBeVisible();
 
-    // Step 2: Open context menu on the collection (should close asset menu, single-menu enforced)
+    // Step 2: Open the sidebar trash menu (should close asset menu, single-menu enforced)
     // The backdrop now has pointer-events:none so right-clicks pass through
-    await window.getByRole("button", { name: /Single Test Collection/ }).click({ button: "right" });
+    await window.getByRole("button", { name: "回收站", exact: true }).click({ button: "right" });
     await expect(window.getByRole("menu")).toBeVisible({ timeout: 5_000 });
-    await expect(window.getByRole("menuitem", { name: /重命名合集/ })).toBeVisible();
+    await expect(window.getByRole("menuitem", { name: "用默认应用打开" })).toHaveCount(0);
     // Only one menu should exist
     const menus = window.locator('[role="menu"]');
     await expect(menus).toHaveCount(1);
 
-    // Step 3: Open context menu on the asset again (should close collection menu)
+    // Step 3: Open context menu on the asset again (should close the trash menu)
     await assetCard.click({ button: "right" });
     await expect(window.getByRole("menuitem", { name: "用默认应用打开" })).toBeVisible();
     await expect(menus).toHaveCount(1);

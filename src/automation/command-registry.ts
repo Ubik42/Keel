@@ -4,7 +4,6 @@ import { z } from 'zod';
 import {
   assetMetadataResultSchema,
   assetSummarySchema,
-  collectionSummarySchema,
   extractedMetadataResultSchema,
   filterClauseSchema,
   linkedFolderSummarySchema,
@@ -12,7 +11,6 @@ import {
   managedFolderSummarySchema,
   searchQuerySchema,
   searchScopeSchema,
-  smartCollectionSummarySchema,
   sortDefinitionSchema,
   tagSummarySchema,
 } from '../shared/asset-types';
@@ -123,11 +121,9 @@ export const automationCapabilitySchema = z.enum([
   'content.write',
   'metadata.read',
   'tag.read',
-  'collection.read',
   'job.read',
   'metadata.write',
   'tag.write',
-  'collection.write',
   'ai.enqueue',
   'job.manage',
   'file.import',
@@ -239,14 +235,6 @@ export const automationCapabilityRegistry = [
     canPersist: false,
   },
   {
-    capability: 'collection.read',
-    displayName: '读取合集',
-    description: '读取合集及其成员关系。',
-    riskTier: 'safe',
-    defaultPolicy: 'allow',
-    canPersist: false,
-  },
-  {
     capability: 'job.read',
     displayName: '读取任务',
     description: '读取媒体、AI 和其他后台任务状态。',
@@ -266,14 +254,6 @@ export const automationCapabilityRegistry = [
     capability: 'tag.write',
     displayName: '修改标签',
     description: '创建、分配或移除标签。',
-    riskTier: 'controlled',
-    defaultPolicy: 'ask',
-    canPersist: true,
-  },
-  {
-    capability: 'collection.write',
-    displayName: '修改合集',
-    description: '创建合集或修改合集成员关系。',
     riskTier: 'controlled',
     defaultPolicy: 'ask',
     canPersist: true,
@@ -728,43 +708,6 @@ export const automationCommandInputSchemas = {
     rules: z.array(linkedFolderRuleSchema).max(200),
   }),
   'linked-folder.refresh': noInputSchema,
-  'collection.list': paginatedInputSchema({}),
-  'collection.create': z.strictObject({
-    name: nonBlankString.max(255),
-    parentId: nonBlankString.nullable().optional(),
-  }),
-  'collection.update': z.strictObject({
-    collectionId: nonBlankString,
-    name: nonBlankString.max(255).optional(),
-    parentId: nonBlankString.nullable().optional(),
-    description: z.string().max(10_000).nullable().optional(),
-    coverAssetId: nonBlankString.nullable().optional(),
-    position: z.number().int().nonnegative().optional(),
-  }),
-  'collection.reorder': z.strictObject({
-    orderedCollectionIds: z.array(nonBlankString).min(1).max(10_000),
-  }),
-  'collection.delete': z.strictObject({ collectionId: nonBlankString }),
-  'collection.assets.add': z.strictObject({
-    collectionId: nonBlankString,
-    assetIds: z.array(nonBlankString).min(1).max(10_000),
-  }),
-  'collection.assets.remove': z.strictObject({
-    collectionId: nonBlankString,
-    assetIds: z.array(nonBlankString).min(1).max(10_000),
-  }),
-  'collection.assets.reorder': z.strictObject({
-    collectionId: nonBlankString,
-    orderedAssetIds: z.array(nonBlankString).min(1).max(10_000),
-  }),
-  'collection.assets.list': z.strictObject({
-    collectionId: nonBlankString,
-    recursive: z.boolean().default(false),
-    ...paginationInputFields,
-  }),
-  'collection.assets.memberships': paginatedInputSchema({
-    assetIds: z.array(nonBlankString).min(1).max(10_000),
-  }),
   'asset.copy': z.strictObject({
     assetIds: z.array(nonBlankString).min(1).max(10_000),
     targetFolderId: nonBlankString.nullable(),
@@ -778,23 +721,6 @@ export const automationCommandInputSchemas = {
     colorSpace: nonBlankString.max(120).optional(),
   }),
   'asset.refresh': noInputSchema,
-  'smart-collection.list': paginatedInputSchema({}),
-  'smart-collection.create': z.strictObject({
-    name: nonBlankString.max(255),
-    queryDefinitionJson: nonBlankString.max(65_536),
-  }),
-  'smart-collection.update': z.strictObject({
-    collectionId: nonBlankString,
-    name: nonBlankString.max(255).optional(),
-    queryDefinitionJson: nonBlankString.max(65_536).optional(),
-    position: z.number().int().nonnegative().optional(),
-  }),
-  'smart-collection.delete': z.strictObject({ collectionId: nonBlankString }),
-  'smart-collection.execute': z.strictObject({
-    collectionId: nonBlankString,
-    scopeMode: z.boolean().optional(),
-    ...paginationInputFields,
-  }),
   'media.jobs.list': paginatedInputSchema({}),
   'media.jobs.cancel': z.strictObject({
     jobIds: z.array(nonBlankString).min(1).max(10_000).optional(),
@@ -1117,26 +1043,8 @@ const tagListWorkerResultSchema = z.strictObject({
   tags: z.array(tagSummarySchema),
 });
 
-const collectionListWorkerResultSchema = z.strictObject({
-  ok: z.literal(true),
-  type: z.literal('collection.list'),
-  collections: z.array(collectionSummarySchema),
-});
 
-const collectionMembershipsWorkerResultSchema = z.strictObject({
-  ok: z.literal(true),
-  type: z.literal('collection.assets.memberships'),
-  memberships: z.array(z.strictObject({
-    assetId: nonBlankString,
-    collectionId: nonBlankString,
-  })),
-});
 
-const smartCollectionListWorkerResultSchema = z.strictObject({
-  ok: z.literal(true),
-  type: z.literal('smart-collection.list'),
-  collections: z.array(smartCollectionSummarySchema),
-});
 
 const mediaJobsWorkerResultSchema = z.strictObject({
   ok: z.literal(true),
@@ -1250,31 +1158,6 @@ const assetMetadataBatchSetWorkerResultSchema = z.strictObject({
   historyEntryId: nonBlankString.optional(),
 });
 
-const collectionCreateWorkerResultSchema = z.strictObject({
-  ok: z.literal(true),
-  type: z.literal('collection.created'),
-  collection: collectionSummarySchema,
-  historyEntryId: nonBlankString.optional(),
-});
-const collectionUpdatedWorkerResultSchema = z.strictObject({
-  ok: z.literal(true), type: z.literal('collection.updated'), collection: collectionSummarySchema,
-  historyEntryId: nonBlankString.optional(),
-});
-const collectionReorderedWorkerResultSchema = z.strictObject({
-  ok: z.literal(true), type: z.literal('collection.reordered'), orderedCollectionIds: z.array(nonBlankString),
-  historyEntryId: nonBlankString.optional(),
-});
-const collectionDeletedWorkerResultSchema = z.strictObject({
-  ok: z.literal(true), type: z.literal('collection.deleted'), collectionId: nonBlankString,
-  historyEntryId: nonBlankString.optional(),
-});
-const collectionAssetsReorderedWorkerResultSchema = z.strictObject({
-  ok: z.literal(true), type: z.literal('collection.assets.reordered'), collectionId: nonBlankString,
-  historyEntryId: nonBlankString.optional(),
-});
-const collectionAssetsListWorkerResultSchema = z.strictObject({
-  ok: z.literal(true), type: z.literal('collection.assets.list'), assets: z.array(assetSummarySchema),
-});
 
 const tagRenamedWorkerResultSchema = z.strictObject({
   ok: z.literal(true), type: z.literal('tag.renamed'), tag: tagSummarySchema,
@@ -1296,22 +1179,6 @@ const tagCooccurrenceWorkerResultSchema = z.strictObject({
   ok: z.literal(true), type: z.literal('tag.cooccurrence'), graph: z.unknown(),
 });
 
-const smartCollectionCreatedWorkerResultSchema = z.strictObject({
-  ok: z.literal(true), type: z.literal('smart-collection.created'), collection: smartCollectionSummarySchema,
-  historyEntryId: nonBlankString.optional(),
-});
-const smartCollectionUpdatedWorkerResultSchema = z.strictObject({
-  ok: z.literal(true), type: z.literal('smart-collection.updated'), collection: smartCollectionSummarySchema,
-  historyEntryId: nonBlankString.optional(),
-});
-const smartCollectionDeletedWorkerResultSchema = z.strictObject({
-  ok: z.literal(true), type: z.literal('smart-collection.deleted'), collectionId: nonBlankString,
-  historyEntryId: nonBlankString.optional(),
-});
-const smartCollectionExecutedWorkerResultSchema = z.strictObject({
-  ok: z.literal(true), type: z.literal('smart-collection.executed'),
-  items: z.array(assetSummarySchema), total: z.number().int().nonnegative(), offset: z.number().int().nonnegative(),
-});
 const assetCopyWorkerResultSchema = z.strictObject({
   ok: z.literal(true), type: z.literal('asset.copied'),
   copiedCount: z.number().int().nonnegative(), skippedCount: z.number().int().nonnegative(),
@@ -1332,19 +1199,7 @@ const mediaPreviewArtifactWorkerResultSchema = z.strictObject({
   sourceContainer: z.enum(['mp4', 'mov', 'webm']).optional(), sourceCodecs: z.array(nonBlankString).optional(),
 });
 
-const collectionAssetsAddWorkerResultSchema = z.strictObject({
-  ok: z.literal(true),
-  type: z.literal('collection.assets.added'),
-  collectionId: nonBlankString,
-  historyEntryId: nonBlankString.optional(),
-});
 
-const collectionAssetsRemoveWorkerResultSchema = z.strictObject({
-  ok: z.literal(true),
-  type: z.literal('collection.assets.removed'),
-  collectionId: nonBlankString,
-  historyEntryId: nonBlankString.optional(),
-});
 
 const aiEnqueueWorkerResultSchema = z.strictObject({
   ok: z.literal(true),
@@ -1607,33 +1462,6 @@ export const automationCommandResultSchemas = {
     parentId: nonBlankString.nullable(),
     name: nonBlankString,
   }),
-  'collection.list': paginatedResultSchema(collectionSummarySchema),
-  'collection.create': z.strictObject({
-    id: nonBlankString,
-    parentId: nonBlankString.nullable(),
-    name: nonBlankString,
-    assetCount: z.number().int().nonnegative(),
-  }),
-  'collection.update': collectionSummarySchema,
-  'collection.reorder': z.object({ orderedCollectionIds: z.array(nonBlankString) }),
-  'collection.delete': z.object({ collectionId: nonBlankString }),
-  'collection.assets.add': z.strictObject({
-    collectionId: nonBlankString,
-  }),
-  'collection.assets.remove': z.strictObject({
-    collectionId: nonBlankString,
-  }),
-  'collection.assets.reorder': z.object({ collectionId: nonBlankString }),
-  'collection.assets.list': paginatedResultSchema(automationAssetSummarySchema),
-  'collection.assets.memberships': paginatedResultSchema(z.strictObject({
-    assetId: nonBlankString,
-    collectionId: nonBlankString,
-  })),
-  'smart-collection.list': paginatedResultSchema(smartCollectionSummarySchema),
-  'smart-collection.create': smartCollectionSummarySchema,
-  'smart-collection.update': smartCollectionSummarySchema,
-  'smart-collection.delete': z.object({ collectionId: nonBlankString }),
-  'smart-collection.execute': paginatedResultSchema(automationAssetSummarySchema),
   'media.jobs.list': mediaJobsAutomationResultSchema,
   'media.jobs.cancel': z.strictObject({ cancelledCount: z.number().int().nonnegative() }),
   'ai.jobs.status': paginatedResultSchema(aiJobSchema),
@@ -3192,246 +3020,6 @@ export const automationCommandRegistry = [
     },
   },
   readDescriptor({
-    commandId: 'collection.list',
-    summary: '列出资源库的普通合集。',
-    inputSchema: automationCommandInputSchemas['collection.list'],
-    resultSchema: automationCommandResultSchemas['collection.list'],
-    workerResultSchema: collectionListWorkerResultSchema,
-    requiredCapabilities: ['library.read', 'collection.read'],
-    allowedSources: allReadSources,
-    targetScope: 'library',
-    supportsBatch: false,
-    mcp: { public: true, toolName: 'serpent_collection_list', outputLimit: AUTOMATION_MAX_PAGE_SIZE },
-    toWorkerCommand: (libraryId) => ({ type: 'collection.list', libraryId }),
-    projectResult: (result, _libraryId, input) => {
-      const parsed = collectionListWorkerResultSchema.safeParse(result);
-      return parsed.success ? pageFromCompleteList(parsed.data.collections, input) : undefined;
-    },
-  }),
-  {
-    commandId: 'collection.create',
-    apiVersion: AUTOMATION_API_VERSION,
-    summary: '创建普通合集。',
-    deprecated: false,
-    inputSchema: automationCommandInputSchemas['collection.create'],
-    resultSchema: automationCommandResultSchemas['collection.create'],
-    workerResultSchema: collectionCreateWorkerResultSchema,
-    requiredCapabilities: ['library.read', 'collection.read', 'collection.write'],
-    allowedSources: allInteractiveSources,
-    impact: 'metadata-write',
-    targetScope: 'library',
-    supportsBatch: false,
-    supportsDryRun: false,
-    supportsIdempotencyKey: false,
-    supportsCancellation: false,
-    supportsDetach: false,
-    supportsUndo: false,
-    history: { policy: 'reversible', recipeKind: 'collection-snapshot', group: 'single-command' },
-    atomicity: 'single-transaction',
-    approvalPolicy: 'execution',
-    mcp: { public: false, toolName: 'serpent_collection_create', outputLimit: 1 },
-    toWorkerCommand: (libraryId, input: AutomationCommandInput<'collection.create'>) => ({
-      type: 'collection.create',
-      libraryId,
-      name: input.name,
-      ...(input.parentId === undefined || input.parentId === null
-        ? {}
-        : { parentId: input.parentId }),
-    }),
-    projectResult: (result) => {
-      const parsed = collectionCreateWorkerResultSchema.safeParse(result);
-      return parsed.success
-        ? {
-          id: parsed.data.collection.collectionId,
-          parentId: parsed.data.collection.parentId,
-          name: parsed.data.collection.name,
-          assetCount: parsed.data.collection.assetCount,
-        }
-      : undefined;
-    },
-  },
-  {
-    commandId: 'collection.update', apiVersion: AUTOMATION_API_VERSION, summary: '更新合集名称、描述、封面或位置。', deprecated: false,
-    inputSchema: automationCommandInputSchemas['collection.update'], resultSchema: automationCommandResultSchemas['collection.update'], workerResultSchema: collectionUpdatedWorkerResultSchema,
-    requiredCapabilities: ['library.read', 'collection.write'], allowedSources: allInteractiveSources, impact: 'metadata-write', targetScope: 'library', supportsBatch: false,
-    supportsDryRun: false, supportsIdempotencyKey: false, supportsCancellation: false, supportsDetach: false, supportsUndo: false, history: { policy: 'reversible', recipeKind: 'collection-snapshot', group: 'single-command' }, atomicity: 'single-transaction', approvalPolicy: 'execution',
-    mcp: { public: true, toolName: 'serpent_collection_update', outputLimit: 1 },
-    toWorkerCommand: (libraryId, input: AutomationCommandInput<'collection.update'>) => ({ type: 'collection.update', libraryId, collectionId: input.collectionId, ...(input.name === undefined ? {} : { name: input.name }), ...(input.parentId === undefined ? {} : { parentId: input.parentId }), ...(input.description === undefined ? {} : { description: input.description }), ...(input.coverAssetId === undefined ? {} : { coverAssetId: input.coverAssetId }), ...(input.position === undefined ? {} : { position: input.position }) }),
-    projectResult: (result) => { const parsed = collectionUpdatedWorkerResultSchema.safeParse(result); return parsed.success ? parsed.data.collection : undefined; },
-  },
-  {
-    commandId: 'collection.reorder', apiVersion: AUTOMATION_API_VERSION, summary: '按给定顺序重排合集。', deprecated: false,
-    inputSchema: automationCommandInputSchemas['collection.reorder'], resultSchema: automationCommandResultSchemas['collection.reorder'], workerResultSchema: collectionReorderedWorkerResultSchema,
-    requiredCapabilities: ['library.read', 'collection.write'], allowedSources: allInteractiveSources, impact: 'metadata-write', targetScope: 'library', supportsBatch: true,
-    supportsDryRun: false, supportsIdempotencyKey: false, supportsCancellation: false, supportsDetach: false, supportsUndo: false, history: { policy: 'reversible', recipeKind: 'collection-snapshot', group: 'single-command' }, atomicity: 'single-transaction', approvalPolicy: 'execution',
-    mcp: { public: true, toolName: 'serpent_collection_reorder', outputLimit: AUTOMATION_MAX_PAGE_SIZE },
-    toWorkerCommand: (libraryId, input: AutomationCommandInput<'collection.reorder'>) => ({ type: 'collection.reorder', libraryId, orderedCollectionIds: input.orderedCollectionIds }),
-    projectResult: (result) => { const parsed = collectionReorderedWorkerResultSchema.safeParse(result); return parsed.success ? { orderedCollectionIds: parsed.data.orderedCollectionIds } : undefined; },
-  },
-  {
-    commandId: 'collection.delete', apiVersion: AUTOMATION_API_VERSION, summary: '删除一个合集；资产本身不会被删除。', deprecated: false,
-    inputSchema: automationCommandInputSchemas['collection.delete'], resultSchema: automationCommandResultSchemas['collection.delete'], workerResultSchema: collectionDeletedWorkerResultSchema,
-    requiredCapabilities: ['library.read', 'collection.write'], allowedSources: allInteractiveSources, impact: 'metadata-write', targetScope: 'library', supportsBatch: false,
-    supportsDryRun: false, supportsIdempotencyKey: false, supportsCancellation: false, supportsDetach: false, supportsUndo: false, history: { policy: 'reversible', recipeKind: 'collection-snapshot', group: 'single-command' }, atomicity: 'single-transaction', approvalPolicy: 'execution',
-    mcp: { public: true, toolName: 'serpent_collection_delete', outputLimit: 1 },
-    toWorkerCommand: (libraryId, input: AutomationCommandInput<'collection.delete'>) => ({ type: 'collection.delete', libraryId, collectionId: input.collectionId }),
-    projectResult: (result) => { const parsed = collectionDeletedWorkerResultSchema.safeParse(result); return parsed.success ? { collectionId: parsed.data.collectionId } : undefined; },
-  },
-  {
-    commandId: 'collection.assets.add',
-    apiVersion: AUTOMATION_API_VERSION,
-    summary: '将资产加入普通合集。',
-    deprecated: false,
-    inputSchema: automationCommandInputSchemas['collection.assets.add'],
-    resultSchema: automationCommandResultSchemas['collection.assets.add'],
-    workerResultSchema: collectionAssetsAddWorkerResultSchema,
-    requiredCapabilities: ['library.read', 'asset.read', 'collection.read', 'collection.write'],
-    allowedSources: allInteractiveSources,
-    impact: 'metadata-write',
-    targetScope: 'asset-set',
-    supportsBatch: true,
-    supportsDryRun: false,
-    supportsIdempotencyKey: false,
-    supportsCancellation: false,
-    supportsDetach: false,
-    supportsUndo: false,
-    history: { policy: 'reversible', recipeKind: 'collection-assets-add', group: 'single-command' },
-    atomicity: 'single-transaction',
-    approvalPolicy: 'execution',
-    mcp: { public: false, toolName: 'serpent_collection_assets_add', outputLimit: 1 },
-    toWorkerCommand: (libraryId, input: AutomationCommandInput<'collection.assets.add'>) => ({
-      type: 'collection.assets.add',
-      libraryId,
-      collectionId: input.collectionId,
-      assetIds: input.assetIds,
-    }),
-    projectResult: (result) => {
-      const parsed = collectionAssetsAddWorkerResultSchema.safeParse(result);
-      return parsed.success ? { collectionId: parsed.data.collectionId } : undefined;
-    },
-  },
-  {
-    commandId: 'collection.assets.remove',
-    apiVersion: AUTOMATION_API_VERSION,
-    summary: '从普通合集移除资产。',
-    deprecated: false,
-    inputSchema: automationCommandInputSchemas['collection.assets.remove'],
-    resultSchema: automationCommandResultSchemas['collection.assets.remove'],
-    workerResultSchema: collectionAssetsRemoveWorkerResultSchema,
-    requiredCapabilities: ['library.read', 'asset.read', 'collection.read', 'collection.write'],
-    allowedSources: allInteractiveSources,
-    impact: 'metadata-write',
-    targetScope: 'asset-set',
-    supportsBatch: true,
-    supportsDryRun: false,
-    supportsIdempotencyKey: false,
-    supportsCancellation: false,
-    supportsDetach: false,
-    supportsUndo: false,
-    history: { policy: 'reversible', recipeKind: 'collection-assets-remove', group: 'single-command' },
-    atomicity: 'single-transaction',
-    approvalPolicy: 'execution',
-    mcp: { public: false, toolName: 'serpent_collection_assets_remove', outputLimit: 1 },
-    toWorkerCommand: (libraryId, input: AutomationCommandInput<'collection.assets.remove'>) => ({
-      type: 'collection.assets.remove',
-      libraryId,
-      collectionId: input.collectionId,
-      assetIds: input.assetIds,
-    }),
-    projectResult: (result) => {
-      const parsed = collectionAssetsRemoveWorkerResultSchema.safeParse(result);
-      return parsed.success ? { collectionId: parsed.data.collectionId } : undefined;
-    },
-  },
-  {
-    commandId: 'collection.assets.reorder', apiVersion: AUTOMATION_API_VERSION, summary: '重排合集中的资产。', deprecated: false,
-    inputSchema: automationCommandInputSchemas['collection.assets.reorder'], resultSchema: automationCommandResultSchemas['collection.assets.reorder'], workerResultSchema: collectionAssetsReorderedWorkerResultSchema,
-    requiredCapabilities: ['library.read', 'collection.write'], allowedSources: allInteractiveSources, impact: 'metadata-write', targetScope: 'library', supportsBatch: true,
-    supportsDryRun: false, supportsIdempotencyKey: false, supportsCancellation: false, supportsDetach: false, supportsUndo: false, history: { policy: 'reversible', recipeKind: 'collection-snapshot', group: 'single-command' }, atomicity: 'single-transaction', approvalPolicy: 'execution',
-    mcp: { public: true, toolName: 'serpent_collection_assets_reorder', outputLimit: 1 },
-    toWorkerCommand: (libraryId, input: AutomationCommandInput<'collection.assets.reorder'>) => ({ type: 'collection.assets.reorder', libraryId, collectionId: input.collectionId, orderedAssetIds: input.orderedAssetIds }),
-    projectResult: (result) => { const parsed = collectionAssetsReorderedWorkerResultSchema.safeParse(result); return parsed.success ? { collectionId: parsed.data.collectionId } : undefined; },
-  },
-  readDescriptor({
-    commandId: 'collection.assets.list', summary: '列出合集中的资产。', inputSchema: automationCommandInputSchemas['collection.assets.list'], resultSchema: automationCommandResultSchemas['collection.assets.list'], workerResultSchema: collectionAssetsListWorkerResultSchema,
-    requiredCapabilities: ['library.read', 'asset.read', 'collection.read'], allowedSources: allReadSources, targetScope: 'library', supportsBatch: false,
-    mcp: { public: true, toolName: 'serpent_collection_assets_list', outputLimit: AUTOMATION_MAX_PAGE_SIZE },
-    toWorkerCommand: (libraryId, input: AutomationCommandInput<'collection.assets.list'>) => ({ type: 'collection.assets.list', libraryId, collectionId: input.collectionId, recursive: input.recursive }),
-    projectResult: (result, _libraryId, input) => { const parsed = collectionAssetsListWorkerResultSchema.safeParse(result); return parsed.success ? pageFromCompleteList(parsed.data.assets.map(automationAssetSummary), input) : undefined; },
-  }),
-  readDescriptor({
-    commandId: 'collection.assets.memberships',
-    summary: '读取一组资产所属的合集关系。',
-    inputSchema: automationCommandInputSchemas['collection.assets.memberships'],
-    resultSchema: automationCommandResultSchemas['collection.assets.memberships'],
-    workerResultSchema: collectionMembershipsWorkerResultSchema,
-    requiredCapabilities: ['library.read', 'asset.read', 'collection.read'],
-    allowedSources: allReadSources,
-    targetScope: 'asset-set',
-    supportsBatch: true,
-    mcp: { public: true, toolName: 'serpent_collection_asset_memberships', outputLimit: AUTOMATION_MAX_PAGE_SIZE },
-    toWorkerCommand: (libraryId, input) => ({
-      type: 'collection.assets.memberships',
-      libraryId,
-      assetIds: input.assetIds,
-    }),
-    projectResult: (result, _libraryId, input) => {
-      const parsed = collectionMembershipsWorkerResultSchema.safeParse(result);
-      return parsed.success ? pageFromCompleteList(parsed.data.memberships, input) : undefined;
-    },
-  }),
-  readDescriptor({
-    commandId: 'smart-collection.list',
-    summary: '列出资源库的智能合集。',
-    inputSchema: automationCommandInputSchemas['smart-collection.list'],
-    resultSchema: automationCommandResultSchemas['smart-collection.list'],
-    workerResultSchema: smartCollectionListWorkerResultSchema,
-    requiredCapabilities: ['library.read', 'collection.read'],
-    allowedSources: allReadSources,
-    targetScope: 'library',
-    supportsBatch: false,
-    mcp: { public: true, toolName: 'serpent_smart_collection_list', outputLimit: AUTOMATION_MAX_PAGE_SIZE },
-    toWorkerCommand: (libraryId) => ({ type: 'smart-collection.list', libraryId }),
-    projectResult: (result, _libraryId, input) => {
-      const parsed = smartCollectionListWorkerResultSchema.safeParse(result);
-      return parsed.success ? pageFromCompleteList(parsed.data.collections, input) : undefined;
-    },
-  }),
-  {
-    commandId: 'smart-collection.create', apiVersion: AUTOMATION_API_VERSION, summary: '创建按结构化查询自动维护的智能合集。', deprecated: false,
-    inputSchema: automationCommandInputSchemas['smart-collection.create'], resultSchema: automationCommandResultSchemas['smart-collection.create'], workerResultSchema: smartCollectionCreatedWorkerResultSchema,
-    requiredCapabilities: ['library.read', 'collection.write'], allowedSources: allInteractiveSources, impact: 'metadata-write', targetScope: 'library', supportsBatch: false,
-    supportsDryRun: false, supportsIdempotencyKey: false, supportsCancellation: false, supportsDetach: false, supportsUndo: false, history: { policy: 'reversible', recipeKind: 'smart-collection-snapshot', group: 'single-command' }, atomicity: 'single-transaction', approvalPolicy: 'execution',
-    mcp: { public: true, toolName: 'serpent_smart_collection_create', outputLimit: 1 },
-    toWorkerCommand: (libraryId, input: AutomationCommandInput<'smart-collection.create'>) => ({ type: 'smart-collection.create', libraryId, name: input.name, queryDefinitionJson: input.queryDefinitionJson }),
-    projectResult: (result) => { const parsed = smartCollectionCreatedWorkerResultSchema.safeParse(result); return parsed.success ? parsed.data.collection : undefined; },
-  },
-  {
-    commandId: 'smart-collection.update', apiVersion: AUTOMATION_API_VERSION, summary: '更新智能合集名称、规则或排序位置。', deprecated: false,
-    inputSchema: automationCommandInputSchemas['smart-collection.update'], resultSchema: automationCommandResultSchemas['smart-collection.update'], workerResultSchema: smartCollectionUpdatedWorkerResultSchema,
-    requiredCapabilities: ['library.read', 'collection.write'], allowedSources: allInteractiveSources, impact: 'metadata-write', targetScope: 'library', supportsBatch: false,
-    supportsDryRun: false, supportsIdempotencyKey: false, supportsCancellation: false, supportsDetach: false, supportsUndo: false, history: { policy: 'reversible', recipeKind: 'smart-collection-snapshot', group: 'single-command' }, atomicity: 'single-transaction', approvalPolicy: 'execution',
-    mcp: { public: true, toolName: 'serpent_smart_collection_update', outputLimit: 1 },
-    toWorkerCommand: (libraryId, input: AutomationCommandInput<'smart-collection.update'>) => ({ type: 'smart-collection.update', libraryId, collectionId: input.collectionId, ...(input.name === undefined ? {} : { name: input.name }), ...(input.queryDefinitionJson === undefined ? {} : { queryDefinitionJson: input.queryDefinitionJson }), ...(input.position === undefined ? {} : { position: input.position }) }),
-    projectResult: (result) => { const parsed = smartCollectionUpdatedWorkerResultSchema.safeParse(result); return parsed.success ? parsed.data.collection : undefined; },
-  },
-  {
-    commandId: 'smart-collection.delete', apiVersion: AUTOMATION_API_VERSION, summary: '删除智能合集。', deprecated: false,
-    inputSchema: automationCommandInputSchemas['smart-collection.delete'], resultSchema: automationCommandResultSchemas['smart-collection.delete'], workerResultSchema: smartCollectionDeletedWorkerResultSchema,
-    requiredCapabilities: ['library.read', 'collection.write'], allowedSources: allInteractiveSources, impact: 'metadata-write', targetScope: 'library', supportsBatch: false,
-    supportsDryRun: false, supportsIdempotencyKey: false, supportsCancellation: false, supportsDetach: false, supportsUndo: false, history: { policy: 'reversible', recipeKind: 'smart-collection-snapshot', group: 'single-command' }, atomicity: 'single-transaction', approvalPolicy: 'execution',
-    mcp: { public: true, toolName: 'serpent_smart_collection_delete', outputLimit: 1 },
-    toWorkerCommand: (libraryId, input: AutomationCommandInput<'smart-collection.delete'>) => ({ type: 'smart-collection.delete', libraryId, collectionId: input.collectionId }),
-    projectResult: (result) => { const parsed = smartCollectionDeletedWorkerResultSchema.safeParse(result); return parsed.success ? { collectionId: parsed.data.collectionId } : undefined; },
-  },
-  readDescriptor({
-    commandId: 'smart-collection.execute', summary: '执行智能合集规则并返回匹配资产。', inputSchema: automationCommandInputSchemas['smart-collection.execute'], resultSchema: automationCommandResultSchemas['smart-collection.execute'], workerResultSchema: smartCollectionExecutedWorkerResultSchema,
-    requiredCapabilities: ['library.read', 'asset.read', 'collection.read'], allowedSources: allReadSources, targetScope: 'library', supportsBatch: false,
-    mcp: { public: true, toolName: 'serpent_smart_collection_execute', outputLimit: AUTOMATION_MAX_PAGE_SIZE },
-    toWorkerCommand: (libraryId, input: AutomationCommandInput<'smart-collection.execute'>) => ({ type: 'smart-collection.execute', libraryId, collectionId: input.collectionId, ...(input.scopeMode === undefined ? {} : { scopeMode: input.scopeMode }), limit: input.limit, offset: input.offset }),
-    projectResult: (result, _libraryId, input) => { const parsed = smartCollectionExecutedWorkerResultSchema.safeParse(result); return parsed.success ? { ...pageFromWorkerPage(parsed.data.items.map(automationAssetSummary), parsed.data.total, input) } : undefined; },
-  }),
-  readDescriptor({
     commandId: 'media.jobs.list',
     summary: '读取媒体后台任务状态。',
     inputSchema: automationCommandInputSchemas['media.jobs.list'],
@@ -3764,22 +3352,6 @@ export function generateAutomationTypeDeclaration(
     '    readonly skipped: readonly { readonly assetId: string; readonly reason: string }[];',
     '  }',
     '',
-    '  interface SerpentScriptCollection {',
-    '    readonly id: string;',
-    '    readonly parentId: string | null;',
-    '    readonly name: string;',
-    '    readonly description: string | null;',
-    '    readonly assetCount: number;',
-    '    readonly childCollectionCount: number;',
-    '  }',
-    '',
-    '  interface SerpentScriptSmartCollection {',
-    '    readonly id: string;',
-    '    readonly name: string;',
-    '    readonly queryDefinition: string;',
-    '    readonly assetCount: number;',
-    '  }',
-    '',
     '  interface SerpentScriptLinkedFolder {',
     '    readonly id: string;',
     '    readonly name: string;',
@@ -3818,25 +3390,6 @@ export function generateAutomationTypeDeclaration(
     '      create(name: string): Promise<SerpentScriptTag>;',
     '      assign(assetIds: readonly string[], tagIds: readonly string[]): Promise<SerpentTagMutationResult>;',
     '      remove(assetIds: readonly string[], tagIds: readonly string[]): Promise<SerpentTagMutationResult>;',
-    '    };',
-    '    readonly collections: {',
-    '      list(input?: { limit?: number; offset?: number }): Promise<{',
-    '        readonly items: readonly SerpentScriptCollection[];',
-    '        readonly total: number; readonly offset: number; readonly limit: number; readonly hasMore: boolean;',
-    '      }>;',
-    '      getMemberships(assetIds: readonly string[], input?: { limit?: number; offset?: number }): Promise<{',
-    '        readonly items: readonly { readonly assetId: string; readonly collectionId: string }[];',
-    '        readonly total: number; readonly offset: number; readonly limit: number; readonly hasMore: boolean;',
-    '      }>;',
-    '      create(name: string, parentId?: string | null): Promise<{ readonly id: string; readonly parentId: string | null; readonly name: string; readonly assetCount: number }>;',
-    '      addAssets(collectionId: string, assetIds: readonly string[]): Promise<{ readonly collectionId: string }>;',
-    '      removeAssets(collectionId: string, assetIds: readonly string[]): Promise<{ readonly collectionId: string }>;',
-    '    };',
-    '    readonly smartCollections: {',
-    '      list(input?: { limit?: number; offset?: number }): Promise<{',
-    '        readonly items: readonly SerpentScriptSmartCollection[];',
-    '        readonly total: number; readonly offset: number; readonly limit: number; readonly hasMore: boolean;',
-    '      }>;',
     '    };',
     '    readonly jobs: {',
     '      readonly media: {',

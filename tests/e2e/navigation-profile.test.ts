@@ -233,7 +233,6 @@ async function activeNavigationScope(window: Page): Promise<string> {
     return [
       button.dataset.navFolderKind ?? "",
       button.dataset.navFolderId ?? "",
-      button.dataset.navCollectionId ?? "",
       button.querySelector(".nav-row-label")?.textContent?.trim() ?? "",
     ].join("\u0000");
   }).catch(() => "");
@@ -259,7 +258,6 @@ async function installNavigationClickProbe(window: Page): Promise<void> {
         identity: [
           target.dataset.navFolderKind ?? "",
           target.dataset.navFolderId ?? "",
-          target.dataset.navCollectionId ?? "",
           target.querySelector(".nav-row-label")?.textContent?.trim() ?? "",
         ].join("\u0000"),
         atEpochMs: performance.timeOrigin + event.timeStamp,
@@ -288,7 +286,6 @@ async function nonEmptyNavigationScopes(window: Page): Promise<NavigationScope[]
       const identity = [
         button.dataset.navFolderKind ?? "",
         button.dataset.navFolderId ?? "",
-        button.dataset.navCollectionId ?? "",
         button.querySelector(".nav-row-label")?.textContent?.trim() ?? "",
       ].join("\u0000");
       const countText = button.querySelector(".nav-count")?.textContent?.trim() ?? "";
@@ -890,7 +887,7 @@ test("profile navigation hotspots on a real library", async () => {
       } else {
         const expectedScope = await row.evaluate((element) => {
           const button = element as HTMLButtonElement;
-          return [button.dataset.navFolderKind ?? "", button.dataset.navFolderId ?? "", button.dataset.navCollectionId ?? "", button.querySelector(".nav-row-label")?.textContent?.trim() ?? ""].join("\u0000");
+          return [button.dataset.navFolderKind ?? "", button.dataset.navFolderId ?? "", button.querySelector(".nav-row-label")?.textContent?.trim() ?? ""].join("\u0000");
         });
         const beforeIds = await visibleCardIds(window);
         const clickAt = Date.now();
@@ -1054,7 +1051,7 @@ test("profile navigation hotspots on a real library", async () => {
         const libraryRow = window.locator(".navigation-pane button.nav-row").first();
         const expectedScope = await libraryRow.evaluate((element) => {
           const button = element as HTMLButtonElement;
-          return [button.dataset.navFolderKind ?? "", button.dataset.navFolderId ?? "", button.dataset.navCollectionId ?? "", button.querySelector(".nav-row-label")?.textContent?.trim() ?? ""].join("\u0000");
+          return [button.dataset.navFolderKind ?? "", button.dataset.navFolderId ?? "", button.querySelector(".nav-row-label")?.textContent?.trim() ?? ""].join("\u0000");
         });
         const beforeIds = await visibleCardIds(window);
         await libraryRow.click();

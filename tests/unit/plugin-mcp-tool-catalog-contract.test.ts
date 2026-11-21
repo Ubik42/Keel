@@ -17,7 +17,7 @@ describe('plugin MCP tool input schema', () => {
 
     expect(tool.inputSchema.properties.assetIds).toMatchObject({ minItems: 1, maxItems: 256 });
     expect(tool.inputSchema.properties.folderIds).toMatchObject({ minItems: 1, maxItems: 256 });
-    expect(tool.inputSchema.properties.collectionIds).toMatchObject({ minItems: 1, maxItems: 256 });
+    expect(tool.inputSchema.properties).not.toHaveProperty('collectionIds');
     expect(() => parsePluginMcpToolArguments(tool, { libraryId: 'library-1', assetIds: [] })).toThrow();
     expect(parsePluginMcpToolArguments(tool, { libraryId: 'library-1', assetIds: ['asset-1'] })).toEqual({
       libraryId: 'library-1',

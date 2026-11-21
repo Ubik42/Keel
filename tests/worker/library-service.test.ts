@@ -687,13 +687,6 @@ describe('LibraryService lifecycle', () => {
       modelVersion: 'v1',
       enabledFields: { description: true, tags: true, rating: false },
     });
-    service.createSmartCollection({
-      libraryId: created.libraryId,
-      name: 'Filename Query',
-      queryDefinitionJson: JSON.stringify({
-        search: { clauses: [{ field: 'filename', values: ['legacy.png'], exclude: false }] },
-      }),
-    });
     service.closeAll();
 
     const databasePath = path.join(created.libraryPath, '.serpent', 'library.db');
@@ -837,8 +830,6 @@ describe('LibraryService lifecycle', () => {
     expect(migratedService.getAiContent(created.libraryId, assetId)).toEqual([
       expect.objectContaining({ fieldName: 'description', value: 'AI description survives' }),
     ]);
-    expect(migratedService.listSmartCollections(created.libraryId).map((item) => item.name))
-      .toEqual(['Filename Query']);
     expect(migratedService.searchAssets({
       libraryId: created.libraryId,
       query: { clauses: [{ field: null, values: ['Legacy Alias'], exclude: false }] },

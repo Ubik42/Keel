@@ -32,7 +32,7 @@ afterEach(() => {
 });
 
 describe('entity appearance', () => {
-  it('stores catalog appearance on folders and collections without renaming disk', () => {
+  it('stores catalog appearance on folders without renaming disk', () => {
     const root = temporaryRoot();
     const service = newService();
     const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Appearance', selectedParentPath: root });
@@ -61,34 +61,6 @@ describe('entity appearance', () => {
     });
     expect(renamed.appearance).toEqual(updated.appearance);
     expect(existsSync(path.join(library.libraryPath, 'Assets', 'HeroProps'))).toBe(true);
-
-    const collection = service.createCollection({ libraryId: library.libraryId, name: 'Ready' });
-    service.setEntityAppearance({
-      libraryId: library.libraryId,
-      target: { kind: 'collection', id: collection.collectionId },
-      appearance: { glyphKind: 'icon', glyphValue: 'star', colorId: 'orange' },
-    });
-    expect(service.listCollections(library.libraryId)[0]?.appearance).toEqual({
-      glyphKind: 'icon',
-      glyphValue: 'star',
-      colorId: 'orange',
-    });
-
-    const smart = service.createSmartCollection({
-      libraryId: library.libraryId,
-      name: 'Favorites',
-      queryDefinitionJson: JSON.stringify({ filters: [{ field: 'favorite', values: [], exclude: false }] }),
-    });
-    service.setEntityAppearance({
-      libraryId: library.libraryId,
-      target: { kind: 'smart-collection', id: smart.collectionId },
-      appearance: { glyphKind: null, glyphValue: null, colorId: 'teal' },
-    });
-    expect(service.listSmartCollections(library.libraryId)[0]?.appearance).toEqual({
-      glyphKind: null,
-      glyphValue: null,
-      colorId: 'teal',
-    });
 
     service.setEntityAppearance({
       libraryId: library.libraryId,

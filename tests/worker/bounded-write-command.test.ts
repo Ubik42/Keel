@@ -46,23 +46,6 @@ describe('boundedWriteLibraryId', () => {
       expectedVersion: 0,
       favorite: true,
     } satisfies WorkerCommand)).toBe(libraryId);
-    expect(boundedWriteLibraryId({
-      type: 'collection.create',
-      libraryId,
-      name: 'Board',
-    } satisfies WorkerCommand)).toBe(libraryId);
-    expect(boundedWriteLibraryId({
-      type: 'collection.assets.add',
-      libraryId,
-      collectionId: '44444444-4444-4444-8444-444444444444',
-      assetIds: ['22222222-2222-4222-8222-222222222222'],
-    } satisfies WorkerCommand)).toBe(libraryId);
-    expect(boundedWriteLibraryId({
-      type: 'collection.assets.remove',
-      libraryId,
-      collectionId: '44444444-4444-4444-8444-444444444444',
-      assetIds: ['22222222-2222-4222-8222-222222222222'],
-    } satisfies WorkerCommand)).toBe(libraryId);
   });
 
   it('keeps reads and long-running media work outside the bounded command lease', () => {
@@ -106,19 +89,6 @@ describe('boundedWriteLibraryId', () => {
       author: null,
       entityVersion: 1,
     });
-    const createCollection = vi.fn().mockReturnValue({
-      collectionId: '44444444-4444-4444-8444-444444444444',
-      parentId: null,
-      name: 'Board',
-      position: 0,
-      assetCount: 0,
-    });
-    const addCollectionAssets = vi.fn().mockReturnValue({
-      collectionId: '44444444-4444-4444-8444-444444444444',
-    });
-    const removeCollectionAssets = vi.fn().mockReturnValue({
-      collectionId: '44444444-4444-4444-8444-444444444444',
-    });
     const getAssetMetadata = vi.fn().mockReturnValue({
       assetId: '22222222-2222-4222-8222-222222222222',
       description: null,
@@ -134,16 +104,11 @@ describe('boundedWriteLibraryId', () => {
     const getHumanTagRelations = vi.fn().mockReturnValue([]);
     const getManagedFolderHistorySnapshot = vi.fn().mockReturnValue([]);
     const getBrowseChangeSequence = vi.fn().mockReturnValue(7);
-    const getCollectionHistorySnapshot = vi.fn().mockReturnValue([]);
-    const getCollectionMembershipHistorySnapshot = vi.fn().mockReturnValue([]);
-    const getCollectionAssetMemberships = vi.fn().mockReturnValue([]);
     const recordAssetMetadataBatchHistory = vi.fn().mockReturnValue(null);
     const recordAssetMetadataHistory = vi.fn().mockReturnValue({ historyEntryId: 'history' });
     const recordTagSnapshotHistory = vi.fn().mockReturnValue({ historyEntryId: 'history' });
     const recordTagRelationsHistory = vi.fn().mockReturnValue(null);
     const recordManagedFolderSnapshotHistory = vi.fn().mockReturnValue({ historyEntryId: 'history' });
-    const recordCollectionSnapshotHistory = vi.fn().mockReturnValue({ historyEntryId: 'history' });
-    const recordCollectionMembershipHistory = vi.fn().mockReturnValue(null);
     const libraryService = {
       setAssetsRating,
       createTag,
@@ -151,24 +116,16 @@ describe('boundedWriteLibraryId', () => {
       removeTags,
       createManagedFolder,
       setAssetMetadata,
-      createCollection,
-      addCollectionAssets,
-      removeCollectionAssets,
       getAssetMetadata,
       getTagHistorySnapshot,
       getHumanTagRelations,
       getManagedFolderHistorySnapshot,
       getBrowseChangeSequence,
-      getCollectionHistorySnapshot,
-      getCollectionMembershipHistorySnapshot,
-      getCollectionAssetMemberships,
       recordAssetMetadataBatchHistory,
       recordAssetMetadataHistory,
       recordTagSnapshotHistory,
       recordTagRelationsHistory,
       recordManagedFolderSnapshotHistory,
-      recordCollectionSnapshotHistory,
-      recordCollectionMembershipHistory,
     } as unknown as LibraryService;
 
     expect(executeBoundedWriteWorkerCommand(libraryService, {
@@ -242,30 +199,5 @@ describe('boundedWriteLibraryId', () => {
       expectedVersion: 0,
       favorite: true,
     })).toMatchObject({ ok: true, type: 'asset.metadata.updated', historyEntryId: 'history' });
-    expect(executeBoundedWriteWorkerCommand(libraryService, {
-      type: 'collection.create',
-      libraryId,
-      name: 'Board',
-    })).toMatchObject({ ok: true, type: 'collection.created', historyEntryId: 'history' });
-    expect(executeBoundedWriteWorkerCommand(libraryService, {
-      type: 'collection.assets.add',
-      libraryId,
-      collectionId: '44444444-4444-4444-8444-444444444444',
-      assetIds: ['22222222-2222-4222-8222-222222222222'],
-    })).toEqual({
-      ok: true,
-      type: 'collection.assets.added',
-      collectionId: '44444444-4444-4444-8444-444444444444',
-    });
-    expect(executeBoundedWriteWorkerCommand(libraryService, {
-      type: 'collection.assets.remove',
-      libraryId,
-      collectionId: '44444444-4444-4444-8444-444444444444',
-      assetIds: ['22222222-2222-4222-8222-222222222222'],
-    })).toEqual({
-      ok: true,
-      type: 'collection.assets.removed',
-      collectionId: '44444444-4444-4444-8444-444444444444',
-    });
   });
 });

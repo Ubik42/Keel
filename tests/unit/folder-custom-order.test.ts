@@ -4,22 +4,16 @@ import {
   applyFolderSiblingOrder,
   customOrderKey,
   insertBesideSibling,
-  loadCollectionCustomOrder,
   loadFolderCustomOrder,
   moveFolderInCustomOrder,
   parseFolderCustomOrder,
-  saveCollectionCustomOrder,
   saveFolderCustomOrder,
 } from "../../src/renderer/folder-custom-order";
 import {
   buildUnifiedDirectoryNavEntries,
-  sortCollectionTree,
   sortManagedTreeEntries,
 } from "../../src/renderer/unified-directory-nav";
-import type {
-  CollectionSummary,
-  ManagedFolderSummary,
-} from "../../src/shared/asset-types";
+import type { ManagedFolderSummary } from "../../src/shared/asset-types";
 
 const folder = (
   folderId: string,
@@ -44,21 +38,6 @@ function memoryStorage() {
   };
 }
 
-const collection = (
-  collectionId: string,
-  name: string,
-  parentId: string | null = null,
-): CollectionSummary => ({
-  collectionId,
-  parentId,
-  name,
-  description: null,
-  coverAssetId: null,
-  position: 0,
-  assetCount: 0,
-  childCollectionCount: 0,
-});
-
 describe("folder custom order storage", () => {
   it("round-trips positions per library", () => {
     const storage = memoryStorage();
@@ -68,19 +47,6 @@ describe("folder custom order storage", () => {
     expect([...loadFolderCustomOrder("library-a", storage)]).toEqual([["f2", 0], ["f1", 1]]);
     expect([...loadFolderCustomOrder("library-b", storage)]).toEqual([["f9", 0]]);
     expect(loadFolderCustomOrder("library-c", storage).size).toBe(0);
-  });
-
-  it("keeps collection positions in their own per-library namespace", () => {
-    const storage = memoryStorage();
-    saveCollectionCustomOrder("library-a", new Map([["c2", 0], ["c1", 1]]), storage);
-    saveFolderCustomOrder("library-a", new Map([["f1", 0]]), storage);
-
-    expect([...loadCollectionCustomOrder("library-a", storage)]).toEqual([
-      ["c2", 0],
-      ["c1", 1],
-    ]);
-    expect([...loadFolderCustomOrder("library-a", storage)]).toEqual([["f1", 0]]);
-    expect(loadCollectionCustomOrder("library-b", storage).size).toBe(0);
   });
 
   it("ignores malformed or non-numeric entries", () => {
@@ -184,43 +150,6 @@ describe("custom folder sort", () => {
   });
 });
 
-
-describe("custom collection sort", () => {
-  const tree = new Map<string | null, CollectionSummary[]>([
-    [null, [collection("a", "Alpha"), collection("b", "Beta")]],
-    ["a", [collection("x", "X", "a"), collection("y", "Y", "a")]],
-  ]);
-
-  it("orders each collection level by stored position", () => {
-    const sorted = sortCollectionTree(
-      tree,
-      "custom",
-      "asc",
-      new Map([["b", 0], ["a", 1], ["y", 0], ["x", 1]]),
-    );
-    expect(sorted.get(null)?.map((entry) => entry.collectionId)).toEqual([
-      "b",
-      "a",
-    ]);
-    expect(sorted.get("a")?.map((entry) => entry.collectionId)).toEqual([
-      "y",
-      "x",
-    ]);
-  });
-
-  it("trails collections that were never reordered by name", () => {
-    const sorted = sortCollectionTree(
-      tree,
-      "custom",
-      "asc",
-      new Map([["b", 0]]),
-    );
-    expect(sorted.get(null)?.map((entry) => entry.collectionId)).toEqual([
-      "b",
-      "a",
-    ]);
-  });
-});
 
 describe("parent-scoped custom positions", () => {
   it("does not let a destination position reorder the old parent", () => {

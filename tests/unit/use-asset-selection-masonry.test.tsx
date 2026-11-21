@@ -75,8 +75,6 @@ function createHarness(options?: {
       setSelectedAssetIds,
       setSelectedAssetId: () => undefined,
       previewAsset: null,
-      draggedMemberId: null,
-      draggedCollectionId: null,
       workspaceCanvasRef: canvasRef,
       marqueeBoxRef,
       folderIds: options?.folderIds ?? [],

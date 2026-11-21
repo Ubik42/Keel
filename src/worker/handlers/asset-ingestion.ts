@@ -90,9 +90,6 @@ export async function executeAssetIngestionWorkerCommand(
           ...(request.command.targetFolderId
             ? { targetFolderId: request.command.targetFolderId }
             : {}),
-          ...(request.command.targetCollectionId
-            ? { targetCollectionId: request.command.targetCollectionId }
-            : {}),
         },
       };
     }

@@ -24,8 +24,6 @@ export function buildScopeBreadcrumbSegments(
     showTrash: boolean;
     trashBreadcrumbHops?: readonly TrashBreadcrumbHop[];
     activeTagLabel: string | null;
-    activeCollectionLabel: string | null;
-    activeSmartCollectionLabel: string | null;
     assetScope: string;
     folderTrail: ManagedFolderBreadcrumbEntry[];
     linkedFolderLabel?: string | null;
@@ -50,28 +48,6 @@ export function buildScopeBreadcrumbSegments(
         kind: "static",
         id: "tag",
         label: t("scope.tagScope", { name: input.activeTagLabel }),
-      },
-    ];
-  }
-  if (input.activeCollectionLabel) {
-    return [
-      {
-        kind: "static",
-        id: "collection",
-        label: t("scope.collectionScope", {
-          name: input.activeCollectionLabel,
-        }),
-      },
-    ];
-  }
-  if (input.activeSmartCollectionLabel) {
-    return [
-      {
-        kind: "static",
-        id: "smart",
-        label: t("scope.smartCollectionScope", {
-          name: input.activeSmartCollectionLabel,
-        }),
       },
     ];
   }

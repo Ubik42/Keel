@@ -65,7 +65,6 @@ export interface WorkspaceTabBrowseState {
   sortOrder: "asc" | "desc";
   shuffleSeed: number | null;
   folderRecursive: boolean;
-  collectionRecursive: boolean;
   showIgnoredItems: boolean;
 }
 
@@ -162,7 +161,6 @@ export function createDefaultWorkspaceTabBrowseState(
     sortOrder,
     shuffleSeed: null,
     folderRecursive: false,
-    collectionRecursive: true,
     showIgnoredItems: false,
   };
 }

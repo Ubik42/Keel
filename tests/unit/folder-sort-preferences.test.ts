@@ -1,15 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  COLLECTION_SORT_PREF_KEY,
-  DEFAULT_COLLECTION_SORT_PREFERENCES,
   DEFAULT_FOLDER_SORT_PREFERENCES,
   FOLDER_SORT_PREF_KEY,
-  loadCollectionSortPreferences,
   loadFolderSortPreferences,
-  saveCollectionSortPreferences,
   saveFolderSortPreferences,
-  withCollectionSort,
   withFolderSort,
   type FolderSortPreferencesStorage,
 } from "../../src/renderer/folder-sort-preferences";
@@ -27,15 +22,11 @@ function memoryStorage(initial: Record<string, string> = {}): FolderSortPreferen
 }
 
 describe("folder-sort-preferences", () => {
-  it("defaults folders and collections to custom order", () => {
+  it("defaults folders to custom order", () => {
     expect(loadFolderSortPreferences(memoryStorage())).toEqual(
       DEFAULT_FOLDER_SORT_PREFERENCES,
     );
-    expect(loadCollectionSortPreferences(memoryStorage())).toEqual(
-      DEFAULT_COLLECTION_SORT_PREFERENCES,
-    );
     expect(DEFAULT_FOLDER_SORT_PREFERENCES.mode).toBe("custom");
-    expect(DEFAULT_COLLECTION_SORT_PREFERENCES.mode).toBe("custom");
   });
 
   it("round-trips a chosen sort mode and order through storage", () => {
@@ -86,38 +77,5 @@ describe("folder-sort-preferences", () => {
         }),
       ),
     ).toEqual(DEFAULT_FOLDER_SORT_PREFERENCES);
-  });
-
-  it("stores collection sorting independently through the shared preference codec", () => {
-    const storage = memoryStorage();
-    saveCollectionSortPreferences(
-      withCollectionSort(DEFAULT_COLLECTION_SORT_PREFERENCES, {
-        mode: "count",
-        order: "desc",
-      }),
-      storage,
-    );
-
-    expect(loadCollectionSortPreferences(storage)).toEqual({
-      version: 1,
-      mode: "count",
-      order: "desc",
-    });
-    expect(storage.dump()[COLLECTION_SORT_PREF_KEY]).toContain('"count"');
-    expect(storage.dump()[FOLDER_SORT_PREF_KEY]).toBeUndefined();
-  });
-
-  it("normalizes a legacy collection time sort to name sort", () => {
-    expect(
-      loadCollectionSortPreferences(
-        memoryStorage({
-          [COLLECTION_SORT_PREF_KEY]: JSON.stringify({
-            version: 1,
-            mode: "created",
-            order: "desc",
-          }),
-        }),
-      ),
-    ).toEqual({ version: 1, mode: "name", order: "desc" });
   });
 });

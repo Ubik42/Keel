@@ -9,7 +9,6 @@ export const readCapabilities = [
   'content.read',
   'metadata.read',
   'tag.read',
-  'collection.read',
   'job.read',
 ] as const satisfies readonly AutomationCapability[];
 
@@ -20,7 +19,6 @@ export const allCapabilities = [
   'content.write',
   'metadata.write',
   'tag.write',
-  'collection.write',
   'ai.enqueue',
   'job.manage',
   'file.import',

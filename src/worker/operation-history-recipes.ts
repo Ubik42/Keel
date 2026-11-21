@@ -32,10 +32,6 @@ const descriptors: readonly OperationHistoryRecipeDescriptor[] = [
   { forwardKind: 'asset-metadata-batch-snapshot', inverseKind: 'asset-metadata-batch-snapshot', version: 1 },
   { forwardKind: 'tag-relations-add', inverseKind: 'tag-relations-remove', version: 1 },
   { forwardKind: 'tag-relations-remove', inverseKind: 'tag-relations-add', version: 1 },
-  { forwardKind: 'collection-assets-add', inverseKind: 'collection-assets-remove', version: 1 },
-  { forwardKind: 'collection-assets-remove', inverseKind: 'collection-assets-add', version: 1 },
-  { forwardKind: 'collection-snapshot', inverseKind: 'collection-snapshot', version: 1 },
-  { forwardKind: 'smart-collection-snapshot', inverseKind: 'smart-collection-snapshot', version: 1 },
   { forwardKind: 'managed-folder-snapshot', inverseKind: 'managed-folder-snapshot', version: 1 },
   { forwardKind: 'managed-folder-rename', inverseKind: 'managed-folder-rename', version: 1 },
   { forwardKind: 'managed-folder-move', inverseKind: 'managed-folder-move', version: 1 },
@@ -68,27 +64,6 @@ const managedFolderSnapshotSchema = z.strictObject({
   name: z.string().min(1).max(255),
   relativePath: z.string().max(4096),
   pathIdentity: z.string().max(4096),
-});
-const collectionSnapshotSchema = z.strictObject({
-  collectionId: identifierSchema,
-  libraryId: identifierSchema,
-  parentId: identifierSchema.nullable(),
-  name: z.string().min(1).max(255),
-  description: z.string().nullable(),
-  coverAssetId: identifierSchema.nullable(),
-  position: z.number().int().nonnegative(),
-});
-const collectionMembershipSnapshotSchema = z.strictObject({
-  collectionId: identifierSchema,
-  assetId: identifierSchema,
-  position: z.number().int().nonnegative(),
-});
-const smartCollectionSnapshotSchema = z.strictObject({
-  collectionId: identifierSchema,
-  libraryId: identifierSchema,
-  name: z.string().min(1).max(255),
-  queryDefinitionJson: z.string().max(65_536),
-  position: z.number().int().nonnegative(),
 });
 const tagSnapshotSchema = z.strictObject({
   appearance: entityAppearanceSchema.optional(),
@@ -160,26 +135,6 @@ const recipePayloadSchemas: ReadonlyMap<string, z.ZodType> = new Map<string, z.Z
   ['tag-relations-remove', z.strictObject({
     relations: z.array(relationSchema).min(1),
     expectedPresent: z.boolean().optional(),
-  })],
-  ['collection-assets-add', z.strictObject({
-    collectionId: identifierSchema,
-    assetIds: z.array(identifierSchema).min(1),
-    expectedPresent: z.boolean().optional(),
-  })],
-  ['collection-assets-remove', z.strictObject({
-    collectionId: identifierSchema,
-    assetIds: z.array(identifierSchema).min(1),
-    expectedPresent: z.boolean().optional(),
-  })],
-  ['collection-snapshot', z.strictObject({
-    expected: z.array(collectionSnapshotSchema),
-    restore: z.array(collectionSnapshotSchema),
-    expectedMemberships: z.array(collectionMembershipSnapshotSchema),
-    restoreMemberships: z.array(collectionMembershipSnapshotSchema),
-  })],
-  ['smart-collection-snapshot', z.strictObject({
-    expected: z.array(smartCollectionSnapshotSchema),
-    restore: z.array(smartCollectionSnapshotSchema),
   })],
   ['managed-folder-snapshot', z.strictObject({
     expected: z.array(managedFolderSnapshotSchema),

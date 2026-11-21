@@ -1,5 +1,5 @@
 import { requestConfirmation } from "./local-confirmation";
-import type { CollectionSummary, LinkedFolderSummary, TagSummary } from "../shared/asset-types";
+import type { LinkedFolderSummary, TagSummary } from "../shared/asset-types";
 import type { SerpentLibraryApi } from "../shared/library-api";
 import type { RendererLibrarySummary } from "../shared/protocol/responses";
 import { LibraryOperationError, toMessage } from "./error-utils";
@@ -12,7 +12,6 @@ export interface UseBatchActionsParams {
   library: RendererLibrarySummary | null;
   setUiState: (state: "loading" | "importing" | "ready") => void;
   setTags: (tags: TagSummary[]) => void;
-  setCollections: (collections: CollectionSummary[]) => void;
   setNotice: (msg: string, historyEntryId?: string) => void;
   setError: (msg: string | null) => void;
   reloadCurrentContent: () => Promise<void>;
@@ -29,10 +28,8 @@ export interface UseBatchActionsParams {
   /** Prevent late read/UI callbacks from an old library crossing a switch. */
   isCurrentLibrary: (libraryId: string) => boolean;
   chooseTag: (tagId: string) => Promise<void>;
-  chooseCollection: (collectionId: string, recursive?: boolean) => Promise<void>;
   clearAssetSelection: () => void;
   activeTagId: string | null;
-  activeCollectionId: string | null;
   onTagsChanged?: (
     action: "assign" | "remove",
     tagId: string,
@@ -43,11 +40,6 @@ export interface UseBatchActionsParams {
 export interface UseBatchActionsResult {
   batchAssignTagToSelection: (tagId: string, assetIds: string[]) => Promise<void>;
   batchRemoveTagFromSelection: (tagId: string, assetIds: string[]) => Promise<void>;
-  batchAddSelectionToCollection: (collectionId: string, assetIds: string[]) => Promise<void>;
-  batchRemoveSelectionFromCollection: (
-    collectionId: string,
-    assetIds: string[],
-  ) => Promise<boolean>;
   trashManagedAssets: (assetIds: string[]) => Promise<string | undefined>;
   deleteManagedAssetsFromDisk: (
     assetIds: string[],
@@ -61,27 +53,17 @@ export function useBatchActions({
   library,
   setUiState,
   setTags,
-  setCollections,
   setNotice,
   setError,
   reloadCurrentContent,
   applyLocalAssetRemoval,
   isCurrentLibrary,
   chooseTag,
-  chooseCollection,
   clearAssetSelection,
   activeTagId,
-  activeCollectionId,
   onTagsChanged,
 }: UseBatchActionsParams): UseBatchActionsResult {
   const { locale } = useLocale();
-
-  async function refreshCollections(libraryId?: string) {
-    if (!api || !library) return;
-    const targetLibraryId = libraryId ?? library.libraryId;
-    const result = await api.listCollections({ libraryId: targetLibraryId });
-    if (result.ok && isCurrentLibrary(targetLibraryId)) setCollections(result.value);
-  }
 
   async function batchAssignTagToSelection(tagId: string, assetIds: string[]) {
     if (!api || !library || assetIds.length === 0) return;
@@ -171,102 +153,6 @@ export function useBatchActions({
     }
   }
 
-  async function batchAddSelectionToCollection(collectionId: string, assetIds: string[]) {
-    if (!api || !library || assetIds.length === 0) return;
-    setUiState("loading");
-    try {
-      const result = await api.addCollectionAssets({
-        libraryId: library.libraryId,
-        collectionId,
-        assetIds,
-      });
-      if (!result.ok) throw new LibraryOperationError(result.error);
-      const collectionResult = await api.listCollections({
-        libraryId: library.libraryId,
-      });
-      if (collectionResult.ok) setCollections(collectionResult.value);
-      setNotice(
-        translateForLocale(locale, "toast.batchAddToCollection", {
-          count: assetIds.length,
-        }),
-        result.value.historyEntryId,
-      );
-    } catch (caught) {
-      setError(
-        toMessage(
-          caught,
-          translateForLocale(locale, "toast.batchAddToCollectionFailed"),
-          locale,
-        ),
-      );
-    } finally {
-      setUiState("ready");
-    }
-  }
-
-  async function batchRemoveSelectionFromCollection(
-    collectionId: string,
-    assetIds: string[],
-  ): Promise<boolean> {
-    if (!api || !library || assetIds.length === 0) return false;
-    setUiState("loading");
-    try {
-      const directMembers = await api.listCollectionAssets({
-        libraryId: library.libraryId,
-        collectionId,
-        recursive: false,
-      });
-      if (!directMembers.ok)
-        throw new LibraryOperationError(directMembers.error);
-      const directMemberIds = new Set(
-        directMembers.value.map((asset) => asset.assetId),
-      );
-      const affectedAssetIds = assetIds.filter((assetId) =>
-        directMemberIds.has(assetId),
-      );
-      if (affectedAssetIds.length === 0) {
-        setError(translateForLocale(locale, "toast.batchRemoveNotDirect"));
-        return false;
-      }
-      const result = await api.removeCollectionAssets({
-        libraryId: library.libraryId,
-        collectionId,
-        assetIds: affectedAssetIds,
-      });
-      if (!result.ok) throw new LibraryOperationError(result.error);
-      const collectionResult = await api.listCollections({
-        libraryId: library.libraryId,
-      });
-      if (collectionResult.ok) setCollections(collectionResult.value);
-      if (activeCollectionId === collectionId)
-        await chooseCollection(collectionId);
-      const skippedCount = assetIds.length - affectedAssetIds.length;
-      setNotice(
-        skippedCount > 0
-          ? translateForLocale(locale, "toast.batchRemovePartial", {
-              count: affectedAssetIds.length,
-              skipped: skippedCount,
-            })
-          : translateForLocale(locale, "toast.batchRemoveDone", {
-              count: affectedAssetIds.length,
-            }),
-        result.value.historyEntryId,
-      );
-      return true;
-    } catch (caught) {
-      setError(
-        toMessage(
-          caught,
-          translateForLocale(locale, "toast.batchRemoveFailed"),
-          locale,
-        ),
-      );
-      return false;
-    } finally {
-      setUiState("ready");
-    }
-  }
-
   async function trashManagedAssets(assetIds: string[]) {
     if (!api || !library) return undefined;
     const operationLibraryId = library.libraryId;
@@ -299,7 +185,6 @@ export function useBatchActions({
         }),
         result.value.historyEntryId,
       );
-      await refreshCollections(operationLibraryId);
       // A concurrent mutation can make the durable count smaller than the
       // optimistic selection.  Re-read the current scope in that uncommon
       // case instead of leaving an under-counted view until navigation.
@@ -356,7 +241,6 @@ export function useBatchActions({
       if (!result.ok) {
         if (result.error.code === "CANCELLED") {
           setNotice(translateForLocale(locale, "toast.diskDeleteCancelled"));
-          await refreshCollections(operationLibraryId);
           if (!isCurrentLibrary(operationLibraryId)) return;
           await reloadCurrentContent();
           return;
@@ -369,7 +253,6 @@ export function useBatchActions({
         }), result.value.semanticCleanupPending === true,
         translateForLocale(locale, "toast.semanticCleanupPending")),
       );
-      await refreshCollections(operationLibraryId);
       if (!isCurrentLibrary(operationLibraryId)) return;
       clearAssetSelection();
       applyLocalAssetRemoval(assetIds, {
@@ -437,8 +320,6 @@ export function useBatchActions({
   return {
     batchAssignTagToSelection,
     batchRemoveTagFromSelection,
-    batchAddSelectionToCollection,
-    batchRemoveSelectionFromCollection,
     trashManagedAssets,
     deleteManagedAssetsFromDisk,
     copyManagedSelectionToLinked,

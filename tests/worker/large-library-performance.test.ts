@@ -151,7 +151,7 @@ describe.skipIf(!fixturePath)('20k asset large-library performance baseline', ()
     startupService.closeAll();
 
     // Serpent-6355d7: keep the all-scope baseline separate from a real folder
-    // scope so collection switching has a like-for-like navigation reference.
+    // scope so folder switching has a like-for-like navigation reference.
     const allBrowseMs = benchmark(() => service.searchAssets({
       libraryId: manifest.libraryId,
       limit: 50,
@@ -166,30 +166,6 @@ describe.skipIf(!fixturePath)('20k asset large-library performance baseline', ()
           limit: 50,
           offset: 0,
         }));
-    // 合集切换（非递归 + 递归，递归含子合集范围）。
-    const firstCollectionId = service.listCollections(manifest.libraryId)[0]?.collectionId;
-    let collectionSwitchMs = -1;
-    let collectionRecursiveSwitchMs = -1;
-    let collectionRecursiveLayoutMs = -1;
-    if (firstCollectionId) {
-      collectionSwitchMs = benchmark(() => service.searchAssets({
-        libraryId: manifest.libraryId,
-        scope: { kind: 'collection', collectionId: firstCollectionId, recursive: false },
-        limit: 50,
-        offset: 0,
-      }));
-      collectionRecursiveLayoutMs = benchmark(() => service.searchAssets({
-        libraryId: manifest.libraryId,
-        scope: { kind: 'collection', collectionId: firstCollectionId, recursive: true },
-        layoutOnly: true,
-      }));
-      collectionRecursiveSwitchMs = benchmark(() => service.searchAssets({
-        libraryId: manifest.libraryId,
-        scope: { kind: 'collection', collectionId: firstCollectionId, recursive: true },
-        limit: 50,
-        offset: 0,
-      }));
-    }
     const searchMs = benchmark(() => service.searchAssets({
       libraryId: manifest.libraryId,
       query: { clauses: [{ field: null, values: [LARGE_LIBRARY_SEARCH_TOKEN], exclude: false }] },
@@ -250,7 +226,6 @@ describe.skipIf(!fixturePath)('20k asset large-library performance baseline', ()
     if (!sampleAssetId) throw new Error('Large-library fixture contains no assets');
     const inspectorMs = benchmark(() => {
       service.getAssetMetadata({ libraryId: manifest.libraryId, assetId: sampleAssetId });
-      service.listAssetCollectionMemberships({ libraryId: manifest.libraryId, assetIds: [sampleAssetId] });
     });
     const beforeDelete = service.searchAssets({ libraryId: manifest.libraryId, limit: 50, offset: 0 });
     expect(beforeDelete.total).toBe(initialLiveAssetCount);
@@ -262,9 +237,6 @@ describe.skipIf(!fixturePath)('20k asset large-library performance baseline', ()
       startupMs: Number(startupMs.toFixed(1)),
       allBrowseMs: Number(allBrowseMs.toFixed(1)),
       folderSwitchMs: Number(folderSwitchMs.toFixed(1)),
-      collectionSwitchMs: collectionSwitchMs < 0 ? null : Number(collectionSwitchMs.toFixed(1)),
-      collectionRecursiveSwitchMs: collectionRecursiveSwitchMs < 0 ? null : Number(collectionRecursiveSwitchMs.toFixed(1)),
-      collectionRecursiveLayoutMs: collectionRecursiveLayoutMs < 0 ? null : Number(collectionRecursiveLayoutMs.toFixed(1)),
       searchMs: Number(searchMs.toFixed(1)),
       layoutMs: Number(layoutMs.toFixed(1)),
       browseSessionOpenMs: Number(sessionOpenMs.toFixed(1)),
@@ -280,9 +252,6 @@ describe.skipIf(!fixturePath)('20k asset large-library performance baseline', ()
     expect(layoutMs).toBeLessThan(5_000);
     if (folderSwitchMs >= 0) expect(folderSwitchMs).toBeLessThan(5_000);
     // 合集切换 ≤ 5s 兜底线；真实目标随报告与文件夹同量级（500ms 首屏）。
-    if (collectionSwitchMs >= 0) expect(collectionSwitchMs).toBeLessThan(5_000);
-    if (collectionRecursiveSwitchMs >= 0) expect(collectionRecursiveSwitchMs).toBeLessThan(5_000);
-    if (collectionRecursiveLayoutMs >= 0) expect(collectionRecursiveLayoutMs).toBeLessThan(5_000);
     expect(sessionOpenMs).toBeLessThan(5_000);
     expect(sessionPageMs).toBeLessThan(5_000);
     expect(sessionGeometryMs).toBeLessThan(5_000);

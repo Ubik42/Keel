@@ -242,7 +242,7 @@ describe('plugin Contributions', () => {
     ]);
   });
 
-  it('registers folder and collection menu contributions with command ids', () => {
+  it('registers folder menu contributions and ignores the removed collection menu', () => {
     const registry = createContributionRegistry();
 
     registerManifestContributions(registry, {
@@ -281,16 +281,7 @@ describe('plugin Contributions', () => {
         target: 'menus.folder',
       },
     ]);
-    expect(listMenuContributions(registry, 'menus.collection')).toEqual([
-      {
-        id: 'com.example.menu.library-a.menu.collection.probe.write-collection',
-        pluginId: 'com.example.menu',
-        pluginInstanceId: '22222222-2222-4222-8222-222222222222',
-        commandId: 'probe.write-collection',
-        title: 'Write collection',
-        target: 'menus.collection',
-      },
-    ]);
+    expect(registry.list().some((item) => item.localId.startsWith('menu.collection.'))).toBe(false);
     expect(listMenuContributions(registry, 'menus.workspace')).toEqual([]);
   });
 

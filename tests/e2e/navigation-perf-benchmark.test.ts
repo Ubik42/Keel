@@ -31,9 +31,9 @@ import {
  * or asset name — every path arrives through the environment.
  *
  * Journeys:
- *   read-only (always)   open, folder switch, collection switch, random jumps,
+ *   read-only (always)   open, folder switch, random jumps,
  *                        continuous wheel scroll, viewer open, library switch
- *   destructive (opt-in) folder create, collection create, asset trash, folder
+ *   destructive (opt-in) folder create, asset trash, folder
  *                        delete — only with SERPENT_NAV_BENCH_WRITE_LIBRARY and
  *                        an explicit SERPENT_NAV_BENCH_WRITE_CONFIRM=1, so a
  *                        real library can never be mutated by accident.
@@ -296,7 +296,6 @@ test("navigation benchmark on a real library", async () => {
     phases.scopes = {
       total: scopes.length,
       folders: scopes.filter((scope) => scope.kind === "folder").length,
-      collections: scopes.filter((scope) => scope.kind === "collection").length,
     };
 
     // ------------------------------------------- busy phase (reconciliation on)
@@ -330,19 +329,6 @@ test("navigation benchmark on a real library", async () => {
       const result = await measureScopeSwitch(window, scope, decodeBudgetMs);
       ops.push({
         op: "folder.switch",
-        index,
-        ms: result.ms,
-        detail: { pageMs: result.pageMs, coverageMs: result.coverageMs, coverage: result.coverage },
-      });
-    }
-
-    for (let index = 0; index < iterations; index += 1) {
-      const current = await activeScopeTitle(window);
-      const scope = pickScope(scopes, "collection", random, current);
-      if (!scope) break;
-      const result = await measureScopeSwitch(window, scope, decodeBudgetMs);
-      ops.push({
-        op: "collection.switch",
         index,
         ms: result.ms,
         detail: { pageMs: result.pageMs, coverageMs: result.coverageMs, coverage: result.coverage },
@@ -489,22 +475,6 @@ async function switchToLibrary(window: Page, libraryPath: string, timeoutMs: num
 /** Destructive operations, only ever against an operator-provided copy. */
 async function runDestructiveJourney(window: Page, ops: OpSample[]): Promise<Record<string, unknown>> {
   const summary: Record<string, unknown> = {};
-  const collectionInput = window.getByPlaceholder("新建合集");
-
-  // collection create
-  try {
-    const before = await window.locator(".navigation-pane button.nav-row[data-nav-collection-id]").count();
-    const startedAt = Date.now();
-    await collectionInput.fill(`bench ${Date.now() % 100000}`);
-    await collectionInput.press("Enter");
-    await expect
-      .poll(() => window.locator(".navigation-pane button.nav-row[data-nav-collection-id]").count(), { timeout: 30_000 })
-      .toBeGreaterThan(before);
-    ops.push({ op: "collection.create", index: 0, ms: Date.now() - startedAt });
-  } catch (error) {
-    summary.collectionCreateError = error instanceof Error ? error.message : String(error);
-  }
-
   // folder create (subfolder of the first folder row)
   let createdFolderTitle: string | null = null;
   try {

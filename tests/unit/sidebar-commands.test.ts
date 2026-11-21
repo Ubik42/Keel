@@ -1,6 +1,4 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { requestConfirmation } from '../../src/renderer/local-confirmation';
-vi.mock('../../src/renderer/local-confirmation', () => ({ requestConfirmation: vi.fn() }));
 
 import { createCommandRegistry } from '../../src/renderer/commands/command-registry';
 import type { ResolvedMenuItem } from '../../src/renderer/commands/command-types';
@@ -56,13 +54,6 @@ function makeActions(calls: RecordedCall[]): SidebarCommandActions {
     trashManagedFolder: record('trashManagedFolder'),
     deleteFolderFromDisk: record('deleteFolderFromDisk'),
     removeLinkedFolder: record('removeLinkedFolder'),
-    renameOrganization: record('renameOrganization'),
-    createSubcollection: record('createSubcollection'),
-    editCollectionDetails: record('editCollectionDetails'),
-    deleteOrganization: record('deleteOrganization'),
-    renameSmartCollection: record('renameSmartCollection'),
-    updateSmartCollection: record('updateSmartCollection'),
-    deleteSmartCollection: record('deleteSmartCollection'),
   };
 }
 
@@ -407,74 +398,9 @@ describe('文件夹分支：平台条件标题', () => {
   });
 });
 
-describe('合集 / 智能合集分支：三项恒可见且恒启用', () => {
-  it('organization：rename / edit-details / delete 全部可见、全部启用', () => {
-    const { ctx } = makeCtx({
-      menuKind: 'organization',
-      subjectId: 'col-1',
-      subjectName: '年度合集',
-      locationKind: undefined,
-    });
-    const menu = registry.resolveMenu(ctx);
-    expect(menu.map((item) => item.id)).toEqual([
-      'collection.create-subcollection',
-      'collection.rename',
-      'collection.edit-details',
-      'collection.delete',
-    ]);
-    expect(menu.map((item) => item.label)).toEqual([
-      '新建子合集',
-      '重命名合集',
-      '编辑合集详情',
-      '删除合集',
-    ]);
-    for (const item of menu) {
-      expect(item.disabled, item.id).toBe(false);
-      expect(item.disabledReason, item.id).toBeNull();
-    }
-  });
-
-  it('smart-collection：rename / update-query / delete 全部可见、全部启用', () => {
-    const { ctx } = makeCtx({
-      menuKind: 'smart-collection',
-      subjectId: 'smart-1',
-      subjectName: '我的智能合集',
-      locationKind: undefined,
-    });
-    const menu = registry.resolveMenu(ctx);
-    expect(menu.map((item) => item.id)).toEqual([
-      'smart-collection.rename',
-      'smart-collection.update-query',
-      'smart-collection.delete',
-    ]);
-    expect(menu.map((item) => item.label)).toEqual([
-      '重命名智能合集',
-      '用当前条件更新',
-      '删除智能合集',
-    ]);
-    for (const item of menu) {
-      expect(item.disabled, item.id).toBe(false);
-      expect(item.disabledReason, item.id).toBeNull();
-    }
-  });
-
-  it('menuKind 互斥：合集上下文不出现文件夹 / 智能合集项', () => {
-    const { ctx } = makeCtx({
-      menuKind: 'organization',
-      locationKind: 'managed',
-    });
-    const ids = resolveIds(ctx);
-    expect(ids.some((id) => id.startsWith('folder.'))).toBe(false);
-    expect(ids.some((id) => id.startsWith('smart-collection.'))).toBe(false);
-  });
-});
-
 describe('danger 处理：注册表核心无 danger 字段，红色样式留在 JSX', () => {
   it('删除项的解析结果不携带 danger（与 0015-B/C 相同，JSX 按历史位置声明）', () => {
-    const { ctx } = makeCtx({
-      menuKind: 'organization',
-      locationKind: undefined,
-    });
+    const { ctx } = makeCtx();
     const menu = registry.resolveMenu(ctx);
     for (const item of menu) {
       expect('danger' in item, item.id).toBe(false);
@@ -534,38 +460,6 @@ describe('run 委托到 actions 回调包', () => {
       'removeLinkedFolder',
       ['folder-1', '素材'],
     ],
-    [
-      'collection.rename',
-      { menuKind: 'organization', subjectId: 'col-1', subjectName: '年度合集' },
-      'renameOrganization',
-      ['col-1', '年度合集'],
-    ],
-    [
-      'collection.edit-details',
-      { menuKind: 'organization', subjectId: 'col-1', subjectName: '年度合集' },
-      'editCollectionDetails',
-      ['col-1'],
-    ],
-    [
-      'smart-collection.rename',
-      {
-        menuKind: 'smart-collection',
-        subjectId: 'smart-1',
-        subjectName: '我的智能合集',
-      },
-      'renameSmartCollection',
-      ['smart-1', '我的智能合集'],
-    ],
-    [
-      'smart-collection.update-query',
-      {
-        menuKind: 'smart-collection',
-        subjectId: 'smart-1',
-        subjectName: '我的智能合集',
-      },
-      'updateSmartCollection',
-      ['smart-1'],
-    ],
   ] as const)(
     '%s 以 subjectId/subjectName 转调 %s',
     (id, overrides, expectedAction, expectedArgs) => {
@@ -599,63 +493,8 @@ describe('run 委托到 actions 回调包', () => {
   });
 });
 
-describe('删除命令的确认由界面动作统一处理', () => {
-  it('collection.delete：直接委托到界面动作', () => {
-    const { ctx, calls } = makeCtx({
-      menuKind: 'organization',
-      subjectId: 'col-1',
-      subjectName: '年度合集',
-      locationKind: undefined,
-    });
-    void registry.get('collection.delete')?.run(ctx);
-    expect(calls).toEqual([
-      { action: 'deleteOrganization', args: ['col-1', '年度合集'] },
-    ]);
-  });
-
-  it('collection.delete：不在命令层读取 window.confirm', () => {
-    const { ctx, calls } = makeCtx({
-      menuKind: 'organization',
-      subjectId: 'col-1',
-      subjectName: '年度合集',
-      locationKind: undefined,
-    });
-    void registry.get('collection.delete')?.run(ctx);
-    expect(calls).toEqual([
-      { action: 'deleteOrganization', args: ['col-1', '年度合集'] },
-    ]);
-  });
-
-  it('smart-collection.delete：confirm 通过 → 删除；文案与历史一致', async () => {
-    vi.mocked(requestConfirmation).mockResolvedValue(true);
-    const { ctx, calls } = makeCtx({
-      menuKind: 'smart-collection',
-      subjectId: 'smart-1',
-      subjectName: '我的智能合集',
-      locationKind: undefined,
-    });
-    await registry.get('smart-collection.delete')?.run(ctx);
-    expect(requestConfirmation).toHaveBeenCalledWith('删除智能合集"我的智能合集"？');
-    expect(calls).toEqual([
-      { action: 'deleteSmartCollection', args: ['smart-1', '我的智能合集'] },
-    ]);
-  });
-
-  it('smart-collection.delete：confirm 取消 → 不调用任何 action', async () => {
-    vi.mocked(requestConfirmation).mockResolvedValue(false);
-    const { ctx, calls } = makeCtx({
-      menuKind: 'smart-collection',
-      subjectId: 'smart-1',
-      subjectName: '我的智能合集',
-      locationKind: undefined,
-    });
-    await registry.get('smart-collection.delete')?.run(ctx);
-    expect(calls).toEqual([]);
-  });
-});
-
 describe('注册表完整性', () => {
-  it('22 条定义全部注册且 id 唯一（createCommandRegistry 未抛错）', () => {
+  it('15 条定义全部注册且 id 唯一（createCommandRegistry 未抛错）', () => {
     expect(registry.list().map((def) => def.id)).toEqual([
       'folder.open-in-file-manager',
       'folder.create-subfolder',
@@ -672,13 +511,6 @@ describe('注册表完整性', () => {
       'folder.move-to-trash',
       'folder.delete-from-disk',
       'folder.remove-from-library',
-      'collection.create-subcollection',
-      'collection.rename',
-      'collection.edit-details',
-      'collection.delete',
-      'smart-collection.rename',
-      'smart-collection.update-query',
-      'smart-collection.delete',
     ]);
   });
 

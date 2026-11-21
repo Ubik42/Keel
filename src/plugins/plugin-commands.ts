@@ -72,7 +72,6 @@ export const pluginCommandContextSchema = z.strictObject({
   targetLibraryId: pluginTargetLibraryIdSchema,
   assetIds: z.array(z.string().min(1).max(255)).max(10_000).optional(),
   folderIds: z.array(z.string().min(1).max(255)).max(10_000).optional(),
-  collectionIds: z.array(z.string().min(1).max(255)).max(10_000).optional(),
   invocation: pluginInvocationContextSchema.optional(),
 });
 export type PluginCommandContext = z.infer<typeof pluginCommandContextSchema> & {
@@ -80,11 +79,11 @@ export type PluginCommandContext = z.infer<typeof pluginCommandContextSchema> & 
 };
 
 /**
- * Command context is a snapshot. Freeze both the target and all collection
+ * Command context is a snapshot. Freeze both the target and all list
  * fields so a handler cannot observe a different target after an await.
  */
 export function freezePluginCommandContext(context: PluginCommandContext): PluginCommandContext {
-  for (const key of ['assetIds', 'folderIds', 'collectionIds'] as const) {
+  for (const key of ['assetIds', 'folderIds'] as const) {
     const values = context[key];
     if (values !== undefined) Object.freeze(values);
   }
@@ -92,7 +91,6 @@ export function freezePluginCommandContext(context: PluginCommandContext): Plugi
     Object.freeze(context.invocation.selection.refs);
     Object.freeze(context.invocation.selection.assetIds);
     Object.freeze(context.invocation.selection.folderIds);
-    Object.freeze(context.invocation.selection.collectionIds);
     if (context.invocation.selection.assets !== undefined) {
       Object.freeze(context.invocation.selection.assets);
     }

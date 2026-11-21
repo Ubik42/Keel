@@ -12,7 +12,6 @@ export type DialogEscapeSnapshot = {
   moveOpen: boolean;
   /** @deprecated Kept for renderer fixture compatibility; legacy dialog was removed. */
   undoMoveOpen?: boolean;
-  collectionEditorOpen: boolean;
   exportDialogOpen: boolean;
   importLibraryChooserOpen: boolean;
   openLibraryChooserOpen: boolean;
@@ -54,7 +53,6 @@ export type DialogEscapeAction =
   | { kind: "cancel-batch-relink" }
   | { kind: "close-restore" }
   | { kind: "close-move" }
-  | { kind: "close-collection-editor" }
   | { kind: "close-export" }
   | { kind: "close-import-library-chooser" }
   | { kind: "close-open-library-chooser" }
@@ -125,7 +123,6 @@ export function resolveDialogEscapeAction(
   if (snapshot.batchRelinkOpen) return { kind: "cancel-batch-relink" };
   if (snapshot.restoreOpen) return { kind: "close-restore" };
   if (snapshot.moveOpen) return { kind: "close-move" };
-  if (snapshot.collectionEditorOpen) return { kind: "close-collection-editor" };
   if (snapshot.exportDialogOpen) return { kind: "close-export" };
   if (snapshot.importLibraryChooserOpen)
     return { kind: "close-import-library-chooser" };

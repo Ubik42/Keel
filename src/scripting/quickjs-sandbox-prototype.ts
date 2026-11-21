@@ -1442,7 +1442,7 @@ export async function runQuickJsSandboxPrototype(
         newQuickJsJsonValue.bind(undefined, context),
       ));
       const domainApi = createGuestCommandApi();
-      for (const namespace of ['assets', 'library', 'folders', 'tags', 'collections', 'smartCollections', 'linkedFolders', 'files', 'trash', 'palettes', 'ui']) {
+      for (const namespace of ['assets', 'library', 'folders', 'tags', 'linkedFolders', 'files', 'trash', 'palettes', 'ui']) {
         const target = context.getProp(domainApi, namespace);
         try {
           context.setProp(serpent, namespace, target);

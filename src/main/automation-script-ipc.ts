@@ -271,8 +271,6 @@ export function registerAutomationScriptIpc(options: AutomationScriptIpcOptions)
         'metadata.read',
         'tag.read',
         'tag.write',
-        'collection.read',
-        'collection.write',
         'job.read',
         'ai.enqueue',
         'metadata.write',

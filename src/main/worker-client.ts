@@ -86,7 +86,6 @@ const LOCAL_RESOURCE_COMMAND_PREFIXES = [
   'asset.',
   'media.',
   'model.',
-  'smart-collection.',
 ] as const;
 
 /**

@@ -1,4 +1,3 @@
-import { requestConfirmation } from "../local-confirmation";
 // ---------------------------------------------------------------------------
 // 侧边栏右键菜单命令定义（REQ-COMMAND-001，切片 0015-D）
 // ---------------------------------------------------------------------------
@@ -50,17 +49,10 @@ export interface SidebarCommandActions {
   readonly deleteFolderFromDisk: (folderId: string, name: string) => void;
   /** 仅链接根：删除链接记录；从不删除外部源文件。 */
   readonly removeLinkedFolder: (folderId: string, name: string) => void;
-  readonly renameOrganization: (id: string, name: string) => void;
-  readonly createSubcollection: (collectionId: string) => void;
-  readonly editCollectionDetails: (collectionId: string) => void;
-  readonly deleteOrganization: (id: string, name: string) => void;
-  readonly renameSmartCollection: (id: string, name: string) => void;
-  readonly updateSmartCollection: (id: string) => void;
-  readonly deleteSmartCollection: (id: string, name: string) => void;
 }
 
 export interface SidebarCommandContext extends CommandContext {
-  readonly menuKind: 'folder' | 'organization' | 'smart-collection';
+  readonly menuKind: 'folder';
   readonly subjectId: string;
   readonly subjectName: string;
   readonly locationKind?: 'managed' | 'linked';
@@ -298,89 +290,5 @@ export const sidebarCommandDefinitions: readonly SidebarCommandDefinition[] = [
       ctx.isLinkedRoot !== false,
     run: (ctx) =>
       ctx.actions.removeLinkedFolder(ctx.subjectId, ctx.subjectName),
-  },
-  {
-    id: 'collection.create-subcollection',
-    title: (ctx) =>
-      translateForLocale(ctx.locale, 'command.collection.newSubcollection'),
-    group: 'organize',
-    shortcut: {
-      mac: { label: '⌘⇧N', key: 'n', metaKey: true, shiftKey: true },
-      windows: { label: 'Ctrl+Shift+N', key: 'n', ctrlKey: true, shiftKey: true },
-    },
-    visible: (ctx) => ctx.menuKind === 'organization',
-    run: (ctx) => ctx.actions.createSubcollection(ctx.subjectId),
-  },
-  {
-    id: 'collection.rename',
-    title: (ctx) =>
-      translateForLocale(ctx.locale, 'command.collection.rename'),
-    group: 'organize',
-    shortcut: {
-      mac: { label: 'F2', key: 'F2' },
-      windows: { label: 'F2', key: 'F2' },
-    },
-    visible: (ctx) => ctx.menuKind === 'organization',
-    run: (ctx) =>
-      ctx.actions.renameOrganization(ctx.subjectId, ctx.subjectName),
-  },
-  {
-    id: 'collection.edit-details',
-    title: (ctx) =>
-      translateForLocale(ctx.locale, 'command.collection.editDetails'),
-    group: 'metadata',
-    visible: (ctx) => ctx.menuKind === 'organization',
-    run: (ctx) => ctx.actions.editCollectionDetails(ctx.subjectId),
-  },
-  {
-    id: 'collection.delete',
-    title: (ctx) =>
-      translateForLocale(ctx.locale, 'command.collection.delete'),
-    group: 'delete',
-    shortcut: {
-      mac: { label: '⌘⌫', key: 'Backspace', metaKey: true },
-      windows: { label: 'Delete', key: 'Delete' },
-    },
-    visible: (ctx) => ctx.menuKind === 'organization',
-    // Confirmation is resolved by the renderer action, which can distinguish
-    // empty collections (direct delete) from collections with members/children.
-    run: (ctx) => ctx.actions.deleteOrganization(ctx.subjectId, ctx.subjectName),
-  },
-  {
-    id: 'smart-collection.rename',
-    title: (ctx) =>
-      translateForLocale(ctx.locale, 'command.smartCollection.rename'),
-    group: 'organize',
-    visible: (ctx) => ctx.menuKind === 'smart-collection',
-    run: (ctx) =>
-      ctx.actions.renameSmartCollection(ctx.subjectId, ctx.subjectName),
-  },
-  {
-    id: 'smart-collection.update-query',
-    title: (ctx) =>
-      translateForLocale(ctx.locale, 'command.smartCollection.updateQuery'),
-    group: 'organize',
-    visible: (ctx) => ctx.menuKind === 'smart-collection',
-    run: (ctx) => ctx.actions.updateSmartCollection(ctx.subjectId),
-  },
-  {
-    id: 'smart-collection.delete',
-    title: (ctx) =>
-      translateForLocale(ctx.locale, 'command.smartCollection.delete'),
-    group: 'delete',
-    visible: (ctx) => ctx.menuKind === 'smart-collection',
-    run: async (ctx) => {
-      if (
-        await requestConfirmation(
-          translateForLocale(
-            ctx.locale,
-            'command.smartCollection.deleteConfirm',
-            { name: ctx.subjectName },
-          ),
-        )
-      ) {
-        ctx.actions.deleteSmartCollection(ctx.subjectId, ctx.subjectName);
-      }
-    },
   },
 ];

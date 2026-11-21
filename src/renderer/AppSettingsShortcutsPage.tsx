@@ -40,7 +40,6 @@ const SCOPE_LABEL_KEYS: Record<ShortcutScope, string> = {
   app: "shortcuts.scope.app",
   browse: "shortcuts.scope.browse",
   "sidebar.folder": "shortcuts.scope.sidebarFolder",
-  "sidebar.collection": "shortcuts.scope.sidebarCollection",
   "viewer.base": "shortcuts.scope.viewerBase",
   "viewer.image": "shortcuts.scope.viewerImage",
   "viewer.video": "shortcuts.scope.viewerVideo",
@@ -466,8 +465,6 @@ export function AppSettingsShortcutsPage(): ReactNode {
                 ? "shortcuts.group.asset"
                 : group.category === "folder"
                   ? "shortcuts.group.folder"
-                  : group.category === "collection"
-                    ? "shortcuts.group.collection"
                   : group.category === "viewer"
                     ? "shortcuts.group.viewer"
                     : "shortcuts.group.app",

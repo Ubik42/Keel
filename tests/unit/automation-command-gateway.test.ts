@@ -34,7 +34,6 @@ const allReadCapabilities = [
   'asset.read',
   'metadata.read',
   'tag.read',
-  'collection.read',
   'job.read',
 ] as const;
 
@@ -150,7 +149,7 @@ const emptyHistoryStatus = {
 
 describe('Automation Command Registry', () => {
   it('contains complete read/write descriptors and exports JSON/TypeScript contracts', () => {
-    expect(automationCommandRegistry).toHaveLength(87);
+    expect(automationCommandRegistry).toHaveLength(72);
     expect(new Set(automationCommandRegistry.map((command) => command.commandId)).size)
       .toBe(automationCommandRegistry.length);
     const registryIds = new Set(automationCommandRegistry.map((command) => command.commandId));
@@ -158,22 +157,13 @@ describe('Automation Command Registry', () => {
       expect(registryIds).toContain(commandId);
     }
     const descriptor = (commandId: string) => automationCommandRegistry.find((command) => command.commandId === commandId)!;
-    // Serpent-10lo: folder/collection parent ids are strict UUIDs — non-UUID
+    // Serpent-10lo: folder parent ids are strict UUIDs — non-UUID
     // values are rejected by the schema (this is the intended contract).
     const PARENT_FOLDER_ID = '00000000-0000-4000-8000-0000000000f1';
-    const PARENT_COLLECTION_ID = '00000000-0000-4000-8000-0000000000c1';
     expect(descriptor('folder.create').toWorkerCommand('library-1', descriptor('folder.create').inputSchema.parse({
       name: 'Child',
       parentFolderId: PARENT_FOLDER_ID,
     }) as never, undefined)).toMatchObject({ type: 'folder.create', parentFolderId: PARENT_FOLDER_ID });
-    expect(descriptor('collection.create').toWorkerCommand('library-1', descriptor('collection.create').inputSchema.parse({
-      name: 'Child',
-      parentId: PARENT_COLLECTION_ID,
-    }) as never, undefined)).toMatchObject({ type: 'collection.create', parentId: PARENT_COLLECTION_ID });
-    expect(descriptor('collection.update').toWorkerCommand('library-1', descriptor('collection.update').inputSchema.parse({
-      collectionId: 'child-collection',
-      parentId: PARENT_COLLECTION_ID,
-    }) as never, undefined)).toMatchObject({ type: 'collection.update', parentId: PARENT_COLLECTION_ID });
     for (const command of automationCommandRegistry) {
       expect(command.apiVersion).toBe(1);
       if (command.commandId === 'asset.rating.set'
@@ -181,9 +171,6 @@ describe('Automation Command Registry', () => {
         || command.commandId === 'tag.create'
         || command.commandId === 'tag.assign'
         || command.commandId === 'tag.remove'
-        || command.commandId === 'collection.create'
-        || command.commandId === 'collection.assets.add'
-        || command.commandId === 'collection.assets.remove'
         || command.commandId === 'ai.enqueue') {
         expect(command.impact).toBe('metadata-write');
         expect(command.approvalPolicy).toBe('execution');
@@ -226,8 +213,6 @@ describe('Automation Command Registry', () => {
         'linked-folder.create', 'linked-folder.relink', 'linked-folder.remove', 'linked-folder.rules.set', 'linked-folder.refresh',
         'asset.copy', 'asset.preview.get', 'asset.refresh', 'asset.metadata.set-many',
         'tag.rename', 'tag.delete', 'tag.delete-many', 'tag.merge',
-        'collection.update', 'collection.reorder', 'collection.delete', 'collection.assets.reorder',
-        'smart-collection.create', 'smart-collection.update', 'smart-collection.delete',
         'history.undo', 'history.redo',
       ].includes(command.commandId)) {
         expect(command.impact).not.toBe('read');
@@ -304,8 +289,6 @@ describe('Automation Command Registry', () => {
     expect(declaration).toContain('create(name: string, parentFolderId?: string | null)');
     expect(declaration).toContain('setMetadata(input: { assetId: string');
     expect(declaration).toContain('getAiContent(assetId: string): Promise<SerpentAiContent>');
-    expect(declaration).toContain('create(name: string, parentId?: string | null)');
-    expect(declaration).toContain('addAssets(collectionId: string, assetIds: readonly string[])');
     expect(declaration).toContain('enqueue(input?: { assetIds?: readonly string[]');
     expect(declaration).not.toContain('zod');
     expect(declaration).not.toContain('cli');
@@ -1138,37 +1121,7 @@ describe('Automation Command Gateway', () => {
     }]);
   });
 
-  it('routes collection.create, asset.metadata.set, and ai.enqueue through Gateway contracts', async () => {
-    const collectionWorker = new RecordingWorker({
-      ok: true,
-      type: 'collection.created',
-      collection: {
-        collectionId: 'collection-new',
-        parentId: null,
-        name: '灵感',
-        description: null,
-        coverAssetId: null,
-        position: 0,
-        assetCount: 0,
-        childCollectionCount: 0,
-      },
-    });
-    const collectionGateway = gateway(collectionWorker, {
-      grantedCapabilities: [...allReadCapabilities, 'collection.write'],
-    });
-    await expect(collectionGateway.execute(request('collection.create', { name: '灵感' }))).resolves.toEqual({
-      ok: true,
-      apiVersion: 1,
-      commandId: 'collection.create',
-      executionId: 'execution-1',
-      result: { id: 'collection-new', parentId: null, name: '灵感', assetCount: 0 },
-    });
-    expect(collectionWorker.commands).toEqual([{
-      type: 'collection.create',
-      libraryId: 'library-1',
-      name: '灵感',
-    }]);
-
+  it('routes asset.metadata.set and ai.enqueue through Gateway contracts', async () => {
     const metadataWorker = new RecordingWorker({
       ok: true,
       type: 'asset.metadata.updated',

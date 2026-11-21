@@ -107,13 +107,6 @@ describe('automationCommandToast (Serpent-fmbr)', () => {
     expect(removed!.message).toContain('标签已移除');
   });
 
-  it('maps collection membership changes onto the manual collection toasts', () => {
-    const added = automationCommandToast(payload('collection.assets.add', { collectionId: 'c-1' }), zh);
-    expect(added!.message).toContain('合集');
-    const removed = automationCommandToast(payload('collection.assets.remove', { collectionId: 'c-1' }), zh);
-    expect(removed!.message).toContain('合集');
-  });
-
   it('never shows a toast for a phase-1 two-phase challenge report', () => {
     expect(automationCommandToast(payload('asset.trash', {
       status: 'confirmation-required',

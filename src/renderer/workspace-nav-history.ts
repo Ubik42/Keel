@@ -3,8 +3,6 @@ export type WorkspaceNavLocation =
   | { kind: "root" }
   | { kind: "folder"; folderId: string }
   | { kind: "tag"; tagId: string }
-  | { kind: "collection"; collectionId: string; recursive: boolean }
-  | { kind: "smart-collection"; collectionId: string }
   | { kind: "trash"; tombstoneId: string | null }
   /**
    * 资产查看器：打开资产 = 一个历史状态（Serpent-b7e173）。查看器内
@@ -93,15 +91,6 @@ export function workspaceNavLocationsEqual(
       return a.folderId === (b as Extract<WorkspaceNavLocation, { kind: "folder" }>).folderId;
     case "tag":
       return a.tagId === (b as Extract<WorkspaceNavLocation, { kind: "tag" }>).tagId;
-    case "collection": {
-      const other = b as Extract<WorkspaceNavLocation, { kind: "collection" }>;
-      return a.collectionId === other.collectionId && a.recursive === other.recursive;
-    }
-    case "smart-collection":
-      return (
-        a.collectionId ===
-        (b as Extract<WorkspaceNavLocation, { kind: "smart-collection" }>).collectionId
-      );
     case "preview":
       return a.assetId === (b as Extract<WorkspaceNavLocation, { kind: "preview" }>).assetId;
     case "tag-management":

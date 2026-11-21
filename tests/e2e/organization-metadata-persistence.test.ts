@@ -2,19 +2,12 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
-import { _electron as electron, expect, test, type Page } from "@playwright/test";
+import { _electron as electron, expect, test } from "@playwright/test";
 
 import {
   assetCard as locateAssetCard,
   resolveElectronExecutablePath,
 } from "./electron-test-helpers";
-
-function collectionRow(window: Page, name: string) {
-  return window
-    .locator('.navigation-pane button.nav-row[data-nav-collection-id]')
-    .filter({ hasText: name })
-    .first();
-}
 
 test("persists organization and metadata across restart and surfaces optimistic-lock conflicts", async () => {
   const temporaryRoot = mkdtempSync(
@@ -92,28 +85,6 @@ test("persists organization and metadata across restart and surfaces optimistic-
     await window.getByRole("button", { name: "刷新磁盘变化" }).click();
     await window.getByRole("button", { name: "所有资产", exact: true }).click();
 
-    await window.getByRole("button", { name: "添加合集" }).click();
-    await window
-      .getByPlaceholder("新建合集")
-      .fill("持久合集");
-    await window
-      .getByPlaceholder("新建合集")
-      .press("Enter");
-    await expect(collectionRow(window, "持久合集")).toBeVisible();
-
-    await collectionRow(window, "持久合集").click({ button: "right" });
-    await window.getByRole("menuitem", { name: "新建子合集", exact: true }).click();
-    await window
-      .getByPlaceholder("新建合集")
-      .fill("持久子合集");
-    await window
-      .getByPlaceholder("新建合集")
-      .press("Enter");
-    await expect(
-      collectionRow(window, "持久子合集"),
-    ).toBeVisible();
-    await window.getByRole("button", { name: "所有资产", exact: true }).click();
-
     await assetCard.click({ button: "right" });
     await window.getByRole("menuitem", { name: "添加标签…" }).click();
     await window
@@ -121,10 +92,6 @@ test("persists organization and metadata across restart and surfaces optimistic-
       .click();
     await expect(window.locator(".workspace-notice")).toContainText("标签已添加");
     await expect(window.locator(".tag-chip-name")).toContainText("持久标签");
-    await assetCard.click({ button: "right" });
-    await window.getByRole("menuitem", { name: "添加到合集" }).hover();
-    await window.getByRole("option", { name: "持久子合集" }).click();
-    await expect(window.locator(".workspace-notice")).toContainText("资产已加入合集");
 
     await assetCard.click();
     await expect(window.locator(".inspector-version-line")).toHaveCount(0);
@@ -203,14 +170,7 @@ test("persists organization and metadata across restart and surfaces optimistic-
     await expect(
       locateAssetCard(window, "persistent-asset.txt"),
     ).toBeVisible();
-    await collectionRow(window, "持久合集").click();
-    let restoredCard = locateAssetCard(window, "persistent-asset.txt");
-    await expect(restoredCard).toBeVisible();
-    await expect(
-      collectionRow(window, "持久子合集"),
-    ).toBeVisible();
-    await collectionRow(window, "持久子合集").click();
-    restoredCard = locateAssetCard(window, "persistent-asset.txt");
+    const restoredCard = locateAssetCard(window, "persistent-asset.txt");
     await expect(restoredCard).toBeVisible();
     await restoredCard.click();
 
@@ -238,14 +198,6 @@ test("persists organization and metadata across restart and surfaces optimistic-
                 ok: boolean;
                 value?: Array<{ libraryId: string }>;
               }>;
-              listCollections(input: { libraryId: string }): Promise<{
-                ok: boolean;
-                value?: Array<{
-                  collectionId: string;
-                  parentId: string | null;
-                  name: string;
-                }>;
-              }>;
               getAssetMetadata(input: {
                 libraryId: string;
                 assetId: string;
@@ -264,29 +216,12 @@ test("persists organization and metadata across restart and surfaces optimistic-
       const open = await api.listOpen();
       const libraryId = open.value?.[0]?.libraryId;
       if (!open.ok || !libraryId) throw new Error("No open library");
-      const [collections, metadata] = await Promise.all([
-        api.listCollections({ libraryId }),
-        api.getAssetMetadata({ libraryId, assetId: targetAssetId }),
-      ]);
-      if (!collections.ok || !metadata.ok || !metadata.value) {
+      const metadata = await api.getAssetMetadata({ libraryId, assetId: targetAssetId });
+      if (!metadata.ok || !metadata.value) {
         throw new Error("Restored organization state is unavailable");
       }
-      const parent = collections.value?.find(
-        (collection) => collection.name === "持久合集",
-      );
-      const child = collections.value?.find(
-        (collection) => collection.name === "持久子合集",
-      );
-      return {
-        childParentId: child?.parentId,
-        metadata: metadata.value,
-        parentId: parent?.collectionId,
-      };
+      return { metadata: metadata.value };
     }, assetId);
-    expect(restoredOrganization.parentId).toBeTruthy();
-    expect(restoredOrganization.childParentId).toBe(
-      restoredOrganization.parentId,
-    );
     const restoredEntityVersion = restoredOrganization.metadata.entityVersion;
     expect(restoredOrganization).toMatchObject({
       metadata: {

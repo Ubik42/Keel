@@ -11,17 +11,3 @@ export function createWebImportCommand(request: WebImportRequest): Extract<Worke
     mediaType: request.mediaType,
   };
 }
-
-export function createWebImportCollectionCommand(
-  request: WebImportRequest,
-  assetId: string,
-): Extract<WorkerCommand, { type: 'collection.assets.add' }> | undefined {
-  return request.targetCollectionId
-    ? {
-        type: 'collection.assets.add',
-        libraryId: request.libraryId,
-        collectionId: request.targetCollectionId,
-        assetIds: [assetId],
-      }
-    : undefined;
-}

@@ -7,7 +7,6 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import {
   createExtensionServer,
-  extensionCollectionSummaries,
   MAX_EXTENSION_UPLOAD_BYTES,
   saveIntentSchema,
   type ExtensionServer,
@@ -27,11 +26,6 @@ function startServer(overrides: Partial<ExtensionServerOptions> = {}): Promise<E
       ok: true,
       folders: [],
       recentBrowsedFolderIds: [],
-      libraryDisplayName: 'Serpent',
-    }),
-    onListCollections: async () => ({
-      ok: true,
-      collections: [],
       libraryDisplayName: 'Serpent',
     }),
     ...overrides,
@@ -188,28 +182,6 @@ function getFolders(port: number): Promise<{ status: number; body: unknown }> {
               parsed = text;
             }
             resolve({ status: res.statusCode ?? 0, body: parsed });
-          });
-        },
-      )
-      .on('error', reject);
-  });
-}
-
-function getCollections(port: number): Promise<{ status: number; body: unknown }> {
-  return new Promise((resolve, reject) => {
-    http
-      .get(
-        {
-          hostname: '127.0.0.1',
-          port,
-          path: '/collections',
-        },
-        (res) => {
-          const chunks: Buffer[] = [];
-          res.on('data', (chunk: Buffer) => chunks.push(chunk));
-          res.on('end', () => {
-            const text = Buffer.concat(chunks).toString('utf-8');
-            resolve({ status: res.statusCode ?? 0, body: JSON.parse(text) });
           });
         },
       )
@@ -476,52 +448,6 @@ describe('createExtensionServer', () => {
         },
       ],
       recentBrowsedFolderIds: [],
-      libraryDisplayName: '演示库',
-    });
-  });
-
-  it('returns nested collection paths for GET /collections', async () => {
-    expect(extensionCollectionSummaries([
-      { collectionId: 'child', parentId: 'parent', name: '草图', assetCount: 1 },
-      { collectionId: 'parent', parentId: null, name: '角色/原画', assetCount: 2 },
-    ])).toEqual([
-      {
-        collectionId: 'child',
-        name: '草图',
-        relativePath: '角色／原画/草图',
-        assetCount: 1,
-      },
-      {
-        collectionId: 'parent',
-        name: '角色／原画',
-        relativePath: '角色／原画',
-        assetCount: 2,
-      },
-    ]);
-
-    server = await startServer({
-      port: TEST_PORT,
-      onListCollections: async () => ({
-        ok: true,
-        collections: extensionCollectionSummaries([
-          { collectionId: 'parent', parentId: null, name: '角色', assetCount: 2 },
-        ]),
-        libraryDisplayName: '演示库',
-      }),
-    });
-
-    const res = await getCollections(server.port);
-    expect(res.status).toBe(200);
-    expect(res.body).toEqual({
-      status: 'ok',
-      collections: [
-        {
-          collectionId: 'parent',
-          name: '角色',
-          relativePath: '角色',
-          assetCount: 2,
-        },
-      ],
       libraryDisplayName: '演示库',
     });
   });
@@ -837,7 +763,7 @@ describe('createExtensionServer', () => {
       }
     });
 
-    it('records a collection target and still accepts an explicit root folder', async () => {
+    it('ignores a legacy collection target header and accepts an explicit root folder', async () => {
       const uploads: SaveUploadRequest[] = [];
       const stagingRoot = path.join(os.tmpdir(), `serpent-ext-test-${randomUUID()}`);
       await mkdir(stagingRoot, { recursive: true });
@@ -856,10 +782,8 @@ describe('createExtensionServer', () => {
           'X-Serpent-Target-Collection-Id': encodeURIComponent('col/1'),
         });
         expect(res.status).toBe(202);
-        expect(uploads[0]).toMatchObject({
-          targetFolderId: null,
-          targetCollectionId: 'col/1',
-        });
+        expect(uploads[0]).toMatchObject({ targetFolderId: null });
+        expect(uploads[0]).not.toHaveProperty('targetCollectionId');
         await rm(uploads[0]!.stagingDirectory, { recursive: true, force: true });
       } finally {
         await rm(stagingRoot, { recursive: true, force: true });

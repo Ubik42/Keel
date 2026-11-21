@@ -1,12 +1,10 @@
 import { useCallback, type MutableRefObject } from "react";
 
-import type { AssetSummary, CollectionSummary } from "../shared/asset-types";
+import type { AssetSummary } from "../shared/asset-types";
 import type { SerpentLibraryApi } from "../shared/library-api";
 import type { RendererLibrarySummary } from "../shared/protocol/responses";
 import {
-  resolveCollectionDrop,
   resolveFolderDrop,
-  resolveNewCollectionMembers,
   resolveTrashDrop,
   type DragAssetFact,
   type DragDropMode,
@@ -25,7 +23,6 @@ export type UseAssetDragDropHandlersParams = {
   clearAssetSelection: () => void;
   trashManagedAssets: (assetIds: string[]) => Promise<string | undefined>;
   reloadCurrentContentRef: MutableRefObject<() => Promise<void>>;
-  setCollections: (collections: CollectionSummary[]) => void;
 };
 
 /**
@@ -43,7 +40,6 @@ export function useAssetDragDropHandlers({
   clearAssetSelection,
   trashManagedAssets,
   reloadCurrentContentRef,
-  setCollections,
 }: UseAssetDragDropHandlersParams) {
   const t = useT();
   const { locale } = useLocale();
@@ -187,66 +183,6 @@ export function useAssetDragDropHandlers({
     ],
   );
 
-  const handleAssetsDroppedOnCollection = useCallback(
-    (collectionId: string, assetIds: string[], mode: DragDropMode) => {
-      if (!api || !library) return;
-      const resolution = resolveCollectionDrop({
-        assets: dragAssetFacts(assetIds),
-        mode,
-      });
-      if (resolution.kind === "reject") {
-        setNotice(t("toast.noCollectionDropAssets"));
-        return;
-      }
-      void (async () => {
-        try {
-          // Serpent-374266: dropping an asset into a collection it already
-          // belongs to changes nothing. Check membership first so the drop is
-          // absorbed silently instead of reporting an add that did not happen
-          // (and so no meaningless history entry is created).
-          const memberships = await api.listAssetCollectionMemberships({
-            libraryId: library.libraryId,
-            assetIds: resolution.assetIds,
-          });
-          const newMemberIds = memberships.ok
-            ? resolveNewCollectionMembers(
-                resolution.assetIds,
-                memberships.value,
-                collectionId,
-              )
-            : resolution.assetIds;
-          if (memberships.ok && newMemberIds.length === 0) return;
-
-          const result = await api.addCollectionAssets({
-            libraryId: library.libraryId,
-            collectionId,
-            assetIds: resolution.assetIds,
-          });
-          if (!result.ok) throw new LibraryOperationError(result.error);
-          const collectionResult = await api.listCollections({
-            libraryId: library.libraryId,
-          });
-          if (collectionResult.ok) setCollections(collectionResult.value);
-          setNotice(
-            t("toast.addedToCollectionCount", {
-              count: newMemberIds.length,
-            }) +
-              (resolution.skippedCount
-                ? t("toast.unavailableSkippedSuffix", {
-                    count: resolution.skippedCount,
-                  })
-              : "") +
-              t("common.sentenceEnd"),
-            result.value.historyEntryId,
-          );
-        } catch (caught) {
-          setError(toMessage(caught, t("toast.addToCollectionFailed"), locale));
-        }
-      })();
-    },
-    [api, library, dragAssetFacts, setNotice, setError, setCollections, locale, t],
-  );
-
   const handleAssetsDroppedOnTrash = useCallback(
     (assetIds: string[]) => {
       if (!api || !library) return;
@@ -275,7 +211,6 @@ export function useAssetDragDropHandlers({
 
   return {
     handleAssetsDroppedOnFolder,
-    handleAssetsDroppedOnCollection,
     handleAssetsDroppedOnTrash,
   };
 }

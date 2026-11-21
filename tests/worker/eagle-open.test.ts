@@ -98,19 +98,8 @@ describe('Eagle external-library opening (Serpent-768x.1)', () => {
       .toBeNull();
     expect(assets.find((asset) => asset.displayName === 'nested-item.txt')?.managedFolderId)
       .toBeNull();
-    const nestedCollection = service
-      .listCollections(converted.libraryId)
-      .find((collection) => collection.name === 'Nested');
-    expect(nestedCollection).toBeDefined();
-    expect(
-      service
-        .listCollectionAssets({
-          libraryId: converted.libraryId,
-          collectionId: nestedCollection!.collectionId,
-          recursive: true,
-        })
-        .map((asset) => asset.displayName),
-    ).toContain('nested-item.txt');
+    const nestedTag = service.listTags(converted.libraryId).find((tag) => tag.name === 'Nested');
+    expect(nestedTag).toMatchObject({ assetCount: 1 });
     expect(service.listTags(converted.libraryId).map((tag) => tag.name)).toContain('root-tag');
   });
 

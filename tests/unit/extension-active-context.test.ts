@@ -9,8 +9,6 @@ describe("resolveExtensionActiveContextTarget", () => {
         libraryId: null,
         showTrash: false,
         activeTagId: null,
-        activeCollectionId: null,
-        activeSmartCollectionId: null,
         assetScope: "all",
       }),
     ).toEqual({ libraryId: null });
@@ -22,8 +20,6 @@ describe("resolveExtensionActiveContextTarget", () => {
         libraryId: "lib-1",
         showTrash: false,
         activeTagId: null,
-        activeCollectionId: null,
-        activeSmartCollectionId: null,
         assetScope: "folder-1",
       }),
     ).toEqual({ libraryId: "lib-1", selectedFolderId: "folder-1" });
@@ -35,8 +31,6 @@ describe("resolveExtensionActiveContextTarget", () => {
         libraryId: "lib-1",
         showTrash: true,
         activeTagId: null,
-        activeCollectionId: null,
-        activeSmartCollectionId: null,
         assetScope: "folder-1",
       }),
     ).toEqual({ libraryId: "lib-1" });

@@ -18,7 +18,6 @@ export function executeBrowseSessionWorkerCommand(
         filters: request.command.filters ?? null,
         scope: request.command.scope ?? null,
         sort: request.command.sort ?? null,
-        smartCollectionId: request.command.smartCollectionId ?? null,
         limit: request.command.limit ?? 100,
         showIgnored: request.command.showIgnored === true,
       });

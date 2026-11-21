@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 import type {
-  CollectionTreeSortMode,
   FolderTreeSortMode,
   FolderTreeSortOrder,
 } from "./unified-directory-nav";
@@ -15,12 +14,6 @@ export type FolderSortOrder = FolderTreeSortOrder;
 export interface FolderSortPreferences {
   readonly version: 1;
   readonly mode: FolderTreeSortMode;
-  readonly order: FolderSortOrder;
-}
-
-export interface CollectionSortPreferences {
-  readonly version: 1;
-  readonly mode: CollectionTreeSortMode;
   readonly order: FolderSortOrder;
 }
 
@@ -39,19 +32,12 @@ const folderSortPreferencesSchema = z.object({
 });
 
 export const FOLDER_SORT_PREF_KEY = "serpent.folder-sort-prefs.v1";
-export const COLLECTION_SORT_PREF_KEY = "serpent.collection-sort-prefs.v1";
 
 export const DEFAULT_FOLDER_SORT_PREFERENCES: FolderSortPreferences = {
   version: 1,
   mode: "custom",
   order: "asc",
 };
-export const DEFAULT_COLLECTION_SORT_PREFERENCES: CollectionSortPreferences = {
-  version: 1,
-  mode: "custom",
-  order: "asc",
-};
-
 function resolveStorage(
   storage?: FolderSortPreferencesStorage,
 ): FolderSortPreferencesStorage {
@@ -108,25 +94,6 @@ export function saveFolderSortPreferences(
   saveSortPreferences(FOLDER_SORT_PREF_KEY, prefs, storage);
 }
 
-export function loadCollectionSortPreferences(
-  storage?: FolderSortPreferencesStorage,
-): CollectionSortPreferences {
-  const loaded = loadSortPreferences(
-    COLLECTION_SORT_PREF_KEY,
-    DEFAULT_COLLECTION_SORT_PREFERENCES,
-    storage,
-  );
-  const mode = loaded.mode === "created" ? "name" : loaded.mode;
-  return { version: 1, mode, order: loaded.order };
-}
-
-export function saveCollectionSortPreferences(
-  prefs: CollectionSortPreferences,
-  storage?: FolderSortPreferencesStorage,
-): void {
-  saveSortPreferences(COLLECTION_SORT_PREF_KEY, prefs, storage);
-}
-
 export function withSidebarSort(
   prefs: FolderSortPreferences,
   next: Partial<Pick<FolderSortPreferences, "mode" | "order">>,
@@ -135,9 +102,3 @@ export function withSidebarSort(
 }
 
 export const withFolderSort = withSidebarSort;
-export function withCollectionSort(
-  prefs: CollectionSortPreferences,
-  next: Partial<Pick<CollectionSortPreferences, "mode" | "order">>,
-): CollectionSortPreferences {
-  return { ...prefs, ...next };
-}

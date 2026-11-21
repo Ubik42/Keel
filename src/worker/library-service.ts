@@ -208,7 +208,7 @@ import {
   CONTENT_REPLACE_BATCH_MAX_ITEMS,
   CONTENT_REPLACE_STAGE_CHUNK_MAX_BYTES,
 } from '../shared/content-replace';
-import { smartCollectionQueryDefinitionSchema, extractedVideoMetadataSchema, type AssetMetadataResult, type ExtractedMetadataResult, type ExtractedVideoMetadata, type AssetSummary, type BrowseLayoutEntry, type CollectionSummary, type FilterClause, type FolderBrowseEntry, type GitignorePreview, type IgnoredPath, type LinkedFolderDirectoryMutation, type LinkedFolderRule, type LinkedFolderSummary, type ManagedFolderSummary, type SearchExpressionNode, type SearchQuery, type SearchScope, type SortDefinition, type SmartCollectionQueryDefinition, type SmartCollectionSummary, type TagCooccurrenceGraph, type TagSummary, type TrashedFolderSummary } from '../shared/asset-types';
+import { smartCollectionQueryDefinitionSchema, extractedVideoMetadataSchema, type AssetMetadataResult, type ExtractedMetadataResult, type ExtractedVideoMetadata, type AssetSummary, type BrowseLayoutEntry, type FilterClause, type FolderBrowseEntry, type GitignorePreview, type IgnoredPath, type LinkedFolderDirectoryMutation, type LinkedFolderRule, type LinkedFolderSummary, type ManagedFolderSummary, type SearchExpressionNode, type SearchQuery, type SearchScope, type SortDefinition, type SmartCollectionQueryDefinition, type TagCooccurrenceGraph, type TagSummary, type TrashedFolderSummary } from '../shared/asset-types';
 import {
   parseWritableAppearance,
   sanitizeEntityAppearance,
@@ -231,7 +231,6 @@ import {
   createAutomationFilePlanHash,
   createAutomationImportPlanHash,
 } from '../shared/automation-file-plan';
-import { hasMeaningfulSmartCollectionCondition } from '../shared/smart-collection-query';
 import type {
   LibraryChangedEvent,
   MissingAssetRecoveryProbe,
@@ -762,7 +761,6 @@ import {
 } from './search-query';
 import {
   buildCatalogAssetVisibilityPredicates,
-  buildCatalogCollectionScope,
   buildCatalogContextualSearchWhere,
   buildCatalogExpressionFtsCandidate,
   buildCatalogExpressionWhere,
@@ -4137,7 +4135,6 @@ interface EagleCopiedThumbnail {
 }
 
 interface EagleImportedMetadata {
-  collectionIds: string[];
   description: string | null;
   rating: number;
   sourceModifiedAtMs: number;
@@ -4486,30 +4483,6 @@ interface ManagedFolderHistorySnapshot {
   name: string;
   relativePath: string;
   pathIdentity: string;
-}
-
-interface CollectionHistorySnapshot {
-  collectionId: string;
-  libraryId: string;
-  parentId: string | null;
-  name: string;
-  description: string | null;
-  coverAssetId: string | null;
-  position: number;
-}
-
-interface CollectionMembershipHistorySnapshot {
-  collectionId: string;
-  assetId: string;
-  position: number;
-}
-
-interface SmartCollectionHistorySnapshot {
-  collectionId: string;
-  libraryId: string;
-  name: string;
-  queryDefinitionJson: string;
-  position: number;
 }
 
 interface TagHistorySnapshot {
@@ -11242,85 +11215,6 @@ export class LibraryService {
     });
   }
 
-  getCollectionAssetMemberships(input: {
-    assetIds: readonly string[];
-    collectionId: string;
-    libraryId: string;
-  }): string[] {
-    const openLibrary = this.requireOpenLibrary(input.libraryId);
-    if (input.assetIds.length === 0) return [];
-    const rows = sqliteAllInChunks<string, { asset_id: string }>({
-      connection: openLibrary.connection,
-      values: input.assetIds,
-      buildSql: (placeholders) =>
-        `SELECT asset_id FROM collection_assets
-          WHERE collection_id = ? AND asset_id IN (${placeholders})`,
-      bind: (chunk) => [input.collectionId, ...chunk],
-    });
-    return rows.map((row) => row.asset_id);
-  }
-
-  private assertCollectionMembershipPrecondition(
-    openLibrary: OpenLibrary,
-    payload: Record<string, unknown>,
-  ): void {
-    if (typeof payload.expectedPresent !== 'boolean') return;
-    if (typeof payload.collectionId !== 'string' || !Array.isArray(payload.assetIds)) {
-      throw new LibraryServiceError('LIBRARY_CORRUPT');
-    }
-    const assetIds = payload.assetIds.filter((assetId): assetId is string => typeof assetId === 'string');
-    if (assetIds.length !== payload.assetIds.length) throw new LibraryServiceError('LIBRARY_CORRUPT');
-    const current = new Set(this.getCollectionAssetMemberships({
-      libraryId: openLibrary.summary.libraryId,
-      collectionId: payload.collectionId,
-      assetIds,
-    }));
-    if (assetIds.some((assetId) => current.has(assetId) !== payload.expectedPresent)) {
-      throw new LibraryServiceError('VERSION_CONFLICT');
-    }
-  }
-
-  recordCollectionMembershipHistory(input: {
-    assetIds: readonly string[];
-    collectionId: string;
-    direction: 'add' | 'remove';
-    libraryId: string;
-    source?: HistorySource;
-    sourceReference?: string | null;
-  }): HistoryOperationReceipt | null {
-    if (input.assetIds.length === 0) return null;
-    const forwardKind = input.direction === 'add' ? 'collection-assets-add' : 'collection-assets-remove';
-    const inverseKind = input.direction === 'add' ? 'collection-assets-remove' : 'collection-assets-add';
-    return this.recordOperationHistory({
-      libraryId: input.libraryId,
-      source: input.source,
-      sourceReference: input.sourceReference,
-      commandId: input.direction === 'add' ? 'collection.assets.add' : 'collection.assets.remove',
-      labelKey: input.direction === 'add' ? 'history.collection.assets.add' : 'history.collection.assets.remove',
-      labelArgs: { count: input.assetIds.length },
-      affectedCount: input.assetIds.length,
-      affectedEntities: input.assetIds,
-      forwardRecipe: {
-        kind: forwardKind,
-        version: 1,
-        payload: {
-          collectionId: input.collectionId,
-          assetIds: input.assetIds,
-          expectedPresent: input.direction === 'remove',
-        },
-      },
-      inverseRecipe: {
-        kind: inverseKind,
-        version: 1,
-        payload: {
-          collectionId: input.collectionId,
-          assetIds: input.assetIds,
-          expectedPresent: input.direction === 'add',
-        },
-      },
-    });
-  }
-
   /** Stable folder rows used by create/delete and as preconditions for moves. */
   getManagedFolderHistorySnapshot(input: {
     folderIds: readonly string[];
@@ -11471,371 +11365,6 @@ export class LibraryService {
         version: 1,
         payload: { expected: input.after, restore: input.before },
       },
-    });
-  }
-
-  getCollectionHistorySnapshot(input: {
-    collectionIds: readonly string[];
-    libraryId: string;
-    allowMissing?: boolean;
-  }): CollectionHistorySnapshot[] {
-    const openLibrary = this.requireOpenLibrary(input.libraryId);
-    const roots = [...new Set(input.collectionIds)];
-    if (roots.length === 0) return [];
-    const rows = openLibrary.connection.prepare(
-      `SELECT collection_id, library_id, parent_id, name, description,
-              cover_asset_id, position
-         FROM collections
-        WHERE library_id = ?`,
-    ).all(input.libraryId) as Array<{
-      collection_id: string;
-      library_id: string;
-      parent_id: string | null;
-      name: string;
-      description: string | null;
-      cover_asset_id: string | null;
-      position: number;
-    }>;
-    const rootSet = new Set(roots);
-    const selected = new Set<string>(rows
-      .filter((row) => rootSet.has(row.collection_id))
-      .map((row) => row.collection_id));
-    // The snapshot intentionally includes every descendant of each requested
-    // root so undo/redo can restore a whole collection subtree.  Compare the
-    // requested roots themselves, not selected.size: a parent with children
-    // legitimately has more selected rows than requested roots.
-    if (roots.some((rootId) => !selected.has(rootId)) && !input.allowMissing) {
-      throw new LibraryServiceError('FOLDER_NOT_FOUND');
-    }
-    let changed = true;
-    while (changed) {
-      changed = false;
-      for (const row of rows) {
-        if (row.parent_id && selected.has(row.parent_id) && !selected.has(row.collection_id)) {
-          selected.add(row.collection_id);
-          changed = true;
-        }
-      }
-    }
-    return rows
-      .filter((row) => selected.has(row.collection_id))
-      .sort((left, right) => left.position - right.position || left.collection_id.localeCompare(right.collection_id))
-      .map((row) => ({
-        collectionId: row.collection_id,
-        libraryId: row.library_id,
-        parentId: row.parent_id,
-        name: row.name,
-        description: row.description,
-        coverAssetId: row.cover_asset_id,
-        position: row.position,
-      }));
-  }
-
-  getCollectionMembershipHistorySnapshot(input: {
-    collectionIds: readonly string[];
-    libraryId: string;
-  }): CollectionMembershipHistorySnapshot[] {
-    const openLibrary = this.requireOpenLibrary(input.libraryId);
-    const ids = [...new Set(input.collectionIds)];
-    if (ids.length === 0) return [];
-    return sqliteAllInChunks<string, { collection_id: string; asset_id: string; position: number }>({
-      connection: openLibrary.connection,
-      values: ids,
-      buildSql: (placeholders) =>
-        `SELECT collection_id, asset_id, position
-           FROM collection_assets
-          WHERE collection_id IN (${placeholders})
-          ORDER BY collection_id, position, asset_id`,
-    }).map((row) => ({
-      collectionId: row.collection_id,
-      assetId: row.asset_id,
-      position: row.position,
-    }));
-  }
-
-  private assertCollectionHistorySnapshots(value: unknown): CollectionHistorySnapshot[] {
-    if (!Array.isArray(value)) throw new LibraryServiceError('LIBRARY_CORRUPT');
-    return value.map((item) => {
-      if (typeof item !== 'object' || item === null) throw new LibraryServiceError('LIBRARY_CORRUPT');
-      const candidate = item as Partial<CollectionHistorySnapshot>;
-      if (
-        typeof candidate.collectionId !== 'string'
-        || typeof candidate.libraryId !== 'string'
-        || (candidate.parentId !== null && typeof candidate.parentId !== 'string')
-        || typeof candidate.name !== 'string'
-        || (candidate.description !== null && typeof candidate.description !== 'string')
-        || (candidate.coverAssetId !== null && typeof candidate.coverAssetId !== 'string')
-        || !Number.isInteger(candidate.position)
-      ) throw new LibraryServiceError('LIBRARY_CORRUPT');
-      return candidate as CollectionHistorySnapshot;
-    });
-  }
-
-  private assertCollectionMembershipHistorySnapshots(value: unknown): CollectionMembershipHistorySnapshot[] {
-    if (!Array.isArray(value)) throw new LibraryServiceError('LIBRARY_CORRUPT');
-    return value.map((item) => {
-      if (typeof item !== 'object' || item === null) throw new LibraryServiceError('LIBRARY_CORRUPT');
-      const candidate = item as Partial<CollectionMembershipHistorySnapshot>;
-      if (
-        typeof candidate.collectionId !== 'string'
-        || typeof candidate.assetId !== 'string'
-        || !Number.isInteger(candidate.position)
-      ) throw new LibraryServiceError('LIBRARY_CORRUPT');
-      return candidate as CollectionMembershipHistorySnapshot;
-    });
-  }
-
-  private collectionHistoryRowsEqual(
-    left: readonly CollectionHistorySnapshot[],
-    right: readonly CollectionHistorySnapshot[],
-  ): boolean {
-    const normalize = (items: readonly CollectionHistorySnapshot[]) => items
-      .map((item) => JSON.stringify(item))
-      .sort();
-    return JSON.stringify(normalize(left)) === JSON.stringify(normalize(right));
-  }
-
-  private collectionMembershipHistoryRowsEqual(
-    left: readonly CollectionMembershipHistorySnapshot[],
-    right: readonly CollectionMembershipHistorySnapshot[],
-  ): boolean {
-    const normalize = (items: readonly CollectionMembershipHistorySnapshot[]) => items
-      .map((item) => JSON.stringify(item))
-      .sort();
-    return JSON.stringify(normalize(left)) === JSON.stringify(normalize(right));
-  }
-
-  private applyCollectionHistorySnapshot(
-    openLibrary: OpenLibrary,
-    expected: readonly CollectionHistorySnapshot[],
-    restore: readonly CollectionHistorySnapshot[],
-    expectedMemberships: readonly CollectionMembershipHistorySnapshot[],
-    restoreMemberships: readonly CollectionMembershipHistorySnapshot[],
-  ): void {
-    const affectedIds = [...new Set([...expected, ...restore].map((item) => item.collectionId))];
-    const current = affectedIds.length === 0
-      ? []
-      : this.getCollectionHistorySnapshot({ libraryId: openLibrary.summary.libraryId, collectionIds: affectedIds, allowMissing: true });
-    const currentMemberships = this.getCollectionMembershipHistorySnapshot({
-      libraryId: openLibrary.summary.libraryId,
-      collectionIds: affectedIds,
-    });
-    if (!this.collectionHistoryRowsEqual(current, expected)
-      || !this.collectionMembershipHistoryRowsEqual(currentMemberships, expectedMemberships)) {
-      throw new LibraryServiceError('VERSION_CONFLICT');
-    }
-
-    const restoreIds = new Set(restore.map((item) => item.collectionId));
-    openLibrary.connection.transaction(() => {
-      // Delete deepest rows first so foreign keys and ON DELETE CASCADE do not
-      // leave a parent snapshot partially restored.
-      for (const item of [...current].sort((left, right) => right.collectionId.localeCompare(left.collectionId))) {
-        if (!restoreIds.has(item.collectionId)) {
-          openLibrary.connection.prepare('DELETE FROM collections WHERE collection_id = ? AND library_id = ?')
-            .run(item.collectionId, openLibrary.summary.libraryId);
-        }
-      }
-      const pending = [...restore];
-      while (pending.length > 0) {
-        const index = pending.findIndex((item) => item.parentId === null || restoreIds.has(item.parentId));
-        if (index < 0) throw new LibraryServiceError('FOLDER_NOT_FOUND');
-        const [item] = pending.splice(index, 1);
-        if (!item) throw new LibraryServiceError('LIBRARY_CORRUPT');
-        openLibrary.connection.prepare(
-          `INSERT INTO collections
-             (collection_id, library_id, parent_id, name, description, cover_asset_id, position, created_at, updated_at)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-           ON CONFLICT(collection_id) DO UPDATE SET
-             library_id = excluded.library_id,
-             parent_id = excluded.parent_id,
-             name = excluded.name,
-             description = excluded.description,
-             cover_asset_id = excluded.cover_asset_id,
-             position = excluded.position,
-             updated_at = excluded.updated_at`,
-        ).run(
-          item.collectionId,
-          item.libraryId,
-          item.parentId,
-          item.name,
-          item.description,
-          item.coverAssetId,
-          item.position,
-          new Date().toISOString(),
-          new Date().toISOString(),
-        );
-      }
-      if (affectedIds.length > 0) {
-        sqliteRunInChunks({
-          connection: openLibrary.connection,
-          values: affectedIds,
-          buildSql: (placeholders) =>
-            `DELETE FROM collection_assets WHERE collection_id IN (${placeholders})`,
-        });
-      }
-      const insertMembership = openLibrary.connection.prepare(
-        'INSERT INTO collection_assets (collection_id, asset_id, position) VALUES (?, ?, ?)',
-      );
-      for (const item of restoreMemberships) insertMembership.run(item.collectionId, item.assetId, item.position);
-    })();
-  }
-
-  recordCollectionSnapshotHistory(input: {
-    after: readonly CollectionHistorySnapshot[];
-    before: readonly CollectionHistorySnapshot[];
-    afterMemberships?: readonly CollectionMembershipHistorySnapshot[];
-    beforeMemberships?: readonly CollectionMembershipHistorySnapshot[];
-    commandId: string;
-    libraryId: string;
-    labelKey: string;
-    affectedCount: number;
-    source?: HistorySource;
-    sourceReference?: string | null;
-  }): HistoryOperationReceipt {
-    const afterMemberships = input.afterMemberships ?? [];
-    const beforeMemberships = input.beforeMemberships ?? [];
-    const recipe = (expected: readonly CollectionHistorySnapshot[], restore: readonly CollectionHistorySnapshot[], expectedMemberships: readonly CollectionMembershipHistorySnapshot[], restoreMemberships: readonly CollectionMembershipHistorySnapshot[]): HistoryRecipe => ({
-      kind: 'collection-snapshot',
-      version: 1,
-      payload: { expected, restore, expectedMemberships, restoreMemberships },
-    });
-    return this.recordOperationHistory({
-      libraryId: input.libraryId,
-      source: input.source,
-      sourceReference: input.sourceReference,
-      commandId: input.commandId,
-      labelKey: input.labelKey,
-      labelArgs: { count: input.affectedCount },
-      affectedCount: input.affectedCount,
-      affectedEntities: input.after.map((item) => item.collectionId),
-      forwardRecipe: recipe(input.before, input.after, beforeMemberships, afterMemberships),
-      inverseRecipe: recipe(input.after, input.before, afterMemberships, beforeMemberships),
-    });
-  }
-
-  getSmartCollectionHistorySnapshot(input: {
-    collectionIds: readonly string[];
-    libraryId: string;
-    allowMissing?: boolean;
-  }): SmartCollectionHistorySnapshot[] {
-    const openLibrary = this.requireOpenLibrary(input.libraryId);
-    const ids = [...new Set(input.collectionIds)];
-    if (ids.length === 0) return [];
-    const rows = sqliteAllInChunks<string, {
-      collection_id: string;
-      library_id: string;
-      name: string;
-      query_definition_json: string;
-      position: number;
-    }>({
-      connection: openLibrary.connection,
-      values: ids,
-      buildSql: (placeholders) =>
-        `SELECT collection_id, library_id, name, query_definition_json, position
-           FROM smart_collections
-          WHERE library_id = ? AND collection_id IN (${placeholders})`,
-      bind: (chunk) => [input.libraryId, ...chunk],
-    });
-    if (rows.length !== ids.length && !input.allowMissing) throw new LibraryServiceError('FOLDER_NOT_FOUND');
-    return rows.map((row) => ({
-      collectionId: row.collection_id,
-      libraryId: row.library_id,
-      name: row.name,
-      queryDefinitionJson: row.query_definition_json,
-      position: row.position,
-    }));
-  }
-
-  private assertSmartCollectionHistorySnapshots(value: unknown): SmartCollectionHistorySnapshot[] {
-    if (!Array.isArray(value)) throw new LibraryServiceError('LIBRARY_CORRUPT');
-    return value.map((item) => {
-      if (typeof item !== 'object' || item === null) throw new LibraryServiceError('LIBRARY_CORRUPT');
-      const candidate = item as Partial<SmartCollectionHistorySnapshot>;
-      if (
-        typeof candidate.collectionId !== 'string'
-        || typeof candidate.libraryId !== 'string'
-        || typeof candidate.name !== 'string'
-        || typeof candidate.queryDefinitionJson !== 'string'
-        || !Number.isInteger(candidate.position)
-      ) throw new LibraryServiceError('LIBRARY_CORRUPT');
-      return candidate as SmartCollectionHistorySnapshot;
-    });
-  }
-
-  private applySmartCollectionHistorySnapshot(
-    openLibrary: OpenLibrary,
-    expected: readonly SmartCollectionHistorySnapshot[],
-    restore: readonly SmartCollectionHistorySnapshot[],
-  ): void {
-    const ids = [...new Set([...expected, ...restore].map((item) => item.collectionId))];
-    const current = ids.length === 0 ? [] : this.getSmartCollectionHistorySnapshot({
-      libraryId: openLibrary.summary.libraryId,
-      collectionIds: ids,
-      allowMissing: true,
-    });
-    const normalized = (items: readonly SmartCollectionHistorySnapshot[]) => items
-      .map((item) => JSON.stringify(item)).sort();
-    if (JSON.stringify(normalized(current)) !== JSON.stringify(normalized(expected))) {
-      throw new LibraryServiceError('VERSION_CONFLICT');
-    }
-    const restoreIds = new Set(restore.map((item) => item.collectionId));
-    openLibrary.connection.transaction(() => {
-      for (const item of current) {
-        if (!restoreIds.has(item.collectionId)) {
-          openLibrary.connection.prepare('DELETE FROM smart_collections WHERE collection_id = ? AND library_id = ?')
-            .run(item.collectionId, openLibrary.summary.libraryId);
-        }
-      }
-      for (const item of restore) {
-        openLibrary.connection.prepare(
-          `INSERT INTO smart_collections
-             (collection_id, library_id, name, query_definition_json, position, created_at, updated_at)
-           VALUES (?, ?, ?, ?, ?, ?, ?)
-           ON CONFLICT(collection_id) DO UPDATE SET
-             library_id = excluded.library_id,
-             name = excluded.name,
-             query_definition_json = excluded.query_definition_json,
-             position = excluded.position,
-             updated_at = excluded.updated_at`,
-        ).run(
-          item.collectionId,
-          item.libraryId,
-          item.name,
-          item.queryDefinitionJson,
-          item.position,
-          new Date().toISOString(),
-          new Date().toISOString(),
-        );
-      }
-    })();
-  }
-
-  recordSmartCollectionSnapshotHistory(input: {
-    after: readonly SmartCollectionHistorySnapshot[];
-    before: readonly SmartCollectionHistorySnapshot[];
-    commandId: string;
-    libraryId: string;
-    labelKey: string;
-    affectedCount: number;
-    source?: HistorySource;
-    sourceReference?: string | null;
-  }): HistoryOperationReceipt {
-    const recipe = (expected: readonly SmartCollectionHistorySnapshot[], restore: readonly SmartCollectionHistorySnapshot[]): HistoryRecipe => ({
-      kind: 'smart-collection-snapshot',
-      version: 1,
-      payload: { expected, restore },
-    });
-    return this.recordOperationHistory({
-      libraryId: input.libraryId,
-      source: input.source,
-      sourceReference: input.sourceReference,
-      commandId: input.commandId,
-      labelKey: input.labelKey,
-      labelArgs: { count: input.affectedCount },
-      affectedCount: input.affectedCount,
-      affectedEntities: input.after.map((item) => item.collectionId),
-      forwardRecipe: recipe(input.before, input.after),
-      inverseRecipe: recipe(input.after, input.before),
     });
   }
 
@@ -12243,24 +11772,6 @@ export class LibraryService {
         this.applyTagRelations(openLibrary, relations, 'remove', typeof payload.expectedPresent === 'boolean' ? payload.expectedPresent : undefined);
         return { affectedCount: relations.length };
       }
-      case 'collection-assets-add': {
-        this.assertCollectionMembershipPrecondition(openLibrary, payload);
-        this.withHistoryReplay(() => this.addCollectionAssets({
-          libraryId: openLibrary.summary.libraryId,
-          collectionId: payload.collectionId as string,
-          assetIds: payload.assetIds as string[],
-        }));
-        return { affectedCount: (payload.assetIds as string[]).length };
-      }
-      case 'collection-assets-remove': {
-        this.assertCollectionMembershipPrecondition(openLibrary, payload);
-        this.withHistoryReplay(() => this.removeCollectionAssets({
-          libraryId: openLibrary.summary.libraryId,
-          collectionId: payload.collectionId as string,
-          assetIds: payload.assetIds as string[],
-        }));
-        return { affectedCount: (payload.assetIds as string[]).length };
-      }
       case 'managed-folder-snapshot': {
         const expected = this.assertManagedFolderHistorySnapshots(payload.expected);
         const restore = this.assertManagedFolderHistorySnapshots(payload.restore);
@@ -12381,26 +11892,6 @@ export class LibraryService {
           tombstoneId,
         }));
         return { affectedCount: result.restoredFolderCount };
-      }
-      case 'collection-snapshot': {
-        const expected = this.assertCollectionHistorySnapshots(payload.expected);
-        const restore = this.assertCollectionHistorySnapshots(payload.restore);
-        const expectedMemberships = this.assertCollectionMembershipHistorySnapshots(payload.expectedMemberships);
-        const restoreMemberships = this.assertCollectionMembershipHistorySnapshots(payload.restoreMemberships);
-        this.applyCollectionHistorySnapshot(
-          openLibrary,
-          expected,
-          restore,
-          expectedMemberships,
-          restoreMemberships,
-        );
-        return { affectedCount: restore.length };
-      }
-      case 'smart-collection-snapshot': {
-        const expected = this.assertSmartCollectionHistorySnapshots(payload.expected);
-        const restore = this.assertSmartCollectionHistorySnapshots(payload.restore);
-        this.applySmartCollectionHistorySnapshot(openLibrary, expected, restore);
-        return { affectedCount: restore.length };
       }
       case 'tag-snapshot': {
         const expected = this.assertTagHistorySnapshots(payload.expected);
@@ -13413,7 +12904,6 @@ export class LibraryService {
   async probeImageSequenceImportOffer(input: {
     libraryId: string;
     targetFolderId?: string;
-    targetCollectionId?: string;
     sourcePaths: string[];
   }): Promise<ImageSequenceImportOffer | null> {
     this.requireOpenLibrary(input.libraryId);
@@ -13545,9 +13035,6 @@ export class LibraryService {
       selectedPaths,
       sequences,
       ...(input.targetFolderId ? { targetFolderId: input.targetFolderId } : {}),
-      ...(input.targetCollectionId
-        ? { targetCollectionId: input.targetCollectionId }
-        : {}),
     };
   }
 
@@ -13798,7 +13285,6 @@ export class LibraryService {
     assetId: string,
     metadata: EagleImportedMetadata,
     now: string,
-    collectionNextPosition?: Map<string, number>,
   ): void {
     openLibrary.connection
       .prepare(
@@ -13827,21 +13313,6 @@ export class LibraryService {
     );
     for (const tagId of metadata.tagIds) insertTag.run(assetId, tagId);
 
-    const maxCollectionPosition = openLibrary.connection.prepare(
-      'SELECT COALESCE(MAX(position), -1) AS max_position FROM collection_assets WHERE collection_id = ?',
-    );
-    const insertCollection = openLibrary.connection.prepare(
-      'INSERT OR IGNORE INTO collection_assets (collection_id, asset_id, position) VALUES (?, ?, ?)',
-    );
-    for (const collectionId of metadata.collectionIds) {
-      let nextPosition = collectionNextPosition?.get(collectionId);
-      if (nextPosition === undefined) {
-        const row = maxCollectionPosition.get(collectionId) as { max_position: number };
-        nextPosition = row.max_position + 1;
-      }
-      insertCollection.run(collectionId, assetId, nextPosition);
-      collectionNextPosition?.set(collectionId, nextPosition + 1);
-    }
     // Search FTS is rebuilt once after the asset row commits; doing it here
     // doubled the GROUP_CONCAT + FTS write on every Eagle/Billfish item.
   }
@@ -16050,7 +15521,6 @@ export class LibraryService {
     }
   }
 
-
   listManagedFolders(libraryId: string, showIgnored = false): ManagedFolderSummary[] {
     const openLibrary = this.requireOpenLibrary(libraryId);
     const rows = (openLibrary.connection
@@ -16074,7 +15544,7 @@ export class LibraryService {
   }
 
   /**
-   * Store a catalog appearance on a folder/collection row. This is library
+   * Store a catalog appearance on a folder row. This is library
    * metadata only — it must not rename or move anything on disk.
    */
   setEntityAppearance(input: {
@@ -16116,38 +15586,6 @@ export class LibraryService {
             `UPDATE linked_folders
                 SET appearance_glyph_kind = ?, appearance_glyph_value = ?, appearance_color_id = ?, updated_at = ?
               WHERE folder_id = ? AND library_id = ?`,
-          )
-          .run(
-            glyphKind,
-            glyphValue,
-            colorId,
-            now,
-            input.target.id,
-            openLibrary.summary.libraryId,
-          ).changes;
-        break;
-      case 'collection':
-        changed = openLibrary.connection
-          .prepare(
-            `UPDATE collections
-                SET appearance_glyph_kind = ?, appearance_glyph_value = ?, appearance_color_id = ?, updated_at = ?
-              WHERE collection_id = ? AND library_id = ?`,
-          )
-          .run(
-            glyphKind,
-            glyphValue,
-            colorId,
-            now,
-            input.target.id,
-            openLibrary.summary.libraryId,
-          ).changes;
-        break;
-      case 'smart-collection':
-        changed = openLibrary.connection
-          .prepare(
-            `UPDATE smart_collections
-                SET appearance_glyph_kind = ?, appearance_glyph_value = ?, appearance_color_id = ?, updated_at = ?
-              WHERE collection_id = ? AND library_id = ?`,
           )
           .run(
             glyphKind,
@@ -16729,8 +16167,6 @@ export class LibraryService {
       folders: this.listManagedFolders(input.libraryId, showIgnored),
       linkedFolders: this.listLinkedFolders(input.libraryId),
       tags: this.listTags(input.libraryId),
-      collections: this.listCollections(input.libraryId),
-      smartCollections: this.listSmartCollections(input.libraryId),
       trashedFolders: includeTrashedFolders
         ? this.listTrashedFolders(input.libraryId)
         : [],
@@ -16834,10 +16270,6 @@ export class LibraryService {
     await checkpoint();
     const tags = metrics.measure('tags', () => this.listTags(input.libraryId));
     await checkpoint();
-    const collections = metrics.measure('collections', () => this.listCollections(input.libraryId));
-    await checkpoint();
-    const smartCollections = metrics.measure('smart-collections', () => this.listSmartCollections(input.libraryId));
-    await checkpoint();
     const trashedFolders = includeTrashedFolders
       ? this.listTrashedFolders(input.libraryId)
       : [];
@@ -16851,8 +16283,6 @@ export class LibraryService {
       folders,
       linkedFolders,
       tags,
-      collections,
-      smartCollections,
       trashedFolders,
       folderCovers: this.listFolderNavigationCovers(openLibrary),
     };
@@ -21155,528 +20585,6 @@ export class LibraryService {
     return { eligibleAssetIds, skipped };
   }
 
-  // ── Collections ────────────────────────────────────────────────────
-
-  createCollection(input: {
-    libraryId: string;
-    parentId?: string;
-    name: string;
-  }): CollectionSummary {
-    const openLibrary = this.requireOpenLibrary(input.libraryId);
-    const trimmed = input.name.trim();
-    if (trimmed.length === 0) throw new LibraryServiceError('INVALID_FOLDER_NAME');
-
-    if (input.parentId) {
-      const parent = openLibrary.connection
-        .prepare(
-          'SELECT collection_id FROM collections WHERE collection_id = ? AND library_id = ?',
-        )
-        .get(input.parentId, openLibrary.summary.libraryId);
-      if (!parent) throw new LibraryServiceError('FOLDER_NOT_FOUND');
-    }
-
-    const maxPosRow = openLibrary.connection
-      .prepare(
-        input.parentId
-          ? 'SELECT COALESCE(MAX(position), -1) AS max_pos FROM collections WHERE parent_id = ? AND library_id = ?'
-          : 'SELECT COALESCE(MAX(position), -1) AS max_pos FROM collections WHERE parent_id IS NULL AND library_id = ?',
-      )
-      .get(
-        ...(input.parentId
-          ? [input.parentId, openLibrary.summary.libraryId]
-          : [openLibrary.summary.libraryId]),
-      ) as { max_pos: number };
-    const position = maxPosRow.max_pos + 1;
-
-    const collectionId = randomUUID();
-    const now = new Date().toISOString();
-
-    openLibrary.connection
-      .prepare(
-        `INSERT INTO collections
-           (collection_id, library_id, parent_id, name, position, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      )
-      .run(
-        collectionId,
-        openLibrary.summary.libraryId,
-        input.parentId ?? null,
-        trimmed,
-        position,
-        now,
-        now,
-      );
-
-    return {
-      collectionId,
-      parentId: input.parentId ?? null,
-      name: trimmed,
-      description: null,
-      coverAssetId: null,
-      position,
-      assetCount: 0,
-      childCollectionCount: 0,
-      // Single-row return must match listCollections, which always reports it.
-      appearance: null,
-    };
-  }
-
-  listCollections(libraryId: string): CollectionSummary[] {
-    const openLibrary = this.requireOpenLibrary(libraryId);
-    // Serpent-verg.2 — lenient read (0031 §1): libraries predating the
-    // collections table degrade to an empty list; missing display columns
-    // (description/cover_asset_id) fill with null.
-    const connection = openLibrary.connection;
-    if (!hasTable(connection, 'collections')) return [];
-    const collectionColumns = columnsFor(connection, 'collections');
-    const selectList = [
-      'c.collection_id',
-      'c.parent_id',
-      'c.name',
-      'c.position',
-      ...qualify('c', collectionColumns, ['description', 'cover_asset_id', 'appearance_glyph_kind', 'appearance_glyph_value', 'appearance_color_id']),
-      `(SELECT COUNT(*) FROM collections ch WHERE ch.parent_id = c.collection_id) AS child_count`,
-    ].join(',\n');
-    const recursiveAssetCounts = this.collectionRecursiveAssetCounts(openLibrary);
-    const rows = connection
-      .prepare(
-        `SELECT ${selectList}
-           FROM collections c
-          WHERE c.library_id = ?
-          ORDER BY c.position, c.name`,
-      )
-      .all(openLibrary.summary.libraryId) as Array<{
-        collection_id: string;
-        parent_id: string | null;
-        name: string;
-        description: string | null;
-        cover_asset_id: string | null;
-        position: number;
-        child_count: number;
-        appearance_glyph_kind?: string | null;
-        appearance_glyph_value?: string | null;
-        appearance_color_id?: string | null;
-      }>;
-    return rows.map((row) => ({
-      collectionId: row.collection_id,
-      parentId: row.parent_id,
-      name: row.name,
-      description: row.description ?? null,
-      coverAssetId: row.cover_asset_id ?? null,
-      position: row.position,
-      // Recursive collection scope is a set union, not a sum: an asset can
-      // be directly assigned to both a parent and one of its descendants.
-      assetCount: recursiveAssetCounts.get(row.collection_id) ?? 0,
-      childCollectionCount: row.child_count,
-      appearance: sanitizeEntityAppearance({
-        glyphKind: row.appearance_glyph_kind,
-        glyphValue: row.appearance_glyph_value,
-        colorId: row.appearance_color_id,
-      }),
-    }));
-  }
-
-  /**
-   * Returns the visible asset union for every collection and its descendants.
-   * Collections are allowed to overlap, so COUNT(DISTINCT) is required here;
-   * the folder count implementation can sum disjoint subtrees instead.
-   */
-  private collectionRecursiveAssetCounts(
-    openLibrary: OpenLibrary,
-  ): Map<string, number> {
-    // Serpent-verg.2 — lenient read (0031 §1): libraries predating the
-    // collection tables have no recursive counts; callers show zero.
-    if (
-      !hasTable(openLibrary.connection, 'collections') ||
-      !hasTable(openLibrary.connection, 'collection_assets')
-    ) {
-      return new Map();
-    }
-    // Serpent-4bdd26 / 0032-E.3: the sidebar re-requests collection summaries
-    // after every mutation; derived job/artifact writes do not change
-    // collection membership, so use the narrow browse sequence as the cache
-    // fence rather than the noisy library-wide sequence.
-    const browseChangeSequence = this.getBrowseChangeSequence(openLibrary.summary.libraryId);
-    if (openLibrary.collectionCountCache?.browseChangeSequence === browseChangeSequence) {
-      return openLibrary.collectionCountCache.counts;
-    }
-    const rows = openLibrary.connection
-      .prepare(
-        `WITH RECURSIVE collection_tree(root_collection_id, collection_id) AS (
-           SELECT c.collection_id, c.collection_id
-             FROM collections c
-            WHERE c.library_id = ?
-           UNION ALL
-           SELECT tree.root_collection_id, child.collection_id
-             FROM collection_tree tree
-             JOIN collections child ON child.parent_id = tree.collection_id
-            WHERE child.library_id = ?
-         )
-         SELECT tree.root_collection_id AS collection_id,
-                COUNT(DISTINCT ca.asset_id) AS asset_count
-           FROM collection_tree tree
-           JOIN collection_assets ca ON ca.collection_id = tree.collection_id
-           JOIN assets a ON a.asset_id = ca.asset_id
-          WHERE a.deleted_at IS NULL
-          GROUP BY tree.root_collection_id`,
-      )
-      .all(openLibrary.summary.libraryId, openLibrary.summary.libraryId) as Array<{
-      collection_id: string;
-      asset_count: number;
-    }>;
-    const counts = new Map(rows.map((row) => [row.collection_id, row.asset_count]));
-    openLibrary.collectionCountCache = { browseChangeSequence, counts };
-    return counts;
-  }
-
-  updateCollection(input: {
-    libraryId: string;
-    collectionId: string;
-    name?: string;
-    parentId?: string | null;
-    description?: string | null;
-    coverAssetId?: string | null;
-    position?: number;
-  }): CollectionSummary {
-    const openLibrary = this.requireOpenLibrary(input.libraryId);
-    const existing = openLibrary.connection
-      .prepare(
-        `SELECT collection_id, parent_id, name, description, cover_asset_id, position,
-                appearance_glyph_kind, appearance_glyph_value, appearance_color_id
-           FROM collections
-          WHERE collection_id = ? AND library_id = ?`,
-      )
-      .get(input.collectionId, openLibrary.summary.libraryId) as {
-        collection_id: string;
-        parent_id: string | null;
-        name: string;
-        description: string | null;
-        cover_asset_id: string | null;
-        position: number;
-        appearance_glyph_kind?: string | null;
-        appearance_glyph_value?: string | null;
-        appearance_color_id?: string | null;
-      } | undefined;
-    if (!existing) throw new LibraryServiceError('FOLDER_NOT_FOUND');
-
-    const now = new Date().toISOString();
-    const newName =
-      input.name !== undefined ? input.name.trim() : existing.name;
-    if (newName.length === 0) throw new LibraryServiceError('INVALID_FOLDER_NAME');
-    const newParentId = input.parentId !== undefined ? input.parentId : existing.parent_id;
-    if (newParentId !== null) {
-      const parent = openLibrary.connection
-        .prepare('SELECT parent_id FROM collections WHERE collection_id = ? AND library_id = ?')
-        .get(newParentId, openLibrary.summary.libraryId) as { parent_id: string | null } | undefined;
-      if (!parent) throw new LibraryServiceError('FOLDER_NOT_FOUND');
-      if (newParentId === input.collectionId) throw new LibraryServiceError('FOLDER_NAME_CONFLICT');
-      const visited = new Set<string>([input.collectionId]);
-      let ancestorId: string | null = newParentId;
-      while (ancestorId !== null) {
-        if (visited.has(ancestorId)) throw new LibraryServiceError('FOLDER_NAME_CONFLICT');
-        visited.add(ancestorId);
-        const ancestor = openLibrary.connection
-          .prepare('SELECT parent_id FROM collections WHERE collection_id = ? AND library_id = ?')
-          .get(ancestorId, openLibrary.summary.libraryId) as { parent_id: string | null } | undefined;
-        if (!ancestor) throw new LibraryServiceError('FOLDER_NOT_FOUND');
-        ancestorId = ancestor.parent_id;
-      }
-    }
-    const newDescription =
-      input.description !== undefined ? input.description : existing.description;
-    const newCoverAssetId =
-      input.coverAssetId !== undefined ? input.coverAssetId : existing.cover_asset_id;
-    const newPosition =
-      input.position !== undefined ? input.position : existing.position;
-
-    openLibrary.connection
-      .prepare(
-        `UPDATE collections
-            SET parent_id = ?, name = ?, description = ?, cover_asset_id = ?, position = ?, updated_at = ?
-          WHERE collection_id = ?`,
-      )
-      .run(
-        newParentId,
-        newName,
-        newDescription,
-        newCoverAssetId,
-        newPosition,
-        now,
-        input.collectionId,
-      );
-
-    const recursiveAssetCounts = this.collectionRecursiveAssetCounts(openLibrary);
-    const countRows = openLibrary.connection
-      .prepare(
-        'SELECT COUNT(*) AS child_count FROM collections WHERE parent_id = ?',
-      )
-      .get(input.collectionId) as { child_count: number };
-
-    return {
-      collectionId: input.collectionId,
-      parentId: newParentId,
-      name: newName,
-      description: newDescription,
-      coverAssetId: newCoverAssetId,
-      position: newPosition,
-      assetCount: recursiveAssetCounts.get(input.collectionId) ?? 0,
-      childCollectionCount: countRows.child_count,
-      appearance: sanitizeEntityAppearance({
-        glyphKind: existing.appearance_glyph_kind,
-        glyphValue: existing.appearance_glyph_value,
-        colorId: existing.appearance_color_id,
-      }),
-    };
-  }
-
-  reorderCollections(input: {
-    libraryId: string;
-    orderedCollectionIds: string[];
-  }): string[] {
-    const openLibrary = this.requireOpenLibrary(input.libraryId);
-    const uniqueIds = new Set(input.orderedCollectionIds);
-    if (uniqueIds.size !== input.orderedCollectionIds.length) {
-      throw new LibraryServiceError('FOLDER_NOT_FOUND');
-    }
-    const rows = sqliteAllInChunks<string, { collection_id: string; parent_id: string | null }>({
-      connection: openLibrary.connection,
-      values: input.orderedCollectionIds,
-      buildSql: (placeholders) =>
-        `SELECT collection_id, parent_id
-           FROM collections
-          WHERE library_id = ? AND collection_id IN (${placeholders})`,
-      bind: (chunk) => [openLibrary.summary.libraryId, ...chunk],
-    });
-    if (rows.length !== input.orderedCollectionIds.length) {
-      throw new LibraryServiceError('FOLDER_NOT_FOUND');
-    }
-    const parentId = rows[0]!.parent_id;
-    if (rows.some((row) => row.parent_id !== parentId)) {
-      throw new LibraryServiceError('FOLDER_NOT_FOUND');
-    }
-    const siblingCount = openLibrary.connection.prepare(
-      `SELECT COUNT(*) AS count
-         FROM collections
-        WHERE library_id = ? AND parent_id IS ?`,
-    ).get(openLibrary.summary.libraryId, parentId) as { count: number };
-    if (siblingCount.count !== input.orderedCollectionIds.length) {
-      throw new LibraryServiceError('FOLDER_NOT_FOUND');
-    }
-
-    const now = new Date().toISOString();
-    const update = openLibrary.connection.prepare(
-      'UPDATE collections SET position = ?, updated_at = ? WHERE collection_id = ? AND library_id = ?',
-    );
-    openLibrary.connection.transaction(() => {
-      input.orderedCollectionIds.forEach((collectionId, position) => {
-        const result = update.run(position, now, collectionId, openLibrary.summary.libraryId);
-        if (result.changes !== 1) throw new LibraryServiceError('FOLDER_NOT_FOUND');
-      });
-    })();
-    return [...input.orderedCollectionIds];
-  }
-
-  deleteCollection(input: { libraryId: string; collectionId: string }): string {
-    const openLibrary = this.requireOpenLibrary(input.libraryId);
-    const existing = openLibrary.connection
-      .prepare(
-        'SELECT collection_id FROM collections WHERE collection_id = ? AND library_id = ?',
-      )
-      .get(input.collectionId, openLibrary.summary.libraryId);
-    if (!existing) throw new LibraryServiceError('FOLDER_NOT_FOUND');
-
-    openLibrary.connection
-      .prepare('DELETE FROM collections WHERE collection_id = ?')
-      .run(input.collectionId);
-    return input.collectionId;
-  }
-
-  addCollectionAssets(input: {
-    libraryId: string;
-    collectionId: string;
-    assetIds: string[];
-  }): { collectionId: string } {
-    const openLibrary = this.requireOpenLibrary(input.libraryId);
-    const col = openLibrary.connection
-      .prepare(
-        'SELECT collection_id FROM collections WHERE collection_id = ? AND library_id = ?',
-      )
-      .get(input.collectionId, openLibrary.summary.libraryId);
-    if (!col) throw new LibraryServiceError('FOLDER_NOT_FOUND');
-
-    const assetRows = sqliteAllInChunks<string, { asset_id: string }>({
-      connection: openLibrary.connection,
-      values: input.assetIds,
-      buildSql: (placeholders) =>
-        `SELECT asset_id FROM assets WHERE asset_id IN (${placeholders})`,
-    });
-    if (assetRows.length !== input.assetIds.length) throw new LibraryServiceError('FOLDER_NOT_FOUND');
-
-    const maxPosRow = openLibrary.connection
-      .prepare(
-        'SELECT COALESCE(MAX(position), -1) AS max_pos FROM collection_assets WHERE collection_id = ?',
-      )
-      .get(input.collectionId) as { max_pos: number };
-    let nextPosition = maxPosRow.max_pos + 1;
-
-    const insertStmt = openLibrary.connection.prepare(
-      'INSERT OR IGNORE INTO collection_assets (collection_id, asset_id, position) VALUES (?, ?, ?)',
-    );
-    openLibrary.connection.transaction(() => {
-      for (const assetId of input.assetIds) {
-        insertStmt.run(input.collectionId, assetId, nextPosition);
-        nextPosition += 1;
-      }
-    })();
-    return { collectionId: input.collectionId };
-  }
-
-  removeCollectionAssets(input: {
-    libraryId: string;
-    collectionId: string;
-    assetIds: string[];
-  }): { collectionId: string } {
-    const openLibrary = this.requireOpenLibrary(input.libraryId);
-    sqliteRunInChunks({
-      connection: openLibrary.connection,
-      values: input.assetIds,
-      buildSql: (placeholders) =>
-        `DELETE FROM collection_assets
-           WHERE collection_id = ?
-             AND asset_id IN (${placeholders})`,
-      bind: (chunk) => [input.collectionId, ...chunk],
-    });
-    return { collectionId: input.collectionId };
-  }
-
-  reorderCollectionAssets(input: {
-    libraryId: string;
-    collectionId: string;
-    orderedAssetIds: string[];
-  }): { collectionId: string } {
-    const openLibrary = this.requireOpenLibrary(input.libraryId);
-    const col = openLibrary.connection
-      .prepare(
-        'SELECT collection_id FROM collections WHERE collection_id = ? AND library_id = ?',
-      )
-      .get(input.collectionId, openLibrary.summary.libraryId);
-    if (!col) throw new LibraryServiceError('FOLDER_NOT_FOUND');
-
-    openLibrary.connection.transaction(() => {
-      openLibrary.connection
-        .prepare('DELETE FROM collection_assets WHERE collection_id = ?')
-        .run(input.collectionId);
-      const insertStmt = openLibrary.connection.prepare(
-        'INSERT INTO collection_assets (collection_id, asset_id, position) VALUES (?, ?, ?)',
-      );
-      for (let index = 0; index < input.orderedAssetIds.length; index += 1) {
-        insertStmt.run(input.collectionId, input.orderedAssetIds[index]!, index);
-      }
-    })();
-    return { collectionId: input.collectionId };
-  }
-
-  listCollectionAssets(input: {
-    libraryId: string;
-    collectionId: string;
-    recursive: boolean;
-  }): AssetSummary[] {
-    const openLibrary = this.requireOpenLibrary(input.libraryId);
-    const col = openLibrary.connection
-      .prepare(
-        'SELECT collection_id FROM collections WHERE collection_id = ? AND library_id = ?',
-      )
-      .get(input.collectionId, openLibrary.summary.libraryId);
-    if (!col) throw new LibraryServiceError('FOLDER_NOT_FOUND');
-
-    let collectionIds: string[];
-    if (input.recursive) {
-      const descendantRows = openLibrary.connection
-        .prepare(
-          `WITH RECURSIVE descendants AS (
-             SELECT collection_id FROM collections WHERE collection_id = ?
-             UNION ALL
-             SELECT c.collection_id FROM collections c JOIN descendants d ON c.parent_id = d.collection_id
-           )
-           SELECT collection_id FROM descendants`,
-        )
-        .all(input.collectionId) as Array<{ collection_id: string }>;
-      collectionIds = descendantRows.map((row) => row.collection_id);
-    } else {
-      collectionIds = [input.collectionId];
-    }
-
-    const rows = sqliteAllInChunks<string, {
-        asset_id: string;
-        location_kind: 'managed' | 'linked';
-        availability: 'available' | 'missing';
-        byte_size: number;
-        current_revision_id: string;
-        managed_folder_id: string | null;
-        modified_at: string;
-        relative_file_path: string;
-        rating: number;
-        favorite: number;
-        deleted_at: string | null;
-        trashed_from_relative_path: string | null;
-        collection_position: number;
-      }>({
-        connection: openLibrary.connection,
-        values: collectionIds,
-        buildSql: (placeholders) =>
-          `SELECT DISTINCT a.asset_id, a.location_kind, a.managed_folder_id, a.relative_file_path,
-                  a.current_revision_id, a.availability, r.byte_size, r.modified_at,
-                  COALESCE(m.rating, 0) AS rating, COALESCE(m.favorite, 0) AS favorite,
-                  a.deleted_at, a.trashed_from_relative_path, ca.position AS collection_position
-             FROM collection_assets ca
-             JOIN assets a ON a.asset_id = ca.asset_id
-             JOIN revisions r ON r.revision_id = a.current_revision_id
-             LEFT JOIN asset_metadata m ON m.asset_id = a.asset_id
-            WHERE ca.collection_id IN (${placeholders})
-              AND a.deleted_at IS NULL
-            ORDER BY ca.position, a.relative_file_path`,
-      });
-    rows.sort((left, right) =>
-      left.collection_position - right.collection_position ||
-      left.relative_file_path.localeCompare(right.relative_file_path),
-    );
-    const uniqueRows = [...new Map(rows.map((row) => [row.asset_id, row])).values()];
-    return this.withImageSequenceSummaries(
-      openLibrary,
-      uniqueRows.map((row) => this.assetSummaryFromRow(row)),
-    );
-  }
-
-  /**
-   * Direct collection memberships for the given assets (CU-B4 menu filtering).
-   * Scoped to collections that belong to the open library.
-   */
-  listAssetCollectionMemberships(input: {
-    libraryId: string;
-    assetIds: string[];
-  }): Array<{ assetId: string; collectionId: string }> {
-    const openLibrary = this.requireOpenLibrary(input.libraryId);
-    const uniqueIds = [...new Set(input.assetIds)];
-    if (uniqueIds.length === 0) return [];
-
-    const rows = sqliteAllInChunks<string, { asset_id: string; collection_id: string }>({
-      connection: openLibrary.connection,
-      values: uniqueIds,
-      buildSql: (placeholders) =>
-        `SELECT ca.asset_id, ca.collection_id
-           FROM collection_assets ca
-           JOIN collections c ON c.collection_id = ca.collection_id
-          WHERE ca.asset_id IN (${placeholders})
-            AND c.library_id = ?`,
-      bind: (chunk) => [...chunk, openLibrary.summary.libraryId],
-    });
-
-    return rows.map((row) => ({
-      assetId: row.asset_id,
-      collectionId: row.collection_id,
-    }));
-  }
-
   // ── Asset Metadata ──────────────────────────────────────────────────
 
   private resolvedPaletteFields(
@@ -22472,8 +21380,6 @@ export class LibraryService {
     this.emitClientAssetsChanged(input.libraryId, eligibleAssetIds.length);
     return { updatedCount: eligibleAssetIds.length, skipped };
   }
-
-  // ── Smart Collections ────────────────────────────────────────────────
 
   // ── FTS5 Search Content Sync ───────────────────────────────────────
 
@@ -24617,7 +23523,7 @@ export class LibraryService {
    * Resolve files from an OS-native drag back to current asset ids. The
    * absolute paths are consumed only in Worker; Renderer receives ids only.
    * Matching both managed and linked roots keeps native drags usable for
-   * folder moves, collection membership, and trash drops.
+   * folder moves, tag drops, and trash drops.
    */
   resolveAssetIdsByAbsolutePaths(
     libraryId: string,
@@ -35844,7 +34750,7 @@ export class LibraryService {
 
   /**
    * The compact layout query and the ordinary all-assets browse share the
-   * same stable order. Keep this narrow: filters, folders, collections and
+   * same stable order. Keep this narrow: filters, folders and
    * explicit sorts each have their own semantics and must use the SQL path.
    */
   /** Linked assets with availability `missing` stay in browse until this is false. */
@@ -35883,7 +34789,6 @@ export class LibraryService {
     filters?: FilterClause[] | null;
     scope?: SearchScope | null;
     sort?: SortDefinition | null;
-    smartCollectionId?: string | null;
     limit?: number | null;
     showIgnored?: boolean;
   }): {
@@ -35894,32 +34799,11 @@ export class LibraryService {
     snippets?: Array<{ assetId: string; text: string }>;
   } {
     const openLibrary = this.requireOpenLibrary(input.libraryId);
-    let query = input.query;
-    let filters = input.filters ?? null;
-    let sort = input.sort ?? null;
-    if (input.smartCollectionId) {
-      const row = openLibrary.connection
-        .prepare(
-          'SELECT query_definition_json FROM smart_collections WHERE collection_id = ? AND library_id = ?',
-        )
-        .get(input.smartCollectionId, input.libraryId) as {
-          query_definition_json: string;
-        } | undefined;
-      if (!row) throw new LibraryServiceError('FOLDER_NOT_FOUND');
-      const smartCollection = this.parseSmartCollectionDefinition(
-        row.query_definition_json,
-        'LIBRARY_CORRUPT',
-      );
-      query = smartCollection.search ?? null;
-      filters = smartCollection.filters ?? null;
-      sort = smartCollection.sort ?? null;
-    }
     const definition = {
-      smartCollectionId: input.smartCollectionId ?? null,
-      query,
-      filters,
+      query: input.query,
+      filters: input.filters ?? null,
       scope: input.scope ?? null,
-      sort,
+      sort: input.sort ?? null,
       showIgnored: input.showIgnored === true,
       showMissingLinked: this.#showMissingLinkedFiles,
     };
@@ -36286,29 +35170,6 @@ export class LibraryService {
       { hasAiContent, hasAiAssetTags, hasTagHierarchy: hasTable(connection, 'tag_hierarchy') },
     );
 
-    // A collection browse is a relational scope, not an asset-id list. Build
-    // that scope once per SQL statement so the recursive tree walk and the
-    // collection-position lookup are shared by COUNT, first-page, ids-only,
-    // and layout queries. The old shape repeated the recursive CTE inside a
-    // correlated ORDER BY subquery for every candidate asset, which made a
-    // recursive collection disproportionately slower than an equivalent
-    // folder browse on large libraries.
-    const collectionScopeResult = input.scope?.kind === 'collection'
-      ? buildCatalogCollectionScope(connection, {
-          libraryId: openLibrary.summary.libraryId,
-          collectionId: input.scope.collectionId,
-          recursive: input.scope.recursive,
-        })
-      : null;
-    if (collectionScopeResult?.status === 'missing') {
-      throw new LibraryServiceError('FOLDER_NOT_FOUND');
-    }
-    const collectionScope = collectionScopeResult?.status === 'ready'
-      ? collectionScopeResult.scope
-      : null;
-
-    // Collection CTE bindings precede WHERE bindings; relevance bindings are
-    // appended after them in the data query.
     const { sql: orderBy, params: orderParams } = buildCatalogSortOrder({
       hasPositiveQuery,
       searchGroups: searchExpression
@@ -36321,7 +35182,6 @@ export class LibraryService {
       artifactColumns,
       hasAiContent,
       sessionMode,
-      collectionScoped: collectionScope !== null,
       trashScope: input.scope?.kind === 'trash',
     });
 
@@ -36385,9 +35245,7 @@ export class LibraryService {
             artifactColumns.has('status') ? "AND chosen.status = 'ready'" : '',
           )}`
       : '';
-    const collectionScopeJoin = collectionScope?.join ?? '';
     const dataFrom = `FROM assets a
-         ${collectionScopeJoin}
          LEFT JOIN revisions r ON r.revision_id = a.current_revision_id
          LEFT JOIN asset_metadata m ON m.asset_id = a.asset_id
          ${durationMetaJoin}
@@ -36404,7 +35262,6 @@ export class LibraryService {
       filterFields.has('favorite') ||
       filterFields.has('source_url');
     const countFrom = `FROM assets a
-         ${collectionScopeJoin}
          ${needsMetadataForFilter ? 'LEFT JOIN asset_metadata m ON m.asset_id = a.asset_id' : ''}
          ${durationMetaJoin}
          ${paletteMetaJoin}
@@ -36495,10 +35352,10 @@ export class LibraryService {
       : cachedBrowseAssetIds !== undefined
       ? cachedBrowseAssetIds.length
       : (() => {
-          const countSql = `${collectionScope?.queryPrefix ?? ''}SELECT COUNT(*) AS total ${countFrom} ${whereClause}`;
+          const countSql = `SELECT COUNT(*) AS total ${countFrom} ${whereClause}`;
           const countRow = connection
             .prepare(countSql)
-            .get(...(collectionScope?.params ?? []), ...allParams) as {
+            .get(...allParams) as {
             total: number;
           };
           return countRow.total;
@@ -36540,16 +35397,15 @@ export class LibraryService {
         ? ''
         : `${whereClause}${whereClause.length > 0 ? ' AND ' : 'WHERE '}a.asset_id IN (${cachedPageAssetIds.map(() => '?').join(',')})`;
     const dataSql = cachedPageAssetIds === undefined
-      ? `${collectionScope?.queryPrefix ?? ''}SELECT ${dataColumnsForFetch} ${dataFrom} ${whereClause} ORDER BY ${orderBy} LIMIT ? OFFSET ?`
+      ? `SELECT ${dataColumnsForFetch} ${dataFrom} ${whereClause} ORDER BY ${orderBy} LIMIT ? OFFSET ?`
       : cachedPageAssetIds.length === 0
         ? ''
-        : `${collectionScope?.queryPrefix ?? ''}SELECT ${dataColumnsForFetch} ${dataFrom} ${cachedPageWhereClause}`;
+        : `SELECT ${dataColumnsForFetch} ${dataFrom} ${cachedPageWhereClause}`;
     let rows = dataSql === ''
       ? []
       : connection
         .prepare(dataSql)
         .all(
-          ...(collectionScope?.params ?? []),
           ...allParams,
           ...(cachedPageAssetIds ?? []),
           ...(cachedPageAssetIds === undefined
@@ -36680,305 +35536,6 @@ export class LibraryService {
         : undefined;
 
     return { items, total, offset, snippets };
-  }
-
-  // ── Smart Collections (v6) ──────────────────────────────────────────
-
-  createSmartCollection(input: {
-    libraryId: string;
-    name: string;
-    queryDefinitionJson: string;
-  }): SmartCollectionSummary {
-    const openLibrary = this.requireOpenLibrary(input.libraryId);
-    const trimmed = input.name.trim();
-    if (trimmed.length === 0) throw new LibraryServiceError('INVALID_FOLDER_NAME');
-
-    // Serpent-era: create may start as a draft with empty `{}` query; the
-    // settings dialog attaches a meaningful condition afterwards. Updates that
-    // change the query still assert via updateSmartCollection.
-    const definition = this.parseSmartCollectionDefinition(
-      input.queryDefinitionJson,
-      'INVALID_SMART_COLLECTION_QUERY',
-    );
-
-    const collectionId = randomUUID();
-    const now = new Date().toISOString();
-
-    try {
-      openLibrary.connection
-        .prepare(
-          `INSERT INTO smart_collections
-             (collection_id, library_id, name, query_definition_json, position, created_at, updated_at)
-           VALUES (?, ?, ?, ?, 0, ?, ?)`,
-        )
-        .run(
-          collectionId,
-          openLibrary.summary.libraryId,
-          trimmed,
-          input.queryDefinitionJson,
-          now,
-          now,
-        );
-    } catch (error) {
-      if (
-        error instanceof Error &&
-        'code' in error &&
-        error.code === 'SQLITE_CONSTRAINT_UNIQUE'
-      ) {
-        throw new LibraryServiceError('FOLDER_ALREADY_EXISTS');
-      }
-      throw new LibraryServiceError('LIBRARY_NOT_WRITABLE', { cause: error });
-    }
-
-    return {
-      collectionId,
-      name: trimmed,
-      queryDefinition: input.queryDefinitionJson,
-      position: 0,
-      assetCount: this.countSmartCollectionMatches(input.libraryId, definition),
-      // Single-row return must match listSmartCollections.
-      appearance: null,
-    };
-  }
-
-  listSmartCollections(libraryId: string): SmartCollectionSummary[] {
-    const openLibrary = this.requireOpenLibrary(libraryId);
-    // Serpent-verg.2 — lenient read (0031 §1): libraries predating the
-    // smart_collections table degrade to an empty list; whitelisted columns
-    // fill with defaults.
-    const connection = openLibrary.connection;
-    if (!hasTable(connection, 'smart_collections')) return [];
-    const present = selectColumns(connection, 'smart_collections', [
-      'collection_id',
-      'name',
-      'query_definition_json',
-      'position',
-      'appearance_glyph_kind',
-      'appearance_glyph_value',
-      'appearance_color_id',
-    ]);
-    if (present.length === 0) return [];
-    const orderBy = present.includes('position') && present.includes('name')
-      ? 'ORDER BY position, name'
-      : present.includes('name')
-        ? 'ORDER BY name'
-        : '';
-    const rows = connection
-      .prepare(
-        `SELECT ${present.join(', ')}
-           FROM smart_collections
-          WHERE library_id = ?
-          ${orderBy}`,
-      )
-      .all(openLibrary.summary.libraryId) as Array<{
-        collection_id?: string;
-        name?: string;
-        query_definition_json?: string;
-        position?: number;
-        appearance_glyph_kind?: string | null;
-        appearance_glyph_value?: string | null;
-        appearance_color_id?: string | null;
-      }>;
-    // Batch counts inside one list call so the renderer avoids N+1 execute RPCs (CU-M6).
-    return rows.map((row) => {
-      let assetCount: number;
-      try {
-        const definition = this.parseSmartCollectionDefinition(
-          row.query_definition_json ?? '{}',
-          'LIBRARY_CORRUPT',
-        );
-        assetCount = this.countSmartCollectionMatches(libraryId, definition);
-      } catch {
-        assetCount = 0;
-      }
-      return {
-        collectionId: row.collection_id ?? '',
-        name: row.name ?? '',
-        queryDefinition: row.query_definition_json ?? '',
-        position: row.position ?? 0,
-        assetCount,
-        appearance: sanitizeEntityAppearance({
-          glyphKind: row.appearance_glyph_kind,
-          glyphValue: row.appearance_glyph_value,
-          colorId: row.appearance_color_id,
-        }),
-      };
-    });
-  }
-
-  updateSmartCollection(input: {
-    libraryId: string;
-    collectionId: string;
-    name?: string;
-    queryDefinitionJson?: string;
-    position?: number;
-  }): SmartCollectionSummary {
-    const openLibrary = this.requireOpenLibrary(input.libraryId);
-    const existing = openLibrary.connection
-      .prepare(
-        'SELECT collection_id, name, query_definition_json, position, appearance_glyph_kind, appearance_glyph_value, appearance_color_id FROM smart_collections WHERE collection_id = ? AND library_id = ?',
-      )
-      .get(input.collectionId, openLibrary.summary.libraryId) as {
-        collection_id: string;
-        name: string;
-        query_definition_json: string;
-        position: number;
-        appearance_glyph_kind?: string | null;
-        appearance_glyph_value?: string | null;
-        appearance_color_id?: string | null;
-      } | undefined;
-    if (!existing) throw new LibraryServiceError('FOLDER_NOT_FOUND');
-
-    const now = new Date().toISOString();
-    const newName =
-      input.name !== undefined ? input.name.trim() : existing.name;
-    if (newName.length === 0) throw new LibraryServiceError('INVALID_FOLDER_NAME');
-    const newQueryDefinitionJson =
-      input.queryDefinitionJson ?? existing.query_definition_json;
-    const newPosition = input.position ?? existing.position;
-
-    // Validate queryDefinitionJson if provided (CU-M5: require search/filter).
-    let definition: SmartCollectionQueryDefinition | null = null;
-    if (input.queryDefinitionJson !== undefined) {
-      definition = this.parseSmartCollectionDefinition(
-        input.queryDefinitionJson,
-        'INVALID_SMART_COLLECTION_QUERY',
-      );
-      this.assertMeaningfulSmartCollectionDefinition(definition);
-    }
-
-    try {
-      openLibrary.connection
-        .prepare(
-          `UPDATE smart_collections
-              SET name = ?, query_definition_json = ?, position = ?, updated_at = ?
-            WHERE collection_id = ?`,
-        )
-        .run(newName, newQueryDefinitionJson, newPosition, now, input.collectionId);
-    } catch (error) {
-      if (
-        error instanceof Error &&
-        'code' in error &&
-        error.code === 'SQLITE_CONSTRAINT_UNIQUE'
-      ) {
-        throw new LibraryServiceError('FOLDER_ALREADY_EXISTS');
-      }
-      throw new LibraryServiceError('LIBRARY_NOT_WRITABLE', { cause: error });
-    }
-
-    let assetCount: number;
-    try {
-      const counted =
-        definition ??
-        this.parseSmartCollectionDefinition(
-          newQueryDefinitionJson,
-          'LIBRARY_CORRUPT',
-        );
-      assetCount = this.countSmartCollectionMatches(input.libraryId, counted);
-    } catch {
-      assetCount = 0;
-    }
-
-    return {
-      collectionId: input.collectionId,
-      name: newName,
-      queryDefinition: newQueryDefinitionJson,
-      position: newPosition,
-      assetCount,
-      appearance: sanitizeEntityAppearance({
-        glyphKind: existing.appearance_glyph_kind,
-        glyphValue: existing.appearance_glyph_value,
-        colorId: existing.appearance_color_id,
-      }),
-    };
-  }
-
-  deleteSmartCollection(input: {
-    libraryId: string;
-    collectionId: string;
-  }): string {
-    const openLibrary = this.requireOpenLibrary(input.libraryId);
-    const existing = openLibrary.connection
-      .prepare(
-        'SELECT collection_id FROM smart_collections WHERE collection_id = ? AND library_id = ?',
-      )
-      .get(input.collectionId, openLibrary.summary.libraryId);
-    if (!existing) throw new LibraryServiceError('FOLDER_NOT_FOUND');
-
-    openLibrary.connection
-      .prepare('DELETE FROM smart_collections WHERE collection_id = ?')
-      .run(input.collectionId);
-    return input.collectionId;
-  }
-
-  executeSmartCollection(input: {
-    libraryId: string;
-    collectionId: string;
-    limit?: number;
-    offset?: number;
-    scopeMode?: boolean | null;
-    idsOnly?: boolean | null;
-    layoutOnly?: boolean | null;
-  }): { items: AssetSummary[]; total: number; offset: number; assetIds?: string[]; layout?: BrowseLayoutEntry[] } {
-    const openLibrary = this.requireOpenLibrary(input.libraryId);
-    const sc = openLibrary.connection
-      .prepare(
-        'SELECT collection_id, query_definition_json FROM smart_collections WHERE collection_id = ? AND library_id = ?',
-      )
-      .get(input.collectionId, openLibrary.summary.libraryId) as {
-        collection_id: string;
-        query_definition_json: string;
-      } | undefined;
-    if (!sc) throw new LibraryServiceError('FOLDER_NOT_FOUND');
-
-    const definition = this.parseSmartCollectionDefinition(sc.query_definition_json, 'LIBRARY_CORRUPT');
-
-    return this.searchAssets({
-      libraryId: input.libraryId,
-      query: definition.search ?? null,
-      filters: definition.filters ?? null,
-      sort: definition.sort ?? null,
-      scopeMode: input.scopeMode ?? false,
-      idsOnly: input.idsOnly ?? false,
-      layoutOnly: input.layoutOnly ?? false,
-      limit: input.scopeMode ? null : (input.limit ?? 50),
-      offset: input.scopeMode ? 0 : (input.offset ?? 0),
-    });
-  }
-
-  private parseSmartCollectionDefinition(
-    value: string,
-    errorCode: 'INVALID_SMART_COLLECTION_QUERY' | 'LIBRARY_CORRUPT',
-  ): SmartCollectionQueryDefinition {
-    if (value.length > 65_536) throw new LibraryServiceError(errorCode);
-    try {
-      return smartCollectionQueryDefinitionSchema.parse(JSON.parse(value));
-    } catch {
-      throw new LibraryServiceError(errorCode);
-    }
-  }
-
-  private assertMeaningfulSmartCollectionDefinition(
-    definition: SmartCollectionQueryDefinition,
-  ): void {
-    if (!hasMeaningfulSmartCollectionCondition(definition)) {
-      throw new LibraryServiceError('INVALID_SMART_COLLECTION_QUERY');
-    }
-  }
-
-  /** Count-only search (limit 0) for sidebar badges without fetching rows. */
-  private countSmartCollectionMatches(
-    libraryId: string,
-    definition: SmartCollectionQueryDefinition,
-  ): number {
-    return this.searchAssets({
-      libraryId,
-      query: definition.search ?? null,
-      filters: definition.filters ?? null,
-      sort: null,
-      limit: 0,
-      offset: 0,
-    }).total;
   }
 
   // ── Trash & Relink (v7) ───────────────────────────────────────────
@@ -45279,74 +43836,59 @@ export class LibraryService {
     }
   }
 
-  private ensureEagleCollections(
+  /**
+   * Eagle folders become hierarchical tags. A same-named tag under the same
+   * parent is reused; when the name is already taken elsewhere, the tag gets
+   * a stable suffix from the Eagle folder id so a re-import finds it again.
+   * Tag names never contain the folder path.
+   */
+  private ensureEagleFolderTags(
     openLibrary: OpenLibrary,
     folders: readonly EagleFolderNode[],
   ): Map<string, string> {
-    const collectionIdsByFolder = new Map<string, string>();
+    const tagIdsByFolder = new Map<string, string>();
+    const db = openLibrary.connection;
+    const libraryId = openLibrary.summary.libraryId;
+    const hasHierarchy = hasTable(db, 'tag_hierarchy');
+    const hasAppearance = hasTable(db, 'tag_appearance');
+    const findByName = db.prepare(
+      'SELECT tag_id FROM tags WHERE library_id = ? AND name = ? COLLATE NOCASE LIMIT 1',
+    );
+    const parentOf = (tagId: string): string | null => {
+      if (!hasHierarchy) return null;
+      const row = db.prepare('SELECT parent_tag_id FROM tag_hierarchy WHERE tag_id = ?')
+        .get(tagId) as { parent_tag_id: string | null } | undefined;
+      return row?.parent_tag_id ?? null;
+    };
     const now = new Date().toISOString();
-    openLibrary.connection.transaction(() => {
+    db.transaction(() => {
       for (const folder of folders) {
-        const parentId = folder.parentFolderId === null
+        const parentTagId = folder.parentFolderId === null
           ? null
-          : (collectionIdsByFolder.get(folder.parentFolderId) ?? null);
-        const existing = parentId === null
-          ? openLibrary.connection
-              .prepare(
-                `SELECT collection_id FROM collections
-                   WHERE library_id = ? AND parent_id IS NULL
-                     AND name = ? COLLATE NOCASE
-                   ORDER BY position, collection_id
-                   LIMIT 1`,
-              )
-              .get(openLibrary.summary.libraryId, folder.name) as { collection_id: string } | undefined
-          : openLibrary.connection
-              .prepare(
-                `SELECT collection_id FROM collections
-                   WHERE library_id = ? AND parent_id = ?
-                     AND name = ? COLLATE NOCASE
-                   ORDER BY position, collection_id
-                   LIMIT 1`,
-              )
-              .get(openLibrary.summary.libraryId, parentId, folder.name) as { collection_id: string } | undefined;
-        if (existing) {
-          collectionIdsByFolder.set(folder.folderId, existing.collection_id);
-          continue;
+          : (tagIdsByFolder.get(folder.parentFolderId) ?? null);
+        const baseName = folder.name.trim() || folder.folderId;
+        const candidates = [baseName, `${baseName}（Eagle ${folder.folderId.slice(0, 8)}）`];
+        let tagId: string | undefined;
+        for (const name of candidates) {
+          const existing = findByName.get(libraryId, name) as { tag_id: string } | undefined;
+          if (!existing) {
+            const createdId = randomUUID();
+            db.prepare('INSERT INTO tags (tag_id, library_id, name, created_at) VALUES (?, ?, ?, ?)')
+              .run(createdId, libraryId, name, now);
+            if (hasAppearance) this.setTagAppearance(openLibrary, createdId, randomTagAppearance());
+            if (hasHierarchy && parentTagId !== null) this.setTagParent(openLibrary, createdId, parentTagId);
+            tagId = createdId;
+            break;
+          }
+          if (parentOf(existing.tag_id) === parentTagId) {
+            tagId = existing.tag_id;
+            break;
+          }
         }
-
-        const maxPosition = parentId === null
-          ? openLibrary.connection
-              .prepare(
-                'SELECT COALESCE(MAX(position), -1) AS max_position FROM collections WHERE library_id = ? AND parent_id IS NULL',
-              )
-              .get(openLibrary.summary.libraryId) as { max_position: number }
-          : openLibrary.connection
-              .prepare(
-                'SELECT COALESCE(MAX(position), -1) AS max_position FROM collections WHERE library_id = ? AND parent_id = ?',
-              )
-              .get(openLibrary.summary.libraryId, parentId) as { max_position: number };
-        const collectionId = randomUUID();
-        openLibrary.connection
-          .prepare(
-            `INSERT INTO collections
-               (collection_id, library_id, parent_id, name, description, cover_asset_id,
-                position, created_at, updated_at)
-             VALUES (?, ?, ?, ?, ?, NULL, ?, ?, ?)`,
-          )
-          .run(
-            collectionId,
-            openLibrary.summary.libraryId,
-            parentId,
-            folder.name,
-            folder.description,
-            maxPosition.max_position + 1,
-            now,
-            now,
-          );
-        collectionIdsByFolder.set(folder.folderId, collectionId);
+        if (tagId) tagIdsByFolder.set(folder.folderId, tagId);
       }
     })();
-    return collectionIdsByFolder;
+    return tagIdsByFolder;
   }
 
   private ensureEagleTags(
@@ -45390,7 +43932,7 @@ export class LibraryService {
   private eagleImportEntry(
     sourceRootPath: string,
     item: EagleAssetCandidate,
-    collectionIdsByFolder: ReadonlyMap<string, string>,
+    folderTagIdsByFolder: ReadonlyMap<string, string>,
     tagIdsByName: ReadonlyMap<string, string>,
   ): ImportSourceEntry | null {
     try {
@@ -45409,20 +43951,15 @@ export class LibraryService {
       const fileName = normalizeAssetFileBaseName(path.basename(item.sourcePath));
       const destinationRelativePath = normalizeRelativeAssetPath(fileName);
       const tagIds = [...new Set(
-        item.tags
-          .map((tag) => tagIdsByName.get(tag))
-          .filter((tagId): tagId is string => tagId !== undefined),
-      )];
-      const collectionIds = [...new Set(
-        item.folderIds
-          .map((folderId) => collectionIdsByFolder.get(folderId))
-          .filter((collectionId): collectionId is string => collectionId !== undefined),
+        [
+          ...item.tags.map((tag) => tagIdsByName.get(tag)),
+          ...item.folderIds.map((folderId) => folderTagIdsByFolder.get(folderId)),
+        ].filter((tagId): tagId is string => tagId !== undefined),
       )];
       return {
         byteSize: Number(sourceStat.size),
         destinationRelativePath,
         eagleMetadata: {
-          collectionIds,
           description: item.description,
           rating: item.rating,
           sourceModifiedAtMs: item.sourceModifiedAtMs,
@@ -45511,7 +44048,6 @@ export class LibraryService {
         destinationRelativePath,
         eagleMetadata: metadata
           ? {
-              collectionIds: [],
               description: metadata.description,
               rating: metadata.rating,
               sourceModifiedAtMs: item.sourceModifiedAtMs,
@@ -45726,7 +44262,7 @@ export class LibraryService {
     emitEagleProgress('validate', 0, 0);
     try {
       throwIfCancelled();
-      const collectionIdsByFolder = this.ensureEagleCollections(openLibrary, root.folders);
+      const folderTagIdsByFolder = this.ensureEagleFolderTags(openLibrary, root.folders);
       emitEagleProgress('validate', 0, 0);
       await transferCheckpoint();
       throwIfCancelled();
@@ -45740,8 +44276,7 @@ export class LibraryService {
           assetCount: 0,
           skippedCount: 0,
           replacedCount: 0,
-          collectionCount: collectionIdsByFolder.size,
-          tagCount: 0,
+          tagCount: new Set(folderTagIdsByFolder.values()).size,
           invalidItemCount: 0,
           assets: [],
         };
@@ -45791,7 +44326,7 @@ export class LibraryService {
           const entry = this.eagleImportEntry(
             root.sourceRootPath,
             item,
-            collectionIdsByFolder,
+            folderTagIdsByFolder,
             tagIdsByName,
           );
           if (entry) batch.push(entry);
@@ -45873,8 +44408,7 @@ export class LibraryService {
         assetCount: importedCount,
         skippedCount,
         replacedCount,
-        collectionCount: collectionIdsByFolder.size,
-        tagCount: tagIdsByName.size,
+        tagCount: new Set([...tagIdsByName.values(), ...folderTagIdsByFolder.values()]).size,
         invalidItemCount,
         assets: sampleAssets,
       };
@@ -46140,7 +44674,6 @@ export class LibraryService {
         assetCount: importedCount,
         skippedCount,
         replacedCount,
-        collectionCount: 0,
         tagCount: tagIdsByName.size,
         invalidItemCount,
         metadataCount,
@@ -46835,7 +45368,6 @@ export class LibraryService {
         revisionId: string;
       }> = [];
       const bulkCommit = pending.skipContentHash === true;
-      const collectionNextPosition = bulkCommit ? new Map<string, number>() : undefined;
       const commitImportedAssets = (): void => {
       for (const action of actions) {
         this.failAt('before-db-commit');
@@ -46958,7 +45490,6 @@ export class LibraryService {
               assetId,
               action.entry.eagleMetadata,
               now,
-              collectionNextPosition,
             );
           }
           if (action.entry.sourcePageUrl !== undefined) {

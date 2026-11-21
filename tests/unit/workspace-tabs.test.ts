@@ -125,14 +125,12 @@ describe("workspace tabs", () => {
       sortOrder: "desc",
       shuffleSeed: null,
       folderRecursive: true,
-      collectionRecursive: true,
       showIgnoredItems: false,
     });
     state = addWorkspaceTab(state, ids("two"));
     state = setWorkspaceTabLocation(state, "two", {
-      kind: "collection",
-      collectionId: "collection-a",
-      recursive: true,
+      kind: "tag",
+      tagId: "tag-a",
     });
 
     expect(getWorkspaceTab(state, "one")?.location).toEqual({ kind: "all" });
@@ -152,9 +150,8 @@ describe("workspace tabs", () => {
     });
     // The second tab carries its own location, independent of tab one.
     expect(getWorkspaceTab(state, "two")?.location).toEqual({
-      kind: "collection",
-      collectionId: "collection-a",
-      recursive: true,
+      kind: "tag",
+      tagId: "tag-a",
     });
   });
 

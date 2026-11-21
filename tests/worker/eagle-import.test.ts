@@ -62,10 +62,10 @@ afterEach(() => {
 });
 
 describe('Eagle library import', () => {
-  it('publishes collections before the first asset batch is copied', async () => {
+  it('publishes folder tags before the first asset batch is copied', async () => {
     const root = temporaryRoot();
     const sourceRootPath = writeEagleLibrary(root, 3);
-    const seen: Array<{ collections: number; assets: number }> = [];
+    const seen: Array<{ tags: number; assets: number }> = [];
     let libraryId = '';
     const service = new LibraryService({
       observerFactory: () => ({ close() {} }),
@@ -73,7 +73,7 @@ describe('Eagle library import', () => {
         if (event.type !== 'import.progress' || !libraryId) return;
         if (event.phase !== 'validate' || event.totalFiles === 0) return;
         seen.push({
-          collections: service.listCollections(libraryId).length,
+          tags: service.listTags(libraryId).length,
           assets: service.listAssets({ libraryId, recursive: true }).length,
         });
       },
@@ -88,10 +88,53 @@ describe('Eagle library import', () => {
       sourceRootPath,
     });
     expect(result.importedCount).toBe(3);
-    expect(result.collectionCount).toBe(1);
-    expect(seen.some((snapshot) => snapshot.collections >= 1 && snapshot.assets === 0)).toBe(true);
+    // The Eagle folder "Props" and the item tag "props" share one tag (names are case-insensitive).
+    expect(result.tagCount).toBe(1);
+    expect(seen.some((snapshot) => snapshot.tags >= 1 && snapshot.assets === 0)).toBe(true);
+    expect(service.listTags(library.libraryId)).toEqual([
+      expect.objectContaining({ name: 'Props', assetCount: 3 }),
+    ]);
     expect(service.listAssets({ libraryId: library.libraryId, recursive: true })).toHaveLength(3);
     service.closeAll();
+  });
+
+  it('maps nested Eagle folders to a tag hierarchy and reuses it on re-import', async () => {
+    const root = temporaryRoot();
+    const sourceRootPath = path.join(root, 'Nested.library');
+    mkdirSync(path.join(sourceRootPath, 'images'), { recursive: true });
+    writeFileSync(path.join(sourceRootPath, 'metadata.json'), JSON.stringify({
+      folders: [
+        { id: 'folder-a', name: 'Shots', children: [{ id: 'folder-a-day', name: 'Day', children: [] }] },
+        { id: 'folder-b', name: 'Refs', children: [{ id: 'folder-b-day', name: 'Day', children: [] }] },
+      ],
+    }));
+    for (const [index, folderId] of ['folder-a-day', 'folder-b-day'].entries()) {
+      const infoPath = path.join(sourceRootPath, 'images', `item-${index}.info`);
+      mkdirSync(infoPath, { recursive: true });
+      writeFileSync(path.join(infoPath, 'metadata.json'), JSON.stringify({
+        id: `item-${index}`, name: `asset-${index}`, ext: 'png', tags: [], folders: [folderId],
+      }));
+      writeFileSync(path.join(infoPath, `asset-${index}.png`), ONE_PX_RED_PNG);
+    }
+    const service = new LibraryService({ observerFactory: () => ({ close() {} }) });
+    try {
+      const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Nested', selectedParentPath: root });
+      const result = await service.importEagleLibrary({ libraryId: library.libraryId, sourceRootPath });
+      expect(result.importedCount).toBe(2);
+      expect(result.tagCount).toBe(4);
+      const tags = service.listTags(library.libraryId);
+      const byName = new Map(tags.map((tag) => [tag.name, tag]));
+      const shots = byName.get('Shots')!;
+      const refs = byName.get('Refs')!;
+      expect(byName.get('Day')).toMatchObject({ parentTagId: shots.tagId, assetCount: 1 });
+      expect(byName.get('Day（Eagle folder-b）')).toMatchObject({ parentTagId: refs.tagId, assetCount: 1 });
+      expect(tags.every((tag) => !tag.name.includes('/'))).toBe(true);
+
+      await service.importEagleLibrary({ libraryId: library.libraryId, sourceRootPath });
+      expect(service.listTags(library.libraryId)).toHaveLength(4);
+    } finally {
+      service.closeAll();
+    }
   });
 
   it('keeps an unindexed destination orphan and places the Eagle asset under a copy name', async () => {

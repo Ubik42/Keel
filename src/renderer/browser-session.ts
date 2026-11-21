@@ -13,7 +13,7 @@ export type StoredBrowserSession = {
   scope:
     | { kind: "all" | "root" | "trash" }
     | {
-        kind: "folder" | "tag" | "collection" | "smart";
+        kind: "folder" | "tag";
         id: string;
         name?: string;
       };
@@ -27,14 +27,12 @@ export type BrowseStateForSession = {
   showTrash: boolean;
   activeTagId: string | null;
   activeTagName: string | undefined;
-  activeCollectionId: string | null;
-  activeSmartCollectionId: string | null;
   assetScope: "all" | "root" | string;
   selectedAssetId: string;
   selectedAssetName: string;
 };
 
-const SCOPED_KINDS = new Set(["folder", "tag", "collection", "smart"]);
+const SCOPED_KINDS = new Set(["folder", "tag"]);
 
 export function browserSessionKey(libraryId: string): string {
   return `serpent.browser-session.v1.${libraryId}`;
@@ -64,8 +62,6 @@ export function readBrowserSession(
         "trash",
         "folder",
         "tag",
-        "collection",
-        "smart",
       ].includes(session.scope.kind)
     ) {
       return null;
@@ -104,13 +100,9 @@ export function buildBrowserSessionFromBrowseState(
           id: state.activeTagId,
           name: state.activeTagName,
         }
-      : state.activeCollectionId
-        ? { kind: "collection", id: state.activeCollectionId }
-        : state.activeSmartCollectionId
-          ? { kind: "smart", id: state.activeSmartCollectionId }
-          : state.assetScope === "all" || state.assetScope === "root"
-            ? { kind: state.assetScope }
-            : { kind: "folder", id: state.assetScope };
+      : state.assetScope === "all" || state.assetScope === "root"
+        ? { kind: state.assetScope }
+        : { kind: "folder", id: state.assetScope };
 
   return {
     version: 1,

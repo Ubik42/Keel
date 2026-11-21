@@ -12,32 +12,25 @@ const base = {
   showTrash: false,
   showTagManagement: false,
   activeTagId: null,
-  activeCollectionId: null,
-  activeSmartCollectionId: null,
 };
 
 describe("browse-nav-active", () => {
   it("marks all-assets only when no other browse mode is active", () => {
     expect(isAllAssetsNavActive(base)).toBe(true);
-    expect(
-      isAllAssetsNavActive({ ...base, activeSmartCollectionId: "sc-1" }),
-    ).toBe(false);
-    expect(isAllAssetsNavActive({ ...base, activeCollectionId: "c-1" })).toBe(
-      false,
-    );
+    expect(isAllAssetsNavActive({ ...base, activeTagId: "t-1" })).toBe(false);
     expect(isAllAssetsNavActive({ ...base, showTrash: true })).toBe(false);
     expect(
       isAllAssetsNavActive({ ...base, showTagManagement: true }),
     ).toBe(false);
   });
 
-  it("keeps trash / root / folder exclusive of smart collections", () => {
+  it("keeps trash / root / folder exclusive of tag browsing", () => {
     expect(isTrashNavActive({ ...base, showTrash: true })).toBe(true);
     expect(
       isTrashNavActive({
         ...base,
         showTrash: true,
-        activeSmartCollectionId: "sc-1",
+        activeTagId: "t-1",
       }),
     ).toBe(false);
     expect(isRootFolderNavActive({ ...base, assetScope: "root" })).toBe(true);
@@ -45,7 +38,7 @@ describe("browse-nav-active", () => {
       isRootFolderNavActive({
         ...base,
         assetScope: "root",
-        activeSmartCollectionId: "sc-1",
+        activeTagId: "t-1",
       }),
     ).toBe(false);
     expect(isManagedFolderNavActive(base, "f-1")).toBe(false);
@@ -54,7 +47,7 @@ describe("browse-nav-active", () => {
     ).toBe(true);
     expect(
       isManagedFolderNavActive(
-        { ...base, assetScope: "f-1", activeSmartCollectionId: "sc-1" },
+        { ...base, assetScope: "f-1", activeTagId: "t-1" },
         "f-1",
       ),
     ).toBe(false);

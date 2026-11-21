@@ -92,7 +92,6 @@ import { executeLinkedFolderWorkerCommand } from './handlers/linked-folders';
 import { executeAssetIngestionWorkerCommand } from './handlers/asset-ingestion';
 import { executeIgnoreWorkerCommand } from './handlers/ignore';
 import { executeTagWorkerCommand } from './handlers/tags';
-import { executeCollectionWorkerCommand } from './handlers/collections';
 import { executeAssetMutationWorkerCommand } from './handlers/asset-mutations';
 import { executePluginJobWorkerCommand } from './handlers/plugin-jobs';
 import { executeMediaPathWorkerCommand } from './handlers/media-paths';
@@ -102,7 +101,6 @@ import { executeVisibleWindowWorkerCommand } from './handlers/visible-window';
 import { executeAiWorkerCommand, type AiAnalysisControls } from './handlers/ai';
 import { executeAssetQueryWorkerCommand } from './handlers/asset-query';
 import { backupSemanticIndexWorkerLibrary, closeSemanticIndexWorkerLibrary, executeSemanticIndexWorkerCommand, reserveSemanticDeleteCleanup, semanticPermanentDeleteCandidates, withSemanticDeleteCleanupStatus } from './handlers/semantic-index';
-import { executeSmartCollectionWorkerCommand } from './handlers/smart-collections';
 import { executeLibraryLifecycleWorkerCommand } from './handlers/library-lifecycle';
 import { executeSyncWorkerCommand } from './handlers/sync';
 import { LibraryGenerationRegistry } from './library-generation';
@@ -2698,22 +2696,6 @@ async function handleRequestWithoutWriteLease(request: WorkerRequest): Promise<W
       }
       return result;
     }
-    case 'collection.list':
-    case 'collection.create':
-    case 'collection.update':
-    case 'collection.reorder':
-    case 'collection.delete':
-    case 'collection.assets.add':
-    case 'collection.assets.remove':
-    case 'collection.assets.reorder':
-    case 'collection.assets.list':
-    case 'collection.assets.memberships': {
-      const result = executeCollectionWorkerCommand(libraryService, request);
-      if (result === undefined) {
-        throw new Error(`Unhandled collection command: ${request.command.type}`);
-      }
-      return result;
-    }
     case 'asset.metadata.get':
     case 'asset.extracted-metadata.get':
     case 'asset.color-space.set':
@@ -2744,17 +2726,6 @@ async function handleRequestWithoutWriteLease(request: WorkerRequest): Promise<W
       );
       if (result === undefined) {
         throw new Error(`Unhandled browse session command: ${request.command.type}`);
-      }
-      return result;
-    }
-    case 'smart-collection.list':
-    case 'smart-collection.create':
-    case 'smart-collection.update':
-    case 'smart-collection.delete':
-    case 'smart-collection.execute': {
-      const result = executeSmartCollectionWorkerCommand(libraryService, request);
-      if (result === undefined) {
-        throw new Error(`Unhandled smart-collection command: ${request.command.type}`);
       }
       return result;
     }

@@ -443,10 +443,10 @@ export async function waitForVisibleDecoded(
 }
 
 // ---------------------------------------------------------------------------
-// navigation scopes (folders / collections in the sidebar)
+// navigation scopes (folders in the sidebar)
 // ---------------------------------------------------------------------------
 
-export type NavScope = { rowIndex: number; kind: "folder" | "collection" | "other"; title: string };
+export type NavScope = { rowIndex: number; kind: "folder" | "other"; title: string };
 
 export async function listNavScopes(window: Page): Promise<NavScope[]> {
   return window.evaluate(() =>
@@ -456,9 +456,7 @@ export async function listNavScopes(window: Page): Promise<NavScope[]> {
         rowIndex: index,
         kind: row.dataset.navFolderKind !== undefined
           ? "folder" as const
-          : row.dataset.navCollectionId !== undefined
-            ? "collection" as const
-            : "other" as const,
+          : "other" as const,
         title: label,
       };
     }),

@@ -12,10 +12,6 @@ import {
 import { MANAGED_FOLDERS_DRAG_TYPE } from "../../src/renderer/folder-drag-drop";
 import { LocaleProvider } from "../../src/renderer/i18n";
 import { NAV_TREE_PREF_KEY } from "../../src/renderer/nav-tree-preferences";
-import {
-  collectionCustomOrderKey,
-  customOrderKey,
-} from "../../src/renderer/folder-custom-order";
 
 function createDragTransfer(
   types: string[],
@@ -99,30 +95,17 @@ function createNavigationProps(
     showTrash: false,
     showTagManagement: false,
     activeTagId: null,
-    activeCollectionId: null,
-    activeSmartCollectionId: null,
     showIgnoredItems: false,
     onToggleShowIgnoredItems: noop,
     allAssetCount: 7,
     rootAssetCount: 2,
     trashedAssetCount: 0,
     folders: [],
-    collections: [],
-    collectionTree: new Map(),
-    smartCollections: [],
     linkedFolders: [],
-    showCollectionInput: false,
-    collectionInputValue: "",
-    newCollectionParentId: null,
-    inlineCollectionRename: null,
-    draggedCollectionId: null,
-    onSetDraggedCollectionId: noop,
     onChooseAllAssets: noop,
     onEnterTrash: noop,
     onEnterTagManagement: noop,
     onChooseFolder: noop,
-    onChooseCollection: noop,
-    onChooseSmartCollection: noop,
     onExternalDragOver: noop,
     onExternalDrop: noop,
     onAssetsDroppedOnFolder: noop,
@@ -131,31 +114,15 @@ function createNavigationProps(
     onToggleFolderSelection: noop,
     onAssetsDroppedOnTrash: noop,
     onFoldersDroppedOnTrash: noop,
-    onAssetsDroppedOnCollection: noop,
     onImportFolderAsLinked: noop,
     onRelinkFolder: noop,
     onConvertLinkedDialog: noop,
-    onAddCollection: noop,
-    onSetShowCollectionInput: noop,
-    onSetCollectionInputValue: noop,
-    onSetNewCollectionParentId: noop,
-    onCollectionInputCommit: noop,
-    onInlineCollectionRenameChange: noop,
-    onInlineCollectionRenameCommit: noop,
-    onInlineCollectionRenameCancel: noop,
     onAddFolder: noop,
-    onAddSmartCollection: noop,
     inlineFolderEdit: null,
     onInlineFolderEditChange: noop,
     onInlineFolderEditCommit: noop,
     onInlineFolderEditCancel: noop,
-    inlineSmartCollectionEdit: null,
-    onInlineSmartCollectionEditChange: noop,
-    onInlineSmartCollectionEditCommit: noop,
-    onInlineSmartCollectionEditCancel: noop,
     onOpenContextMenu: noop,
-    onNestCollection: noop,
-    onMoveCollectionToRoot: noop,
     onImportDroppedFiles: noop,
     onCopyManagedToLinked: noop,
     ...overrides,
@@ -221,7 +188,6 @@ describe("NavigationSidebar virtual library root", () => {
     localStorage.setItem(NAV_TREE_PREF_KEY, JSON.stringify({
       version: 1,
       collapsedFolderIds: [parent.folderId],
-      collapsedCollectionIds: [],
     }));
     container = document.createElement("div");
     document.body.append(container);
@@ -260,39 +226,13 @@ describe("NavigationSidebar virtual library root", () => {
     )).toBeNull();
   });
 
-  it("keeps nested folder and collection rows aligned with long labels and counts", async () => {
+  it("keeps nested folder rows aligned with long labels and counts", async () => {
     const onChooseFolder = vi.fn();
-    const onChooseCollection = vi.fn();
     const parentFolderName = "A very long parent folder name that must stay on one row";
     const childFolderName = "A deeply nested child folder with a long display name";
-    const parentCollectionName = "A long parent collection name with many characters";
-    const childCollectionName = "A long nested collection name with many characters";
     const parentFolderId = "folder-parent";
     const childFolderId = "folder-child";
-    const parentCollectionId = "collection-parent";
-    const childCollectionId = "collection-child";
-    const parentCollection = {
-      collectionId: parentCollectionId,
-      parentId: null,
-      name: parentCollectionName,
-      description: null,
-      coverAssetId: null,
-      position: 0,
-      assetCount: 4,
-      childCollectionCount: 1,
-    };
-    const childCollection = {
-      collectionId: childCollectionId,
-      parentId: parentCollectionId,
-      name: childCollectionName,
-      description: null,
-      coverAssetId: null,
-      position: 0,
-      assetCount: 2,
-      childCollectionCount: 0,
-    };
     const props = createNavigationProps({
-      activeCollectionId: childCollectionId,
       folders: [
         {
           folderId: parentFolderId,
@@ -311,13 +251,7 @@ describe("NavigationSidebar virtual library root", () => {
           childFolderCount: 0,
         },
       ],
-      collections: [parentCollection, childCollection],
-      collectionTree: new Map([
-        [null, [parentCollection]],
-        [parentCollectionId, [childCollection]],
-      ]),
       onChooseFolder,
-      onChooseCollection,
     });
     container = document.createElement("div");
     document.body.append(container);
@@ -372,38 +306,8 @@ describe("NavigationSidebar virtual library root", () => {
     expect(parentFolderRow?.querySelector(".nav-count")?.textContent).toBe("3");
     expect(childFolderRow?.querySelector(".nav-count")?.textContent).toBe("5");
 
-    const collectionRows = [
-      ...container.querySelectorAll<HTMLButtonElement>(
-        "button[data-nav-collection-id]",
-      ),
-    ];
-    expect(collectionRows).toHaveLength(2);
-    const parentCollectionRow = collectionRows.find(
-      (row) => row.dataset.navCollectionId === parentCollectionId,
-    );
-    const childCollectionRow = collectionRows.find(
-      (row) => row.dataset.navCollectionId === childCollectionId,
-    );
-    expect(parentCollectionRow?.getAttribute("data-hover-tip")).toBe(parentCollectionName);
-    expect(childCollectionRow?.getAttribute("data-hover-tip")).toBe(childCollectionName);
-    expect(parentCollectionRow?.style.paddingLeft).toBe("7px");
-    expect(childCollectionRow?.style.paddingLeft).toBe("7px");
-    expect(
-      parentCollectionRow?.closest<HTMLElement>(".nav-tree-row")?.style.paddingLeft,
-    ).toBe("0px");
-    expect(
-      childCollectionRow?.closest<HTMLElement>(".nav-tree-row")?.style.paddingLeft,
-    ).toBe("14px");
-    expect(parentCollectionRow?.classList.contains("is-active")).toBe(false);
-    expect(childCollectionRow?.classList.contains("is-active")).toBe(true);
-    expect(parentCollectionRow?.querySelectorAll(".nav-count")).toHaveLength(1);
-    expect(parentCollectionRow?.textContent).toContain("4");
-    expect(parentCollectionRow?.textContent).not.toContain("1");
-    expect(childCollectionRow?.querySelector(".nav-count")?.textContent).toBe("2");
 
-    await act(async () => childCollectionRow?.click());
     await act(async () => childFolderRow?.click());
-    expect(onChooseCollection).toHaveBeenCalledWith(childCollectionId);
     expect(onChooseFolder).toHaveBeenCalledWith(childFolderId);
   });
 
@@ -417,144 +321,6 @@ describe("NavigationSidebar virtual library root", () => {
       /\.nav-row\s*\{[\s\S]*?grid-template-columns:\s*17px minmax\(0, 1fr\) auto;/,
     );
     expect(styles).not.toContain(".nav-child-count");
-  });
-
-  it("collapses and expands collection children via the disclosure button (Serpent-c42eb1)", async () => {
-    const parentId = "collection-parent";
-    const childId = "collection-child";
-    const parentCollection = {
-      collectionId: parentId,
-      parentId: null,
-      name: "Parent",
-      description: null,
-      coverAssetId: null,
-      position: 0,
-      assetCount: 4,
-      childCollectionCount: 1,
-    };
-    const childCollection = {
-      collectionId: childId,
-      parentId,
-      name: "Child",
-      description: null,
-      coverAssetId: null,
-      position: 0,
-      assetCount: 2,
-      childCollectionCount: 0,
-    };
-    const props = createNavigationProps({
-      collections: [parentCollection, childCollection],
-      collectionTree: new Map([
-        [null, [parentCollection]],
-        [parentId, [childCollection]],
-      ]),
-    });
-    container = document.createElement("div");
-    document.body.append(container);
-    root = createRoot(container);
-
-    await act(async () => {
-      root?.render(
-        createElement(
-          LocaleProvider,
-          { children: null, initialPreference: "zh-CN" },
-          createElement(NavigationSidebar, props),
-        ),
-      );
-    });
-
-    const rows = () => [
-      ...(container as HTMLDivElement).querySelectorAll<HTMLButtonElement>(
-        "button[data-nav-collection-id]",
-      ),
-    ];
-    // Both rows visible initially (expanded).
-    expect(rows().map((row) => row.dataset.navCollectionId)).toEqual([
-      parentId,
-      childId,
-    ]);
-
-    // Parent row exposes a disclosure button with the chevron icon.
-    const parentRow = rows().find(
-      (row) => row.dataset.navCollectionId === parentId,
-    );
-    const disclosure = parentRow
-      ? [...(container as HTMLDivElement).querySelectorAll<HTMLButtonElement>(".nav-disclosure")]
-          .find((button) =>
-            button.getAttribute("aria-label")?.includes("Parent"),
-          )
-      : undefined;
-    expect(disclosure).toBeDefined();
-    expect(disclosure?.getAttribute("aria-expanded")).toBe("true");
-
-    // Collapse: child row disappears, disclosure flips to collapsed.
-    await act(async () => disclosure?.click());
-    expect(rows().map((row) => row.dataset.navCollectionId)).toEqual([
-      parentId,
-    ]);
-    const collapsedDisclosure = [
-      ...(container as HTMLDivElement).querySelectorAll<HTMLButtonElement>(".nav-disclosure"),
-    ].find((button) => button.getAttribute("aria-label")?.includes("Parent"));
-    expect(collapsedDisclosure?.getAttribute("aria-expanded")).toBe("false");
-
-    // Expand: child row returns.
-    await act(async () => collapsedDisclosure?.click());
-    expect(rows().map((row) => row.dataset.navCollectionId)).toEqual([
-      parentId,
-      childId,
-    ]);
-  });
-
-  it("highlights collection and trash rows for native File drags", async () => {
-    const collection = {
-      collectionId: "collection-1",
-      parentId: null,
-      name: "References",
-      description: null,
-      coverAssetId: null,
-      position: 0,
-      assetCount: 1,
-      childCollectionCount: 0,
-    };
-    const props = createNavigationProps({
-      collections: [collection],
-      collectionTree: new Map([[null, [collection]]]),
-    });
-    container = document.createElement("div");
-    document.body.append(container);
-    root = createRoot(container);
-
-    await act(async () => {
-      root?.render(
-        createElement(
-          LocaleProvider,
-          null,
-          createElement(NavigationSidebar, props),
-        ),
-      );
-    });
-
-    const collectionRow = container.querySelector<HTMLButtonElement>(
-      'button[data-nav-collection-id="collection-1"]',
-    );
-    const trashRow = [...container.querySelectorAll<HTMLButtonElement>(".nav-row")]
-      .find((row) => /Trash|回收站/u.test(row.textContent ?? ""));
-    expect(collectionRow).not.toBeNull();
-    expect(trashRow).toBeDefined();
-
-    const nativeFileTransfer = createDragTransfer(["Files"]);
-    await act(async () => {
-      dispatchDragEvent(collectionRow!, "dragover", nativeFileTransfer);
-    });
-
-    expect(collectionRow?.classList.contains("is-drop-target")).toBe(true);
-
-    await act(async () => {
-      dispatchDragEvent(trashRow!, "dragover", nativeFileTransfer);
-    });
-
-    expect(trashRow?.classList.contains("is-drop-target")).toBe(true);
-    expect(collectionRow?.classList.contains("is-drop-target")).toBe(false);
   });
 
   it("routes only an active in-app native File drop to the trash", async () => {
@@ -699,593 +465,6 @@ describe("NavigationSidebar virtual library root", () => {
     expect(onAssetsDroppedOnTrash).not.toHaveBeenCalled();
   });
 
-  it("keeps the child collection highlighted when a drag enters its row", async () => {
-    const parent = {
-      collectionId: "collection-parent",
-      parentId: null,
-      name: "Parent",
-      description: null,
-      coverAssetId: null,
-      position: 0,
-      assetCount: 1,
-      childCollectionCount: 1,
-    };
-    const child = {
-      collectionId: "collection-child",
-      parentId: parent.collectionId,
-      name: "Child",
-      description: null,
-      coverAssetId: null,
-      position: 0,
-      assetCount: 0,
-      childCollectionCount: 0,
-    };
-    const onAssetsDroppedOnCollection = vi.fn();
-    const onResolveManagedAssetDrop = vi.fn(async () => ["asset-1"]);
-    const onImportDroppedFiles = vi.fn();
-    let internalAssetDrag = true;
-    const props = createNavigationProps({
-      collections: [parent, child],
-      collectionTree: new Map([
-        [null, [parent]],
-        [parent.collectionId, [child]],
-      ]),
-      onExternalDragOver: (event) => event.preventDefault(),
-      onAssetsDroppedOnCollection,
-      onResolveManagedAssetDrop,
-      onImportDroppedFiles,
-      isInternalAssetDrag: () => internalAssetDrag,
-    });
-    container = document.createElement("div");
-    document.body.append(container);
-    root = createRoot(container);
-
-    await act(async () => {
-      root?.render(
-        createElement(
-          LocaleProvider,
-          null,
-          createElement(NavigationSidebar, props),
-        ),
-      );
-    });
-
-    const parentRow = container.querySelector<HTMLButtonElement>(
-      `button[data-nav-collection-id="${parent.collectionId}"]`,
-    );
-    const childRow = container.querySelector<HTMLButtonElement>(
-      `button[data-nav-collection-id="${child.collectionId}"]`,
-    );
-    expect(parentRow).not.toBeNull();
-    expect(childRow).not.toBeNull();
-
-    for (const types of [["Files"], ["application/x-serpent-managed-assets"]]) {
-      await act(async () => {
-        const dragOver = dispatchDragEvent(
-          childRow!,
-          "dragover",
-          createDragTransfer(types),
-        );
-        if (types[0] === "Files") {
-          expect(dragOver.defaultPrevented).toBe(true);
-        }
-      });
-
-      expect(childRow?.classList.contains("is-drop-target")).toBe(true);
-      expect(parentRow?.classList.contains("is-drop-target")).toBe(false);
-    }
-
-    const nativeFileTransfer = {
-      ...createDragTransfer(["Files"]),
-      files: [new File(["asset"], "asset.png")],
-    } as unknown as DataTransfer;
-    let dropEvent: Event | undefined;
-    await act(async () => {
-      dropEvent = dispatchDropEvent(childRow!, nativeFileTransfer);
-      await Promise.resolve();
-      await Promise.resolve();
-    });
-    expect(dropEvent?.defaultPrevented).toBe(true);
-    expect(onResolveManagedAssetDrop).toHaveBeenCalledWith(
-      nativeFileTransfer.files,
-    );
-    expect(onAssetsDroppedOnCollection).toHaveBeenCalledWith(
-      child.collectionId,
-      ["asset-1"],
-      "move",
-    );
-
-    internalAssetDrag = false;
-    await act(async () => {
-      dropEvent = dispatchDropEvent(childRow!, nativeFileTransfer);
-      await Promise.resolve();
-      await Promise.resolve();
-    });
-    expect(onResolveManagedAssetDrop).toHaveBeenCalledTimes(1);
-    expect(onAssetsDroppedOnCollection).toHaveBeenCalledTimes(1);
-    expect(onImportDroppedFiles).toHaveBeenCalledWith(
-      nativeFileTransfer.files,
-      undefined,
-      child.collectionId,
-      { files: nativeFileTransfer.files, html: "", uriList: "" },
-    );
-  });
-
-  it("creates collections at the library root from the section plus button", async () => {
-    const onAddCollection = vi.fn();
-    const nested = {
-      collectionId: "collection-nested",
-      parentId: "collection-parent",
-      name: "Nested",
-      description: null,
-      coverAssetId: null,
-      position: 0,
-      assetCount: 0,
-      childCollectionCount: 0,
-    };
-    const parent = {
-      collectionId: "collection-parent",
-      parentId: null,
-      name: "Parent",
-      description: null,
-      coverAssetId: null,
-      position: 0,
-      assetCount: 0,
-      childCollectionCount: 1,
-    };
-    const props = createNavigationProps({
-      activeCollectionId: nested.collectionId,
-      collections: [parent, nested],
-      collectionTree: new Map([
-        [null, [parent]],
-        [parent.collectionId, [nested]],
-      ]),
-      onAddCollection,
-    });
-    container = document.createElement("div");
-    document.body.append(container);
-    root = createRoot(container);
-
-    await act(async () => {
-      root?.render(
-        createElement(
-          LocaleProvider,
-          null,
-          createElement(NavigationSidebar, props),
-        ),
-      );
-    });
-
-    const collectionSection = [
-      ...container.querySelectorAll<HTMLElement>(".nav-section"),
-    ].find((section) =>
-      section.querySelector(".nav-section-heading")?.textContent?.match(/Collections|合集/u),
-    );
-    const addButton = [...(collectionSection?.querySelectorAll("button") ?? [])]
-      .find((button) => button.getAttribute("aria-label")?.match(/Add|新建|添加/u));
-    expect(addButton).toBeDefined();
-
-    await act(async () => addButton?.click());
-
-    expect(onAddCollection).toHaveBeenCalledWith(null);
-  });
-
-  it("moves a nested collection to the root from the collection list blank area", async () => {
-    const onMoveCollectionToRoot = vi.fn();
-    const parent = {
-      collectionId: "collection-parent",
-      parentId: null,
-      name: "Parent",
-      description: null,
-      coverAssetId: null,
-      position: 0,
-      assetCount: 0,
-      childCollectionCount: 1,
-    };
-    const child = {
-      collectionId: "collection-child",
-      parentId: parent.collectionId,
-      name: "Child",
-      description: null,
-      coverAssetId: null,
-      position: 0,
-      assetCount: 0,
-      childCollectionCount: 0,
-    };
-    const props = createNavigationProps({
-      collections: [parent, child],
-      collectionTree: new Map([
-        [null, [parent]],
-        [parent.collectionId, [child]],
-      ]),
-      draggedCollectionId: child.collectionId,
-      onMoveCollectionToRoot,
-    });
-    container = document.createElement("div");
-    document.body.append(container);
-    root = createRoot(container);
-
-    await act(async () => {
-      root?.render(
-        createElement(
-          LocaleProvider,
-          null,
-          createElement(NavigationSidebar, props),
-        ),
-      );
-    });
-
-    const childRow = container.querySelector<HTMLButtonElement>(
-      `button[data-nav-collection-id="${child.collectionId}"]`,
-    );
-    const list = container.querySelector<HTMLElement>(".nav-collection-list");
-    expect(childRow).not.toBeNull();
-    expect(list).not.toBeNull();
-    const transfer = createDragTransfer([]);
-
-    await act(async () => {
-      dispatchDragEvent(list!, "dragenter", transfer);
-      dispatchDragEvent(list!, "dragover", transfer);
-    });
-    expect(list?.classList.contains("is-root-drop-target")).toBe(true);
-
-    await act(async () => {
-      const drop = dispatchDropEvent(list!, transfer);
-      expect(drop.defaultPrevented).toBe(true);
-    });
-    expect(onMoveCollectionToRoot).toHaveBeenCalledWith(child.collectionId);
-  });
-
-  it("moves a nested collection to the root from a row gutter drop", async () => {
-    const onMoveCollectionToRoot = vi.fn();
-    const onNestCollection = vi.fn();
-    const parent = {
-      collectionId: "collection-parent",
-      parentId: null,
-      name: "Parent",
-      description: null,
-      coverAssetId: null,
-      position: 0,
-      assetCount: 0,
-      childCollectionCount: 1,
-    };
-    const child = {
-      collectionId: "collection-child",
-      parentId: parent.collectionId,
-      name: "Child",
-      description: null,
-      coverAssetId: null,
-      position: 0,
-      assetCount: 0,
-      childCollectionCount: 0,
-    };
-    const props = createNavigationProps({
-      collections: [parent, child],
-      collectionTree: new Map([
-        [null, [parent]],
-        [parent.collectionId, [child]],
-      ]),
-      draggedCollectionId: child.collectionId,
-      onMoveCollectionToRoot,
-      onNestCollection,
-    });
-    container = document.createElement("div");
-    document.body.append(container);
-    root = createRoot(container);
-
-    await act(async () => {
-      root?.render(
-        createElement(
-          LocaleProvider,
-          null,
-          createElement(NavigationSidebar, props),
-        ),
-      );
-    });
-
-    const childRow = container.querySelector<HTMLButtonElement>(
-      `button[data-nav-collection-id="${child.collectionId}"]`,
-    );
-    const list = container.querySelector<HTMLElement>(".nav-collection-list");
-    const gutter = childRow
-      ?.closest(".nav-tree-row")
-      ?.querySelector(".nav-disclosure-spacer");
-    expect(childRow).not.toBeNull();
-    expect(list).not.toBeNull();
-    expect(gutter).not.toBeNull();
-    const transfer = createDragTransfer([]);
-
-    await act(async () => {
-      dispatchDragEvent(gutter!, "dragenter", transfer);
-      dispatchDragEvent(gutter!, "dragover", transfer);
-    });
-    expect(list?.classList.contains("is-root-drop-target")).toBe(true);
-
-    await act(async () => {
-      const drop = dispatchDropEvent(gutter!, transfer);
-      expect(drop.defaultPrevented).toBe(true);
-    });
-    expect(onMoveCollectionToRoot).toHaveBeenCalledWith(child.collectionId);
-    expect(onNestCollection).not.toHaveBeenCalled();
-  });
-
-  it("nests a collection when dropping onto another collection row", async () => {
-    const onMoveCollectionToRoot = vi.fn();
-    const onNestCollection = vi.fn();
-    const parent = {
-      collectionId: "collection-parent",
-      parentId: null,
-      name: "Parent",
-      description: null,
-      coverAssetId: null,
-      position: 0,
-      assetCount: 0,
-      childCollectionCount: 0,
-    };
-    const child = {
-      collectionId: "collection-child",
-      parentId: null,
-      name: "Child",
-      description: null,
-      coverAssetId: null,
-      position: 1,
-      assetCount: 0,
-      childCollectionCount: 0,
-    };
-    const props = createNavigationProps({
-      collections: [parent, child],
-      collectionTree: new Map([[null, [parent, child]]]),
-      draggedCollectionId: child.collectionId,
-      onMoveCollectionToRoot,
-      onNestCollection,
-    });
-    container = document.createElement("div");
-    document.body.append(container);
-    root = createRoot(container);
-
-    await act(async () => {
-      root?.render(
-        createElement(
-          LocaleProvider,
-          null,
-          createElement(NavigationSidebar, props),
-        ),
-      );
-    });
-
-    const parentRow = container.querySelector<HTMLButtonElement>(
-      `button[data-nav-collection-id="${parent.collectionId}"]`,
-    );
-    expect(parentRow).not.toBeNull();
-    const transfer = createDragTransfer([]);
-
-    await act(async () => {
-      dispatchDropEvent(parentRow!, transfer);
-    });
-    expect(onNestCollection).toHaveBeenCalledWith(
-      child.collectionId,
-      parent.collectionId,
-    );
-    expect(onMoveCollectionToRoot).not.toHaveBeenCalled();
-  });
-
-  it("highlights a collection nest target the same way as a folder row", async () => {
-    const parent = {
-      collectionId: "collection-parent",
-      parentId: null,
-      name: "Parent",
-      description: null,
-      coverAssetId: null,
-      position: 0,
-      assetCount: 0,
-      childCollectionCount: 0,
-    };
-    const child = {
-      collectionId: "collection-child",
-      parentId: null,
-      name: "Child",
-      description: null,
-      coverAssetId: null,
-      position: 1,
-      assetCount: 0,
-      childCollectionCount: 0,
-    };
-    const props = createNavigationProps({
-      collections: [parent, child],
-      collectionTree: new Map([[null, [parent, child]]]),
-      draggedCollectionId: child.collectionId,
-    });
-    container = document.createElement("div");
-    document.body.append(container);
-    root = createRoot(container);
-
-    await act(async () => {
-      root?.render(
-        createElement(
-          LocaleProvider,
-          null,
-          createElement(NavigationSidebar, props),
-        ),
-      );
-    });
-
-    const parentRow = container.querySelector<HTMLButtonElement>(
-      `button[data-nav-collection-id="${parent.collectionId}"]`,
-    );
-    const list = container.querySelector<HTMLElement>(".nav-collection-list");
-    expect(parentRow).not.toBeNull();
-    expect(list).not.toBeNull();
-    const transfer = createDragTransfer([]);
-
-    await act(async () => {
-      dispatchDragEvent(parentRow!, "dragenter", transfer);
-      dispatchDragEvent(parentRow!, "dragover", transfer);
-    });
-    expect(parentRow?.classList.contains("is-drop-target")).toBe(true);
-    expect(list?.classList.contains("is-root-drop-target")).toBe(false);
-  });
-
-  it("does not nest a collection onto its current parent", async () => {
-    const onMoveCollectionToRoot = vi.fn();
-    const onNestCollection = vi.fn();
-    const parent = {
-      collectionId: "collection-parent",
-      parentId: null,
-      name: "Parent",
-      description: null,
-      coverAssetId: null,
-      position: 0,
-      assetCount: 0,
-      childCollectionCount: 1,
-    };
-    const child = {
-      collectionId: "collection-child",
-      parentId: parent.collectionId,
-      name: "Child",
-      description: null,
-      coverAssetId: null,
-      position: 0,
-      assetCount: 0,
-      childCollectionCount: 0,
-    };
-    const props = createNavigationProps({
-      collections: [parent, child],
-      collectionTree: new Map([
-        [null, [parent]],
-        [parent.collectionId, [child]],
-      ]),
-      draggedCollectionId: child.collectionId,
-      onMoveCollectionToRoot,
-      onNestCollection,
-    });
-    container = document.createElement("div");
-    document.body.append(container);
-    root = createRoot(container);
-
-    await act(async () => {
-      root?.render(
-        createElement(
-          LocaleProvider,
-          null,
-          createElement(NavigationSidebar, props),
-        ),
-      );
-    });
-
-    const parentRow = container.querySelector<HTMLButtonElement>(
-      `button[data-nav-collection-id="${parent.collectionId}"]`,
-    );
-    expect(parentRow).not.toBeNull();
-    const transfer = createDragTransfer([]);
-
-    await act(async () => {
-      dispatchDropEvent(parentRow!, transfer);
-    });
-    expect(onNestCollection).not.toHaveBeenCalled();
-    expect(onMoveCollectionToRoot).not.toHaveBeenCalled();
-  });
-
-  it("does not highlight a collection nest that would change nothing", async () => {
-    const parent = {
-      collectionId: "collection-parent",
-      parentId: null,
-      name: "Parent",
-      description: null,
-      coverAssetId: null,
-      position: 0,
-      assetCount: 0,
-      childCollectionCount: 1,
-    };
-    const child = {
-      collectionId: "collection-child",
-      parentId: parent.collectionId,
-      name: "Child",
-      description: null,
-      coverAssetId: null,
-      position: 0,
-      assetCount: 0,
-      childCollectionCount: 0,
-    };
-    const props = createNavigationProps({
-      collections: [parent, child],
-      collectionTree: new Map([
-        [null, [parent]],
-        [parent.collectionId, [child]],
-      ]),
-      draggedCollectionId: child.collectionId,
-    });
-    container = document.createElement("div");
-    document.body.append(container);
-    root = createRoot(container);
-
-    await act(async () => {
-      root?.render(
-        createElement(
-          LocaleProvider,
-          null,
-          createElement(NavigationSidebar, props),
-        ),
-      );
-    });
-
-    const parentRow = container.querySelector<HTMLButtonElement>(
-      `button[data-nav-collection-id="${parent.collectionId}"]`,
-    );
-    expect(parentRow).not.toBeNull();
-    const transfer = createDragTransfer([]);
-
-    await act(async () => {
-      dispatchDragEvent(parentRow!, "dragenter", transfer);
-      dispatchDragEvent(parentRow!, "dragover", transfer);
-    });
-    expect(parentRow?.classList.contains("is-drop-target")).toBe(false);
-  });
-
-  it("does not highlight the collection blank area for a root collection", async () => {
-    const onMoveCollectionToRoot = vi.fn();
-    const rootCollection = {
-      collectionId: "collection-root",
-      parentId: null,
-      name: "Root",
-      description: null,
-      coverAssetId: null,
-      position: 0,
-      assetCount: 0,
-      childCollectionCount: 0,
-    };
-    const props = createNavigationProps({
-      collections: [rootCollection],
-      collectionTree: new Map([[null, [rootCollection]]]),
-      draggedCollectionId: rootCollection.collectionId,
-      onMoveCollectionToRoot,
-    });
-    container = document.createElement("div");
-    document.body.append(container);
-    root = createRoot(container);
-
-    await act(async () => {
-      root?.render(
-        createElement(
-          LocaleProvider,
-          null,
-          createElement(NavigationSidebar, props),
-        ),
-      );
-    });
-
-    const list = container.querySelector<HTMLElement>(".nav-collection-list");
-    expect(list).not.toBeNull();
-    const transfer = createDragTransfer([]);
-
-    await act(async () => {
-      dispatchDragEvent(list!, "dragenter", transfer);
-      dispatchDragEvent(list!, "dragover", transfer);
-      dispatchDropEvent(list!, transfer);
-    });
-
-    expect(list?.classList.contains("is-root-drop-target")).toBe(false);
-    expect(onMoveCollectionToRoot).not.toHaveBeenCalled();
-  });
 });
 
 describe("NavigationSidebar folder-section blank area", () => {
@@ -1387,7 +566,7 @@ describe("NavigationSidebar folder-section blank area", () => {
   });
 
   // Serpent-6e3b10 — the folder section's own empty state is inside the blank
-  // area; the collections / smart-collections sections are not.
+  // area.
   it("returns to the library root when the folder section's empty state is clicked", async () => {
     const onChooseFolder = vi.fn();
     const nav = await renderSidebar({
@@ -1423,19 +602,12 @@ describe("NavigationSidebar folder-section blank area", () => {
     const onChooseFolder = vi.fn();
     const nav = await renderSidebar({
       assetScope: "folder-child",
-      collections: [],
-      smartCollections: [],
       onChooseFolder,
     });
-    const collectionsEmptyState = [
-      ...nav.querySelectorAll<HTMLElement>("p.nav-empty"),
-    ].find((node) => !node.closest(".nav-folder-list"));
     const heading = nav.querySelector<HTMLElement>(".nav-section-heading > span");
-    expect(collectionsEmptyState).toBeDefined();
     expect(heading).not.toBeNull();
 
     await act(async () => {
-      collectionsEmptyState!.click();
       heading!.click();
       nav.click();
     });
@@ -1702,16 +874,14 @@ describe("NavigationSidebar folder-section blank area", () => {
   // Serpent-b29bc4 — one more time: no folder drag, no root move.
   it("moves nothing when a folder is dropped outside the folder section", async () => {    const onFoldersDroppedOnFolder = vi.fn();
     const nav = await renderSidebar({ onFoldersDroppedOnFolder });
-    const collectionsHeading = [
-      ...nav.querySelectorAll<HTMLElement>(".nav-section-heading > span"),
-    ].find((node) => node.textContent?.trim() === "合集");
-    expect(collectionsHeading).toBeDefined();
+    // The pane itself (outside the folder list) is not a drop target.
+    const outside = nav;
     const transfer = createFolderDragTransfer([childFolder.folderId]);
 
     await act(async () => {
-      dispatchDragEvent(collectionsHeading!, "dragenter", transfer);
-      dispatchDragEvent(collectionsHeading!, "dragover", transfer);
-      dispatchDropEvent(collectionsHeading!, transfer);
+      dispatchDragEvent(outside, "dragenter", transfer);
+      dispatchDragEvent(outside, "dragover", transfer);
+      dispatchDropEvent(outside, transfer);
     });
 
     expect(onFoldersDroppedOnFolder).not.toHaveBeenCalled();
@@ -1755,18 +925,11 @@ describe("NavigationSidebar folder-section blank area", () => {
 
   it("filters the folder tree from the heading search and keeps ancestors", async () => {
     const nav = await renderSidebar();
-    const openSearch = [...nav.querySelectorAll("button")].find(
-      (button) => button.getAttribute("aria-label") === "搜索文件夹",
+    // Folder search lives permanently in the section heading row.
+    const input = nav.querySelector<HTMLInputElement>(
+      '.nav-section-heading input[aria-label="搜索文件夹"]',
     );
-    expect(openSearch).toBeDefined();
-    await act(async () => {
-      openSearch!.click();
-    });
-    const input = nav.querySelector<HTMLInputElement>("input.nav-section-search");
-    const slot = input?.closest(".nav-section-search-slot");
     expect(input).not.toBeNull();
-    expect(slot?.classList.contains("is-open")).toBe(true);
-    expect(slot?.previousElementSibling?.classList.contains("nav-section-heading")).toBe(true);
     await act(async () => {
       const setter = Object.getOwnPropertyDescriptor(
         HTMLInputElement.prototype,
@@ -1826,132 +989,6 @@ describe("NavigationSidebar folder-section blank area", () => {
     expect(line).not.toBeNull();
     // depth 1: 14px indent + 16px disclosure + 2px gap.
     expect(line?.style.left).toBe("32px");
-  });
-
-  it("reorders collections with the custom insertion line", async () => {
-    localStorage.removeItem(collectionCustomOrderKey("library-1"));
-    const onNestCollection = vi.fn();
-    const onMoveCollectionToRoot = vi.fn();
-    const first = {
-      collectionId: "collection-first",
-      parentId: null,
-      name: "First",
-      description: null,
-      coverAssetId: null,
-      position: 0,
-      assetCount: 0,
-      childCollectionCount: 0,
-    };
-    const second = {
-      collectionId: "collection-second",
-      parentId: null,
-      name: "Second",
-      description: null,
-      coverAssetId: null,
-      position: 1,
-      assetCount: 0,
-      childCollectionCount: 0,
-    };
-    const nav = await renderSidebar({
-      collections: [first, second],
-      collectionTree: new Map([[null, [first, second]]]),
-      draggedCollectionId: second.collectionId,
-      onNestCollection,
-      onMoveCollectionToRoot,
-    });
-    const targetRow = nav.querySelector<HTMLButtonElement>(
-      `button[data-nav-collection-id="${first.collectionId}"]`,
-    )!;
-    const transfer = createDragTransfer([]);
-    setRowRect(targetRow);
-
-    await act(async () => {
-      dispatchDragEvent(targetRow, "dragover", transfer, 101);
-    });
-    expect(
-      targetRow.closest(".nav-tree-row")?.getAttribute("data-insert-edge"),
-    ).toBe("before");
-
-    await act(async () => {
-      dispatchDropEvent(targetRow, transfer);
-    });
-
-    expect(onNestCollection).not.toHaveBeenCalled();
-    expect(onMoveCollectionToRoot).not.toHaveBeenCalled();
-    const stored = JSON.parse(
-      localStorage.getItem(collectionCustomOrderKey("library-1")) ?? "{}",
-    ) as Record<string, number>;
-    const secondPosition = stored[customOrderKey(null, second.collectionId)];
-    const firstPosition = stored[customOrderKey(null, first.collectionId)];
-    expect(typeof secondPosition).toBe("number");
-    expect(typeof firstPosition).toBe("number");
-    expect(secondPosition as number).toBeLessThan(firstPosition as number);
-  });
-
-  it("nests a collection when inserted beside a child at another level", async () => {
-    localStorage.removeItem(collectionCustomOrderKey("library-1"));
-    const onNestCollection = vi.fn();
-    const parent = {
-      collectionId: "collection-parent",
-      parentId: null,
-      name: "Parent",
-      description: null,
-      coverAssetId: null,
-      position: 0,
-      assetCount: 0,
-      childCollectionCount: 1,
-    };
-    const child = {
-      collectionId: "collection-child",
-      parentId: parent.collectionId,
-      name: "Child",
-      description: null,
-      coverAssetId: null,
-      position: 0,
-      assetCount: 0,
-      childCollectionCount: 0,
-    };
-    const dragged = {
-      collectionId: "collection-dragged",
-      parentId: null,
-      name: "Dragged",
-      description: null,
-      coverAssetId: null,
-      position: 1,
-      assetCount: 0,
-      childCollectionCount: 0,
-    };
-    const nav = await renderSidebar({
-      collections: [parent, child, dragged],
-      collectionTree: new Map([
-        [null, [parent, dragged]],
-        [parent.collectionId, [child]],
-      ]),
-      draggedCollectionId: dragged.collectionId,
-      onNestCollection,
-    });
-    const targetRow = nav.querySelector<HTMLButtonElement>(
-      `button[data-nav-collection-id="${child.collectionId}"]`,
-    )!;
-    const transfer = createDragTransfer([]);
-    setRowRect(targetRow);
-
-    await act(async () => {
-      dispatchDragEvent(targetRow, "dragover", transfer, 120);
-    });
-    expect(
-      targetRow.closest(".nav-tree-row")?.getAttribute("data-insert-edge"),
-    ).toBe("after");
-
-    await act(async () => {
-      dispatchDropEvent(targetRow, transfer);
-    });
-
-    expect(onNestCollection).toHaveBeenCalledWith(
-      dragged.collectionId,
-      parent.collectionId,
-      { blockingUi: false },
-    );
   });
 
 });

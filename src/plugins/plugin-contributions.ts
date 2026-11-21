@@ -35,7 +35,6 @@ export const pluginContributionTargetSchema = z.enum([
   'commands',
   'menus.asset',
   'menus.folder',
-  'menus.collection',
   'menus.workspace',
   'toolbar',
   'inspector.sections',
@@ -126,7 +125,6 @@ export interface PluginContributionRegistry {
 export const pluginHostMenuTargetSchema = z.enum([
   'menus.asset',
   'menus.folder',
-  'menus.collection',
   'menus.workspace',
 ]);
 export type PluginHostMenuTarget = z.infer<typeof pluginHostMenuTargetSchema>;
@@ -159,7 +157,6 @@ export type PluginAssetMenuContribution = PluginMenuContribution & {
 const MENU_TARGET_BY_NAME: Record<string, PluginContributionTarget> = {
   asset: 'menus.asset',
   folder: 'menus.folder',
-  collection: 'menus.collection',
   workspace: 'menus.workspace',
 };
 

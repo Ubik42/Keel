@@ -41,7 +41,6 @@ function makeActions(calls: RecordedCall[]): AssetCommandActions {
     relink: record('relink'),
     restore: record('restore'),
     deletePermanent: record('deletePermanent'),
-    removeFromCurrentCollection: record('removeFromCurrentCollection'),
   };
 }
 
@@ -60,7 +59,6 @@ function makeCtx(
     locationKind: 'managed',
     assetAvailable: true,
     assetDeleted: false,
-    activeCollectionId: null,
     aiCanAnalyze: true,
     pasteTargetFolderId: 'folder-1',
     semanticSearchEnabled: false,
@@ -169,41 +167,6 @@ describe('可见性（与历史内联 JSX 条件一致）', () => {
     ]);
   });
 
-  it('activeCollectionId 控制 remove-from-current-collection，且排在组织组首位', () => {
-    const withCollection = makeCtx({ activeCollectionId: 'col-1' });
-    expect(resolveIds(withCollection.ctx)).toEqual([
-      'asset.view',
-      'asset.open-external',
-      'asset.reveal-in-folder',
-      'asset.show-in-library-folder',
-      'asset.remove-from-current-collection',
-      'asset.move-to-folder',
-      'asset.copy',
-      'asset.paste',
-      'asset.copy-file-path',
-      'asset.rename',
-      'asset.ai-analyze',
-      'asset.clear-ai-content',
-      'asset.move-to-trash',
-      'asset.delete-from-disk',
-    ]);
-    const without = makeCtx({ activeCollectionId: null });
-    expect(resolveIds(without.ctx)).not.toContain(
-      'asset.remove-from-current-collection',
-    );
-  });
-
-  it('deleted 时即使 activeCollectionId 存在也不显示常规项', () => {
-    const { ctx } = makeCtx({
-      assetDeleted: true,
-      activeCollectionId: 'col-1',
-    });
-    expect(resolveIds(ctx)).toEqual([
-      'asset.restore',
-      'asset.delete-permanent',
-    ]);
-  });
-
   it('语义搜索开启后只为当前模型可处理的资产显示找相似', () => {
     const enabled = makeCtx({
       semanticSearchEnabled: true,
@@ -247,7 +210,7 @@ describe('可见性（与历史内联 JSX 条件一致）', () => {
 
 describe('禁用原因（disabledReason 是唯一禁用来源）', () => {
   it('managed + available：所有可见项均启用', () => {
-    const { ctx } = makeCtx({ activeCollectionId: 'col-1' });
+    const { ctx } = makeCtx();
     for (const item of registry.resolveMenu(ctx)) {
       expect(item.disabled, item.id).toBe(false);
       expect(item.disabledReason, item.id).toBeNull();
@@ -351,7 +314,6 @@ describe('标题与快捷键标签', () => {
     ['asset.delete-permanent', '永久删除'],
     ['asset.view', '查看'],
     ['asset.open-external', '用默认应用打开'],
-    ['asset.remove-from-current-collection', '从当前合集移除'],
     ['asset.relink', '找回资产…'],
     ['asset.move-to-folder', '移动到文件夹…'],
     ['asset.copy', '复制'],
@@ -364,7 +326,6 @@ describe('标题与快捷键标签', () => {
   ] as const)('%s 标题为「%s」（与历史渲染一致）', (id, expected) => {
     // 用全开 ctx 让每项都可见：deleted 覆盖回收站项，正常 ctx 覆盖其余。
     const { ctx } = makeCtx({
-      activeCollectionId: 'col-1',
       assetDeleted: id === 'asset.restore' || id === 'asset.delete-permanent',
       locationKind: 'managed',
       assetAvailable: id !== 'asset.relink',
@@ -452,12 +413,6 @@ describe('run 委托到 actions 回调包', () => {
       'deletePermanent',
       [['asset-1']],
     ],
-    [
-      'asset.remove-from-current-collection',
-      { activeCollectionId: 'col-1' },
-      'removeFromCurrentCollection',
-      ['asset-1'],
-    ],
   ] as const)(
     '%s 以 primaryAssetId 转调 %s',
     (id, overrides, expectedAction, expectedArgs) => {
@@ -492,7 +447,7 @@ describe('run 委托到 actions 回调包', () => {
 });
 
 describe('注册表完整性', () => {
-  it('18 条定义全部注册且 id 唯一（createCommandRegistry 未抛错）', () => {
+  it('17 条定义全部注册且 id 唯一（createCommandRegistry 未抛错）', () => {
     expect(registry.list().map((def) => def.id)).toEqual([
       'asset.restore',
       'asset.delete-permanent',
@@ -501,7 +456,6 @@ describe('注册表完整性', () => {
       'asset.reveal-in-folder',
       'asset.show-in-library-folder',
       'asset.find-similar',
-      'asset.remove-from-current-collection',
       'asset.relink',
       'asset.move-to-folder',
       'asset.copy',
@@ -516,14 +470,13 @@ describe('注册表完整性', () => {
   });
 
   it('解析结果按 open → organize → metadata → delete 组序排列', () => {
-    const { ctx } = makeCtx({ activeCollectionId: 'col-1' });
+    const { ctx } = makeCtx();
     const groups = registry.resolveMenu(ctx).map((item) => item.group);
     expect(groups).toEqual([
       'open',
       'open',
       'open',
       'open',
-      'organize',
       'organize',
       'organize',
       'organize',

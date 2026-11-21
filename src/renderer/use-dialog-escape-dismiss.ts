@@ -20,7 +20,6 @@ export type UseDialogEscapeDismissParams = {
   cancelBatchRelink: () => void | Promise<void>;
   setRestoreDialog: (value: null) => void;
   setMoveDialog: (value: null) => void;
-  setCollectionEditor: (value: null) => void;
   setExportDialogOpen: (open: boolean) => void;
   setImportLibraryChooserOpen: (open: boolean) => void;
   setOpenLibraryChooserOpen: (open: boolean) => void;
@@ -34,7 +33,6 @@ export type UseDialogEscapeDismissParams = {
   setLinkedRulesEditor: (value: null) => void;
   resetConvertLinkedDialog: () => void;
   setDialog: (value: null) => void;
-  setShowCollectionInput: (open: boolean) => void;
   setConflicts: (value: ImportConflictPlan | null) => void;
   setSourceFailurePlan?: (value: null) => void;
   setError: (message: string | null) => void;
@@ -62,7 +60,6 @@ export function useDialogEscapeDismiss({
   cancelBatchRelink,
   setRestoreDialog,
   setMoveDialog,
-  setCollectionEditor,
   setExportDialogOpen,
   setImportLibraryChooserOpen,
   setOpenLibraryChooserOpen,
@@ -76,7 +73,6 @@ export function useDialogEscapeDismiss({
   setLinkedRulesEditor,
   resetConvertLinkedDialog,
   setDialog,
-  setShowCollectionInput,
   setConflicts,
   setSourceFailurePlan,
   setError,
@@ -141,9 +137,6 @@ export function useDialogEscapeDismiss({
         case "close-move":
           setMoveDialog(null);
           return;
-        case "close-collection-editor":
-          setCollectionEditor(null);
-          return;
         case "close-export":
           setExportDialogOpen(false);
           return;
@@ -182,7 +175,6 @@ export function useDialogEscapeDismiss({
           return;
         case "close-dialog":
           setDialog(null);
-          setShowCollectionInput(false);
           return;
         case "dismiss-plugin-trust-prompt":
           onDismissPluginTrustPrompt?.();
@@ -218,7 +210,6 @@ export function useDialogEscapeDismiss({
     cancelBatchRelink,
     setRestoreDialog,
     setMoveDialog,
-    setCollectionEditor,
     setExportDialogOpen,
     setImportLibraryChooserOpen,
     setOpenLibraryChooserOpen,
@@ -232,7 +223,6 @@ export function useDialogEscapeDismiss({
     setLinkedRulesEditor,
     resetConvertLinkedDialog,
     setDialog,
-    setShowCollectionInput,
     setConflicts,
     setSourceFailurePlan,
     setError,

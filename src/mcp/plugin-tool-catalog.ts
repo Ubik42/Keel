@@ -5,9 +5,8 @@ import { pluginIdSchema, pluginLocalIdSchema } from '../plugins/plugin-manifest'
 export const pluginMcpCommandContextSchema = z.strictObject({
   assetIds: z.array(z.string().min(1).max(256)).max(256).optional(),
   folderIds: z.array(z.string().min(1).max(256)).max(256).optional(),
-  collectionIds: z.array(z.string().min(1).max(256)).max(256).optional(),
 }).refine(
-  (context) => Boolean(context.assetIds?.length || context.folderIds?.length || context.collectionIds?.length),
+  (context) => Boolean(context.assetIds?.length || context.folderIds?.length),
   'At least one bounded context ID is required',
 );
 export type PluginMcpCommandContext = z.infer<typeof pluginMcpCommandContextSchema>;
@@ -122,11 +121,9 @@ const pluginMcpInputSchemaJson: PluginMcpToolDefinition['inputSchema'] = {
     libraryId: { type: 'string', minLength: 1, maxLength: 512 },
     assetIds: { type: 'array', items: { type: 'string' }, minItems: 1, maxItems: 256 },
     folderIds: { type: 'array', items: { type: 'string' }, minItems: 1, maxItems: 256 },
-    collectionIds: { type: 'array', items: { type: 'string' }, minItems: 1, maxItems: 256 },
   },
   anyOf: [
     { required: ['libraryId', 'assetIds'] },
     { required: ['libraryId', 'folderIds'] },
-    { required: ['libraryId', 'collectionIds'] },
   ],
 };

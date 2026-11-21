@@ -29,7 +29,6 @@ const emptySnapshot: DialogEscapeSnapshot = {
   restoreOpen: false,
   moveOpen: false,
   undoMoveOpen: false,
-  collectionEditorOpen: false,
   exportDialogOpen: false,
   importLibraryChooserOpen: false,
   openLibraryChooserOpen: false,

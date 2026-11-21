@@ -54,7 +54,6 @@ export const pluginContributionContextSchema = z.strictObject({
   }),
   browse: z.strictObject({
     folderId: boundedId.optional(),
-    collectionId: boundedId.optional(),
     tagId: boundedId.optional(),
     search: boundedText.optional(),
     filter: boundedText.optional(),
@@ -100,12 +99,10 @@ export const pluginInvocationContextSchema = z.strictObject({
     refs: boundedList(boundedId, 10_000),
     assetIds: boundedList(boundedId, 10_000),
     folderIds: boundedList(boundedId, 10_000),
-    collectionIds: boundedList(boundedId, 10_000),
     assets: boundedList(pluginInvocationAssetSchema, 256).optional().default([]),
   }),
   browse: z.strictObject({
     folderId: boundedId.optional(),
-    collectionId: boundedId.optional(),
     tagId: boundedId.optional(),
     search: boundedText.optional(),
     filter: boundedText.optional(),
@@ -157,7 +154,6 @@ export type PluginInvocationTarget = {
     refs?: readonly string[];
     assetIds?: readonly string[];
     folderIds?: readonly string[];
-    collectionIds?: readonly string[];
     assets?: readonly PluginInvocationAsset[];
   };
 };
@@ -202,7 +198,6 @@ export function createPluginInvocationContext(
       refs: [...(selection?.refs ?? [])],
       assetIds: [...(selection?.assetIds ?? [])],
       folderIds: [...(selection?.folderIds ?? [])],
-      collectionIds: [...(selection?.collectionIds ?? [])],
       assets: [...(selection?.assets ?? [])],
     },
     browse: parsed.browse,

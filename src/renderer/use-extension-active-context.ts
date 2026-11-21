@@ -8,8 +8,6 @@ export type UseExtensionActiveContextArgs = {
   readonly libraryId: string | null;
   readonly showTrash: boolean;
   readonly activeTagId: string | null;
-  readonly activeCollectionId: string | null;
-  readonly activeSmartCollectionId: string | null;
   readonly assetScope: "all" | "root" | string;
 };
 
@@ -26,8 +24,6 @@ export function useExtensionActiveContext(
     libraryId,
     showTrash,
     activeTagId,
-    activeCollectionId,
-    activeSmartCollectionId,
     assetScope,
   } = args;
 
@@ -37,14 +33,10 @@ export function useExtensionActiveContext(
       libraryId,
       showTrash,
       activeTagId,
-      activeCollectionId,
-      activeSmartCollectionId,
       assetScope,
     });
     api.setActiveContext(target.libraryId, target.selectedFolderId);
   }, [
-    activeCollectionId,
-    activeSmartCollectionId,
     activeTagId,
     api,
     assetScope,

@@ -13,7 +13,6 @@ export type ShortcutScope =
   | "app"
   | "browse"
   | "sidebar.folder"
-  | "sidebar.collection"
   | "viewer.base"
   | "viewer.image"
   | "viewer.video"
@@ -27,7 +26,7 @@ export type ShortcutSurface =
   | "hidden-accelerator"
   | "before-input";
 
-export type ShortcutCategory = "asset" | "folder" | "collection" | "app" | "viewer";
+export type ShortcutCategory = "asset" | "folder" | "app" | "viewer";
 
 export type ShortcutChord = {
   /** Logical key used for display and named-key matching. */
@@ -301,36 +300,6 @@ export const SHORTCUT_ACTIONS: readonly ShortcutActionDefinition[] = Object.free
     category: "folder",
     scopes: ["sidebar.folder"],
     defaults: sharedDiskDeleteDefaults,
-    customizable: true,
-    surfaces: rendererContextAndHidden,
-  },
-  {
-    id: "collection.create-subcollection",
-    labelKey: "shortcuts.action.collection.createSubcollection",
-    category: "collection",
-    scopes: ["sidebar.collection"],
-    defaults: {
-      mac: [folderCreateMac],
-      windows: [folderCreateWin],
-    },
-    customizable: true,
-    surfaces: rendererAndContext,
-  },
-  {
-    id: "collection.rename",
-    labelKey: "shortcuts.action.collection.rename",
-    category: "collection",
-    scopes: ["sidebar.collection"],
-    defaults: sharedDefaults,
-    customizable: true,
-    surfaces: rendererContextAndHidden,
-  },
-  {
-    id: "collection.delete",
-    labelKey: "shortcuts.action.collection.delete",
-    category: "collection",
-    scopes: ["sidebar.collection"],
-    defaults: sharedTrashDefaults,
     customizable: true,
     surfaces: rendererContextAndHidden,
   },
@@ -681,7 +650,6 @@ export function shortcutScopesOverlap(
 export const SHORTCUT_CATEGORY_ORDER: readonly ShortcutCategory[] = [
   "asset",
   "folder",
-  "collection",
   "app",
   "viewer",
 ];

@@ -513,8 +513,6 @@ describe('Plugin contribution registry and generated SDK', () => {
       'getExtractedMetadata(assetId: string): Promise<unknown>;',
       'readonly folders:',
       'readonly tags:',
-      'readonly collections:',
-      'readonly smartCollections:',
       'readonly linkedFolders:',
       'readonly ui:',
       'openDialog(input: {',
@@ -527,7 +525,8 @@ describe('Plugin contribution registry and generated SDK', () => {
     }
     expect(declaration).toContain('readonly targetLibraryId: string;');
     expect(declaration).toContain('readonly folderIds?: readonly string[];');
-    expect(declaration).toContain('readonly collectionIds?: readonly string[];');
+    expect(declaration).not.toContain('collectionIds');
+    expect(declaration).not.toContain('readonly collections:');
     expect(declaration).toContain("Pick<SerpentPluginApi['jobs'], 'enqueue' | 'reportProgress' | 'cancel' | 'pause' | 'resume' | 'retry'>");
     expect(declaration).toContain('reportProgress');
     expect(declaration).not.toContain('zod');

@@ -43,11 +43,9 @@ interface ViewerContextMenuProps {
   canTrash?: boolean;
   canDiskDelete?: boolean;
   diskDeleteLinked?: boolean;
-  canRemoveFromCollection?: boolean;
   canPermanentDelete?: boolean;
   onTrash?: () => void;
   onDiskDelete?: () => void;
-  onRemoveFromCollection?: () => void;
   onPermanentDelete?: () => void;
   playback?: ViewerPlaybackMenuProps | null;
   chromeSettings?: ViewerChromeMenuProps | null;
@@ -79,11 +77,9 @@ export function ViewerContextMenu({
   canTrash = false,
   canDiskDelete = false,
   diskDeleteLinked = false,
-  canRemoveFromCollection = false,
   canPermanentDelete = false,
   onTrash,
   onDiskDelete,
-  onRemoveFromCollection,
   onPermanentDelete,
   playback = null,
   chromeSettings = null,
@@ -324,7 +320,7 @@ export function ViewerContextMenu({
           </span>
         </button>
       </div>
-      {canTrash || canDiskDelete || canRemoveFromCollection || canPermanentDelete ? (
+      {canTrash || canDiskDelete || canPermanentDelete ? (
         <div className="context-menu-section" role="group">
           {canTrash && onTrash ? (
             <button
@@ -338,22 +334,6 @@ export function ViewerContextMenu({
               </span>
               <span className="context-menu-item-label">
                 {t("command.asset.moveToTrash")}
-              </span>
-              <span className="context-menu-item-shortcut">Delete</span>
-            </button>
-          ) : null}
-          {canRemoveFromCollection && onRemoveFromCollection ? (
-            <button
-              className="context-menu-item"
-              onClick={action(onRemoveFromCollection)}
-              tabIndex={VIEWER_CHROME_TAB_INDEX}
-              type="button"
-            >
-              <span className="context-menu-item-icon">
-                <Icon name="trash" size={14} />
-              </span>
-              <span className="context-menu-item-label">
-                {t("command.asset.removeFromCollection")}
               </span>
               <span className="context-menu-item-shortcut">Delete</span>
             </button>

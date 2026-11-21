@@ -273,10 +273,10 @@ describe("formatMenuActionSkipLine / formatMultiAssetMenuSkipFooter", () => {
       ["f1"],
     );
     expect(formatMultiAssetMenuSkipFooter(report, "zh-CN")).toBe(
-      "标签/合集/AI：跳过 1（文件夹）",
+      "标签/AI：跳过 1（文件夹）",
     );
     expect(formatMultiAssetMenuSkipFooter(report, "en")).toBe(
-      "Tags/collections/AI: skip 1 (folder)",
+      "Tags/AI: skip 1 (folder)",
     );
   });
 });

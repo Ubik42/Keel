@@ -12,7 +12,6 @@ import {
 import { pluginProviderMediaSchema, pluginProviderMetadataSchema, pluginProviderAiAnalysisSchema, pluginProviderExportDescriptorSchema, pluginProviderImportPlanSchema } from '../plugins/plugin-providers';
 import { pluginThemePackageSchema } from '../plugins/plugin-themes';
 import { pluginRuntimeModeSchema } from '../plugins/plugin-runtime-mode';
-import { PLUGIN_PLATFORM_TOKENS } from '../plugins/plugin-release-asset';
 import { pluginInvocationContextSchema } from '../plugins/plugin-context';
 import { pluginUiDescriptorSchema } from './plugin-ui-descriptor';
 import {
@@ -68,7 +67,6 @@ export type PluginManagerSourceSummary = z.infer<typeof pluginManagerSourceSumma
 const pluginHostMenuTargetSchema = z.enum([
   'menus.asset',
   'menus.folder',
-  'menus.collection',
   'menus.workspace',
 ]);
 export type PluginHostMenuTarget = z.infer<typeof pluginHostMenuTargetSchema>;
@@ -77,7 +75,6 @@ const pluginHostContributionTargetSchema = z.enum([
   'commands',
   'menus.asset',
   'menus.folder',
-  'menus.collection',
   'menus.workspace',
   'toolbar',
   'inspector.sections',
@@ -116,7 +113,6 @@ export const pluginManagerRequestSchema = z.discriminatedUnion('type', [
     commandId: pluginLocalIdSchema.optional(),
     assetIds: z.array(z.string().min(1).max(255)).max(10_000).optional(),
     folderIds: z.array(z.string().min(1).max(255)).max(10_000).optional(),
-    collectionIds: z.array(z.string().min(1).max(255)).max(10_000).optional(),
     invocation: pluginInvocationContextSchema.optional(),
   }).superRefine((value, context) => {
     const hasContributionId = value.contributionId !== undefined;

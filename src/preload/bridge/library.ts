@@ -23,7 +23,7 @@ import { searchQuerySchema } from '../../shared/asset-types';
 import type { EntityAppearance, EntityAppearanceTarget } from '../../shared/entity-appearance';
 import type { FbxConversionResult, FbxConversionStats } from '../../shared/fbx-conversion';
 import type { ModelCompanionAsset } from '../../shared/model-companions';
-import type { AiSearchPlan, AssetSummary, AssetMetadataResult, ExtractedMetadataResult, CollectionSummary, FilterClause, FolderBrowseEntry, LinkedFolderDirectoryMutation, LinkedFolderRule, LinkedFolderSummary, ManagedFolderSummary, SearchQuery, SearchScope, SmartCollectionSummary, TagCooccurrenceGraph, TagSummary, TrashedFolderSummary } from '../../shared/asset-types';
+import type { AiSearchPlan, AssetSummary, AssetMetadataResult, ExtractedMetadataResult, FilterClause, FolderBrowseEntry, LinkedFolderDirectoryMutation, LinkedFolderRule, LinkedFolderSummary, ManagedFolderSummary, SearchQuery, SearchScope, TagCooccurrenceGraph, TagSummary, TrashedFolderSummary } from '../../shared/asset-types';
 import {
   ASSET_CHANGE_CHANNEL,
   ASSET_NATIVE_DRAG_READINESS_CHANNEL,
@@ -98,8 +98,7 @@ const EMPTY_FBX_CONVERSION_STATS: FbxConversionStats = {
 
 const e2eEnabled = process.env.SERPENT_E2E === '1';
 export type E2eBrowseSessionDelayTarget = {
-  folderId?: string;
-  smartCollectionId?: string;
+  folderId: string;
 };
 let e2eBrowseSessionDelay: {
   target: E2eBrowseSessionDelayTarget;
@@ -811,7 +810,6 @@ export const library: SerpentLibraryApi = Object.freeze({
   async importDropped(input: {
     libraryId: string;
     targetFolderId?: string;
-    targetCollectionId?: string;
     files: File[];
     html?: string;
     uriList?: string;
@@ -831,7 +829,6 @@ export const library: SerpentLibraryApi = Object.freeze({
           type: 'asset.import-web.request',
           libraryId: input.libraryId,
           targetFolderId: input.targetFolderId,
-          targetCollectionId: input.targetCollectionId,
           ...extracted,
         });
       } catch (error) {
@@ -855,7 +852,6 @@ export const library: SerpentLibraryApi = Object.freeze({
         type: 'asset.import-drop.request',
         libraryId: input.libraryId,
         targetFolderId: input.targetFolderId,
-        targetCollectionId: input.targetCollectionId,
         sourcePaths,
         autoDetectImageSequences: input.autoDetectImageSequences,
         detectImageSequences: input.detectImageSequences,
@@ -896,7 +892,6 @@ export const library: SerpentLibraryApi = Object.freeze({
   async pasteClipboardImage(input: {
     libraryId: string;
     targetFolderId?: string;
-    targetCollectionId?: string;
   }): Promise<LibraryApiResult<ImportCompletion | ImportConflictPlan>> {
     const result = await importRequest({ type: 'asset.import-clipboard.request', ...input });
     if (!result.ok) return { ok: false, error: result.error };
@@ -1165,76 +1160,6 @@ export const library: SerpentLibraryApi = Object.freeze({
     return { ok: true, value: { removedCount: result.removedCount, skipped: result.skipped, ...(result.historyEntryId ? { historyEntryId: result.historyEntryId } : {}) } };
   },
 
-  async listCollections({ libraryId }: { libraryId: string }): Promise<LibraryApiResult<CollectionSummary[]>> {
-    const result = await request({ type: 'collection.list.request', libraryId });
-    if (!result.ok) return failure(result);
-    if (result.type !== 'collection.list') throw new Error('Unexpected list-collections response.');
-    return { ok: true, value: result.collections };
-  },
-
-  async createCollection({ libraryId, parentId, name }: { libraryId: string; parentId?: string; name: string }): Promise<LibraryApiResult<CollectionSummary & { historyEntryId?: string }>> {
-    const result = await request({ type: 'collection.create.request', libraryId, parentId, name });
-    if (!result.ok) return failure(result);
-    if (result.type !== 'collection.created') throw new Error('Unexpected create-collection response.');
-    return { ok: true, value: { ...result.collection, ...(result.historyEntryId ? { historyEntryId: result.historyEntryId } : {}) } };
-  },
-
-  async updateCollection({ libraryId, collectionId, name, parentId, description, coverAssetId, position }: { libraryId: string; collectionId: string; name?: string; parentId?: string | null; description?: string | null; coverAssetId?: string | null; position?: number }): Promise<LibraryApiResult<CollectionSummary & { historyEntryId?: string }>> {
-    const result = await request({ type: 'collection.update.request', libraryId, collectionId, name, parentId, description, coverAssetId, position });
-    if (!result.ok) return failure(result);
-    if (result.type !== 'collection.updated') throw new Error('Unexpected update-collection response.');
-    return { ok: true, value: { ...result.collection, ...(result.historyEntryId ? { historyEntryId: result.historyEntryId } : {}) } };
-  },
-
-  async reorderCollections({ libraryId, orderedCollectionIds }: { libraryId: string; orderedCollectionIds: string[] }): Promise<LibraryApiResult<{ orderedCollectionIds: string[]; historyEntryId?: string }>> {
-    const result = await request({ type: 'collection.reorder.request', libraryId, orderedCollectionIds });
-    if (!result.ok) return failure(result);
-    if (result.type !== 'collection.reordered') throw new Error('Unexpected reorder-collections response.');
-    return { ok: true, value: { orderedCollectionIds: result.orderedCollectionIds, ...(result.historyEntryId ? { historyEntryId: result.historyEntryId } : {}) } };
-  },
-
-  async deleteCollection({ libraryId, collectionId }: { libraryId: string; collectionId: string }): Promise<LibraryApiResult<{ collectionId: string; historyEntryId?: string }>> {
-    const result = await request({ type: 'collection.delete.request', libraryId, collectionId });
-    if (!result.ok) return failure(result);
-    if (result.type !== 'collection.deleted') throw new Error('Unexpected delete-collection response.');
-    return { ok: true, value: { collectionId: result.collectionId, ...(result.historyEntryId ? { historyEntryId: result.historyEntryId } : {}) } };
-  },
-
-  async addCollectionAssets({ libraryId, collectionId, assetIds }: { libraryId: string; collectionId: string; assetIds: string[] }): Promise<LibraryApiResult<{ collectionId: string; historyEntryId?: string }>> {
-    const result = await request({ type: 'collection.assets.add.request', libraryId, collectionId, assetIds });
-    if (!result.ok) return failure(result);
-    if (result.type !== 'collection.assets.added') throw new Error('Unexpected add-collection-assets response.');
-    return { ok: true, value: { collectionId: result.collectionId, ...(result.historyEntryId ? { historyEntryId: result.historyEntryId } : {}) } };
-  },
-
-  async removeCollectionAssets({ libraryId, collectionId, assetIds }: { libraryId: string; collectionId: string; assetIds: string[] }): Promise<LibraryApiResult<{ collectionId: string; historyEntryId?: string }>> {
-    const result = await request({ type: 'collection.assets.remove.request', libraryId, collectionId, assetIds });
-    if (!result.ok) return failure(result);
-    if (result.type !== 'collection.assets.removed') throw new Error('Unexpected remove-collection-assets response.');
-    return { ok: true, value: { collectionId: result.collectionId, ...(result.historyEntryId ? { historyEntryId: result.historyEntryId } : {}) } };
-  },
-
-  async reorderCollectionAssets({ libraryId, collectionId, orderedAssetIds }: { libraryId: string; collectionId: string; orderedAssetIds: string[] }): Promise<LibraryApiResult<{ collectionId: string; historyEntryId?: string }>> {
-    const result = await request({ type: 'collection.assets.reorder.request', libraryId, collectionId, orderedAssetIds });
-    if (!result.ok) return failure(result);
-    if (result.type !== 'collection.assets.reordered') throw new Error('Unexpected reorder-collection-assets response.');
-    return { ok: true, value: { collectionId: result.collectionId, ...(result.historyEntryId ? { historyEntryId: result.historyEntryId } : {}) } };
-  },
-
-  async listCollectionAssets({ libraryId, collectionId, recursive }: { libraryId: string; collectionId: string; recursive: boolean }): Promise<LibraryApiResult<AssetSummary[]>> {
-    const result = await request({ type: 'collection.assets.list.request', libraryId, collectionId, recursive });
-    if (!result.ok) return failure(result);
-    if (result.type !== 'collection.assets.list') throw new Error('Unexpected list-collection-assets response.');
-    return { ok: true, value: result.assets };
-  },
-
-  async listAssetCollectionMemberships({ libraryId, assetIds }: { libraryId: string; assetIds: string[] }): Promise<LibraryApiResult<Array<{ assetId: string; collectionId: string }>>> {
-    const result = await request({ type: 'collection.assets.memberships.request', libraryId, assetIds });
-    if (!result.ok) return failure(result);
-    if (result.type !== 'collection.assets.memberships') throw new Error('Unexpected list-asset-collection-memberships response.');
-    return { ok: true, value: result.memberships };
-  },
-
   async getAssetMetadata({ libraryId, assetId }: { libraryId: string; assetId: string }): Promise<LibraryApiResult<AssetMetadataResult>> {
     const result = await request({ type: 'asset.metadata.get.request', libraryId, assetId });
     if (!result.ok) return failure(result);
@@ -1283,59 +1208,6 @@ export const library: SerpentLibraryApi = Object.freeze({
     return { ok: true, value: { updatedCount: result.updatedCount, skipped: result.skipped, ...(result.historyEntryId ? { historyEntryId: result.historyEntryId } : {}) } };
   },
 
-  async listSmartCollections({ libraryId }: { libraryId: string }): Promise<LibraryApiResult<SmartCollectionSummary[]>> {
-    const result = await request({ type: 'smart-collection.list.request', libraryId });
-    if (!result.ok) return failure(result);
-    if (result.type !== 'smart-collection.list') throw new Error('Unexpected list-smart-collections response.');
-    return { ok: true, value: result.collections };
-  },
-
-  async createSmartCollection({ libraryId, name, queryDefinitionJson }: { libraryId: string; name: string; queryDefinitionJson: string }): Promise<LibraryApiResult<SmartCollectionSummary & { historyEntryId?: string }>> {
-    const result = await request({ type: 'smart-collection.create.request', libraryId, name, queryDefinitionJson });
-    if (!result.ok) return failure(result);
-    if (result.type !== 'smart-collection.created') throw new Error('Unexpected create-smart-collection response.');
-    return {
-      ok: true,
-      value: {
-        ...result.collection,
-        ...(result.historyEntryId ? { historyEntryId: result.historyEntryId } : {}),
-      },
-    };
-  },
-
-  async updateSmartCollection({ libraryId, collectionId, name, queryDefinitionJson, position }: { libraryId: string; collectionId: string; name?: string; queryDefinitionJson?: string; position?: number }): Promise<LibraryApiResult<SmartCollectionSummary & { historyEntryId?: string }>> {
-    const result = await request({ type: 'smart-collection.update.request', libraryId, collectionId, name, queryDefinitionJson, position });
-    if (!result.ok) return failure(result);
-    if (result.type !== 'smart-collection.updated') throw new Error('Unexpected update-smart-collection response.');
-    return {
-      ok: true,
-      value: {
-        ...result.collection,
-        ...(result.historyEntryId ? { historyEntryId: result.historyEntryId } : {}),
-      },
-    };
-  },
-
-  async deleteSmartCollection({ libraryId, collectionId }: { libraryId: string; collectionId: string }): Promise<LibraryApiResult<{ collectionId: string; historyEntryId?: string }>> {
-    const result = await request({ type: 'smart-collection.delete.request', libraryId, collectionId });
-    if (!result.ok) return failure(result);
-    if (result.type !== 'smart-collection.deleted') throw new Error('Unexpected delete-smart-collection response.');
-    return {
-      ok: true,
-      value: {
-        collectionId: result.collectionId,
-        ...(result.historyEntryId ? { historyEntryId: result.historyEntryId } : {}),
-      },
-    };
-  },
-
-  async executeSmartCollection({ libraryId, collectionId, scopeMode, idsOnly, layoutOnly, limit, offset }: { libraryId: string; collectionId: string; scopeMode?: boolean; idsOnly?: boolean; layoutOnly?: boolean; limit?: number; offset?: number }) {
-    const result = await request({ type: 'smart-collection.execute.request', libraryId, collectionId, scopeMode, idsOnly, layoutOnly, limit, offset });
-    if (!result.ok) return failure(result);
-    if (result.type !== 'smart-collection.executed') throw new Error('Unexpected execute-smart-collection response.');
-    return { ok: true as const, value: { items: result.items, total: result.total, offset: result.offset, ...(result.assetIds ? { assetIds: result.assetIds } : {}), ...(result.layout ? { layout: result.layout } : {}) } };
-  },
-
   async searchAssets({ libraryId, query, filters, scope, sort, scopeMode, idsOnly, layoutOnly, limit, offset, showIgnored }: { libraryId: string; query?: SearchQuery | null; filters?: FilterClause[]; scope?: SearchScope; sort?: { field: 'name' | 'modified_at' | 'created_at' | 'byte_size' | 'long_edge' | 'duration' | 'rating' | 'color' | 'author'; order: 'asc' | 'desc' }; scopeMode?: boolean; idsOnly?: boolean; layoutOnly?: boolean; limit?: number; offset?: number; showIgnored?: boolean }) {
     const parsedQuery = searchQuerySchema.safeParse(query ?? null);
     if (!parsedQuery.success) {
@@ -1347,16 +1219,12 @@ export const library: SerpentLibraryApi = Object.freeze({
     return { ok: true as const, value: { items: result.items, total: result.total, offset: result.offset, snippets: result.snippets, ...(result.assetIds ? { assetIds: result.assetIds } : {}), ...(result.layout ? { layout: result.layout } : {}) } };
   },
 
-  async openBrowseSession({ libraryId, query, filters, scope, sort, smartCollectionId, limit, showIgnored }: { libraryId: string; query: SearchQuery | null; filters?: FilterClause[]; scope?: SearchScope; sort?: { field: 'name' | 'modified_at' | 'created_at' | 'byte_size' | 'long_edge' | 'duration' | 'rating' | 'color' | 'author'; order: 'asc' | 'desc' }; smartCollectionId?: string; limit?: number; showIgnored?: boolean }) {
+  async openBrowseSession({ libraryId, query, filters, scope, sort, limit, showIgnored }: { libraryId: string; query: SearchQuery | null; filters?: FilterClause[]; scope?: SearchScope; sort?: { field: 'name' | 'modified_at' | 'created_at' | 'byte_size' | 'long_edge' | 'duration' | 'rating' | 'color' | 'author'; order: 'asc' | 'desc' }; limit?: number; showIgnored?: boolean }) {
     const navigationId = createNavigationId();
     const navigationStartedAtEpochMs = Date.now();
     const delayedBrowse = e2eBrowseSessionDelay;
-    const shouldDelay = delayedBrowse && (
-      delayedBrowse.target.folderId !== undefined
-        ? scope?.kind === 'folder' && scope.folderId === delayedBrowse.target.folderId
-        : delayedBrowse.target.smartCollectionId !== undefined &&
-          smartCollectionId === delayedBrowse.target.smartCollectionId
-    );
+    const shouldDelay = delayedBrowse &&
+      scope?.kind === 'folder' && scope.folderId === delayedBrowse.target.folderId;
     if (shouldDelay && delayedBrowse) {
       e2eBrowseSessionDelay = null;
       await new Promise((resolve) => setTimeout(resolve, delayedBrowse.delayMs));
@@ -1370,7 +1238,6 @@ export const library: SerpentLibraryApi = Object.freeze({
       filters,
       scope,
       sort,
-      smartCollectionId,
       limit,
       showIgnored,
     });

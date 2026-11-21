@@ -1,10 +1,8 @@
 import { z } from 'zod';
 
 import {
-  collectionSummarySchema,
   linkedFolderSummarySchema,
   managedFolderSummarySchema,
-  smartCollectionSummarySchema,
   tagSummarySchema,
   trashedFolderSummarySchema,
 } from './asset-types';
@@ -45,8 +43,6 @@ export const libraryNavigationSummarySchema = z.strictObject({
   folders: z.array(managedFolderSummarySchema),
   linkedFolders: z.array(linkedFolderSummarySchema),
   tags: z.array(tagSummarySchema),
-  collections: z.array(collectionSummarySchema),
-  smartCollections: z.array(smartCollectionSummarySchema),
   trashedFolders: z.array(trashedFolderSummarySchema),
   folderCovers: folderNavigationCoversSchema,
 });

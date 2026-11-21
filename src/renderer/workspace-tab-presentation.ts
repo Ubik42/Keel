@@ -1,9 +1,7 @@
 import type {
   AssetSummary,
-  CollectionSummary,
   LinkedFolderSummary,
   ManagedFolderSummary,
-  SmartCollectionSummary,
   TagSummary,
 } from "../shared/asset-types";
 import type { EntityAppearance } from "../shared/entity-appearance";
@@ -23,15 +21,12 @@ export interface WorkspaceTabPresentation {
   linkedBadge?: "link" | "link-off" | null;
   entity:
     | { kind: "folder"; id: string; name: string }
-    | { kind: "collection"; id: string; name: string }
     | null;
 }
 
 export interface WorkspaceTabPresentationInput {
   folders: readonly ManagedFolderSummary[];
   linkedFolders: readonly LinkedFolderSummary[];
-  collections: readonly CollectionSummary[];
-  smartCollections: readonly SmartCollectionSummary[];
   tags: readonly TagSummary[];
   assets: readonly AssetSummary[];
   pluginViews: readonly PluginSidebarViewDescriptor[];
@@ -119,26 +114,6 @@ function presentLocation(
         icon: "tag",
         entity: null,
       };
-    }
-    case "collection": {
-      const collection = input.collections.find(
-        (item) => item.collectionId === location.collectionId,
-      );
-      const name = collection?.name ?? tab.cachedTitle ?? input.t("scope.collectionView");
-      return {
-        id: tab.id,
-        title: name,
-        icon: "collection",
-        appearance: collection?.appearance ?? null,
-        entity: { kind: "collection", id: location.collectionId, name },
-      };
-    }
-    case "smart-collection": {
-      const collection = input.smartCollections.find(
-        (item) => item.collectionId === location.collectionId,
-      );
-      const name = collection?.name ?? tab.cachedTitle ?? input.t("scope.smartCollections");
-      return { id: tab.id, title: name, icon: "smart", appearance: collection?.appearance ?? null, entity: null };
     }
     case "trash":
       return { id: tab.id, title: input.t("scope.trash"), icon: "trash", entity: null };

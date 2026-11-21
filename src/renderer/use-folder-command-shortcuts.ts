@@ -120,8 +120,6 @@ export function useFolderCommandShortcuts(
       if (isEditableKeyboardTarget(event.target)) return;
       if (previewOpen) return;
       if (document.querySelector('[role="dialog"][aria-modal="true"]')) return;
-      // Collection rows own their own F2 / Delete / create shortcuts.
-      if (document.activeElement?.closest("[data-nav-collection-id]")) return;
 
       for (const commandId of FOLDER_SHORTCUT_COMMAND_IDS) {
         if (!matchFolderCommandShortcut(commandId, shortcutInput, platform)) continue;

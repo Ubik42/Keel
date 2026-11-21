@@ -160,7 +160,6 @@ export async function callSerpentMcpTool(
         const pluginContext = {
           ...(parsedPluginArguments.assetIds === undefined ? {} : { assetIds: parsedPluginArguments.assetIds }),
           ...(parsedPluginArguments.folderIds === undefined ? {} : { folderIds: parsedPluginArguments.folderIds }),
-          ...(parsedPluginArguments.collectionIds === undefined ? {} : { collectionIds: parsedPluginArguments.collectionIds }),
         };
         const result = await input.pluginTools!.call({
           pluginId: pluginTool.pluginId,

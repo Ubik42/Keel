@@ -30,8 +30,6 @@ describe("buildScopeBreadcrumbSegments", () => {
         {
           showTrash: false,
           activeTagLabel: null,
-          activeCollectionLabel: null,
-          activeSmartCollectionLabel: null,
           assetScope: "all",
           folderTrail: [],
         },
@@ -50,8 +48,6 @@ describe("buildScopeBreadcrumbSegments", () => {
             { tombstoneId: "tomb-filled", label: "filled" },
           ],
           activeTagLabel: null,
-          activeCollectionLabel: null,
-          activeSmartCollectionLabel: null,
           assetScope: "all",
           folderTrail: [],
         },
@@ -74,8 +70,6 @@ describe("buildScopeBreadcrumbSegments", () => {
         {
           showTrash: false,
           activeTagLabel: null,
-          activeCollectionLabel: null,
-          activeSmartCollectionLabel: null,
           assetScope: "leaf",
           folderTrail: [
             { folderId: "root", name: "Root" },
@@ -96,8 +90,6 @@ describe("buildScopeBreadcrumbSegments", () => {
         {
           showTrash: false,
           activeTagLabel: null,
-          activeCollectionLabel: null,
-          activeSmartCollectionLabel: null,
           assetScope: "linked-1",
           folderTrail: [],
           linkedFolderLabel: "External shots",

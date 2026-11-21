@@ -6,7 +6,6 @@ import { TEXT_EXTENSIONS, FORMAT_UNKNOWN_TOKEN } from '../../src/shared/text-med
 import { knownProductFormatExtensionsDotless } from '../../src/shared/product-format-extensions';
 import {
   buildCatalogAssetVisibilityPredicates,
-  buildCatalogCollectionScope,
   buildCatalogContextualSearchRank,
   buildCatalogContextualSearchWhere,
   buildCatalogExpressionFtsCandidate,
@@ -209,35 +208,7 @@ describe('shared pure catalog reads', () => {
     expect(widthFilter.params).toEqual([100]);
   });
 
-  it('keeps folder and collection recursion SQL-only and checks missing scopes', () => {
-    const missingCollection = readConnection({ getResults: [undefined] });
-    expect(buildCatalogCollectionScope(missingCollection.connection, {
-      libraryId: 'library', collectionId: 'missing', recursive: true,
-    })).toEqual({ status: 'missing' });
-
-    const recursiveCollection = readConnection({
-      getResults: [{ collection_id: 'collection' }, { collection_id: 'child' }],
-    });
-    const collection = buildCatalogCollectionScope(recursiveCollection.connection, {
-      libraryId: 'library', collectionId: 'collection', recursive: true,
-    });
-    expect(collection.status).toBe('ready');
-    if (collection.status === 'ready') {
-      expect(collection.scope.queryPrefix).toContain('WITH RECURSIVE collection_descendants');
-      expect(collection.scope.queryPrefix).toContain('MIN(ca.position) AS collection_position');
-      expect(collection.scope.params).toEqual(['collection', 'library', 'library']);
-    }
-    const leafCollection = readConnection({
-      getResults: [{ collection_id: 'leaf' }, undefined],
-    });
-    const leaf = buildCatalogCollectionScope(leafCollection.connection, {
-      libraryId: 'library', collectionId: 'leaf', recursive: true,
-    });
-    expect(leaf).toMatchObject({
-      status: 'ready',
-      scope: { queryPrefix: expect.not.stringContaining('WITH RECURSIVE'), params: ['leaf'] },
-    });
-
+  it('keeps folder recursion SQL-only and checks missing scopes', () => {
     const managed = readConnection({ getResults: [{ folder_id: 'folder' }] });
     const managedScope = buildCatalogFolderScopeClause(managed.connection, {
       libraryId: 'library',
@@ -329,7 +300,6 @@ describe('shared pure catalog reads', () => {
       artifactColumns: new Set(['duration_ms']),
       hasAiContent: false,
       sessionMode: false,
-      collectionScoped: false,
       trashScope: false,
     });
     expect(order.sql).toBe('duration_meta.duration_ms IS NULL ASC, duration_meta.duration_ms DESC, a.asset_id ASC');
@@ -371,8 +341,6 @@ describe('shared pure catalog reads', () => {
     const { connection, calls, preparedSqls } = readConnection({
       getResults: [
         { total: 42 },
-        { collection_id: 'collection' },
-        { collection_id: 'child' },
         { folder_id: 'managed' },
         undefined,
         { folder_id: 'linked' },
@@ -388,15 +356,6 @@ describe('shared pure catalog reads', () => {
       hasLinkedIgnoredAssets: true,
       hasSequenceFrames: true,
     })).toBe(42);
-    const collectionScope = buildCatalogCollectionScope(connection, {
-      libraryId: 'library',
-      collectionId: 'collection',
-      recursive: true,
-    });
-    expect(collectionScope.status).toBe('ready');
-    if (collectionScope.status === 'ready') {
-      expect(collectionScope.scope.queryPrefix).toContain('WITH RECURSIVE');
-    }
     expect(buildCatalogFolderScopeClause(connection, {
       libraryId: 'library',
       scope: { kind: 'folder', folderId: 'managed', recursive: true },
@@ -417,11 +376,11 @@ describe('shared pure catalog reads', () => {
       hasInvalidatedAt: true,
     })).toBeNull();
 
-    // Current catalog prepare sites: navigation count (1), collection scope
-    // (2), managed/linked folder resolution (3), thumbnail read (1), descriptor
+    // Current catalog prepare sites: navigation count (1),
+    // managed/linked folder resolution (3), thumbnail read (1), descriptor
     // read (1). Recording at prepare() ensures all executed SQL is audited,
     // independently of whether the returned statement uses all() or get().
-    expect(preparedSqls).toHaveLength(8);
+    expect(preparedSqls).toHaveLength(6);
     expect(calls).toHaveLength(preparedSqls.length);
     expectOnlyReadCatalogStatements(preparedSqls);
   });

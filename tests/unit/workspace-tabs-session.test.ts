@@ -37,9 +37,8 @@ describe("workspace tabs session", () => {
     });
     state = addWorkspaceTab(state, () => "tab-b");
     state = setWorkspaceTabLocation(state, "tab-b", {
-      kind: "collection",
-      collectionId: "collection-a",
-      recursive: true,
+      kind: "tag",
+      tagId: "tag-a",
     });
     state = addWorkspaceTab(state, () => "tab-c");
     state = selectWorkspaceTab(state, "tab-b");
@@ -60,9 +59,8 @@ describe("workspace tabs session", () => {
         {
           id: "tab-b",
           location: {
-            kind: "collection",
-            collectionId: "collection-a",
-            recursive: true,
+            kind: "tag",
+            tagId: "tag-a",
           },
         },
         { id: "tab-c", location: { kind: "all" } },
@@ -73,9 +71,8 @@ describe("workspace tabs session", () => {
     expect(rebuilt.tabs.map((tab) => tab.id)).toEqual(["tab-a", "tab-b", "tab-c"]);
     expect(rebuilt.activeTabId).toBe("tab-b");
     expect(rebuilt.tabs[1]!.location).toEqual({
-      kind: "collection",
-      collectionId: "collection-a",
-      recursive: true,
+      kind: "tag",
+      tagId: "tag-a",
     });
     expect(rebuilt.tabs[2]!.location).toEqual({ kind: "all" });
   });

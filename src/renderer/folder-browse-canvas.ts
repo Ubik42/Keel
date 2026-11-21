@@ -4,8 +4,6 @@ export interface FolderBrowseCanvasContext {
   assetScope: string;
   showTrash: boolean;
   activeTagId: string | null;
-  activeCollectionId: string | null;
-  activeSmartCollectionId: string | null;
   folders: ManagedFolderSummary[];
   linkedFolders?: readonly LinkedFolderSummary[];
   /** Text/AI search overlay active on top of the current scope. */
@@ -62,7 +60,7 @@ export function shouldShowFolderBrowseCards(
 /**
  * Resolves the `parentFolderId` to fetch direct child folder-card entries for
  * (REQ-FOLDER-001/002/003/010), or `undefined` when the current browse view
- * has no folder-card row: trash, a tag/collection/smart-collection view, "all
+ * has no folder-card row: trash, a tag view, "all
  * assets", or an active text/AI search overlay.
  *
  * `null` means the managed library root; a string means a managed folder id
@@ -75,13 +73,11 @@ export function resolveFolderBrowseParentId(
     assetScope,
     showTrash,
     activeTagId,
-    activeCollectionId,
-    activeSmartCollectionId,
     folders,
     linkedFolders = [],
     searchActive,
   } = context;
-  if (showTrash || activeTagId || activeCollectionId || activeSmartCollectionId) {
+  if (showTrash || activeTagId) {
     return undefined;
   }
   if (searchActive) return undefined;

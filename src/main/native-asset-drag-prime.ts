@@ -17,7 +17,6 @@ type NativeDragAssetResult = {
 
 const ASSET_ARRAY_RESULT_TYPES = new Set([
   "asset.list",
-  "collection.assets.list",
   "asset.list-trash",
   "asset.refreshed",
   "linked-folder.assets.copied",
@@ -35,7 +34,6 @@ const ASSET_ARRAY_RESULT_TYPES = new Set([
 
 const ASSET_ITEM_RESULT_TYPES = new Set([
   "asset.search.result",
-  "smart-collection.executed",
   "browse.session.opened",
   "browse.session.page",
 ]);

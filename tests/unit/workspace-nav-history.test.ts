@@ -25,18 +25,6 @@ describe("workspaceNavLocationsEqual", () => {
       ),
     ).toBe(false);
     expect(
-      workspaceNavLocationsEqual(
-        { kind: "collection", collectionId: "c", recursive: true },
-        { kind: "collection", collectionId: "c", recursive: false },
-      ),
-    ).toBe(false);
-    expect(
-      workspaceNavLocationsEqual(
-        { kind: "smart-collection", collectionId: "s" },
-        { kind: "smart-collection", collectionId: "s" },
-      ),
-    ).toBe(true);
-    expect(
       workspaceNavLocationsEqual({ kind: "tag", tagId: "t" }, { kind: "tag", tagId: "t" }),
     ).toBe(true);
     expect(
@@ -111,7 +99,7 @@ describe("createWorkspaceNavHistory", () => {
   it("back and forward move the index and return the new current", () => {
     const history = createWorkspaceNavHistory();
     history.push({ kind: "trash", tombstoneId: null });
-    history.push({ kind: "collection", collectionId: "c1", recursive: true });
+    history.push({ kind: "folder", folderId: "f1" });
 
     expect(history.back()).toEqual({ kind: "trash", tombstoneId: null });
     expect(history.current).toEqual({ kind: "trash", tombstoneId: null });
@@ -123,11 +111,7 @@ describe("createWorkspaceNavHistory", () => {
     expect(history.canBack).toBe(false);
 
     expect(history.forward()).toEqual({ kind: "trash", tombstoneId: null });
-    expect(history.forward()).toEqual({
-      kind: "collection",
-      collectionId: "c1",
-      recursive: true,
-    });
+    expect(history.forward()).toEqual({ kind: "folder", folderId: "f1" });
     expect(history.forward()).toBeNull();
   });
 
@@ -193,7 +177,7 @@ describe("createWorkspaceNavHistory", () => {
 
   it("clear resets the stack to the default or provided initial", () => {
     const history = createWorkspaceNavHistory();
-    history.push({ kind: "smart-collection", collectionId: "s1" });
+    history.push({ kind: "tag", tagId: "t1" });
     history.push({ kind: "trash", tombstoneId: "a" });
     history.back();
 

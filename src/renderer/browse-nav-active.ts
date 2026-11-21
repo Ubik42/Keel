@@ -9,8 +9,6 @@ export type BrowseNavFlags = {
   showTagManagement?: boolean;
   activePluginSidebarViewId?: string | null;
   activeTagId: string | null;
-  activeCollectionId: string | null;
-  activeSmartCollectionId: string | null;
 };
 
 function isPluginSidebarViewActive(flags: BrowseNavFlags): boolean {
@@ -30,9 +28,7 @@ export function isAllAssetsNavActive(flags: BrowseNavFlags): boolean {
     flags.assetScope === "all" &&
     !flags.showTrash &&
     !isAlternateBrowseSurfaceActive(flags) &&
-    !flags.activeTagId &&
-    !flags.activeCollectionId &&
-    !flags.activeSmartCollectionId
+    !flags.activeTagId
   );
 }
 
@@ -40,9 +36,7 @@ export function isTrashNavActive(flags: BrowseNavFlags): boolean {
   return (
     flags.showTrash &&
     !isAlternateBrowseSurfaceActive(flags) &&
-    !flags.activeTagId &&
-    !flags.activeCollectionId &&
-    !flags.activeSmartCollectionId
+    !flags.activeTagId
   );
 }
 
@@ -62,9 +56,7 @@ export function isRootFolderNavActive(flags: BrowseNavFlags): boolean {
     flags.assetScope === "root" &&
     !flags.showTrash &&
     !isAlternateBrowseSurfaceActive(flags) &&
-    !flags.activeTagId &&
-    !flags.activeCollectionId &&
-    !flags.activeSmartCollectionId
+    !flags.activeTagId
   );
 }
 
@@ -76,8 +68,6 @@ export function isManagedFolderNavActive(
     flags.assetScope === folderId &&
     !flags.showTrash &&
     !isAlternateBrowseSurfaceActive(flags) &&
-    !flags.activeTagId &&
-    !flags.activeCollectionId &&
-    !flags.activeSmartCollectionId
+    !flags.activeTagId
   );
 }

@@ -388,8 +388,6 @@ describe('renderer request protocol', () => {
           folders: [],
           linkedFolders: [],
           tags: [],
-          collections: [],
-          smartCollections: [],
           trashedFolders: [],
         },
       },
@@ -521,18 +519,15 @@ describe('renderer request protocol', () => {
     });
   });
 
-  it('accepts collection membership list requests (CU-B4)', () => {
-    expect(
-      parseRendererRequest({
-        type: 'collection.assets.memberships.request',
-        libraryId: 'library-01',
-        assetIds: ['asset-01', 'asset-02'],
-      }),
-    ).toMatchObject({
-      type: 'collection.assets.memberships.request',
-      assetIds: ['asset-01', 'asset-02'],
-    });
-    expect(
+  it('rejects the removed collection and smart-collection requests', () => {
+    for (const type of [
+      'collection.list.request',
+      'collection.assets.memberships.request',
+      'smart-collection.list.request',
+    ]) {
+      expect(() => parseRendererRequest({ type, libraryId: 'library-01' })).toThrow();
+    }
+    expect(() =>
       parseWorkerRequest({
         requestId: 'memberships',
         command: {
@@ -540,11 +535,8 @@ describe('renderer request protocol', () => {
           libraryId: 'library-01',
           assetIds: ['asset-01'],
         },
-      }).command,
-    ).toMatchObject({
-      type: 'collection.assets.memberships',
-      assetIds: ['asset-01'],
-    });
+      }),
+    ).toThrow();
   });
 
   it('accepts only empty or HTTP(S) source-page URLs up to the URL limit', () => {
@@ -1289,7 +1281,6 @@ describe('renderer request protocol', () => {
       type: 'asset.import-drop.request',
       libraryId: 'library-01',
       targetFolderId: 'folder-01',
-      targetCollectionId: 'collection-01',
       sourcePaths: ['/private/preload-resolved/asset.png'],
     })).toMatchObject({ type: 'asset.import-drop.request', sourcePaths: ['/private/preload-resolved/asset.png'] });
     expect(parseRendererRequest({
@@ -1314,7 +1305,6 @@ describe('renderer request protocol', () => {
       type: 'asset.import-web.request',
       libraryId: 'library-01',
       targetFolderId: 'folder-01',
-      targetCollectionId: 'collection-01',
       mediaUrl: 'https://cdn.example.com/image.png',
       mediaType: 'image',
     })).toMatchObject({ type: 'asset.import-web.request', mediaUrl: 'https://cdn.example.com/image.png' });
@@ -1419,19 +1409,6 @@ describe('renderer request protocol', () => {
       type: 'media.retry-jobs.request',
       libraryId: 'library-01',
       jobIds: [],
-    })).toThrow();
-  });
-
-  it('accepts one atomic collection sibling order and rejects duplicates only at the domain layer', () => {
-    expect(parseRendererRequest({
-      type: 'collection.reorder.request',
-      libraryId: 'library-01',
-      orderedCollectionIds: ['collection-03', 'collection-01', 'collection-02'],
-    })).toMatchObject({ orderedCollectionIds: ['collection-03', 'collection-01', 'collection-02'] });
-    expect(() => parseRendererRequest({
-      type: 'collection.reorder.request',
-      libraryId: 'library-01',
-      orderedCollectionIds: [],
     })).toThrow();
   });
 

@@ -9,7 +9,6 @@ const storageKeySchema = z.string().min(1).max(128).regex(/^[a-z0-9][a-z0-9._-]{
 const pluginUiCommandContextSchema = z.strictObject({
   assetIds: z.array(z.string().min(1).max(255)).max(10_000).optional(),
   folderIds: z.array(z.string().min(1).max(255)).max(10_000).optional(),
-  collectionIds: z.array(z.string().min(1).max(255)).max(10_000).optional(),
 });
 
 function isJsonValue(value: unknown, depth = 0): boolean {

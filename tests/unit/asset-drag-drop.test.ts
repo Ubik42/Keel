@@ -4,13 +4,11 @@ import {
   MANAGED_ASSETS_DRAG_TYPE,
   dragCopyModifierLabel,
   parseManagedAssetDrag,
-  resolveCollectionDrop,
   resolveDragDropMode,
   resolveDraggedAssetIds,
   resolveFolderDrop,
   resolveInternalAssetDropIds,
   resolveManagedDropEffect,
-  resolveNewCollectionMembers,
   resolveTrashDrop,
   supportsManagedAssetDrag,
   type DragAssetFact,
@@ -140,38 +138,6 @@ describe('resolveFolderDrop (REQ-DND-001)', () => {
   });
 });
 
-describe('resolveCollectionDrop (Serpent-aa3)', () => {
-  it('adds membership for both move and copy modes', () => {
-    const assets: DragAssetFact[] = [
-      managed('a'),
-      { assetId: 'b', locationKind: 'linked', availability: 'available', deletedAt: null },
-    ];
-    expect(resolveCollectionDrop({ assets, mode: 'move' })).toEqual({
-      kind: 'add-membership',
-      assetIds: ['a', 'b'],
-      skippedCount: 0,
-      mode: 'move',
-    });
-    expect(resolveCollectionDrop({ assets, mode: 'copy' })).toEqual({
-      kind: 'add-membership',
-      assetIds: ['a', 'b'],
-      skippedCount: 0,
-      mode: 'copy',
-    });
-  });
-
-  it('skips trashed assets and rejects when none remain', () => {
-    const assets: DragAssetFact[] = [
-      { assetId: 'd', locationKind: 'managed', availability: 'available', deletedAt: 'x' },
-    ];
-    expect(resolveCollectionDrop({ assets, mode: 'copy' })).toEqual({
-      kind: 'reject',
-      reason: 'no-eligible-assets',
-      skippedCount: 1,
-    });
-  });
-});
-
 describe('resolveTrashDrop (REQ-DND-002)', () => {
   it('keeps only managed, available, non-trashed assets', () => {
     const assets: DragAssetFact[] = [
@@ -184,8 +150,6 @@ describe('resolveTrashDrop (REQ-DND-002)', () => {
   });
 });
 
-// Serpent-374266: dropping into a collection the assets already belong to
-// changes nothing, so the caller must not report an add that did not happen.
 describe('resolveInternalAssetDropIds', () => {
   it('uses a non-empty HTML5 payload', () => {
     expect(
@@ -209,33 +173,5 @@ describe('resolveInternalAssetDropIds', () => {
     expect(
       resolveInternalAssetDropIds(transfer(['Files']), ['asset-root']),
     ).toEqual(['asset-root']);
-  });
-});
-
-describe('resolveNewCollectionMembers', () => {
-  it('keeps only the assets that are not members of that collection yet', () => {
-    expect(
-      resolveNewCollectionMembers(
-        ['a', 'b', 'c'],
-        [
-          { assetId: 'a', collectionId: 'target' },
-          { assetId: 'c', collectionId: 'other' },
-        ],
-        'target',
-      ),
-    ).toEqual(['b', 'c']);
-  });
-
-  it('returns nothing when every asset is already a member', () => {
-    expect(
-      resolveNewCollectionMembers(
-        ['a', 'b'],
-        [
-          { assetId: 'a', collectionId: 'target' },
-          { assetId: 'b', collectionId: 'target' },
-        ],
-        'target',
-      ),
-    ).toEqual([]);
   });
 });

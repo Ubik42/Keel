@@ -11,7 +11,6 @@ import {
 import {
   applyStoredBrowserSession,
   findSessionSelectedAsset,
-  type RestoreBrowserSessionApi,
 } from "../../src/renderer/restore-browser-session";
 import type { AssetSummary } from "../../src/shared/asset-types";
 
@@ -61,8 +60,6 @@ describe("browser-session", () => {
         showTrash: true,
         activeTagId: "t1",
         activeTagName: "ignored-when-trash",
-        activeCollectionId: "c1",
-        activeSmartCollectionId: "s1",
         assetScope: "folder-x",
         selectedAssetId: "a1",
         selectedAssetName: "a.png",
@@ -74,8 +71,6 @@ describe("browser-session", () => {
         showTrash: false,
         activeTagId: "t1",
         activeTagName: "hero",
-        activeCollectionId: null,
-        activeSmartCollectionId: null,
         assetScope: "all",
         selectedAssetId: "a1",
         selectedAssetName: "a.png",
@@ -87,8 +82,6 @@ describe("browser-session", () => {
         showTrash: false,
         activeTagId: null,
         activeTagName: undefined,
-        activeCollectionId: null,
-        activeSmartCollectionId: null,
         assetScope: "folder-9",
         selectedAssetId: "a1",
         selectedAssetName: "a.png",
@@ -127,13 +120,27 @@ describe("browser-session", () => {
       }),
     );
     expect(readBrowserSession("lib-1", store)).toBeNull();
+
+    // Collections were removed: sessions saved in a collection scope reset.
+    for (const kind of ["collection", "smart"]) {
+      store.setItem(
+        browserSessionKey("lib-1"),
+        JSON.stringify({
+          version: 1,
+          selectedAssetId: "a1",
+          selectedAssetName: "x",
+          scope: { kind, id: "c1" },
+        }),
+      );
+      expect(readBrowserSession("lib-1", store)).toBeNull();
+    }
   });
 });
 
 describe("findSessionSelectedAsset", () => {
   it("returns the asset already in the restored scope", async () => {
     const found = await findSessionSelectedAsset({
-      api: { searchAssets: vi.fn(), executeSmartCollection: vi.fn() },
+      api: { searchAssets: vi.fn() },
       libraryId: "lib",
       session: {
         version: 1,
@@ -146,37 +153,7 @@ describe("findSessionSelectedAsset", () => {
     expect(found?.assetId).toBe("a2");
   });
 
-  it("loads the full smart collection when the asset is missing", async () => {
-    const executeSmartCollection = vi.fn(async () => ({
-      ok: true as const,
-      value: {
-        items: [asset({ assetId: "deep" })],
-        total: 1,
-        offset: 0,
-      },
-    }));
-    const api: RestoreBrowserSessionApi = {
-      executeSmartCollection,
-      searchAssets: vi.fn(),
-    };
-    const found = await findSessionSelectedAsset({
-      api,
-      libraryId: "lib",
-      session: {
-        version: 1,
-        scope: { kind: "smart", id: "sc1" },
-        selectedAssetId: "deep",
-        selectedAssetName: "deep.png",
-      },
-      restoredItems: [asset({ assetId: "page0" })],
-    });
-    expect(found?.assetId).toBe("deep");
-    expect(executeSmartCollection).toHaveBeenCalledWith(
-      expect.objectContaining({ scopeMode: true }),
-    );
-  });
-
-  it("falls back to filename search outside smart scope", async () => {
+  it("falls back to filename search when the asset is missing", async () => {
     const searchAssets = vi.fn(async () => ({
       ok: true as const,
       value: {
@@ -186,7 +163,7 @@ describe("findSessionSelectedAsset", () => {
       },
     }));
     const found = await findSessionSelectedAsset({
-      api: { searchAssets, executeSmartCollection: vi.fn() },
+      api: { searchAssets },
       libraryId: "lib",
       session: {
         version: 1,
@@ -225,7 +202,6 @@ describe("applyStoredBrowserSession", () => {
     const result = await applyStoredBrowserSession({
       api: {
         searchAssets: vi.fn(),
-        executeSmartCollection: vi.fn(),
       },
       library: {
         libraryId: "lib",
@@ -239,7 +215,6 @@ describe("applyStoredBrowserSession", () => {
         selectedAssetName: "t1.png",
       },
       initialItems: [],
-      collectionRecursive: false,
       isFolderRecursiveEnabled: () => false,
       loadContent,
       setShowTrash,
@@ -248,8 +223,6 @@ describe("applyStoredBrowserSession", () => {
       folderRecursiveRef: { current: false },
       setActiveTagId: vi.fn(),
       setTagFilter: vi.fn(),
-      setActiveCollectionId: vi.fn(),
-      setActiveSmartCollectionId: vi.fn(),
       setAssets: vi.fn(),
       setTrashedAssets,
       setSearchTotal: vi.fn(),

@@ -1,4 +1,4 @@
-// Serpent-verg.2: inspector-side read paths (tags/collections/metadata/AI
+// Serpent-verg.2: inspector-side read paths (tags/metadata/AI
 // content) must keep working on an older library whose tables or columns are
 // missing — degraded to empty/default shapes instead of failing (0031 §1).
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
@@ -94,7 +94,7 @@ function reopenAfterMutating(
 }
 
 describe('inspector read paths lenient read (Serpent-verg.2)', () => {
-  it('tags and collections degrade to empty on pre-tag libraries', () => {
+  it('tags degrade to empty on pre-tag libraries', () => {
     const root = temporaryRoot();
     const { service, libraryId, libraryPath } = libraryWithOneAsset(root, 'InspectorNoTags');
     reopenAfterMutating(service, libraryPath, (dbPath) =>
@@ -102,19 +102,6 @@ describe('inspector read paths lenient read (Serpent-verg.2)', () => {
     );
 
     expect(service.listTags(libraryId)).toEqual([]);
-    expect(service.listCollections(libraryId)).toEqual([]);
-    service.closeAll();
-  });
-
-  it('collections read with missing display columns', () => {
-    const root = temporaryRoot();
-    const { service, libraryId, libraryPath } = libraryWithOneAsset(root, 'InspectorNoDesc');
-    reopenAfterMutating(service, libraryPath, (dbPath) =>
-      dropColumns(dbPath, 'collections', ['description', 'cover_asset_id']),
-    );
-
-    const collections = service.listCollections(libraryId);
-    expect(collections).toEqual([]);
     service.closeAll();
   });
 

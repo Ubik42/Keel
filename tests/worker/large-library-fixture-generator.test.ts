@@ -40,7 +40,6 @@ describe.skipIf(!outputPath)('large-library fixture generator', () => {
     expect(manifest.unsupportedCount).toBe(expected.unsupportedCount);
     expect(manifest.assetProfile).toBe(assetProfile);
     expect(manifest.folderCount).toBeGreaterThanOrEqual(150);
-    expect(manifest.collectionCount).toBeGreaterThanOrEqual(50);
     expect(manifest.tagCount).toBeGreaterThanOrEqual(1);
     expect(manifest.searchToken).toBe(LARGE_LIBRARY_SEARCH_TOKEN);
     expect(manifest.searchTokenAssetCount).toBeGreaterThan(0);

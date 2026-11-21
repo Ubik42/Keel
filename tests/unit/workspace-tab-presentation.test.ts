@@ -17,8 +17,6 @@ describe("workspace tab presentation", () => {
     expect(presentWorkspaceTab(tab, {
       folders: [],
       linkedFolders: [],
-      collections: [],
-      smartCollections: [],
       tags: [],
       assets: [],
       pluginViews: [],
@@ -30,7 +28,7 @@ describe("workspace tab presentation", () => {
     });
   });
 
-  it("exposes folder and collection identities only for their contextual menus", () => {
+  it("exposes folder identities only for their contextual menus", () => {
     const state = createWorkspaceTabs(() => "folder-tab");
     const tab = state.tabs[0]!;
     tab.location = { kind: "folder", folderId: "folder-1" };
@@ -44,8 +42,6 @@ describe("workspace tab presentation", () => {
         childFolderCount: 0,
       }],
       linkedFolders: [],
-      collections: [],
-      smartCollections: [],
       tags: [],
       assets: [],
       pluginViews: [],
@@ -75,8 +71,6 @@ describe("workspace tab presentation", () => {
         childFolderCount: 0,
       }],
       linkedFolders: [],
-      collections: [],
-      smartCollections: [],
       tags: [],
       assets: [],
       pluginViews: [],
@@ -102,8 +96,6 @@ describe("workspace tab presentation", () => {
         absoluteRootPath: "E:\\Media\\绘画",
         relativePath: "",
       }],
-      collections: [],
-      smartCollections: [],
       tags: [],
       assets: [],
       pluginViews: [],
@@ -114,7 +106,7 @@ describe("workspace tab presentation", () => {
     });
   });
 
-  it("carries folder and collection appearance onto workspace tabs", () => {
+  it("carries folder appearance onto workspace tabs", () => {
     const appearance = { glyphKind: "emoji" as const, glyphValue: "🎨", colorId: "blue" as const };
     const folderState = createWorkspaceTabs(() => "folder-tab");
     folderState.tabs[0]!.location = { kind: "folder", folderId: "folder-1" };
@@ -129,8 +121,6 @@ describe("workspace tab presentation", () => {
         appearance,
       }],
       linkedFolders: [],
-      collections: [],
-      smartCollections: [],
       tags: [],
       assets: [],
       pluginViews: [],
@@ -150,8 +140,6 @@ describe("workspace tab presentation", () => {
         relativePath: "",
         appearance,
       }],
-      collections: [],
-      smartCollections: [],
       tags: [],
       assets: [],
       pluginViews: [],
@@ -168,8 +156,6 @@ describe("workspace tab presentation", () => {
     expect(presentWorkspaceTab(state.tabs[0]!, {
       folders: [],
       linkedFolders: [],
-      collections: [],
-      smartCollections: [],
       tags: [],
       assets: [],
       pluginViews: [],

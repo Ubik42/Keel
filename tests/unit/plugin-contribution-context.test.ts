@@ -164,7 +164,6 @@ describe('plugin menu contribution context', () => {
       libraryId: 'library-a',
       browse: {
         folderId: 'folder-1',
-        collectionId: 'collection-1',
         tagId: 'tag-1',
         search: 'hero',
         filter: 'format=png&favorite=yes',
@@ -181,7 +180,6 @@ describe('plugin menu contribution context', () => {
 
     expect(context.browse).toEqual({
       folderId: 'folder-1',
-      collectionId: 'collection-1',
       tagId: 'tag-1',
       search: 'hero',
       filter: 'format=png&favorite=yes',

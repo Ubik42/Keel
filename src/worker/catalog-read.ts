@@ -585,65 +585,6 @@ export function countCatalogNavigationAssets(
   return row.total;
 }
 
-export interface CatalogCollectionScope {
-  queryPrefix: string;
-  join: string;
-  params: unknown[];
-}
-
-export type CatalogCollectionScopeResult =
-  | { status: 'ready'; scope: CatalogCollectionScope }
-  | { status: 'missing' };
-
-export function buildCatalogCollectionScope(
-  connection: CatalogReadConnection,
-  input: { libraryId: string; collectionId: string; recursive: boolean },
-): CatalogCollectionScopeResult {
-  const collection = connection.prepare(
-    'SELECT collection_id FROM collections WHERE collection_id = ? AND library_id = ?',
-  ).get(input.collectionId, input.libraryId);
-  if (!collection) return { status: 'missing' };
-  if (input.recursive) {
-    const hasChildren = connection.prepare(
-      'SELECT 1 FROM collections WHERE parent_id = ? AND library_id = ? LIMIT 1',
-    ).get(input.collectionId, input.libraryId);
-    if (hasChildren) {
-      return {
-        status: 'ready',
-        scope: {
-          queryPrefix: `WITH RECURSIVE collection_descendants(collection_id) AS (
-                SELECT collection_id FROM collections WHERE collection_id = ? AND library_id = ?
-                UNION ALL
-                SELECT child.collection_id FROM collections child
-                  JOIN collection_descendants parent ON child.parent_id = parent.collection_id
-                 WHERE child.library_id = ?
-              ),
-              collection_scope AS (
-                SELECT ca.asset_id, MIN(ca.position) AS collection_position
-                  FROM collection_assets ca
-                  JOIN collection_descendants d ON d.collection_id = ca.collection_id
-                 GROUP BY ca.asset_id
-              ) `,
-          join: 'JOIN collection_scope ON collection_scope.asset_id = a.asset_id',
-          params: [input.collectionId, input.libraryId, input.libraryId],
-        },
-      };
-    }
-  }
-  return {
-    status: 'ready',
-    scope: {
-      queryPrefix: `WITH collection_scope AS (
-                  SELECT asset_id, position AS collection_position
-                    FROM collection_assets
-                   WHERE collection_id = ?
-                ) `,
-      join: 'JOIN collection_scope ON collection_scope.asset_id = a.asset_id',
-      params: [input.collectionId],
-    },
-  };
-}
-
 export type CatalogFolderScopeClauseResult =
   | { status: 'ready'; sql: string; params: unknown[] }
   | { status: 'missing' };
@@ -727,7 +668,6 @@ export function buildCatalogSortOrder(input: {
   artifactColumns: ReadonlySet<string>;
   hasAiContent: boolean;
   sessionMode: boolean;
-  collectionScoped: boolean;
   trashScope: boolean;
 }): { sql: string; params: unknown[] } {
   const defaultNameSort = 'a.relative_file_path ASC, a.asset_id ASC';
@@ -791,9 +731,6 @@ export function buildCatalogSortOrder(input: {
     }
   }
   if (input.sessionMode) return { sql: 'a.asset_id ASC', params: [] };
-  if (input.collectionScoped) {
-    return { sql: 'collection_scope.collection_position ASC, a.relative_file_path ASC, a.asset_id ASC', params: [] };
-  }
   if (input.trashScope) return { sql: 'a.deleted_at DESC, a.asset_id ASC', params: [] };
   return { sql: defaultNameSort, params: [] };
 }

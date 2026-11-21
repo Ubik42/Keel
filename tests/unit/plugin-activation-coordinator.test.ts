@@ -860,7 +860,6 @@ describe('PluginActivationCoordinator', () => {
       contributionId: command!.id,
       assetIds: ['asset-1'],
       folderIds: [],
-      collectionIds: [],
     });
     expect(invokeCommand.mock.calls[1]?.[0].context).toEqual({
       targetLibraryId: 'library-2',

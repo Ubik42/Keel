@@ -17,7 +17,6 @@ import {
   isBrowseSessionPageUnusable,
   browseWindowQueryMode,
   registerBrowseSearchPage,
-  registerBrowseSmartCollectionPage,
   shouldRunBrowseSentinel,
   type BrowsePageDefinition,
 } from "../../src/renderer/use-browse-pagination";
@@ -59,13 +58,6 @@ const searchDefinition: BrowsePageDefinition = {
   target: "assets",
 };
 
-const smartDefinition: BrowsePageDefinition = {
-  kind: "smart-collection",
-  libraryId: "lib-1",
-  collectionId: "sc-1",
-  target: "assets",
-};
-
 const rankedDefinition: BrowsePageDefinition = {
   ...searchDefinition,
   rankedAssetIds: ["rank-1", "rank-2", "rank-3", "rank-4"],
@@ -91,7 +83,6 @@ describe("fetchBrowseScopeIds (Serpent-ws4k select-all id set)", () => {
     }));
     const api = {
       searchAssets,
-      executeSmartCollection: vi.fn(),
     } as unknown as SerpentLibraryApi;
 
     expect(await fetchBrowseScopeIds({ api, definition: searchDefinition })).toEqual([
@@ -103,31 +94,12 @@ describe("fetchBrowseScopeIds (Serpent-ws4k select-all id set)", () => {
     );
   });
 
-  it("fetches idsOnly via executeSmartCollection for smart definitions", async () => {
-    const executeSmartCollection = vi.fn(async () => ({
-      ok: true as const,
-      value: { items: [], total: 1, offset: 0, assetIds: ["s1"] },
-    }));
-    const api = {
-      searchAssets: vi.fn(),
-      executeSmartCollection,
-    } as unknown as SerpentLibraryApi;
-
-    expect(await fetchBrowseScopeIds({ api, definition: smartDefinition })).toEqual([
-      "s1",
-    ]);
-    expect(executeSmartCollection).toHaveBeenCalledWith(
-      expect.objectContaining({ collectionId: "sc-1", idsOnly: true }),
-    );
-  });
-
   it("returns null when the ids fetch fails", async () => {
     const api = {
       searchAssets: vi.fn(async () => ({
         ok: false as const,
         error: { code: "FOLDER_NOT_FOUND", message: "gone" },
       })),
-      executeSmartCollection: vi.fn(),
     } as unknown as SerpentLibraryApi;
 
     expect(await fetchBrowseScopeIds({ api, definition: searchDefinition })).toBeNull();
@@ -150,7 +122,6 @@ describe("fetchBrowseLayout (Serpent-sa65 compact geometry index)", () => {
     }));
     const api = {
       searchAssets,
-      executeSmartCollection: vi.fn(),
     } as unknown as SerpentLibraryApi;
 
     expect(await fetchBrowseLayout({ api, definition: searchDefinition })).toEqual(layout);
@@ -166,7 +137,6 @@ describe("fetchBrowseLayout (Serpent-sa65 compact geometry index)", () => {
     }));
     const api = {
       searchAssets,
-      executeSmartCollection: vi.fn(),
     } as unknown as SerpentLibraryApi;
 
     expect(await fetchBrowseLayout({ api, definition: searchDefinition })).toBeNull();
@@ -374,7 +344,7 @@ describe("fetchBrowseScopeAssetIdsGuarded (Serpent-ws4k select-all race)", () =>
   });
 });
 
-describe("registerBrowseSearchPage / registerBrowseSmartCollectionPage (Serpent-ws4k)", () => {
+describe("registerBrowseSearchPage (Serpent-ws4k)", () => {
   it("registers the semantic ID snapshot as the page source", () => {
     const beginPage = vi.fn();
     registerBrowseSearchPage(beginPage, {
@@ -451,26 +421,6 @@ describe("registerBrowseSearchPage / registerBrowseSmartCollectionPage (Serpent-
         target: "assets",
       },
       { items: [], total: 0, offset: 0 },
-    );
-  });
-
-  it("registers a smart-collection page definition + first page through beginPage", () => {
-    const beginPage = vi.fn();
-    registerBrowseSmartCollectionPage(beginPage, {
-      libraryId: "lib-1",
-      collectionId: "sc-1",
-      items: [asset("s1")],
-      total: 1,
-      offset: 0,
-    });
-    expect(beginPage).toHaveBeenCalledWith(
-      {
-        kind: "smart-collection",
-        libraryId: "lib-1",
-        collectionId: "sc-1",
-        target: "assets",
-      },
-      { items: [asset("s1")], total: 1, offset: 0 },
     );
   });
 });

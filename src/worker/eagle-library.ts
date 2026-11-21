@@ -417,7 +417,7 @@ function sourceRootDisplayName(sourceRootPath: string): string {
 /**
  * Read Eagle root metadata and the images/*.info directory names only.
  * Parsing each item's metadata.json is deferred so the importer can publish
- * folders/collections before touching every asset.
+ * folder tags before touching every asset.
  */
 export function readEagleLibraryRoot(sourceRootPath: string): EagleLibraryRoot {
   let normalizedRoot: string;

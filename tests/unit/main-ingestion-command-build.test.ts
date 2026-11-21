@@ -1,7 +1,6 @@
 import { expect, test, vi } from "vitest";
 
 import {
-  applyImportWorkerResult,
   maybeProbeImportSequences,
   tryBuildIngestionCommand,
   tryHandleIngestionOwnedRequest,
@@ -134,22 +133,4 @@ test("drop-invalid reports stay on the Main-owned error path", async () => {
     ok: false,
     error: { code: "INVALID_DROP_SELECTION" },
   });
-});
-
-test("import.abandon drops the pending collection destination", async () => {
-  const pendingImportCollections = new Map([["import-1", "col-1"]]);
-  await expect(applyImportWorkerResult(
-    { type: "asset.import.abandon", importId: "import-1" },
-    { ok: false as const, error: { code: "INTERNAL_ERROR" as const, message: "unused" } },
-    {
-      pendingImportLibraries: new Map(),
-      pendingImportCollections,
-      logError: vi.fn(),
-      requestWorker: vi.fn(async () => {
-        throw new Error("unused");
-      }),
-      enqueueAutoAnalyzeAfterImport: vi.fn(),
-    },
-  )).resolves.toBeUndefined();
-  expect(pendingImportCollections.size).toBe(0);
 });

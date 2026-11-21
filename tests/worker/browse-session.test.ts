@@ -179,27 +179,10 @@ describe('BrowseSession', () => {
     });
     expect(navigationAfterArtifact.changeSequence).toBeGreaterThan(navigation.changeSequence);
     expect(navigationAfterArtifact.folders).toBe(navigation.folders);
-    expect(navigationAfterArtifact.collections).toBe(navigation.collections);
     expect(service.getLibraryNavigationSummary({
       libraryId: library.libraryId,
       includeTrashedFolders: true,
     })).toEqual(navigationAfterArtifact);
-
-    const smart = service.createSmartCollection({
-      libraryId: library.libraryId,
-      name: 'PNG assets',
-      queryDefinitionJson: JSON.stringify({
-        search: { clauses: [{ field: 'filename', values: ['png'], exclude: false }] },
-      }),
-    });
-    const smartSession = service.createBrowseSession({
-      libraryId: library.libraryId,
-      libraryGeneration: 7,
-      query: null,
-      smartCollectionId: smart.collectionId,
-      limit: 1,
-    });
-    expect(smartSession.total).toBe(2);
 
     const asset = service.listAssets({ libraryId: library.libraryId, recursive: true })[0]!;
     service.setAssetMetadata({

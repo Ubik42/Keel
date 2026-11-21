@@ -20,8 +20,6 @@ describe("folder navigation cover cap", () => {
       folders: [],
       linkedFolders: [],
       tags: [],
-      collections: [],
-      smartCollections: [],
       trashedFolders: [],
       folderCovers,
     });

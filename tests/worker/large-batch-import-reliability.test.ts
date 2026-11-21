@@ -27,7 +27,7 @@ afterEach(() => {
 }, 180_000);
 
 describe('large-batch import reliability', () => {
-  it(`imports ${LARGE_BATCH_COUNT} tiny files then tags, collections, and trash them`, () => {
+  it(`imports ${LARGE_BATCH_COUNT} tiny files then tag and trash them`, () => {
     expect(Number.isSafeInteger(LARGE_BATCH_COUNT) && LARGE_BATCH_COUNT > 900).toBe(true);
     const root = temporaryRoot();
     const incoming = path.join(root, 'incoming');
@@ -89,17 +89,6 @@ describe('large-batch import reliability', () => {
       tagIds: [tag.tagId],
     });
     expect(assigned.assignedCount).toBe(written);
-
-    const collection = service.createCollection({ libraryId: library.libraryId, name: 'Batch' });
-    service.addCollectionAssets({
-      libraryId: library.libraryId,
-      collectionId: collection.collectionId,
-      assetIds,
-    });
-    const collections = service.listCollections(library.libraryId);
-    expect(collections).toEqual(expect.arrayContaining([
-      expect.objectContaining({ collectionId: collection.collectionId, assetCount: written }),
-    ]));
 
     const trashed = service.trashAssets({
       libraryId: library.libraryId,

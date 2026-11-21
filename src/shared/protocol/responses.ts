@@ -9,7 +9,7 @@ import {
   SEMANTIC_IMAGE_EDGE_MIN,
 } from '../embedding/image-limits';
 
-import { aiSearchPlanSchema, assetMetadataResultSchema, extractedMetadataResultSchema, assetSummarySchema, browseLayoutEntrySchema, collectionSummarySchema, folderBrowseEntrySchema, gitignorePreviewSchema, ignoredPathSchema, linkedFolderDirectoryMutationSchema, linkedFolderRuleSchema, linkedFolderSummarySchema, managedFolderSummarySchema, portableRelativePathSchema, smartCollectionSummarySchema, tagCooccurrenceGraphSchema, tagSummarySchema, trashedFolderSummarySchema } from '../asset-types';
+import { aiSearchPlanSchema, assetMetadataResultSchema, extractedMetadataResultSchema, assetSummarySchema, browseLayoutEntrySchema, folderBrowseEntrySchema, gitignorePreviewSchema, ignoredPathSchema, linkedFolderDirectoryMutationSchema, linkedFolderRuleSchema, linkedFolderSummarySchema, managedFolderSummarySchema, portableRelativePathSchema, tagCooccurrenceGraphSchema, tagSummarySchema, trashedFolderSummarySchema } from '../asset-types';
 import { entityAppearanceSchema, entityAppearanceTargetSchema } from '../entity-appearance';
 import { libraryNavigationSummarySchema } from '../library-navigation';
 import { pluginJobRecordSchema } from '../../plugins/plugin-jobs';
@@ -241,7 +241,6 @@ export const eagleImportResultSchema = z.strictObject({
   assetCount: z.number().int().nonnegative(),
   skippedCount: z.number().int().nonnegative(),
   replacedCount: z.number().int().nonnegative(),
-  collectionCount: z.number().int().nonnegative(),
   tagCount: z.number().int().nonnegative(),
   invalidItemCount: z.number().int().nonnegative(),
   // Large Eagle libraries must not send tens of thousands of cards through
@@ -259,7 +258,6 @@ export const billfishImportResultSchema = z.strictObject({
   assetCount: z.number().int().nonnegative(),
   skippedCount: z.number().int().nonnegative(),
   replacedCount: z.number().int().nonnegative(),
-  collectionCount: z.number().int().nonnegative(),
   tagCount: z.number().int().nonnegative(),
   invalidItemCount: z.number().int().nonnegative(),
   metadataCount: z.number().int().nonnegative(),
@@ -294,7 +292,6 @@ export const imageSequenceImportOfferSchema = z.strictObject({
   offerId: nonBlankString.optional(),
   selectedPaths: z.array(nonBlankString).min(1).max(1_000).optional(),
   sequences: z.array(imageSequenceImportCandidateSchema).max(64),
-  targetCollectionId: nonBlankString.optional(),
   targetFolderId: nonBlankString.optional(),
 });
 
@@ -1085,68 +1082,6 @@ const assetOperationSuccessSchemas = [
   }),
   z.strictObject({
     ok: z.literal(true),
-    type: z.literal('collection.list'),
-    collections: z.array(collectionSummarySchema),
-  }),
-  z.strictObject({
-    ok: z.literal(true),
-    type: z.literal('collection.created'),
-    collection: collectionSummarySchema,
-    historyEntryId: nonBlankString.optional(),
-  }),
-  z.strictObject({
-    ok: z.literal(true),
-    type: z.literal('collection.updated'),
-    collection: collectionSummarySchema,
-    historyEntryId: nonBlankString.optional(),
-  }),
-  z.strictObject({
-    ok: z.literal(true),
-    type: z.literal('collection.reordered'),
-    orderedCollectionIds: z.array(nonBlankString),
-    historyEntryId: nonBlankString.optional(),
-  }),
-  z.strictObject({
-    ok: z.literal(true),
-    type: z.literal('collection.deleted'),
-    collectionId: nonBlankString,
-    historyEntryId: nonBlankString.optional(),
-  }),
-  z.strictObject({
-    ok: z.literal(true),
-    type: z.literal('collection.assets.added'),
-    collectionId: nonBlankString,
-    historyEntryId: nonBlankString.optional(),
-  }),
-  z.strictObject({
-    ok: z.literal(true),
-    type: z.literal('collection.assets.removed'),
-    collectionId: nonBlankString,
-    historyEntryId: nonBlankString.optional(),
-  }),
-  z.strictObject({
-    ok: z.literal(true),
-    type: z.literal('collection.assets.reordered'),
-    collectionId: nonBlankString,
-    historyEntryId: nonBlankString.optional(),
-  }),
-  z.strictObject({
-    ok: z.literal(true),
-    type: z.literal('collection.assets.list'),
-    assets: z.array(assetSummarySchema),
-  }),
-  z.strictObject({
-    ok: z.literal(true),
-    type: z.literal('collection.assets.memberships'),
-    memberships: z.array(
-      z.strictObject({
-        assetId: nonBlankString,
-        collectionId: nonBlankString,
-      }),
-    ),
-  }),
-  z.strictObject({
-    ok: z.literal(true),
     type: z.literal('asset.metadata.got'),
     metadata: assetMetadataResultSchema,
   }),
@@ -1186,39 +1121,6 @@ const assetOperationSuccessSchemas = [
     updatedCount: z.number().int().nonnegative(),
     skipped: z.array(tagOperationSkipSchema),
     historyEntryId: nonBlankString.optional(),
-  }),
-  z.strictObject({
-    ok: z.literal(true),
-    type: z.literal('smart-collection.list'),
-    collections: z.array(smartCollectionSummarySchema),
-  }),
-  z.strictObject({
-    ok: z.literal(true),
-    type: z.literal('smart-collection.created'),
-    collection: smartCollectionSummarySchema,
-    historyEntryId: nonBlankString.optional(),
-  }),
-  z.strictObject({
-    ok: z.literal(true),
-    type: z.literal('smart-collection.updated'),
-    collection: smartCollectionSummarySchema,
-    historyEntryId: nonBlankString.optional(),
-  }),
-  z.strictObject({
-    ok: z.literal(true),
-    type: z.literal('smart-collection.deleted'),
-    collectionId: nonBlankString,
-    historyEntryId: nonBlankString.optional(),
-  }),
-  z.strictObject({
-    ok: z.literal(true),
-    type: z.literal('smart-collection.executed'),
-    items: z.array(assetSummarySchema),
-    total: z.number().int().nonnegative(),
-    offset: z.number().int().nonnegative(),
-    /** Serpent-ws4k: present when the request used idsOnly (select-all). */
-    assetIds: z.array(nonBlankString).optional(),
-    layout: z.array(browseLayoutEntrySchema).optional(),
   }),
   z.strictObject({
     ok: z.literal(true),

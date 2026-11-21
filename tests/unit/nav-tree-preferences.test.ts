@@ -4,7 +4,6 @@ import {
   DEFAULT_NAV_TREE_PREFERENCES,
   loadNavTreePreferences,
   saveNavTreePreferences,
-  withCollapsedCollectionIds,
   withCollapsedFolderIds,
   type NavTreePreferencesStorage,
 } from "../../src/renderer/nav-tree-preferences";
@@ -44,30 +43,16 @@ describe("nav-tree-preferences", () => {
     ]);
   });
 
-  it("round-trips collapsed collection ids (Serpent-c42eb1)", () => {
-    const storage = memoryStorage();
-    const prefs = withCollapsedCollectionIds(DEFAULT_NAV_TREE_PREFERENCES, [
-      "col-a",
-      "col-b",
-    ]);
-    saveNavTreePreferences(prefs, storage);
-    expect(loadNavTreePreferences(storage).collapsedCollectionIds).toEqual([
-      "col-a",
-      "col-b",
-    ]);
-    // Folder collapse state is preserved alongside collection collapse.
-    expect(loadNavTreePreferences(storage).collapsedFolderIds).toEqual([]);
-  });
-
-  it("loads legacy v1 data without collapsedCollectionIds", () => {
+  it("drops legacy collapsedCollectionIds from v1 data", () => {
     const storage = memoryStorage({
       "serpent.nav-tree-prefs.v1": JSON.stringify({
         version: 1,
         collapsedFolderIds: ["f1"],
+        collapsedCollectionIds: ["col-a"],
       }),
     });
     const loaded = loadNavTreePreferences(storage);
     expect(loaded.collapsedFolderIds).toEqual(["f1"]);
-    expect(loaded.collapsedCollectionIds ?? []).toEqual([]);
+    expect(loaded).not.toHaveProperty("collapsedCollectionIds");
   });
 });

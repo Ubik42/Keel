@@ -518,46 +518,6 @@ describe('durable operation history', () => {
     ]);
   });
 
-  it('round-trips collection membership and smart collection snapshots', async () => {
-    const { service, libraryId, assetId } = createLibraryWithAsset();
-    const collectionResult = await runBounded(service, {
-      type: 'collection.create',
-      libraryId,
-      name: 'History Board',
-    });
-    const collectionId = (collectionResult as Extract<WorkerResult, { ok: true; type: 'collection.created' }>).collection.collectionId;
-    const collectionEntryId = historyEntryId(collectionResult);
-    const membershipResult = await runBounded(service, {
-      type: 'collection.assets.add',
-      libraryId,
-      collectionId,
-      assetIds: [assetId],
-    });
-    const membershipEntryId = historyEntryId(membershipResult);
-
-    await undo(service, libraryId, membershipEntryId);
-    expect(service.getCollectionAssetMemberships({ libraryId, collectionId, assetIds: [assetId] })).toEqual([]);
-    await redo(service, libraryId, membershipEntryId);
-    expect(service.getCollectionAssetMemberships({ libraryId, collectionId, assetIds: [assetId] })).toEqual([assetId]);
-
-    await undo(service, libraryId, membershipEntryId);
-    await undo(service, libraryId, collectionEntryId);
-    expect(service.getCollectionHistorySnapshot({ libraryId, collectionIds: [collectionId], allowMissing: true })).toEqual([]);
-
-    const smartResult = await runBounded(service, {
-      type: 'smart-collection.create',
-      libraryId,
-      name: 'History Smart Board',
-      queryDefinitionJson: JSON.stringify({ search: { clauses: [] } }),
-    });
-    const smartId = (smartResult as Extract<WorkerResult, { ok: true; type: 'smart-collection.created' }>).collection.collectionId;
-    const smartEntryId = historyEntryId(smartResult);
-    await undo(service, libraryId, smartEntryId);
-    expect(service.getSmartCollectionHistorySnapshot({ libraryId, collectionIds: [smartId], allowMissing: true })).toEqual([]);
-    await redo(service, libraryId, smartEntryId);
-    expect(service.getSmartCollectionHistorySnapshot({ libraryId, collectionIds: [smartId] })).toHaveLength(1);
-  });
-
   it('does not expose undo or redo across an irreversible delete barrier', async () => {
     const { service, libraryId } = createLibraryWithAsset();
     const created = await runBounded(service, {

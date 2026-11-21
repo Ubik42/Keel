@@ -493,21 +493,6 @@ test("ordinary browsing continuously appends every asset without page controls",
                 assetIds: string[];
                 tagIds: string[];
               }): Promise<{ ok: boolean }>;
-              createCollection(input: {
-                libraryId: string;
-                parentId?: string;
-                name: string;
-              }): Promise<{ ok: boolean; value?: { collectionId: string } }>;
-              addCollectionAssets(input: {
-                libraryId: string;
-                collectionId: string;
-                assetIds: string[];
-              }): Promise<{ ok: boolean }>;
-              createSmartCollection(input: {
-                libraryId: string;
-                name: string;
-                queryDefinitionJson: string;
-              }): Promise<{ ok: boolean }>;
               trashAssets(input: {
                 libraryId: string;
                 assetIds: string[];
@@ -528,26 +513,11 @@ test("ordinary browsing continuously appends every asset without page controls",
         libraryId,
         name: "分页标签",
       });
-      const collection = await serpent.library.createCollection({
-        libraryId,
-        name: "分页合集",
-      });
-      const childCollection = collection.ok && collection.value
-        ? await serpent.library.createCollection({
-            libraryId,
-            parentId: collection.value.collectionId,
-            name: "分页子合集",
-          })
-        : { ok: false as const };
       if (
         !listed.ok ||
         assetIds.length !== expectedAssetCount ||
         !tag.ok ||
-        !tag.value ||
-        !collection.ok ||
-        !collection.value ||
-        !childCollection.ok ||
-        !childCollection.value
+        !tag.value
       ) {
         throw new Error("Could not prepare organization pagination fixture.");
       }
@@ -562,43 +532,11 @@ test("ordinary browsing continuously appends every asset without page controls",
       ) {
         throw new Error("Could not assign tag fixture.");
       }
-      const directAssetCount = Math.floor(assetIds.length / 2);
-      const directMembers = assetIds.slice(0, directAssetCount);
-      const childMembers = assetIds.slice(directAssetCount);
-      if (
-        !(
-          await serpent.library.addCollectionAssets({
-            libraryId,
-            collectionId: collection.value.collectionId,
-            assetIds: directMembers,
-          })
-        ).ok ||
-        !(
-          await serpent.library.addCollectionAssets({
-            libraryId,
-            collectionId: childCollection.value.collectionId,
-            assetIds: childMembers,
-          })
-        ).ok
-      ) {
-        throw new Error("Could not assign collection fixture.");
-      }
-      if (
-        !(
-          await serpent.library.createSmartCollection({
-            libraryId,
-            name: "分页智能合集",
-            queryDefinitionJson: JSON.stringify({ filters: [{ field: "format", values: ["txt"], exclude: false }] }),
-          })
-        ).ok
-      ) {
-        throw new Error("Could not create smart collection fixture.");
-      }
-      return { assetIds, directAssetCount, libraryId };
+      return { assetIds, libraryId };
     }, assetCount);
 
     // The large-library navigation path intentionally keeps sidebar queries
-    // out of every scope click. This fixture mutates collections/tags through
+    // out of every scope click. This fixture mutates tags through
     // the preload API, so use the explicit refresh command once before
     // asserting the newly-created organization entries. 筛选面板现在是外部
     // 点击即关的浮层：刷新后填写前重新展开。
@@ -607,55 +545,15 @@ test("ordinary browsing continuously appends every asset without page controls",
     await window.getByRole("button", { name: "格式", exact: true }).click();
     await window.getByLabel("格式过滤").fill("png");
     await expect(window.locator(".asset-card")).toHaveCount(0);
-    // Same-tab navigation keeps discovery chips. Clear the format filter
-    // before timing the collection switch, or the png chip hides every txt.
     await window.getByLabel("格式过滤").fill("");
     await expect(
       window.getByRole("button", { name: "格式", exact: true }),
     ).not.toHaveClass(/is-active/);
-    const collectionSwitchStartedAt = Date.now();
-    await window.getByRole("button", { name: /^分页合集/ }).click();
-    await expect(window.locator(".asset-card").first()).toBeVisible();
-    const collectionSwitchMs = Date.now() - collectionSwitchStartedAt;
-    console.info(
-      `[collection-switch-e2e] ${JSON.stringify({
-        assets: assetCount,
-        collectionSwitchMs,
-      })}`,
-    );
-    expect(collectionSwitchMs).toBeLessThan(5_000);
-    await expect(
-      window.getByRole("button", { name: "格式", exact: true }),
-    ).not.toHaveClass(/is-active/);
-
-    const collectionScopeToggle = window.getByRole("button", {
-      name: "包含子合集",
-    });
-    await expect(collectionScopeToggle).toHaveAttribute("aria-pressed", "true");
-    await loadEveryAssetInCurrentScope();
-    await collectionScopeToggle.click();
-    await expect(collectionScopeToggle).toHaveAttribute("aria-pressed", "false");
-    await expect(window.locator(".item-count")).toContainText(
-      String(setup.directAssetCount),
-    );
-    await expect(
-      window.locator(".asset-card").filter({ hasText: tailName }),
-    ).toHaveCount(0);
-    await collectionScopeToggle.click();
-    await expect(collectionScopeToggle).toHaveAttribute("aria-pressed", "true");
-    await expect(window.locator(".item-count")).toContainText(String(assetCount));
-    await loadEveryAssetInCurrentScope();
     // The sidebar no longer enumerates tags (REQ-TAG-001); enter the
     // tag-filtered view through the retained 标签过滤 entry instead.
     await window.getByRole("button", { name: "标签", exact: true }).click();
     await window.getByLabel("标签过滤").fill("分页标签");
     await window.getByRole("option", { name: /分页标签/ }).click();
-    await loadEveryAssetInCurrentScope();
-    await window.getByRole("button", { name: /^分页合集/ }).click();
-    await loadEveryAssetInCurrentScope();
-    await window
-      .getByRole("button", { name: /分页智能合集/ })
-      .click();
     await loadEveryAssetInCurrentScope();
 
     const trashed = await window.evaluate(async ({ libraryId, assetIds }) => {

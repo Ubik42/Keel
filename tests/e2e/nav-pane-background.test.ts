@@ -15,16 +15,16 @@ const revealInFileManagerName =
 /**
  * Serpent-6e3b10 / Serpent-b29bc4: the blank area **of the folder section** —
  * the indentation gutter left of the rows — returns to the library root on
- * click and accepts managed-folder drops. The collections / smart-collections
- * sections below are not blank space, and neither is the rest of the pane.
+ * click and accepts managed-folder drops. The rest of the pane is not blank
+ * space.
  * Serpent-374266 adds the counterpart rule: a folder dropped back where it
  * already is (its own row) changes nothing, so it neither highlights nor
  * reports anything.
  *
  * The first implementation targeted the whole `.navigation-scroll`, and the spot
  * the user actually aims at (right under the tree) was covered by the next
- * section's heading and its "尚无合集" paragraph, so clicks were swallowed. The
- * second one poured over the collections area and added a blank strip that the
+ * section's heading and its empty-state paragraph, so clicks were swallowed.
+ * The second one poured over the next section and added a blank strip that the
  * user did not want. This spec pins the final scope and asserts the element
  * under the point, so a future change cannot silently move the target again.
  */
@@ -358,19 +358,9 @@ test("folder-section blank area returns to the root and accepts folder drops", a
     const betaGutterBox = await window
       .locator('.navigation-pane .nav-tree-row:has(button[data-hover-tip="Beta"])')
       .boundingBox();
-    const collectionsHeadingBox = await window
-      .locator(".navigation-pane .nav-section-heading > span", {
-        hasText: /^合集$/u,
-      })
-      .boundingBox();
-    const collectionsEmptyBox = await window
-      .locator(".navigation-scroll p.nav-empty", { hasText: "尚无合集" })
-      .boundingBox();
     const navBox = await window.locator(".navigation-scroll").boundingBox();
     expect(betaRowBox).not.toBeNull();
     expect(betaGutterBox).not.toBeNull();
-    expect(collectionsHeadingBox).not.toBeNull();
-    expect(collectionsEmptyBox).not.toBeNull();
     expect(navBox).not.toBeNull();
 
     // The indentation gutter is the blank area: it belongs to no row.
@@ -378,15 +368,12 @@ test("folder-section blank area returns to the root and accepts folder drops", a
       x: Math.round(betaGutterBox!.x + 4),
       y: Math.round(betaGutterBox!.y + betaGutterBox!.height / 2),
     };
-    const collectionsHeading = centreOf(collectionsHeadingBox!);
-    const collectionsEmpty = centreOf(collectionsEmptyBox!);
     const paneBottom: Point = {
       x: Math.round(navBox!.x + navBox!.width / 2),
       y: Math.round(navBox!.y + navBox!.height - 6),
     };
 
     expect(await elementClassAt(window, gutter)).toContain("nav-tree-row");
-    expect(await elementClassAt(window, collectionsEmpty)).toContain("nav-empty");
 
     // The gutter returns to the library root.
     await folderRow(window, "Beta").click();
@@ -397,8 +384,6 @@ test("folder-section blank area returns to the root and accepts folder drops", a
 
     // Everything outside the folder section stays inert.
     for (const [label, point] of [
-      ["collections heading", collectionsHeading],
-      ["collections empty state", collectionsEmpty],
       ["pane bottom", paneBottom],
     ] as const) {
       await folderRow(window, "Beta").click();

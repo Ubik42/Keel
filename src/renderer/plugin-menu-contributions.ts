@@ -26,10 +26,9 @@ const pluginMenuPlatform: CommandPlatform = typeof navigator !== "undefined"
   ? "mac"
   : "windows";
 
-const DESCRIPTOR_MENU_KEY_BY_TARGET: Record<PluginHostMenuTarget, "asset" | "folder" | "collection" | "workspace"> = {
+const DESCRIPTOR_MENU_KEY_BY_TARGET: Record<PluginHostMenuTarget, "asset" | "folder" | "workspace"> = {
   "menus.asset": "asset",
   "menus.folder": "folder",
-  "menus.collection": "collection",
   "menus.workspace": "workspace",
 };
 
@@ -185,7 +184,6 @@ const KNOWN_HOST_MENU_ANCHORS = new Set([
   "asset.reveal-in-folder",
   "asset.show-in-library-folder",
   "folder.open-in-file-manager",
-  "asset.remove-from-current-collection",
   "asset.relink",
   "asset.move-to-folder",
   "asset.copy",
@@ -790,7 +788,6 @@ export async function runPluginMenuCommand(
   context: {
     assetIds?: string[];
     folderIds?: string[];
-    collectionIds?: string[];
     assets?: readonly PluginInvocationAssetSource[];
     contributionContext?: PluginContributionContext;
     invocationContext?: PluginInvocationContext;
@@ -805,11 +802,9 @@ export async function runPluginMenuCommand(
           refs: [
             ...(context.assetIds ?? []),
             ...(context.folderIds ?? []),
-            ...(context.collectionIds ?? []),
           ],
           ...(context.assetIds === undefined ? {} : { assetIds: context.assetIds }),
           ...(context.folderIds === undefined ? {} : { folderIds: context.folderIds }),
-          ...(context.collectionIds === undefined ? {} : { collectionIds: context.collectionIds }),
           ...(context.assets === undefined || context.assets.length === 0
             ? {}
             : { assets: toPluginInvocationAssets(context.assets) }),
@@ -822,7 +817,6 @@ export async function runPluginMenuCommand(
     contributionId: item.contributionId,
     ...(context.assetIds === undefined ? {} : { assetIds: context.assetIds }),
     ...(context.folderIds === undefined ? {} : { folderIds: context.folderIds }),
-    ...(context.collectionIds === undefined ? {} : { collectionIds: context.collectionIds }),
     ...(invocation === undefined ? {} : { invocation }),
   });
   if (!result.ok) {

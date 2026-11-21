@@ -84,7 +84,6 @@ const assetRenameFileFieldsSchema = z.object({
 const selectedPathSchema = nonBlankString;
 const optionalIdentifierSchema = identifierSchema.optional();
 const optionalClearableDescriptionSchema = z.string().max(10000).optional();
-const queryDefinitionJsonSchema = nonBlankString.max(65_536);
 export const manualPaletteColorSchema = z.string().regex(/^#[0-9A-Fa-f]{6}$/u, {
   message: 'Expected a six-digit hexadecimal color such as #A1B2C3.',
 });
@@ -504,7 +503,6 @@ export const rendererRequestSchema = z.discriminatedUnion('type', [
     type: z.literal('asset.import-drop.request'),
     libraryId: identifierSchema,
     targetFolderId: optionalIdentifierSchema,
-    targetCollectionId: optionalIdentifierSchema,
     sourcePaths: z.array(selectedPathSchema).min(1).max(1_000),
     imageSequenceDecision: z
       .strictObject({
@@ -545,7 +543,6 @@ export const rendererRequestSchema = z.discriminatedUnion('type', [
     type: z.literal('asset.import-web.request'),
     libraryId: identifierSchema,
     targetFolderId: optionalIdentifierSchema,
-    targetCollectionId: optionalIdentifierSchema,
     mediaUrl: httpUrlSchema,
     mediaType: z.enum(['image', 'video']).optional(),
   }),
@@ -558,7 +555,6 @@ export const rendererRequestSchema = z.discriminatedUnion('type', [
     type: z.literal('asset.import-clipboard.request'),
     libraryId: identifierSchema,
     targetFolderId: optionalIdentifierSchema,
-    targetCollectionId: optionalIdentifierSchema,
   }),
   z.strictObject({
     type: z.literal('asset.import.resolve'),
@@ -723,66 +719,6 @@ export const rendererRequestSchema = z.discriminatedUnion('type', [
     tagIds: z.array(identifierSchema).min(1),
   }),
   z.strictObject({
-    type: z.literal('collection.list.request'),
-    libraryId: identifierSchema,
-  }),
-  z.strictObject({
-    type: z.literal('collection.create.request'),
-    libraryId: identifierSchema,
-    parentId: optionalIdentifierSchema,
-    name: displayNameSchema,
-  }),
-  z.strictObject({
-    type: z.literal('collection.update.request'),
-    libraryId: identifierSchema,
-    collectionId: identifierSchema,
-    name: optionalIdentifierSchema,
-    parentId: identifierSchema.nullable().optional(),
-    description: nonBlankString.max(10_000).nullable().optional(),
-    coverAssetId: identifierSchema.nullable().optional(),
-    position: z.number().int().nonnegative().optional(),
-  }),
-  z.strictObject({
-    type: z.literal('collection.reorder.request'),
-    libraryId: identifierSchema,
-    orderedCollectionIds: z.array(identifierSchema).min(1).max(10_000),
-  }),
-  z.strictObject({
-    type: z.literal('collection.delete.request'),
-    libraryId: identifierSchema,
-    collectionId: identifierSchema,
-  }),
-  z.strictObject({
-    type: z.literal('collection.assets.add.request'),
-    libraryId: identifierSchema,
-    collectionId: identifierSchema,
-    assetIds: z.array(identifierSchema).min(1),
-  }),
-  z.strictObject({
-    type: z.literal('collection.assets.remove.request'),
-    libraryId: identifierSchema,
-    collectionId: identifierSchema,
-    assetIds: z.array(identifierSchema).min(1),
-  }),
-  z.strictObject({
-    type: z.literal('collection.assets.reorder.request'),
-    libraryId: identifierSchema,
-    collectionId: identifierSchema,
-    orderedAssetIds: z.array(identifierSchema).min(1),
-  }),
-  z.strictObject({
-    type: z.literal('collection.assets.list.request'),
-    libraryId: identifierSchema,
-    collectionId: identifierSchema,
-    recursive: z.boolean(),
-  }),
-  z.strictObject({
-    // CU-B4: direct memberships for selected assets (context-menu filtering).
-    type: z.literal('collection.assets.memberships.request'),
-    libraryId: identifierSchema,
-    assetIds: z.array(identifierSchema).min(1),
-  }),
-  z.strictObject({
     type: z.literal('asset.metadata.get.request'),
     libraryId: identifierSchema,
     assetId: identifierSchema,
@@ -852,7 +788,6 @@ export const rendererRequestSchema = z.discriminatedUnion('type', [
     filters: z.array(filterClauseSchema).max(16).optional(),
     scope: searchScopeSchema.optional(),
     sort: sortDefinitionSchema.optional(),
-    smartCollectionId: identifierSchema.optional(),
     limit: z.number().int().positive().max(500).optional(),
     showIgnored: z.boolean().optional(),
   }),
@@ -865,7 +800,7 @@ export const rendererRequestSchema = z.discriminatedUnion('type', [
   }),
   z.strictObject({
     // Stage C.3: select-all reuses the same ordered snapshot as pages instead
-    // of rebuilding a smart-collection/search scope.
+    // of rebuilding a search scope.
     type: z.literal('browse.session.ids.request'),
     libraryId: identifierSchema,
     sessionId: identifierSchema,
@@ -886,39 +821,6 @@ export const rendererRequestSchema = z.discriminatedUnion('type', [
   z.strictObject({
     type: z.literal('ai.search-plan.request'),
     naturalQuery: nonBlankString.max(2_000),
-  }),
-  z.strictObject({
-    type: z.literal('smart-collection.list.request'),
-    libraryId: identifierSchema,
-  }),
-  z.strictObject({
-    type: z.literal('smart-collection.create.request'),
-    libraryId: identifierSchema,
-    name: displayNameSchema,
-    queryDefinitionJson: queryDefinitionJsonSchema,
-  }),
-  z.strictObject({
-    type: z.literal('smart-collection.update.request'),
-    libraryId: identifierSchema,
-    collectionId: identifierSchema,
-    name: optionalIdentifierSchema,
-    queryDefinitionJson: queryDefinitionJsonSchema.optional(),
-    position: z.number().int().nonnegative().optional(),
-  }),
-  z.strictObject({
-    type: z.literal('smart-collection.delete.request'),
-    libraryId: identifierSchema,
-    collectionId: identifierSchema,
-  }),
-  z.strictObject({
-    type: z.literal('smart-collection.execute.request'),
-    libraryId: identifierSchema,
-    collectionId: identifierSchema,
-    scopeMode: z.boolean().optional(),
-    idsOnly: z.boolean().optional(),
-    layoutOnly: z.boolean().optional(),
-    limit: z.number().int().positive().max(500).optional(),
-    offset: z.number().int().nonnegative().optional(),
   }),
   z.strictObject({
     type: z.literal('asset.trash.request'),
@@ -1889,7 +1791,6 @@ export const workerCommandSchema = z.discriminatedUnion('type', [
     type: z.literal('asset.import.probe-sequences'),
     libraryId: identifierSchema,
     targetFolderId: optionalIdentifierSchema,
-    targetCollectionId: optionalIdentifierSchema,
     sourcePaths: z.array(selectedPathSchema).min(1).max(1_000),
   }),
   z.strictObject({
@@ -2080,65 +1981,6 @@ export const workerCommandSchema = z.discriminatedUnion('type', [
     tagIds: z.array(identifierSchema).min(1),
   }),
   z.strictObject({
-    type: z.literal('collection.list'),
-    libraryId: identifierSchema,
-  }),
-  z.strictObject({
-    type: z.literal('collection.create'),
-    libraryId: identifierSchema,
-    parentId: optionalIdentifierSchema,
-    name: displayNameSchema,
-  }),
-  z.strictObject({
-    type: z.literal('collection.update'),
-    libraryId: identifierSchema,
-    collectionId: identifierSchema,
-    name: optionalIdentifierSchema,
-    parentId: identifierSchema.nullable().optional(),
-    description: nonBlankString.max(10_000).nullable().optional(),
-    coverAssetId: identifierSchema.nullable().optional(),
-    position: z.number().int().nonnegative().optional(),
-  }),
-  z.strictObject({
-    type: z.literal('collection.reorder'),
-    libraryId: identifierSchema,
-    orderedCollectionIds: z.array(identifierSchema).min(1).max(10_000),
-  }),
-  z.strictObject({
-    type: z.literal('collection.delete'),
-    libraryId: identifierSchema,
-    collectionId: identifierSchema,
-  }),
-  z.strictObject({
-    type: z.literal('collection.assets.add'),
-    libraryId: identifierSchema,
-    collectionId: identifierSchema,
-    assetIds: z.array(identifierSchema).min(1),
-  }),
-  z.strictObject({
-    type: z.literal('collection.assets.remove'),
-    libraryId: identifierSchema,
-    collectionId: identifierSchema,
-    assetIds: z.array(identifierSchema).min(1),
-  }),
-  z.strictObject({
-    type: z.literal('collection.assets.reorder'),
-    libraryId: identifierSchema,
-    collectionId: identifierSchema,
-    orderedAssetIds: z.array(identifierSchema).min(1),
-  }),
-  z.strictObject({
-    type: z.literal('collection.assets.list'),
-    libraryId: identifierSchema,
-    collectionId: identifierSchema,
-    recursive: z.boolean(),
-  }),
-  z.strictObject({
-    type: z.literal('collection.assets.memberships'),
-    libraryId: identifierSchema,
-    assetIds: z.array(identifierSchema).min(1),
-  }),
-  z.strictObject({
     type: z.literal('asset.metadata.get'),
     libraryId: identifierSchema,
     assetId: identifierSchema,
@@ -2215,7 +2057,6 @@ export const workerCommandSchema = z.discriminatedUnion('type', [
     filters: z.array(filterClauseSchema).max(16).optional(),
     scope: searchScopeSchema.optional(),
     sort: sortDefinitionSchema.optional(),
-    smartCollectionId: identifierSchema.optional(),
     limit: z.number().int().positive().max(500).optional(),
     showIgnored: z.boolean().optional(),
   }),
@@ -2241,39 +2082,6 @@ export const workerCommandSchema = z.discriminatedUnion('type', [
     libraryId: identifierSchema,
     showIgnored: z.boolean().optional(),
     includeTrashedFolders: z.boolean().optional(),
-  }),
-  z.strictObject({
-    type: z.literal('smart-collection.list'),
-    libraryId: identifierSchema,
-  }),
-  z.strictObject({
-    type: z.literal('smart-collection.create'),
-    libraryId: identifierSchema,
-    name: displayNameSchema,
-    queryDefinitionJson: queryDefinitionJsonSchema,
-  }),
-  z.strictObject({
-    type: z.literal('smart-collection.update'),
-    libraryId: identifierSchema,
-    collectionId: identifierSchema,
-    name: optionalIdentifierSchema,
-    queryDefinitionJson: queryDefinitionJsonSchema.optional(),
-    position: z.number().int().nonnegative().optional(),
-  }),
-  z.strictObject({
-    type: z.literal('smart-collection.delete'),
-    libraryId: identifierSchema,
-    collectionId: identifierSchema,
-  }),
-  z.strictObject({
-    type: z.literal('smart-collection.execute'),
-    libraryId: identifierSchema,
-    collectionId: identifierSchema,
-    scopeMode: z.boolean().optional(),
-    idsOnly: z.boolean().optional(),
-    layoutOnly: z.boolean().optional(),
-    limit: z.number().int().positive().max(500).optional(),
-    offset: z.number().int().nonnegative().optional(),
   }),
   z.strictObject({
     type: z.literal('asset.trash'),

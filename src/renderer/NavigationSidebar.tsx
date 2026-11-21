@@ -1,4 +1,3 @@
-const showLegacyGroups = false;
 import {
   useCallback,
   useEffect,
@@ -22,10 +21,8 @@ import {
 import { useT } from "./i18n";
 import { isImeKeyboardEvent, shouldHoldDismissForIme } from "./ime-safe-dismiss";
 import type {
-  CollectionSummary,
   LinkedFolderSummary,
   ManagedFolderSummary,
-  SmartCollectionSummary,
 } from "../shared/asset-types";
 import type { ContextMenuDescriptor } from "./context-menu";
 import type { RendererLibrarySummary } from "../shared/protocol/responses";
@@ -60,17 +57,14 @@ import {
   isToggleSelectionModifier,
   resolveSelectionPlatform,
 } from "./selection-modifiers";
-import type { InlineSmartCollectionEditState } from "./inline-smart-collection-edit";
 import { isLibraryRootFolderId } from "../shared/library-root-folder";
 import {
   buildUnifiedDirectoryNavEntries,
   hideOfflineLinkedDirectoryEntries,
   filterCollapsedDirectoryEntries,
-  filterCollectionTreeByName,
   filterDirectoryEntriesByName,
   folderIdsInSubtree,
   managedFolderIdsWithChildren,
-  sortCollectionTree,
   sortManagedTreeEntries,
   withFolderSubtreeCollapsed,
   type FolderTreeSortMode,
@@ -92,28 +86,21 @@ import {
   loadNavTreePreferences,
   saveNavTreePreferences,
   withCollapsedFolderIds,
-  withCollapsedCollectionIds,
   type NavTreePreferences,
 } from "./nav-tree-preferences";
 import {
   loadFolderSortPreferences,
-  loadCollectionSortPreferences,
   saveFolderSortPreferences,
-  saveCollectionSortPreferences,
   withFolderSort,
-  withCollectionSort,
   type FolderSortOrder,
   type FolderSortPreferences,
-  type CollectionSortPreferences,
 } from "./folder-sort-preferences";
 import { PortaledPopover } from "./PortaledPopover";
 import { PaneSurface } from "./ui/surfaces";
 import {
   applyFolderSiblingOrder,
   insertBesideSibling,
-  loadCollectionCustomOrder,
   loadFolderCustomOrder,
-  saveCollectionCustomOrder,
   saveFolderCustomOrder,
   type FolderDropEdge,
 } from "./folder-custom-order";
@@ -145,7 +132,6 @@ function NavRow({
   disclosure,
   navFolderId,
   navFolderKind,
-  navCollectionId,
   multiSelected,
   insertEdge,
 }: {
@@ -176,8 +162,6 @@ function NavRow({
   navFolderKind?: "managed" | "linked";
   /** Serpent-d7acfa: row participates in the sidebar multi-folder selection. */
   multiSelected?: boolean;
-  /** Focus target for collection keyboard shortcuts. */
-  navCollectionId?: string;
   /** Custom-order drop insertion edge (Serpent: folder 自定义 sort). */
   insertEdge?: FolderDropEdge | null;
 }) {
@@ -205,7 +189,6 @@ function NavRow({
         className={`nav-row${active ? " is-active" : ""}${multiSelected ? " is-multi-selected" : ""}${dropActive ? " is-drop-target" : ""}`}
         data-nav-folder-id={navFolderId}
         data-nav-folder-kind={navFolderKind}
-        data-nav-collection-id={navCollectionId}
         disabled={disabled}
         draggable={draggable}
         onClick={onClick}
@@ -342,212 +325,6 @@ function InlineFolderEditRow({
     </div>
   );
 }
-
-/** The collection equivalent of the folder in-tree create row. */
-function InlineCollectionEditRow({
-  depth,
-  value,
-  ariaLabel,
-  placeholder,
-  onChange,
-  onCommit,
-  onCancel,
-}: {
-  depth: number;
-  value: string;
-  ariaLabel?: string;
-  placeholder?: string;
-  onChange: (value: string) => void;
-  onCommit: () => void | Promise<void>;
-  onCancel: () => void;
-}) {
-  const t = useT();
-  const inputRef = useRef<HTMLInputElement>(null);
-  const committingRef = useRef(false);
-  const blurCommitTimerRef = useRef<number | null>(null);
-
-  const cancelScheduledBlurCommit = useCallback(() => {
-    if (blurCommitTimerRef.current === null) return;
-    window.clearTimeout(blurCommitTimerRef.current);
-    blurCommitTimerRef.current = null;
-  }, []);
-
-  const commitOnce = useCallback(() => {
-    cancelScheduledBlurCommit();
-    if (committingRef.current) return;
-    committingRef.current = true;
-    void Promise.resolve(onCommit()).finally(() => {
-      committingRef.current = false;
-    });
-  }, [cancelScheduledBlurCommit, onCommit]);
-
-  // Layout focus handles the initial mount before paint; the frame retry
-  // covers a menu teardown that briefly reclaims focus. Both creation and
-  // rename are replacement-ready, matching the folder editor.
-  useLayoutEffect(() => {
-    const focusInput = () => {
-      const input = inputRef.current;
-      if (!input) return;
-      input.focus({ preventScroll: true });
-      input.select();
-    };
-    focusInput();
-    const frame = window.requestAnimationFrame(() => {
-      if (document.activeElement !== inputRef.current) focusInput();
-    });
-    return () => window.cancelAnimationFrame(frame);
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      if (blurCommitTimerRef.current !== null) {
-        window.clearTimeout(blurCommitTimerRef.current);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    const handleOutsidePointer = (event: PointerEvent) => {
-      const input = inputRef.current;
-      if (input && !input.contains(event.target as Node | null)) commitOnce();
-    };
-    document.addEventListener("pointerdown", handleOutsidePointer, true);
-    return () =>
-      document.removeEventListener("pointerdown", handleOutsidePointer, true);
-  }, [commitOnce]);
-
-  return (
-    <div className="nav-tree-row" style={{ paddingLeft: depth * 14 }}>
-
-      <span className="nav-disclosure-spacer" aria-hidden="true" />
-      <div className="nav-inline-edit" style={{ paddingLeft: 7 }}>
-        <Icon name="collection" size={15} />
-        <input
-          aria-label={ariaLabel ?? t("nav.newCollection")}
-          className="text-field"
-          maxLength={255}
-          onBlur={(event) => {
-            if (shouldHoldDismissForIme({ focusEvent: event })) return;
-            cancelScheduledBlurCommit();
-            blurCommitTimerRef.current = window.setTimeout(() => {
-              blurCommitTimerRef.current = null;
-              if (document.activeElement !== inputRef.current) commitOnce();
-            }, 0);
-          }}
-          onChange={(event) => onChange(event.target.value)}
-          onFocus={cancelScheduledBlurCommit}
-          onKeyDown={(event) => {
-            if (isImeKeyboardEvent(event)) return;
-            if (event.key === "Enter") {
-              event.preventDefault();
-              commitOnce();
-            } else if (event.key === "Escape") {
-              event.preventDefault();
-              event.stopPropagation();
-              onCancel();
-            }
-          }}
-          placeholder={placeholder ?? t("nav.newCollection")}
-          ref={inputRef}
-          value={value}
-        />
-      </div>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// InlineSmartCollectionEditRow — SMART-007 sidebar create row
-// ---------------------------------------------------------------------------
-
-/**
- * Name-edit row for the smart-collections section 「+」. Enter commits,
- * Escape cancels, blur routes through the same commit resolution; typed
- * failures (including missing discovery conditions) stay under the row.
- */
-function InlineSmartCollectionEditRow({
-  state,
-  onChange,
-  onCommit,
-  onCancel,
-}: {
-  state: InlineSmartCollectionEditState;
-  onChange: (value: string) => void;
-  onCommit: () => void;
-  onCancel: () => void;
-}) {
-  const t = useT();
-  const inputRef = useRef<HTMLInputElement>(null);
-  const committingRef = useRef(false);
-
-  const commitOnce = useCallback(() => {
-    if (committingRef.current) return;
-    committingRef.current = true;
-    onCommit();
-    window.setTimeout(() => {
-      committingRef.current = false;
-    }, 0);
-  }, [onCommit]);
-
-  useEffect(() => {
-    const input = inputRef.current;
-    if (!input) return;
-    input.focus();
-    input.select();
-  }, []);
-
-  useEffect(() => {
-    const handleOutsidePointer = (event: PointerEvent) => {
-      const input = inputRef.current;
-      if (input && !input.contains(event.target as Node | null)) commitOnce();
-    };
-    document.addEventListener("pointerdown", handleOutsidePointer, true);
-    return () =>
-      document.removeEventListener("pointerdown", handleOutsidePointer, true);
-  }, [commitOnce]);
-
-  return (
-    <div className="nav-tree-row">
-      <span className="nav-disclosure-spacer" aria-hidden="true" />
-      <div className="nav-inline-edit" style={{ paddingLeft: 7 }}>
-      <Icon name="smart" size={15} />
-      <input
-        aria-invalid={state.error ? true : undefined}
-        aria-label={t("nav.newSmartCollectionName")}
-        className="text-field"
-        maxLength={80}
-        onBlur={(event) => {
-          if (shouldHoldDismissForIme({ focusEvent: event })) return;
-          commitOnce();
-        }}
-        onChange={(event) => onChange(event.target.value)}
-        onKeyDown={(event) => {
-          if (isImeKeyboardEvent(event)) return;
-          if (event.key === "Enter") {
-            event.preventDefault();
-            commitOnce();
-          } else if (event.key === "Escape") {
-            event.preventDefault();
-            event.stopPropagation();
-            onCancel();
-          }
-        }}
-        ref={inputRef}
-        value={state.value}
-      />
-      {state.error ? (
-        <p className="nav-inline-edit-error" role="alert">
-          {state.error}
-        </p>
-      ) : null}
-      </div>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Section — local presentational wrapper
-// ---------------------------------------------------------------------------
 
 function Section({
   title,
@@ -692,7 +469,7 @@ function Section({
 }
 
 // ---------------------------------------------------------------------------
-// SidebarSortTrigger — shared folder/collection tree sort control
+// SidebarSortTrigger — shared folder tree sort control
 // Mirrors the browse sort panel (SortModeControl): a direction radio group
 // plus a field list, so adding a new field is one array entry, never an N-way
 // option explosion.
@@ -709,9 +486,6 @@ const FOLDER_SORT_FIELDS: readonly {
   { mode: "count", labelKey: "nav.sortByCount" },
   { mode: "custom", labelKey: "nav.sortByCustom" },
 ];
-const COLLECTION_SORT_FIELDS = FOLDER_SORT_FIELDS.filter(
-  ({ mode }) => mode !== "created",
-);
 
 const FOLDER_SORT_ORDERS: readonly FolderSortOrder[] = ["asc", "desc"];
 
@@ -891,13 +665,11 @@ export interface NavigationSidebarProps {
   activePluginSidebarViewId?: string | null;
   pluginSidebarViews?: readonly { id: string; title: string }[];
   activeTagId: string | null;
-  activeCollectionId: string | null;
-  activeSmartCollectionId: string | null;
   showIgnoredItems: boolean;
   showMissingLinkedFiles?: boolean;
   onToggleShowIgnoredItems: () => void;
   revealTarget?: {
-    kind: "folder" | "collection";
+    kind: "folder";
     id: string;
     requestId: number;
   } | null;
@@ -917,21 +689,7 @@ export interface NavigationSidebarProps {
   } | null;
   trashedAssetCount: number;
   folders: ManagedFolderSummary[];
-  collections: CollectionSummary[];
-  collectionTree: Map<string | null, CollectionSummary[]>;
-  smartCollections: SmartCollectionSummary[];
   linkedFolders: LinkedFolderSummary[];
-  // --- Inline input state ---
-  showCollectionInput: boolean;
-  collectionInputValue: string;
-  newCollectionParentId: string | null;
-  inlineCollectionRename: {
-    collectionId: string;
-    value: string;
-  } | null;
-  // --- Collection drag state ---
-  draggedCollectionId: string | null;
-  onSetDraggedCollectionId: (id: string | null) => void;
 
   // --- Navigation callbacks ---
   onChooseAllAssets: () => void;
@@ -940,15 +698,12 @@ export interface NavigationSidebarProps {
   onEnterTagManagement: () => void;
   onChoosePluginSidebarView?: (viewId: string) => void;
   onChooseFolder: (folderId: string) => void;
-  onChooseCollection: (collectionId: string, recursive?: boolean) => void;
-  onChooseSmartCollection: (collectionId: string) => void;
 
   // --- External drag/drop ---
   onExternalDragOver: (event: React.DragEvent<HTMLElement>) => void;
   onExternalDrop: (
     event: React.DragEvent<HTMLElement>,
     targetFolderId: string | null | undefined,
-    targetCollectionId: string | undefined,
   ) => void;
   /** Renderer-only fallback for a native drag whose custom payload was lost. */
   getManagedAssetDragIds?: () => readonly string[] | null;
@@ -988,11 +743,6 @@ export interface NavigationSidebarProps {
   onToggleFolderSelection: (folderId: string) => void;
   onAssetsDroppedOnTrash: (assetIds: string[]) => void;
   onFoldersDroppedOnTrash: (folderIds: string[]) => void;
-  onAssetsDroppedOnCollection: (
-    collectionId: string,
-    assetIds: string[],
-    mode: DragDropMode,
-  ) => void;
   /** Mid-drag Option/Alt flips; used to update the drag-preview "+" badge. */
   onManagedAssetCopyModeChange?: (copyMode: boolean) => void;
 
@@ -1009,19 +759,8 @@ export interface NavigationSidebarProps {
     targetFolderId: string;
   }) => void;
 
-  // --- Collection input ---
-  onAddCollection: (parentId: string | null) => void;
-  onSetShowCollectionInput: (show: boolean) => void;
-  onSetCollectionInputValue: (value: string) => void;
-  onSetNewCollectionParentId: (id: string | null) => void;
-  onCollectionInputCommit: () => void | Promise<void>;
-  onInlineCollectionRenameChange: (value: string) => void;
-  onInlineCollectionRenameCommit: () => void | Promise<void>;
-  onInlineCollectionRenameCancel: () => void;
   // --- Folder creation entry (sidebar 「+」; opens the inline edit row) ---
   onAddFolder: () => void;
-  /** SMART-007: open sidebar inline smart-collection name row. */
-  onAddSmartCollection: () => void;
 
   // --- Inline folder edit (REQ-FOLDER-007) ---
   inlineFolderEdit: InlineFolderEditState | null;
@@ -1034,32 +773,15 @@ export interface NavigationSidebarProps {
   ) => void;
   onInlineFolderEditCancel: () => void;
 
-  // --- Inline smart-collection create (SMART-007) ---
-  inlineSmartCollectionEdit: InlineSmartCollectionEditState | null;
-  onInlineSmartCollectionEditChange: (value: string) => void;
-  onInlineSmartCollectionEditCommit: () => void;
-  onInlineSmartCollectionEditCancel: () => void;
-
   // --- Context menu ---
   onOpenContextMenu: (
     descriptor: ContextMenuDescriptor,
     position: { x: number; y: number },
   ) => void;
 
-  // --- Collection drag/drop ---
-  onNestCollection: (
-    sourceId: string,
-    targetId: string,
-    options?: { blockingUi?: boolean },
-  ) => void;
-  onMoveCollectionToRoot: (
-    collectionId: string,
-    options?: { blockingUi?: boolean },
-  ) => void;
   onImportDroppedFiles: (
     files: File[],
     targetFolderId: string | null | undefined,
-    targetCollectionId: string | undefined,
     webPayload?: { html: string; uriList: string },
   ) => void;
 
@@ -1096,8 +818,6 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
     activePluginSidebarViewId = null,
     pluginSidebarViews = [],
     activeTagId,
-    activeCollectionId,
-    activeSmartCollectionId,
     showIgnoredItems,
     showMissingLinkedFiles = true,
     onToggleShowIgnoredItems,
@@ -1107,24 +827,13 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
     filteredFolderCounts = null,
     trashedAssetCount,
     folders,
-    collections,
-    collectionTree,
-    smartCollections,
     linkedFolders,
-    showCollectionInput,
-    collectionInputValue,
-    newCollectionParentId,
-    inlineCollectionRename,
-    draggedCollectionId,
-    onSetDraggedCollectionId,
     onChooseAllAssets,
     onEnterTrash,
     onTrashContextMenu,
     onEnterTagManagement,
     onChoosePluginSidebarView,
     onChooseFolder,
-    onChooseCollection,
-    onChooseSmartCollection,
     onExternalDragOver,
     onExternalDrop,
     getManagedAssetDragIds,
@@ -1139,7 +848,6 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
     onToggleFolderSelection,
     onAssetsDroppedOnTrash,
     onFoldersDroppedOnTrash,
-    onAssetsDroppedOnCollection,
     onManagedAssetCopyModeChange,
     onImportFolderAsLinked,
     linkedFolderHintActive,
@@ -1147,27 +855,12 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
     onLinkedFolderHintHoverEnd,
     onRelinkFolder,
     onConvertLinkedDialog,
-    onAddCollection,
-    onSetShowCollectionInput,
-    onSetCollectionInputValue,
-    onSetNewCollectionParentId,
-    onCollectionInputCommit,
-    onInlineCollectionRenameChange,
-    onInlineCollectionRenameCommit,
-    onInlineCollectionRenameCancel,
     onAddFolder,
-    onAddSmartCollection,
     inlineFolderEdit,
     onInlineFolderEditChange,
     onInlineFolderEditCommit,
     onInlineFolderEditCancel,
-    inlineSmartCollectionEdit,
-    onInlineSmartCollectionEditChange,
-    onInlineSmartCollectionEditCommit,
-    onInlineSmartCollectionEditCancel,
     onOpenContextMenu,
-    onNestCollection,
-    onMoveCollectionToRoot,
     onImportDroppedFiles,
     onCopyManagedToLinked,
   } = props;
@@ -1178,8 +871,6 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
     showTagManagement,
     activePluginSidebarViewId,
     activeTagId,
-    activeCollectionId,
-    activeSmartCollectionId,
   };
 
   // REQ-DND-001/002: which row is the current asset-drag hover target.
@@ -1189,8 +880,6 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
   // Serpent-b29bc4: a managed-folder drag hovering the folder section's blank
   // area (indentation gutter / space below the last row) targets the root.
   const [folderListDropActive, setFolderListDropActive] = useState(false);
-  // Collections use the same root-drop interaction as folders.
-  const [collectionListDropActive, setCollectionListDropActive] = useState(false);
   // Serpent-374266: ids of the folder drag started from this sidebar. The HTML5
   // payload is unreadable during dragover, so the drop-target validity check
   // needs its own copy (cleared on every dragend/drop).
@@ -1210,8 +899,6 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
   const [folderSortPrefs, setFolderSortPrefs] = useState<FolderSortPreferences>(
     () => loadFolderSortPreferences(),
   );
-  const [collectionSortPrefs, setCollectionSortPrefs] =
-    useState<CollectionSortPreferences>(() => loadCollectionSortPreferences());
   // Serpent folder custom order: device-local, keyed by library id (the sort
   // mode itself is device-local too).
   const [folderCustomOrder, setFolderCustomOrder] = useState<
@@ -1224,30 +911,12 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
     loadedCustomOrderLibraryRef.current = libraryId;
     setFolderCustomOrder(loadFolderCustomOrder(libraryId));
   }, [library?.libraryId]);
-  const [collectionCustomOrder, setCollectionCustomOrder] = useState<
-    ReadonlyMap<string, number>
-  >(() => loadCollectionCustomOrder(library?.libraryId));
-  const loadedCollectionOrderLibraryRef = useRef<string | null>(null);
-  useEffect(() => {
-    const libraryId = library?.libraryId ?? null;
-    if (loadedCollectionOrderLibraryRef.current === libraryId) return;
-    loadedCollectionOrderLibraryRef.current = libraryId;
-    setCollectionCustomOrder(loadCollectionCustomOrder(libraryId));
-  }, [library?.libraryId]);
   const [folderSearchOpen, setFolderSearchOpen] = useState(false);
   const [folderSearchQuery, setFolderSearchQuery] = useState("");
-  const [collectionSearchOpen, setCollectionSearchOpen] = useState(false);
-  const [collectionSearchQuery, setCollectionSearchQuery] = useState("");
   function changeFolderSort(mode: FolderTreeSortMode, order: FolderSortOrder) {
     const next = withFolderSort(folderSortPrefs, { mode, order });
     setFolderSortPrefs(next);
     saveFolderSortPreferences(next);
-  }
-  function changeCollectionSort(mode: FolderTreeSortMode, order: FolderSortOrder) {
-    if (mode === "created") return;
-    const next = withCollectionSort(collectionSortPrefs, { mode, order });
-    setCollectionSortPrefs(next);
-    saveCollectionSortPreferences(next);
   }
   function toggleFolderSearch() {
     setFolderSearchOpen((open) => {
@@ -1259,22 +928,11 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
     setFolderSearchOpen(false);
     setFolderSearchQuery("");
   }
-  function toggleCollectionSearch() {
-    setCollectionSearchOpen((open) => {
-      if (open) setCollectionSearchQuery("");
-      return !open;
-    });
-  }
-  function closeCollectionSearch() {
-    setCollectionSearchOpen(false);
-    setCollectionSearchQuery("");
-  }
   useEffect(() => {
-    if (!assetDropTarget && !folderListDropActive && !collectionListDropActive) return;
+    if (!assetDropTarget && !folderListDropActive) return;
     const clear = () => {
       setAssetDropTarget(null);
       setFolderListDropActive(false);
-      setCollectionListDropActive(false);
     };
     window.addEventListener("dragend", clear);
     window.addEventListener("drop", clear);
@@ -1282,7 +940,7 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
       window.removeEventListener("dragend", clear);
       window.removeEventListener("drop", clear);
     };
-  }, [assetDropTarget, collectionListDropActive, folderListDropActive]);
+  }, [assetDropTarget, folderListDropActive]);
 
   // Serpent-374266: the folder-drag snapshot must not outlive its gesture, even
   // when the drag ends without ever highlighting a target (e.g. dropped back on
@@ -1336,13 +994,6 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
     folderSortPrefs.order,
     folderCustomOrder,
   ), [unifiedDirectoryEntries, folderSortPrefs.mode, folderSortPrefs.order, folderCustomOrder]);
-  const sortedCollectionTree = useMemo(() => sortCollectionTree(
-    collectionTree,
-    collectionSortPrefs.mode,
-    collectionSortPrefs.order,
-    collectionCustomOrder,
-  ), [collectionTree, collectionSortPrefs.mode, collectionSortPrefs.order, collectionCustomOrder]);
-
   function applyFolderSubtree(folderId: string, collapse: boolean) {
     const rootId = isLibraryRootFolderId(folderId) || folderId === "root"
       ? null
@@ -1366,41 +1017,13 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
     };
   });
 
-  // Serpent-c42eb1: collection subtree collapse, mirroring folder collapse.
-  const persistedCollapsedCollectionIds = new Set(
-    navTreePrefs.collapsedCollectionIds ?? [],
-  );
-  // Creating a sub-collection under a collapsed parent must reveal the inline
-  // create row; keep this derived so opening/cancelling an editor never
-  // mutates the persisted navigation preference.
-  const collapsedCollectionIds = new Set(persistedCollapsedCollectionIds);
-  if (
-    showCollectionInput &&
-    newCollectionParentId &&
-    collapsedCollectionIds.has(newCollectionParentId)
-  ) {
-    collapsedCollectionIds.delete(newCollectionParentId);
-  }
-
-  function toggleCollectionCollapsed(collectionId: string) {
-    const current = navTreePrefs.collapsedCollectionIds ?? [];
-    const nextIds = persistedCollapsedCollectionIds.has(collectionId)
-      ? current.filter((id) => id !== collectionId)
-      : [...current, collectionId];
-    const next = withCollapsedCollectionIds(navTreePrefs, nextIds);
-    setNavTreePrefs(next);
-    saveNavTreePreferences(next);
-  }
-
   useEffect(() => {
     if (!revealTarget) return;
     if (handledRevealRequestRef.current === revealTarget.requestId) return;
-    const collapsed = revealTarget.kind === "folder"
-      ? navTreePrefs.collapsedFolderIds
-      : (navTreePrefs.collapsedCollectionIds ?? []);
+    const collapsed = navTreePrefs.collapsedFolderIds;
     const ancestors: string[] = [];
     const seen = new Set<string>();
-    if (revealTarget.kind === "folder") {
+    {
       const byId = new Map<string, { parentId: string | null }>();
       for (const folder of folders) {
         byId.set(folder.folderId, { parentId: folder.parentFolderId });
@@ -1415,33 +1038,17 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
         ancestors.push(cursor.parentId);
         cursor = byId.get(cursor.parentId);
       }
-    } else {
-      const byId = new Map(
-        collections.map((collection) => [collection.collectionId, collection]),
-      );
-      let cursor = byId.get(revealTarget.id);
-      while (cursor?.parentId) {
-        if (seen.has(cursor.parentId)) break;
-        seen.add(cursor.parentId);
-        ancestors.push(cursor.parentId);
-        cursor = byId.get(cursor.parentId);
-      }
     }
     const nextCollapsed = collapsed.filter((id) => !ancestors.includes(id));
     if (nextCollapsed.length !== collapsed.length) {
-      const next = revealTarget.kind === "folder"
-        ? withCollapsedFolderIds(navTreePrefs, nextCollapsed)
-        : withCollapsedCollectionIds(navTreePrefs, nextCollapsed);
+      const next = withCollapsedFolderIds(navTreePrefs, nextCollapsed);
       const frame = window.requestAnimationFrame(() => {
         setNavTreePrefs(next);
         saveNavTreePreferences(next);
       });
       return () => window.cancelAnimationFrame(frame);
     }
-    const attribute = revealTarget.kind === "folder"
-      ? "data-nav-folder-id"
-      : "data-nav-collection-id";
-    const selector = `[${attribute}="${CSS.escape(revealTarget.id)}"]`;
+    const selector = `[data-nav-folder-id="${CSS.escape(revealTarget.id)}"]`;
     const frame = window.requestAnimationFrame(() => {
       const row = document.querySelector<HTMLButtonElement>(selector);
       if (!row) return;
@@ -1450,7 +1057,7 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
       handledRevealRequestRef.current = revealTarget.requestId;
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [collections, folders, linkedFolders, navTreePrefs, revealTarget]);
+  }, [folders, linkedFolders, navTreePrefs, revealTarget]);
 
   function revealCreatedFolderParent(
     _folderId: string,
@@ -1490,18 +1097,6 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
     event.dataTransfer.dropEffect = dropEffect;
     onManagedAssetCopyModeChange?.(mode === "copy");
     return mode;
-  }
-
-  /**
-   * Production Electron drags arrive as native `Files`; the E2E/in-window
-   * fallback carries the managed-asset MIME type. Both represent an asset
-   * drag for target highlighting, while only the latter can be parsed locally.
-   */
-  function supportsAssetDropTransfer(transfer: DataTransfer): boolean {
-    return (
-      supportsManagedAssetDrag(transfer) ||
-      supportsExternalImportTransfer(transfer)
-    );
   }
 
   /**
@@ -1642,16 +1237,11 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
               );
               return;
             }
-            void onImportDroppedFiles(
-              payload.files,
-              folderId,
-              undefined,
-              payload,
-            );
+            void onImportDroppedFiles(payload.files, folderId, payload);
           });
           return;
         }
-        onExternalDrop(event, folderId, undefined);
+        onExternalDrop(event, folderId);
       },
     };
   }
@@ -1741,7 +1331,7 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
    * dragged managed folders on it moves them to the root.
    *
    * Scope is the folder list only (2026-09-12 user clarification on a marked-up
-   * screenshot): the collections / smart-collections sections below are not
+   * screenshot): the sections below are not
    * blank space, and neither is the rest of the pane. A first version used the
    * whole `.navigation-scroll` and the band under the tree — which is what the
    * user actually aims at — was covered by the next section's heading and its
@@ -1781,11 +1371,7 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
 
   // An open inline editor owns the click that follows (blur commits it);
   // navigating at the same time would fight that commit.
-  const inlineEditorOpen =
-    inlineFolderEdit !== null ||
-    inlineCollectionRename !== null ||
-    inlineSmartCollectionEdit !== null ||
-    showCollectionInput;
+  const inlineEditorOpen = inlineFolderEdit !== null;
 
   /** Handlers for the folder section's blank area (the indentation gutter). */
   function folderListBlankHandlers() {
@@ -1844,137 +1430,13 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
     };
   }
 
-  function acceptsCollectionRootDrop(): boolean {
-    if (!draggedCollectionId) return false;
-    const dragged = collections.find(
-      (collection) => collection.collectionId === draggedCollectionId,
-    );
-    return dragged?.parentId !== null && dragged !== undefined;
-  }
-
-  function isCollectionAncestor(ancestorId: string, nodeId: string): boolean {
-    const byId = new Map(
-      collections.map((collection) => [collection.collectionId, collection]),
-    );
-    const seen = new Set<string>();
-    let cursor = byId.get(nodeId);
-    while (cursor?.parentId) {
-      if (cursor.parentId === ancestorId) return true;
-      if (seen.has(cursor.parentId)) break;
-      seen.add(cursor.parentId);
-      cursor = byId.get(cursor.parentId);
-    }
-    return false;
-  }
-
-  function acceptsCollectionNestDrop(targetId: string): boolean {
-    if (!draggedCollectionId || draggedCollectionId === targetId) return false;
-    if (isCollectionAncestor(draggedCollectionId, targetId)) return false;
-    const dragged = collections.find(
-      (collection) => collection.collectionId === draggedCollectionId,
-    );
-    return Boolean(dragged && dragged.parentId !== targetId);
-  }
-
-  function collectionParentId(collectionId: string): string | null | undefined {
-    for (const [parentId, children] of collectionTree) {
-      if (children.some((collection) => collection.collectionId === collectionId)) {
-        return parentId;
-      }
-    }
-    return undefined;
-  }
-
-  /**
-   * Insertion beside a collection puts the dragged collection in the hovered
-   * row's parent. Reject drops that would nest a collection inside itself or
-   * inside one of its descendants.
-   */
-  function acceptsCollectionInsertBeside(targetCollectionId: string): boolean {
-    if (!draggedCollectionId || draggedCollectionId === targetCollectionId) {
-      return false;
-    }
-    const targetParentId = collectionParentId(targetCollectionId);
-    if (targetParentId === undefined) return false;
-    if (targetParentId === draggedCollectionId) return false;
-    if (
-      targetParentId !== null &&
-      isCollectionAncestor(draggedCollectionId, targetParentId)
-    ) {
-      return false;
-    }
-    return true;
-  }
-
-  function highlightCollectionNestTarget(collectionId: string): boolean {
-    if (!acceptsCollectionNestDrop(collectionId)) return false;
-    setAssetDropTarget(`collection:${collectionId}`);
-    setCollectionListDropActive(false);
-    return true;
-  }
-
-  /**
-   * Collections mirror the folder section's blank-area root target. A drop
-   * outside a collection row reparents the dragged collection to the root;
-   * dropping onto another collection row nests it as a child.
-   */
-  function collectionListBlankHandlers() {
-    return {
-      onDragEnter: (event: React.DragEvent<HTMLElement>) => {
-        if (
-          !isFolderListBlankTarget(event) ||
-          !acceptsCollectionRootDrop()
-        ) {
-          return;
-        }
-        setCollectionListDropActive(true);
-      },
-      onDragOver: (event: React.DragEvent<HTMLElement>) => {
-        if (
-          !isFolderListBlankTarget(event) ||
-          !acceptsCollectionRootDrop()
-        ) {
-          setCollectionListDropActive(false);
-          return;
-        }
-        event.preventDefault();
-        event.dataTransfer.dropEffect = "move";
-        setCollectionListDropActive(true);
-      },
-      onDragLeave: (event: React.DragEvent<HTMLElement>) => {
-        if (event.currentTarget.contains(event.relatedTarget as Node | null)) {
-          return;
-        }
-        setCollectionListDropActive(false);
-      },
-      onDrop: (event: React.DragEvent<HTMLElement>) => {
-        if (
-          !isFolderListBlankTarget(event) ||
-          !acceptsCollectionRootDrop() ||
-          !draggedCollectionId
-        ) {
-          return;
-        }
-        event.preventDefault();
-        setCollectionListDropActive(false);
-        onMoveCollectionToRoot(draggedCollectionId);
-        onSetDraggedCollectionId(null);
-      },
-    };
-  }
-
   const [folderInsertEdge, setFolderInsertEdge] = useState<{
     folderId: string;
-    edge: FolderDropEdge;
-  } | null>(null);
-  const [collectionInsertEdge, setCollectionInsertEdge] = useState<{
-    collectionId: string;
     edge: FolderDropEdge;
   } | null>(null);
   useEffect(() => {
     const clear = () => {
       setFolderInsertEdge(null);
-      setCollectionInsertEdge(null);
     };
     document.addEventListener("dragend", clear);
     document.addEventListener("drop", clear);
@@ -2041,47 +1503,6 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
     }
   }
 
-  /** Reorder a collection beside `targetId`; cross-parent drops reparent it. */
-  function reorderCollectionBeside(
-    targetId: string,
-    edge: FolderDropEdge,
-    draggedId: string,
-  ): void {
-    if (!library?.libraryId) return;
-    if (!acceptsCollectionInsertBeside(targetId)) return;
-    const targetParentId = collectionParentId(targetId);
-    if (targetParentId === undefined) return;
-    const draggedParentId = collectionParentId(draggedId) ?? null;
-    const needsMove = draggedParentId !== targetParentId;
-    // Use the visible (custom-ordered) sibling sequence so untouched rows
-    // keep their relative order when the sequence is renumbered.
-    const siblings = (sortedCollectionTree.get(targetParentId) ?? []).map(
-      (collection) => collection.collectionId,
-    );
-    const nextSequence = insertBesideSibling(
-      siblings,
-      [draggedId],
-      targetId,
-      edge,
-    );
-    if (nextSequence.join("\u0000") === siblings.join("\u0000")) return;
-    const next = applyFolderSiblingOrder(
-      collectionCustomOrder,
-      targetParentId,
-      nextSequence,
-    );
-    setCollectionCustomOrder(next);
-    saveCollectionCustomOrder(library.libraryId, next);
-    if (needsMove) {
-      if (targetParentId === null) {
-        onMoveCollectionToRoot(draggedId, { blockingUi: false });
-      } else {
-        void onNestCollection(draggedId, targetParentId, {
-          blockingUi: false,
-        });
-      }
-    }
-  }
   const folderSearchActive = folderSearchQuery.trim().length > 0;
   const directoryEntries = useMemo(() => folderSearchActive
     ? filterDirectoryEntriesByName(sortedDirectoryEntries, folderSearchQuery)
@@ -2091,16 +1512,6 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
     () => managedFolderIdsWithChildren(unifiedDirectoryEntries),
     [unifiedDirectoryEntries],
   );
-  const collectionSearchActive = collectionSearchQuery.trim().length > 0;
-  const visibleCollectionTree = collectionSearchActive
-    ? filterCollectionTreeByName(sortedCollectionTree, collectionSearchQuery)
-    : sortedCollectionTree;
-
-  function collectionRowCollapsed(collectionId: string): boolean {
-    if (collectionSearchActive) return false;
-    return collapsedCollectionIds.has(collectionId);
-  }
-
   function renderDirectoryEntries(): ReactNode {
     if (directoryEntries.length === 0 && inlineFolderEdit?.kind !== "create") {
       return (
@@ -2440,23 +1851,13 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
                 // directly into the selected linked directory.  Falling
                 // through to the resolver alone made Explorer/Finder drops
                 // appear to do nothing because no managed asset id existed.
-                void onImportDroppedFiles(
-                  payload.files,
-                  lf.folderId,
-                  undefined,
-                  payload,
-                );
+                void onImportDroppedFiles(payload.files, lf.folderId, payload);
               });
             } else if (files.length > 0) {
               event.preventDefault();
               setAssetDropTarget(null);
               const payload = externalImportPayload(event.dataTransfer);
-              void onImportDroppedFiles(
-                payload.files,
-                lf.folderId,
-                undefined,
-                payload,
-              );
+              void onImportDroppedFiles(payload.files, lf.folderId, payload);
             }
           }}
         />
@@ -2484,314 +1885,6 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
     return rows;
   }
 
-  // Recursive collection node renderer
-  function renderCollectionNodes(
-    parentId: string | null,
-    depth: number,
-  ): ReactNode {
-    const children = visibleCollectionTree.get(parentId) ?? [];
-    const rows: ReactNode[] = [];
-    if (showCollectionInput && newCollectionParentId === parentId) {
-      rows.push(
-        <InlineCollectionEditRow
-          depth={depth}
-          key={`inline-collection-create-${parentId ?? "root"}`}
-          onCancel={() => {
-            onSetShowCollectionInput(false);
-            onSetCollectionInputValue("");
-            onSetNewCollectionParentId(null);
-          }}
-          onChange={onSetCollectionInputValue}
-          onCommit={onCollectionInputCommit}
-          value={collectionInputValue}
-        />,
-      );
-    }
-    rows.push(...children.map((c) => (
-      <div
-        className="collection-drop-target"
-        data-nav-collection-id={c.collectionId}
-        draggable={inlineCollectionRename?.collectionId !== c.collectionId}
-        key={c.collectionId}
-        onDragEnd={() => onSetDraggedCollectionId(null)}
-        onDragEnter={(event) => {
-          if (supportsAssetDropTransfer(event.dataTransfer)) {
-            setAssetDropTarget(`collection:${c.collectionId}`);
-            return;
-          }
-          if (draggedCollectionId && !isFolderListBlankTarget(event)) {
-            highlightCollectionNestTarget(c.collectionId);
-          }
-        }}
-        onDragLeave={(event) => {
-          if (event.currentTarget.contains(event.relatedTarget as Node | null))
-            return;
-          setAssetDropTarget((current) =>
-            current === `collection:${c.collectionId}` ? null : current,
-          );
-        }}
-        onDragOver={(event) => {
-          if (supportsManagedAssetDrag(event.dataTransfer)) {
-            setAssetDropTarget(`collection:${c.collectionId}`);
-            applyManagedAssetDragOver(event);
-            return;
-          }
-          if (supportsExternalImportTransfer(event.dataTransfer)) {
-            setAssetDropTarget(`collection:${c.collectionId}`);
-            onExternalDragOver(event);
-            return;
-          }
-          if (draggedCollectionId) {
-            // Gutter / blank hits belong to the list root-drop target; do not
-            // claim them as a nest (Serpent-01cff7 follow-up).
-            if (isFolderListBlankTarget(event)) return;
-            if (!highlightCollectionNestTarget(c.collectionId)) return;
-            event.preventDefault();
-            event.dataTransfer.dropEffect = "move";
-          }
-        }}
-        onDragStart={(event) => {
-          event.stopPropagation();
-          onSetDraggedCollectionId(c.collectionId);
-          event.dataTransfer.effectAllowed = "move";
-        }}
-        onDrop={(event) => {
-          if (draggedCollectionId && isFolderListBlankTarget(event)) {
-            return;
-          }
-          event.preventDefault();
-          event.stopPropagation();
-          setAssetDropTarget(null);
-          const assetIds =
-            parseManagedAssetDrag(event.dataTransfer) ??
-            (getManagedAssetDragIds
-              ? [...(getManagedAssetDragIds() ?? [])]
-              : null) ??
-            null;
-          if (assetIds && assetIds.length > 0) {
-            onAssetsDroppedOnCollection(
-              c.collectionId,
-              assetIds,
-              resolveDragDropMode({ altKey: event.altKey }),
-            );
-            return;
-          }
-          const internalAssetDrag = isInternalAssetDrag?.() ?? false;
-          if (draggedCollectionId) {
-            if (!acceptsCollectionNestDrop(c.collectionId)) return;
-            if (persistedCollapsedCollectionIds.has(c.collectionId)) {
-              toggleCollectionCollapsed(c.collectionId);
-            }
-            void onNestCollection(draggedCollectionId, c.collectionId);
-          } else if (
-            event.dataTransfer.files.length > 0 &&
-            internalAssetDrag &&
-            onResolveManagedAssetDrop
-          ) {
-            const files = Array.from(event.dataTransfer.files);
-            const payload = externalImportPayload(event.dataTransfer);
-            void onResolveManagedAssetDrop(files).then((resolvedIds) => {
-              if (
-                shouldConsumeManagedAssetDrop(
-                  internalAssetDrag,
-                  files.length,
-                  resolvedIds,
-                )
-              ) {
-                onAssetsDroppedOnCollection(
-                  c.collectionId,
-                  resolvedIds,
-                  resolveDragDropMode({ altKey: event.altKey }),
-                );
-                return;
-              }
-              void onImportDroppedFiles(
-                payload.files,
-                undefined,
-                c.collectionId,
-                payload,
-              );
-            });
-          } else if (supportsExternalImportTransfer(event.dataTransfer)) {
-            const payload = externalImportPayload(event.dataTransfer);
-            void onImportDroppedFiles(
-              payload.files,
-              undefined,
-              c.collectionId,
-              payload,
-            );
-          }
-        }}
-      >
-        {inlineCollectionRename?.collectionId === c.collectionId ? (
-          <InlineCollectionEditRow
-            ariaLabel={t("nav.renameCollection")}
-            depth={depth}
-            onCancel={onInlineCollectionRenameCancel}
-            onChange={onInlineCollectionRenameChange}
-            onCommit={onInlineCollectionRenameCommit}
-            placeholder={c.name}
-            value={inlineCollectionRename.value}
-          />
-        ) : (
-          <NavRow
-            disclosure={
-              (visibleCollectionTree.get(c.collectionId) ?? []).length > 0 ? (
-                <button
-                  aria-expanded={!collectionRowCollapsed(c.collectionId)}
-                  aria-label={
-                    collectionRowCollapsed(c.collectionId)
-                      ? t("nav.expandCollection", { name: c.name })
-                      : t("nav.collapseCollection", { name: c.name })
-                  }
-                  className={`nav-disclosure${
-                    collectionRowCollapsed(c.collectionId) ? "" : " is-expanded"
-                  }`}
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    toggleCollectionCollapsed(c.collectionId);
-                  }}
-                  type="button"
-                >
-                  <Icon name="chevron-right" size={12} />
-                </button>
-              ) : undefined
-            }
-            icon="collection"
-            appearance={c.appearance}
-            label={c.name}
-            count={c.assetCount}
-            active={activeCollectionId === c.collectionId && !activeTagId}
-            depth={depth}
-            navCollectionId={c.collectionId}
-            dropActive={assetDropTarget === `collection:${c.collectionId}`}
-            insertEdge={
-              collectionInsertEdge?.collectionId === c.collectionId
-                ? collectionInsertEdge.edge
-                : null
-            }
-            onDragEnter={(event) => {
-              if (supportsAssetDropTransfer(event.dataTransfer)) {
-                event.stopPropagation();
-                setAssetDropTarget(`collection:${c.collectionId}`);
-                return;
-              }
-              if (draggedCollectionId) {
-                event.stopPropagation();
-                // In custom mode the row's top/bottom bands insert beside it
-                // and only the middle nests; dragOver makes that call.
-                if (collectionSortPrefs.mode !== "custom") {
-                  highlightCollectionNestTarget(c.collectionId);
-                }
-              }
-            }}
-            onDragLeave={(event) => {
-              if (supportsAssetDropTransfer(event.dataTransfer)) {
-                event.stopPropagation();
-              }
-              if (event.currentTarget.contains(event.relatedTarget as Node | null))
-                return;
-              setAssetDropTarget((current) =>
-                current === `collection:${c.collectionId}` ? null : current,
-              );
-              setCollectionInsertEdge((current) =>
-                current?.collectionId === c.collectionId ? null : current,
-              );
-            }}
-            onDragOver={(event) => {
-              if (supportsManagedAssetDrag(event.dataTransfer)) {
-                event.stopPropagation();
-                applyManagedAssetDragOver(event);
-              } else if (supportsExternalImportTransfer(event.dataTransfer)) {
-                event.stopPropagation();
-                setAssetDropTarget(`collection:${c.collectionId}`);
-                // Native Electron asset drags arrive as Files. The child row
-                // owns the event so the parent collection cannot steal the
-                // highlight, therefore it must also accept the drop here.
-                onExternalDragOver(event);
-              } else if (draggedCollectionId) {
-                // This handler only runs for the row button itself; gutter and
-                // blank hits bubble to the collection list's root-drop target.
-                if (collectionSortPrefs.mode === "custom") {
-                  const edge = acceptsCollectionInsertBeside(c.collectionId)
-                    ? folderDropEdgeAt(event)
-                    : null;
-                  if (edge) {
-                    event.stopPropagation();
-                    event.preventDefault();
-                    event.dataTransfer.dropEffect = "move";
-                    setAssetDropTarget(null);
-                    setCollectionInsertEdge((current) =>
-                      current?.collectionId === c.collectionId &&
-                      current.edge === edge
-                        ? current
-                        : { collectionId: c.collectionId, edge },
-                    );
-                    return;
-                  }
-                  setCollectionInsertEdge((current) =>
-                    current?.collectionId === c.collectionId ? null : current,
-                  );
-                }
-                if (!highlightCollectionNestTarget(c.collectionId)) return;
-                event.stopPropagation();
-                event.preventDefault();
-                event.dataTransfer.dropEffect = "move";
-              }
-            }}
-            onDrop={(event) => {
-              if (
-                draggedCollectionId &&
-                collectionSortPrefs.mode === "custom" &&
-                collectionInsertEdge?.collectionId === c.collectionId &&
-                acceptsCollectionInsertBeside(c.collectionId)
-              ) {
-                event.preventDefault();
-                event.stopPropagation();
-                setAssetDropTarget(null);
-                setCollectionInsertEdge(null);
-                reorderCollectionBeside(
-                  c.collectionId,
-                  collectionInsertEdge.edge,
-                  draggedCollectionId,
-                );
-                return;
-              }
-              setCollectionInsertEdge((current) =>
-                current?.collectionId === c.collectionId ? null : current,
-              );
-              const assetIds = parseManagedAssetDrag(event.dataTransfer);
-              if (!assetIds || assetIds.length === 0) return;
-              event.preventDefault();
-              event.stopPropagation();
-              setAssetDropTarget(null);
-              onAssetsDroppedOnCollection(
-                c.collectionId,
-                assetIds,
-                resolveDragDropMode({ altKey: event.altKey }),
-              );
-            }}
-            onContextMenu={(e) => {
-              e.preventDefault();
-              onOpenContextMenu(
-                {
-                  type: "organization",
-                  id: c.collectionId,
-                  name: c.name,
-                },
-                { x: e.clientX, y: e.clientY },
-              );
-            }}
-            onClick={() => void onChooseCollection(c.collectionId)}
-          />
-        )}
-        {!collectionRowCollapsed(c.collectionId) &&
-          renderCollectionNodes(c.collectionId, depth + 1)}
-      </div>
-    )));
-    return rows;
-  }
-
   return (
     <PaneSurface
       className="navigation-pane"
@@ -2814,7 +1907,7 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
             : {
                 onDragOver: onExternalDragOver,
                 onDrop: (event: React.DragEvent<HTMLButtonElement>) =>
-                  onExternalDrop(event, null, undefined),
+                  onExternalDrop(event, null),
             })}
         />
         <NavRow
@@ -2840,7 +1933,7 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
             : {
                 onDragOver: onExternalDragOver,
                 onDrop: (event: React.DragEvent<HTMLButtonElement>) =>
-                  onExternalDrop(event, null, undefined),
+                  onExternalDrop(event, null),
               })}
         />
         <NavRow
@@ -3018,112 +2111,6 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
           )}
         </Section>
         {props.automaticTasks}
-        {showLegacyGroups && <>
-        <Section
-          title={t("nav.collections")}
-          search={
-            library
-              ? {
-                  open: collectionSearchOpen,
-                  query: collectionSearchQuery,
-                  label: t("nav.searchCollections"),
-                  placeholder: t("nav.searchNamePlaceholder"),
-                  onToggle: toggleCollectionSearch,
-                  onQueryChange: setCollectionSearchQuery,
-                  onClose: closeCollectionSearch,
-                }
-              : undefined
-          }
-          action={
-            library
-              ? () => onAddCollection(null)
-              : undefined
-          }
-          extraAction={
-            library ? (
-              <SidebarSortTrigger
-                fields={COLLECTION_SORT_FIELDS}
-                labelKey="nav.sortCollections"
-                mode={collectionSortPrefs.mode}
-                order={collectionSortPrefs.order}
-                onChange={changeCollectionSort}
-              />
-            ) : undefined
-          }
-        >
-          {library ? (
-            <div
-              className={`nav-collection-list${collectionListDropActive ? " is-root-drop-target" : ""}`}
-              {...collectionListBlankHandlers()}
-            >
-              {collections.length ? (
-                collectionSearchActive &&
-                (visibleCollectionTree.get(null)?.length ?? 0) === 0 &&
-                !(showCollectionInput && newCollectionParentId === null) ? (
-                  <p className="nav-empty">{t("nav.searchEmpty")}</p>
-                ) : (
-                  renderCollectionNodes(null, 0)
-                )
-              ) : (
-                showCollectionInput && newCollectionParentId === null ? (
-                  renderCollectionNodes(null, 0)
-                ) : (
-                  <p className="nav-empty">{t("nav.emptyCollections")}</p>
-                )
-              )}
-            </div>
-          ) : (
-            <p className="nav-empty">{t("nav.openLibraryHint")}</p>
-          )}
-        </Section>
-        <Section
-          action={library ? onAddSmartCollection : undefined}
-          actionLabel={t("nav.addSmartCollection")}
-          title={t("nav.smartCollections")}
-        >
-          {library ? (
-            <>
-              {inlineSmartCollectionEdit ? (
-                <InlineSmartCollectionEditRow
-                  key="inline-smart-collection-create"
-                  onCancel={onInlineSmartCollectionEditCancel}
-                  onChange={onInlineSmartCollectionEditChange}
-                  onCommit={onInlineSmartCollectionEditCommit}
-                  state={inlineSmartCollectionEdit}
-                />
-              ) : null}
-              {smartCollections.length ? (
-                smartCollections.map((sc) => (
-                  <NavRow
-                    active={activeSmartCollectionId === sc.collectionId}
-                    count={sc.assetCount}
-                    icon="smart"
-                    appearance={sc.appearance}
-                    key={sc.collectionId}
-                    label={sc.name}
-                    onClick={() => void onChooseSmartCollection(sc.collectionId)}
-                    onContextMenu={(event) => {
-                      event.preventDefault();
-                      onOpenContextMenu(
-                        {
-                          type: "smart-collection",
-                          id: sc.collectionId,
-                          name: sc.name,
-                        },
-                        { x: event.clientX, y: event.clientY },
-                      );
-                    }}
-                  />
-                ))
-              ) : inlineSmartCollectionEdit ? null : (
-                <p className="nav-empty">{t("nav.emptySmartCollections")}</p>
-              )}
-            </>
-          ) : (
-            <p className="nav-empty">{t("nav.openLibrarySmartHint")}</p>
-          )}
-        </Section>
-        </>}
       </nav>
     </PaneSurface>
   );

@@ -99,14 +99,10 @@ interface SoakFixture {
   descriptions: Map<string, string | null>;
   /** Number of tags created. */
   tagCount: number;
-  /** Number of collections created. */
-  collectionCount: number;
   /** Map of assetId → sourcePageUrl. */
   sourcePageUrls: Map<string, string | null>;
   /** Map of assetId → tag names assigned to that asset. */
   tagAssignments: Map<string, string[]>;
-  /** Map of assetId → collection names assigned to that asset. */
-  collectionAssignments: Map<string, string[]>;
   /** Set of asset IDs that are trashed (deleted_at IS NOT NULL). */
   trashedAssetIds: Set<string>;
 }
@@ -259,34 +255,6 @@ function seedAssetsAndFiles(libraryPath: string, folderName: string, folderId: s
     throw error;
   }
 
-  // Seed collections (5 collections).
-  const collectionNames = ['Favorites', 'Concepts', 'Textures', 'UI Assets', 'Completed'];
-  const collectionIds: string[] = [];
-  for (const colName of collectionNames) {
-    const colId = `soak-col-${colName.toLowerCase().replace(/\s+/g, '-')}`;
-    db.prepare(
-      'INSERT OR IGNORE INTO collections (collection_id, library_id, name, parent_id, position, created_at, updated_at) VALUES (?, (SELECT library_id FROM library LIMIT 1), ?, NULL, 0, ?, ?)',
-    ).run(colId, colName, now, now);
-    collectionIds.push(colId);
-  }
-
-  // Assign collections to ~5% of assets (every 20th asset gets added to 1 collection).
-  db.exec('BEGIN IMMEDIATE');
-  try {
-    for (let idx = 0; idx < ASSET_COUNT; idx += 1) {
-      if (idx % 20 !== 0) continue;
-      const colIdx = idx % collectionIds.length;
-      const colId = collectionIds[colIdx]!;
-      db.prepare(
-        'INSERT OR IGNORE INTO collection_assets (collection_id, asset_id, position) VALUES (?, ?, ?)',
-      ).run(colId, assetId(idx), idx);
-    }
-    db.exec('COMMIT');
-  } catch (error) {
-    db.exec('ROLLBACK');
-    throw error;
-  }
-
   // Trash the first 10 assets using the real library-service API after
   // the library is reopened.  Direct SQL SET deleted_at is avoided; this
   // exercises the API path including file move to .serpent/trash, the
@@ -369,13 +337,6 @@ beforeAll(() => {
     tagAssignments.set(assetId(idx), ['concept']);
   }
 
-  // Pre-compute collection assignments (mirrors seed logic: every 20th asset goes to "Favorites").
-  const collectionAssignments = new Map<string, string[]>();
-  for (let idx = 0; idx < ASSET_COUNT; idx += 1) {
-    if (idx % 20 !== 0) continue;
-    collectionAssignments.set(assetId(idx), ['Favorites']);
-  }
-
   // Trash the first 10 assets using the real LibraryService API (not direct
   // SQL).  This exercises the full trash path: file move to .serpent/trash,
   // trashed_from_relative_path recording, operation manifest.  The API also
@@ -422,10 +383,8 @@ beforeAll(() => {
     descriptions,
     sourcePageUrls,
     tagAssignments,
-    collectionAssignments,
     trashedAssetIds,
     tagCount: 10,
-    collectionCount: 5,
   };
 }, 180_000);
 
@@ -533,16 +492,6 @@ function verifyRoundTripIntegrity(
     expect(importedTag, `[${label}] missing tag "${sourceTag.name}"`).toBeDefined();
   }
 
-  // 6. Collections: count and names preserved.
-  const sourceCollections = fixture.service.listCollections(fixture.libraryId);
-  const importedCollections = importedService.listCollections(importedLibraryId);
-  expect(importedCollections.length).toBe(fixture.collectionCount);
-  expect(importedCollections.length).toBe(sourceCollections.length);
-  for (const sourceCol of sourceCollections) {
-    const importedCol = importedCollections.find((c) => c.name === sourceCol.name);
-    expect(importedCol, `[${label}] missing collection "${sourceCol.name}"`).toBeDefined();
-  }
-
   // 5b. Tags: per-tag asset count preserved across round-trip.
   for (const sourceTag of sourceTags) {
     const importedTag = importedTags.find((t) => t.name === sourceTag.name);
@@ -553,18 +502,8 @@ function verifyRoundTripIntegrity(
     ).toBe(sourceTag.assetCount);
   }
 
-  // 6b. Collections: per-collection asset count preserved across round-trip.
-  for (const sourceCol of sourceCollections) {
-    const importedCol = importedCollections.find((c) => c.name === sourceCol.name);
-    expect(importedCol, `[${label}] missing collection "${sourceCol.name}" for count check`).toBeDefined();
-    expect(
-      importedCol!.assetCount,
-      `[${label}] collection "${sourceCol.name}" assetCount: src=${sourceCol.assetCount} imp=${importedCol!.assetCount}`,
-    ).toBe(sourceCol.assetCount);
-  }
-
   // 7. Revisions, trash, physical trash directory, and per-asset
-  //    tag/collection links via direct SQLite on the imported library.
+  //    tag links via direct SQLite on the imported library.
   {
     const libs = importedService.listLibraries();
     const importedPath = libs[0]!.libraryPath;
@@ -633,30 +572,6 @@ function verifyRoundTripIntegrity(
       tagChecked += 1;
     }
 
-    // 7d. Per-asset collection links: spot-check collectioned assets
-    //     still belong to the same collections after import.
-    const getAssetCollections = db.prepare(
-      `SELECT c.name FROM collection_assets ca
-         JOIN collections c ON c.collection_id = ca.collection_id
-        WHERE ca.asset_id = ?`,
-    );
-    const colAssetList = [...fixture.collectionAssignments.keys()];
-    const colSampleSize = 100;
-    const colStep = Math.max(1, Math.floor(colAssetList.length / colSampleSize));
-    let colChecked = 0;
-    for (let i = 0; i < colAssetList.length && colChecked < colSampleSize; i += colStep) {
-      const aid = colAssetList[i]!;
-      const expectedCols = fixture.collectionAssignments.get(aid)!.slice().sort();
-      const actualCols = (getAssetCollections.all(aid) as Array<{ name: string }>)
-        .map((r) => r.name)
-        .sort();
-      expect(
-        actualCols,
-        `[${label}] collections mismatch for asset ${aid}: expected ${JSON.stringify(expectedCols)}, got ${JSON.stringify(actualCols)}`,
-      ).toEqual(expectedCols);
-      colChecked += 1;
-    }
-
     db.close();
   }
 }
@@ -665,7 +580,7 @@ function verifyRoundTripIntegrity(
 
 describe('Library import/export soak (20k assets)', () => {
   it(
-    'folder export/import round-trip preserves counts and sampled asset data, tags, and collections',
+    'folder export/import round-trip preserves counts and sampled asset data, and tags',
     async () => {
       // Export.
       const exportDest = path.join(fixture.root, 'export-folder');
@@ -727,7 +642,7 @@ describe('Library import/export soak (20k assets)', () => {
   );
 
   it(
-    'ZIP export/import round-trip preserves counts and sampled asset data, tags, and collections',
+    'ZIP export/import round-trip preserves counts and sampled asset data, and tags',
     async () => {
       // Export to ZIP.
       const zipDest = path.join(fixture.root, 'export.zip');
@@ -799,7 +714,5 @@ describe('Library import/export soak (20k assets)', () => {
     const tags = fixture.service.listTags(fixture.libraryId);
     expect(tags.length).toBe(fixture.tagCount);
 
-    const collections = fixture.service.listCollections(fixture.libraryId);
-    expect(collections.length).toBe(fixture.collectionCount);
   });
 });

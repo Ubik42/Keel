@@ -9,9 +9,7 @@
 // unit-testable without React or the DOM.
 //
 // Copy mode (Option/Alt held): dropEffect is "copy". Folder drops duplicate
-// managed files via copyAssets (Serpent-2vn); collection drops are always
-// membership-add for both move and copy (never remove from a source folder
-// or source collection on sidebar drop).
+// managed files via copyAssets (Serpent-2vn).
 // ---------------------------------------------------------------------------
 
 export const MANAGED_ASSETS_DRAG_TYPE = 'application/x-serpent-managed-assets';
@@ -138,13 +136,6 @@ function movableAssets(assets: readonly DragAssetFact[]): DragAssetFact[] {
   );
 }
 
-/** Assets eligible for collection membership: any non-trashed asset (linked OK). */
-function membershipEligibleAssets(
-  assets: readonly DragAssetFact[],
-): DragAssetFact[] {
-  return assets.filter((asset) => !asset.deletedAt);
-}
-
 export type FolderDropResolution =
   | { readonly kind: 'move'; readonly assetIds: string[]; readonly skippedCount: number }
   | { readonly kind: 'copy'; readonly assetIds: string[]; readonly skippedCount: number }
@@ -184,44 +175,6 @@ export function resolveFolderDrop(input: {
   };
 }
 
-export type CollectionDropResolution =
-  | {
-      readonly kind: 'add-membership';
-      readonly assetIds: string[];
-      readonly skippedCount: number;
-      /** Echoed for callers/tests; both modes use membership-add. */
-      readonly mode: DragDropMode;
-    }
-  | {
-      readonly kind: 'reject';
-      readonly reason: 'no-eligible-assets';
-      readonly skippedCount: number;
-    };
-
-/**
- * Resolve a drop onto a (manual) collection row.
- *
- * Collections are multi-membership: both move and copy modes only *add*
- * membership. They never remove the asset from its folder or from another
- * collection. Trashed assets are skipped (same fail-closed posture as menus).
- */
-export function resolveCollectionDrop(input: {
-  readonly assets: readonly DragAssetFact[];
-  readonly mode: DragDropMode;
-}): CollectionDropResolution {
-  const eligible = membershipEligibleAssets(input.assets);
-  const skippedCount = input.assets.length - eligible.length;
-  if (eligible.length === 0) {
-    return { kind: 'reject', reason: 'no-eligible-assets', skippedCount };
-  }
-  return {
-    kind: 'add-membership',
-    assetIds: eligible.map((asset) => asset.assetId),
-    skippedCount,
-    mode: input.mode,
-  };
-}
-
 export interface TrashDropResolution {
   readonly assetIds: string[];
   readonly skippedCount: number;
@@ -241,23 +194,4 @@ export function resolveTrashDrop(
     assetIds: eligible.map((asset) => asset.assetId),
     skippedCount: assets.length - eligible.length,
   };
-}
-
-/**
- * Serpent-374266: which of the dropped assets are not members of the collection
- * yet. Dropping an asset into a collection it already belongs to changes
- * nothing, so the caller stays silent instead of reporting an add that did not
- * happen.
- */
-export function resolveNewCollectionMembers(
-  assetIds: readonly string[],
-  memberships: readonly { assetId: string; collectionId: string }[],
-  collectionId: string,
-): string[] {
-  const existing = new Set(
-    memberships
-      .filter((entry) => entry.collectionId === collectionId)
-      .map((entry) => entry.assetId),
-  );
-  return assetIds.filter((assetId) => !existing.has(assetId));
 }

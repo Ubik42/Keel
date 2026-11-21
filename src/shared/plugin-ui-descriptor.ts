@@ -77,7 +77,6 @@ export const pluginUiMenuItemSchema: z.ZodType<PluginUiMenuItem> = z.lazy(() => 
 export const pluginUiMenuSurfaceSchema = z.object({
   asset: z.array(pluginUiMenuItemSchema).max(256).optional(),
   folder: z.array(pluginUiMenuItemSchema).max(256).optional(),
-  collection: z.array(pluginUiMenuItemSchema).max(256).optional(),
   workspace: z.array(pluginUiMenuItemSchema).max(256).optional(),
 }).strict();
 export type PluginUiMenuSurface = z.infer<typeof pluginUiMenuSurfaceSchema>;
@@ -232,11 +231,11 @@ function parseMenuSurface(
   }
   const surfaces: PluginUiMenuSurface = {};
   for (const key of Object.keys(value)) {
-    if (!['asset', 'folder', 'collection', 'workspace'].includes(key)) {
+    if (!['asset', 'folder', 'workspace'].includes(key)) {
       diagnostic(diagnostics, `menus.${key}`, 'unknown-field', 'Unknown menu surface.');
     }
   }
-  for (const surface of ['asset', 'folder', 'collection', 'workspace'] as const) {
+  for (const surface of ['asset', 'folder', 'workspace'] as const) {
     const items = parseArrayField(value[surface], `menus.${surface}`, pluginUiMenuItemSchema, diagnostics, 256);
     if (items !== undefined) surfaces[surface] = items;
   }

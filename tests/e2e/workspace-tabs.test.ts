@@ -47,53 +47,15 @@ function launchApp(
   });
 }
 
-async function createSmartCollection(window: Page, name: string) {
-  const collectionId = await window.evaluate(async (collectionName) => {
-    type LibraryApi = {
-      listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
-      createSmartCollection(input: {
-        libraryId: string;
-        name: string;
-        queryDefinitionJson: string;
-      }): Promise<{
-        ok: boolean;
-        value?: { collectionId: string };
-        error?: { message?: string };
-      }>;
-    };
-    const library = (
-      globalThis as typeof globalThis & { serpent: { library: LibraryApi } }
-    ).serpent.library;
-    const opened = await library.listOpen();
-    const libraryId = opened.value?.[0]?.libraryId;
-    if (!opened.ok || !libraryId) throw new Error("Expected an open library.");
-    const result = await library.createSmartCollection({
-      libraryId,
-      name: collectionName,
-      queryDefinitionJson: JSON.stringify({
-        filters: [{ field: "format", values: ["txt"], exclude: false }],
-      }),
-    });
-    if (!result.ok || !result.value) {
-      throw new Error(result.error?.message ?? "Could not create smart collection.");
-    }
-    return result.value.collectionId;
-  }, name);
-  const refreshButton = window.getByRole("button", { name: "刷新磁盘变化" });
-  await refreshButton.click();
-  await expect(refreshButton).toBeEnabled({ timeout: 15_000 });
-  return collectionId;
-}
-
 async function delayNextBrowseSession(
   window: Page,
-  target: { folderId?: string; smartCollectionId?: string },
+  target: { folderId: string },
   delayMs: number,
 ) {
   await window.evaluate(({ match, delay }) => {
     type E2eApi = {
       delayNextBrowseSession(
-        target: { folderId?: string; smartCollectionId?: string },
+        target: { folderId: string },
         delayMs: number,
       ): void;
     };
@@ -219,13 +181,6 @@ function folderRow(window: Page, name: string) {
   );
 }
 
-function collectionRow(window: Page, name: string) {
-  const escapedName = name.replace(/["\\]/gu, "\\$&");
-  return window.locator(
-    `.navigation-pane button.nav-row[data-nav-collection-id][data-hover-tip="${escapedName}"]`,
-  );
-}
-
 async function createFolder(window: Page, name: string) {
   await window.getByRole("button", { name: "添加文件夹" }).click();
   const input = window.locator(".nav-inline-edit input");
@@ -233,14 +188,6 @@ async function createFolder(window: Page, name: string) {
   await input.fill(name);
   await input.press("Enter");
   await expect(folderRow(window, name)).toBeVisible({ timeout: 10_000 });
-}
-
-async function createCollection(window: Page, name: string) {
-  await window.getByRole("button", { name: "添加合集" }).click();
-  const input = window.getByPlaceholder("新建合集");
-  await input.fill(name);
-  await input.press("Enter");
-  await expect(collectionRow(window, name)).toBeVisible({ timeout: 10_000 });
 }
 
 async function createScrollableRoot(window: Page, count: number) {
@@ -332,8 +279,6 @@ test("keeps navigation inside explicit tabs and exposes contextual tab actions",
     await createFolder(window, "并发目标");
     const searchedAsset = window.locator('.asset-card[data-asset-name="blue metal.txt"]');
     await expect(searchedAsset).toBeVisible({ timeout: 15_000 });
-    await createCollection(window, "灵感合集");
-    const smartCollectionId = await createSmartCollection(window, "慢速智能合集");
     await createScrollableRoot(window, 36);
     await folderRow(window, "角色原画").click();
     await waitForWorkspaceNavigation(window);
@@ -503,9 +448,9 @@ test("keeps navigation inside explicit tabs and exposes contextual tab actions",
     await expect(tabs.nth(1)).toHaveAccessibleName("所有资产");
     await expect(window.getByRole("combobox", { name: "搜索资源库" })).toHaveValue("");
 
-    await collectionRow(window, "灵感合集").click();
+    await folderRow(window, "并发目标").click();
     await expect(tabs).toHaveCount(2);
-    await expect(tabs.nth(1)).toHaveAccessibleName("灵感合集");
+    await expect(tabs.nth(1)).toHaveAccessibleName("并发目标");
     if (process.env.SERPENT_E2E_TABS_SCREENSHOT_PATH) {
       await window.screenshot({
         path: process.env.SERPENT_E2E_TABS_SCREENSHOT_PATH,
@@ -519,12 +464,12 @@ test("keeps navigation inside explicit tabs and exposes contextual tab actions",
 
     await startNoBlankFrameProbe(window);
     await tabs.nth(1).click();
-    await expect(window.locator(".scope-crumb-label.is-current")).toContainText("灵感合集");
+    await expect(window.locator(".scope-crumb-label.is-current")).toContainText("并发目标");
     await expect(window.getByRole("combobox", { name: "搜索资源库" })).toHaveValue("");
     await tabs.first().click();
     await expect(window.locator(".scope-crumb-label.is-current")).toHaveText("角色原画");
     await tabs.nth(1).click();
-    await expect(window.locator(".scope-crumb-label.is-current")).toContainText("灵感合集");
+    await expect(window.locator(".scope-crumb-label.is-current")).toContainText("并发目标");
     expect(await stopNoBlankFrameProbe(window)).toBe(0);
 
     await tabs.first().click({ button: "right" });
@@ -543,11 +488,10 @@ test("keeps navigation inside explicit tabs and exposes contextual tab actions",
     await expect(tabs.nth(1)).toHaveAttribute("aria-selected", "true");
 
     await tabs.nth(1).click({ button: "right" });
-    const collectionMenu = window.getByRole("menu", { name: "灵感合集" });
-    await expect(collectionMenu.getByRole("menuitem", { name: "在合集中显示" })).toBeVisible();
-    await expect(collectionMenu.getByRole("menuitem", { name: "复制名称" })).toBeVisible();
-    await expect(collectionMenu.getByRole("menuitem", { name: "复制路径" })).toHaveCount(0);
-    await collectionMenu.getByRole("menuitem", { name: "关闭标签页" }).click();
+    const secondFolderMenu = window.getByRole("menu", { name: "并发目标" });
+    await expect(secondFolderMenu.getByRole("menuitem", { name: "在文件夹中显示" })).toBeVisible();
+    await expect(secondFolderMenu.getByRole("menuitem", { name: "复制名称" })).toBeVisible();
+    await secondFolderMenu.getByRole("menuitem", { name: "关闭标签页" }).click();
 
     await expect(tabs).toHaveCount(1);
     await expect(tabs.first()).toHaveAccessibleName("角色原画");
@@ -593,22 +537,20 @@ test("keeps navigation inside explicit tabs and exposes contextual tab actions",
 
     await window.getByRole("button", { name: "新建标签页" }).click();
     await expect(tabs).toHaveCount(2);
-    const smartCollectionRow = window
-      .locator(".navigation-pane button.nav-row")
-      .filter({ hasText: "慢速智能合集" });
-    await expect(smartCollectionRow).toBeVisible();
-    await delayNextBrowseSession(window, { smartCollectionId }, 900);
-    await smartCollectionRow.click();
+    // A slow browse in the new tab must survive closing the other tab.
+    const delayedFolderId = await folderRow(window, "并发目标").getAttribute("data-nav-folder-id");
+    expect(delayedFolderId).toBeTruthy();
+    await delayNextBrowseSession(window, { folderId: delayedFolderId! }, 900);
+    await folderRow(window, "并发目标").click();
     await tablist.locator(".workspace-tab").first()
       .getByRole("button", { name: "关闭标签页：角色原画" }).click();
     await expect(tabs).toHaveCount(1);
-    await expect(window.locator('.asset-card[data-asset-name="blue metal.txt"]')).toBeVisible({
+    await expect(window.locator(".scope-crumb-label.is-current")).toContainText("并发目标", {
       timeout: 15_000,
     });
-    await expect(window.locator(".scope-crumb-label.is-current")).toContainText("慢速智能合集");
     await window.waitForTimeout(1_000);
-    await expect(window.locator('.asset-card[data-asset-name="blue metal.txt"]')).toBeVisible();
-    await expect(window.locator(".scope-crumb-label.is-current")).toContainText("慢速智能合集");
+    await expect(window.locator(".scope-crumb-label.is-current")).toContainText("并发目标");
+    await expect(tabs.first()).toHaveAccessibleName("并发目标");
   } finally {
     await quitApplication(application);
     await rm(temporaryRoot, {

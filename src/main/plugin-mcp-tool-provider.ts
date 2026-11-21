@@ -72,7 +72,6 @@ export class PluginMcpToolProvider implements SerpentMcpPluginToolBridge {
       commandId: command.commandId,
       ...(context.assetIds === undefined ? {} : { assetIds: context.assetIds }),
       ...(context.folderIds === undefined ? {} : { folderIds: context.folderIds }),
-      ...(context.collectionIds === undefined ? {} : { collectionIds: context.collectionIds }),
     });
     if (input.signal?.aborted) throw new Error('The plugin MCP command was cancelled.');
     if (result.complete.status !== 'succeeded') {

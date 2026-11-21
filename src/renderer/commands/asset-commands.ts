@@ -36,7 +36,6 @@ export interface AssetCommandActions {
   readonly relink: (assetId: string) => void;
   readonly restore: (assetIds: string[]) => void;
   readonly deletePermanent: (assetIds: string[]) => void;
-  readonly removeFromCurrentCollection: (assetId: string) => void;
 }
 
 /**
@@ -47,7 +46,6 @@ export interface AssetCommandContext extends CommandContext {
   readonly locationKind: 'managed' | 'linked';
   readonly assetAvailable: boolean;
   readonly assetDeleted: boolean;
-  readonly activeCollectionId: string | null;
   readonly aiCanAnalyze: boolean;
   /**
    * Managed folder that receives OS clipboard paste (current browse folder
@@ -166,16 +164,6 @@ export const assetCommandDefinitions: readonly AssetCommandDefinition[] = [
     run: (ctx) => withPrimaryAsset(ctx, (id) => ctx.actions.findSimilar(id)),
   },
   // ---- 组织 ----
-  {
-    id: 'asset.remove-from-current-collection',
-    title: (ctx) => t(ctx, 'command.asset.removeFromCollection'),
-    group: 'organize',
-    visible: (ctx) => !ctx.assetDeleted && ctx.activeCollectionId !== null,
-    run: (ctx) =>
-      withPrimaryAsset(ctx, (id) =>
-        ctx.actions.removeFromCurrentCollection(id),
-      ),
-  },
   {
     id: 'asset.relink',
     title: (ctx) => t(ctx, 'command.asset.relink'),

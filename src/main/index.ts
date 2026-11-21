@@ -1,11 +1,9 @@
 import path from "node:path";
-import { spawn } from "node:child_process";
 import { tmpdir } from "node:os";
 import { randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import {
-  appendFileSync,
   existsSync,
   mkdirSync,
   readdirSync,
@@ -155,10 +153,8 @@ import { executeAssetIngestionMainCommand } from "./commands/asset-ingestion";
 import { executeLinkedFolderMainCommand } from "./commands/linked-folders";
 import { executeIgnoreMainCommand } from "./commands/ignore";
 import { executeTagMainCommand } from "./commands/tags";
-import { executeCollectionMainCommand } from "./commands/collections";
 import { executeAssetQueryMainCommand } from "./commands/asset-query";
 import { executeBrowseSessionMainCommand } from "./commands/browse-session";
-import { executeSmartCollectionMainCommand } from "./commands/smart-collections";
 import { executeAssetMutationMainCommand } from "./commands/asset-mutations";
 import { executeLibraryTransferMainCommand } from "./commands/library-transfer";
 import { executeAiMainCommand } from "./commands/ai";
@@ -517,8 +513,6 @@ import {
   type SaveUploadDisposition,
   type SaveUploadRequest,
   type ListFoldersDisposition,
-  extensionCollectionSummaries,
-  type ListCollectionsDisposition,
 } from "./extension-server";
 import {
   readExtensionBrowseFolderIds,
@@ -1213,10 +1207,6 @@ async function sweepOrphanExternalLibraryStagingOnStartup(): Promise<void> {
 // Pending import libraryId (importId -> libraryId), for auto-analyze after import.
 const pendingImportLibraries = new Map<string, string>();
 
-// Pending drop/paste collection destinations survive the conflict dialog. The
-// actual import is already durable in Worker staging before Main stores this.
-const pendingImportCollections = new Map<string, string>();
-
 type StoredImageSequenceOffer = ImageSequenceImportOffer;
 
 const pendingImageSequenceOffers = new Map<
@@ -1257,9 +1247,6 @@ function rememberImageSequenceOffer(
       width: sequence.width,
     })),
     ...(offer.targetFolderId ? { targetFolderId: offer.targetFolderId } : {}),
-    ...(offer.targetCollectionId
-      ? { targetCollectionId: offer.targetCollectionId }
-      : {}),
   };
 }
 
@@ -2577,47 +2564,6 @@ async function handleListFolders(): Promise<ListFoldersDisposition> {
   };
 }
 
-async function handleListCollections(): Promise<ListCollectionsDisposition> {
-  if (!workerClient) {
-    return { ok: false, status: 503, reason: "worker unavailable" };
-  }
-
-  const saveContext = getExtensionSaveContext();
-  if (!saveContext) {
-    return { ok: false, status: 503, reason: "no active library" };
-  }
-
-  const result = await workerClient.request({
-    type: "collection.list",
-    libraryId: saveContext.libraryId,
-  });
-  if (!result.ok) {
-    return {
-      ok: false,
-      status: result.error.code === "LIBRARY_NOT_OPEN" ? 503 : 422,
-      reason: result.error.reason ?? result.error.code,
-    };
-  }
-  if (result.type !== "collection.list") {
-    return { ok: false, status: 500, reason: "unexpected worker response" };
-  }
-
-  let libraryDisplayName = "Serpent";
-  const librariesResult = await workerClient.request({ type: "library.list" });
-  if (librariesResult.ok && librariesResult.type === "library.list") {
-    const match = librariesResult.libraries.find(
-      (library) => library.libraryId === saveContext.libraryId,
-    );
-    if (match?.displayName) libraryDisplayName = match.displayName;
-  }
-
-  return {
-    ok: true,
-    libraryDisplayName,
-    collections: extensionCollectionSummaries(result.collections),
-  };
-}
-
 async function handleSaveIntent(
   intent: SaveIntent,
 ): Promise<SaveIntentDisposition> {
@@ -2717,9 +2663,8 @@ async function handleSaveUpload(
     return { accepted: false, status: 503, reason: "no active library" };
   }
 
-  const targetFolderId = upload.targetCollectionId
-    ? undefined
-    : upload.targetFolderId !== undefined
+  const targetFolderId =
+    upload.targetFolderId !== undefined
       ? upload.targetFolderId ?? undefined
       : saveContext.selectedFolderId;
 
@@ -2753,24 +2698,6 @@ async function handleSaveUpload(
     }
     if (result.type !== "extension.asset-saved") {
       return { accepted: false, status: 500, reason: "unexpected worker response" };
-    }
-    if (upload.targetCollectionId) {
-      const added = await workerClient.request({
-        type: "collection.assets.add",
-        libraryId: saveContext.libraryId,
-        collectionId: upload.targetCollectionId,
-        assetIds: [result.asset.assetId],
-      });
-      if (!added.ok || added.type !== "collection.assets.added") {
-        const detail = added.ok
-          ? "unexpected worker response"
-          : added.error.reason ?? added.error.code;
-        return {
-          accepted: false,
-          status: !added.ok && added.error.code === "LIBRARY_NOT_OPEN" ? 503 : 422,
-          reason: `未能加入合集：${detail}`,
-        };
-      }
     }
     logger?.info("extension-server.save-upload", "Asset saved successfully.", {
       type: result.type,
@@ -3355,18 +3282,6 @@ async function commandFor(
     case "tag.remove.request": {
       return executeTagMainCommand(request);
     }
-    case "collection.list.request":
-    case "collection.create.request":
-    case "collection.update.request":
-    case "collection.reorder.request":
-    case "collection.delete.request":
-    case "collection.assets.add.request":
-    case "collection.assets.remove.request":
-    case "collection.assets.reorder.request":
-    case "collection.assets.list.request":
-    case "collection.assets.memberships.request": {
-      return executeCollectionMainCommand(request);
-    }
     case "asset.metadata.get.request":
     case "asset.extracted-metadata.get.request":
     case "asset.color-space.set.request":
@@ -3383,13 +3298,6 @@ async function commandFor(
     case "library.navigation-summary.request":
     case "ai.search-plan.request": {
       return executeBrowseSessionMainCommand(request);
-    }
-    case "smart-collection.list.request":
-    case "smart-collection.create.request":
-    case "smart-collection.update.request":
-    case "smart-collection.delete.request":
-    case "smart-collection.execute.request": {
-      return executeSmartCollectionMainCommand(request);
     }
     case "asset.trash.request":
     case "asset.sequence.create.request":
@@ -4029,7 +3937,6 @@ async function handleLibraryRequest(
         for (const [importId, pendingLibraryId] of pendingImportLibraries) {
           if (pendingLibraryId !== libraryId) continue;
           pendingImportLibraries.delete(importId);
-          pendingImportCollections.delete(importId);
         }
       },
       processAiQueue: (libraryId) => {
@@ -4084,7 +3991,6 @@ async function handleLibraryRequest(
 
     const importPostProcess = await applyImportWorkerResult(request, workerResult, {
       pendingImportLibraries,
-      pendingImportCollections,
       logError: (scope, error, context) => {
         logger?.error(scope, error, context);
       },
@@ -7180,7 +7086,6 @@ async function startApplication(): Promise<void> {
       port: 19876,
       uploadStagingRoot: app.getPath("temp"),
       onListFolders: handleListFolders,
-      onListCollections: handleListCollections,
       onSaveIntent: handleSaveIntent,
       onSaveUpload: handleSaveUpload,
       onError: (err) => logger?.error("extension-server", err),

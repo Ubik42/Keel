@@ -111,7 +111,6 @@ describe('Serpent MCP tool catalog', () => {
     const names = listed.tools.map((tool) => tool.name);
     expect(names).toContain('serpent_tag_create');
     expect(names).toContain('serpent_folder_create');
-    expect(names).toContain('serpent_collection_create');
     expect(names).toContain('serpent_ai_enqueue');
     expect(names).toContain('serpent_library_create');
     expect(names).toContain('serpent_file_import');

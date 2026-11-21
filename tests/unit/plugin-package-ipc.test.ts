@@ -90,14 +90,11 @@ describe('Plugin package IPC bridge', () => {
       type: 'plugin-manager.list-contributions',
       target: 'menus.folder',
     });
-    expect(pluginManagerRequestSchema.parse({
+    expect(() => pluginManagerRequestSchema.parse({
       type: 'plugin-manager.list-contributions',
       libraryId: 'library-a',
       target: 'menus.collection',
-    })).toMatchObject({
-      type: 'plugin-manager.list-contributions',
-      target: 'menus.collection',
-    });
+    })).toThrow();
     expect(pluginManagerRequestSchema.parse({
       type: 'plugin-manager.list-contributions',
       libraryId: 'library-a',
@@ -160,17 +157,13 @@ describe('Plugin package IPC bridge', () => {
       commandId: 'probe.write-folder',
       folderIds: ['folder-1'],
     });
-    expect(pluginManagerRequestSchema.parse({
+    expect(() => pluginManagerRequestSchema.parse({
       type: 'plugin-manager.run-command',
       libraryId: 'library-a',
       pluginId: 'com.example.menu',
       commandId: 'probe.write-collection',
       collectionIds: ['collection-1'],
-    })).toMatchObject({
-      type: 'plugin-manager.run-command',
-      commandId: 'probe.write-collection',
-      collectionIds: ['collection-1'],
-    });
+    })).toThrow();
     expect(() => pluginManagerRequestSchema.parse({
       type: 'plugin-manager.run-command',
       libraryId: 'library-a',
@@ -488,7 +481,6 @@ describe('Plugin package IPC bridge', () => {
         refs: ['asset-1'],
         assetIds: ['asset-1'],
         folderIds: [],
-        collectionIds: [],
         assets: [],
       },
       browse: {},

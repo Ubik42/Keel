@@ -18,7 +18,6 @@ import type { BeginBrowsePage } from "./use-browse-pagination";
 import {
   BROWSE_PAGE_SIZE,
   registerBrowseSearchPage,
-  registerBrowseSmartCollectionPage,
 } from "./use-browse-pagination";
 import type { WorkspaceNavLocation } from "./workspace-nav-history";
 
@@ -44,13 +43,6 @@ export type RestoreBrowserSessionApi = {
     limit?: number;
     offset?: number;
   }): Promise<LibraryApiResult<SessionAssetPage>>;
-  executeSmartCollection(input: {
-    libraryId: string;
-    collectionId: string;
-    scopeMode?: boolean;
-    limit?: number;
-    offset?: number;
-  }): Promise<LibraryApiResult<SessionAssetPage>>;
 };
 
 export type LoadContentForRestore = (
@@ -68,7 +60,6 @@ export type RestoreBrowserSessionDeps = {
   session: StoredBrowserSession;
   /** Items from the initial all-scope load before session apply. */
   initialItems: AssetSummary[];
-  collectionRecursive: boolean;
   isFolderRecursiveEnabled: (libraryId: string, folderId: string) => boolean;
   loadContent: LoadContentForRestore;
   setShowTrash: (value: boolean) => void;
@@ -77,8 +68,6 @@ export type RestoreBrowserSessionDeps = {
   folderRecursiveRef: { current: boolean };
   setActiveTagId: (id: string | null) => void;
   setTagFilter: (name: string) => void;
-  setActiveCollectionId: (id: string | null) => void;
-  setActiveSmartCollectionId: (id: string | null) => void;
   setAssets: (
     update: AssetSummary[] | ((current: AssetSummary[]) => AssetSummary[]),
   ) => void;
@@ -118,18 +107,6 @@ export async function findSessionSelectedAsset(args: {
   );
   if (restoredAsset) return restoredAsset;
 
-  if (session.scope.kind === "smart") {
-    const result = await api.executeSmartCollection({
-      libraryId,
-      collectionId: session.scope.id,
-      ...BROWSE_SCOPE_SEARCH,
-    });
-    if (!result.ok || result.value.items.length === 0) return undefined;
-    return result.value.items.find(
-      (asset) => asset.assetId === session.selectedAssetId,
-    );
-  }
-
   const result = await api.searchAssets({
     libraryId,
     query: {
@@ -162,7 +139,6 @@ export async function applyStoredBrowserSession(
     api,
     library,
     session,
-    collectionRecursive,
     isFolderRecursiveEnabled,
     loadContent,
     setShowTrash,
@@ -171,8 +147,6 @@ export async function applyStoredBrowserSession(
     folderRecursiveRef,
     setActiveTagId,
     setTagFilter,
-    setActiveCollectionId,
-    setActiveSmartCollectionId,
     setAssets,
     setTrashedAssets,
     setSearchTotal,
@@ -248,64 +222,6 @@ export async function applyStoredBrowserSession(
     });
     restoredItems = result.value.items;
     restoredLocation = { kind: "tag", tagId: session.scope.id };
-  } else if (session.scope.kind === "collection") {
-    searchScope = {
-      kind: "collection",
-      collectionId: session.scope.id,
-      recursive: collectionRecursive,
-    };
-    const result = await api.searchAssets({
-      libraryId: library.libraryId,
-      query: null,
-      scope: searchScope,
-      // Serpent-87pd: first window only; scrollbar jumps fetch other offsets.
-      limit: BROWSE_PAGE_SIZE,
-      offset: 0,
-    });
-    if (!result.ok) throw new LibraryOperationError(result.error);
-    setActiveCollectionId(session.scope.id);
-    setSearchTotal(result.value.total);
-    registerBrowseSearchPage(beginBrowsePage, {
-      libraryId: library.libraryId,
-      query: null,
-      filters: null,
-      scope: searchScope,
-      sort: null,
-      showIgnored: false,
-      target: "assets",
-      items: result.value.items,
-      total: result.value.total,
-      offset: result.value.offset,
-    });
-    restoredItems = result.value.items;
-    restoredLocation = {
-      kind: "collection",
-      collectionId: session.scope.id,
-      recursive: collectionRecursive,
-    };
-  } else if (session.scope.kind === "smart") {
-    const result = await api.executeSmartCollection({
-      libraryId: library.libraryId,
-      collectionId: session.scope.id,
-      // Serpent-87pd: first window only; scrollbar jumps fetch other offsets.
-      limit: BROWSE_PAGE_SIZE,
-      offset: 0,
-    });
-    if (!result.ok) throw new LibraryOperationError(result.error);
-    setActiveSmartCollectionId(session.scope.id);
-    setSearchTotal(result.value.total);
-    registerBrowseSmartCollectionPage(beginBrowsePage, {
-      libraryId: library.libraryId,
-      collectionId: session.scope.id,
-      items: result.value.items,
-      total: result.value.total,
-      offset: result.value.offset,
-    });
-    restoredItems = result.value.items;
-    restoredLocation = {
-      kind: "smart-collection",
-      collectionId: session.scope.id,
-    };
   }
 
   const restoredAsset =

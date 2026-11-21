@@ -62,8 +62,6 @@ describe.skipIf(!fixturePath)('comprehensive perf benchmark', () => {
     const folders = (service as unknown as { listManagedFolders(l: string): Array<{ folderId: string }> })
       .listManagedFolders(manifest.libraryId);
     const sampleFolderId = folders[1]?.folderId ?? null;
-    const collections = service.listCollections(manifest.libraryId);
-    const sampleCollectionId = collections[0]?.collectionId;
 
     // ── 2. 浏览/切换 ──
     results.allBrowseFirstPageMs = Number(bench(() => service.searchAssets({
@@ -74,14 +72,6 @@ describe.skipIf(!fixturePath)('comprehensive perf benchmark', () => {
         limit: 50, offset: 0 })).toFixed(2));
       results.folderSwitchRecursiveMs = Number(bench(() => service.searchAssets({
         ...libId, scope: { kind: 'folder', folderId: sampleFolderId, recursive: true },
-        limit: 50, offset: 0 })).toFixed(2));
-    }
-    if (sampleCollectionId) {
-      results.collectionSwitchMs = Number(bench(() => service.searchAssets({
-        ...libId, scope: { kind: 'collection', collectionId: sampleCollectionId, recursive: false },
-        limit: 50, offset: 0 })).toFixed(2));
-      results.collectionRecursiveSwitchMs = Number(bench(() => service.searchAssets({
-        ...libId, scope: { kind: 'collection', collectionId: sampleCollectionId, recursive: true },
         limit: 50, offset: 0 })).toFixed(2));
     }
 
@@ -119,7 +109,6 @@ describe.skipIf(!fixturePath)('comprehensive perf benchmark', () => {
     // ── 8. Inspector 元数据 ──
     results.inspectorMetadataMs = Number(bench(() => {
       service.getAssetMetadata({ ...libId, assetId: sampleIds[0]! });
-      service.listAssetCollectionMemberships({ ...libId, assetIds: [sampleIds[0]!] });
     }).toFixed(2));
 
     // ── 9. 侧栏 ──
@@ -128,8 +117,6 @@ describe.skipIf(!fixturePath)('comprehensive perf benchmark', () => {
     };
     results.sidebarListFoldersMs = Number(bench(() =>
       svc.listManagedFolders(manifest.libraryId)).toFixed(2));
-    results.sidebarListCollectionsMs = Number(bench(() =>
-      service.listCollections(manifest.libraryId)).toFixed(2));
 
     if (allowFixtureMutation) {
     // ── 10. 删除路径（trash 5 个 → trash 2 个新的 → 恢复全部 → 永久删除）──
@@ -177,26 +164,6 @@ describe.skipIf(!fixturePath)('comprehensive perf benchmark', () => {
       svcRating.setAssetsRating({ libraryId: manifest.libraryId, assetIds: sampleIds, rating: 4 }))
         .toFixed(1));
 
-    // ── 12. 合集资产重排（goal 指标：资产重新排列）──
-    if (sampleCollectionId) {
-      const members = service.listCollectionAssets({
-        ...libId,
-        collectionId: sampleCollectionId,
-        recursive: false,
-      }).slice(0, 100);
-      const memberIds = members.map((m) => m.assetId);
-      if (memberIds.length >= 2) {
-        const reordered = [...memberIds].reverse();
-        results.collectionReorderAllMs = Number(once(() =>
-          (service as unknown as {
-            reorderCollectionAssets(input: { libraryId: string; collectionId: string; orderedAssetIds: string[] }): unknown;
-          }).reorderCollectionAssets({
-            libraryId: manifest.libraryId,
-            collectionId: sampleCollectionId,
-            orderedAssetIds: reordered,
-          })).toFixed(2));
-      }
-    }
     } else {
       results.mutationMetrics = 'skipped (set SERPENT_PERF_BENCH_ALLOW_MUTATION=1 on a disposable clone)';
     }

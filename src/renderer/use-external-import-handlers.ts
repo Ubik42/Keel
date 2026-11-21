@@ -48,14 +48,11 @@ export type UseExternalImportHandlersParams = {
   api: SerpentLibraryApi | null;
   library: RendererLibrarySummary | null;
   busy: boolean;
-  activeCollectionId: string | null;
   autoDetectImageSequences: boolean;
   detectImageSequences: boolean;
   /** When set, external drop highlight/import is suppressed (viewer open). */
   previewBlocksDrop: boolean;
   managedImportTargetFolderIdRef: MutableRefObject<string | undefined>;
-  reloadCurrentContent: () => Promise<void>;
-  reloadCurrentContentRef: MutableRefObject<() => Promise<void>>;
   /** After a successful import without conflicts: reveal/select imported assets. */
   onImportCompleted: (completion: ImportCompletion) => void | Promise<void>;
   setUiState: (state: "loading" | "importing" | "ready") => void;
@@ -90,13 +87,10 @@ export function useExternalImportHandlers({
   api,
   library,
   busy,
-  activeCollectionId,
   autoDetectImageSequences,
   detectImageSequences,
   previewBlocksDrop,
   managedImportTargetFolderIdRef,
-  reloadCurrentContent,
-  reloadCurrentContentRef,
   onImportCompleted,
   setUiState,
   setImportProgress,
@@ -213,9 +207,6 @@ export function useExternalImportHandlers({
       result: Awaited<ReturnType<SerpentLibraryApi["importDropped"]>>,
     ): Promise<void> => {
       if (!result.ok) {
-        if (result.error.code === "IMPORT_COLLECTION_ASSIGN_FAILED") {
-          await reloadCurrentContent();
-        }
         throw new LibraryOperationError(result.error);
       }
       if (isImportSourceFailurePlan(result.value)) {
@@ -236,7 +227,6 @@ export function useExternalImportHandlers({
     [
       locale,
       onImportCompleted,
-      reloadCurrentContent,
       setConflicts,
       setSourceFailurePlan,
       setImageSequenceImportOffer,
@@ -248,7 +238,6 @@ export function useExternalImportHandlers({
     async (
       files: File[],
       targetFolderId: string | null | undefined = managedImportTargetFolderIdRef.current,
-      targetCollectionId = activeCollectionId ?? undefined,
       webPayload?: { html: string; uriList: string },
     ) => {
       if (!api || !library || (files.length === 0 && !webPayload) || busy) return;
@@ -259,7 +248,6 @@ export function useExternalImportHandlers({
         const result = await runImportRpc(() => api.importDropped({
           libraryId: library.libraryId,
           targetFolderId: targetFolderId ?? undefined,
-          targetCollectionId,
           autoDetectImageSequences,
           detectImageSequences,
           files,
@@ -279,7 +267,6 @@ export function useExternalImportHandlers({
       }
     },
     [
-      activeCollectionId,
       autoDetectImageSequences,
       detectImageSequences,
       api,
@@ -314,7 +301,6 @@ export function useExternalImportHandlers({
           libraryId: library.libraryId,
           targetFolderId:
             options?.targetFolderId ?? managedImportTargetFolderIdRef.current,
-          targetCollectionId: activeCollectionId ?? undefined,
         }));
         if (!result.ok) {
           if (result.error.code === "CLIPBOARD_IMAGE_NOT_FOUND") {
@@ -323,9 +309,6 @@ export function useExternalImportHandlers({
               return;
             }
             throw new LibraryOperationError(result.error);
-          }
-          if (result.error.code === "IMPORT_COLLECTION_ASSIGN_FAILED") {
-            await reloadCurrentContentRef.current();
           }
           throw new LibraryOperationError(result.error);
         }
@@ -349,14 +332,12 @@ export function useExternalImportHandlers({
       }
     },
     [
-      activeCollectionId,
       api,
       busy,
       library,
       locale,
       managedImportTargetFolderIdRef,
       onImportCompleted,
-      reloadCurrentContentRef,
       runImportRpc,
       setConflicts,
       setSourceFailurePlan,
@@ -471,11 +452,11 @@ export function useExternalImportHandlers({
           ) {
             return;
           }
-          void importDroppedFiles(payload.files, undefined, undefined, payload);
+          void importDroppedFiles(payload.files, undefined, payload);
         });
         return;
       }
-      void importDroppedFiles(payload.files, undefined, undefined, payload);
+      void importDroppedFiles(payload.files, undefined, payload);
     },
     [importDroppedFiles, onResolveManagedAssetDrop, previewBlocksDrop],
   );
@@ -503,7 +484,6 @@ export function useExternalImportHandlers({
     (
       event: DragEvent<HTMLElement>,
       targetFolderId: string | null | undefined,
-      targetCollectionId: string | undefined,
     ) => {
       if (previewBlocksDrop) {
         event.preventDefault();
@@ -524,7 +504,7 @@ export function useExternalImportHandlers({
         onResolveManagedAssetDrop
       ) {
         void onResolveManagedAssetDrop(payload.files).then((assetIds) => {
-          // Folder/collection targets resolve native managed assets in their
+          // Folder targets resolve native managed assets in their
           // dedicated drop handlers. A generic target must not re-import them.
           if (
             shouldConsumeManagedAssetDrop(
@@ -538,7 +518,6 @@ export function useExternalImportHandlers({
           void importDroppedFiles(
             payload.files,
             targetFolderId,
-            targetCollectionId,
             payload,
           );
         });
@@ -547,7 +526,6 @@ export function useExternalImportHandlers({
       void importDroppedFiles(
         payload.files,
         targetFolderId,
-        targetCollectionId,
         payload,
       );
     },
@@ -646,7 +624,7 @@ export function useExternalImportHandlers({
               );
               return;
             }
-            void importDroppedFiles(files, folderId, undefined, payload);
+            void importDroppedFiles(files, folderId, payload);
           });
           return;
         }
@@ -657,7 +635,7 @@ export function useExternalImportHandlers({
           onFoldersDroppedOnFolder?.(folderId, draggedFolderIds);
           return;
         }
-        handleTargetExternalDrop(event, folderId, undefined);
+        handleTargetExternalDrop(event, folderId);
       },
     }),
     [

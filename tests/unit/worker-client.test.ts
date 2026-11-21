@@ -206,7 +206,6 @@ describe('requestTimeoutForCommand', () => {
   it('does not impose a wall-clock timeout on local reads', () => {
     expect(requestTimeoutForCommand('asset.search')).toBeNull();
     expect(requestTimeoutForCommand('media.get-asset-drag-infos')).toBeNull();
-    expect(requestTimeoutForCommand('smart-collection.execute')).toBeNull();
   });
 
   it('does not impose a wall-clock timeout on disk-bound library transfers (Serpent-4s8b)', () => {

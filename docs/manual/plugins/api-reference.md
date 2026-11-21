@@ -65,8 +65,8 @@ type PluginRuntime =
 
 ```text
 library.read  history.write  folder.read  folder.write  asset.read  metadata.read
-tag.read  collection.read  job.read  metadata.write  tag.write
-collection.write  ai.enqueue  job.manage  file.import  file.move
+tag.read  job.read  metadata.write  tag.write  ai.enqueue  job.manage
+file.import  file.move
 file.rename  trash.write  clipboard.read  clipboard.write  content.read
 content.write  net.fetch  storage.read  storage.write  data.files
 secrets.read  secrets.write  ui.workspace  ui.inspector  ui.viewer
@@ -152,7 +152,7 @@ type ThemeColor = string; // Host schema accepts only bounded color literals.
 
 ## 4. 菜单、条件和上下文
 
-Manifest 菜单的 key 当前是 `asset`、`folder`、`collection`、`workspace`：
+Manifest 菜单的 key 当前是 `asset`、`folder`、`workspace`。其他 key（包括已删除的 `collection`）会被忽略：
 
 ```ts
 interface MenuItem {
@@ -231,7 +231,7 @@ interface PluginContributionContext {
     summary: { managedCount: number; unmanagedCount: number; availableCount: number; unavailableCount: number; deletedCount: number; hasDeleted: boolean; hasUnavailable: boolean };
     hasDeleted: boolean; hasUnavailable: boolean;
   };
-  browse: { folderId?: string; collectionId?: string; tagId?: string; search?: string; filter?: string };
+  browse: { folderId?: string; tagId?: string; search?: string; filter?: string };
   viewer: { active: boolean; assetId?: string; extension?: string; mimeType?: string; mediaKind?: string; fullscreen: boolean };
 }
 ```
@@ -247,20 +247,20 @@ interface PluginInvocationContext {
   contextId: string; revision: number; libraryId: string;
   app?: { locale: string };
   selection: {
-    ref?: string; refs: string[]; assetIds: string[]; folderIds: string[]; collectionIds: string[];
+    ref?: string; refs: string[]; assetIds: string[]; folderIds: string[];
     assets?: Array<{
       id: string; name: string; relativeFilePath: string; mediaType: string; byteSize: number;
       durationMs?: number | null; currentRevisionId?: string; folderId?: string | null;
       locationKind: 'managed' | 'linked'; linkedFolderId?: string | null;
     }>;
   };
-  browse: { folderId?: string; collectionId?: string; tagId?: string; search?: string; filter?: string };
+  browse: { folderId?: string; tagId?: string; search?: string; filter?: string };
   viewer: { active: boolean; assetId?: string };
 }
 ```
 
 异步命令必须使用这份快照，不要在等待之后读取新的 UI 选择。命令 handler 的 `context.invocation` 提供这份快照；顶层
-`targetLibraryId` 与 ID 数组仍保留为便捷字段。`collectionIds` 只表示触发时的合集目标，合集浏览范围仍在 `invocation.browse.collectionId`。
+`targetLibraryId` 与 ID 数组仍保留为便捷字段。
 菜单、工具栏、Inspector、查看页会带上当前选中资产的有界快照（`selection.assets`，最多 256 项，只有库内相对路径，没有绝对路径）。
 快照包含 `currentRevisionId` 和 `folderId`，替换原资产和导入到同一文件夹时不要再 `assets.list` 去补。插件要用这份快照识别「选中了谁」和媒体类型，不要为当前选择再调用 `assets.list`。只有 MCP/脚本等只给了 ID、没有快照时才按 `assetIds` 回查。
 
@@ -312,7 +312,7 @@ serpent.assets.replaceContentBatch(items): Promise<{ operationId: string; items:
 权限是独立的门槛：例如读取 extracted metadata 需要 `metadata.read`，不能因为已经拥有 `asset.read` 或 `content.read` 就假定
 `asset.extracted-metadata.get` 一定可用。权限不足应作为结构化失败处理；插件可以在有权限时读取 metadata，否则用已声明的 content 能力自行解析。
 
-其他领域面与 Automation Gateway 对齐，包括 folders、tags、collections、metadata、library、files、clipboard、secrets、net、ai。
+其他领域面与 Automation Gateway 对齐，包括 folders、tags、metadata、library、files、clipboard、secrets、net、ai。
 使用哪个命令必须同时满足对应 permission；当前实现不向插件提供任意 SQL 或库绝对路径读写。
 
 ### `serpent.forLibrary`
@@ -478,7 +478,7 @@ Provider kind 为 `preview`、`thumbnail`、`metadata`、`import`、`export`、`
 激活后会成为 MCP 候选工具，但当前只有 **Full Access** credential 在 `tools/list` 中看到并调用它们；Auto credential 不暴露插件工具。Full Access 也不能绕过危险操作的一次性 challenge。插件命令目前按可能产生副作用处理；只导出稳定、有界、可校验的命令，不能导出任意 eval、秘密、路径
 或 Node 接口。
 
-插件 MCP 命令的输入必须包含至少一个非空的 `assetIds`、`folderIds` 或 `collectionIds` 数组；`tools/list` 的 JSON Schema 与运行时均以
+插件 MCP 命令的输入必须包含至少一个非空的 `assetIds` 或 `folderIds` 数组；`tools/list` 的 JSON Schema 与运行时均以
 `minItems: 1` 校验，空数组或完全没有上下文 ID 会被拒绝。
 
 ## 7. 设置与 iframe 页面

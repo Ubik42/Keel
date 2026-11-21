@@ -14,7 +14,6 @@ import {
   type ClipboardImageReaderDeps,
 } from "../desktop-ingestion";
 import { resolveImageSequenceImportPaths } from "../image-sequence-import";
-import { createWebImportCollectionCommand } from "../web-ingestion";
 import type { LibraryCommandBuildOutcome } from "./command-outcome";
 
 export type PendingImageSequenceOffer = {
@@ -91,7 +90,6 @@ export async function tryBuildIngestionCommand(
           type: "asset.import.probe-sequences",
           libraryId: request.libraryId,
           targetFolderId: request.targetFolderId,
-          targetCollectionId: request.targetCollectionId,
           sourcePaths: request.sourcePaths,
         });
         if (!probeResult.ok) {
@@ -468,7 +466,6 @@ export async function maybeProbeImportSequences(
 
 export type ImportWorkerResultRuntime = {
   pendingImportLibraries: Map<string, string>;
-  pendingImportCollections: Map<string, string>;
   logError: (scope: string, error: unknown, context?: Record<string, unknown>) => void;
   requestWorker: (command: WorkerCommand) => Promise<WorkerResult>;
   enqueueAutoAnalyzeAfterImport: (
@@ -479,7 +476,7 @@ export type ImportWorkerResultRuntime = {
 };
 
 /**
- * Import Worker-result bookkeeping: pending maps, collection assign, auto-analyze.
+ * Import Worker-result bookkeeping: pending maps and auto-analyze.
  * A RendererResult means handleLibraryRequest should return immediately.
  */
 export async function applyImportWorkerResult(
@@ -496,7 +493,6 @@ export async function applyImportWorkerResult(
       {
         libraryId: request.libraryId,
         targetFolderId: request.targetFolderId,
-        targetCollectionId: request.targetCollectionId,
         code: workerResult.error.code,
         reason: workerResult.error.reason,
       },
@@ -506,7 +502,6 @@ export async function applyImportWorkerResult(
   if (!workerResult.ok && (request.type === "asset.import.resolve" ||
         request.type === "asset.import.skip-source-failure")) {
     runtime.pendingImportLibraries.delete(request.importId);
-    runtime.pendingImportCollections.delete(request.importId);
   }
 
   if (
@@ -518,131 +513,6 @@ export async function applyImportWorkerResult(
       workerResult.plan.importId,
       (request as { libraryId?: string }).libraryId ?? "",
     );
-    if (
-      (request.type === "asset.import-drop.request" ||
-        request.type === "asset.import-clipboard.request") &&
-      request.targetCollectionId
-    ) {
-      runtime.pendingImportCollections.set(
-        workerResult.plan.importId,
-        request.targetCollectionId,
-      );
-    }
-  }
-
-  if (request.type === "asset.import.abandon") {
-    runtime.pendingImportCollections.delete(request.importId);
-  }
-
-  if (workerResult.ok && workerResult.type === "asset.import.completed") {
-    const collectionId =
-      (request.type === "asset.import.resolve" ||
-        request.type === "asset.import.skip-source-failure")
-        ? runtime.pendingImportCollections.get(request.importId)
-        : request.type === "asset.import-drop.request" ||
-            request.type === "asset.import-clipboard.request"
-          ? request.targetCollectionId
-          : undefined;
-    if ((request.type === "asset.import.resolve" ||
-        request.type === "asset.import.skip-source-failure"))
-      runtime.pendingImportCollections.delete(request.importId);
-    if (collectionId && workerResult.completion.assets.length > 0) {
-      const importLibraryId =
-        (request.type === "asset.import.resolve" ||
-        request.type === "asset.import.skip-source-failure")
-          ? runtime.pendingImportLibraries.get(request.importId)
-          : request.type === "asset.import-drop.request" ||
-              request.type === "asset.import-clipboard.request"
-            ? request.libraryId
-            : undefined;
-      if (!importLibraryId) {
-        runtime.logError(
-          "desktop-ingestion.collection-assign",
-          new Error("The import library context was not found."),
-          {
-            collectionId,
-            importedCount: workerResult.completion.assets.length,
-          },
-        );
-        return {
-          ok: false,
-          error: createPublicError("IMPORT_COLLECTION_ASSIGN_FAILED"),
-        } satisfies RendererResult;
-      }
-      const relationResult = await runtime.requestWorker({
-        type: "collection.assets.add",
-        libraryId: importLibraryId,
-        collectionId,
-        assetIds: workerResult.completion.assets.map(
-          (asset) => asset.assetId,
-        ),
-      });
-      if (
-        !relationResult.ok ||
-        relationResult.type !== "collection.assets.added"
-      ) {
-        runtime.logError(
-          "desktop-ingestion.collection-assign",
-          new Error(
-            "Imported assets could not be assigned to the collection.",
-          ),
-          {
-            collectionId,
-            importedCount: workerResult.completion.assets.length,
-            code: relationResult.ok
-              ? "UNEXPECTED_RESULT"
-              : relationResult.error.code,
-            reason: relationResult.ok
-              ? undefined
-              : relationResult.error.reason,
-          },
-        );
-        if ((request.type === "asset.import.resolve" ||
-        request.type === "asset.import.skip-source-failure"))
-          runtime.pendingImportLibraries.delete(request.importId);
-        return {
-          ok: false,
-          error: createPublicError("IMPORT_COLLECTION_ASSIGN_FAILED"),
-        } satisfies RendererResult;
-      }
-    }
-  }
-
-  if (
-    workerResult.ok &&
-    workerResult.type === "extension.asset-saved" &&
-    request.type === "asset.import-web.request" &&
-    request.targetCollectionId
-  ) {
-    const relationCommand = createWebImportCollectionCommand(
-      request,
-      workerResult.asset.assetId,
-    )!;
-    const relationResult = await runtime.requestWorker(relationCommand);
-    if (
-      !relationResult.ok ||
-      relationResult.type !== "collection.assets.added"
-    ) {
-      runtime.logError(
-        "web-ingestion.collection-assign",
-        new Error(
-          "Downloaded browser media could not be assigned to the collection.",
-        ),
-        {
-          libraryId: request.libraryId,
-          collectionId: request.targetCollectionId,
-          assetId: workerResult.asset.assetId,
-          code: relationResult.ok
-            ? "UNEXPECTED_RESULT"
-            : relationResult.error.code,
-          reason: relationResult.ok ? undefined : relationResult.error.reason,
-        },
-      );
-      return {
-        ok: false,
-        error: createPublicError("IMPORT_COLLECTION_ASSIGN_FAILED"),
-      } satisfies RendererResult;
-    }
   }
 
   if (

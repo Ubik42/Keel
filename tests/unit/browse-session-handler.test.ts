@@ -72,7 +72,6 @@ test('browse.session.open maps the service snapshot onto the opened result', () 
     filters: null,
     scope: null,
     sort: null,
-    smartCollectionId: null,
     limit: 100,
     showIgnored: true,
   });

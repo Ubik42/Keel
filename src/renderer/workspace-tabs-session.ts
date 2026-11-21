@@ -62,16 +62,6 @@ export function parseStoredWorkspaceNavLocation(
       const tagId = nonBlank(input.tagId);
       return tagId ? { kind: "tag", tagId } : null;
     }
-    case "collection": {
-      const collectionId = nonBlank(input.collectionId);
-      return collectionId
-        ? { kind: "collection", collectionId, recursive: input.recursive === true }
-        : null;
-    }
-    case "smart-collection": {
-      const collectionId = nonBlank(input.collectionId);
-      return collectionId ? { kind: "smart-collection", collectionId } : null;
-    }
     case "preview": {
       const assetId = nonBlank(input.assetId);
       return assetId ? { kind: "preview", assetId } : null;

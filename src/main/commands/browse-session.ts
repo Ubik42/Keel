@@ -13,7 +13,6 @@ export function executeBrowseSessionMainCommand(
         filters: request.filters,
         scope: request.scope,
         sort: request.sort,
-        smartCollectionId: request.smartCollectionId,
         limit: request.limit,
         showIgnored: request.showIgnored,
       };

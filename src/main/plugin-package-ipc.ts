@@ -27,10 +27,6 @@ import {
   type PluginSettingValue,
 } from '../plugins/plugin-manifest';
 import {
-  currentPluginPlatformToken,
-  selectPluginReleaseAsset,
-} from '../plugins/plugin-release-asset';
-import {
   PluginSettingsStoreError,
 } from './plugin-settings-store';
 import type { PluginSettingsSnapshot, PluginSettingsStore } from './plugin-settings-store';
@@ -609,7 +605,6 @@ export function createPluginPackageRequestHandler(options: PluginPackageIpcOptio
           ...(request.commandId === undefined ? {} : { commandId: request.commandId }),
           ...(request.assetIds === undefined ? {} : { assetIds: request.assetIds }),
           ...(request.folderIds === undefined ? {} : { folderIds: request.folderIds }),
-          ...(request.collectionIds === undefined ? {} : { collectionIds: request.collectionIds }),
           ...(request.invocation === undefined ? {} : { invocation: request.invocation }),
         });
         if (result.complete.status !== 'succeeded') {

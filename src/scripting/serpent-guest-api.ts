@@ -179,72 +179,6 @@ export function projectSerpentGuestTagPageResult(value: unknown): unknown {
   };
 }
 
-export function projectSerpentGuestCollectionPageResult(value: unknown): unknown {
-  if (!value || typeof value !== 'object' || !Array.isArray((value as { items?: unknown }).items)) {
-    return value;
-  }
-  const page = value as {
-    items: unknown[];
-    total?: unknown;
-    offset?: unknown;
-    limit?: unknown;
-    hasMore?: unknown;
-  };
-  return {
-    items: page.items.map((item) => {
-      if (!item || typeof item !== 'object' || typeof (item as { collectionId?: unknown }).collectionId !== 'string') {
-        return item;
-      }
-      const collection = item as Record<string, unknown> & { collectionId: string };
-      return {
-        id: collection.collectionId,
-        parentId: typeof collection.parentId === 'string' ? collection.parentId : null,
-        name: typeof collection.name === 'string' ? collection.name : collection.collectionId,
-        description: typeof collection.description === 'string' ? collection.description : null,
-        assetCount: typeof collection.assetCount === 'number' ? collection.assetCount : 0,
-        childCollectionCount: typeof collection.childCollectionCount === 'number'
-          ? collection.childCollectionCount
-          : 0,
-      };
-    }),
-    total: typeof page.total === 'number' ? page.total : page.items.length,
-    offset: typeof page.offset === 'number' ? page.offset : 0,
-    limit: typeof page.limit === 'number' ? page.limit : page.items.length,
-    hasMore: page.hasMore === true,
-  };
-}
-
-export function projectSerpentGuestSmartCollectionPageResult(value: unknown): unknown {
-  if (!value || typeof value !== 'object' || !Array.isArray((value as { items?: unknown }).items)) {
-    return value;
-  }
-  const page = value as {
-    items: unknown[];
-    total?: unknown;
-    offset?: unknown;
-    limit?: unknown;
-    hasMore?: unknown;
-  };
-  return {
-    items: page.items.map((item) => {
-      if (!item || typeof item !== 'object' || typeof (item as { collectionId?: unknown }).collectionId !== 'string') {
-        return item;
-      }
-      const collection = item as Record<string, unknown> & { collectionId: string };
-      return {
-        id: collection.collectionId,
-        name: typeof collection.name === 'string' ? collection.name : collection.collectionId,
-        queryDefinition: typeof collection.queryDefinition === 'string' ? collection.queryDefinition : '',
-        assetCount: typeof collection.assetCount === 'number' ? collection.assetCount : 0,
-      };
-    }),
-    total: typeof page.total === 'number' ? page.total : page.items.length,
-    offset: typeof page.offset === 'number' ? page.offset : 0,
-    limit: typeof page.limit === 'number' ? page.limit : page.items.length,
-    hasMore: page.hasMore === true,
-  };
-}
-
 /** Linked folder absoluteRootPath must never reach the guest. */
 export function projectSerpentGuestLinkedFolderPageResult(value: unknown): unknown {
   if (!value || typeof value !== 'object' || !Array.isArray((value as { items?: unknown }).items)) {
@@ -437,44 +371,6 @@ const scriptGuestCommandDefinitions: readonly SerpentGuestCommandDefinition[] = 
     buildInput: (assetIds, tagIds) => ({ assetIds, tagIds }),
   },
   {
-    path: 'collections.list',
-    commandId: 'collection.list',
-    buildInput: (input = {}) => input,
-    projectResult: projectSerpentGuestCollectionPageResult,
-  },
-  {
-    path: 'collections.create',
-    commandId: 'collection.create',
-    buildInput: (name, parentId) => ({
-      name,
-      ...(parentId === undefined ? {} : { parentId }),
-    }),
-  },
-  {
-    path: 'collections.getMemberships',
-    commandId: 'collection.assets.memberships',
-    buildInput: (assetIds, pagination = {}) => ({
-      assetIds,
-      ...((pagination && typeof pagination === 'object') ? pagination as Record<string, unknown> : {}),
-    }),
-  },
-  {
-    path: 'collections.addAssets',
-    commandId: 'collection.assets.add',
-    buildInput: (collectionId, assetIds) => ({ collectionId, assetIds }),
-  },
-  {
-    path: 'collections.removeAssets',
-    commandId: 'collection.assets.remove',
-    buildInput: (collectionId, assetIds) => ({ collectionId, assetIds }),
-  },
-  {
-    path: 'smartCollections.list',
-    commandId: 'smart-collection.list',
-    buildInput: (input = {}) => input,
-    projectResult: projectSerpentGuestSmartCollectionPageResult,
-  },
-  {
     path: 'linkedFolders.list',
     commandId: 'linked-folder.list',
     buildInput: (input = {}) => input,
@@ -550,8 +446,6 @@ export const SERPENT_GUEST_ASSET_METHODS = guestMethodsForPrefix('assets');
 export const SERPENT_GUEST_LIBRARY_METHODS = guestMethodsForPrefix('library');
 export const SERPENT_GUEST_FOLDER_METHODS = guestMethodsForPrefix('folders');
 export const SERPENT_GUEST_TAG_METHODS = guestMethodsForPrefix('tags');
-export const SERPENT_GUEST_COLLECTION_METHODS = guestMethodsForPrefix('collections');
-export const SERPENT_GUEST_SMART_COLLECTION_METHODS = guestMethodsForPrefix('smartCollections');
 export const SERPENT_GUEST_LINKED_FOLDER_METHODS = guestMethodsForPrefix('linkedFolders');
 export const SERPENT_GUEST_FILE_METHODS = guestMethodsForPrefix('files');
 export const SERPENT_GUEST_TRASH_METHODS = guestMethodsForPrefix('trash');
@@ -563,8 +457,6 @@ export const SERPENT_GUEST_NAMESPACES = [
   'library',
   'folders',
   'tags',
-  'collections',
-  'smartCollections',
   'linkedFolders',
   'files',
   'trash',

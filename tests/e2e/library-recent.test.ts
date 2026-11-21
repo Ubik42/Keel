@@ -24,9 +24,8 @@ const VALID_PNG = Buffer.from(
 async function createNavigationFixture(
   window: Page,
   folderName: string,
-  collectionName: string,
 ): Promise<void> {
-  await window.evaluate(async ({ folderName: targetFolderName, collectionName: targetCollectionName }) => {
+  await window.evaluate(async ({ folderName: targetFolderName }) => {
     interface Result<T> {
       ok: boolean;
       value?: T;
@@ -35,10 +34,6 @@ async function createNavigationFixture(
     type LibraryApi = {
       listOpen(): Promise<Result<Array<{ libraryId: string }>>>;
       createFolder(input: {
-        libraryId: string;
-        name: string;
-      }): Promise<Result<unknown>>;
-      createCollection(input: {
         libraryId: string;
         name: string;
       }): Promise<Result<unknown>>;
@@ -56,23 +51,13 @@ async function createNavigationFixture(
     if (!folder.ok) {
       throw new Error(folder.error?.message ?? "Could not create folder.");
     }
-    const collection = await bridge.serpent.library.createCollection({
-      libraryId,
-      name: targetCollectionName,
-    });
-    if (!collection.ok) {
-      throw new Error(collection.error?.message ?? "Could not create collection.");
-    }
-  }, { folderName, collectionName });
+  }, { folderName });
 
   // Bridge mutations bypass the renderer's local refresh path. Refresh through
   // the same command a user uses so the fixture is visible in the sidebar.
   await window.getByRole("button", { name: "刷新磁盘变化" }).click();
   await expect(
     window.locator(".navigation-pane .nav-row-label").filter({ hasText: folderName }).first(),
-  ).toBeVisible({ timeout: 15_000 });
-  await expect(
-    window.locator(".navigation-pane .nav-row-label").filter({ hasText: collectionName }).first(),
   ).toBeVisible({ timeout: 15_000 });
 }
 
@@ -336,9 +321,7 @@ test("does not retain the previous library navigation while switching", async ()
   const firstName = "导航隔离甲";
   const secondName = "导航隔离乙";
   const firstFolderName = "仅甲文件夹";
-  const firstCollectionName = "仅甲合集";
   const secondFolderName = "仅乙文件夹";
-  const secondCollectionName = "仅乙合集";
   const executablePath = resolveElectronExecutablePath();
   const applicationDirectory =
     process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
@@ -370,7 +353,7 @@ test("does not retain the previous library navigation while switching", async ()
       window.getByRole("button", { name: `当前资源库 ${firstName}` }),
     ).toBeVisible();
     await waitForLibraryLoadingToFinish(window);
-    await createNavigationFixture(window, firstFolderName, firstCollectionName);
+    await createNavigationFixture(window, firstFolderName);
 
     await closeLibraryViaSwitcher(window, firstName);
     await application.close();
@@ -387,7 +370,7 @@ test("does not retain the previous library navigation while switching", async ()
       window.getByRole("button", { name: `当前资源库 ${secondName}` }),
     ).toBeVisible();
     await waitForLibraryLoadingToFinish(window);
-    await createNavigationFixture(window, secondFolderName, secondCollectionName);
+    await createNavigationFixture(window, secondFolderName);
 
     const secondTrigger = window.getByRole("button", {
       name: `当前资源库 ${secondName}`,
@@ -404,15 +387,9 @@ test("does not retain the previous library navigation while switching", async ()
     expect(
       await window.locator(".navigation-pane .nav-row-label").filter({ hasText: secondFolderName }).count(),
     ).toBe(0);
-    expect(
-      await window.locator(".navigation-pane .nav-row-label").filter({ hasText: secondCollectionName }).count(),
-    ).toBe(0);
     await expect(
       window.locator(".navigation-pane .nav-row-label").filter({ hasText: firstFolderName }).first(),
     ).toBeVisible({ timeout: 1_800 });
-    await expect(
-      window.locator(".navigation-pane .nav-row-label").filter({ hasText: firstCollectionName }).first(),
-    ).toBeVisible({ timeout: 15_000 });
   } finally {
     await application.close();
     rmSync(temporaryRoot, { force: true, recursive: true });

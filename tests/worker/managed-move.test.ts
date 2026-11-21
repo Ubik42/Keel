@@ -48,8 +48,6 @@ describe('managed asset move and one-shot undo', () => {
     const b = importFile(service, library.libraryId, sourceB, sourceFolder.folderId).assets[0]!;
     const tag = service.createTag({ libraryId: library.libraryId, name: 'Keep' });
     service.assignTags({ libraryId: library.libraryId, assetIds: [a.assetId], tagIds: [tag.tagId] });
-    const collection = service.createCollection({ libraryId: library.libraryId, name: 'Set' });
-    service.addCollectionAssets({ libraryId: library.libraryId, collectionId: collection.collectionId, assetIds: [a.assetId] });
     service.setAssetMetadata({ libraryId: library.libraryId, assetId: a.assetId, expectedVersion: 0, description: 'Hero', sourcePageUrl: 'https://example.com/a' });
 
     const moved = service.moveAssets({
@@ -64,7 +62,6 @@ describe('managed asset move and one-shot undo', () => {
     expect(existsSync(path.join(library.libraryPath, 'Assets', 'Target', 'a.png'))).toBe(true);
     expect(existsSync(path.join(library.libraryPath, 'Assets', 'Source', 'a.png'))).toBe(false);
     expect(service.getAssetMetadata({ libraryId: library.libraryId, assetId: a.assetId })).toMatchObject({ description: 'Hero', sourcePageUrl: 'https://example.com/a' });
-    expect(service.listCollectionAssets({ libraryId: library.libraryId, collectionId: collection.collectionId, recursive: false }).map((asset) => asset.assetId)).toContain(a.assetId);
     expect(service.listTags(library.libraryId).find((item) => item.tagId === tag.tagId)?.assetCount).toBe(1);
 
     const undone = service.undoMoveAssets({ libraryId: library.libraryId, operationId: moved.operationId! });

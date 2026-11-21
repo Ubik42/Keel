@@ -1,9 +1,15 @@
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
+import { createRequire } from "node:module";
 import path from "node:path";
 import { afterEach, describe, it, expect } from "vitest";
 import { LibraryService } from "../../src/worker/library-service";
 import type { AutomaticTaskConfig } from "../../src/shared/automatic-tasks";
+const require = createRequire(import.meta.url);
+const Database = require("better-sqlite3") as new (filename: string) => {
+  close(): void;
+  prepare(source: string): { run(...parameters: unknown[]): unknown };
+};
 const roots: string[] = [];
 const services: LibraryService[] = [];
 function fixture() {
@@ -205,24 +211,34 @@ describe("independent automatic tasks", () => {
     writeFileSync(path.join(library.libraryPath, "a.txt"), "a");
     service.refreshManagedAssets(id);
     const asset = service.listAssets({ libraryId: id, recursive: true })[0]!;
-    const parent = service.createCollection({ libraryId: id, name: "项目" });
-    const child = service.createCollection({
-      libraryId: id,
-      name: "选片",
-      parentId: parent.collectionId,
-    });
-    service.addCollectionAssets({
-      libraryId: id,
-      collectionId: child.collectionId,
-      assetIds: [asset.assetId],
-    });
-    service.createSmartCollection({
-      libraryId: id,
-      name: "文本条件",
-      queryDefinitionJson: JSON.stringify({
+    service.closeLibrary(id);
+    // 旧版合集与智能合集只剩表结构；直接写入旧表，模拟升级前的资源库。
+    const db = new Database(path.join(library.libraryPath, ".serpent", "library.db"));
+    const now = new Date().toISOString();
+    const parentId = "00000000-0000-4000-8000-0000000000a1";
+    const childId = "00000000-0000-4000-8000-0000000000a2";
+    const insertGroup = db.prepare(
+      "INSERT INTO collections (collection_id, library_id, parent_id, name, description, cover_asset_id, position, created_at, updated_at) VALUES (?, ?, ?, ?, NULL, NULL, 0, ?, ?)",
+    );
+    insertGroup.run(parentId, id, null, "项目", now, now);
+    insertGroup.run(childId, id, parentId, "选片", now, now);
+    db.prepare(
+      "INSERT INTO collection_assets (collection_id, asset_id, position) VALUES (?, ?, 0)",
+    ).run(childId, asset.assetId);
+    db.prepare(
+      "INSERT INTO smart_collections (collection_id, library_id, name, query_definition_json, position, created_at, updated_at) VALUES (?, ?, ?, ?, 0, ?, ?)",
+    ).run(
+      "00000000-0000-4000-8000-0000000000a3",
+      id,
+      "文本条件",
+      JSON.stringify({
         filters: [{ field: "format", values: ["text"], exclude: false }],
       }),
-    });
+      now,
+      now,
+    );
+    db.close();
+    service.openLibrary(library.libraryPath);
     const tasks = service.listAutomaticTasks(id);
     expect(tasks).toHaveLength(1);
     expect(tasks[0]!.enabled).toBe(false);

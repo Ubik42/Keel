@@ -127,8 +127,6 @@ describe.each(MUTATION_MATRIX)('mutation $table.$column', ({ table, column }) =>
 
     smokeReadPaths(service, libraryId, assetId);
     expect(() => service.listTags(libraryId)).not.toThrow();
-    expect(() => service.listCollections(libraryId)).not.toThrow();
-    expect(() => service.listSmartCollections(libraryId)).not.toThrow();
     expect(() => service.getAssetMetadata({ libraryId, assetId })).not.toThrow();
     expect(() => service.getAiContent(libraryId, assetId)).not.toThrow();
     service.closeAll();

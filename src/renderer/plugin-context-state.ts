@@ -85,15 +85,12 @@ export function buildPluginBrowseFilter(
 export function buildPluginBrowseScope(input: {
   selectedFolderId?: string;
   showTrash: boolean;
-  collectionId: string | null;
   tagId: string | null;
   searchValue: string;
   filter: PluginBrowseFilterInput;
 }): Partial<PluginContributionContext["browse"]> {
-  const collectionId = input.collectionId;
   return {
     ...(input.selectedFolderId === undefined || input.showTrash ? {} : { folderId: input.selectedFolderId }),
-    ...(collectionId === null ? {} : { collectionId }),
     ...(input.tagId === null ? {} : { tagId: input.tagId }),
     ...(input.searchValue.trim().length === 0 ? {} : { search: input.searchValue.trim() }),
     filter: buildPluginBrowseFilter(input.filter),

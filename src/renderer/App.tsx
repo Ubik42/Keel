@@ -91,7 +91,6 @@ import {
   searchHistoryNavigationDirection,
 } from "./search-history";
 import { useWindowsBrowseShortcutBridge } from "./use-windows-browse-shortcut-bridge";
-import { useCollectionCommandShortcuts } from "./use-collection-command-shortcuts";
 import { useShortcutRuntimeVersion } from "./shortcut-provider";
 import {
   listenForMouseShortcutInputs,
@@ -278,12 +277,10 @@ import {
   resolveImportConflictPresentation,
   type ImportConflictPhase,
 } from "./import-conflict-flow";
-import { RenameDialog } from "./RenameDialog";
 import {
   CreateDialog,
   type CreateLibraryPhase,
 } from "./CreateDialog";
-import { CollectionEditorDialog } from "./CollectionEditorDialog";
 import { FolderCoverPickerDialog } from "./FolderCoverPickerDialog";
 import {
   AiConfigDialog,
@@ -342,10 +339,6 @@ import {
 } from "./post-import-image-sequences";
 import type { ImageSequenceConfirmPurpose } from "./image-sequence-import-dialog";
 import { resolveAssetSummariesForSelection } from "./image-sequence-selection";
-import {
-  SmartCollectionSettingsDialog,
-  type SmartCollectionSettingsTarget,
-} from "./SmartCollectionSettingsDialog";
 import { MediaJobsDialog } from "./MediaJobsDialog";
 import { PluginJobActivityBanner } from "./PluginJobActivityBanner";
 import { AiConnectionFailureDialog } from "./AiConnectionFailureDialog";
@@ -443,7 +436,6 @@ import {
 } from "./dialog-escape-stack";
 import { splitAssetFileName, useAssetRename } from "./useAssetRename";
 import { useInlineFolderEdit } from "./use-inline-folder-edit";
-import { useInlineSmartCollectionEdit } from "./use-inline-smart-collection-edit";
 import { usePanelResize } from "./use-panel-resize";
 import { useToastNotifications } from "./useToastNotifications";
 import { Notice } from "./ui/patterns";
@@ -505,19 +497,16 @@ import type {
   AssetSummary,
   BrowseLayoutEntry,
   AssetMetadataResult,
-  CollectionSummary,
   FilterClause,
   FolderBrowseEntry,
   LinkedFolderRule,
   LinkedFolderSummary,
   ManagedFolderSummary,
   SearchScope,
-  SmartCollectionSummary,
   SortDefinition,
   TagSummary,
   TrashedFolderSummary,
 } from "../shared/asset-types";
-import { smartCollectionQueryDefinitionSchema } from "../shared/asset-types";
 import {
   assetsRemainingAfterMembership,
   type BrowseMembershipChange,
@@ -553,7 +542,6 @@ import {
   type FindSimilarSource,
 } from "./find-similar";
 import { isSemanticSearchModelId, type EmbeddingIndexSnapshot, type SemanticSearchModelId } from "../shared/embedding/profile";
-import { hasMeaningfulSmartCollectionCondition } from "../shared/smart-collection-query";
 import { compactFormatFilterTokens } from "../shared/text-media";
 import type {
   SerpentLibraryApi,
@@ -640,7 +628,6 @@ import {
   BROWSE_PAGE_SIZE,
   fetchFirstRankedBrowsePage,
   registerBrowseSearchPage,
-  registerBrowseSmartCollectionPage,
   useBrowsePagination,
 } from "./use-browse-pagination";
 import {
@@ -802,7 +789,7 @@ type QueryFilterSnapshot = {
 };
 // REQ-FOLDER-007 removed the "folder" kind: folder create/rename now happens
 // inline in the directory tree (use-inline-folder-edit), not in a dialog.
-type DialogKind = "library" | "tag" | "collection" | null;
+type DialogKind = "library" | "tag" | null;
 type AssetScope = "all" | "root" | string;
 type WorkspaceNavigationRequest = Readonly<{
   token?: WorkspaceNavigationToken;
@@ -812,12 +799,6 @@ type WorkspaceNavigationRequest = Readonly<{
   browseState?: WorkspaceTabBrowseState;
   browseStateTabId?: string;
 }>;
-type OrganizationKind = "collection" | "smart";
-type OrganizationRenameTarget = {
-  kind: OrganizationKind;
-  id: string;
-  name: string;
-};
 function renderFilenameHighlights(value: string, searchValue: string, keyPrefix: string): ReactNode {
   const segments = splitSearchHighlights(value, searchValue, "filename");
   // Keep the ordinary, non-search path as a text node. Wrapping every
@@ -1285,13 +1266,6 @@ function AppInner() {
   const [activeTagId, setActiveTagId] = useState<string | null>(null);
   const [storedPinnedTagId, setPinnedTagId] = useState<string | null>(null);
 
-  // Collections
-  const [collections, setCollections] = useState<CollectionSummary[]>([]);
-  const [activeCollectionId, setActiveCollectionId] = useState<string | null>(
-    null,
-  );
-  const [collectionRecursive, setCollectionRecursive] = useState(true);
-  const collectionRecursiveRef = useRef(collectionRecursive);
   // REQ-FOLDER-009: folder browse/search recurse only when explicitly enabled.
   const [folderRecursive, setFolderRecursive] = useState(false);
   const folderRecursiveRef = useRef(folderRecursive);
@@ -1383,23 +1357,7 @@ function AppInner() {
       linkedFolderHintHoverTimerRef.current = null;
     }
   };
-  const [collectionEditor, setCollectionEditor] = useState<{
-    collectionId: string;
-    description: string;
-    coverAssetId: string;
-  } | null>(null);
-  const [draggedCollectionId, setDraggedCollectionId] = useState<string | null>(
-    null,
-  );
-  const [draggedMemberId, setDraggedMemberId] = useState<string | null>(null);
 
-  // Smart collections
-  const [smartCollections, setSmartCollections] = useState<
-    SmartCollectionSummary[]
-  >([]);
-  const [activeSmartCollectionId, setActiveSmartCollectionId] = useState<
-    string | null
-  >(null);
   const [searchValue, setSearchValue] = useState("");
   const lastValidSearchQueryRef = useRef<{ scope: string; query: ReturnType<typeof parseSearchExpression> } | null>(null);
   const lastValidFolderSearchQueryRef = useRef<{ scope: string; query: ReturnType<typeof parseSearchExpression> } | null>(null);
@@ -1635,19 +1593,6 @@ function AppInner() {
     selectedAssetIdsRef.current = selectedAssetIds;
   }, [selectedAssetIds]);
 
-  // Inline collection editors
-  const [showCollectionInput, setShowCollectionInput] = useState(false);
-  const [collectionInputValue, setCollectionInputValue] = useState("");
-  const [newCollectionParentId, setNewCollectionParentId] = useState<
-    string | null
-  >(null);
-  const [inlineCollectionRename, setInlineCollectionRename] = useState<{
-    collectionId: string;
-    value: string;
-  } | null>(null);
-  const [renameTarget, setRenameTarget] =
-    useState<OrganizationRenameTarget | null>(null);
-
   // Trash / Delete / Relink state
   const [showTrash, setShowTrash] = useState(false);
   useEffect(() => {
@@ -1881,8 +1826,6 @@ function AppInner() {
     [activePluginSidebarViewId, pluginSidebarViews],
   );
   const showPluginSidebarView = activePluginSidebarView !== undefined;
-  const [smartCollectionSettings, setSmartCollectionSettings] =
-    useState<SmartCollectionSettingsTarget | null>(null);
   const [appLogOpen, setAppLogOpen] = useState(false);
   const [libraryRecoveryDialogOpen, setLibraryRecoveryDialogOpen] =
     useState(false);
@@ -1938,7 +1881,7 @@ function AppInner() {
       ?? Promise.resolve();
   }, [shellApi, showMissingLinkedFiles]);
   const [workspaceTabRevealTarget, setWorkspaceTabRevealTarget] = useState<{
-    kind: "folder" | "collection";
+    kind: "folder";
     id: string;
     requestId: number;
   } | null>(null);
@@ -2745,23 +2688,18 @@ function AppInner() {
   useEffect(() => {
     const handleDragCancel = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
-      if (
-        !managedAssetDragIdsRef.current &&
-        !dragPreviewRef.current &&
-        draggedMemberId === null
-      ) {
+      if (!managedAssetDragIdsRef.current && !dragPreviewRef.current) {
         return;
       }
       event.preventDefault();
       event.stopPropagation();
-      setDraggedMemberId(null);
       managedAssetDragIdsRef.current = null;
       dismissAssetDragPreview(dragPreviewRef.current);
       dragPreviewRef.current = null;
     };
     window.addEventListener("keydown", handleDragCancel);
     return () => window.removeEventListener("keydown", handleDragCancel);
-  }, [draggedMemberId]);
+  }, []);
   const [pluginUiDialogOpen, setPluginUiDialogOpen] = useState(false);
   const [thumbnailFailures, setThumbnailFailures] = useState<
     Map<string, string>
@@ -3086,8 +3024,6 @@ function AppInner() {
     presentWorkspaceTab(tab, {
       folders,
       linkedFolders,
-      collections,
-      smartCollections,
       tags,
       assets: [...visibleAssets, ...assets],
       pluginViews: pluginSidebarViews,
@@ -3315,7 +3251,6 @@ function AppInner() {
     () => buildPluginBrowseScope({
       selectedFolderId,
       showTrash,
-      collectionId: activeCollectionId ?? activeSmartCollectionId,
       tagId: activeTagId,
       searchValue,
       filter: {
@@ -3342,8 +3277,6 @@ function AppInner() {
       },
     }),
     [
-      activeCollectionId,
-      activeSmartCollectionId,
       activeTagId,
       aspectRatioRange,
       aspectRatioRanges,
@@ -3397,9 +3330,7 @@ function AppInner() {
   const sourceBadgeContext = useMemo(() => {
     const mixedFolderBrowse =
       Boolean(searchValue.trim()) ||
-      Boolean(activeTagId) ||
-      Boolean(activeCollectionId) ||
-      Boolean(activeSmartCollectionId);
+      Boolean(activeTagId);
     return {
       assetScope,
       mixedFolderBrowse,
@@ -3408,16 +3339,9 @@ function AppInner() {
     assetScope,
     searchValue,
     activeTagId,
-    activeCollectionId,
-    activeSmartCollectionId,
   ]);
 
-  const organizationBrowseScope = activeSmartCollectionId
-    ? ("smart-collection" as const)
-    : activeCollectionId
-      ? ("collection" as const)
-      : ("folder" as const);
-  const importMenuCopy = resolveImportMenuCopy(organizationBrowseScope);
+  const importMenuCopy = resolveImportMenuCopy();
 
   const browseEmptyState = useMemo(() => {
     // The default "hide text" format filter does not count as narrowing, so an
@@ -3455,13 +3379,11 @@ function AppInner() {
       showTrash,
       hasActiveDiscovery,
       hasSelectedFolder: Boolean(selectedFolder),
-      organizationScope: organizationBrowseScope,
     });
   }, [
     showTrash,
     searchValue,
     selectedFolder,
-    organizationBrowseScope,
     colorFilter,
     excludeColorFilter,
     formatFilter,
@@ -3521,16 +3443,6 @@ function AppInner() {
       activeTagLabel: activeTagId
         ? (tags.find((tag) => tag.tagId === activeTagId)?.name ?? null)
         : null,
-      activeCollectionLabel: activeCollectionId
-        ? (collections.find(
-            (collection) => collection.collectionId === activeCollectionId,
-          )?.name ?? null)
-        : null,
-      activeSmartCollectionLabel: activeSmartCollectionId
-        ? (smartCollections.find(
-            (collection) => collection.collectionId === activeSmartCollectionId,
-          )?.name ?? null)
-        : null,
       assetScope,
       folderTrail:
         assetScope !== "all" && assetScope !== "root"
@@ -3548,7 +3460,7 @@ function AppInner() {
   );
 
   // Serpent-b8a853: the include-subfolders hint pulses only for the folder-scope
-  // button (not the collection variant), in a folder browsing mode that shows
+  // button, in a folder browsing mode that shows
   // child-folder cards but zero direct assets, while the recursive toggle is
   // off, the global feature-hint switch is on, and the hint is not yet
   // dismissed (the user has never expanded this folder's subfolders). The
@@ -3562,8 +3474,6 @@ function AppInner() {
     !showTagManagement &&
     !showPluginSidebarView &&
     !activeTagId &&
-    !activeCollectionId &&
-    !activeSmartCollectionId &&
     shouldFlashRecursiveSubfoldersHint({
       recursiveEnabled: folderRecursive,
       hintsEnabled: isFeatureHintEnabled(featureHintPrefs),
@@ -3680,8 +3590,6 @@ function AppInner() {
     setSelectedAssetIds,
     setSelectedAssetId,
     previewAsset,
-    draggedMemberId,
-    draggedCollectionId,
     workspaceCanvasRef,
     marqueeBoxRef,
     folderIds: visibleFolderIds,
@@ -3716,8 +3624,6 @@ function AppInner() {
       assetScope,
       showTrash,
       activeTagId,
-      activeCollectionId,
-      activeSmartCollectionId,
       folders,
       linkedFolders,
       searchActive: searchValue.trim() !== "",
@@ -3735,8 +3641,6 @@ function AppInner() {
     assetScope,
     showTrash,
     activeTagId,
-    activeCollectionId,
-    activeSmartCollectionId,
     folders,
     linkedFolders,
     searchValue,
@@ -3863,7 +3767,7 @@ function AppInner() {
 
   // REQ-FOLDER-001/002/003/010: load direct child folder cards whenever the
   // browse parent is a managed folder or the managed root; cleared for
-  // trash/tag/collection/smart-collection/search/linked-only views.
+  // trash/tag/search/linked-only views.
   useEffect(() => {
     let cancelled = false;
     async function loadFolderBrowseEntries() {
@@ -3876,8 +3780,6 @@ function AppInner() {
               assetScope,
               showTrash,
               activeTagId,
-              activeCollectionId,
-              activeSmartCollectionId,
               folders,
               linkedFolders,
               searchActive: Boolean(searchValue.trim()),
@@ -3923,8 +3825,6 @@ function AppInner() {
     assetScope,
     showTrash,
     activeTagId,
-    activeCollectionId,
-    activeSmartCollectionId,
     folders,
     linkedFolders,
     searchValue,
@@ -4633,19 +4533,6 @@ function AppInner() {
     }
   }, [api, armPreviewScrollHold, clearPreviewScrollHold, library, navHistoryRef, previewAsset, setNavHistoryUi, syncActiveWorkspaceTabLocation]);
 
-  // Collection tree helper
-  const collectionTree = useMemo(() => {
-    const byParent = new Map<string | null, CollectionSummary[]>();
-    for (const c of collections) {
-      const key = c.parentId;
-      if (!byParent.has(key)) byParent.set(key, []);
-      byParent.get(key)!.push(c);
-    }
-    for (const children of byParent.values())
-      children.sort((a, b) => a.position - b.position);
-    return byParent;
-  }, [collections]);
-
   const loadContent = useCallback(
     async (
       activeLibrary: RendererLibrarySummary,
@@ -4739,8 +4626,6 @@ function AppInner() {
         setFolders(summary.folders);
         setLinkedFolders(summary.linkedFolders);
         setTags(summary.tags);
-        setCollections(summary.collections);
-        setSmartCollections(summary.smartCollections);
         setTrashedFolders(summary.trashedFolders);
         const covers = summary.folderCovers ?? [];
         folderNavigationCoversRef.current = covers;
@@ -4930,7 +4815,6 @@ function AppInner() {
     api: api ?? null,
     loadContent,
     setLibraryLoading,
-    collectionRecursiveRef,
     folderRecursiveRef,
     setFolderRecursive,
     setLibrary,
@@ -4939,8 +4823,6 @@ function AppInner() {
     setAssetScope,
     setActiveTagId,
     setTagFilter,
-    setActiveCollectionId,
-    setActiveSmartCollectionId,
     setAssets,
     setSearchTotal,
     beginBrowsePage: beginBrowsePageClearingSimilar,
@@ -4961,8 +4843,6 @@ function AppInner() {
     libraryId: library?.libraryId ?? null,
     showTrash,
     activeTagId,
-    activeCollectionId,
-    activeSmartCollectionId,
     assetScope,
   });
   useBrowserSessionPersist({
@@ -4972,8 +4852,6 @@ function AppInner() {
     showTrash,
     activeTagId,
     tags,
-    activeCollectionId,
-    activeSmartCollectionId,
     assetScope,
   });
   usePendingRestoredAssetFocus({
@@ -5624,7 +5502,6 @@ function AppInner() {
       sortOrder,
       shuffleSeed,
       folderRecursive,
-      collectionRecursive,
       showIgnoredItems,
     };
   }
@@ -5665,12 +5542,6 @@ function AppInner() {
       location.kind === "plugin-sidebar" ? location.viewId : null,
     );
     setActiveTagId(location.kind === "tag" ? location.tagId : null);
-    setActiveCollectionId(
-      location.kind === "collection" ? location.collectionId : null,
-    );
-    setActiveSmartCollectionId(
-      location.kind === "smart-collection" ? location.collectionId : null,
-    );
     setAssetScope(location.kind === "folder" ? location.folderId : location.kind === "root" ? "root" : "all");
     if (location.kind === "trash") setTrashBrowseTombstoneId(location.tombstoneId);
   }
@@ -5845,8 +5716,6 @@ function AppInner() {
     setShuffleSeed(state.shuffleSeed);
     folderRecursiveRef.current = state.folderRecursive;
     setFolderRecursive(state.folderRecursive);
-    collectionRecursiveRef.current = state.collectionRecursive;
-    setCollectionRecursive(state.collectionRecursive);
     setShowIgnoredItems(state.showIgnoredItems);
   }
 
@@ -6051,12 +5920,6 @@ function AppInner() {
         return;
       case "tag":
         await chooseTag(location.tagId, request);
-        return;
-      case "collection":
-        await chooseCollection(location.collectionId, location.recursive, request);
-        return;
-      case "smart-collection":
-        await chooseSmartCollection(location.collectionId, request);
         return;
       case "trash":
         await enterTrashAt(location.tombstoneId, request);
@@ -6733,8 +6596,6 @@ function AppInner() {
       setFolderRecursive(recursive);
       clearAssetSelection();
       setActiveTagId(null);
-      setActiveCollectionId(null);
-      setActiveSmartCollectionId(null);
       resetDiscoveryIfNavigationReplacesLive(request);
       managedImportTargetFolderIdRef.current = folderId;
       api?.setActiveContext(targetLibraryId, folderId);
@@ -6814,8 +6675,6 @@ function AppInner() {
       setShowTagManagement(false);
       setActivePluginSidebarViewId(null);
       setActiveTagId(null);
-      setActiveCollectionId(null);
-      setActiveSmartCollectionId(null);
       resetDiscoveryIfNavigationReplacesLive(request);
       clearAssetSelection();
       setAssetScope("all");
@@ -6858,8 +6717,6 @@ function AppInner() {
       setActivePluginSidebarViewId(null);
       setShowTrash(false);
       setActiveTagId(null);
-      setActiveCollectionId(null);
-      setActiveSmartCollectionId(null);
       setAssetScope("all");
       clearAssetSelection();
       resetDiscoveryIfNavigationReplacesLive(request);
@@ -6899,8 +6756,6 @@ function AppInner() {
     setAssetScope("all");
     clearAssetSelection();
     setActiveTagId(null);
-    setActiveCollectionId(null);
-    setActiveSmartCollectionId(null);
     resetDiscoveryIfNavigationReplacesLive(request);
     api?.setActiveContext(targetLibraryId);
     recordNavigation({ kind: "plugin-sidebar", viewId }, request);
@@ -7089,8 +6944,6 @@ function AppInner() {
       setShowTagManagement(false);
       setActivePluginSidebarViewId(null);
       setActiveTagId(null);
-      setActiveCollectionId(null);
-      setActiveSmartCollectionId(null);
       setAssetScope("all");
       clearAssetSelection();
       setTagFilter(joined);
@@ -7176,8 +7029,6 @@ function AppInner() {
       setShowTagManagement(false);
       setActivePluginSidebarViewId(null);
       setActiveTagId(tagId);
-      setActiveCollectionId(null);
-      setActiveSmartCollectionId(null);
       setAssetScope("all");
       clearAssetSelection();
       if (!request.browseState) {
@@ -7455,515 +7306,6 @@ function AppInner() {
       setNotice(notice, assignResult.value.historyEntryId);
     } catch (caught) {
       setError(toMessage(caught, t("toast.addTagFailed"), locale));
-    }
-  }
-
-  // --- Collection CRUD ---
-
-  async function createCollection() {
-    if (!api || !library) return;
-    const targetLibraryId = library.libraryId;
-    const viewSession = ensureLibraryView(targetLibraryId);
-    if (!viewSession) return;
-    const name = collectionInputValue.trim();
-    if (!name) {
-      setShowCollectionInput(false);
-      setCollectionInputValue("");
-      setNewCollectionParentId(null);
-      return;
-    }
-    setUiState("loading");
-    try {
-      const result = await api.createCollection({
-        libraryId: targetLibraryId,
-        parentId: newCollectionParentId ?? undefined,
-        name,
-      });
-      if (!result.ok) throw new LibraryOperationError(result.error);
-      if (!isCurrentLibraryView(viewSession)) return;
-      setShowCollectionInput(false);
-      setCollectionInputValue("");
-      setNewCollectionParentId(null);
-      const collectionResult = await api.listCollections({
-        libraryId: targetLibraryId,
-      });
-      if (!collectionResult.ok) {
-        throw new LibraryOperationError(collectionResult.error);
-      }
-      if (!isCurrentLibraryView(viewSession)) return;
-      setCollections(collectionResult.value);
-      // Creation should land in the new collection immediately, matching
-      // folder and smart-collection creation instead of leaving the user in
-      // the previous browse scope.
-      await chooseCollection(result.value.collectionId);
-    } catch (caught) {
-      if (isCurrentLibraryView(viewSession)) {
-        setError(toOrganizationMessage(caught, "collection", "create", locale));
-      }
-    } finally {
-      if (isCurrentLibraryView(viewSession)) setUiState("ready");
-    }
-  }
-
-  async function deleteCollection(collectionId: string) {
-    if (!api || !library) return;
-    const targetLibraryId = library.libraryId;
-    const viewSession = ensureLibraryView(targetLibraryId);
-    if (!viewSession) return;
-    const deletedCollectionIds = new Set([collectionId]);
-    let foundDescendant = true;
-    while (foundDescendant) {
-      foundDescendant = false;
-      for (const collection of collections) {
-        if (
-          collection.parentId &&
-          deletedCollectionIds.has(collection.parentId) &&
-          !deletedCollectionIds.has(collection.collectionId)
-        ) {
-          deletedCollectionIds.add(collection.collectionId);
-          foundDescendant = true;
-        }
-      }
-    }
-    setUiState("loading");
-    try {
-      const result = await api.deleteCollection({
-        libraryId: targetLibraryId,
-        collectionId,
-      });
-      if (!result.ok) throw new LibraryOperationError(result.error);
-      if (!isCurrentLibraryView(viewSession)) return;
-      if (activeCollectionId && deletedCollectionIds.has(activeCollectionId)) {
-        await closeAssetPreview(false);
-        setActiveCollectionId(null);
-        await loadContent(library, assetScope);
-      } else {
-        const colResult = await api.listCollections({
-          libraryId: targetLibraryId,
-        });
-        if (!colResult.ok) throw new LibraryOperationError(colResult.error);
-        if (!isCurrentLibraryView(viewSession)) return;
-        setCollections(colResult.value);
-      }
-      if (!isCurrentLibraryView(viewSession)) return;
-      setError(null);
-      setNotice(t("toast.collectionDeleted"), result.value.historyEntryId);
-    } catch (caught) {
-      if (isCurrentLibraryView(viewSession)) {
-        setError(toOrganizationMessage(caught, "collection", "delete", locale));
-      }
-    } finally {
-      if (isCurrentLibraryView(viewSession)) setUiState("ready");
-    }
-  }
-
-  async function renameCollection() {
-    if (
-      !api ||
-      !library ||
-      !renameTarget ||
-      renameTarget.kind !== "collection" ||
-      !renameTarget.name.trim()
-    )
-      return;
-    const targetLibraryId = library.libraryId;
-    const viewSession = ensureLibraryView(targetLibraryId);
-    if (!viewSession) return;
-    setUiState("loading");
-    try {
-      const result = await api.updateCollection({
-        libraryId: targetLibraryId,
-        collectionId: renameTarget.id,
-        name: renameTarget.name.trim(),
-      });
-      if (!result.ok) throw new LibraryOperationError(result.error);
-      if (!isCurrentLibraryView(viewSession)) return;
-      setCollections((current) =>
-        current.map((collection) =>
-          collection.collectionId === result.value.collectionId
-            ? result.value
-            : collection,
-        ),
-      );
-      setRenameTarget(null);
-      setError(null);
-      setNotice(t("toast.collectionRenamed"), result.value.historyEntryId);
-    } catch (caught) {
-      if (isCurrentLibraryView(viewSession)) {
-        setError(toOrganizationMessage(caught, "collection", "rename", locale));
-      }
-    } finally {
-      if (isCurrentLibraryView(viewSession)) setUiState("ready");
-    }
-  }
-
-  async function saveCollectionDetails() {
-    if (!api || !library || !collectionEditor) return;
-    const existing = collections.find(
-      (collection) => collection.collectionId === collectionEditor.collectionId,
-    );
-    if (!existing) return;
-    const targetLibraryId = library.libraryId;
-    const viewSession = ensureLibraryView(targetLibraryId);
-    if (!viewSession) return;
-    setUiState("loading");
-    try {
-      const result = await api.updateCollection({
-        libraryId: targetLibraryId,
-        collectionId: collectionEditor.collectionId,
-        ...(collectionEditor.description.trim() !== (existing.description ?? "")
-          ? { description: collectionEditor.description.trim() || null }
-          : {}),
-        ...(collectionEditor.coverAssetId !== (existing.coverAssetId ?? "")
-          ? { coverAssetId: collectionEditor.coverAssetId || null }
-          : {}),
-      });
-      if (!result.ok) throw new LibraryOperationError(result.error);
-      if (!isCurrentLibraryView(viewSession)) return;
-      setCollections((current) =>
-        current.map((collection) =>
-          collection.collectionId === result.value.collectionId
-            ? result.value
-            : collection,
-        ),
-      );
-      setCollectionEditor(null);
-      setNotice(t("toast.collectionDetailsUpdated"), result.value.historyEntryId);
-    } catch (caught) {
-      if (isCurrentLibraryView(viewSession)) {
-        setError(toOrganizationMessage(caught, "collection", "rename", locale));
-      }
-    } finally {
-      if (isCurrentLibraryView(viewSession)) setUiState("ready");
-    }
-  }
-
-  async function moveCollectionToRoot(
-    collectionId: string,
-    options?: { blockingUi?: boolean },
-  ) {
-    if (!api || !library) return;
-    const source = collections.find(
-      (collection) => collection.collectionId === collectionId,
-    );
-    if (!source || source.parentId === null) return;
-    const targetLibraryId = library.libraryId;
-    const viewSession = ensureLibraryView(targetLibraryId);
-    if (!viewSession) return;
-    const blockingUi = options?.blockingUi ?? true;
-    setDraggedCollectionId(null);
-    if (blockingUi) setUiState("loading");
-    try {
-      const moved = await api.updateCollection({
-        libraryId: targetLibraryId,
-        collectionId,
-        parentId: null,
-        position: (collectionTree.get(null) ?? []).length,
-      });
-      if (!moved.ok) throw new LibraryOperationError(moved.error);
-      if (!isCurrentLibraryView(viewSession)) return;
-      const result = await api.listCollections({
-        libraryId: targetLibraryId,
-      });
-      if (!result.ok) throw new LibraryOperationError(result.error);
-      if (!isCurrentLibraryView(viewSession)) return;
-      setCollections(result.value);
-      setNotice(t("toast.collectionOrderUpdated"), moved.value.historyEntryId);
-    } catch (caught) {
-      if (isCurrentLibraryView(viewSession)) {
-        setError(toMessage(caught, t("toast.collectionReorderFailed"), locale));
-      }
-    } finally {
-      if (blockingUi && isCurrentLibraryView(viewSession)) setUiState("ready");
-    }
-  }
-
-  async function nestCollectionUnder(
-    sourceId: string,
-    targetId: string,
-    options?: { blockingUi?: boolean },
-  ) {
-    if (!api || !library || sourceId === targetId) return;
-    const source = collections.find(
-      (collection) => collection.collectionId === sourceId,
-    );
-    const target = collections.find(
-      (collection) => collection.collectionId === targetId,
-    );
-    if (!source || !target || source.parentId === targetId) return;
-    const targetLibraryId = library.libraryId;
-    const viewSession = ensureLibraryView(targetLibraryId);
-    if (!viewSession) return;
-    const blockingUi = options?.blockingUi ?? true;
-    setDraggedCollectionId(null);
-    if (blockingUi) setUiState("loading");
-    try {
-      const moved = await api.updateCollection({
-        libraryId: targetLibraryId,
-        collectionId: sourceId,
-        parentId: targetId,
-        position: (collectionTree.get(targetId) ?? []).length,
-      });
-      if (!moved.ok) throw new LibraryOperationError(moved.error);
-      if (!isCurrentLibraryView(viewSession)) return;
-      const result = await api.listCollections({
-        libraryId: targetLibraryId,
-      });
-      if (!result.ok) throw new LibraryOperationError(result.error);
-      if (!isCurrentLibraryView(viewSession)) return;
-      setCollections(result.value);
-      setNotice(t("toast.collectionNested", { name: target.name }), moved.value.historyEntryId);
-    } catch (caught) {
-      if (isCurrentLibraryView(viewSession)) {
-        setError(toMessage(caught, t("toast.collectionNestFailed"), locale));
-      }
-    } finally {
-      if (blockingUi && isCurrentLibraryView(viewSession)) setUiState("ready");
-    }
-  }
-
-  async function reorderCollectionMember(sourceId: string, targetId: string) {
-    if (!api || !library || !activeCollectionId || sourceId === targetId)
-      return;
-    const targetLibraryId = library.libraryId;
-    const targetCollectionId = activeCollectionId;
-    const viewSession = ensureLibraryView(targetLibraryId);
-    if (!viewSession) return;
-    setDraggedMemberId(null);
-    setUiState("loading");
-    try {
-      const members = await api.listCollectionAssets({
-        libraryId: targetLibraryId,
-        collectionId: targetCollectionId,
-        recursive: false,
-      });
-      if (!members.ok) throw new LibraryOperationError(members.error);
-      if (!isCurrentLibraryView(viewSession)) return;
-      const orderedIds = members.value.map((asset) => asset.assetId);
-      const sourceIndex = orderedIds.indexOf(sourceId);
-      const targetIndex = orderedIds.indexOf(targetId);
-      if (sourceIndex < 0 || targetIndex < 0)
-        throw new Error(t("toast.collectionMemberDirectOnly"));
-      const [moved] = orderedIds.splice(sourceIndex, 1);
-      if (!moved) return;
-      orderedIds.splice(targetIndex, 0, moved);
-      const result = await api.reorderCollectionAssets({
-        libraryId: targetLibraryId,
-        collectionId: targetCollectionId,
-        orderedAssetIds: orderedIds,
-      });
-      if (!result.ok) throw new LibraryOperationError(result.error);
-      if (!isCurrentLibraryView(viewSession)) return;
-      setAssets((current) => {
-        const next = [...current];
-        const currentSourceIndex = next.findIndex(
-          (asset) => asset.assetId === sourceId,
-        );
-        const currentTargetIndex = next.findIndex(
-          (asset) => asset.assetId === targetId,
-        );
-        if (currentSourceIndex < 0 || currentTargetIndex < 0) return current;
-        const [currentMoved] = next.splice(currentSourceIndex, 1);
-        if (!currentMoved) return current;
-        next.splice(currentTargetIndex, 0, currentMoved);
-        return next;
-      });
-      setNotice(t("toast.collectionMemberOrderUpdated"), result.value.historyEntryId);
-    } catch (caught) {
-      if (isCurrentLibraryView(viewSession)) {
-        setError(toMessage(caught, t("toast.collectionMemberReorderFailed"), locale));
-      }
-    } finally {
-      if (isCurrentLibraryView(viewSession)) setUiState("ready");
-    }
-  }
-
-  async function chooseCollection(
-    collectionId: string,
-    recursive = collectionRecursive,
-    navigation?: WorkspaceNavigationRequest,
-  ) {
-    if (!api || !library) return;
-    const request = createWorkspaceNavigationRequest(navigation);
-    if (!request.isCurrent()) return;
-    if (request.historyMode === "push") saveCurrentWorkspaceHistoryViewport();
-    const targetLibraryId = library.libraryId;
-    const viewSession = ensureLibraryView(targetLibraryId);
-    if (!viewSession) return;
-    if (request.browseState) {
-      recursive = request.browseState.collectionRecursive;
-    }
-    acknowledgeWorkspaceNavigation({
-      kind: "collection",
-      collectionId,
-      recursive,
-    });
-    await closeAssetPreview(false);
-    if (!request.isCurrent() || !isCurrentLibraryView(viewSession)) return;
-    try {
-      const definition = queryDefinitionForNavigationRequest(request);
-      const includeIgnored =
-        request.browseState?.showIgnoredItems ?? showIgnoredItems;
-      const result = await api.openBrowseSession({
-        libraryId: targetLibraryId,
-        query: definition.search ?? null,
-        ...(definition.filters ? { filters: definition.filters } : {}),
-        scope: {
-          kind: "collection",
-          collectionId,
-          recursive,
-        },
-        ...(definition.sort ? { sort: definition.sort } : {}),
-        // Serpent-87pd: first window only; scrollbar jumps fetch other offsets.
-        limit: BROWSE_PAGE_SIZE,
-        showIgnored: includeIgnored,
-      });
-      if (!result.ok) throw new LibraryOperationError(result.error);
-      if (!request.isCurrent() || !isCurrentLibraryView(viewSession)) return;
-      managedImportTargetFolderIdRef.current = undefined;
-      closeContextMenu();
-      resetBrowsePaginationPreservingVisibleLayout();
-      applyWorkspaceTabBrowseStateForNavigation(request);
-      setShowTrash(false);
-      setShowTagManagement(false);
-      setActivePluginSidebarViewId(null);
-      setActiveCollectionId(collectionId);
-      setActiveTagId(null);
-      setActiveSmartCollectionId(null);
-      setAssetScope("all");
-      if (request.browseState) {
-        collectionRecursiveRef.current = request.browseState.collectionRecursive;
-        setCollectionRecursive(request.browseState.collectionRecursive);
-      }
-      clearAssetSelection();
-      resetDiscoveryIfNavigationReplacesLive(request);
-      api.setActiveContext(targetLibraryId);
-      applySearchResult(result.value);
-      registerBrowseSearchPage(beginBrowsePageClearingSimilar, {
-        libraryId: targetLibraryId,
-        query: definition.search ?? null,
-        scope: { kind: "collection", collectionId, recursive },
-        sort: definition.sort ?? null,
-        filters: definition.filters ?? null,
-        showIgnored: includeIgnored,
-        target: "assets",
-        items: result.value.items,
-        total: result.value.total,
-        offset: result.value.offset,
-        sessionId: result.value.sessionId,
-        snippets: result.value.snippets,
-      });
-      recordNavigation({
-        kind: "collection",
-        collectionId,
-        recursive,
-      }, request);
-      if (!request.deferReveal) finishWorkspaceNavigation(request);
-    } catch (caught) {
-      if (request.isCurrent() && isCurrentLibraryView(viewSession)) {
-        setError(toMessage(caught, t("toast.readCollectionFailed"), locale));
-        setWorkspaceNavigationPending(false);
-        setUiState("ready");
-      }
-    }
-  }
-
-  async function addAssetToCollection(assetId: string, collectionId: string) {
-    if (!api || !library) return;
-    const targetLibraryId = library.libraryId;
-    const viewSession = ensureLibraryView(targetLibraryId);
-    if (!viewSession) return;
-    try {
-      const result = await api.addCollectionAssets({
-        libraryId: targetLibraryId,
-        collectionId,
-        assetIds: [assetId],
-      });
-      if (!result.ok) throw new LibraryOperationError(result.error);
-      if (!isCurrentLibraryView(viewSession)) return;
-      const collectionResult = await api.listCollections({
-        libraryId: targetLibraryId,
-      });
-      if (collectionResult.ok && isCurrentLibraryView(viewSession)) {
-        setCollections(collectionResult.value);
-      }
-      if (!isCurrentLibraryView(viewSession)) return;
-      setNotice(t("toast.addedToCollection"), result.value.historyEntryId);
-    } catch (caught) {
-      setError(toMessage(caught, t("toast.addToCollectionFailed"), locale));
-    }
-  }
-
-  const loadCollectionMemberships = useCallback(
-    async (assetIds: string[]) => {
-      if (!api || !library || assetIds.length === 0) return [];
-      const targetLibraryId = library.libraryId;
-      const viewSession = ensureLibraryView(targetLibraryId);
-      if (!viewSession) return [];
-      const result = await api.listAssetCollectionMemberships({
-        libraryId: targetLibraryId,
-        assetIds,
-      });
-      if (!result.ok || !isCurrentLibraryView(viewSession)) return [];
-      return result.value;
-    },
-    [api, ensureLibraryView, isCurrentLibraryView, library],
-  );
-
-  async function removeAssetFromCollection(
-    assetId: string,
-    collectionId: string,
-  ) {
-    if (!api || !library) return;
-    const targetLibraryId = library.libraryId;
-    const viewSession = ensureLibraryView(targetLibraryId);
-    if (!viewSession) return;
-    const targetCollectionId = collectionId;
-    setUiState("loading");
-    try {
-      const directMembers = await api.listCollectionAssets({
-        libraryId: targetLibraryId,
-        collectionId: targetCollectionId,
-        recursive: false,
-      });
-      if (!directMembers.ok)
-        throw new LibraryOperationError(directMembers.error);
-      if (!isCurrentLibraryView(viewSession)) return;
-      if (!directMembers.value.some((asset) => asset.assetId === assetId)) {
-        setError(t("toast.removeFromChildCollection"));
-        return;
-      }
-      const result = await api.removeCollectionAssets({
-        libraryId: targetLibraryId,
-        collectionId: targetCollectionId,
-        assetIds: [assetId],
-      });
-      if (!result.ok) throw new LibraryOperationError(result.error);
-      if (!isCurrentLibraryView(viewSession)) return;
-      const collectionResult = await api.listCollections({
-        libraryId: targetLibraryId,
-      });
-      if (!collectionResult.ok)
-        throw new LibraryOperationError(collectionResult.error);
-      if (!isCurrentLibraryView(viewSession)) return;
-      setCollections(collectionResult.value);
-      // CU-B1: refresh the *current* browse scope — do not force a collection search
-      // when the user is still on All assets / a folder (that emptied the grid).
-      if (activeCollectionId === targetCollectionId) {
-        await chooseCollection(targetCollectionId);
-      } else {
-        await reloadCurrentContent();
-      }
-      if (!isCurrentLibraryView(viewSession)) return;
-      clearAssetSelection();
-      setError(null);
-      setNotice(t("toast.removedFromCollection"), result.value.historyEntryId);
-    } catch (caught) {
-      if (isCurrentLibraryView(viewSession)) {
-        setError(toOrganizationMessage(caught, "collection", "removeAsset", locale));
-      }
-    } finally {
-      if (isCurrentLibraryView(viewSession)) setUiState("ready");
     }
   }
 
@@ -8261,12 +7603,6 @@ function AppInner() {
   function currentSearchScope(
     recursivelySearchFolders = false,
   ): SearchScope | undefined {
-    if (activeCollectionId)
-      return {
-        kind: "collection",
-        collectionId: activeCollectionId,
-        recursive: collectionRecursive,
-      };
     return recursivelySearchFolders
       ? folderSearchScope(assetScope)
       : folderBrowseScope(assetScope, folderRecursive);
@@ -8280,10 +7616,6 @@ function AppInner() {
   }) {
     if (!library) return;
     if (!showTrash) setFilteredFolderCountRefreshToken((token) => token + 1);
-    if (activeSmartCollectionId) {
-      await chooseSmartCollection(activeSmartCollectionId);
-      return;
-    }
     if (showTrash) {
       await loadContent(library, "all", {
         trashMode: true,
@@ -8388,88 +7720,8 @@ function AppInner() {
     ],
   );
 
-  function openInlineCollectionRename(collectionId: string, currentName: string) {
-    setShowCollectionInput(false);
-    setCollectionInputValue("");
-    setNewCollectionParentId(null);
-    setRenameTarget(null);
-    setInlineCollectionRename({ collectionId, value: currentName });
-  }
-
-  function cancelInlineCollectionRename() {
-    setInlineCollectionRename(null);
-  }
-
-  async function commitInlineCollectionRename() {
-    const session = inlineCollectionRename;
-    if (!session) return;
-    const name = session.value.trim();
-    if (!name) {
-      setInlineCollectionRename(null);
-      return;
-    }
-    if (!api || !library) return;
-    const targetLibraryId = library.libraryId;
-    const viewSession = ensureLibraryView(targetLibraryId);
-    if (!viewSession) return;
-    try {
-      const result = await api.updateCollection({
-        libraryId: targetLibraryId,
-        collectionId: session.collectionId,
-        name,
-      });
-      if (!result.ok) throw new LibraryOperationError(result.error);
-      if (!isCurrentLibraryView(viewSession)) return;
-      setCollections((current) =>
-        current.map((collection) =>
-          collection.collectionId === result.value.collectionId
-            ? result.value
-            : collection,
-        ),
-      );
-      setInlineCollectionRename(null);
-      setError(null);
-      setNotice(t("toast.collectionRenamed"), result.value.historyEntryId);
-    } catch (caught) {
-      if (isCurrentLibraryView(viewSession)) {
-        setError(toOrganizationMessage(caught, "collection", "rename", locale));
-      }
-    }
-  }
-
-  async function requestDeleteCollection(collectionId: string, name: string) {
-    const sourceLibraryId = libraryRef.current?.libraryId;
-    const collection = collections.find(
-      (candidate) => candidate.collectionId === collectionId,
-    );
-    const hasContents =
-      (collection?.assetCount ?? 0) > 0 ||
-      (collection?.childCollectionCount ?? 0) > 0;
-    if (
-      hasContents &&
-      !await requestConfirmation(
-        t("command.collection.deleteConfirm", { name }),
-      )
-    ) {
-      return;
-    }
-    if (libraryRef.current?.libraryId !== sourceLibraryId) return;
-    void deleteCollection(collectionId);
-  }
-
   function requestTrashManagedFolder(folderId: string, name: string) {
     void trashManagedFolder(folderId, name);
-  }
-
-  async function refreshCollectionSummaries() {
-    if (!api || !library) return;
-    const targetLibraryId = library.libraryId;
-    const viewSession = ensureLibraryView(targetLibraryId);
-    if (!viewSession) return;
-    const result = await api.listCollections({ libraryId: targetLibraryId });
-    if (result.ok && isCurrentLibraryView(viewSession)) {
-      setCollections(result.value);
-    }
   }
 
   async function createSelectedImageSequence() {
@@ -8587,20 +7839,6 @@ function AppInner() {
   });
 
   function visibleBrowseFilters(): FilterClause[] | null {
-    if (activeSmartCollectionId) {
-      const found = smartCollections.find(
-        (collection) => collection.collectionId === activeSmartCollectionId,
-      );
-      if (!found) return null;
-      try {
-        const parsed = smartCollectionQueryDefinitionSchema.parse(
-          JSON.parse(found.queryDefinition),
-        );
-        return parsed.filters ?? [];
-      } catch {
-        return null;
-      }
-    }
     const activeTagName = activeTagId
       ? tags.find((tag) => tag.tagId === activeTagId)?.name
       : undefined;
@@ -8689,8 +7927,6 @@ function AppInner() {
   const {
     batchAssignTagToSelection,
     batchRemoveTagFromSelection,
-    batchAddSelectionToCollection,
-    batchRemoveSelectionFromCollection,
     trashManagedAssets,
     deleteManagedAssetsFromDisk,
     copyManagedSelectionToLinked,
@@ -8699,7 +7935,6 @@ function AppInner() {
     library,
     setUiState,
     setTags,
-    setCollections,
     setNotice,
     setError,
     // Batch callbacks may outlive the render that started them. Resolve the
@@ -8709,10 +7944,8 @@ function AppInner() {
     applyLocalAssetRemoval,
     isCurrentLibrary: (libraryId) => libraryRef.current?.libraryId === libraryId,
     chooseTag,
-    chooseCollection,
     clearAssetSelection,
     activeTagId,
-    activeCollectionId,
     onTagsChanged: (action, tagId, assetIds) => {
       const tagName = tags.find((tag) => tag.tagId === tagId)?.name;
       if (!tagName) return;
@@ -8767,7 +8000,6 @@ function AppInner() {
     onManagedFoldersTrashed: removeDeletedManagedFoldersFromSidebar,
     onDeletedCurrentScope: () => {
       void chooseFolder("root", { refreshSidebar: true });
-      void refreshCollectionSummaries();
     },
   });
 
@@ -8831,7 +8063,6 @@ function AppInner() {
 
   const {
     handleAssetsDroppedOnFolder,
-    handleAssetsDroppedOnCollection,
     handleAssetsDroppedOnTrash,
   } = useAssetDragDropHandlers({
     api: api ?? null,
@@ -8844,7 +8075,6 @@ function AppInner() {
     clearAssetSelection,
     trashManagedAssets,
     reloadCurrentContentRef,
-    setCollections,
   });
 
   const resolveManagedAssetDrop = useCallback(
@@ -8894,13 +8124,10 @@ function AppInner() {
     api: api ?? null,
     library,
     busy,
-    activeCollectionId,
     autoDetectImageSequences: imageSequencePrefs.autoDetectOnImport,
     detectImageSequences: imageSequencePrefs.detectionEnabled,
     previewBlocksDrop: Boolean(previewAsset),
     managedImportTargetFolderIdRef,
-    reloadCurrentContent,
-    reloadCurrentContentRef,
     onImportCompleted: async (completion) => {
       await revealAfterImportRef.current(completion);
       offerPostImportSequencesRef.current(completion.assets);
@@ -8983,35 +8210,6 @@ function AppInner() {
     },
   });
 
-  const reloadSmartCollections = useCallback(async () => {
-    if (!api || !library) return;
-    const listResult = await api.listSmartCollections({
-      libraryId: library.libraryId,
-    });
-    if (listResult.ok) setSmartCollections(listResult.value);
-  }, [api, library]);
-
-  const {
-    inlineSmartCollectionEdit,
-    openInlineSmartCollectionCreate,
-    changeInlineSmartCollectionEdit,
-    cancelInlineSmartCollectionEdit,
-    commitInlineSmartCollectionEdit,
-  } = useInlineSmartCollectionEdit({
-    api: api ?? null,
-    library,
-    getQueryDefinition: () => currentQueryDefinition(),
-    setNotice,
-    reloadSmartCollections,
-    onCreated: (collection) => {
-      setSmartCollectionSettings({
-        collectionId: collection.collectionId,
-        name: collection.name,
-      });
-      void chooseSmartCollection(collection.collectionId);
-    },
-  });
-
   const resolveManagedFolderName = useCallback(
     (folderId: string) => {
       const managed = folders.find((folder) => folder.folderId === folderId)?.name;
@@ -9069,23 +8267,6 @@ function AppInner() {
               ),
             );
             return;
-          case "collection":
-            setCollections((current) =>
-              current.map((collection) =>
-                collection.collectionId === target.id
-                  ? { ...collection, appearance: next }
-                  : collection,
-              ),
-            );
-            return;
-          case "smart-collection":
-            setSmartCollections((current) =>
-              current.map((collection) =>
-                collection.collectionId === target.id
-                  ? { ...collection, appearance: next }
-                  : collection,
-              ),
-            );
         }
       } catch (caught) {
         setError(toMessage(caught, t("toast.appearanceFailed"), locale));
@@ -9217,7 +8398,6 @@ function AppInner() {
       void handleOpenFolderInFileManager(folderId);
     },
     createSubfolder: (parentFolderId) => {
-      cancelInlineSmartCollectionEdit();
       openInlineFolderCreate(parentFolderId);
     },
     copyFolder: (folderId) => {
@@ -9230,7 +8410,6 @@ function AppInner() {
       dispatchClipboardPaste(folderId);
     },
     renameFolder: (folderId, currentName) => {
-      cancelInlineSmartCollectionEdit();
       openInlineFolderRename(folderId, currentName);
     },
     trashManagedFolder: (folderId, name) => {
@@ -9270,22 +8449,6 @@ function AppInner() {
     },
   });
 
-  useCollectionCommandShortcuts({
-    enabled: Boolean(library) && !showTrash,
-    platform: SHORTCUT_PLATFORM,
-    previewOpen: Boolean(previewAsset),
-    createSubcollection: (parentCollectionId) => {
-      cancelInlineSmartCollectionEdit();
-      setShowCollectionInput(true);
-      setCollectionInputValue("");
-      setNewCollectionParentId(parentCollectionId);
-    },
-    renameCollection: (collectionId, currentName) => {
-      cancelInlineSmartCollectionEdit();
-      openInlineCollectionRename(collectionId, currentName);
-    },
-    deleteCollection: requestDeleteCollection,
-  });
 
   async function executeSearchDefinition(
     definition: SearchDefinition,
@@ -9303,17 +8466,12 @@ function AppInner() {
       request.browseState?.showIgnoredItems ?? showIgnoredItems;
     // Resolve once so the first page and every subsequent page use exactly
     // the same scope even if sidebar state changes while the request is live.
-    const searchScope = activeSmartCollectionId
-      ? undefined
-      : currentSearchScope(definition.search !== undefined);
+    const searchScope = currentSearchScope(definition.search !== undefined);
     const result = await api.openBrowseSession({
       libraryId: targetLibraryId,
       query: definition.search ?? null,
       filters: definition.filters,
       scope: searchScope,
-      ...(activeSmartCollectionId
-        ? { smartCollectionId: activeSmartCollectionId }
-        : {}),
       sort: definition.sort,
       // Serpent-87pd: first window only; scrollbar jumps fetch other offsets.
       limit: BROWSE_PAGE_SIZE,
@@ -9330,7 +8488,6 @@ function AppInner() {
     setShowTagManagement(false);
     setActivePluginSidebarViewId(null);
     if (!tagFilter.trim()) setActiveTagId(null);
-    setActiveSmartCollectionId(null);
     const pendingTabSelection = pendingWorkspaceTabSelectionRef.current;
     const selectionNow = selectedAssetIdsRef.current;
     const pageAssetIds = new Set(result.value.items.map((item) => item.assetId));
@@ -9355,33 +8512,20 @@ function AppInner() {
     }
     applySearchResult(result.value);
     // Serpent-ws4k: subsequent pages must reuse the same query/scope/sort.
-    if (activeSmartCollectionId) {
-      registerBrowseSmartCollectionPage(beginBrowsePageClearingSimilar, {
-        libraryId: targetLibraryId,
-        collectionId: activeSmartCollectionId,
-        sessionId: result.value.sessionId,
-        items: result.value.items,
-        total: result.value.total,
-        offset: result.value.offset,
-        snippets: result.value.snippets,
-      });
-      setUiState("ready");
-    } else {
-      registerBrowseSearchPage(beginBrowsePageClearingSimilar, {
-        libraryId: targetLibraryId,
-        query: definition.search ?? null,
-        filters: definition.filters,
-        scope: searchScope,
-        sort: definition.sort,
-        showIgnored: includeIgnored,
-        sessionId: result.value.sessionId,
-        target: "assets",
-        items: result.value.items,
-        total: result.value.total,
-        offset: result.value.offset,
-        snippets: result.value.snippets,
-      });
-    }
+    registerBrowseSearchPage(beginBrowsePageClearingSimilar, {
+      libraryId: targetLibraryId,
+      query: definition.search ?? null,
+      filters: definition.filters,
+      scope: searchScope,
+      sort: definition.sort,
+      showIgnored: includeIgnored,
+      sessionId: result.value.sessionId,
+      target: "assets",
+      items: result.value.items,
+      total: result.value.total,
+      offset: result.value.offset,
+      snippets: result.value.snippets,
+    });
     if (
       shouldRestoreViewportAfterBrowseReload(
         request.deferReveal ? "silent" : "submit",
@@ -9405,7 +8549,6 @@ function AppInner() {
     setShowTrash(false);
     setShowTagManagement(false);
     setActivePluginSidebarViewId(null);
-    setActiveSmartCollectionId(null);
     if (!pendingRevealRef.current) clearAssetSelection({ preserveFolders: true });
     const definition = currentQueryDefinition();
     registerBrowseSearchPage(beginBrowsePageClearingSimilar, semanticBrowseRegistration({
@@ -9813,151 +8956,6 @@ function AppInner() {
     sortOrder,
   ]);
 
-  async function chooseSmartCollection(
-    collectionId: string,
-    navigation?: WorkspaceNavigationRequest,
-  ) {
-    if (!api || !library) return;
-    const request = createWorkspaceNavigationRequest(navigation);
-    if (!request.isCurrent()) return;
-    if (request.historyMode === "push") saveCurrentWorkspaceHistoryViewport();
-    const targetLibraryId = library.libraryId;
-    const viewSession = ensureLibraryView(targetLibraryId);
-    if (!viewSession) return;
-    acknowledgeWorkspaceNavigation({
-      kind: "smart-collection",
-      collectionId,
-    });
-    await closeAssetPreview(false);
-    if (!request.isCurrent() || !isCurrentLibraryView(viewSession)) return;
-    try {
-      const definition = queryDefinitionForNavigationRequest(request);
-      const includeIgnored =
-        request.browseState?.showIgnoredItems ?? showIgnoredItems;
-      const result = await api.openBrowseSession({
-        libraryId: targetLibraryId,
-        query: definition.search ?? null,
-        ...(definition.filters ? { filters: definition.filters } : {}),
-        smartCollectionId: collectionId,
-        ...(definition.sort ? { sort: definition.sort } : {}),
-        limit: BROWSE_PAGE_SIZE,
-        showIgnored: includeIgnored,
-      });
-      if (!result.ok) throw new LibraryOperationError(result.error);
-      if (!request.isCurrent() || !isCurrentLibraryView(viewSession)) return;
-      managedImportTargetFolderIdRef.current = undefined;
-      closeContextMenu();
-      resetBrowsePaginationPreservingVisibleLayout();
-      applyWorkspaceTabBrowseStateForNavigation(request);
-      setShowTrash(false);
-      setShowTagManagement(false);
-      setActivePluginSidebarViewId(null);
-      setActiveTagId(null);
-      setActiveCollectionId(null);
-      setActiveSmartCollectionId(collectionId);
-      setAssetScope("all");
-      clearAssetSelection();
-      resetDiscoveryIfNavigationReplacesLive(request);
-      api.setActiveContext(targetLibraryId);
-      setSmartCollections((current) =>
-        current.map((collection) =>
-          collection.collectionId === collectionId
-            ? { ...collection, assetCount: result.value.total }
-            : collection,
-        ),
-      );
-      applySearchResult(result.value);
-      registerBrowseSmartCollectionPage(beginBrowsePageClearingSimilar, {
-        libraryId: targetLibraryId,
-        collectionId,
-        sessionId: result.value.sessionId,
-        items: result.value.items,
-        total: result.value.total,
-        offset: result.value.offset,
-        snippets: result.value.snippets,
-      });
-      recordNavigation({ kind: "smart-collection", collectionId }, request);
-      if (!request.deferReveal) finishWorkspaceNavigation(request);
-    } catch (caught) {
-      if (request.isCurrent() && isCurrentLibraryView(viewSession)) {
-        setError(toMessage(caught, t("toast.smartCollectionRunFailed"), locale));
-        setWorkspaceNavigationPending(false);
-        setUiState("ready");
-      }
-    } finally {
-      if (request.isCurrent() && isCurrentLibraryView(viewSession)) setUiState("ready");
-    }
-  }
-
-  async function renameSmartCollection(collectionId: string, name: string) {
-    if (!api || !library || !name.trim()) return;
-    try {
-      const result = await api.updateSmartCollection({
-        libraryId: library.libraryId,
-        collectionId,
-        name: name.trim(),
-      });
-      if (!result.ok) throw new LibraryOperationError(result.error);
-      setSmartCollections((current) =>
-        current.map((collection) =>
-          collection.collectionId === collectionId ? result.value : collection,
-        ),
-      );
-      setNotice(t("toast.smartCollectionRenamed"), result.value.historyEntryId);
-    } catch (caught) {
-      setError(toMessage(caught, t("toast.smartCollectionRenameFailed"), locale));
-    }
-  }
-
-  async function updateSmartCollectionQuery(collectionId: string) {
-    if (!api || !library) return;
-    const definition = currentQueryDefinition();
-    if (!hasMeaningfulSmartCollectionCondition(definition)) {
-      setError(t("toast.smartCollectionNeedsCondition"));
-      return;
-    }
-    try {
-      const result = await api.updateSmartCollection({
-        libraryId: library.libraryId,
-        collectionId,
-        queryDefinitionJson: JSON.stringify(definition),
-      });
-      if (!result.ok) throw new LibraryOperationError(result.error);
-      setSmartCollections((current) =>
-        current.map((collection) =>
-          collection.collectionId === collectionId ? result.value : collection,
-        ),
-      );
-      setNotice(t("toast.smartCollectionUpdated"), result.value.historyEntryId);
-    } catch (caught) {
-      setError(toMessage(caught, t("toast.smartCollectionUpdateFailed"), locale));
-    }
-  }
-
-  async function deleteSmartCollection(collectionId: string) {
-    if (!api || !library) return;
-    try {
-      const result = await api.deleteSmartCollection({
-        libraryId: library.libraryId,
-        collectionId,
-      });
-      if (!result.ok) throw new LibraryOperationError(result.error);
-      setSmartCollections((current) =>
-        current.filter(
-          (collection) => collection.collectionId !== collectionId,
-        ),
-      );
-      if (activeSmartCollectionId === collectionId) {
-        await closeAssetPreview(false);
-        setActiveSmartCollectionId(null);
-        await loadContent(library, "all");
-      }
-      setNotice(t("toast.smartCollectionDeleted"), result.value.historyEntryId);
-    } catch (caught) {
-      setError(toMessage(caught, t("toast.smartCollectionDeleteFailed"), locale));
-    }
-  }
-
   loadAiContentForAssetRef.current = loadAiContentForAsset;
   rebuildAndApplyMultiEditRef.current = rebuildAndApplyMultiEdit;
   refreshAfterAiRef.current = async (assetId: string) => {
@@ -10024,8 +9022,6 @@ function AppInner() {
     };
     const alreadyThere =
       !showTrash &&
-      activeCollectionId === null &&
-      activeSmartCollectionId === null &&
       assetScope === scope;
     if (alreadyThere) {
       pendingRestoredFocusRef.current = asset.assetId;
@@ -10747,11 +9743,7 @@ function AppInner() {
     setTrashedAssets([]);
     setTrashedAssetCount(0);
     setTags([]);
-    setCollections([]);
-    setSmartCollections([]);
     setActiveTagId(null);
-    setActiveCollectionId(null);
-    setActiveSmartCollectionId(null);
     setSelectedFolderIds([]);
     setSelectedAssetId(undefined);
     setSelectedAssetIds([]);
@@ -10770,16 +9762,10 @@ function AppInner() {
     setSearchSnippets(new Map());
     setThumbnailFailures(new Map());
     setOperationHistory(null);
-    setCollectionEditor(null);
     setFolderCoverPicker(null);
     folderNavigationCoversRef.current = [];
     setFolderNavigationCovers([]);
     setFolderCustomCoverIds(new Set());
-    setInlineCollectionRename(null);
-    setRenameTarget(null);
-    setShowCollectionInput(false);
-    setCollectionInputValue("");
-    setNewCollectionParentId(null);
     setRestoreDialog(null);
     setMoveDialog(null);
     setImageSequenceDialog(null);
@@ -10950,7 +9936,6 @@ function AppInner() {
         result.value.historyEntryId,
       );
       clearAssetSelection();
-      await refreshCollectionSummaries();
       if (showTrash) {
         await loadContent(library, "all", { trashMode: true });
       } else {
@@ -10985,7 +9970,6 @@ function AppInner() {
         result.value.historyEntryId,
       );
       clearAssetSelection();
-      await refreshCollectionSummaries();
       await loadContent(library, "all", { trashMode: true });
     } catch (caught) {
       setError(toMessage(caught, t("toast.restoreTrashedFolderFailed"), locale));
@@ -11300,10 +10284,6 @@ function AppInner() {
         }
         deletedAssets = result.value.deletedCount;
         semanticCleanupPending = result.value.semanticCleanupPending === true;
-        const collectionResult = await api.listCollections({
-          libraryId: library.libraryId,
-        });
-        if (collectionResult.ok) setCollections(collectionResult.value);
       }
       for (const folderId of folderIds) {
         const result = await api.deleteFolderFromDisk({
@@ -11387,12 +10367,6 @@ function AppInner() {
         trashedAssets = result.value.trashedAssetCount;
         trashedFolders = result.value.trashedFolderCount;
         historyEntryId = result.value.historyEntryId;
-      }
-      if (managedAssetIds.length > 0) {
-        const collectionResult = await api.listCollections({
-          libraryId: library.libraryId,
-        });
-        if (collectionResult.ok) setCollections(collectionResult.value);
       }
       setNotice(
         t("toast.selectionTrashed", {
@@ -12234,7 +11208,6 @@ function AppInner() {
       batchRelinkOpen: Boolean(batchRelinkPreview),
       restoreOpen: Boolean(restoreDialog),
       moveOpen: Boolean(moveDialog),
-      collectionEditorOpen: Boolean(collectionEditor),
       exportDialogOpen,
       importLibraryChooserOpen,
       openLibraryChooserOpen,
@@ -12266,7 +11239,6 @@ function AppInner() {
     batchRelinkPreview,
     restoreDialog,
     moveDialog,
-    collectionEditor,
     exportDialogOpen,
     importLibraryChooserOpen,
     openLibraryChooserOpen,
@@ -12309,7 +11281,6 @@ function AppInner() {
     cancelBatchRelink,
     setRestoreDialog,
     setMoveDialog,
-    setCollectionEditor,
     setExportDialogOpen,
     setImportLibraryChooserOpen,
     setOpenLibraryChooserOpen,
@@ -12333,7 +11304,6 @@ function AppInner() {
       }
       setDialog(value);
     },
-    setShowCollectionInput,
     setConflicts: (value) => {
       if (value === null) {
         clearImportConflictsUi();
@@ -12368,7 +11338,6 @@ function AppInner() {
       batchRelinkPreview ||
       restoreDialog ||
       moveDialog ||
-      collectionEditor ||
       exportDialogOpen ||
       importLibraryChooserOpen ||
       openLibraryChooserOpen ||
@@ -12378,7 +11347,6 @@ function AppInner() {
       scriptSandboxPreviewOpen ||
       aboutOpen ||
       openSourceLicensesOpen ||
-      Boolean(smartCollectionSettings) ||
       Boolean(imageSequenceDialog) ||
       Boolean(imageSequenceImportOffer) ||
       Boolean(fatalAlertMessage) ||
@@ -12451,7 +11419,6 @@ function AppInner() {
     platform: SHORTCUT_PLATFORM,
     previewOpen: Boolean(previewAsset),
     showTrash,
-    activeCollectionId,
     libraryOpen: Boolean(library),
     busy,
     selectedAsset: previewAsset ?? selectedAsset,
@@ -12489,13 +11456,6 @@ function AppInner() {
     onPermanentDelete: (assetIds) => {
       const viewedId = previewAssetRef.current?.assetId;
       void deletePermanentFromTrash([...assetIds]).then((removed) => {
-        if (removed && viewedId && assetIds.includes(viewedId)) advanceOpenViewer(viewedId);
-      });
-    },
-    onRemoveFromCurrentCollection: (assetIds) => {
-      if (!activeCollectionId) return;
-      const viewedId = previewAssetRef.current?.assetId;
-      void batchRemoveSelectionFromCollection(activeCollectionId, [...assetIds]).then((removed) => {
         if (removed && viewedId && assetIds.includes(viewedId)) advanceOpenViewer(viewedId);
       });
     },
@@ -12666,8 +11626,7 @@ function AppInner() {
       dialog ||
       conflicts ||
       batchRelinkPreview ||
-      restoreDialog ||
-      collectionEditor
+      restoreDialog
     )
       return;
     const onShortcutInput = (shortcutInput: ShortcutEventLike, event: KeyboardEvent | MouseEvent) => {
@@ -12738,7 +11697,6 @@ function AppInner() {
   }, [
     batchRelinkPreview,
     closeAssetPreview,
-    collectionEditor,
     conflicts,
     dialog,
     previewAsset,
@@ -12799,22 +11757,6 @@ function AppInner() {
       return tag
         ? t("scope.tagNamed", { name: tag.name })
         : t("scope.tagFilter");
-    }
-    if (activeCollectionId) {
-      const collection = collections.find(
-        (x) => x.collectionId === activeCollectionId,
-      );
-      return collection
-        ? t("scope.collectionNamed", { name: collection.name })
-        : t("scope.collectionView");
-    }
-    if (activeSmartCollectionId) {
-      const smart = smartCollections.find(
-        (x) => x.collectionId === activeSmartCollectionId,
-      );
-      return smart
-        ? t("scope.smartCollectionScope", { name: smart.name })
-        : t("scope.smartCollections");
     }
     if (assetScope === "all") return t("scope.allAssets");
     if (assetScope === "root") return t("scope.rootFolder");
@@ -14665,8 +13607,6 @@ function AppInner() {
         activePluginSidebarViewId={activePluginSidebarViewId}
         pluginSidebarViews={pluginSidebarViews}
         activeTagId={activeTagId}
-        activeCollectionId={activeCollectionId}
-        activeSmartCollectionId={activeSmartCollectionId}
         showIgnoredItems={showIgnoredItems}
         showMissingLinkedFiles={showMissingLinkedFiles}
         revealTarget={workspaceTabRevealTarget}
@@ -14686,16 +13626,7 @@ function AppInner() {
         filteredFolderCounts={showTrash ? null : filteredFolderCounts}
         trashedAssetCount={trashedAssetCount}
         folders={folders}
-        collections={[]}
-        collectionTree={collectionTree}
-        smartCollections={[]}
         linkedFolders={linkedFolders}
-        showCollectionInput={showCollectionInput}
-        collectionInputValue={collectionInputValue}
-        newCollectionParentId={newCollectionParentId}
-        inlineCollectionRename={inlineCollectionRename}
-        draggedCollectionId={draggedCollectionId}
-        onSetDraggedCollectionId={setDraggedCollectionId}
         onChooseAllAssets={() => void chooseFolder("all")}
         onEnterTrash={() => void enterTrash()}
         onTrashContextMenu={(event) => {
@@ -14711,15 +13642,9 @@ function AppInner() {
           setSelectedFolderIds([]);
           void chooseFolder(folderId);
         }}
-        onChooseCollection={(collectionId, recursive) =>
-          void chooseCollection(collectionId, recursive)
-        }
-        onChooseSmartCollection={(collectionId) =>
-          void chooseSmartCollection(collectionId)
-        }
         onExternalDragOver={handleTargetExternalDragOver}
-        onExternalDrop={(event, targetFolderId, targetCollectionId) =>
-          handleTargetExternalDrop(event, targetFolderId, targetCollectionId)
+        onExternalDrop={(event, targetFolderId) =>
+          handleTargetExternalDrop(event, targetFolderId)
         }
         getManagedAssetDragIds={getManagedAssetDragIds}
         getManagedFolderDragIds={getManagedFolderDragIds}
@@ -14765,9 +13690,6 @@ function AppInner() {
           handleAssetsDroppedOnTrash(assetIds)
         }
         onFoldersDroppedOnTrash={handleFoldersDroppedOnTrash}
-        onAssetsDroppedOnCollection={(collectionId, assetIds, mode) =>
-          handleAssetsDroppedOnCollection(collectionId, assetIds, mode)
-        }
         onManagedAssetCopyModeChange={(copyMode) => {
           setAssetDragPreviewCopyMode(dragPreviewRef.current, copyMode);
         }}
@@ -14777,24 +13699,7 @@ function AppInner() {
         onLinkedFolderHintHoverEnd={endLinkedFolderHintHover}
         onRelinkFolder={(folderId) => void relinkFolder(folderId)}
         onConvertLinkedDialog={setConvertLinkedDialog}
-        onAddCollection={(parentId) => {
-          setShowCollectionInput(true);
-          setCollectionInputValue("");
-          setNewCollectionParentId(parentId);
-        }}
-        onSetShowCollectionInput={setShowCollectionInput}
-        onSetCollectionInputValue={setCollectionInputValue}
-        onSetNewCollectionParentId={setNewCollectionParentId}
-        onCollectionInputCommit={() => createCollection()}
-        onInlineCollectionRenameChange={(value) =>
-          setInlineCollectionRename((current) =>
-            current ? { ...current, value } : current,
-          )
-        }
-        onInlineCollectionRenameCommit={() => commitInlineCollectionRename()}
-        onInlineCollectionRenameCancel={cancelInlineCollectionRename}
         onAddFolder={() => {
-          cancelInlineSmartCollectionEdit();
           // Serpent-b8a853: while the user has never used linked folders,
           // adding an ordinary folder pulses the 导入链接文件夹 entry.
           if (linkedFolderAddHintEligible) {
@@ -14812,10 +13717,6 @@ function AppInner() {
           // Subfolders are created from the folder's context menu (新建子文件夹).
           openInlineFolderCreate(null);
         }}
-        onAddSmartCollection={() => {
-          cancelInlineFolderEdit();
-          openInlineSmartCollectionCreate();
-        }}
         inlineFolderEdit={inlineFolderEdit}
         onInlineFolderEditChange={changeInlineFolderEdit}
         onInlineFolderEditCommit={(onCreateSuccess) =>
@@ -14824,21 +13725,9 @@ function AppInner() {
           })
         }
         onInlineFolderEditCancel={cancelInlineFolderEdit}
-        inlineSmartCollectionEdit={inlineSmartCollectionEdit}
-        onInlineSmartCollectionEditChange={changeInlineSmartCollectionEdit}
-        onInlineSmartCollectionEditCommit={() =>
-          void commitInlineSmartCollectionEdit()
-        }
-        onInlineSmartCollectionEditCancel={cancelInlineSmartCollectionEdit}
         onOpenContextMenu={openContextMenu}
-        onNestCollection={(sourceId, targetId, options) =>
-          void nestCollectionUnder(sourceId, targetId, options)
-        }
-        onMoveCollectionToRoot={(collectionId, options) =>
-          void moveCollectionToRoot(collectionId, options)
-        }
-        onImportDroppedFiles={(files, targetFolderId, targetCollectionId, webPayload) =>
-          void importDroppedFiles(files, targetFolderId, targetCollectionId, webPayload)
+        onImportDroppedFiles={(files, targetFolderId, webPayload) =>
+          void importDroppedFiles(files, targetFolderId, webPayload)
         }
         onCopyManagedToLinked={(folder, assetIds) =>
           void copyManagedSelectionToLinked(folder, assetIds)
@@ -14858,8 +13747,6 @@ function AppInner() {
               !showTagManagement &&
               !showPluginSidebarView &&
               !activeTagId &&
-              !activeCollectionId &&
-              !activeSmartCollectionId &&
               assetScope !== "all" &&
               assetScope !== "root" && (
                 <button
@@ -14933,30 +13820,6 @@ function AppInner() {
                   }}
                   type="button"
                   {...iconActionAttrs(t("nav.includeChildFolders"))}
-                >
-                  <Icon name="folders" size={14} />
-                </button>
-              )}
-            {library &&
-              !showTrash &&
-              !showTagManagement &&
-              !activeTagId &&
-              activeCollectionId &&
-              !activeSmartCollectionId && (
-                <button
-                  aria-pressed={collectionRecursive}
-                  className="workspace-include-subfolders"
-                  onClick={() => {
-                    // Collection scope uses the same explicit recursive toggle
-                    // as folder scope, but the control lives beside its title.
-                    void closeAssetPreview(false);
-                    const next = !collectionRecursiveRef.current;
-                    collectionRecursiveRef.current = next;
-                    setCollectionRecursive(next);
-                    void chooseCollection(activeCollectionId, next);
-                  }}
-                  type="button"
-                  {...iconActionAttrs(t("nav.includeChildCollections"))}
                 >
                   <Icon name="folders" size={14} />
                 </button>
@@ -15504,8 +14367,7 @@ function AppInner() {
                       data-media-type={asset.mediaType}
                       draggable={
                         !showTrash && !renamingThisAsset && (
-                          Boolean(activeCollectionId && !collectionRecursive)
-                          || !nativeAssetDragEnabled
+                          !nativeAssetDragEnabled
                           || (selectedIdSet.has(asset.assetId)
                             ? selectedNativeDragReady
                             : nativeDragReadyIds.has(asset.assetId))
@@ -15564,7 +14426,6 @@ function AppInner() {
                         openAssetPreview(asset);
                       }}
                       onDragEnd={() => {
-                        setDraggedMemberId(null);
                         managedAssetDragIdsRef.current = null;
                         // REQ-DND-003: unmount the custom drag ghost.
                         dismissAssetDragPreview(dragPreviewRef.current);
@@ -15574,16 +14435,9 @@ function AppInner() {
                         if (!showTrash && event.dataTransfer.types.includes(TAG_DRAG_TYPE)) {
                           event.preventDefault(); event.stopPropagation(); event.dataTransfer.dropEffect = 'copy'; setTagDropTargetId(asset.assetId); return;
                         }
-                        if (draggedMemberId) event.preventDefault();
                       }}
                       onDragLeave={() => setTagDropTargetId(null)}
                       onDragStart={(event) => {
-                        // Collection member reorder keeps its own drag path.
-                        if (activeCollectionId && !collectionRecursive) {
-                          setDraggedMemberId(asset.assetId);
-                          event.dataTransfer.effectAllowed = "move";
-                          return;
-                        }
                         // REQ-DND-001/002: folder/trash drops resolve this
                         // selection snapshot at the target (asset-drag-drop.ts).
                         const ids = resolveDraggedAssetIds(asset.assetId, selectedAssetIds);
@@ -15656,12 +14510,6 @@ function AppInner() {
                           if (tags.some((tag) => tag.tagId === tagId)) void assignAssetsToTreeTag([asset.assetId], tagId);
                           return;
                         }
-                        if (!draggedMemberId) return;
-                        event.preventDefault();
-                        void reorderCollectionMember(
-                          draggedMemberId,
-                          asset.assetId,
-                        );
                       }}
                       onContextMenu={(e) => {
                         e.preventDefault();
@@ -16184,11 +15032,7 @@ function AppInner() {
             <div className="external-drop-overlay-content">
               <Icon name="upload" size={28} />
               <strong>{t("toolbar.dropToImport")}</strong>
-              <span>
-                {activeCollectionId
-                  ? t("toolbar.dropHintWithCollection")
-                  : t("toolbar.dropHint")}
-              </span>
+              <span>{t("toolbar.dropHint")}</span>
             </div>
           </div>
         )}
@@ -16209,12 +15053,10 @@ function AppInner() {
             chromeIdle={viewerChromeIdle}
             canDiskDeleteAsset={!showTrash && previewAsset.deletedAt === null}
             canPermanentDelete={showTrash}
-            canRemoveFromCollection={Boolean(activeCollectionId) && !showTrash}
             canTrashAsset={
               previewAsset.locationKind === "managed"
               && previewAsset.deletedAt === null
               && !showTrash
-              && !activeCollectionId
             }
             libraryId={library.libraryId}
             navArrowsOnApproach={viewerChromePrefs.navArrowsOnApproach}
@@ -16236,13 +15078,6 @@ function AppInner() {
             onPermanentDelete={() => {
               const assetId = previewAsset.assetId;
               void deletePermanentFromTrash([assetId]).then((removed) => {
-                if (removed) advanceOpenViewer(assetId);
-              });
-            }}
-            onRemoveFromCollection={() => {
-              if (!activeCollectionId) return;
-              const assetId = previewAsset.assetId;
-              void batchRemoveSelectionFromCollection(activeCollectionId, [assetId]).then((removed) => {
                 if (removed) advanceOpenViewer(assetId);
               });
             }}
@@ -16456,27 +15291,6 @@ function AppInner() {
           onCancel={() => setMoveDialog(null)}
         />
       )}
-      <CollectionEditorDialog
-        open={collectionEditor !== null}
-        description={collectionEditor?.description ?? ""}
-        coverAssetId={collectionEditor?.coverAssetId ?? ""}
-        assetOptions={visibleAssets.map((asset) => ({
-          assetId: asset.assetId,
-          displayName: asset.displayName,
-        }))}
-        onDescriptionChange={(d) =>
-          setCollectionEditor((current) =>
-            current ? { ...current, description: d } : current,
-          )
-        }
-        onCoverAssetChange={(id) =>
-          setCollectionEditor((current) =>
-            current ? { ...current, coverAssetId: id } : current,
-          )
-        }
-        onSave={() => void saveCollectionDetails()}
-        onCancel={() => setCollectionEditor(null)}
-      />
       <FolderCoverPickerDialog
         open={folderCoverPicker !== null}
         libraryId={library?.libraryId ?? null}
@@ -16490,27 +15304,6 @@ function AppInner() {
         }
         onConfirm={applyFolderCoverFromLibrary}
         onCancel={() => setFolderCoverPicker(null)}
-      />
-      <RenameDialog
-        open={renameTarget !== null}
-        kind={renameTarget?.kind ?? "collection"}
-        currentName={renameTarget?.name ?? ""}
-        onNameChange={(name) =>
-          setRenameTarget((current) =>
-            current ? { ...current, name } : current,
-          )
-        }
-        onSave={() => {
-          if (!renameTarget) return;
-          if (renameTarget.kind === "collection")
-            void renameCollection();
-          else {
-            const target = renameTarget;
-            setRenameTarget(null);
-            void renameSmartCollection(target.id, target.name);
-          }
-        }}
-        onCancel={() => setRenameTarget(null)}
       />
       <AppSettingsDialog
         activeCategory={appSettingsCategory}
@@ -16894,24 +15687,6 @@ function AppInner() {
         open={openSourceLicensesOpen}
         onClose={() => setOpenSourceLicensesOpen(false)}
       />
-      {smartCollectionSettings ? (
-        <SmartCollectionSettingsDialog
-          key={smartCollectionSettings.collectionId}
-          onClose={() => setSmartCollectionSettings(null)}
-          onRename={async (collectionId, name) => {
-            await renameSmartCollection(collectionId, name);
-            setSmartCollectionSettings((current) =>
-              current && current.collectionId === collectionId
-                ? { ...current, name }
-                : current,
-            );
-          }}
-          onSaveCurrentQuery={async (collectionId) => {
-            await updateSmartCollectionQuery(collectionId);
-          }}
-          target={smartCollectionSettings}
-        />
-      ) : null}
       <CreateDialog
         busy={busy}
         open={dialog === "library"}
@@ -17122,11 +15897,8 @@ function AppInner() {
         pluginApi={(window as RendererWindow).serpent?.plugins}
         pluginContributionRefreshKey={pluginContributionRefreshKey}
         tags={tags}
-        collections={[]}
         linkedFolders={linkedFolders}
         managedFolders={folders}
-        smartCollections={[]}
-        activeCollectionId={activeCollectionId}
         assets={visibleAssets}
         menuSkipScope={menuSkipScope}
         onCloseWorkspaceTab={(tabId) => void closeWorkspaceTab(tabId)}
@@ -17146,33 +15918,7 @@ function AppInner() {
             () => setError(t("tabs.copyNameFailed")),
           );
         }}
-        onRenameSmartCollection={(id, name) => setRenameTarget({ kind: "smart", id, name })}
-        onUpdateSmartCollection={(id) => { void updateSmartCollectionQuery(id); }}
-        onDeleteSmartCollection={(id) => { void deleteSmartCollection(id); }}
-        onRenameOrganization={(id, name) => {
-          cancelInlineSmartCollectionEdit();
-          openInlineCollectionRename(id, name);
-        }}
-        onCreateSubcollection={(parentId) => {
-          cancelInlineSmartCollectionEdit();
-          setShowCollectionInput(true);
-          setCollectionInputValue("");
-          setNewCollectionParentId(parentId);
-        }}
-        onEditCollectionDetails={(collectionId) => {
-          const collection = collections.find((c) => c.collectionId === collectionId);
-          if (collection)
-            setCollectionEditor({
-              collectionId: collection.collectionId,
-              description: collection.description ?? "",
-              coverAssetId: collection.coverAssetId ?? "",
-            });
-        }}
-        onDeleteOrganization={(id, name) => {
-          requestDeleteCollection(id, name);
-        }}
         onCreateSubfolder={(folderId) => {
-          cancelInlineSmartCollectionEdit();
           openInlineFolderCreate(isLibraryRootFolderId(folderId) ? null : folderId);
         }}
         onExpandFolderTree={(folderId) => {
@@ -17192,7 +15938,6 @@ function AppInner() {
           void setIgnoreState({ locationKind, linkedFolderId, relativePath, pathKind, ignored, name });
         }}
         onRenameFolder={(folderId, currentName) => {
-          cancelInlineSmartCollectionEdit();
           openInlineFolderRename(folderId, currentName);
         }}
         onOpenFolderInFileManager={(folderId) => {
@@ -17261,12 +16006,6 @@ function AppInner() {
         }}
         onBatchRemoveTag={(tagId, assetIds) => {
           void batchRemoveTagFromSelection(tagId, assetIds);
-        }}
-        onBatchAddToCollection={(collectionId, assetIds) => {
-          void batchAddSelectionToCollection(collectionId, assetIds);
-        }}
-        onBatchRemoveFromCollection={(collectionId, assetIds) => {
-          void batchRemoveSelectionFromCollection(collectionId, assetIds);
         }}
         onMoveToFolder={(assetIds, folderIds) =>
           setMoveDialog({
@@ -17347,13 +16086,7 @@ function AppInner() {
         }}
         pasteTargetFolderId={browsePasteDestination}
         onRenameAssetFile={(assetId) => { openAssetRename(assetId); }}
-        onRemoveFromCurrentCollection={(assetId) => {
-          if (activeCollectionId) void removeAssetFromCollection(assetId, activeCollectionId);
-        }}
-        onRemoveFromCollection={(assetId, collectionId) => { void removeAssetFromCollection(assetId, collectionId); }}
         onAssignTag={(assetId, tagId) => { void assignAssetToTag(assetId, tagId); }}
-        onAddToCollection={(assetId, collectionId) => { void addAssetToCollection(assetId, collectionId); }}
-        onLoadCollectionMemberships={loadCollectionMemberships}
         trashedAssetCount={trashedAssetCount}
         trashedFolderCount={trashedFolders.length}
         onRestoreTrashedFolder={(tombstoneId, name) => {
@@ -17448,14 +16181,6 @@ export function App() {
   );
 }
 
-function organizationNoun(kind: OrganizationKind, locale: AppLocale) {
-  return translateForLocale(
-    locale,
-    kind === "collection"
-      ? "dialog.rename.nounCollection"
-      : "dialog.rename.nounSmartCollection",
-  );
-}
 export function aiSearchPlanToDefinition(plan: AiSearchPlan): SearchDefinition {
   const positiveTerms = [...new Set([...plan.keywords, ...plan.synonyms])];
   const clauses: SearchQuery["clauses"] = [];
@@ -17534,68 +16259,4 @@ function highlightSnippet(value: string): ReactNode {
       <span key={index}>{segment}</span>
     );
   });
-}
-type OrganizationOperation = "create" | "rename" | "delete" | "removeAsset";
-
-function organizationAction(
-  kind: OrganizationKind,
-  operation: OrganizationOperation,
-  locale: AppLocale,
-) {
-  const noun = organizationNoun(kind, locale);
-  switch (operation) {
-    case "create":
-      return translateForLocale(locale, "toast.orgCreate", { noun });
-    case "rename":
-      return translateForLocale(locale, "toast.orgRename", { noun });
-    case "delete":
-      return translateForLocale(locale, "toast.orgDelete", { noun });
-    case "removeAsset":
-      return translateForLocale(locale, "toast.orgRemoveAsset");
-  }
-}
-
-function toOrganizationMessage(
-  error: unknown,
-  kind: OrganizationKind,
-  operation: OrganizationOperation,
-  locale: AppLocale,
-) {
-  const noun = organizationNoun(kind, locale);
-  const action = organizationAction(kind, operation, locale);
-  if (error instanceof LibraryOperationError) {
-    const reason = error.reason
-      ? translateForLocale(locale, `error.reason.${error.reason}`)
-      : undefined;
-    const detail = (() => {
-      switch (error.code) {
-        case "INVALID_FOLDER_NAME":
-          return translateForLocale(locale, "toast.nameEmpty", { noun });
-        case "FOLDER_ALREADY_EXISTS":
-          return translateForLocale(locale, "toast.nameConflict", { noun });
-        case "FOLDER_NOT_FOUND":
-          return translateForLocale(locale, "toast.targetGone", { noun });
-        case "ASSET_NOT_FOUND":
-          return translateForLocale(locale, "toast.assetGone");
-        default: {
-          if (reason) return reason;
-          const codeKey = `error.code.${error.code}`;
-          const codeMsg = translateForLocale(locale, codeKey);
-          return codeMsg !== codeKey
-            ? codeMsg
-            : translateForLocale(locale, "toast.opFailedSeeLog");
-        }
-      }
-    })();
-    const message = translateForLocale(locale, "toast.opFailedReason", {
-      action,
-      detail,
-    });
-    return reason && detail !== reason ? `${message} ${reason}` : message;
-  }
-  const detail =
-    error instanceof Error && error.message
-      ? error.message
-      : translateForLocale(locale, "toast.unknownError");
-  return translateForLocale(locale, "toast.opFailedReason", { action, detail });
 }

@@ -57,7 +57,6 @@ describe("browse-key-command (Serpent-g8u9)", () => {
     expect(
       planAssetDeleteShortcut({
         showTrash: false,
-        activeCollectionId: null,
         libraryOpen: true,
         selectedAssets: [asset({ assetId: "l", locationKind: "linked" })],
       }),
@@ -68,7 +67,6 @@ describe("browse-key-command (Serpent-g8u9)", () => {
     expect(
       planAssetDeleteShortcut({
         showTrash: false,
-        activeCollectionId: null,
         libraryOpen: true,
         selectedAssets: [asset({ assetId: "m" })],
       }),

@@ -43,7 +43,6 @@ export type UseBrowserSessionRestoreArgs = {
   loadContent: LoadContentForRestore;
   /** Keep the workspace covered until the restored library is coherent. */
   setLibraryLoading: (state: { name: string | null } | null) => void;
-  collectionRecursiveRef: MutableRefObject<boolean>;
   folderRecursiveRef: MutableRefObject<boolean>;
   setFolderRecursive: (enabled: boolean) => void;
   setLibrary: Dispatch<SetStateAction<RendererLibrarySummary | null>>;
@@ -52,8 +51,6 @@ export type UseBrowserSessionRestoreArgs = {
   setAssetScope: Dispatch<SetStateAction<"all" | "root" | string>>;
   setActiveTagId: Dispatch<SetStateAction<string | null>>;
   setTagFilter: Dispatch<SetStateAction<string>>;
-  setActiveCollectionId: Dispatch<SetStateAction<string | null>>;
-  setActiveSmartCollectionId: Dispatch<SetStateAction<string | null>>;
   setAssets: Dispatch<SetStateAction<AssetSummary[]>>;
   setSearchTotal: Dispatch<SetStateAction<number | null>>;
   /** Serpent-ws4k: register the restored scope for paginated appends. */
@@ -105,7 +102,6 @@ export function useBrowserSessionRestore(
     api,
     loadContent,
     setLibraryLoading,
-    collectionRecursiveRef,
     folderRecursiveRef,
     setFolderRecursive,
     setLibrary,
@@ -114,8 +110,6 @@ export function useBrowserSessionRestore(
     setAssetScope,
     setActiveTagId,
     setTagFilter,
-    setActiveCollectionId,
-    setActiveSmartCollectionId,
     setAssets,
     setSearchTotal,
     beginBrowsePage,
@@ -166,7 +160,6 @@ export function useBrowserSessionRestore(
               library: activeLibrary,
               session,
               initialItems: restoredItems,
-              collectionRecursive: collectionRecursiveRef.current,
               isFolderRecursiveEnabled: (libraryId, folderId) =>
                 isFolderRecursiveEnabled(
                   loadFolderRecursivePreferences(),
@@ -180,8 +173,6 @@ export function useBrowserSessionRestore(
               folderRecursiveRef,
               setActiveTagId,
               setTagFilter,
-              setActiveCollectionId,
-              setActiveSmartCollectionId,
               setAssets,
               setTrashedAssets,
               setSearchTotal,
@@ -202,8 +193,6 @@ export function useBrowserSessionRestore(
             setShowTrash(false);
             setAssetScope("all");
             setActiveTagId(null);
-            setActiveCollectionId(null);
-            setActiveSmartCollectionId(null);
             restoredLocation = { kind: "all" };
             await loadContent(activeLibrary, "all");
           }
@@ -239,14 +228,11 @@ export function useBrowserSessionRestore(
   }, [
     api,
     beginBrowsePage,
-    collectionRecursiveRef,
     folderRecursiveRef,
     loadContent,
     locale,
     navHistoryRef,
     pendingRestoredFocusRef,
-    setActiveCollectionId,
-    setActiveSmartCollectionId,
     setActiveTagId,
     setAssetScope,
     setAssetSelectionAnchor,
@@ -286,8 +272,6 @@ export type UseBrowserSessionPersistArgs = {
   showTrash: boolean;
   activeTagId: string | null;
   tags: readonly { tagId: string; name: string }[];
-  activeCollectionId: string | null;
-  activeSmartCollectionId: string | null;
   assetScope: "all" | "root" | string;
 };
 
@@ -301,8 +285,6 @@ export function useBrowserSessionPersist(
     showTrash,
     activeTagId,
     tags,
-    activeCollectionId,
-    activeSmartCollectionId,
     assetScope,
   } = args;
 
@@ -312,8 +294,6 @@ export function useBrowserSessionPersist(
       showTrash,
       activeTagId,
       activeTagName: tags.find((tag) => tag.tagId === activeTagId)?.name,
-      activeCollectionId,
-      activeSmartCollectionId,
       assetScope,
       // Persist scope even with an empty selection so relaunch restores the
       // last folder/collection instead of falling back to "all assets".
@@ -322,8 +302,6 @@ export function useBrowserSessionPersist(
     });
     writeBrowserSession(library.libraryId, session);
   }, [
-    activeCollectionId,
-    activeSmartCollectionId,
     browserSessionReady,
     activeTagId,
     assetScope,

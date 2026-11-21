@@ -31,31 +31,22 @@ export function canDeleteAssetFromDiskWithShortcut(
 
 export type AssetDeleteShortcutPlan =
   | { readonly type: "permanent-delete"; readonly assetIds: readonly string[] }
-  | {
-      readonly type: "remove-from-collection";
-      readonly assetIds: readonly string[];
-    }
   | { readonly type: "trash-managed"; readonly assetIds: readonly string[] }
   | { readonly type: "trash-linked"; readonly assetIds: readonly string[] }
   | { readonly type: "none" };
 
 export function planAssetDeleteShortcut(input: {
   readonly showTrash: boolean;
-  readonly activeCollectionId: string | null;
   readonly libraryOpen: boolean;
   readonly selectedAssets: readonly AssetSummary[];
 }): AssetDeleteShortcutPlan {
-  const { showTrash, activeCollectionId, libraryOpen, selectedAssets } = input;
+  const { showTrash, libraryOpen, selectedAssets } = input;
   if (selectedAssets.length === 0) return { type: "none" };
 
   const ids = selectedAssets.map((asset) => asset.assetId);
 
   if (showTrash) {
     return { type: "permanent-delete", assetIds: ids };
-  }
-
-  if (activeCollectionId !== null) {
-    return { type: "remove-from-collection", assetIds: ids };
   }
 
   if (!libraryOpen) return { type: "none" };

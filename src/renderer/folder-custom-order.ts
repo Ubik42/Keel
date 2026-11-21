@@ -1,5 +1,5 @@
 /**
- * User-defined sidebar order ("自定义" sort) for folders and collections.
+ * User-defined sidebar order ("自定义" sort) for folders.
  *
  * Stored per library next to the existing sidebar sort preference, which is
  * also device-local. Positions are compared only among siblings, so a single
@@ -7,7 +7,6 @@
  */
 
 const FOLDER_STORAGE_PREFIX = "serpent.folder-custom-order.v1.";
-const COLLECTION_STORAGE_PREFIX = "serpent.collection-custom-order.v1.";
 
 export type FolderDropEdge = "before" | "after";
 
@@ -25,10 +24,6 @@ function resolveStorage(storage?: StorageLike): StorageLike | null {
 
 export function folderCustomOrderKey(libraryId: string): string {
   return `${FOLDER_STORAGE_PREFIX}${libraryId}`;
-}
-
-export function collectionCustomOrderKey(libraryId: string): string {
-  return `${COLLECTION_STORAGE_PREFIX}${libraryId}`;
 }
 
 export function parseFolderCustomOrder(raw: string | null): Map<string, number> {
@@ -71,13 +66,6 @@ export function loadFolderCustomOrder(
   return loadScopedOrder(libraryId ? folderCustomOrderKey(libraryId) : null, storage);
 }
 
-export function loadCollectionCustomOrder(
-  libraryId: string | null | undefined,
-  storage?: StorageLike,
-): Map<string, number> {
-  return loadScopedOrder(libraryId ? collectionCustomOrderKey(libraryId) : null, storage);
-}
-
 function saveScopedOrder(
   key: string,
   order: ReadonlyMap<string, number>,
@@ -96,14 +84,6 @@ export function saveFolderCustomOrder(
   storage?: StorageLike,
 ): void {
   saveScopedOrder(folderCustomOrderKey(libraryId), order, storage);
-}
-
-export function saveCollectionCustomOrder(
-  libraryId: string,
-  order: ReadonlyMap<string, number>,
-  storage?: StorageLike,
-): void {
-  saveScopedOrder(collectionCustomOrderKey(libraryId), order, storage);
 }
 
 /**

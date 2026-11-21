@@ -32,14 +32,8 @@ export type ContextMenuDescriptor =
       isDeleted: boolean;
     }
   | {
-      // Collections only. Tags were removed from the sidebar (REQ-TAG-001),
-      // so the organization menu no longer has a tag branch.
+      // Inspector tag chips (InspectorTagChip local menu).
       type: "organization";
-      id: string;
-      name: string;
-    }
-  | {
-      type: "smart-collection";
       id: string;
       name: string;
     }
@@ -85,7 +79,6 @@ export type ContextMenuDescriptor =
       name: string;
       entity:
         | { kind: "folder"; id: string }
-        | { kind: "collection"; id: string }
         | null;
       /** False for the last remaining tab: the strip never empties entirely. */
       canClose: boolean;

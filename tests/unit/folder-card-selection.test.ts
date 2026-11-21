@@ -19,8 +19,6 @@ const baseContext: FolderBrowseCanvasContext = {
   assetScope: "all",
   showTrash: false,
   activeTagId: null,
-  activeCollectionId: null,
-  activeSmartCollectionId: null,
   folders: [managedFolder("folder-1")],
   searchActive: false,
 };
@@ -83,24 +81,6 @@ describe("resolveFolderBrowseParentId", () => {
   it("has no folder-card row for a tag view", () => {
     expect(
       resolveFolderBrowseParentId({ ...baseContext, activeTagId: "tag-1" }),
-    ).toBeUndefined();
-  });
-
-  it("has no folder-card row for a collection view", () => {
-    expect(
-      resolveFolderBrowseParentId({
-        ...baseContext,
-        activeCollectionId: "collection-1",
-      }),
-    ).toBeUndefined();
-  });
-
-  it("has no folder-card row for a smart-collection view", () => {
-    expect(
-      resolveFolderBrowseParentId({
-        ...baseContext,
-        activeSmartCollectionId: "smart-1",
-      }),
     ).toBeUndefined();
   });
 

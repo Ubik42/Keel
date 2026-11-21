@@ -729,12 +729,6 @@ describe('linked folder watcher', () => {
       source_device: String(originalStat.dev),
       source_inode: String(originalStat.ino),
     });
-    const collection = service.createCollection({ libraryId: library.libraryId, name: 'Move metadata' });
-    service.addCollectionAssets({
-      libraryId: library.libraryId,
-      collectionId: collection.collectionId,
-      assetIds: [original.assetId],
-    });
     service.setAssetMetadata({
       libraryId: library.libraryId,
       assetId: original.assetId,
@@ -777,11 +771,6 @@ describe('linked folder watcher', () => {
     expect(service.getAssetMetadata({ libraryId: library.libraryId, assetId: original.assetId })).toMatchObject({
       description: 'Preserve on move',
     });
-    expect(service.listCollectionAssets({
-      libraryId: library.libraryId,
-      collectionId: collection.collectionId,
-      recursive: false,
-    })).toEqual([expect.objectContaining({ assetId: original.assetId })]);
   });
 
   it('stops offline roots, restarts returned roots, and rebuilds an observer on relink', () => {

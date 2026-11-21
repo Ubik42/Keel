@@ -37,7 +37,6 @@ describe("shortcut settings model", () => {
     expect(groupShortcutRows(rows).map((group) => group.category)).toEqual([
       "asset",
       "folder",
-      "collection",
       "app",
       "viewer",
     ]);

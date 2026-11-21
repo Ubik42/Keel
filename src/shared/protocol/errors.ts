@@ -25,7 +25,6 @@ export const PUBLIC_ERROR_MESSAGES = {
   CLIPBOARD_IMAGE_NOT_FOUND: 'Copy an image to the system clipboard and try again.',
   CLIPBOARD_FILES_NOT_FOUND:
     'Copy files or folders in Finder/Explorer, then paste again.',
-  IMPORT_COLLECTION_ASSIGN_FAILED: 'The assets were imported, but Serpent could not add them to the selected collection.',
   INVALID_IMPORT_DECISION: 'Choose a valid import conflict decision.',
   AUTOMATION_FILE_PLAN_INVALID: 'The file operation plan is not valid for this request.',
   IMPORT_NOT_FOUND: 'The pending import no longer exists.',
@@ -111,7 +110,6 @@ export const PUBLIC_ERROR_MESSAGES = {
   ASSET_FILE_NAME_CONFLICT: 'A file with this name already exists in the asset folder.',
   INVALID_ASSET_METADATA: 'Choose valid asset metadata values, including six-digit hex colors and an HTTP(S) source page URL.',
   INVALID_SEARCH_QUERY: 'Use supported search fields: filename, tags, description, source URL, folder path, or metadata.',
-  INVALID_SMART_COLLECTION_QUERY: 'Add a search query or at least one filter before saving a smart collection.',
   ASSET_MOVE_CONFLICT: 'The asset move could not be completed because a source or destination changed.',
   ASSET_SOURCE_TRASH_FAILED: 'Serpent could not move the asset source to the system trash.',
   AI_ANALYSIS_FAILED: 'The AI service could not analyze this asset.',

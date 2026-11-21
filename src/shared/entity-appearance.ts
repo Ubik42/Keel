@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 /**
- * Library-owned appearance for folders and collections (Serpent-df3049).
+ * Library-owned appearance for folders (Serpent-df3049).
  * Unknown stored values must degrade to the default chrome icon, not fail open.
  */
 
@@ -11,8 +11,6 @@ export type EntityAppearanceGlyphKind = (typeof ENTITY_APPEARANCE_GLYPH_KINDS)[n
 export const ENTITY_APPEARANCE_TARGET_KINDS = [
   'managed-folder',
   'linked-folder',
-  'collection',
-  'smart-collection',
 ] as const;
 export type EntityAppearanceTargetKind = (typeof ENTITY_APPEARANCE_TARGET_KINDS)[number];
 

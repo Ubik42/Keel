@@ -47,25 +47,6 @@ const folderSummary = (id: string) => ({
 
 const tagSummary = (id: string) => ({ tagId: id, name: `tag-${id}`, assetCount: 0 });
 
-const collectionSummary = (id: string) => ({
-  collectionId: id,
-  parentId: null,
-  name: `collection-${id}`,
-  description: null,
-  coverAssetId: null,
-  position: 0,
-  assetCount: 0,
-  childCollectionCount: 0,
-});
-
-const smartCollectionSummary = (id: string) => ({
-  collectionId: id,
-  name: `smart-${id}`,
-  queryDefinition: '{"query":"rating:5"}',
-  position: 0,
-  assetCount: 0,
-});
-
 const assetSummary = (id: string) => ({
   assetId: id,
   locationKind: 'managed' as const,
@@ -286,44 +267,6 @@ describe('MCP lifecycle commands: tag (Serpent-j9n2)', () => {
   });
 });
 
-describe('MCP lifecycle commands: collection (Serpent-b6ta)', () => {
-  it('routes collection.update/reorder/delete', async () => {
-    const updated = new RecordingWorker({
-      ok: true,
-      type: 'collection.updated',
-      collection: collectionSummary('col-1'),
-    });
-    const updateResult = await callTool(updated, 'serpent_collection_update', {
-      libraryId: 'library-1',
-      collectionId: 'col-1',
-      name: 'Renamed',
-    });
-    expect(updateResult, JSON.stringify(updateResult)).toMatchObject({ ok: true, commandId: 'collection.update' });
-
-    const reordered = new RecordingWorker({
-      ok: true,
-      type: 'collection.reordered',
-      orderedCollectionIds: ['col-1', 'col-2'],
-    });
-    const reorderResult = await callTool(reordered, 'serpent_collection_reorder', {
-      libraryId: 'library-1',
-      orderedCollectionIds: ['col-1', 'col-2'],
-    });
-    expect(reorderResult).toMatchObject({ ok: true, commandId: 'collection.reorder' });
-
-    const deleted = new RecordingWorker({
-      ok: true,
-      type: 'collection.deleted',
-      collectionId: 'col-1',
-    });
-    const deleteResult = await callTool(deleted, 'serpent_collection_delete', {
-      libraryId: 'library-1',
-      collectionId: 'col-1',
-    });
-    expect(deleteResult).toMatchObject({ ok: true, commandId: 'collection.delete' });
-  });
-});
-
 describe('MCP lifecycle commands: linked folder (Serpent-eyus)', () => {
   it('routes linked-folder.create with the explicit source root', async () => {
     const worker = new RecordingWorker({
@@ -400,44 +343,5 @@ describe('MCP lifecycle commands: asset helpers (Serpent-uup6)', () => {
     });
     expect(previewResult).toMatchObject({ ok: true, commandId: 'asset.preview.get' });
     expect(preview.commands[0]).toMatchObject({ type: 'media.get-preview-artifact' });
-  });
-});
-
-describe('MCP lifecycle commands: smart collection (Serpent-jxbm)', () => {
-  it('routes smart-collection.create with the query definition', async () => {
-    const worker = new RecordingWorker({
-      ok: true,
-      type: 'smart-collection.created',
-      collection: smartCollectionSummary('sc-1'),
-    });
-    const result = await callTool(worker, 'serpent_smart_collection_create', {
-      libraryId: 'library-1',
-      name: 'Recent',
-      queryDefinitionJson: '{"query":"rating:5"}',
-    });
-    expect(result, JSON.stringify(result)).toMatchObject({ ok: true, commandId: 'smart-collection.create' });
-    expect(worker.commands[0]).toMatchObject({
-      type: 'smart-collection.create',
-      libraryId: 'library-1',
-    });
-  });
-
-  it('executes a smart collection rule', async () => {
-    const worker = new RecordingWorker({
-      ok: true,
-      type: 'smart-collection.executed',
-      items: [assetSummary('asset-1')],
-      total: 1,
-      offset: 0,
-    });
-    const result = await callTool(worker, 'serpent_smart_collection_execute', {
-      libraryId: 'library-1',
-      collectionId: 'sc-1',
-    });
-    expect(result).toMatchObject({ ok: true, commandId: 'smart-collection.execute' });
-    expect(worker.commands[0]).toMatchObject({
-      type: 'smart-collection.execute',
-      libraryId: 'library-1',
-    });
   });
 });

@@ -74,31 +74,4 @@ describe('desktop ingestion through the existing import transaction', () => {
     service.closeAll();
   });
 
-  it('keeps collection assignment explicit after a pasted image import', () => {
-    const root = mkdtempSync(path.join(tmpdir(), 'serpent-clipboard-worker-'));
-    roots.push(root);
-    const source = path.join(root, 'Clipboard 2026-07-13T12-34-56Z.png');
-    writeFileSync(source, Buffer.from('clipboard-png'));
-    const service = new LibraryService();
-    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Clipboard', selectedParentPath: root });
-    const collection = service.createCollection({ libraryId: library.libraryId, name: 'Moodboard' });
-    const completion = service.prepareOrExecuteImport({
-      libraryId: library.libraryId,
-      sourceKind: 'files',
-      sourcePaths: [source],
-    });
-    if ('importId' in completion) throw new Error('Unexpected conflict');
-    service.addCollectionAssets({
-      libraryId: library.libraryId,
-      collectionId: collection.collectionId,
-      assetIds: completion.assets.map((asset) => asset.assetId),
-    });
-
-    expect(service.listCollectionAssets({
-      libraryId: library.libraryId,
-      collectionId: collection.collectionId,
-      recursive: false,
-    }).map((asset) => asset.displayName)).toEqual(['Clipboard 2026-07-13T12-34-56Z.png']);
-    service.closeAll();
-  });
 });

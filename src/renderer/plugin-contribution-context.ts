@@ -88,7 +88,7 @@ function selectedIds(descriptor: ContextMenuDescriptor): {
   if (descriptor.type === "folder" || descriptor.type === "trashed-folder") {
     return { assetIds: [], folderIds: [descriptor.type === "folder" ? descriptor.folderId : descriptor.tombstoneId] };
   }
-  if (descriptor.type === "organization" || descriptor.type === "smart-collection") {
+  if (descriptor.type === "organization") {
     return { assetIds: [], folderIds: [] };
   }
   if (descriptor.type === "workspace") return { assetIds: [...(descriptor.assetIds ?? [])], folderIds: [] };

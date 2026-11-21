@@ -55,7 +55,6 @@ export {
 
 const ROOT_FOLDER_COUNT = 10;
 const CHILD_FOLDERS_PER_ROOT = 15;
-const COLLECTION_COUNT = 50;
 const TAG_NAMES = ['ABCD-A', 'ABCD-B', 'ABCD-C', 'ABCD-D', 'ABCD-E', 'ABCD-F'];
 /** Unique encoded clips copied across the video bucket so generation stays bounded. */
 const VIDEO_POOL_SIZE = 48;
@@ -86,7 +85,6 @@ export interface LargeLibraryFixtureManifest {
   audioCount: number;
   unsupportedCount: number;
   folderCount: number;
-  collectionCount: number;
   tagCount: number;
   searchToken: string;
   searchTokenAssetCount: number;
@@ -218,7 +216,6 @@ async function seedDatabase(
   libraryPath: string,
   folderIds: string[],
   tagIds: string[],
-  collectionIds: string[],
   counts: LargeLibraryMixCounts,
   writeFiles: boolean,
 ): Promise<{ searchTokenAssetCount: number; sampleAssetId: string }> {
@@ -251,9 +248,6 @@ async function seedDatabase(
   );
   const insertAssetTag = database.prepare(
     'INSERT INTO human_asset_tags (asset_id, tag_id) VALUES (?, ?)',
-  );
-  const insertCollectionAsset = database.prepare(
-    'INSERT INTO collection_assets (collection_id, asset_id, position) VALUES (?, ?, ?)',
   );
   const insertArtifact = database.prepare(
     `INSERT INTO revision_artifacts
@@ -401,16 +395,6 @@ async function seedDatabase(
       if (item.index % 17 === 0) {
         insertAssetTag.run(assetId, tagIds[tagIds.length - 1]);
       }
-      const memberships = new Set([
-        item.index % collectionIds.length,
-        (item.index * 7 + 3) % collectionIds.length,
-        (item.index * 13 + 11) % collectionIds.length,
-      ]);
-      let position = 0;
-      for (const collectionIndex of memberships) {
-        insertCollectionAsset.run(collectionIds[collectionIndex], assetId, position);
-        position += 1;
-      }
       assetIds.push(assetId);
     }
     database.exec('COMMIT');
@@ -480,24 +464,6 @@ export async function ensureLargeLibraryFixture(
     }
     const tags = TAG_NAMES.map((name) => service.createTag({ libraryId: library.libraryId, name }));
     const searchTag = service.createTag({ libraryId: library.libraryId, name: LARGE_LIBRARY_SEARCH_TOKEN });
-    const collections = [] as Array<{ collectionId: string }>;
-    const parentCollections = [] as Array<{ collectionId: string }>;
-    for (let index = 0; index < 10; index += 1) {
-      const collection = service.createCollection({
-        libraryId: library.libraryId,
-        name: `Collection-${pad(index, 2)}`,
-      });
-      parentCollections.push(collection);
-      collections.push(collection);
-    }
-    for (let index = 10; index < COLLECTION_COUNT; index += 1) {
-      const collection = service.createCollection({
-        libraryId: library.libraryId,
-        parentId: parentCollections[index % parentCollections.length]!.collectionId,
-        name: `Collection-${pad(index, 2)}`,
-      });
-      collections.push(collection);
-    }
 
     service.closeAll();
     for (const folder of folders) mkdirSync(path.join(library.libraryPath, 'Assets', folder.relativePath), { recursive: true });
@@ -505,7 +471,6 @@ export async function ensureLargeLibraryFixture(
       library.libraryPath,
       folders.map((folder) => folder.folderId),
       [...tags, searchTag].map((tag) => tag.tagId),
-      collections.map((collection) => collection.collectionId),
       counts,
       writeFiles,
     );
@@ -522,7 +487,6 @@ export async function ensureLargeLibraryFixture(
       audioCount: counts.audioCount,
       unsupportedCount: counts.unsupportedCount,
       folderCount: folders.length + ROOT_FOLDER_COUNT,
-      collectionCount: collections.length,
       tagCount: tags.length + 1,
       searchToken: LARGE_LIBRARY_SEARCH_TOKEN,
       searchTokenAssetCount: seeded.searchTokenAssetCount,

@@ -39,10 +39,6 @@ export interface UseAssetSelectionParams {
   setSelectedAssetId: React.Dispatch<React.SetStateAction<string | undefined>>;
   /** When non-null, marquee drag is suppressed (preview is open) */
   previewAsset: AssetSummary | null;
-  /** When non-null, marquee drag is suppressed (member is being dragged) */
-  draggedMemberId: string | null;
-  /** When non-null, marquee drag is suppressed (collection is being dragged) */
-  draggedCollectionId: string | null;
   /** Ref to the scrollable workspace canvas element */
   workspaceCanvasRef: React.RefObject<HTMLDivElement | null>;
   /** Serpent-wgl2: the always-mounted marquee box div, mutated directly via ref. */
@@ -104,8 +100,6 @@ export function useAssetSelection({
   setSelectedAssetIds,
   setSelectedAssetId,
   previewAsset,
-  draggedMemberId,
-  draggedCollectionId,
   workspaceCanvasRef,
   marqueeBoxRef,
   folderIds = [],
@@ -378,7 +372,6 @@ export function useAssetSelection({
       )
         return;
       if (previewAsset) return;
-      if (draggedMemberId || draggedCollectionId) return;
       // Only left-button drags start a marquee
       if (e.button !== 0) return;
       // A native scrollbar thumb/track dispatches its pointerdown from the
@@ -455,8 +448,6 @@ export function useAssetSelection({
     },
     [
       previewAsset,
-      draggedMemberId,
-      draggedCollectionId,
       selectedAssetIds,
       selectedFolderIds,
       selectionPlatform,

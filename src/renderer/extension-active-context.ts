@@ -5,27 +5,20 @@ export type ExtensionActiveContextTarget = {
 
 /**
  * Derives the browse target the browser extension should import into from the
- * current renderer scope. Non-folder scopes (trash, tags, collections, search)
+ * current renderer scope. Non-folder scopes (trash, tags, search)
  * fall back to the library root.
  */
 export function resolveExtensionActiveContextTarget(input: {
   readonly libraryId: string | null;
   readonly showTrash: boolean;
   readonly activeTagId: string | null;
-  readonly activeCollectionId: string | null;
-  readonly activeSmartCollectionId: string | null;
   readonly assetScope: "all" | "root" | string;
 }): ExtensionActiveContextTarget {
   if (!input.libraryId) {
     return { libraryId: null };
   }
 
-  if (
-    input.showTrash ||
-    input.activeTagId ||
-    input.activeCollectionId ||
-    input.activeSmartCollectionId
-  ) {
+  if (input.showTrash || input.activeTagId) {
     return { libraryId: input.libraryId };
   }
 

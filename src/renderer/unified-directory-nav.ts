@@ -1,5 +1,4 @@
 import type {
-  CollectionSummary,
   LinkedFolderSummary,
   ManagedFolderSummary,
 } from "../shared/asset-types";
@@ -261,8 +260,6 @@ export function filterCollapsedDirectoryEntries(
 
 export type FolderTreeSortMode = "name" | "created" | "count" | "custom";
 
-export type CollectionTreeSortMode = Exclude<FolderTreeSortMode, "created">;
-
 export type FolderTreeSortOrder = "asc" | "desc";
 
 type SortableSidebarEntry = {
@@ -385,43 +382,6 @@ export function sortManagedTreeEntries(
   return sorted;
 }
 
-/**
- * Sort each collection level with the shared name/count field and direction
- * semantics. Collections do not expose folder creation-time sorting. The tree
- * shape is preserved so collapse and inline-create logic can continue to
- * consume the existing parent map.
- */
-export function sortCollectionTree(
-  tree: ReadonlyMap<string | null, readonly CollectionSummary[]>,
-  mode: CollectionTreeSortMode,
-  order: FolderTreeSortOrder,
-  customOrder?: ReadonlyMap<string, number>,
-): Map<string | null, CollectionSummary[]> {
-  const sorted = new Map<string | null, CollectionSummary[]>();
-  for (const [parentId, children] of tree) {
-    sorted.set(
-      parentId,
-      [...children].sort((left, right) =>
-        compareSortableSidebarEntries(
-          {
-            name: left.name,
-            assetCount: left.assetCount,
-            position: resolveCustomPosition(customOrder, parentId, left.collectionId),
-          },
-          {
-            name: right.name,
-            assetCount: right.assetCount,
-            position: resolveCustomPosition(customOrder, parentId, right.collectionId),
-          },
-          mode,
-          order,
-        ),
-      ),
-    );
-  }
-  return sorted;
-}
-
 function normalizedNavQuery(query: string): string {
   return query.trim().toLocaleLowerCase();
 }
@@ -449,42 +409,4 @@ export function filterDirectoryEntriesByName(
     }
   }
   return entries.filter((entry) => keep.has(entry.folderId));
-}
-
-/**
- * Same name match as folders: a collection stays when it matches or when a
- * descendant matches. Parent groups with no remaining children are dropped.
- */
-export function filterCollectionTreeByName(
-  tree: ReadonlyMap<string | null, readonly CollectionSummary[]>,
-  query: string,
-): Map<string | null, CollectionSummary[]> {
-  const needle = normalizedNavQuery(query);
-  if (!needle) {
-    return new Map(
-      [...tree].map(([parentId, children]) => [parentId, [...children]]),
-    );
-  }
-  const parentOf = new Map<string, string | null>();
-  for (const [parentId, children] of tree) {
-    for (const child of children) parentOf.set(child.collectionId, parentId);
-  }
-  const keep = new Set<string>();
-  for (const children of tree.values()) {
-    for (const child of children) {
-      if (!child.name.toLocaleLowerCase().includes(needle)) continue;
-      let current: string | null = child.collectionId;
-      while (current) {
-        if (keep.has(current)) break;
-        keep.add(current);
-        current = parentOf.get(current) ?? null;
-      }
-    }
-  }
-  const next = new Map<string | null, CollectionSummary[]>();
-  for (const [parentId, children] of tree) {
-    const filtered = children.filter((child) => keep.has(child.collectionId));
-    if (filtered.length > 0) next.set(parentId, filtered);
-  }
-  return next;
 }

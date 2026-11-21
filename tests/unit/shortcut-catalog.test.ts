@@ -49,10 +49,9 @@ describe("shortcut catalog", () => {
     }
   });
 
-  it("keeps folder and collection sidebar scopes independent", () => {
+  it("keeps sidebar folder scope independent of browse", () => {
     expect(shortcutScopesOverlap(["app"], ["browse"])).toBe(true);
     expect(shortcutScopesOverlap(["browse"], ["sidebar.folder"])).toBe(false);
-    expect(shortcutScopesOverlap(["sidebar.folder"], ["sidebar.collection"])).toBe(false);
     expect(shortcutScopesOverlap(["sidebar.folder"], ["sidebar.folder"])).toBe(true);
   });
 
