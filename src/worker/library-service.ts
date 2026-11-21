@@ -42384,6 +42384,9 @@ export class LibraryService {
   }
 
   private linkedPathIsIgnored(relativePath: string, rules: LinkedFolderRule[]): boolean {
+    // Older scans could index files inside a stray metadata directory of a
+    // copied library. Such paths are reserved, so they count as ignored.
+    if (relativePath.replaceAll('\\', '/').split('/').some((segment) => isLibraryMetaDirName(segment))) return true;
     const normalizedPath = normalizeRelativeAssetPath(relativePath);
     if (isAlwaysIgnoredAssetPath(normalizedPath)) return true;
     let matches = this.linkedRuleMatchers.get(rules);
