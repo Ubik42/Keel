@@ -17,4 +17,4 @@ Documentation is organized into two parts: **Public documentation** (distributed
 
 Development process documents live in [`docs/internal/`](https://github.com/dolag233/Serpent/tree/dolag_dev/docs/internal) on `dolag_dev` (not published to the site): architectural decisions (ADR), implementation specifications, development logs, QA reports, code reviews, technical research, development workflows, and project status.
 
-> AI agent instructions are in `AGENTS.md` and `CLAUDE.md`.
+> AI agent instructions are in `CLAUDE.md` and `CLAUDE.md`.

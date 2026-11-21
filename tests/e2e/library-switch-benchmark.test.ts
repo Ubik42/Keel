@@ -25,7 +25,7 @@ import { readFileSync } from "node:fs";
  * skips without it. Library paths are never defaulted or committed: this is a
  * real journey that drives a real library's media queue and writes its database,
  * so it must be an explicit operator choice (privacy + workspace-cleanliness
- * rules in AGENTS.md).
+ * rules in CLAUDE.md).
  */
 const configured = (process.env.SERPENT_E2E_SWITCH_LIBRARIES ?? "")
   .split("|")
