@@ -114,8 +114,17 @@ export function parseCurrentUserSid(output: string): string {
   return sid;
 }
 
+/**
+ * Resolve Windows tools from System32. A bare name follows PATH, where Git's
+ * POSIX `whoami` (or another icacls) can shadow the system tool.
+ */
+function windowsSystemTool(name: string): string {
+  const systemRoot = process.env.SystemRoot ?? process.env.windir ?? 'C:\Windows';
+  return path.join(systemRoot, 'System32', name);
+}
+
 function currentWindowsUserSid(): string {
-  const result = spawnSync('whoami.exe', ['/user', '/fo', 'csv', '/nh'], {
+  const result = spawnSync(windowsSystemTool('whoami.exe'), ['/user', '/fo', 'csv', '/nh'], {
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'ignore'],
     windowsHide: true,
@@ -136,7 +145,7 @@ export function buildPepperFileAccessRepairArgs(filename: string, userSid: strin
 }
 
 function runIcacls(filename: string, args: string[]): void {
-  const result = spawnSync('icacls.exe', args, {
+  const result = spawnSync(windowsSystemTool('icacls.exe'), args, {
     stdio: 'ignore',
     windowsHide: true,
   });
