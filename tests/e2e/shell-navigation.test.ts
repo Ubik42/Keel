@@ -87,7 +87,7 @@ test("library switcher, breadcrumbs, and workspace history", async () => {
     await expect(forwardButton).toBeVisible();
     await expect(settingsButton).toBeVisible();
     // macOS keeps About on the native application menu. Windows and Linux
-    // use the in-app main menu; the native menu there has no about.serpent item.
+    // use the in-app main menu; the native menu there has no about.keel item.
     if (useInAppMainMenu) {
       await settingsButton.hover();
       await expect(window.getByRole("menu", { name: "主菜单" })).toHaveCount(0);

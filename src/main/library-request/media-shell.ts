@@ -31,13 +31,13 @@ export async function tryHandleMediaShellWorkerResult(
       workerResult.status === "ready"
         ? workerResult.playbackMode === "source" &&
           workerResult.sourceRevisionId
-          ? `serpent://source/${request.libraryId}/${request.assetId}?revision=${encodeURIComponent(workerResult.sourceRevisionId)}`
+          ? `keel://source/${request.libraryId}/${request.assetId}?revision=${encodeURIComponent(workerResult.sourceRevisionId)}`
           : workerResult.artifactId
-            ? `serpent://${workerResult.playbackMode === "proxy" ? "proxy" : "preview"}/${request.libraryId}/${workerResult.artifactId}`
+            ? `keel://${workerResult.playbackMode === "proxy" ? "proxy" : "preview"}/${request.libraryId}/${workerResult.artifactId}`
             : undefined
         : undefined;
     const posterUrl = workerResult.posterArtifactId
-      ? `serpent://preview/${request.libraryId}/${workerResult.posterArtifactId}`
+      ? `keel://preview/${request.libraryId}/${workerResult.posterArtifactId}`
       : undefined;
     if (
       workerResult.status === "failed" ||

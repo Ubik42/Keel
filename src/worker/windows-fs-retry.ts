@@ -123,7 +123,7 @@ export interface RemoveLibraryRootOptions extends RemoveWithRetryOptions {
 /**
  * Delete a library root after the Worker has closed SQLite and watchers.
  *
- * Windows Chromium (`serpent://` thumbnails), Defender, and Explorer commonly
+ * Windows Chromium (`keel://` thumbnails), Defender, and Explorer commonly
  * keep a child handle for a few hundred milliseconds after close. A single
  * `rmSync` then throws EPERM/ENOTEMPTY and leaves a half-deleted tree.
  * Retry, then rename the root aside so the original path is gone even if the

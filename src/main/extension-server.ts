@@ -137,6 +137,13 @@ function jsonResponse(
 }
 
 function headerValue(headers: http.IncomingHttpHeaders, name: string): string | undefined {
+  const current = singleHeaderValue(headers, name);
+  if (current !== undefined || !name.startsWith('x-keel-')) return current;
+  // Extensions built before the rename send x-serpent-* headers.
+  return singleHeaderValue(headers, `x-serpent-${name.slice('x-keel-'.length)}`);
+}
+
+function singleHeaderValue(headers: http.IncomingHttpHeaders, name: string): string | undefined {
   const raw = headers[name];
   if (typeof raw === 'string') return raw;
   if (Array.isArray(raw) && typeof raw[0] === 'string') return raw[0];
@@ -176,15 +183,15 @@ function parseUploadMetadata(headers: http.IncomingHttpHeaders):
     revealInLibrary: boolean;
   }
   | { ok: false; reason: string } {
-  const kindRaw = headerValue(headers, 'x-serpent-kind');
-  const sourcePageUrl = decodeHeaderText(headerValue(headers, 'x-serpent-source-page-url'));
-  const mediaUrl = decodeHeaderText(headerValue(headers, 'x-serpent-media-url'));
-  const localFileUpload = headerValue(headers, 'x-serpent-local-file') === 'true';
+  const kindRaw = headerValue(headers, 'x-keel-kind');
+  const sourcePageUrl = decodeHeaderText(headerValue(headers, 'x-keel-source-page-url'));
+  const mediaUrl = decodeHeaderText(headerValue(headers, 'x-keel-media-url'));
+  const localFileUpload = headerValue(headers, 'x-keel-local-file') === 'true';
   const contentType = normalizeContentType(
-    headerValue(headers, 'x-serpent-content-type') ?? headerValue(headers, 'content-type'),
+    headerValue(headers, 'x-keel-content-type') ?? headerValue(headers, 'content-type'),
   );
-  const filename = decodeHeaderText(headerValue(headers, 'x-serpent-filename')) ?? 'download';
-  const targetRaw = headerValue(headers, 'x-serpent-target-folder-id');
+  const filename = decodeHeaderText(headerValue(headers, 'x-keel-filename')) ?? 'download';
+  const targetRaw = headerValue(headers, 'x-keel-target-folder-id');
 
   if (kindRaw !== 'image' && kindRaw !== 'video') {
     return { ok: false, reason: 'invalid kind' };
@@ -200,7 +207,7 @@ function parseUploadMetadata(headers: http.IncomingHttpHeaders):
   }
   if (!contentType || contentType === 'application/octet-stream') {
     // octet-stream alone is too vague; require an explicit media content-type header.
-    if (!headerValue(headers, 'x-serpent-content-type')) {
+    if (!headerValue(headers, 'x-keel-content-type')) {
       return { ok: false, reason: 'missing content type' };
     }
   }
@@ -226,11 +233,11 @@ function parseUploadMetadata(headers: http.IncomingHttpHeaders):
     filename: filename.trim() || 'download',
     targetFolderId,
     focusAppAfterSave: parseBooleanHeader(
-      headerValue(headers, 'x-serpent-focus-app-after-save'),
+      headerValue(headers, 'x-keel-focus-app-after-save'),
       true,
     ),
     revealInLibrary: parseBooleanHeader(
-      headerValue(headers, 'x-serpent-reveal-in-library'),
+      headerValue(headers, 'x-keel-reveal-in-library'),
       true,
     ),
   };
@@ -265,7 +272,7 @@ function sizeLimitTransform(maxBytes: number): {
 /**
  * Starts a lightweight HTTP server bound to 127.0.0.1. Accepts:
  *
- *   GET  /ping         → 200 {"app":"Serpent"}
+ *   GET  /ping         → 200 {"app":"Keel"}
  *   GET  /folders      → 200 {"folders":[...]} on success
  *   POST /save         → 202 on valid save-intent JSON (desktop re-download)
  *   POST /save-upload  → 202 after browser-fetched bytes are staged (preferred)
@@ -292,7 +299,7 @@ export async function createExtensionServer(
     }
 
     if (req.method === 'GET' && req.url === '/ping') {
-      jsonResponse(res, 200, { app: 'Serpent' });
+      jsonResponse(res, 200, { app: 'Keel' });
       return;
     }
 

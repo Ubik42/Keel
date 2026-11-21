@@ -3,10 +3,10 @@
  *
  * 预览只描述「用当前帧范围 + 帧率播放」，与导入本身无关：这里全部是纯函数，
  * 便于单测覆盖帧推进 / 范围绑定 / 帧率换档；真实解码由 <img> 走既有
- * `serpent://` 通道（人类验收项）。
+ * `keel://` 通道（人类验收项）。
  *
  * 两种来源：
- * - `assets`：导入后成组，帧已经是库内资产，走 `serpent://source/<libraryId>/<assetId>`。
+ * - `assets`：导入后成组，帧已经是库内资产，走 `keel://source/<libraryId>/<assetId>`。
  * - `pending`：导入前的候选帧，Renderer 只拿得到 Main 发出的不透明 offerId 与帧号，
  *   路径由 Main 解析。候选帧按既有约定「第 offset 帧 = firstFrame + offset」编号，
  *   因此这里不需要把上万帧展开成数组。
@@ -166,14 +166,14 @@ export function sequencePreviewFrameUrl(
 
 /**
  * 已入库帧（导入后成组）：走既有 source 通道。必须带 `revision`——Main 的
- * `serpent://source` 只认「库 + 资产 + 修订」三元组，缺 revision 直接 400。
+ * `keel://source` 只认「库 + 资产 + 修订」三元组，缺 revision 直接 400。
  */
 export function importedSequenceFrameUrl(
   libraryId: string,
   assetId: string,
   revisionId: string,
 ): string {
-  return `serpent://source/${libraryId}/${assetId}?revision=${encodeURIComponent(revisionId)}`;
+  return `keel://source/${libraryId}/${assetId}?revision=${encodeURIComponent(revisionId)}`;
 }
 
 /**
@@ -185,5 +185,5 @@ export function pendingSequenceFrameUrl(
   sequenceIndex: number,
   frameNumber: number,
 ): string {
-  return `serpent://import-frame/${encodeURIComponent(offerId)}/${sequenceIndex}/${frameNumber}`;
+  return `keel://import-frame/${encodeURIComponent(offerId)}/${sequenceIndex}/${frameNumber}`;
 }

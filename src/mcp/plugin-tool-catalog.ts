@@ -48,7 +48,7 @@ export type PluginMcpToolDefinition = {
 
 export function pluginMcpToolName(pluginId: string, commandId: string): string {
   return [
-    'serpent_plugin',
+    'keel_plugin',
     pluginIdSchema.parse(pluginId).replace(/[^a-zA-Z0-9]+/g, '_'),
     pluginLocalIdSchema.parse(commandId).replace(/[^a-zA-Z0-9]+/g, '_'),
   ].join('_');

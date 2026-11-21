@@ -13,7 +13,7 @@ type StartupApi = {
 };
 
 function startupApi(): StartupApi | undefined {
-  return (window as Window & { serpent?: { startup?: StartupApi } }).serpent?.startup;
+  return (window as Window & { keel?: { startup?: StartupApi } }).keel?.startup;
 }
 
 export function useStartupPreferences(): {

@@ -263,13 +263,13 @@ describe('adapters apply the shared request policy', () => {
     const adapter = new AnthropicVendorAdapter('key', model, (async (_url, init) => {
       analyzed = JSON.parse(String(init?.body)) as Record<string, unknown>;
       return new Response(JSON.stringify({
-        content: [{ type: 'tool_use', name: 'serpent_classify_asset', input: { tags: ['a'] } }],
+        content: [{ type: 'tool_use', name: 'keel_classify_asset', input: { tags: ['a'] } }],
       }), { status: 200 });
     }) as typeof fetch, baseUrl);
     await adapter.analyze(request);
 
     const fetchFn = vi.fn<typeof fetch>().mockResolvedValue(new Response(JSON.stringify({
-      content: [{ type: 'tool_use', name: 'serpent_prepare_search', input: {
+      content: [{ type: 'tool_use', name: 'keel_prepare_search', input: {
         keywords: ['city'], synonyms: [], exclusions: [], filters: [], sort: null,
       } }],
     }), { status: 200 }));
@@ -279,7 +279,7 @@ describe('adapters apply the shared request policy', () => {
     const searched = JSON.parse(String(fetchFn.mock.calls[0]?.[1]?.body)) as Record<string, unknown>;
     expect(analyzed?.thinking).toEqual({ type: 'disabled' });
     expect(searched.thinking).toEqual(analyzed?.thinking);
-    expect(searched.tool_choice).toEqual({ type: 'tool', name: 'serpent_prepare_search' });
+    expect(searched.tool_choice).toEqual({ type: 'tool', name: 'keel_prepare_search' });
   });
 
   it('omits thinking for an official Anthropic analysis', async () => {
@@ -287,7 +287,7 @@ describe('adapters apply the shared request policy', () => {
     const adapter = new AnthropicVendorAdapter('key', 'claude-sonnet-4-20250514', (async (_url, init) => {
       sent = JSON.parse(String(init?.body)) as Record<string, unknown>;
       return new Response(JSON.stringify({
-        content: [{ type: 'tool_use', name: 'serpent_classify_asset', input: { tags: ['a'] } }],
+        content: [{ type: 'tool_use', name: 'keel_classify_asset', input: { tags: ['a'] } }],
       }), { status: 200 });
     }) as typeof fetch);
     await adapter.analyze(request);

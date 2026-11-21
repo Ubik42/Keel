@@ -175,12 +175,12 @@ export async function importFilesThroughBridge(
       }): Promise<Result<{ assets: unknown[] }>>;
     };
     const bridge = globalThis as typeof globalThis & {
-      serpent: { library: LibraryApi };
+      keel: { library: LibraryApi };
     };
-    const opened = await bridge.serpent.library.listOpen();
+    const opened = await bridge.keel.library.listOpen();
     const libraryId = opened.value?.[0]?.libraryId;
     if (!opened.ok || !libraryId) throw new Error('Expected an open library.');
-    const folders = await bridge.serpent.library.listFolders({ libraryId });
+    const folders = await bridge.keel.library.listFolders({ libraryId });
     if (!folders.ok) throw new Error('Could not list folders.');
     const targetFolderId = folderName === undefined
       ? undefined
@@ -188,7 +188,7 @@ export async function importFilesThroughBridge(
     if (folderName !== undefined && !targetFolderId) {
       throw new Error(`Expected folder ${folderName}.`);
     }
-    const imported = await bridge.serpent.library.importFiles({
+    const imported = await bridge.keel.library.importFiles({
       libraryId,
       ...(targetFolderId ? { targetFolderId } : {}),
     });

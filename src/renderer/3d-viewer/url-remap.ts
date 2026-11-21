@@ -2,12 +2,12 @@
  * Companion-texture URL remapping for model previews (spec 3D-12 / §6).
  *
  * three loaders resolve external texture references relative to the model
- * URL. Model sources are `serpent://source/<libraryId>/<assetId>` — a flat
+ * URL. Model sources are `keel://source/<libraryId>/<assetId>` — a flat
  * asset URL with no directory — so relative references would hit the
  * protocol's 400 malformed-path rejection. Instead the renderer rewrites
  * every external reference through the companion index the Worker built for
  * the model's directory (`model.resolve-companions`): relative path →
- * `serpent://source/<libraryId>/<assetId>?revision=<revisionId>`. The
+ * `keel://source/<libraryId>/<assetId>?revision=<revisionId>`. The
  * `preview` host serves derived artifacts only; companion assets are served
  * by the `source` host (which validates the revision token).
  *
@@ -20,7 +20,7 @@
  * - FBX fallback (FBXLoader): material textures matched by `texture.name`
  *   (the FBX attribute name), exact path or basename.
  *
- * References that are already absolute (serpent://, http(s), data:) pass
+ * References that are already absolute (keel://, http(s), data:) pass
  * through untouched; unmatched relative references are left as-is and
  * degrade to an untextured material (3D-12: 解析不到时材质降级并提示).
  *
@@ -29,18 +29,18 @@
 
 import type { ModelCompanionAsset } from '../../shared/model-companions';
 
-/** Build a `serpent://preview/<libraryId>/<artifactId>` artifact URL. */
+/** Build a `keel://preview/<libraryId>/<artifactId>` artifact URL. */
 export function serpentPreviewUrl(libraryId: string, artifactId: string): string {
-  return `serpent://preview/${libraryId}/${artifactId}`;
+  return `keel://preview/${libraryId}/${artifactId}`;
 }
 
-/** Build a `serpent://source/<libraryId>/<assetId>?revision=<id>` source URL. */
+/** Build a `keel://source/<libraryId>/<assetId>?revision=<id>` source URL. */
 export function serpentSourceUrl(
   libraryId: string,
   assetId: string,
   revisionId?: string,
 ): string {
-  const base = `serpent://source/${libraryId}/${assetId}`;
+  const base = `keel://source/${libraryId}/${assetId}`;
   return revisionId ? `${base}?revision=${encodeURIComponent(revisionId)}` : base;
 }
 
@@ -70,7 +70,7 @@ function isAbsoluteOrDataUrl(url: string): boolean {
 
 /**
  * Remap one relative texture reference through the companion map.
- * Returns the `serpent://source` URL, or null when the reference is
+ * Returns the `keel://source` URL, or null when the reference is
  * absolute (leave untouched) or unmatched (leave as-is → degrade).
  */
 export function remapCompanionUrl(input: {
@@ -122,7 +122,7 @@ export type GltfJsonLike = {
 
 /**
  * Rewrite `.gltf` JSON so external images/buffers load through
- * `serpent://source` companion URLs. Only `uri` strings are touched;
+ * `keel://source` companion URLs. Only `uri` strings are touched;
  * embedded base64/data references and everything else pass through.
  */
 export function rewriteGltfUris(
@@ -221,7 +221,7 @@ export function extractMtlTexturePath(rest: string): string | null {
 
 /**
  * Rewrite texture references in MTL text. Options (e.g. `-s 1 1 1`) are
- * preserved; only the path tail is swapped for its serpent://preview URL.
+ * preserved; only the path tail is swapped for its keel://preview URL.
  */
 export function rewriteMtlTextureRefs(
   mtlText: string,

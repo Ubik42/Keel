@@ -56,7 +56,7 @@ const resultPath = process.env.KEEL_LARGE_LIBRARY_E2E_RESULT_PATH ?? "";
 // When set, sample the renderer main thread during every jump (CDP Profiler)
 // and write one .cpuprofile per jump for function-level hotspot attribution.
 const profileDir = process.env.KEEL_LARGE_LIBRARY_E2E_PROFILE_DIR ?? "";
-// CDP Network events can expose serpent:// requests that Chromium omits from
+// CDP Network events can expose keel:// requests that Chromium omits from
 // PerformanceResourceTiming. Opt in for diagnostic runs only.
 const networkTraceEnabled = process.env.KEEL_LARGE_LIBRARY_E2E_NETWORK_TRACE === "1";
 // When set, record a devtools.timeline trace covering all jumps and write it
@@ -247,7 +247,7 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
         });
         observer.observe({ entryTypes: ["longtask"] });
       }
-      // Stage breakdown needs every serpent://preview fetch of the current
+      // Stage breakdown needs every keel://preview fetch of the current
       // jump; the default 250-entry buffer overflows across jumps.
       performance.setResourceTimingBufferSize(8192);
       const capture = ((event: CustomEvent) => {
@@ -256,9 +256,9 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
           detail: event.detail,
         });
       }) as EventListener;
-      globalThis.addEventListener("serpent:e2e-browse-page", capture);
-      globalThis.addEventListener("serpent:e2e-browse-result", capture);
-      globalThis.addEventListener("serpent:e2e-browse-request", capture);
+      globalThis.addEventListener("keel:e2e-browse-page", capture);
+      globalThis.addEventListener("keel:e2e-browse-result", capture);
+      globalThis.addEventListener("keel:e2e-browse-request", capture);
     });
 
     let cdp: CDPSession | null = null;
@@ -279,7 +279,7 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
         timestamp: number;
         wallTime: number;
       }) => {
-        if (!/^serpent:\/\/(?:preview|source|proxy)\//.test(event.request.url)) return;
+        if (!/^keel:\/\/(?:preview|source|proxy)\//.test(event.request.url)) return;
         networkRequests.set(event.requestId, {
           artifactId: event.request.url.slice(event.request.url.lastIndexOf("/") + 1).split("?")[0] ?? "",
           startedEpochMs: event.wallTime * 1_000,
@@ -416,8 +416,8 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
           const canvasElement = document.querySelector<HTMLElement>(".workspace-canvas");
           if (!canvasElement) throw new Error("Missing workspace canvas.");
           const diagnostics = (globalThis as unknown as {
-            serpent: { e2e: { getRequestCount: (type: "asset.search.request") => number } };
-          }).serpent.e2e;
+            keel: { e2e: { getRequestCount: (type: "asset.search.request") => number } };
+          }).keel.e2e;
           const searchRequestsBefore = diagnostics.getRequestCount("asset.search.request");
           const eventRoot = globalThis as typeof globalThis & {
             __serpentBrowsePages?: unknown[];
@@ -438,7 +438,7 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
             defaultIcons: number;
             uncoveredLayoutIds: number;
           }> = [];
-          // Keep only this jump's serpent://preview resource entries so the
+          // Keep only this jump's keel://preview resource entries so the
           // stage breakdown never mixes jumps (or the initial open).
           performance.clearResourceTimings();
           // Trace anchor: blink.user_timing surfaces these in CDP traces so the
@@ -664,7 +664,7 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
                 // Chromium does not always expose timing for custom protocols.
                 const fetchStages = performance.getEntriesByType("resource")
                   .filter((entry): entry is PerformanceResourceTiming =>
-                    entry.name.startsWith("serpent://preview/"))
+                    entry.name.startsWith("keel://preview/"))
                   .filter((entry) => entry.startTime >= startedAt)
                   .map((entry) => ({
                     artifactId: entry.name.slice(entry.name.lastIndexOf("/") + 1),

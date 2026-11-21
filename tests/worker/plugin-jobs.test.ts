@@ -28,7 +28,7 @@ describe('plugin job repository via LibraryService', () => {
     const packageHash = 'a'.repeat(64);
     const enqueued = service.enqueuePluginJob({
       libraryId: library.libraryId,
-      ownerPluginId: 'com.serpent.job-probe',
+      ownerPluginId: 'com.keel.job-probe',
       ownerPackageHash: packageHash,
       ownerPluginInstanceId: 'instance-01',
       ownerScope: 'library',
@@ -39,7 +39,7 @@ describe('plugin job repository via LibraryService', () => {
     });
     const otherInstanceJob = service.enqueuePluginJob({
       libraryId: library.libraryId,
-      ownerPluginId: 'com.serpent.job-probe',
+      ownerPluginId: 'com.keel.job-probe',
       ownerPackageHash: packageHash,
       ownerPluginInstanceId: 'instance-02',
       ownerScope: 'library',
@@ -53,7 +53,7 @@ describe('plugin job repository via LibraryService', () => {
 
     const claimed = service.claimNextPluginJob({
       libraryId: library.libraryId,
-      ownerPluginId: 'com.serpent.job-probe',
+      ownerPluginId: 'com.keel.job-probe',
       ownerPackageHash: packageHash,
       ownerPluginInstanceId: 'instance-01',
       ownerScope: 'library',
@@ -66,7 +66,7 @@ describe('plugin job repository via LibraryService', () => {
     const progressed = service.reportPluginJobProgress({
       libraryId: library.libraryId,
       jobId: enqueued.jobId,
-      ownerPluginId: 'com.serpent.job-probe',
+      ownerPluginId: 'com.keel.job-probe',
       ownerPackageHash: packageHash,
       ownerPluginInstanceId: 'instance-01',
       ownerScope: 'library',
@@ -82,7 +82,7 @@ describe('plugin job repository via LibraryService', () => {
     expect(service.reportPluginJobProgress({
       libraryId: library.libraryId,
       jobId: enqueued.jobId,
-      ownerPluginId: 'com.serpent.job-probe',
+      ownerPluginId: 'com.keel.job-probe',
       ownerPackageHash: packageHash,
       ownerPluginInstanceId: 'instance-02',
       ownerScope: 'library',
@@ -96,7 +96,7 @@ describe('plugin job repository via LibraryService', () => {
       .toBe('processing');
     expect(service.claimNextPluginJob({
       libraryId: library.libraryId,
-      ownerPluginId: 'com.serpent.job-probe',
+      ownerPluginId: 'com.keel.job-probe',
       ownerPackageHash: packageHash,
       ownerPluginInstanceId: 'instance-01',
       ownerScope: 'library',
@@ -104,7 +104,7 @@ describe('plugin job repository via LibraryService', () => {
     })).toBeNull();
     expect(service.claimNextPluginJob({
       libraryId: library.libraryId,
-      ownerPluginId: 'com.serpent.job-probe',
+      ownerPluginId: 'com.keel.job-probe',
       ownerPackageHash: packageHash,
       ownerPluginInstanceId: 'instance-02',
       ownerScope: 'library',
@@ -113,7 +113,7 @@ describe('plugin job repository via LibraryService', () => {
     expect(service.completePluginJob({
       libraryId: library.libraryId,
       jobId: otherInstanceJob.jobId,
-      ownerPluginId: 'com.serpent.job-probe',
+      ownerPluginId: 'com.keel.job-probe',
       ownerPackageHash: packageHash,
       ownerPluginInstanceId: 'instance-02',
       ownerScope: 'library',
@@ -124,7 +124,7 @@ describe('plugin job repository via LibraryService', () => {
     const completed = service.completePluginJob({
       libraryId: library.libraryId,
       jobId: enqueued.jobId,
-      ownerPluginId: 'com.serpent.job-probe',
+      ownerPluginId: 'com.keel.job-probe',
       ownerPackageHash: packageHash,
       ownerPluginInstanceId: 'instance-01',
       ownerScope: 'library',
@@ -136,7 +136,7 @@ describe('plugin job repository via LibraryService', () => {
 
     expect(() => service.enqueuePluginJob({
       libraryId: library.libraryId,
-      ownerPluginId: 'com.serpent.job-probe',
+      ownerPluginId: 'com.keel.job-probe',
       ownerPackageHash: packageHash,
       ownerPluginInstanceId: 'global-instance',
       ownerScope: 'global',
@@ -147,7 +147,7 @@ describe('plugin job repository via LibraryService', () => {
 
     const second = service.enqueuePluginJob({
       libraryId: library.libraryId,
-      ownerPluginId: 'com.serpent.job-probe',
+      ownerPluginId: 'com.keel.job-probe',
       ownerPackageHash: packageHash,
       ownerPluginInstanceId: 'instance-01',
       ownerScope: 'library',
@@ -158,7 +158,7 @@ describe('plugin job repository via LibraryService', () => {
     });
     const pausedCount = service.pausePluginJobsForOwners({
       libraryId: library.libraryId,
-      owners: [{ pluginId: 'com.serpent.job-probe', packageHash }],
+      owners: [{ pluginId: 'com.keel.job-probe', packageHash }],
     });
     expect(pausedCount).toBe(1);
     const listed = service.listPluginJobs(library.libraryId);
@@ -175,7 +175,7 @@ describe('plugin job repository via LibraryService', () => {
     const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Plugin Job Controls', selectedParentPath: root });
     const packageHash = 'b'.repeat(64);
     const owner = {
-      ownerPluginId: 'com.serpent.job-controls',
+      ownerPluginId: 'com.keel.job-controls',
       ownerPackageHash: packageHash,
       ownerPluginInstanceId: 'instance-controls',
       ownerScope: 'library' as const,
@@ -248,7 +248,7 @@ describe('plugin job repository via LibraryService', () => {
     const library = crashed.createLibrary({ storageLayout: 'assets', displayName: 'Plugin Job Recovery', selectedParentPath: root });
     const packageHash = 'c'.repeat(64);
     const owner = {
-      ownerPluginId: 'com.serpent.job-recovery',
+      ownerPluginId: 'com.keel.job-recovery',
       ownerPackageHash: packageHash,
       ownerPluginInstanceId: 'instance-recovery',
       ownerScope: 'library' as const,
@@ -372,7 +372,7 @@ describe('plugin job repository via LibraryService', () => {
     const library = crashed.createLibrary({ storageLayout: 'assets', displayName: 'Plugin Job Inactive Recovery', selectedParentPath: root });
     const packageHash = 'd'.repeat(64);
     const owner = {
-      ownerPluginId: 'com.serpent.job-recovery',
+      ownerPluginId: 'com.keel.job-recovery',
       ownerPackageHash: packageHash,
       ownerPluginInstanceId: 'instance-recovery',
       ownerScope: 'library' as const,
@@ -457,7 +457,7 @@ describe('plugin job repository via LibraryService', () => {
     const packageHash = 'e'.repeat(64);
     const job = service.enqueuePluginJob({
       libraryId: library.libraryId,
-      ownerPluginId: 'com.serpent.job-same-session',
+      ownerPluginId: 'com.keel.job-same-session',
       ownerPackageHash: packageHash,
       ownerPluginInstanceId: 'instance-same-session',
       ownerScope: 'library',

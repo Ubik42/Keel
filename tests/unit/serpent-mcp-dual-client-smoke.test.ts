@@ -78,10 +78,10 @@ describe('Serpent MCP dual-client smoke (Phase C)', () => {
     expect(listed.tools.map((tool) => tool.name).sort()).toEqual([...catalogNames].sort());
     // Requestable tools stay discoverable while the Permission Broker owns the
     // ask/allow decision at call time.
-    expect(listed.tools.map((tool) => tool.name)).toContain('serpent_tag_create');
+    expect(listed.tools.map((tool) => tool.name)).toContain('keel_tag_create');
 
     const called = await client.callTool({
-      name: 'serpent_library_inspect',
+      name: 'keel_library_inspect',
       arguments: { libraryId: 'library-1' },
     });
     expect(called.isError).not.toBe(true);
@@ -114,9 +114,9 @@ describe('Serpent MCP dual-client smoke (Phase C)', () => {
     ]);
 
     const listed = await client.listTools();
-    expect(listed.tools.some((tool) => tool.name === 'serpent_asset_search')).toBe(true);
+    expect(listed.tools.some((tool) => tool.name === 'keel_asset_search')).toBe(true);
     const search = await client.callTool({
-      name: 'serpent_asset_search',
+      name: 'keel_asset_search',
       arguments: { libraryId: 'library-1', query: null, limit: 10 },
     });
     expect(search.isError).not.toBe(true);

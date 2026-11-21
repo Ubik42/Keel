@@ -40,7 +40,7 @@ export type TextViewerControlsHandle = {
 
 /**
  * Numbered text viewer/editor (Serpent-sh7). Content is loaded via capped Worker
- * IPC — never via unbounded serpent://source fetch.
+ * IPC — never via unbounded keel://source fetch.
  */
 let persistTextViewerWrap = true;
 let persistMarkdownPreview = true;
@@ -51,7 +51,7 @@ export function resetTextViewerModeForTests(): void {
 }
 
 function shellApi(): SerpentShellApi | undefined {
-  return (window as Window & { serpent?: { shell?: SerpentShellApi } }).serpent?.shell;
+  return (window as Window & { keel?: { shell?: SerpentShellApi } }).keel?.shell;
 }
 
 export const TextViewerControls = forwardRef<

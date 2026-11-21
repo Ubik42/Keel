@@ -8,11 +8,11 @@
  * - `.glb`              → GLTFLoader (embedded textures; also the FBX→GLB
  *                         conversion product from slice B);
  * - `.gltf`             → GLTFLoader with `images[].uri` / `buffers[].uri`
- *                         rewritten to serpent://preview URLs;
+ *                         rewritten to keel://preview URLs;
  * - `.fbx`              → `convertFbx()` first (ufbx → GLB, slice B); on
  *                         `failed` the FBXLoader fallback runs, materials are
  *                         upgraded Phong→Standard and failed texture loads are
- *                         re-pointed at remapped serpent://preview URLs;
+ *                         re-pointed at remapped keel://preview URLs;
  * - `.obj`              → MTL text fetched through the companion map and
  *                         rewritten (map_* refs), parsed by MTLLoader; meshes
  *                         upgraded Phong→Standard;
@@ -105,7 +105,7 @@ export interface ModelLoaderDeps {
 
 export interface LoadModelSceneInput {
   readonly format: ModelFormat;
-  /** `serpent://source/...` URL of the model asset. */
+  /** `keel://source/...` URL of the model asset. */
   readonly sourceUrl: string;
   readonly libraryId: string;
   /** Companion index from `model.resolve-companions`. */
@@ -208,7 +208,7 @@ async function loadFbx(input: LoadModelSceneInput): Promise<LoadedModelScene> {
     }
   }
   // Fallback path: three's FBXLoader on the source file. Textures referenced
-  // by relative names fail to fetch against serpent://source; remap them
+  // by relative names fail to fetch against keel://source; remap them
   // through the companion index after load (3D-12 degradation).
   const loader = input.deps?.fbx ?? new FBXLoader();
   const root = await loader.loadAsync(input.sourceUrl);
@@ -290,8 +290,8 @@ function enableShadowCasting(root: Group): void {
 /**
  * Upgrade fallback-path materials (FBXLoader / OBJ+MTL emit Phong/Lambert)
  * to MeshStandardMaterial via the slice-D mapping, and re-point texture
- * loads that failed against the flat serpent://source URL at their remapped
- * serpent://preview companions (3D-11 / 3D-12).
+ * loads that failed against the flat keel://source URL at their remapped
+ * keel://preview companions (3D-11 / 3D-12).
  *
  * Shared materials are upgraded once; mesh material references (single or
  * array) are replaced afterwards.

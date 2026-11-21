@@ -310,7 +310,7 @@ function assertSourceWithinLimit(source: string, maxSourceBytes: number): void {
  * Compile a script body, not an ES module. A later Script Runtime may wrap a
  * saved `export default async function` entrypoint before calling this engine.
  */
-export function transpileQuickJsSandboxPrototypeSource(source: string, fileName = 'script.serpent.ts'): string {
+export function transpileQuickJsSandboxPrototypeSource(source: string, fileName = 'script.keel.ts'): string {
   assertSourceIsAllowed(source, fileName);
   const transpiled = ts.transpileModule(source, {
     compilerOptions: {
@@ -351,7 +351,7 @@ function instrumentAsyncFunctions(
   trackIdentifier: string,
 ): string {
   const sourceFile = ts.createSourceFile(
-    'script.serpent.instrumented.js',
+    'script.keel.instrumented.js',
     source,
     ts.ScriptTarget.ES2022,
     true,
@@ -1499,6 +1499,8 @@ export async function runQuickJsSandboxPrototype(
       }
     }
     context.setProp(consoleObject, 'log', log);
+    context.setProp(context.global, 'keel', serpent);
+    // Pre-rename global, kept for saved scripts.
     context.setProp(context.global, 'serpent', serpent);
     context.setProp(context.global, 'console', consoleObject);
     serpent.dispose();
@@ -1510,7 +1512,7 @@ export async function runQuickJsSandboxPrototype(
           transpiledJavaScript,
           promiseTrackerIdentifier,
         ),
-        'script.serpent.js',
+        'script.keel.js',
         { type: 'global' },
       ));
     if (evaluation.error) {

@@ -9,9 +9,9 @@ describe('MCP client config formatters (Serpent-8b5b.5)', () => {
   it('renders the generic JSON config with the bearer header', () => {
     const text = buildMcpClientConfigText('generic-json', ENDPOINT, TOKEN);
     const parsed = JSON.parse(text) as {
-      mcpServers: { serpent: { type: string; url: string; headers: Record<string, string> } };
+      mcpServers: { keel: { type: string; url: string; headers: Record<string, string> } };
     };
-    expect(parsed.mcpServers.serpent).toEqual({
+    expect(parsed.mcpServers.keel).toEqual({
       type: 'streamable-http',
       url: ENDPOINT,
       headers: { Authorization: 'Bearer abc123token' },
@@ -21,15 +21,15 @@ describe('MCP client config formatters (Serpent-8b5b.5)', () => {
   it('renders the mcpServers shape for Claude Code and Cursor', () => {
     for (const [format, type] of [['claude', 'http'], ['cursor', 'streamable-http']] as const) {
       const parsed = JSON.parse(buildMcpClientConfigText(format, ENDPOINT, TOKEN)) as {
-        mcpServers: { serpent: unknown };
+        mcpServers: { keel: unknown };
       };
-      expect(parsed.mcpServers.serpent).toMatchObject({ type, url: ENDPOINT });
+      expect(parsed.mcpServers.keel).toMatchObject({ type, url: ENDPOINT });
     }
   });
 
   it('renders Codex TOML without command/args/cwd', () => {
     const text = buildMcpClientConfigText('codex', ENDPOINT, TOKEN);
-    expect(text).toContain('[mcp_servers.serpent]');
+    expect(text).toContain('[mcp_servers.keel]');
     expect(text).toContain(`url = "${ENDPOINT}"`);
     expect(text).toContain('http_headers = { Authorization = "Bearer abc123token" }');
     expect(text).not.toContain('command');
@@ -49,7 +49,7 @@ describe('MCP client config formatters (Serpent-8b5b.5)', () => {
     expect(text).toContain('initialize');
     expect(text).toContain('tools/list');
     expect(text).toContain('explicit libraryId');
-    expect(text).toContain('serpent_library_list_open');
+    expect(text).toContain('keel_library_list_open');
     expect(text).toContain('mcpServers');
   });
 });

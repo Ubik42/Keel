@@ -100,11 +100,11 @@ test("the image sequence confirm panel shows a statement title and a live frame 
     ).toBeVisible();
 
     // 预览：真实解码的帧。本次流程是「导入完成 → 面板确认成组」，
-    // 因此帧已经是库内资产，走既有 serpent://source 通道。
+    // 因此帧已经是库内资产，走既有 keel://source 通道。
     const preview = dialog.locator('[data-sequence-preview="ready"]');
     await expect(preview).toBeVisible();
     const previewImage = preview.locator("img");
-    await expect(previewImage).toHaveAttribute("src", /^serpent:\/\/source\//);
+    await expect(previewImage).toHaveAttribute("src", /^keel:\/\/source\//);
     await expectDecodedPreview(previewImage);
     await expect(preview.locator(".image-sequence-preview-caption")).toContainText(
       "FPS",

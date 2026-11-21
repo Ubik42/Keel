@@ -52,8 +52,8 @@ async function createFolderViaApi(window: Page, name: string) {
       }): Promise<{ ok: boolean; error?: { message?: string } }>;
     };
     const library = (
-      globalThis as typeof globalThis & { serpent: { library: LibraryApi } }
-    ).serpent.library;
+      globalThis as typeof globalThis & { keel: { library: LibraryApi } }
+    ).keel.library;
     const opened = await library.listOpen();
     const libraryId = opened.value?.[0]?.libraryId;
     if (!opened.ok || !libraryId) throw new Error("Expected an open library.");

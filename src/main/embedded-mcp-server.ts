@@ -760,7 +760,7 @@ export class EmbeddedMcpServer {
     const mcpServer = createSerpentMcpServer({
       backend,
       gateway: this.#gateway,
-      serverName: 'serpent',
+      serverName: 'keel',
       serverVersion: String(AUTOMATION_API_VERSION),
       ...(this.#onCommandCompleted === undefined ? {} : { onCommandCompleted: this.#onCommandCompleted }),
     });

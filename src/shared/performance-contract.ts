@@ -296,7 +296,7 @@ const BACKGROUND_PRIMARY_COMMANDS = new Set([
    * a library/folder switch, so it belongs in a lane that yields.
    *
    * Source/artifact path lookups used to sit on `interactive-control` with
-   * browse. A packaged network session logged ten `serpent://source` resolves
+   * browse. A packaged network session logged ten `keel://source` resolves
    * for one asset; each held the only user-facing slot and made folder clicks
    * look like a frozen mouse. They yield like drag priming.
    */

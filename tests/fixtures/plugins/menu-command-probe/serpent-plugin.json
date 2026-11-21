@@ -1,6 +1,6 @@
 {
   "manifestVersion": 1,
-  "id": "com.serpent.menu-command-probe",
+  "id": "com.keel.menu-command-probe",
   "version": "1.0.0",
   "name": "Menu Command Probe",
   "description": "Fixed test plugin that writes context ids from asset, folder, and collection menu commands.",

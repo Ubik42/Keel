@@ -22,7 +22,7 @@ import type { SerpentShortcutsApi } from "../shared/shortcut-api";
 import { setShortcutRuntime } from "./shortcut-runtime";
 
 type ShortcutsWindow = Window & {
-  serpent?: { shortcuts?: SerpentShortcutsApi };
+  keel?: { shortcuts?: SerpentShortcutsApi };
 };
 
 export type ShortcutSettingsContextValue = {
@@ -49,7 +49,7 @@ const ShortcutSettingsContext =
   createContext<ShortcutSettingsContextValue | null>(null);
 
 function resolveApi(): SerpentShortcutsApi | undefined {
-  return (window as ShortcutsWindow).serpent?.shortcuts;
+  return (window as ShortcutsWindow).keel?.shortcuts;
 }
 
 function rendererPlatform(): ShortcutPlatform {

@@ -102,15 +102,15 @@ async function readMediaJobSummary(window: Page) {
     type Counts = { queued: number; running: number; succeeded: number; failed: number; paused: number; cancelled: number };
     type Result<T> = { ok: true; value: T } | { ok: false; error: { code: string } };
     const bridge = globalThis as typeof globalThis & {
-      serpent: { library: {
+      keel: { library: {
         listOpen(): Promise<Result<Array<{ libraryId: string }>>>;
         getMediaJobSummary(input: { libraryId: string }): Promise<Result<Counts>>;
       } };
     };
-    const opened = await bridge.serpent.library.listOpen();
+    const opened = await bridge.keel.library.listOpen();
     const libraryId = opened.ok ? opened.value[0]?.libraryId : undefined;
     if (!libraryId) throw new Error("No open library while reading job counts.");
-    const result = await bridge.serpent.library.getMediaJobSummary({ libraryId });
+    const result = await bridge.keel.library.getMediaJobSummary({ libraryId });
     if (!result.ok) throw new Error(`Could not read job counts: ${result.error.code}`);
     return result.value;
   });
@@ -125,19 +125,19 @@ async function readMediaJobGroups(window: Page) {
       hasMore: boolean;
     };
     const bridge = globalThis as typeof globalThis & {
-      serpent: { library: {
+      keel: { library: {
         listOpen(): Promise<Result<Array<{ libraryId: string }>>>;
         listMediaJobs(input: { libraryId: string; limit: number; cursor?: JobPage["nextCursor"] }): Promise<Result<JobPage>>;
       } };
     };
-    const opened = await bridge.serpent.library.listOpen();
+    const opened = await bridge.keel.library.listOpen();
     const libraryId = opened.ok ? opened.value[0]?.libraryId : undefined;
     if (!libraryId) throw new Error("No open library while reading job groups.");
     const groups: Record<string, number> = {};
     let cursor: JobPage["nextCursor"] = null;
     let pages = 0;
     do {
-      const result: Result<JobPage> = await bridge.serpent.library.listMediaJobs({
+      const result: Result<JobPage> = await bridge.keel.library.listMediaJobs({
         libraryId,
         limit: 200,
         ...(cursor ? { cursor } : {}),
@@ -223,7 +223,7 @@ test("profile first linked-folder browse with real external images", async () =>
     await window.evaluate(() => {
       type ProgressMark = { phase: string; at: number; filesProcessed: number };
       const target = globalThis as unknown as Window & {
-        serpent?: { library?: { onProgress: (listener: (event: {
+        keel?: { library?: { onProgress: (listener: (event: {
           type: string;
           phase?: string;
           copiesFiles?: boolean;
@@ -232,7 +232,7 @@ test("profile first linked-folder browse with real external images", async () =>
         __linkedProfileMarks?: ProgressMark[];
       };
       target.__linkedProfileMarks = [];
-      target.serpent?.library?.onProgress((event) => {
+      target.keel?.library?.onProgress((event) => {
         if (event.type !== "import.progress" || event.copiesFiles !== false || !event.phase) return;
         target.__linkedProfileMarks?.push({
           phase: event.phase,

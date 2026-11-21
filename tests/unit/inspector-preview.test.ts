@@ -7,7 +7,7 @@ describe("resolveInspectorPreviewSrc", () => {
     expect(resolveInspectorPreviewSrc(
       { thumbnailStatus: "ready", thumbnailArtifactId: "artifact-1" },
       { libraryId: "library-1" },
-    )).toBe("serpent://preview/library-1/artifact-1");
+    )).toBe("keel://preview/library-1/artifact-1");
     expect(resolveInspectorPreviewSrc(
       { thumbnailStatus: "pending", thumbnailArtifactId: null },
       { libraryId: "library-1" },
@@ -32,7 +32,7 @@ describe("resolveInspectorPreviewSrc", () => {
       },
       { libraryId: "library-1" },
     )).toBe(
-      "serpent://source/library-1/asset-1?revision=revision-1",
+      "keel://source/library-1/asset-1?revision=revision-1",
     );
     expect(resolveInspectorPreviewSrc(
       {
@@ -44,7 +44,7 @@ describe("resolveInspectorPreviewSrc", () => {
         thumbnailStatus: "pending",
       },
       { libraryId: "library-1" },
-    )).toBe("serpent://source/library-1/asset-1?revision=revision-1");
+    )).toBe("keel://source/library-1/asset-1?revision=revision-1");
     expect(resolveInspectorPreviewSrc(
       {
         assetId: "asset-1",

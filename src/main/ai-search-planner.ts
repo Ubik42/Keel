@@ -278,7 +278,7 @@ function providerRequest(
         messages: [{ role: 'system', content: system }, { role: 'user', content: input.naturalQuery }],
         response_format: {
           type: 'json_schema',
-          json_schema: { name: 'serpent_search_plan', strict: true, schema: AI_SEARCH_PLAN_JSON_SCHEMA },
+          json_schema: { name: 'keel_search_plan', strict: true, schema: AI_SEARCH_PLAN_JSON_SCHEMA },
         },
       })),
     }];
@@ -295,7 +295,7 @@ function providerRequest(
         text: {
           format: {
             type: 'json_schema',
-            name: 'serpent_search_plan',
+            name: 'keel_search_plan',
             strict: true,
             schema: AI_SEARCH_PLAN_JSON_SCHEMA,
           },
@@ -355,11 +355,11 @@ function providerRequest(
       system,
       messages: [{ role: 'user', content: input.naturalQuery }],
       tools: [{
-        name: 'serpent_prepare_search',
+        name: 'keel_prepare_search',
         description: 'Prepare a constrained Serpent search plan.',
         input_schema: AI_SEARCH_PLAN_JSON_SCHEMA,
       }],
-      tool_choice: { type: 'tool', name: 'serpent_prepare_search' },
+      tool_choice: { type: 'tool', name: 'keel_prepare_search' },
     })),
   }];
 }
@@ -434,7 +434,7 @@ function extractProviderOutput(apiFormat: AiApiFormat, body: unknown): unknown {
     return parseEmbeddedJson(text);
   }
   const content = asArray(record.content);
-  const toolUse = content.map(asRecord).find((item) => item.type === 'tool_use' && item.name === 'serpent_prepare_search');
+  const toolUse = content.map(asRecord).find((item) => item.type === 'tool_use' && item.name === 'keel_prepare_search');
   if (!toolUse) {
     const refused = content.map(asRecord).some((item) => item.type === 'text');
     throw new AiSearchPlannerError(refused ? 'AI_REFUSED' : 'AI_INVALID_RESPONSE',

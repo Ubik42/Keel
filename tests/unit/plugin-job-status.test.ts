@@ -11,7 +11,7 @@ function job(partial: Partial<PluginJobRecord> & Pick<PluginJobRecord, 'jobId' |
     attemptCount: 0,
     errorCode: null,
     errorDetail: null,
-    ownerPluginId: 'com.serpent.job-probe',
+    ownerPluginId: 'com.keel.job-probe',
     ownerPackageHash: 'a'.repeat(64),
     pluginHandlerId: 'tick',
     payload: {},
@@ -48,7 +48,7 @@ describe('summarizePluginJobs', () => {
       cancelled: 1,
       interrupted: 1,
     });
-    expect(summary.jobs[0]?.ownerPluginId).toBe('com.serpent.job-probe');
+    expect(summary.jobs[0]?.ownerPluginId).toBe('com.keel.job-probe');
     expect(summary.jobs[0]?.pluginHandlerId).toBe('tick');
   });
 });

@@ -828,6 +828,6 @@ export async function runPluginMenuCommand(
       result.message,
     );
   } else if (typeof window !== "undefined") {
-    window.dispatchEvent(new CustomEvent("serpent:plugin-command-completed", { detail: { libraryId } }));
+    window.dispatchEvent(new CustomEvent("keel:plugin-command-completed", { detail: { libraryId } }));
   }
 }

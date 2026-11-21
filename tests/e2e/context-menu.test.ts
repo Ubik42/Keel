@@ -709,7 +709,7 @@ test("tag picker searches, survives in-menu scroll, has no back button, and clos
     await window.evaluate(async () => {
       const api = (
         globalThis as typeof globalThis & {
-          serpent: {
+          keel: {
             library: {
               listOpen(): Promise<{
                 ok: boolean;
@@ -722,7 +722,7 @@ test("tag picker searches, survives in-menu scroll, has no back button, and clos
             };
           };
         }
-      ).serpent.library;
+      ).keel.library;
       const open = await api.listOpen();
       const libraryId = open.value?.[0]?.libraryId;
       if (!libraryId) throw new Error("No open library");

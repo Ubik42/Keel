@@ -192,7 +192,7 @@ test("generates a decoded thumbnail and keeps asset viewer context coherent", as
     await expectImageDecoded(thumbnail);
     await expect
       .poll(() => thumbnail.getAttribute("src"))
-      .toMatch(/^serpent:\/\/preview\//);
+      .toMatch(/^keel:\/\/preview\//);
     // Islands justified slots fill the frame (cover) so rounded corners do not
     // show a 1–2px letterbox. The inspector preview below stays contain.
     expect(
@@ -264,7 +264,7 @@ test("generates a decoded thumbnail and keeps asset viewer context coherent", as
       };
       HTMLImageElement.prototype.decode = function gatedDecode() {
         const source = this.getAttribute("src") ?? "";
-        if (!source.startsWith("serpent://source/")) {
+        if (!source.startsWith("keel://source/")) {
           return originalDecode.call(this);
         }
         gate.fullDecodeCalls += 1;
@@ -316,7 +316,7 @@ test("generates a decoded thumbnail and keeps asset viewer context coherent", as
         if (!region) return;
         const images = [...region.querySelectorAll<HTMLImageElement>("img.preview-image")];
         const placeholder = images.find((image) =>
-          image.getAttribute("src")?.startsWith("serpent://preview/"),
+          image.getAttribute("src")?.startsWith("keel://preview/"),
         );
         if (placeholder && trace.firstPlaceholder === null) {
           trace.firstPlaceholder = placeholder;
@@ -343,7 +343,7 @@ test("generates a decoded thumbnail and keeps asset viewer context coherent", as
         trace.startedFromDecodedPlaceholder = true;
         trace.samples.push({ visibleDecodedImages });
         const full = images.find((image) =>
-          image.getAttribute("src")?.startsWith("serpent://source/"),
+          image.getAttribute("src")?.startsWith("keel://source/"),
         );
         const fullStyle = full ? getComputedStyle(full) : null;
         const fullVisible = full !== undefined &&
@@ -679,7 +679,7 @@ test("generates a decoded thumbnail and keeps asset viewer context coherent", as
     await expectImageDecoded(svgPreviewImage);
     await expect
       .poll(() => svgPreviewImage.getAttribute("src"))
-      .toContain("serpent://source/");
+      .toContain("keel://source/");
     await window.keyboard.press("Escape");
     await expect(svgPreview).toBeHidden();
 
@@ -945,7 +945,7 @@ test("repairs a historical video preview after a full process restart", async ()
           window.evaluate(async () => {
             const api = (
               globalThis as typeof globalThis & {
-                serpent: {
+                keel: {
                   library: {
                     listOpen(): Promise<{
                       ok: boolean;
@@ -960,7 +960,7 @@ test("repairs a historical video preview after a full process restart", async ()
                   };
                 };
               }
-            ).serpent.library;
+            ).keel.library;
             const opened = await api.listOpen();
             const libraryId = opened.value?.[0]?.libraryId;
             if (!opened.ok || !libraryId) return null;

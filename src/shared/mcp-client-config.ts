@@ -18,7 +18,7 @@ export function buildMcpClientConfigText(
     case 'cursor':
       return JSON.stringify({
         mcpServers: {
-          serpent: {
+          keel: {
             // Claude Code names Streamable HTTP servers `http`.
             type: format === 'claude' ? 'http' : 'streamable-http',
             url: endpoint,
@@ -28,7 +28,7 @@ export function buildMcpClientConfigText(
       }, null, 2);
     case 'codex':
       return [
-        '[mcp_servers.serpent]',
+        '[mcp_servers.keel]',
         `url = "${endpoint}"`,
         `http_headers = { Authorization = "${authorization}" }`,
         '',
@@ -51,7 +51,7 @@ export function buildMcpAgentConnectionText(
 ): string {
   const config = buildMcpClientConfigText(format, endpoint, token);
   return [
-    'Serpent MCP connection',
+    'Keel MCP connection',
     '',
     `Endpoint: ${endpoint}`,
     'Transport: Streamable HTTP',
@@ -64,9 +64,9 @@ export function buildMcpAgentConnectionText(
     '',
     'Agent instructions:',
     '- Connect with Streamable HTTP and call initialize, then tools/list.',
-    '- Call serpent_library_list_open or serpent_library_list_recent to find a libraryId.',
+    '- Call keel_library_list_open or keel_library_list_recent to find a libraryId.',
     '- Include that explicit libraryId in every library-scoped tool call; do not assume the desktop focus library is the target.',
     '- Critical operations return an exact challenge and require a second confirmation call.',
-    '- Keep this Bearer token secret. Revoke the client in Serpent settings when it is no longer trusted.',
+    '- Keep this Bearer token secret. Revoke the client in Keel settings when it is no longer trusted.',
   ].join('\n');
 }

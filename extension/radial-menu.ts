@@ -35,7 +35,7 @@ import type { SaveIntent } from './save-client';
 import { showSaveBubble } from './save-bubble';
 
 /**
- * Serpent-c0ml / REQ-EXT-005 思维导图树状拖放保存菜单。
+ * Keel-c0ml / REQ-EXT-005 思维导图树状拖放保存菜单。
  * 规格：docs/internal/ui/0002-extension-drag-radial-save-menu.md（v7）。
  * 命中走矩形几何（radial-menu-model）；面板 pointer-events:none，不拦截原生拖拽。
  */
@@ -202,9 +202,9 @@ const STYLE_TEXT = `
     border: 1px solid rgba(255, 255, 255, 0.14);
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.34);
     overflow: visible;
-    animation: serpent-tree-in 140ms ease-out;
+    animation: keel-tree-in 140ms ease-out;
   }
-  @keyframes serpent-tree-in {
+  @keyframes keel-tree-in {
     from { transform: scale(0.94); opacity: 0; }
     to { transform: scale(1); opacity: 1; }
   }
@@ -443,7 +443,7 @@ let navDwellTimer = 0;
 function ensureShadowRoot(): ShadowRoot {
   if (shadowRoot) return shadowRoot;
   const host = document.createElement('div');
-  host.setAttribute('data-serpent-radial-menu', 'true');
+  host.setAttribute('data-keel-radial-menu', 'true');
   Object.assign(host.style, {
     position: 'fixed',
     left: '0',
@@ -480,7 +480,7 @@ function currentItems(): TreeItem[] {
 function currentParent(): TreeParentInfo {
   if (!state) {
     return {
-      label: 'Serpent',
+      label: 'Keel',
       path: ROOT_FOLDER_PATH,
       folderId: null,
       backTarget: { kind: 'root' },
@@ -825,7 +825,7 @@ async function requestSave(
       return;
     }
     const response = await sendRuntimeMessage<SaveResponse>({
-      type: 'serpent-local-save-request',
+      type: 'keel-local-save-request',
       ...localUpload,
       targetFolderId,
     });
@@ -840,7 +840,7 @@ async function requestSave(
     targetFolderId,
   };
   const response = await sendRuntimeMessage<SaveResponse>({
-    type: 'serpent-save-request',
+    type: 'keel-save-request',
     intent,
   });
   showSaveBubble(bubbleX, bubbleY, response.notification.title, response.notification.message);
@@ -1139,7 +1139,7 @@ export async function startRadialSaveMenu(
     let connected = false;
     try {
       const status = await sendRuntimeMessage<ConnectionStatusResponse>({
-        type: 'serpent-connection-status',
+        type: 'keel-connection-status',
       });
       connected = status.kind === 'connected';
     } catch {
@@ -1147,7 +1147,7 @@ export async function startRadialSaveMenu(
     }
     if (!connected) {
       if (!dragEndedEarly) {
-        showSaveBubble(clientX, clientY, '未连接 Serpent', '请先启动应用并打开资源库');
+        showSaveBubble(clientX, clientY, '未连接 Keel', '请先启动应用并打开资源库');
       }
       return;
     }
@@ -1155,11 +1155,11 @@ export async function startRadialSaveMenu(
     let context: TreeMenuContext = {
       roots: [],
       recentFolders: [],
-      libraryDisplayName: 'Serpent',
+      libraryDisplayName: 'Keel',
     };
     try {
       const response = await sendRuntimeMessage<FolderListResponse | FolderListErrorResponse>({
-        type: 'serpent-list-folders',
+        type: 'keel-list-folders',
       });
       if (response.kind === 'ok') {
         const tree = buildFolderTree(response.folders);
@@ -1182,7 +1182,7 @@ export async function startRadialSaveMenu(
             typeof response.libraryDisplayName === 'string' &&
             response.libraryDisplayName.trim()
               ? response.libraryDisplayName.trim()
-              : 'Serpent',
+              : 'Keel',
         };
       }
     } catch {

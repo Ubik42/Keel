@@ -1,6 +1,6 @@
 {
   "manifestVersion": 1,
-  "id": "com.serpent.trusted-host-probe",
+  "id": "com.keel.trusted-host-probe",
   "version": "1.0.0",
   "name": "Trusted Host Probe",
   "description": "Fixed test plugin that activates through the trusted Node Host and writes namespaced storage.",

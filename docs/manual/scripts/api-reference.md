@@ -371,4 +371,4 @@ interface SerpentAutomationScriptApi {
 
 ## 不是当前脚本 API 的东西
 
-`serpent.jobs`、`execution.status`、MCP 的 `serpent_execution_status`、资源库变更通知、MCP resource URI、`serpent_desktop_*` 工具以及插件的 `setup`/events/hooks/providers/jobs/input/storage 都不是当前 Desktop Console 脚本公共 API。Registry 或 `automation-api.d.ts` 出现某个命令，不等于 guest API 已投影该命令；新增命令必须同时更新 Registry、Gateway、guest 投影、类型声明、测试和文档。
+`serpent.jobs`、`execution.status`、MCP 的 `keel_execution_status`、资源库变更通知、MCP resource URI、`keel_desktop_*` 工具以及插件的 `setup`/events/hooks/providers/jobs/input/storage 都不是当前 Desktop Console 脚本公共 API。Registry 或 `automation-api.d.ts` 出现某个命令，不等于 guest API 已投影该命令；新增命令必须同时更新 Registry、Gateway、guest 投影、类型声明、测试和文档。

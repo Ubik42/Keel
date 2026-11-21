@@ -147,7 +147,7 @@ function makeJob(overrides: Partial<ModelThumbnailRenderRequest> = {}): ModelThu
     assetId: 'asset-1',
     revisionId: 'rev-1',
     format: 'glb',
-    renderUrl: 'serpent://preview/lib-1/art-1',
+    renderUrl: 'keel://preview/lib-1/art-1',
     companionMap: [],
     hdriPresetId: 'studio-small-09',
     width: 512,
@@ -175,7 +175,7 @@ describe('offscreen thumbnail renderer (slice E, main side)', () => {
     await vi.waitFor(() => expect(window.webContents.sent).toHaveLength(1));
 
     const sent = window.webContents.sent[0]!;
-    expect(sent.channel).toBe('serpent:offscreen-thumbnail:render');
+    expect(sent.channel).toBe('keel:offscreen-thumbnail:render');
     expect((sent.payload as ModelThumbnailRenderRequest).requestId).toBe('job-1');
 
     harness.emitFrame({

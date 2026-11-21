@@ -47,7 +47,7 @@ test("does not display the metadata concurrency token as a file version", async 
     // cards carry no thumbnail img to key an alt attribute on.
     const assetId = await window.evaluate(async () => {
       const bridge = globalThis as typeof globalThis & {
-        serpent: {
+        keel: {
           library: {
             listOpen(): Promise<{
               ok: boolean;
@@ -65,10 +65,10 @@ test("does not display the metadata concurrency token as a file version", async 
           };
         };
       };
-      const open = await bridge.serpent.library.listOpen();
+      const open = await bridge.keel.library.listOpen();
       const libraryId = open.ok && open.value?.[0] ? open.value[0].libraryId : undefined;
       if (!libraryId) throw new Error("Expected an open library.");
-      const listed = await bridge.serpent.library.listAssets({
+      const listed = await bridge.keel.library.listAssets({
         libraryId,
         recursive: true,
       });

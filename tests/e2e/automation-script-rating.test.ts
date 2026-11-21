@@ -14,7 +14,7 @@ test('runs the default Desktop Console script and rates only its matching assets
   const sourceRoot = path.join(temporaryRoot, 'sources');
   const matchingSource = path.join(sourceRoot, 'Ser-reference.png');
   const otherSource = path.join(sourceRoot, 'other-reference.png');
-  const savedScript = path.join(temporaryRoot, 'rating.serpent.ts');
+  const savedScript = path.join(temporaryRoot, 'rating.keel.ts');
   const libraryName = '自动化评分验收';
   mkdirSync(sourceRoot);
   writeFileSync(matchingSource, 'matching asset');
@@ -66,7 +66,7 @@ test('runs the default Desktop Console script and rates only its matching assets
     await expect(dialog).toBeVisible();
     await dialog.getByRole('textbox', { name: '脚本' }).fill(DEFAULT_AUTOMATION_RATING_SCRIPT);
     await dialog.getByRole('button', { name: '保存脚本' }).click();
-    await expect(dialog).toContainText('已保存脚本：rating.serpent.ts');
+    await expect(dialog).toContainText('已保存脚本：rating.keel.ts');
     expect(readFileSync(savedScript, 'utf8')).toContain('serpent.assets.setRating');
     await dialog.getByRole('textbox', { name: '脚本' }).fill('return { changed: true };');
     await dialog.getByRole('button', { name: '打开脚本' }).click();

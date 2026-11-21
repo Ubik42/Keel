@@ -11,7 +11,7 @@ type ShellWithLocale = {
 
 export function syncAppLocaleToMain(locale: AppLocale): void {
   const shell = (
-    globalThis as { serpent?: { shell?: ShellWithLocale } }
-  ).serpent?.shell;
+    globalThis as { keel?: { shell?: ShellWithLocale } }
+  ).keel?.shell;
   shell?.setAppLocale?.(locale);
 }

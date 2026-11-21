@@ -1,6 +1,6 @@
 {
   "manifestVersion": 1,
-  "id": "com.serpent.unrestricted-settings-probe",
+  "id": "com.keel.unrestricted-settings-probe",
   "version": "1.0.0",
   "name": "Unrestricted Settings Probe",
   "description": "Unrestricted host fixture with menus.asset and settings.pages for contribution listing.",

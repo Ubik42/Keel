@@ -79,7 +79,7 @@ export interface ModelViewerSurfaceProps {
   readonly api: SerpentLibraryApi;
   readonly asset: AssetSummary;
   readonly libraryId: string;
-  /** `serpent://source/...` URL of the model asset. */
+  /** `keel://source/...` URL of the model asset. */
   readonly sourceUrl: string;
   readonly isFullscreen: boolean;
   /** Preloaded navigation surfaces only need one decoded frame. */
@@ -501,7 +501,7 @@ export function ModelViewerSurface(props: ModelViewerSurfaceProps) {
     let cancelled = false;
     const composer = composerRef.current;
     const preset = getHdriPreset(presetId);
-    const url = preset ? `serpent://app-assets/hdri/${preset.fileName}` : null;
+    const url = preset ? `keel://app-assets/hdri/${preset.fileName}` : null;
     if (!composer || !url) return;
     const previous = environmentRef.current;
     loadHdrEnvironment(url, { renderer: composer.renderer })

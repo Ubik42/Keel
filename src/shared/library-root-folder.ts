@@ -8,7 +8,7 @@
  * boundary in `folder.get-path`, where it must never be confused with a real
  * folder id.
  */
-export const LIBRARY_ROOT_FOLDER_ID = "serpent:library-root";
+export const LIBRARY_ROOT_FOLDER_ID = "keel:library-root";
 
 export function isLibraryRootFolderId(folderId: string | null | undefined): boolean {
   return folderId === LIBRARY_ROOT_FOLDER_ID;

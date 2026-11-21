@@ -313,7 +313,7 @@ export function buildOpenAiStructuredResponseFormat(
   return {
     type: 'json_schema',
     json_schema: {
-      name: 'serpent_asset_analysis',
+      name: 'keel_asset_analysis',
       strict: true,
       schema: {
         type: 'object',

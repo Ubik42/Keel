@@ -32,7 +32,7 @@ describe('plugin custom UI contract', () => {
       description: 'Probe',
       author: 'Serpent',
       license: 'MIT',
-      engines: { serpent: '>=0.1.0', pluginApi: 1 },
+      engines: { keel: '>=0.1.0', pluginApi: 1 },
       runtime: { mode: 'restricted', entry: 'entry/main.js' },
       permissions: ['ui.workspace', 'storage.write'],
       contributes: {
@@ -105,10 +105,10 @@ describe('plugin custom UI contract', () => {
       expectedSource: 'iframe-window',
     })).toBe(true);
     expect(isTrustedPluginUiMessage({
-      origin: 'serpent-plugin://com.example.iframe',
+      origin: 'keel-plugin://com.example.iframe',
       source: 'iframe-window',
       expectedOrigin: 'null',
-      expectedPluginOrigin: 'serpent-plugin://com.example.iframe',
+      expectedPluginOrigin: 'keel-plugin://com.example.iframe',
       expectedSource: 'iframe-window',
     })).toBe(true);
     expect(isTrustedPluginUiMessage({
@@ -167,7 +167,7 @@ describe('plugin custom UI contract', () => {
       libraryId: 'library-a',
       entryPath: 'entry/index.html',
     });
-    expect(new URL(url).protocol).toBe('serpent-plugin:');
+    expect(new URL(url).protocol).toBe('keel-plugin:');
     expect(parsePluginUiAssetRequest(url)).toEqual({
       pluginId: 'com.example.iframe',
       instanceId: 'instance-a',
@@ -177,10 +177,10 @@ describe('plugin custom UI contract', () => {
     });
     expect(new URL(url).searchParams.get('instanceId')).toBe('instance-a');
     expect(parsePluginUiAssetRequest(
-      'serpent-plugin://com.example.iframe/instance-a/../secret.js?libraryId=library-a&contributionId=bad',
+      'keel-plugin://com.example.iframe/instance-a/../secret.js?libraryId=library-a&contributionId=bad',
     )).toBeUndefined();
     expect(parsePluginUiAssetRequest(
-      'serpent-plugin://com.example.iframe/instance-a/%2e%2e/secret.js?libraryId=library-a&contributionId=com.example.iframe.probe-view',
+      'keel-plugin://com.example.iframe/instance-a/%2e%2e/secret.js?libraryId=library-a&contributionId=com.example.iframe.probe-view',
     )).toBeUndefined();
     // path.resolve 返回平台路径（Windows 下带盘符）
     expect(resolvePluginUiAssetPath('/plugins/com.example.iframe/1.0.0', 'entry/index.html'))

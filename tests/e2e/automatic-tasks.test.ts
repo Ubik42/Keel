@@ -59,9 +59,9 @@ test("independent automatic tasks replace group entries and apply tags manually 
       window.evaluate(async () => {
         const api = (
           globalThis as typeof globalThis & {
-            serpent: { library: SerpentLibraryApi };
+            keel: { library: SerpentLibraryApi };
           }
-        ).serpent.library;
+        ).keel.library;
         const opened = await api.listOpen();
         if (!opened.ok) return -1;
         const tags = await api.listTags({
@@ -77,9 +77,9 @@ test("independent automatic tasks replace group entries and apply tags manually 
           window.evaluate(async () => {
             const api = (
               globalThis as typeof globalThis & {
-                serpent: { library: SerpentLibraryApi };
+                keel: { library: SerpentLibraryApi };
               }
-            ).serpent.library;
+            ).keel.library;
             const opened = await api.listOpen();
             if (!opened.ok) return 0;
             const a = await api.listAssets({

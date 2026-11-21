@@ -383,7 +383,7 @@ export const zhCN = {
       emptySource: "请先输入一段脚本。",
       fileErrors: {
         cancelled: "没有打开或保存脚本。",
-        "invalid-script-file": "请选择扩展名为 .serpent.js 或 .serpent.ts 的脚本文件。",
+        "invalid-script-file": "请选择扩展名为 .keel.js 或 .keel.ts 的脚本文件（旧的 .serpent.js / .serpent.ts 也可打开）。",
         "source-too-large": "脚本超过 64 KB 上限，请拆分后再试。",
         "io-failed": "无法读取或保存脚本文件，请检查文件是否可访问。",
         "recent-script-not-found": "找不到该脚本，可能已被移动或删除。"
@@ -1190,7 +1190,7 @@ export const zhCN = {
     openLibraryChooser: {
       title: "打开资源库",
       help: "打开已有的 Serpent 资源库、从同步服务器拉取，或将 Eagle / Billfish 转换为新的 Serpent 资源库。",
-      serpent: "打开 Serpent 资源库",
+      keel: "打开 Keel 资源库",
       external: "打开外部资源库"
     }
   },

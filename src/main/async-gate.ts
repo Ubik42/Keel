@@ -1,7 +1,7 @@
 /**
  * Bounded async admission for Main-process filesystem work.
  *
- * Chromium can issue many overlapping `serpent://` range requests for one
+ * Chromium can issue many overlapping `keel://` range requests for one
  * visible card. Each `fs.promises.open`/`stat` occupies a libuv threadpool
  * slot (default 4). On a network volume those slots fill with SMB round
  * trips and the Electron main thread stops dispatching window input — the

@@ -26,7 +26,7 @@ function startServer(overrides: Partial<ExtensionServerOptions> = {}): Promise<E
       ok: true,
       folders: [],
       recentBrowsedFolderIds: [],
-      libraryDisplayName: 'Serpent',
+      libraryDisplayName: 'Keel',
     }),
     ...overrides,
   });
@@ -190,11 +190,11 @@ function getFolders(port: number): Promise<{ status: number; body: unknown }> {
 }
 
 const validUploadHeaders = {
-  'X-Serpent-Kind': 'image',
-  'X-Serpent-Source-Page-Url': 'https://example.com/gallery',
-  'X-Serpent-Media-Url': 'https://example.com/photo.png',
-  'X-Serpent-Content-Type': 'image/png',
-  'X-Serpent-Filename': 'photo.png',
+  'X-Keel-Kind': 'image',
+  'X-Keel-Source-Page-Url': 'https://example.com/gallery',
+  'X-Keel-Media-Url': 'https://example.com/photo.png',
+  'X-Keel-Content-Type': 'image/png',
+  'X-Keel-Filename': 'photo.png',
 };
 
 // ---------------------------------------------------------------------------
@@ -347,7 +347,7 @@ describe('createExtensionServer', () => {
 
     const ping = await getPing(server.port);
     expect(ping.status).toBe(200);
-    expect(ping.body).toEqual({ app: 'Serpent' });
+    expect(ping.body).toEqual({ app: 'Keel' });
   });
 
   it('falls back to the next port when the first is occupied', async () => {
@@ -528,7 +528,7 @@ describe('createExtensionServer', () => {
     expect(res.status).toBe(202);
   });
 
-  it('accepts a valid Firefox extension Origin (Serpent-54122a)', async () => {
+  it('accepts a valid Firefox extension Origin (Keel-54122a)', async () => {
     server = await startServer({ port: TEST_PORT });
     const res = await post(
       server.port,
@@ -726,7 +726,7 @@ describe('createExtensionServer', () => {
   describe('POST /save-upload', () => {
     it('returns 202 for a valid upload and calls onSaveUpload', async () => {
       const uploads: SaveUploadRequest[] = [];
-      const stagingRoot = path.join(os.tmpdir(), `serpent-ext-test-${randomUUID()}`);
+      const stagingRoot = path.join(os.tmpdir(), `keel-ext-test-${randomUUID()}`);
       await mkdir(stagingRoot, { recursive: true });
 
       try {
@@ -765,7 +765,7 @@ describe('createExtensionServer', () => {
 
     it('ignores a legacy collection target header and accepts an explicit root folder', async () => {
       const uploads: SaveUploadRequest[] = [];
-      const stagingRoot = path.join(os.tmpdir(), `serpent-ext-test-${randomUUID()}`);
+      const stagingRoot = path.join(os.tmpdir(), `keel-ext-test-${randomUUID()}`);
       await mkdir(stagingRoot, { recursive: true });
       try {
         server = await startServer({
@@ -778,8 +778,8 @@ describe('createExtensionServer', () => {
         });
         const res = await postUpload(server.port, Buffer.from('png'), {
           ...validUploadHeaders,
-          'X-Serpent-Target-Folder-Id': 'null',
-          'X-Serpent-Target-Collection-Id': encodeURIComponent('col/1'),
+          'X-Keel-Target-Folder-Id': 'null',
+          'X-Keel-Target-Collection-Id': encodeURIComponent('col/1'),
         });
         expect(res.status).toBe(202);
         expect(uploads[0]).toMatchObject({ targetFolderId: null });
@@ -794,7 +794,7 @@ describe('createExtensionServer', () => {
       server = await startServer({ port: TEST_PORT });
 
       const res = await postUpload(server.port, Buffer.from('x'), {
-        'X-Serpent-Kind': 'image',
+        'X-Keel-Kind': 'image',
       });
 
       expect(res.status).toBe(400);
@@ -803,7 +803,7 @@ describe('createExtensionServer', () => {
 
     it('accepts a local-file upload without URL metadata', async () => {
       const uploads: SaveUploadRequest[] = [];
-      const stagingRoot = path.join(os.tmpdir(), `serpent-ext-test-${randomUUID()}`);
+      const stagingRoot = path.join(os.tmpdir(), `keel-ext-test-${randomUUID()}`);
       await mkdir(stagingRoot, { recursive: true });
       try {
         server = await startServer({
@@ -815,10 +815,10 @@ describe('createExtensionServer', () => {
           },
         });
         const res = await postUpload(server.port, Buffer.from('local-png'), {
-          'X-Serpent-Kind': 'image',
-          'X-Serpent-Local-File': 'true',
-          'X-Serpent-Content-Type': 'image/png',
-          'X-Serpent-Filename': 'shot.png',
+          'X-Keel-Kind': 'image',
+          'X-Keel-Local-File': 'true',
+          'X-Keel-Content-Type': 'image/png',
+          'X-Keel-Filename': 'shot.png',
         });
         expect(res.status).toBe(202);
         expect(uploads[0]).toMatchObject({
@@ -868,7 +868,7 @@ describe('createExtensionServer', () => {
 
     it('streams the request body to staging before invoking onSaveUpload', async () => {
       const uploads: SaveUploadRequest[] = [];
-      const stagingRoot = path.join(os.tmpdir(), `serpent-ext-test-${randomUUID()}`);
+      const stagingRoot = path.join(os.tmpdir(), `keel-ext-test-${randomUUID()}`);
       await mkdir(stagingRoot, { recursive: true });
 
       try {

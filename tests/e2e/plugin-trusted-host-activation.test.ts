@@ -61,7 +61,7 @@ test('activates the fixed trusted Host probe and writes library storage', async 
     const storagePath = path.join(
       libraryDirectory,
       PLUGIN_LIBRARY_DATA_DIRECTORY,
-      'com.serpent.trusted-host-probe.json',
+      'com.keel.trusted-host-probe.json',
     );
 
     await expect.poll(() => existsSync(storagePath), {

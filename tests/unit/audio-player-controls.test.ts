@@ -232,6 +232,6 @@ describe("AudioPlayerControls trail pump (Serpent-mrsm)", () => {
     await act(async () => root?.unmount());
     root = undefined;
     expect(setActive).toHaveBeenCalledWith(false, "viewer.audio");
-    delete (window as Window & { serpent?: unknown }).serpent;
+    delete (window as Window & { keel?: unknown }).keel;
   });
 });

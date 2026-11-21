@@ -169,7 +169,7 @@ export function useAssetCardHoverPreview(input: {
 
   // A preview resolution is scoped to the library that produced its URL.
   // Keeping the asset-id-only map across a library switch can reuse an old
-  // serpent://source URL when two libraries contain the same asset id, and
+  // keel://source URL when two libraries contain the same asset id, and
   // the in-flight request can otherwise finish after the old library closes.
   useEffect(() => {
     requestSeqRef.current += 1;

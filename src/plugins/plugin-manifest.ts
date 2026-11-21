@@ -797,9 +797,14 @@ const pluginManifestObjectSchema = z.strictObject({
   author: z.string().min(1).max(160),
   license: z.string().min(1).max(160),
   repository: repositorySchema.optional(),
+  // `serpent` is the pre-rename name of the host-version range; accept either.
   engines: z.strictObject({
-    serpent: semverRangeSchema,
+    keel: semverRangeSchema.optional(),
+    serpent: semverRangeSchema.optional(),
     pluginApi: z.literal(PLUGIN_API_VERSION),
+  }).refine((engines) => engines.keel !== undefined || engines.serpent !== undefined, {
+    message: 'engines.keel is required.',
+    path: ['keel'],
   }),
   runtime: pluginRuntimeSchema,
   ui: z.strictObject({
@@ -970,11 +975,11 @@ export function validatePluginManifestCompatibility(
   manifest: PluginManifest,
   target: PluginCompatibilityTarget,
 ): PluginCompatibilityResult {
-  if (!satisfiesSemverRange(target.serpentVersion, manifest.engines.serpent)) {
+  if (!satisfiesSemverRange(target.serpentVersion, manifest.engines.keel ?? manifest.engines.serpent ?? '')) {
     return {
       ok: false,
       code: 'PLUGIN_KEEL_VERSION_UNSUPPORTED',
-      message: 'This plugin version does not support the current Serpent version.',
+      message: 'This plugin version does not support the current Keel version.',
     };
   }
   if (target.pluginApiVersion !== manifest.engines.pluginApi) {

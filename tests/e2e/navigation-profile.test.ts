@@ -24,7 +24,7 @@ import { LARGE_LIBRARY_FIXTURE_VERSION } from "../worker/large-library-mix";
 /**
  * Profiler + user-visible latency harness (real library only).
  *
- * The earlier navigation benchmark reported `serpent:e2e-browse-page` as the
+ * The earlier navigation benchmark reported `keel:e2e-browse-page` as the
  * switch latency; that event is gated behind `browseDiagnosticsEnabled` and
  * never fires in a production-like build, so its "20 s" was a wait-for-nothing
  * timeout. This harness measures what a user actually waits for instead:
@@ -563,14 +563,14 @@ async function sampleMediaJobStatus(window: Page, libraryId: string): Promise<nu
   return window.evaluate(async (id) => {
     type Result<T> = { ok: true; value: T } | { ok: false; error: { code: string } };
     const bridge = globalThis as typeof globalThis & {
-      serpent: {
+      keel: {
         library: {
           listMediaJobs(input: { libraryId: string; summaryOnly?: boolean }): Promise<Result<unknown>>;
         };
       };
     };
     const startedAt = performance.now();
-    const result = await bridge.serpent.library.listMediaJobs({ libraryId: id, summaryOnly: true });
+    const result = await bridge.keel.library.listMediaJobs({ libraryId: id, summaryOnly: true });
     const elapsedMs = performance.now() - startedAt;
     if (!result.ok) throw new Error(`Could not read task status: ${result.error.code}`);
     return elapsedMs;
@@ -581,9 +581,9 @@ async function openLibraryId(window: Page): Promise<string> {
   return window.evaluate(async () => {
     type Result<T> = { ok: true; value: T } | { ok: false; error: { code: string } };
     const bridge = globalThis as typeof globalThis & {
-      serpent: { library: { listOpen(): Promise<Result<Array<{ libraryId: string }>>> } };
+      keel: { library: { listOpen(): Promise<Result<Array<{ libraryId: string }>>> } };
     };
-    const opened = await bridge.serpent.library.listOpen();
+    const opened = await bridge.keel.library.listOpen();
     const libraryId = opened.ok ? opened.value[0]?.libraryId : undefined;
     if (!libraryId) throw new Error("Expected one open library while sampling task status.");
     return libraryId;
@@ -611,13 +611,13 @@ async function readMediaJobCounts(
     };
     type Result<T> = { ok: true; value: T } | { ok: false; error: { code: string } };
     const bridge = globalThis as typeof globalThis & {
-      serpent: {
+      keel: {
         library: {
           listMediaJobs(input: { libraryId: string; summaryOnly?: boolean }): Promise<Result<Counts>>;
         };
       };
     };
-    const result = await bridge.serpent.library.listMediaJobs({
+    const result = await bridge.keel.library.listMediaJobs({
       libraryId: id,
       ...(cached ? { summaryOnly: true } : {}),
     });
@@ -646,7 +646,7 @@ async function readMediaQueueSnapshot(window: Page): Promise<{
     };
     type Result<T> = { ok: true; value: T } | { ok: false; error: { code: string } };
     const bridge = globalThis as typeof globalThis & {
-      serpent: {
+      keel: {
         library: {
           listOpen(): Promise<Result<Array<{ libraryId: string }>>>;
           listMediaJobs(input: {
@@ -656,10 +656,10 @@ async function readMediaQueueSnapshot(window: Page): Promise<{
         };
       };
     };
-    const opened = await bridge.serpent.library.listOpen();
+    const opened = await bridge.keel.library.listOpen();
     const libraryId = opened.ok ? opened.value[0]?.libraryId : undefined;
     if (!libraryId) throw new Error("Expected one open library while collecting queue diagnostics.");
-    const result = await bridge.serpent.library.listMediaJobs({ libraryId, summaryOnly: true });
+    const result = await bridge.keel.library.listMediaJobs({ libraryId, summaryOnly: true });
     if (!result.ok) throw new Error("Could not collect the media queue diagnostic snapshot.");
     return {
       queued: result.value.queued,
@@ -712,7 +712,7 @@ async function controlMediaQueue(window: Page, action: "pause" | "resume"): Prom
   return window.evaluate(async (queueAction) => {
     type Result<T> = { ok: true; value: T } | { ok: false; error: { code: string } };
     const bridge = globalThis as typeof globalThis & {
-      serpent: {
+      keel: {
         library: {
           listOpen(): Promise<Result<Array<{ libraryId: string }>>>;
           pauseMediaJobs(input: { libraryId: string }): Promise<Result<{ pausedCount: number }>>;
@@ -720,15 +720,15 @@ async function controlMediaQueue(window: Page, action: "pause" | "resume"): Prom
         };
       };
     };
-    const opened = await bridge.serpent.library.listOpen();
+    const opened = await bridge.keel.library.listOpen();
     const libraryId = opened.ok ? opened.value[0]?.libraryId : undefined;
     if (!libraryId) throw new Error("Expected one open fixture library while controlling its media queue.");
     if (queueAction === "pause") {
-      const result = await bridge.serpent.library.pauseMediaJobs({ libraryId });
+      const result = await bridge.keel.library.pauseMediaJobs({ libraryId });
       if (!result.ok) throw new Error(`Could not pause the fixture media queue: ${result.error.code}`);
       return result.value.pausedCount;
     }
-    const result = await bridge.serpent.library.resumeMediaJobs({ libraryId });
+    const result = await bridge.keel.library.resumeMediaJobs({ libraryId });
     if (!result.ok) throw new Error(`Could not resume the fixture media queue: ${result.error.code}`);
     return result.value.resumedCount;
   }, action);

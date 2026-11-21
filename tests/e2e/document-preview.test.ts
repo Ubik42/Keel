@@ -429,7 +429,7 @@ test("opens an HTML asset in the embedded browser viewer (Serpent-8ca259)", asyn
 
     const viewer = window.locator(".html-viewer");
     await expect(viewer).toBeVisible({ timeout: 30_000 });
-    // The iframe loads serpent://source with the text/html MIME. Use frameLocator
+    // The iframe loads keel://source with the text/html MIME. Use frameLocator
     // (cross-origin safe) to reach the embedded document's marker element.
     const frame = window.frameLocator(".html-viewer-iframe");
     await expect(frame.locator("#serpent-html-marker")).toBeVisible({ timeout: 20_000 });

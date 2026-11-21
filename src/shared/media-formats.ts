@@ -144,7 +144,7 @@ export function isChromiumDirectPlayVideoExtension(extensionOrFilename: string):
 }
 
 /**
- * MIME type for bytes served over `serpent://preview` / `serpent://proxy`.
+ * MIME type for bytes served over `keel://preview` / `keel://proxy`.
  * H.264 playback proxies are `.mp4`; missing that mapping used to emit
  * `application/octet-stream`, which Chromium will not decode.
  */

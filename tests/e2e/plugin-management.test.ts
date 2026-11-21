@@ -12,7 +12,7 @@ test.describe.configure({ timeout: 120_000 });
 function writeCompatiblePlugin(directory: string): void {
   const manifest = {
     ...manifestFixture,
-    engines: { serpent: '>=0.1.0 <1.0.0', pluginApi: 1 },
+    engines: { keel: '>=0.1.0 <1.0.0', pluginApi: 1 },
   };
   mkdirSync(path.join(directory, 'dist', 'ui'), { recursive: true });
   writeFileSync(path.join(directory, 'serpent-plugin.json'), `${JSON.stringify(manifest, null, 2)}\n`);

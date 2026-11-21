@@ -79,7 +79,7 @@ describe("BrowseLayoutPreview caption (Serpent-l2at / Serpent-qc7v)", () => {
       /2\.0 KB/,
     );
     expect(container.querySelector("img")?.getAttribute("src")).toBe(
-      "serpent://preview/lib-1/thumb-1",
+      "keel://preview/lib-1/thumb-1",
     );
   });
 

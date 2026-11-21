@@ -1,3 +1,4 @@
+// chrome.storage keys keep their pre-rename names so saved settings survive the update.
 export const NOTIFICATIONS_ENABLED_KEY = 'serpentNotificationsEnabled';
 export const FOCUS_APP_AFTER_SAVE_KEY = 'serpentFocusAppAfterSave';
 export const REVEAL_IN_LIBRARY_AFTER_SAVE_KEY = 'serpentRevealInLibraryAfterSave';
@@ -8,7 +9,7 @@ export function notificationsEnabledFromStored(value: unknown): boolean {
   return value !== false;
 }
 
-/** Default on so Serpent surfaces after a browser save. */
+/** Default on so Keel surfaces after a browser save. */
 export function focusAppAfterSaveFromStored(value: unknown): boolean {
   return value !== false;
 }

@@ -101,9 +101,9 @@ async function callTool(
 describe('MCP lifecycle commands: folder (Serpent-dcb1)', () => {
   it('exposes rename/move/delete-empty tools', () => {
     const names = listSerpentMcpTools(writeExposure).tools.map((tool) => tool.name);
-    expect(names).toContain('serpent_folder_rename');
-    expect(names).toContain('serpent_folder_move');
-    expect(names).toContain('serpent_folder_delete_empty');
+    expect(names).toContain('keel_folder_rename');
+    expect(names).toContain('keel_folder_move');
+    expect(names).toContain('keel_folder_delete_empty');
   });
 
   it('routes folder.rename to the worker with the new name', async () => {
@@ -112,7 +112,7 @@ describe('MCP lifecycle commands: folder (Serpent-dcb1)', () => {
       type: 'folder.renamed',
       folder: folderSummary('folder-1'),
     });
-    const result = await callTool(worker, 'serpent_folder_rename', {
+    const result = await callTool(worker, 'keel_folder_rename', {
       libraryId: 'library-1',
       folderId: 'folder-1',
       newName: 'Renamed',
@@ -131,7 +131,7 @@ describe('MCP lifecycle commands: folder (Serpent-dcb1)', () => {
       skippedCount: 0,
       folders: [folderSummary('folder-1')],
     });
-    const result = await callTool(worker, 'serpent_folder_move', {
+    const result = await callTool(worker, 'keel_folder_move', {
       libraryId: 'library-1',
       folderIds: ['folder-1'],
       targetParentFolderId: 'folder-2',
@@ -154,7 +154,7 @@ describe('MCP lifecycle commands: folder (Serpent-dcb1)', () => {
       type: 'folder.empty-deleted',
       deletedFolderIds: ['folder-1'],
     });
-    const result = await callTool(worker, 'serpent_folder_delete_empty', {
+    const result = await callTool(worker, 'keel_folder_delete_empty', {
       libraryId: 'library-1',
       folderIds: ['folder-1'],
     });
@@ -170,13 +170,13 @@ describe('MCP lifecycle commands: library (Serpent-96ys)', () => {
   it('exposes list-recent/close/rename/export/import/delete tools', () => {
     const names = listSerpentMcpTools(writeExposure).tools.map((tool) => tool.name);
     for (const name of [
-      'serpent_library_list_recent',
-      'serpent_library_close',
-      'serpent_library_rename',
-      'serpent_library_export',
-      'serpent_library_import_folder',
-      'serpent_library_import_zip',
-      'serpent_library_delete_from_disk',
+      'keel_library_list_recent',
+      'keel_library_close',
+      'keel_library_rename',
+      'keel_library_export',
+      'keel_library_import_folder',
+      'keel_library_import_zip',
+      'keel_library_delete_from_disk',
     ]) {
       expect(names, name).toContain(name);
     }
@@ -192,7 +192,7 @@ describe('MCP lifecycle commands: library (Serpent-96ys)', () => {
         libraryPath: '/libraries/new-name',
       },
     });
-    const result = await callTool(worker, 'serpent_library_rename', {
+    const result = await callTool(worker, 'keel_library_rename', {
       libraryId: '00000000-0000-4000-8000-0000000000aa',
       displayName: 'New Name',
     });
@@ -212,7 +212,7 @@ describe('MCP lifecycle commands: library (Serpent-96ys)', () => {
       type: 'library.closed',
       libraryId: '00000000-0000-4000-8000-0000000000aa',
     });
-    const result = await callTool(worker, 'serpent_library_close', {
+    const result = await callTool(worker, 'keel_library_close', {
       libraryId: '00000000-0000-4000-8000-0000000000aa',
     });
     expect(result).toMatchObject({ ok: true, commandId: 'library.close' });
@@ -229,7 +229,7 @@ describe('MCP lifecycle commands: tag (Serpent-j9n2)', () => {
       type: 'tag.renamed',
       tag: tagSummary('tag-1'),
     });
-    const renameResult = await callTool(renamed, 'serpent_tag_rename', {
+    const renameResult = await callTool(renamed, 'keel_tag_rename', {
       libraryId: 'library-1',
       tagId: 'tag-1',
       name: 'New Tag',
@@ -242,7 +242,7 @@ describe('MCP lifecycle commands: tag (Serpent-j9n2)', () => {
       type: 'tag.deleted',
       tagId: 'tag-1',
     });
-    const deleteResult = await callTool(deleted, 'serpent_tag_delete', {
+    const deleteResult = await callTool(deleted, 'keel_tag_delete', {
       libraryId: 'library-1',
       tagId: 'tag-1',
     });
@@ -254,7 +254,7 @@ describe('MCP lifecycle commands: tag (Serpent-j9n2)', () => {
       tag: tagSummary('tag-keep'),
       mergedTagIds: ['tag-1', 'tag-2'],
     });
-    const mergeResult = await callTool(merged, 'serpent_tag_merge', {
+    const mergeResult = await callTool(merged, 'keel_tag_merge', {
       libraryId: 'library-1',
       sourceTagIds: ['tag-1', 'tag-2'],
       name: 'tag-keep',
@@ -274,7 +274,7 @@ describe('MCP lifecycle commands: linked folder (Serpent-eyus)', () => {
       type: 'asset.import-linked.completed',
       linkedFolder: linkedFolderSummary('lf-1'),
     });
-    const result = await callTool(worker, 'serpent_linked_folder_create', {
+    const result = await callTool(worker, 'keel_linked_folder_create', {
       libraryId: 'library-1',
       sourceRootPath: '/external/assets',
       displayName: 'Assets',
@@ -298,7 +298,7 @@ describe('MCP lifecycle commands: asset helpers (Serpent-uup6)', () => {
       operationId: null,
       assets: [assetSummary('asset-1')],
     });
-    const result = await callTool(worker, 'serpent_asset_copy', {
+    const result = await callTool(worker, 'keel_asset_copy', {
       libraryId: 'library-1',
       assetIds: ['asset-1'],
       targetFolderId: 'folder-9',
@@ -320,7 +320,7 @@ describe('MCP lifecycle commands: asset helpers (Serpent-uup6)', () => {
       width: 512,
       height: 512,
     });
-    const thumbResult = await callTool(thumb, 'serpent_asset_thumbnail_get', {
+    const thumbResult = await callTool(thumb, 'keel_asset_thumbnail_get', {
       libraryId: 'library-1',
       assetId: 'asset-1',
     });
@@ -337,7 +337,7 @@ describe('MCP lifecycle commands: asset helpers (Serpent-uup6)', () => {
       artifactId: 'thumb-1',
       mimeType: 'image/webp',
     });
-    const previewResult = await callTool(preview, 'serpent_asset_preview_get', {
+    const previewResult = await callTool(preview, 'keel_asset_preview_get', {
       libraryId: 'library-1',
       assetId: 'asset-1',
     });

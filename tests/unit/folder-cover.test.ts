@@ -28,7 +28,7 @@ describe("folderCoverImageSrc", () => {
       hasCustomCover: true,
       customCoverToken: "2026-10-09T00:00:00.000Z",
       coverArtifactIds: ["art-1"],
-    })).toContain("serpent://folder-cover/");
+    })).toContain("keel://folder-cover/");
   });
 
   it("prefers a library asset cover over the stored file and the automatic thumbnail", () => {
@@ -39,7 +39,7 @@ describe("folderCoverImageSrc", () => {
       customCoverAssetId: "asset-1",
       customCoverArtifactId: "art-cover",
       coverArtifactIds: ["art-1"],
-    })).toBe("serpent://preview/lib/art-cover");
+    })).toBe("keel://preview/lib/art-cover");
   });
 
   it("uses the library asset file when its thumbnail is not ready", () => {
@@ -49,7 +49,7 @@ describe("folderCoverImageSrc", () => {
       customCoverAssetId: "asset-1",
       customCoverSourcePreview: { assetId: "asset-1", revisionId: "rev 2" },
       coverArtifactIds: ["art-1"],
-    })).toBe("serpent://source/lib/asset-1?revision=rev%202");
+    })).toBe("keel://source/lib/asset-1?revision=rev%202");
   });
 
   it("prefers a thumbnail artifact", () => {
@@ -57,7 +57,7 @@ describe("folderCoverImageSrc", () => {
       folderId: "folder-1",
       coverArtifactIds: ["art-1"],
       coverSourcePreviews: [{ assetId: "asset", revisionId: "rev" }],
-    })).toBe("serpent://preview/lib/art-1");
+    })).toBe("keel://preview/lib/art-1");
   });
 
   it("uses the sequence frame file when the folder has no thumbnail", () => {
@@ -65,7 +65,7 @@ describe("folderCoverImageSrc", () => {
       folderId: "folder-1",
       coverArtifactIds: [],
       coverSourcePreviews: [{ assetId: "frame", revisionId: "rev 1" }],
-    })).toBe("serpent://source/lib/frame?revision=rev%201");
+    })).toBe("keel://source/lib/frame?revision=rev%201");
   });
 
   it("returns nothing when the folder has no paintable cover", () => {

@@ -20,4 +20,4 @@ const criticalConfirmation = Object.freeze({
   },
 });
 
-contextBridge.exposeInMainWorld('serpentCriticalConfirmation', criticalConfirmation);
+contextBridge.exposeInMainWorld('keelCriticalConfirmation', criticalConfirmation);

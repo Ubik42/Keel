@@ -15,7 +15,7 @@ import {
 
 describe('plugin dialog host session', () => {
   const view = {
-    id: 'com.dolag.serpent.media-converter.aa983299-25dc-4a1e-86d3-ac2c8a9eb5e7.compress',
+    id: 'com.dolag.keel.media-converter.aa983299-25dc-4a1e-86d3-ac2c8a9eb5e7.compress',
     pluginInstanceId: 'aa983299-25dc-4a1e-86d3-ac2c8a9eb5e7',
     viewType: 'dialog' as const,
     scope: 'library' as const,
@@ -23,7 +23,7 @@ describe('plugin dialog host session', () => {
 
   it('puts instanceId on the iframe URL so the frame does not parse pathname', () => {
     const url = createPluginUiUrl({
-      pluginId: 'com.dolag.serpent.media-converter',
+      pluginId: 'com.dolag.keel.media-converter',
       instanceId: view.pluginInstanceId,
       contributionId: view.id,
       libraryId: 'library-a',
@@ -77,7 +77,7 @@ describe('plugin dialog host session', () => {
   it('always stamps dialogId onto the iframe payload', () => {
     expect(buildPluginDialogFramePayload({
       requestId: 'plugin-ui-dialog-1',
-      pluginId: 'com.dolag.serpent.media-converter',
+      pluginId: 'com.dolag.keel.media-converter',
       pluginInstanceId: view.pluginInstanceId,
       dialogId: 'compress',
       libraryId: 'library-a',
@@ -130,7 +130,7 @@ describe('plugin dialog host session', () => {
 
   it('rewrites same-folder dialog scripts and leaves traversal src untouched', () => {
     const documentUrl = createPluginUiUrl({
-      pluginId: 'com.dolag.serpent.media-converter',
+      pluginId: 'com.dolag.keel.media-converter',
       instanceId: view.pluginInstanceId,
       contributionId: view.id,
       libraryId: 'library-a',

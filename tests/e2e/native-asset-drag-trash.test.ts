@@ -55,7 +55,7 @@ async function expectPersistentThumbnailDecoded(card: Locator): Promise<void> {
   const image = card.locator('img').first();
   await expect
     .poll(() => image.getAttribute('src'), { timeout: 30_000 })
-    .toMatch(/^serpent:\/\/preview\//);
+    .toMatch(/^keel:\/\/preview\//);
   await expectDecodedImage(card);
 }
 
@@ -89,9 +89,9 @@ async function readNativeDragStartFiles(
 async function readTrashRequestCount(window: Page): Promise<number> {
   return window.evaluate(() => {
     const renderer = globalThis as typeof globalThis & {
-      serpent?: { e2e?: { getRequestCount?: (type: string) => number } };
+      keel?: { e2e?: { getRequestCount?: (type: string) => number } };
     };
-    return renderer.serpent?.e2e?.getRequestCount?.('asset.trash.request') ?? 0;
+    return renderer.keel?.e2e?.getRequestCount?.('asset.trash.request') ?? 0;
   });
 }
 
@@ -229,23 +229,23 @@ test('a renamed source cannot start a native drag until Main refreshes its valid
     await window.evaluate(() => {
       const testGlobal = globalThis as typeof globalThis & {
         __nativeDragReadinessTypes?: string[];
-        serpent: { library: {
+        keel: { library: {
           onNativeDragReadiness(listener: (event: { type: string }) => void): () => void;
         } };
       };
       testGlobal.__nativeDragReadinessTypes = [];
-      testGlobal.serpent.library.onNativeDragReadiness((event) => {
+      testGlobal.keel.library.onNativeDragReadiness((event) => {
         testGlobal.__nativeDragReadinessTypes?.push(event.type);
       });
     });
 
     await window.evaluate(async ({ id, newName }) => {
       const bridge = (globalThis as typeof globalThis & {
-        serpent: { library: {
+        keel: { library: {
           listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
           renameAssetFile(input: { libraryId: string; assetId: string; newFileName: string }): Promise<{ ok: boolean }>;
         } };
-      }).serpent.library;
+      }).keel.library;
       const opened = await bridge.listOpen();
       if (!opened.ok || !opened.value?.[0]) throw new Error('No open test library.');
       const renamed = await bridge.renameAssetFile({

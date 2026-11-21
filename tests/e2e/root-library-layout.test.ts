@@ -35,7 +35,7 @@ test('creates root storage by default and offers the compatible Assets layout', 
     await window.getByRole('button', { name: '创建', exact: true }).click();
     await expect(window.getByText('日常记录', { exact: true }).first()).toBeVisible();
     const library = await window.evaluate(async () => {
-      const api = (globalThis as typeof globalThis & { serpent: { library: SerpentLibraryApi } }).serpent.library;
+      const api = (globalThis as typeof globalThis & { keel: { library: SerpentLibraryApi } }).keel.library;
       const result = await api.listOpen();
       if (!result.ok) throw new Error('Could not list open libraries');
       return result.value[0]!;
@@ -45,7 +45,7 @@ test('creates root storage by default and offers the compatible Assets layout', 
     expect(existsSync(path.join(root, 'Assets'))).toBe(false);
     writeFileSync(path.join(root, '原位照片.txt'), 'external file');
     await expect.poll(async () => window.evaluate(async (libraryId) => {
-      const api = (globalThis as typeof globalThis & { serpent: { library: SerpentLibraryApi } }).serpent.library;
+      const api = (globalThis as typeof globalThis & { keel: { library: SerpentLibraryApi } }).keel.library;
       const result = await api.listAssets({ libraryId, recursive: true });
       return result.ok ? result.value.map((asset) => asset.relativeFilePath) : [];
     }, library.libraryId), { timeout: 20_000 }).toEqual(['原位照片.txt']);

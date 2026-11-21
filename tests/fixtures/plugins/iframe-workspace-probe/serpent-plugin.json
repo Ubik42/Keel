@@ -1,6 +1,6 @@
 {
   "manifestVersion": 1,
-  "id": "com.serpent.iframe-workspace-probe",
+  "id": "com.keel.iframe-workspace-probe",
   "version": "1.0.0",
   "name": "Iframe Workspace Probe",
   "description": "Fixed sandboxed workspace iframe fixture for PLUGIN-016.",

@@ -138,15 +138,15 @@ describe('folderMenuItemId / parseFolderMenuId', () => {
   });
 
   it('「保存至此」解析为 null（根目录），未知 id 为 undefined', () => {
-    expect(parseFolderMenuId('serpent-save-root')).toBeNull();
-    expect(parseFolderMenuId('serpent-save-whatever')).toBeUndefined();
+    expect(parseFolderMenuId('keel-save-root')).toBeNull();
+    expect(parseFolderMenuId('keel-save-whatever')).toBeUndefined();
   });
 });
 
 describe('folderMenuSelfId / parseFolderMenuId', () => {
   it('「保存到此文件夹」项解析回该 folderId，与其他 id 不冲突', () => {
     const id = folderMenuSelfId('d1');
-    expect(id).toBe('serpent-save-self:d1');
+    expect(id).toBe('keel-save-self:d1');
     expect(parseFolderMenuId(id)).toBe('d1');
     expect(id).not.toBe(folderMenuId('d1'));
     expect(parseFolderMenuId(folderMenuId('d1'))).toBe('d1');

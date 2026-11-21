@@ -45,11 +45,11 @@ test('restarts an exited Library Worker and restores browsing and search', async
     await expect(assetCard(window, 'example.png')).toBeVisible();
     const beforeCrash = await window.evaluate(async () => {
       const api = (globalThis as typeof globalThis & {
-        serpent: { library: {
+        keel: { library: {
           create(input: { displayName: string }): Promise<{ ok: boolean }>;
           listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
         } };
-      }).serpent.library;
+      }).keel.library;
       const created = await api.create({ displayName: 'Second recovery fixture' });
       if (!created.ok) throw new Error('Could not create second fixture library');
       return api.listOpen();
@@ -84,8 +84,8 @@ test('restarts an exited Library Worker and restores browsing and search', async
 
     const openLibraries = await window.evaluate(async () => {
       const api = (globalThis as typeof globalThis & {
-        serpent: { library: { listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }> } };
-      }).serpent.library;
+        keel: { library: { listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }> } };
+      }).keel.library;
       return api.listOpen();
     });
     expect(openLibraries.ok).toBe(true);

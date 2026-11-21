@@ -1,5 +1,5 @@
 /**
- * Track and abort Main-process reads of library files (`serpent://` streams).
+ * Track and abort Main-process reads of library files (`keel://` streams).
  *
  * Chromium keeps those streams open while thumbnails/previews are on screen.
  * Windows then refuses to delete the library root (EPERM / ENOTEMPTY) even
@@ -29,7 +29,7 @@ export function unblockLibraryMediaReads(libraryId: string): void {
 /**
  * Delete-from-disk must drop Chromium file handles before Worker `rm`.
  * The fence is request-scoped: Serpent ZIP import keeps the same
- * `library_id`, so a leaked block 410s every `serpent://` URL after the
+ * `library_id`, so a leaked block 410s every `keel://` URL after the
  * user re-imports that library.
  */
 export function beginLibraryDeleteMediaFence(libraryId: string): void {

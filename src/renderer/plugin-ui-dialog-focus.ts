@@ -11,7 +11,7 @@ export const DIALOG_INITIAL_FOCUS_ATTRIBUTE = "data-dialog-initial-focus";
 const STEAL_FOCUS_COOLDOWN_MS = 400;
 
 type RendererWindow = Window & {
-  serpent?: {
+  keel?: {
     shell?: Pick<SerpentShellApi, "windowControl">;
   };
 };
@@ -34,7 +34,7 @@ function defaultStealNativeFocus(): Promise<unknown> | void {
   const now = Date.now();
   if (now - lastStealNativeFocusAt < STEAL_FOCUS_COOLDOWN_MS) return;
   lastStealNativeFocusAt = now;
-  const shell = (window as RendererWindow).serpent?.shell;
+  const shell = (window as RendererWindow).keel?.shell;
   return shell?.windowControl("steal-focus");
 }
 

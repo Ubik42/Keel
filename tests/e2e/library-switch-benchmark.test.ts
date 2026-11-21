@@ -68,7 +68,7 @@ async function installScrollProbe(window: Page): Promise<void> {
             : Array.from(node.querySelectorAll<HTMLImageElement>("img.asset-thumbnail"));
           for (const image of images) {
             const src = image.getAttribute("src");
-            if (!src || !src.startsWith("serpent://")) continue;
+            if (!src || !src.startsWith("keel://")) continue;
             probe.mediaSrcWrites += 1;
             probe.srcCounts[src] = (probe.srcCounts[src] ?? 0) + 1;
           }
@@ -78,7 +78,7 @@ async function installScrollProbe(window: Page): Promise<void> {
         }
         if (record.type === "attributes" && record.target instanceof HTMLImageElement) {
           const src = record.target.getAttribute("src");
-          if (src && src.startsWith("serpent://")) {
+          if (src && src.startsWith("keel://")) {
             probe.mediaSrcWrites += 1;
             probe.srcCounts[src] = (probe.srcCounts[src] ?? 0) + 1;
           }
@@ -314,13 +314,13 @@ test("measures wheel scrolling and a real library switch", async () => {
     if (pausedMedia) {
       const pauseResult = await window.evaluate(async () => {
         const bridge = (globalThis as unknown as {
-          serpent: {
+          keel: {
             library: {
               listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
               pauseMediaJobs(input: { libraryId: string }): Promise<{ ok: boolean; error?: { code: string } }>;
             };
           };
-        }).serpent;
+        }).keel;
         const opened = await bridge.library.listOpen();
         const libraryId = opened.value?.[0]?.libraryId;
         if (!libraryId) return { ok: false, reason: "no-open-library" };
@@ -560,13 +560,13 @@ test("measures wheel scrolling and a real library switch", async () => {
       try {
         await benchmarkWindow?.evaluate(async () => {
           const bridge = (globalThis as unknown as {
-            serpent: {
+            keel: {
               library: {
                 listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
                 resumeMediaJobs(input: { libraryId: string }): Promise<{ ok: boolean }>;
               };
             };
-          }).serpent;
+          }).keel;
           const opened = await bridge.library.listOpen();
           for (const library of opened.value ?? []) {
             await bridge.library.resumeMediaJobs({ libraryId: library.libraryId });

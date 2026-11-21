@@ -62,7 +62,7 @@ test("persists organization and metadata across restart and surfaces optimistic-
     await window.evaluate(async () => {
       const api = (
         globalThis as typeof globalThis & {
-          serpent: {
+          keel: {
             library: {
               listOpen(): Promise<{
                 ok: boolean;
@@ -75,7 +75,7 @@ test("persists organization and metadata across restart and surfaces optimistic-
             };
           };
         }
-      ).serpent.library;
+      ).keel.library;
       const open = await api.listOpen();
       const libraryId = open.value?.[0]?.libraryId;
       if (!libraryId) throw new Error("No open library");
@@ -102,7 +102,7 @@ test("persists organization and metadata across restart and surfaces optimistic-
       window.evaluate(async (targetAssetId) => {
         const api = (
           globalThis as typeof globalThis & {
-            serpent: {
+            keel: {
               library: {
                 listOpen(): Promise<{
                   ok: boolean;
@@ -123,7 +123,7 @@ test("persists organization and metadata across restart and surfaces optimistic-
               };
             };
           }
-        ).serpent.library;
+        ).keel.library;
         const open = await api.listOpen();
         const libraryId = open.value?.[0]?.libraryId;
         if (!open.ok || !libraryId) return null;
@@ -192,7 +192,7 @@ test("persists organization and metadata across restart and surfaces optimistic-
     const restoredOrganization = await window.evaluate(async (targetAssetId) => {
       const api = (
         globalThis as typeof globalThis & {
-          serpent: {
+          keel: {
             library: {
               listOpen(): Promise<{
                 ok: boolean;
@@ -212,7 +212,7 @@ test("persists organization and metadata across restart and surfaces optimistic-
             };
           };
         }
-      ).serpent.library;
+      ).keel.library;
       const open = await api.listOpen();
       const libraryId = open.value?.[0]?.libraryId;
       if (!open.ok || !libraryId) throw new Error("No open library");
@@ -234,7 +234,7 @@ test("persists organization and metadata across restart and surfaces optimistic-
     const competingWrite = await window.evaluate(async (targetAssetId) => {
       const api = (
         globalThis as typeof globalThis & {
-          serpent: {
+          keel: {
             library: {
               listOpen(): Promise<{
                 ok: boolean;
@@ -266,7 +266,7 @@ test("persists organization and metadata across restart and surfaces optimistic-
             };
           };
         }
-      ).serpent.library;
+      ).keel.library;
       const open = await api.listOpen();
       const libraryId = open.value?.[0]?.libraryId;
       if (!open.ok || !libraryId) throw new Error("No open library");
@@ -298,7 +298,7 @@ test("persists organization and metadata across restart and surfaces optimistic-
     const latestBeforeRefresh = await window.evaluate(async (targetAssetId) => {
       const api = (
         globalThis as typeof globalThis & {
-          serpent: {
+          keel: {
             library: {
               listOpen(): Promise<{
                 ok: boolean;
@@ -317,7 +317,7 @@ test("persists organization and metadata across restart and surfaces optimistic-
             };
           };
         }
-      ).serpent.library;
+      ).keel.library;
       const open = await api.listOpen();
       const libraryId = open.value?.[0]?.libraryId;
       if (!open.ok || !libraryId) throw new Error("No open library");
@@ -407,7 +407,7 @@ test("switches Inspector assets without connection flashes or mixed metadata", a
       window.evaluate(async (targetAssetId) => {
         const api = (
           globalThis as typeof globalThis & {
-            serpent: {
+            keel: {
               library: {
                 listOpen(): Promise<{
                   ok: boolean;
@@ -423,7 +423,7 @@ test("switches Inspector assets without connection flashes or mixed metadata", a
               };
             };
           }
-        ).serpent.library;
+        ).keel.library;
         const open = await api.listOpen();
         const libraryId = open.value?.[0]?.libraryId;
         if (!open.ok || !libraryId) return null;
@@ -633,7 +633,7 @@ test("assigns Inspector tag suggestions directly and hides tags after their fina
       async ({ sourceAssetId, targetAssetId }) => {
         const api = (
           globalThis as typeof globalThis & {
-            serpent: {
+            keel: {
               library: {
                 listOpen(): Promise<{
                   ok: boolean;
@@ -655,7 +655,7 @@ test("assigns Inspector tag suggestions directly and hides tags after their fina
               };
             };
           }
-        ).serpent.library;
+        ).keel.library;
         const open = await api.listOpen();
         const libraryId = open.value?.[0]?.libraryId;
         if (!open.ok || !libraryId) throw new Error("No open library.");

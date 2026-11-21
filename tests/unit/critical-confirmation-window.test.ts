@@ -157,8 +157,8 @@ describe('Critical confirmation window', () => {
     const pending = manager.request(payload);
     const window = windows[0]!;
     const forged = new FakeWindow();
-    const getChannel = 'serpent:critical-confirmation:get';
-    const decideChannel = 'serpent:critical-confirmation:decide';
+    const getChannel = 'keel:critical-confirmation:get';
+    const decideChannel = 'keel:critical-confirmation:decide';
 
     await expect(ipcMain.invoke(getChannel, forged)).rejects.toThrow();
     await expect(ipcMain.invoke(decideChannel, forged, 'confirm')).resolves.toBe(false);

@@ -294,13 +294,13 @@ test('returns specific safe desktop-ingestion errors and records their diagnosti
 
     const invalidDrop = await window.evaluate(async () => {
       const bridge = window as unknown as {
-        serpent: { library: {
+        keel: { library: {
           listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
           importDropped(input: { libraryId: string; files: unknown[] }): Promise<{ ok: boolean; error?: { code: string } }>;
         } };
       };
-      const libraries = await bridge.serpent.library.listOpen();
-      return bridge.serpent.library.importDropped({
+      const libraries = await bridge.keel.library.listOpen();
+      return bridge.keel.library.importDropped({
         libraryId: libraries.value?.[0]?.libraryId ?? 'missing',
         files: [{}],
       });
@@ -328,7 +328,7 @@ async function pasteClipboardImage(
   return window.evaluate(async ({ folderName: targetFolderName }) => {
     interface Result<T> { ok: boolean; value?: T; error?: { code: string; message?: string } }
     const bridge = globalThis as typeof globalThis & {
-      serpent: {
+      keel: {
         library: {
           listOpen(): Promise<Result<Array<{ libraryId: string }>>>;
           listFolders(input: { libraryId: string }): Promise<Result<Array<{ folderId: string; name: string }>>>;
@@ -339,14 +339,14 @@ async function pasteClipboardImage(
         };
       };
     };
-    const open = await bridge.serpent.library.listOpen();
+    const open = await bridge.keel.library.listOpen();
     const libraryId = open.value?.[0]?.libraryId;
     if (!open.ok || !libraryId) throw new Error('Expected an open library.');
-    const folders = await bridge.serpent.library.listFolders({ libraryId });
+    const folders = await bridge.keel.library.listFolders({ libraryId });
     const targetFolderId = targetFolderName === undefined
       ? undefined
       : folders.value?.find((folder) => folder.name === targetFolderName)?.folderId;
-    return bridge.serpent.library.pasteClipboardImage({
+    return bridge.keel.library.pasteClipboardImage({
       libraryId,
       ...(targetFolderId === undefined ? {} : { targetFolderId }),
     });
@@ -356,13 +356,13 @@ async function pasteClipboardImage(
 async function resolveClipboardConflict(window: Page, importId: string): Promise<boolean> {
   return window.evaluate(async (token) => {
     const bridge = globalThis as typeof globalThis & {
-      serpent: { library: { resolveImport(input: {
+      keel: { library: { resolveImport(input: {
         importId: string;
         suspectedDuplicate: 'create-copy';
         nameConflict: 'keep-both';
       }): Promise<{ ok: boolean }> } };
     };
-    return (await bridge.serpent.library.resolveImport({
+    return (await bridge.keel.library.resolveImport({
       importId: token,
       suspectedDuplicate: 'create-copy',
       nameConflict: 'keep-both',

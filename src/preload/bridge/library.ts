@@ -121,7 +121,7 @@ function emitE2eBrowseSessionResponse(
   ok: boolean,
 ): void {
   if (!e2eEnabled || process.env.KEEL_E2E_LIBRARY_TRACE !== '1') return;
-  window.dispatchEvent(new CustomEvent('serpent:e2e-browse-session-response', {
+  window.dispatchEvent(new CustomEvent('keel:e2e-browse-session-response', {
     detail: JSON.stringify({
       navigationId,
       responseAtEpochMs: Date.now(),

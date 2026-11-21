@@ -376,7 +376,7 @@ export function buildPluginSetupSource(entryJavaScript: string, context: {
     'signal.removeEventListener = function() {};',
     'signal.throwIfAborted = function() { if (signal.aborted) { const error = new Error("The plugin instance was deactivated."); error.name = "AbortError"; throw error; } };',
     'try {',
-    `  await setup(Object.assign({}, serpent, { pluginId: ${JSON.stringify(context.pluginId)}, pluginInstanceId: ${JSON.stringify(context.pluginInstanceId)}, installationScope: ${JSON.stringify(context.installationScope)}, instanceScope: { kind: ${JSON.stringify(context.instanceScope)} }, subscriptions: subscriptions, signal: signal, serpent: serpent }));`,
+    `  await setup(Object.assign({}, serpent, { pluginId: ${JSON.stringify(context.pluginId)}, pluginInstanceId: ${JSON.stringify(context.pluginInstanceId)}, installationScope: ${JSON.stringify(context.installationScope)}, instanceScope: { kind: ${JSON.stringify(context.instanceScope)} }, subscriptions: subscriptions, signal: signal, keel: serpent, serpent: serpent }));`,
     '  if (typeof serpent.__waitUntilDeactivate === "function") {',
     '    await serpent.__waitUntilDeactivate();',
     '  }',

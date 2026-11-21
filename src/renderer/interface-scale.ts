@@ -7,7 +7,7 @@ export function loadInterfaceScale(): number {
 }
 export function applyInterfaceScale(value: number): void {
   const percent = normalizeInterfaceScale(value);
-  const bridge = (globalThis as typeof globalThis & { serpent?: { shell?: { setInterfaceScale?: (percent: number) => void } } }).serpent;
+  const bridge = (globalThis as typeof globalThis & { keel?: { shell?: { setInterfaceScale?: (percent: number) => void } } }).keel;
   bridge?.shell?.setInterfaceScale?.(percent);
   document.documentElement.dataset.interfaceScale = String(percent);
 }

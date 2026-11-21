@@ -20,7 +20,7 @@ function job(
     attemptCount: 0,
     errorCode: null,
     errorDetail: null,
-    ownerPluginId: "com.serpent.probe",
+    ownerPluginId: "com.keel.probe",
     ownerPackageHash: "a".repeat(64),
     pluginHandlerId: "process",
     payload: {},

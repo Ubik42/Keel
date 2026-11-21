@@ -64,7 +64,7 @@ Permission Broker 只读取 credential 权限档，不保存 transport session g
 
 ## Desktop 通知
 
-`serpent_ui_notify` 是非阻塞信息投影，不是权限通道，仅接受 `toast` 模式（dialog 模式已按 stateless 设计移除）。Host 或 Agent 可以用它说明“正在导入显式路径”“正在查询任务”等阶段，但不得打开选择器或用 notification 等待人类批准。
+`keel_ui_notify` 是非阻塞信息投影，不是权限通道，仅接受 `toast` 模式（dialog 模式已按 stateless 设计移除）。Host 或 Agent 可以用它说明“正在导入显式路径”“正在查询任务”等阶段，但不得打开选择器或用 notification 等待人类批准。
 
 库级调用的成功响应回显 `libraryId` 与 `libraryChangeSequence`（最近已知变更序号，ADR-0031 §2）；写命令自身可能滞后一个事件，后续调用与 `library.change-sequence` 提供新值。失败响应携带稳定 `code`/`message`，并按错误契约附加 `retryable`（瞬时错误）、`currentVersion`（实体版本冲突）与 `libraryId`。
 

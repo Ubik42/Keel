@@ -156,7 +156,7 @@ test("folder-section + creates at the library root while a subfolder is in scope
           window.evaluate(async () => {
             const api = (
               globalThis as typeof globalThis & {
-                serpent: {
+                keel: {
                   library: {
                     listOpen(): Promise<{
                       ok: boolean;
@@ -172,7 +172,7 @@ test("folder-section + creates at the library root while a subfolder is in scope
                   };
                 };
               }
-            ).serpent.library;
+            ).keel.library;
             const open = await api.listOpen();
             const libraryId = open.value?.[0]?.libraryId;
             if (!libraryId) return null;
@@ -296,7 +296,7 @@ test("right-clicking the blank area opens the library-root folder menu", async (
       await window.evaluate(async () => {
         const api = (
           globalThis as typeof globalThis & {
-            serpent: {
+            keel: {
               library: {
                 listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
                 listFolders(input: { libraryId: string }): Promise<{
@@ -306,7 +306,7 @@ test("right-clicking the blank area opens the library-root folder menu", async (
               };
             };
           }
-        ).serpent.library;
+        ).keel.library;
         const open = await api.listOpen();
         const libraryId = open.value?.[0]?.libraryId;
         if (!libraryId) return "no-library";
@@ -434,7 +434,7 @@ test("folder-section blank area returns to the root and accepts folder drops", a
           window.evaluate(async () => {
             const api = (
               globalThis as typeof globalThis & {
-                serpent: {
+                keel: {
                   library: {
                     listOpen(): Promise<{
                       ok: boolean;
@@ -451,7 +451,7 @@ test("folder-section blank area returns to the root and accepts folder drops", a
                   };
                 };
               }
-            ).serpent.library;
+            ).keel.library;
             const open = await api.listOpen();
             const libraryId = open.value?.[0]?.libraryId;
             if (!libraryId) return null;
@@ -534,7 +534,7 @@ test("folder-section blank area returns to the root and accepts folder drops", a
           window.evaluate(async (targetId) => {
             const api = (
               globalThis as typeof globalThis & {
-                serpent: {
+                keel: {
                   library: {
                     listOpen(): Promise<{
                       ok: boolean;
@@ -550,7 +550,7 @@ test("folder-section blank area returns to the root and accepts folder drops", a
                   };
                 };
               }
-            ).serpent.library;
+            ).keel.library;
             const open = await api.listOpen();
             const libraryId = open.value?.[0]?.libraryId;
             if (!libraryId) return null;

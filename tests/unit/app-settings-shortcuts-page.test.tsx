@@ -31,7 +31,7 @@ async function renderPage(
     importFromFile?: () => Promise<unknown>;
   } = {},
 ) {
-  (window as unknown as { serpent?: unknown }).serpent = {
+  (window as unknown as { keel?: unknown }).keel = {
     shortcuts: {
       get: async () => DEFAULT_SHORTCUT_BINDINGS,
       set: setMock,
@@ -99,7 +99,7 @@ async function pressMouseSide(button: 3 | 4, modifiers: Partial<MouseEventInit> 
 }
 
 beforeEach(() => {
-  originalSerpent = (window as unknown as { serpent?: unknown }).serpent;
+  originalSerpent = (window as unknown as { keel?: unknown }).keel;
 });
 
 afterEach(() => {
@@ -107,7 +107,7 @@ afterEach(() => {
   container?.remove();
   root = undefined;
   container = undefined;
-  (window as unknown as { serpent?: unknown }).serpent = originalSerpent;
+  (window as unknown as { keel?: unknown }).keel = originalSerpent;
 });
 
 describe("AppSettingsShortcutsPage", () => {

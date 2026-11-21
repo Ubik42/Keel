@@ -1,10 +1,10 @@
 /**
  * Serpent-485aeb: the generated font specimen sheet served at
- * `serpent://source/<libraryId>/<assetId>?revision=…&sample=font`.
+ * `keel://source/<libraryId>/<assetId>?revision=…&sample=font`.
  *
  * Main renders this page in the offscreen capture window to produce the font
  * card thumbnail, so the specimen rules live in one place: the font is loaded
- * with `@font-face` from the *same* serpent://source route (same origin, so no
+ * with `@font-face` from the *same* keel://source route (same origin, so no
  * CORS relaxation is needed) and the cover text follows the language the font
  * actually declares (see `src/shared/font-metadata.ts` for why cmap coverage is
  * not a language signal).
@@ -23,7 +23,7 @@ import {
 } from '../shared/font-metadata';
 
 export interface FontSamplePageInput {
-  /** Absolute `serpent://source/...` URL of the font file itself. */
+  /** Absolute `keel://source/...` URL of the font file itself. */
   readonly fontUrl: string;
   /** Family name read from the font's `name` table; null when unreadable. */
   readonly family?: string | null;
@@ -82,7 +82,7 @@ function escapeHtml(value: string): string {
 }
 
 /**
- * Split a `serpent://source/…&sample=font` request into the sheet's inputs.
+ * Split a `keel://source/…&sample=font` request into the sheet's inputs.
  *
  * The sample-only query keys (`sample`, `family`, `lang`, `script`) must be
  * stripped from the URL handed to `@font-face`: a leftover key would make the
@@ -96,7 +96,7 @@ export function resolveFontSampleRequest(sourceUrl: URL): {
   const fontQuery = new URLSearchParams(sourceUrl.searchParams);
   for (const key of ['sample', 'family', 'lang', 'script']) fontQuery.delete(key);
   return {
-    fontUrl: `serpent://source${sourceUrl.pathname}?${fontQuery.toString()}`,
+    fontUrl: `keel://source${sourceUrl.pathname}?${fontQuery.toString()}`,
     family: sourceUrl.searchParams.get('family'),
     language: parseFontLanguage(sourceUrl.searchParams.get('lang')),
   };

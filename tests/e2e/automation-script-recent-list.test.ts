@@ -13,7 +13,7 @@ test('reopens a saved script from the recent scripts list', async () => {
   const temporaryRoot = mkdtempSync(path.join(tmpdir(), 'serpent-automation-recent-e2e-'));
   const sourceRoot = path.join(temporaryRoot, 'sources');
   const matchingSource = path.join(sourceRoot, 'Ser-reference.png');
-  const savedScript = path.join(temporaryRoot, 'rating.serpent.ts');
+  const savedScript = path.join(temporaryRoot, 'rating.keel.ts');
   const libraryName = '自动化最近脚本验收';
   mkdirSync(sourceRoot);
   writeFileSync(matchingSource, 'matching asset');
@@ -50,8 +50,8 @@ test('reopens a saved script from the recent scripts list', async () => {
     await expect(dialog).toBeVisible();
     await dialog.getByRole('textbox', { name: '脚本' }).fill(DEFAULT_AUTOMATION_RATING_SCRIPT);
     await dialog.getByRole('button', { name: '保存脚本' }).click();
-    await expect(dialog).toContainText('已保存脚本：rating.serpent.ts');
-    await expect(dialog.getByRole('button', { name: 'rating.serpent.ts' })).toBeVisible();
+    await expect(dialog).toContainText('已保存脚本：rating.keel.ts');
+    await expect(dialog.getByRole('button', { name: 'rating.keel.ts' })).toBeVisible();
     expect(readFileSync(savedScript, 'utf8')).toContain('serpent.assets.setRating');
 
     await dialog.getByRole('textbox', { name: '脚本' }).fill('return { changed: true };');
@@ -61,9 +61,9 @@ test('reopens a saved script from the recent scripts list', async () => {
     await window.getByRole('button', { name: '更多工具' }).click();
     await window.getByRole('menuitem', { name: '自动化脚本' }).click();
     await expect(dialog).toBeVisible();
-    await dialog.getByRole('button', { name: 'rating.serpent.ts' }).click();
+    await dialog.getByRole('button', { name: 'rating.keel.ts' }).click();
     await expect(dialog.getByRole('textbox', { name: '脚本' })).toHaveValue(/serpent\.assets\.setRating/);
-    await expect(dialog).toContainText('已保存脚本：rating.serpent.ts');
+    await expect(dialog).toContainText('已保存脚本：rating.keel.ts');
     await expect(dialog).not.toContainText(temporaryRoot);
   } finally {
     await application.close();

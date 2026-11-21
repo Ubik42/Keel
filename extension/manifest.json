@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Serpent",
+  "name": "Keel",
   "version": "0.1.0",
-  "description": "Save images and videos from the web to Serpent digital asset manager.",
+  "description": "Save images and videos from the web to Keel digital asset manager.",
   "permissions": ["contextMenus", "notifications", "storage", "alarms", "declarativeNetRequest"],
   "host_permissions": [
     "http://127.0.0.1:19876/*",
@@ -21,7 +21,7 @@
     }
   ],
   "action": {
-    "default_title": "Serpent",
+    "default_title": "Keel",
     "default_icon": {
       "32": "icons/icon-gray-32.png",
       "48": "icons/icon-gray-48.png",

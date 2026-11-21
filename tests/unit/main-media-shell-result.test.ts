@@ -50,7 +50,7 @@ test("asset.preview maps a source artifact onto a serpent URL", async () => {
     ok: true,
     type: "asset.preview.resolved",
     assetId: "asset-1",
-    url: "serpent://source/lib-1/asset-1?revision=rev-1",
+    url: "keel://source/lib-1/asset-1?revision=rev-1",
     playbackToken: "asset-1:rev-1",
   });
 });

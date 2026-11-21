@@ -4,7 +4,7 @@
  * The Worker (`model.resolve-companions` command) returns the assets in the
  * model's directory as relative-path entries; the renderer 3D loaders rewrite
  * OBJ+MTL / FBX / glTF external texture references against this index to
- * `serpent://source/<libraryId>/<assetId>?revision=<revisionId>` URLs (the
+ * `keel://source/<libraryId>/<assetId>?revision=<revisionId>` URLs (the
  * `preview` host serves artifacts, not assets — E2E caught the assetId-in-
  * preview-host 404). Only library-relative POSIX paths and ids cross the
  * boundary — no absolute paths (REQ-COMMAND-003).

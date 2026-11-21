@@ -2,7 +2,7 @@ import path from 'node:path';
 
 import { pluginIdSchema, pluginPackagePathSchema } from '../plugins/plugin-manifest';
 
-const pluginUiProtocol = 'serpent-plugin:';
+const pluginUiProtocol = 'keel-plugin:';
 
 export type PluginUiAssetRequest = {
   pluginId: string;

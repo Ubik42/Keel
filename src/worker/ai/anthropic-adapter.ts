@@ -21,7 +21,7 @@ import type { VendorAdapter, VendorId } from './vendor-adapter';
  */
 function buildAnthropicToolDefinition(language: string) {
   return {
-    name: 'serpent_classify_asset',
+    name: 'keel_classify_asset',
     description:
       'Classify a digital asset for a creative professional library. ' +
       `Provide description and tags in ${language}, and an optional aesthetic rating.`,
@@ -81,7 +81,7 @@ function httpStatusToErrorKind(
  * (api.anthropic.com/v1/messages).
  *
  * Structured output is enforced via tool-use: we define a single
- * tool `serpent_classify_asset` with the structured `input_schema`
+ * tool `keel_classify_asset` with the structured `input_schema`
  * and instruct the model to call it.
  */
 export class AnthropicVendorAdapter implements VendorAdapter {
@@ -124,7 +124,7 @@ export class AnthropicVendorAdapter implements VendorAdapter {
       tools: [buildAnthropicToolDefinition(request.language)],
       tool_choice: {
         type: 'tool' as const,
-        name: 'serpent_classify_asset',
+        name: 'keel_classify_asset',
       },
     }, this.#policyInput('analyze'));
 
@@ -234,7 +234,7 @@ export class AnthropicVendorAdapter implements VendorAdapter {
         enabledFields: request.enabledFields,
         existingTagNames: request.existingTagNames,
       }) +
-      '\n通过调用 `serpent_classify_asset` 工具返回结果。\n'
+      '\n通过调用 `keel_classify_asset` 工具返回结果。\n'
     );
   }
 

@@ -14,7 +14,7 @@ import type { ShortcutEventLike } from "../shared/shortcut-resolution";
 import { listenForShortcutInputs } from "./shortcut-runtime";
 import { hasActiveModalDialog } from "./use-dialog-focus-trap";
 
-const VIEWER_VOLUME_UPDATED_EVENT = "serpent:viewer-volume-updated";
+const VIEWER_VOLUME_UPDATED_EVENT = "keel:viewer-volume-updated";
 
 export function useViewerVolume(
   enabled = true,

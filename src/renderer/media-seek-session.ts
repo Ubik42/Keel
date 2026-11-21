@@ -2,7 +2,7 @@
  * Coalesced, seek-aware media seeking for custom-protocol playback.
  *
  * Scrub UIs that assign `HTMLMediaElement.currentTime` on every pointermove
- * cancel in-flight Range fetches. Under `serpent://` that race frequently
+ * cancel in-flight Range fetches. Under `keel://` that race frequently
  * ends in MEDIA_ERR_NETWORK and a fatal viewer error overlay (Serpent-jh2).
  *
  * This session:
@@ -146,7 +146,7 @@ export function isTransientMediaPlaybackError(
 }
 
 /**
- * A source served through the custom serpent:// protocol can briefly report
+ * A source served through the custom keel:// protocol can briefly report
  * MEDIA_ERR_NETWORK while Chromium is reconnecting a Range request. This is
  * recoverable for the source viewer and should get a bounded remount retry
  * before we surface a playback error or generate a proxy.

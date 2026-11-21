@@ -123,9 +123,9 @@ async function createServerHarness(options: {
   });
   const config = await server.createClientConfig('generic-json', 'HTTP test client');
   const parsedConfig = JSON.parse(config.configText) as {
-    mcpServers: { serpent: { url: string; headers: { Authorization: string } } };
+    mcpServers: { keel: { url: string; headers: { Authorization: string } } };
   };
-  const clientConfig = parsedConfig.mcpServers.serpent;
+  const clientConfig = parsedConfig.mcpServers.keel;
   return {
     server,
     endpoint: clientConfig.url,
@@ -179,14 +179,14 @@ describe('Embedded MCP Streamable HTTP server', () => {
     await client.connect(transport);
     expect(client.getInstructions()).toContain('explicit libraryId');
     const listed = await client.listTools();
-    expect(listed.tools.map((tool) => tool.name)).toContain('serpent_library_list_open');
+    expect(listed.tools.map((tool) => tool.name)).toContain('keel_library_list_open');
     expect(harness.journal.list()[0]).toMatchObject({
       source: 'mcp',
       clientName: 'http-sdk-test',
     });
     const progress = vi.fn();
     await client.callTool(
-      { name: 'serpent_library_list_open', arguments: {} },
+      { name: 'keel_library_list_open', arguments: {} },
       undefined,
       { onprogress: progress },
     );
@@ -257,7 +257,7 @@ describe('Embedded MCP Streamable HTTP server', () => {
     });
     await client.connect(transport);
     const response = await client.callTool({
-      name: 'serpent_library_inspect',
+      name: 'keel_library_inspect',
       arguments: { libraryId: targetLibraryId },
     });
     expect(response.structuredContent).toMatchObject({
@@ -339,7 +339,7 @@ describe('Embedded MCP Streamable HTTP server', () => {
     });
     await client.connect(transport);
     const names = (await client.listTools()).tools.map((tool) => tool.name);
-    expect(names).toContain('serpent_library_create');
+    expect(names).toContain('keel_library_create');
     await client.close();
     await harness.server.close();
   });

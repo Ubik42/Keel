@@ -1,7 +1,7 @@
 import type { ExtensionFolderOption } from './folder-menu';
 
 /**
- * Serpent-c0ml / REQ-EXT-005 拖拽思维导图树状保存菜单纯逻辑。
+ * Keel-c0ml / REQ-EXT-005 拖拽思维导图树状保存菜单纯逻辑。
  * 规格：docs/internal/ui/0002-extension-drag-radial-save-menu.md（v7 树状）。
  * 本模块不接触 DOM；命中矩形与层级项生成可单测。渲染在 radial-menu.ts。
  */
@@ -273,7 +273,7 @@ export function parentInfoForLevel(
 ): TreeParentInfo {
   if (level.kind === 'root') {
     return {
-      label: context.libraryDisplayName || 'Serpent',
+      label: context.libraryDisplayName || 'Keel',
       path: ROOT_FOLDER_PATH,
       folderId: null,
       backTarget: { kind: 'root' },
@@ -282,7 +282,7 @@ export function parentInfoForLevel(
   }
   if (level.kind === 'all') {
     return {
-      label: context.libraryDisplayName || 'Serpent',
+      label: context.libraryDisplayName || 'Keel',
       path: ROOT_FOLDER_PATH,
       folderId: null,
       backTarget: { kind: 'root' },
@@ -331,7 +331,7 @@ export function armedHint(
 
 export function crumbForLevel(level: TreeLevel, libraryDisplayName?: string): string {
   if (level.kind === 'root') {
-    return libraryDisplayName ? `保存到 ${libraryDisplayName}` : '保存到 Serpent';
+    return libraryDisplayName ? `保存到 ${libraryDisplayName}` : '保存到 Keel';
   }
   if (level.kind === 'all') return libraryDisplayName ?? '根目录';
   return `根目录 / ${level.path.split('/').join(' / ')}`;

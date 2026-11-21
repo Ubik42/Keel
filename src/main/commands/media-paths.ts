@@ -57,7 +57,7 @@ export function executeMediaPathMainCommand(
       };
     case "asset.preview.request":
       // Handled directly in handleLibraryRequest because it requires constructing
-      // a serpent:// URL after the Worker lookup.
+      // a keel:// URL after the Worker lookup.
       return {
         type: "media.get-preview-artifact",
         libraryId: request.libraryId,

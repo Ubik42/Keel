@@ -8,7 +8,7 @@
  *   Worker ──postMessage──▶ { type: 'document-thumbnail.render-request', ... }
  *   Main   ──postMessage──▶ { type: 'document-thumbnail.render-response', ... }
  *
- * The request carries the HTML URL (serpent://source) and the viewport size.
+ * The request carries the HTML URL (keel://source) and the viewport size.
  * PNG bytes return to the Worker, which alone persists the artifact row.
  *
  * Security: the offscreen window loads the HTML like a browser opening a local
@@ -24,7 +24,7 @@ export const DOCUMENT_THUMBNAIL_WIDTH = 1024;
 export const DOCUMENT_THUMBNAIL_GENERATOR_VERSION = 'offscreen-web-1';
 /**
  * Serpent-485aeb: font sample cards use the same offscreen pipeline, but Main
- * serves a generated sample sheet (`serpent://source/...&sample=font`). A
+ * serves a generated sample sheet (`keel://source/...&sample=font`). A
  * distinct tag keeps font cards from being invalidated by the document check;
  * `-2` re-renders them at 16:9 with a larger sample line.
  */
@@ -44,7 +44,7 @@ export type DocumentThumbnailErrorCode = z.infer<typeof documentThumbnailErrorCo
 export const documentThumbnailRenderRequestSchema = z.strictObject({
   type: z.literal('document-thumbnail.render-request'),
   requestId: z.string().min(1),
-  /** serpent://source URL for the HTML asset. */
+  /** keel://source URL for the HTML asset. */
   url: z.string().min(1),
   /** Capture viewport width (px). */
   width: z.number().int().positive(),

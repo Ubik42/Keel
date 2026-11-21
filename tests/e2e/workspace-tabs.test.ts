@@ -61,9 +61,9 @@ async function delayNextBrowseSession(
     };
     const diagnostics = (
       globalThis as typeof globalThis & {
-        serpent: { e2e?: E2eApi };
+        keel: { e2e?: E2eApi };
       }
-    ).serpent.e2e;
+    ).keel.e2e;
     if (!diagnostics) throw new Error("E2E diagnostics are unavailable.");
     diagnostics.delayNextBrowseSession(match, delay);
   }, { match: target, delay: delayMs });
@@ -206,9 +206,9 @@ async function createScrollableRoot(window: Page, count: number) {
     };
     const api = (
       globalThis as typeof globalThis & {
-        serpent: { library: LibraryApi };
+        keel: { library: LibraryApi };
       }
-    ).serpent.library;
+    ).keel.library;
     const opened = await api.listOpen();
     const libraryId = opened.value?.[0]?.libraryId;
     if (!opened.ok || !libraryId) throw new Error("Expected an open library.");

@@ -6,7 +6,8 @@ import { utf8ByteLength } from '../shared/script-sandbox-limits';
 import type { AutomationRecentScriptsStore } from './automation-recent-scripts-store';
 
 const MAX_SCRIPT_SOURCE_BYTES = 64 * 1024;
-const scriptFilenamePattern = /\.serpent\.(?:js|ts)$/iu;
+/** `.keel.js`/`.keel.ts`; pre-rename `.serpent.*` scripts still open. */
+const scriptFilenamePattern = /\.(?:keel|serpent)\.(?:js|ts)$/iu;
 
 export type AutomationScriptFileResult =
   | { ok: true; scriptId: string; displayName: string; source: string }

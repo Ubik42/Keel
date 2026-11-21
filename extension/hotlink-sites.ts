@@ -5,7 +5,7 @@
  * fetch init 的 referrer/referrerPolicy 均无效），按 Referer 防盗链的图床
  * （如微博 sinaimg.cn）会对扩展的下载请求返回 HTTP 403。本模块在启动时用
  * chrome.declarativeNetRequest 为已知防盗链 CDN 的 xmlhttprequest 请求注入
- * 目标站点认可的 Referer，扩展其余「SW fetch + 上传 Serpent」流程不变。
+ * 目标站点认可的 Referer，扩展其余「SW fetch + 上传 Keel」流程不变。
  *
  * 新站点接入：在 HOTLINK_SITES 追加一条 { label, hosts, referer }，重启扩展生效；
  * 规则注册幂等，重复启动不会叠加或冲突。Referer 值需以目标站实测为准
@@ -97,6 +97,6 @@ export async function installHotlinkRules(
     });
   } catch (error) {
     // 规则注册失败只影响防盗链站点的保存（仍是下载失败），不应阻断扩展其余功能。
-    console.warn('Serpent: failed to install hotlink referer rules', error);
+    console.warn('Keel: failed to install hotlink referer rules', error);
   }
 }

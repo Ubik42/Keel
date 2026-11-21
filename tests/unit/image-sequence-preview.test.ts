@@ -65,11 +65,11 @@ describe("image sequence preview", () => {
     ]);
     expect(sequencePreviewFrameCount(source, range)).toBe(2);
     expect(sequencePreviewFrameUrl(source, 12)).toBe(
-      "serpent://source/lib/c?revision=rev-c",
+      "keel://source/lib/c?revision=rev-c",
     );
     // 范围内没有资产时退回最近的帧，而不是空白
     expect(sequencePreviewFrameUrl(source, 11)).toBe(
-      "serpent://source/lib/b?revision=rev-b",
+      "keel://source/lib/b?revision=rev-b",
     );
     expect(sequencePreviewFrameCount(source, sequencePreviewRange(20, 24))).toBe(0);
   });
@@ -92,7 +92,7 @@ describe("image sequence preview", () => {
     );
     // offerId 必须转义，不能让它带出路径分隔符
     expect(pendingSequenceFrameUrl("a/b", 0, 1)).toBe(
-      "serpent://import-frame/a%2Fb/0/1",
+      "keel://import-frame/a%2Fb/0/1",
     );
   });
 });

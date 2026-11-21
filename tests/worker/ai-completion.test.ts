@@ -245,7 +245,7 @@ describe('AnthropicVendorAdapter', () => {
       {
         type: 'tool_use',
         id: 'toolu_01X',
-        name: 'serpent_classify_asset',
+        name: 'keel_classify_asset',
         input: {
           description: 'A test image classified by Claude',
           tags: ['claude', 'test'],
@@ -275,7 +275,7 @@ describe('AnthropicVendorAdapter', () => {
       enabledFields: { description: true, tags: true, rating: false },
       existingTagNames: [],
     });
-    expect(sent?.tool_choice).toEqual({ type: 'tool', name: 'serpent_classify_asset' });
+    expect(sent?.tool_choice).toEqual({ type: 'tool', name: 'keel_classify_asset' });
     expect(sent?.thinking).toEqual({ type: 'disabled' });
   });
 
@@ -388,7 +388,7 @@ describe('AnthropicVendorAdapter', () => {
         {
           type: 'tool_use',
           id: 'toolu_02',
-          name: 'serpent_classify_asset',
+          name: 'keel_classify_asset',
           input: {
             description: 'Found in second block',
             tags: ['late'],

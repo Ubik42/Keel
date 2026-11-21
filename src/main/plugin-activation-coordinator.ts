@@ -847,7 +847,7 @@ export class PluginActivationCoordinator {
     const record = [...active.values()].find((candidate) =>
       candidate.instanceId === input.instanceId && candidate.pluginId === input.pluginId);
     if (record === undefined || this.options.contributions === undefined) return undefined;
-    // Settings / sidebar / inspector / viewer / dialog iframes share serpent-plugin://.
+    // Settings / sidebar / inspector / viewer / dialog iframes share keel-plugin://.
     const contribution = listPluginUiFrameContributions(this.options.contributions)
       .find((candidate) => candidate.id === input.contributionId
         && candidate.pluginInstanceId === input.instanceId

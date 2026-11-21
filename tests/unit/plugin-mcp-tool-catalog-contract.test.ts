@@ -43,6 +43,6 @@ describe('plugin MCP tool input schema', () => {
 
     expect(tools).toHaveLength(2);
     expect(new Set(tools.map((tool) => tool.name)).size).toBe(2);
-    expect(tools.every((tool) => tool.name.startsWith('serpent_plugin_com_example_alpha_beta_inspect_'))).toBe(true);
+    expect(tools.every((tool) => tool.name.startsWith('keel_plugin_com_example_alpha_beta_inspect_'))).toBe(true);
   });
 });

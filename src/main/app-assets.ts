@@ -5,14 +5,14 @@ import path from 'node:path';
 import { HDRI_PRESETS } from '../shared/hdri-presets';
 
 /**
- * Bundled renderer asset serving for the `serpent://app-assets` route
+ * Bundled renderer asset serving for the `keel://app-assets` route
  * (slice C, Serpent-qvc6).
  *
  * Why this exists: three r185 loaders use `fetch`, and in the packaged app
  * the renderer runs from `file://` where fetch is blocked — so `.hdr`
  * environment maps (and anything else bundled with the renderer) cannot be
  * loaded from their Vite asset URLs. The viewer instead fetches
- * `serpent://app-assets/hdri/<fileName>`, which this module resolves to a
+ * `keel://app-assets/hdri/<fileName>`, which this module resolves to a
  * real file in both modes:
  *
  * - dev:      <appPath>/src/renderer/assets/hdri/<fileName>

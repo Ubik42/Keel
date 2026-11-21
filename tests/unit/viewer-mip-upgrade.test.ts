@@ -24,7 +24,7 @@ const readyDocument = {
 describe("viewer mip upgrade (Serpent-eh07)", () => {
   it("builds preview URLs for ready image and document thumbnails", () => {
     expect(resolveViewerPlaceholderUrl(readyImage, "lib-1")).toBe(
-      "serpent://preview/lib-1/art-1",
+      "keel://preview/lib-1/art-1",
     );
     expect(
       resolveViewerPlaceholderUrl(
@@ -40,14 +40,14 @@ describe("viewer mip upgrade (Serpent-eh07)", () => {
     ).toBeNull();
     expect(canPresentViewerPlaceholder(readyImage, "lib-1")).toBe(true);
     expect(resolveViewerPlaceholderUrl(readyDocument, "lib-1")).toBe(
-      "serpent://preview/lib-1/pdf-art-1",
+      "keel://preview/lib-1/pdf-art-1",
     );
     expect(
       resolveViewerPlaceholderUrl(
         { ...readyDocument, displayName: "artwork.ai" },
         "lib-1",
       ),
-    ).toBe("serpent://preview/lib-1/pdf-art-1");
+    ).toBe("keel://preview/lib-1/pdf-art-1");
     expect(
       resolveViewerPlaceholderUrl(
         { ...readyDocument, displayName: "page.html" },
@@ -64,12 +64,12 @@ describe("viewer mip upgrade (Serpent-eh07)", () => {
         },
         "lib-1",
       ),
-    ).toBe("serpent://preview/lib-1/zip-art");
+    ).toBe("keel://preview/lib-1/zip-art");
   });
 
   it("keeps placeholder visible until full image has decoded", () => {
-    const placeholder = "serpent://preview/lib/art";
-    const full = "serpent://source/lib/asset?revision=r1";
+    const placeholder = "keel://preview/lib/art";
+    const full = "keel://source/lib/asset?revision=r1";
 
     expect(
       resolveViewerImageDisplay({
@@ -120,21 +120,21 @@ describe("viewer mip upgrade (Serpent-eh07)", () => {
       shouldRecoverCachedFullImage({
         image: decoded,
         decodedSource: null,
-        source: "serpent://source/a",
+        source: "keel://source/a",
       }),
     ).toBe(true);
     expect(
       shouldRecoverCachedFullImage({
         image: decoded,
-        decodedSource: "serpent://source/a",
-        source: "serpent://source/a",
+        decodedSource: "keel://source/a",
+        source: "keel://source/a",
       }),
     ).toBe(false);
     expect(
       shouldRecoverCachedFullImage({
         image: { complete: false, naturalWidth: 0 },
         decodedSource: null,
-        source: "serpent://source/a",
+        source: "keel://source/a",
       }),
     ).toBe(false);
   });

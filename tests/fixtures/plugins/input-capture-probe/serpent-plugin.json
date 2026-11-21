@@ -1,6 +1,6 @@
 {
   "manifestVersion": 1,
-  "id": "com.serpent.input-capture-probe",
+  "id": "com.keel.input-capture-probe",
   "version": "1.0.0",
   "name": "Input Capture Probe",
   "description": "Fixed probe for application-scoped keyboard and IME input capture.",

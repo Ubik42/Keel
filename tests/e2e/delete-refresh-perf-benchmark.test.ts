@@ -616,7 +616,7 @@ async function readFolderRecoveryTarget(window: Page, folderId: string): Promise
         showIgnored: boolean;
       }): Promise<Result<Asset[]>>;
     };
-    const api = (globalThis as typeof globalThis & { serpent: { library: LibraryApi } }).serpent.library;
+    const api = (globalThis as typeof globalThis & { keel: { library: LibraryApi } }).keel.library;
     const opened = await api.listOpen();
     const libraryId = opened.value?.[0]?.libraryId;
     if (!opened.ok || !libraryId) throw new Error("Could not identify the open library during folder recovery.");
@@ -666,7 +666,7 @@ async function readAssetRecoveryState(window: Page, assetId: string): Promise<As
       listTrash(input: { libraryId: string }): Promise<Result<Asset[]>>;
       listAssets(input: { libraryId: string; recursive: boolean; assetIds: string[] }): Promise<Result<Asset[]>>;
     };
-    const api = (globalThis as typeof globalThis & { serpent: { library: LibraryApi } }).serpent.library;
+    const api = (globalThis as typeof globalThis & { keel: { library: LibraryApi } }).keel.library;
     const opened = await api.listOpen();
     const libraryId = opened.value?.[0]?.libraryId;
     if (!opened.ok || !libraryId) throw new Error("Could not identify the open library during asset recovery.");
@@ -697,7 +697,7 @@ async function restoreTrashedAssetViaBridge(window: Page, assetId: string): Prom
           conflictStrategy: "keep-both";
         }): Promise<Result<{ restoredCount: number }>>;
       };
-      const api = (globalThis as typeof globalThis & { serpent: { library: LibraryApi } }).serpent.library;
+      const api = (globalThis as typeof globalThis & { keel: { library: LibraryApi } }).keel.library;
       const opened = await api.listOpen();
       const libraryId = opened.value?.[0]?.libraryId;
       if (!opened.ok || !libraryId) throw new Error("Could not identify the open library during asset recovery.");

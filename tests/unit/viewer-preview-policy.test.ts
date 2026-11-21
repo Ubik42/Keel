@@ -10,7 +10,7 @@ const nativeImage = {
   status: 'ready' as const,
   mediaType: 'image',
   playbackMode: 'source',
-  url: 'serpent://source/lib/asset?revision=r1',
+  url: 'keel://source/lib/asset?revision=r1',
   kind: 'thumbnail',
 };
 
@@ -19,7 +19,7 @@ const nativeVideoGated = {
   mediaType: 'video',
   playbackMode: 'source',
   sourceCodecs: ['avc1.42E01E', 'mp4a.40.2'],
-  url: 'serpent://source/lib/asset?revision=r1',
+  url: 'keel://source/lib/asset?revision=r1',
   kind: 'webm_proxy',
 };
 
@@ -80,7 +80,7 @@ describe('viewer preview policy (REQ-VIEW-002)', () => {
         loading: false,
         resolution: {
           ...pendingNoUrl,
-          url: 'serpent://source/lib/asset?revision=r1',
+          url: 'keel://source/lib/asset?revision=r1',
         },
         directApproved: false,
       }),
@@ -103,7 +103,7 @@ describe('viewer preview policy (REQ-VIEW-002)', () => {
   });
 
   it('opens model assets into the media surface, never unsupported (slice A)', () => {
-    // Model resolution is a ready source URL (serpent://source with revision);
+    // Model resolution is a ready source URL (keel://source with revision);
     // it must not classify as `other` even when an artifact is absent.
     expect(
       resolveViewerPrimarySurface({
@@ -112,7 +112,7 @@ describe('viewer preview policy (REQ-VIEW-002)', () => {
           status: 'ready',
           mediaType: 'model',
           playbackMode: 'source',
-          url: 'serpent://source/lib/asset?revision=r1',
+          url: 'keel://source/lib/asset?revision=r1',
           kind: 'thumbnail',
         },
         directApproved: false,

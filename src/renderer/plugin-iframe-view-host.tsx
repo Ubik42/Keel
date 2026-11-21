@@ -275,7 +275,7 @@ export function PluginIframeViewHost({
   }, [view]);
 
   useEffect(() => {
-    const pluginOrigin = `serpent-plugin://${view.pluginId}`;
+    const pluginOrigin = `keel-plugin://${view.pluginId}`;
     // Captured at effect time: the cleanup notifies the exact frame this
     // effect served, even if the ref has moved on by then.
     const servedFrame = frameRef.current;

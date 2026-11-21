@@ -13,11 +13,11 @@ import {
 describe('assetDragPreviewModel (REQ-DND-003)', () => {
   it('carries the thumbnail url and shows no badge for a single-asset drag', () => {
     const model = assetDragPreviewModel({
-      thumbnailUrl: 'serpent://preview/lib/artifact',
+      thumbnailUrl: 'keel://preview/lib/artifact',
       fileName: 'hero.png',
       count: 1,
     });
-    expect(model.thumbnailUrl).toBe('serpent://preview/lib/artifact');
+    expect(model.thumbnailUrl).toBe('keel://preview/lib/artifact');
     expect(model.fileName).toBe('hero.png');
     expect(model.badgeText).toBeNull();
     expect(model.showCopyBadge).toBe(false);

@@ -36,7 +36,7 @@ describe('plugin derived-field materialization', () => {
 
     const first = service.materializePluginDerivedFields({
       libraryId: library.libraryId,
-      pluginId: 'com.serpent.derived-probe',
+      pluginId: 'com.keel.derived-probe',
       packageHash: 'a'.repeat(64),
       fieldId: 'extUpper',
       fieldType: 'string',
@@ -46,7 +46,7 @@ describe('plugin derived-field materialization', () => {
 
     expect(service.queryPluginDerivedFields({
       libraryId: library.libraryId,
-      pluginId: 'com.serpent.derived-probe',
+      pluginId: 'com.keel.derived-probe',
       packageHash: 'a'.repeat(64),
       fieldId: 'extUpper',
       operator: 'equals',
@@ -55,7 +55,7 @@ describe('plugin derived-field materialization', () => {
 
     expect(service.queryPluginDerivedFields({
       libraryId: library.libraryId,
-      pluginId: 'com.serpent.derived-probe',
+      pluginId: 'com.keel.derived-probe',
       packageHash: 'b'.repeat(64),
       fieldId: 'extUpper',
       operator: 'equals',

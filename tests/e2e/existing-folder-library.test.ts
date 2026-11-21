@@ -35,7 +35,7 @@ test('turns an existing folder into a library and automatically indexes its orig
     await window.getByRole('button', { name: '选择文件夹并创建', exact: true }).click();
     await expect(window.getByText('日常记录', { exact: true }).first()).toBeVisible({ timeout: 15_000 });
     const library = await window.evaluate(async () => {
-      const api = (globalThis as typeof globalThis & { serpent: { library: SerpentLibraryApi } }).serpent.library;
+      const api = (globalThis as typeof globalThis & { keel: { library: SerpentLibraryApi } }).keel.library;
       const result = await api.listOpen();
       if (!result.ok) throw new Error('Could not list open libraries');
       return result.value[0]!;
@@ -43,7 +43,7 @@ test('turns an existing folder into a library and automatically indexes its orig
     expect(library.displayPath).toBe(folder);
     expect(library.storageLayout).toBe('root');
     await expect.poll(async () => window.evaluate(async (libraryId) => {
-      const api = (globalThis as typeof globalThis & { serpent: { library: SerpentLibraryApi } }).serpent.library;
+      const api = (globalThis as typeof globalThis & { keel: { library: SerpentLibraryApi } }).keel.library;
       const result = await api.listAssets({ libraryId, recursive: true });
       return result.ok ? result.value.map((asset) => asset.relativeFilePath) : [];
     }, library.libraryId), { timeout: 20_000 }).toEqual(['2026/原始照片.txt']);

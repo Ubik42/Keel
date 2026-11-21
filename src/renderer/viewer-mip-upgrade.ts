@@ -30,7 +30,7 @@ export function resolveViewerPlaceholderUrl(
   if (asset.thumbnailStatus !== "ready" || !asset.thumbnailArtifactId) {
     return null;
   }
-  return `serpent://preview/${libraryId}/${asset.thumbnailArtifactId}`;
+  return `keel://preview/${libraryId}/${asset.thumbnailArtifactId}`;
 }
 
 export type ViewerImageDisplay = {

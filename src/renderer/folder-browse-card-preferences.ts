@@ -8,7 +8,7 @@ export const FOLDER_BROWSE_CARD_PREFERENCES_KEY =
   "keel.folder-browse-cards.v1";
 
 export const FOLDER_BROWSE_CARD_PREFERENCES_CHANGED =
-  "serpent:folder-browse-cards-changed";
+  "keel:folder-browse-cards-changed";
 
 export interface FolderBrowseCardPreferences {
   readonly version: 1;

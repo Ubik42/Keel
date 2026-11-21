@@ -122,7 +122,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
       .find((a) => a.displayName === 'hero.fbx')!;
     const preview = service.getPreviewArtifact(created.libraryId, fbx.assetId);
     // Main turns playbackMode 'source' + sourceRevisionId into
-    // serpent://source/<libraryId>/<assetId>?revision=... (same route as
+    // keel://source/<libraryId>/<assetId>?revision=... (same route as
     // direct-play video), so the viewer opens without a generation gate.
     expect(preview).toMatchObject({
       mediaType: 'model',

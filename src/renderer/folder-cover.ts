@@ -26,7 +26,7 @@ export function folderCustomCoverSrc(
   folderId: string,
   token: string,
 ): string {
-  const url = new URL(`serpent://folder-cover/${encodeURIComponent(libraryId)}`);
+  const url = new URL(`keel://folder-cover/${encodeURIComponent(libraryId)}`);
   url.searchParams.set("folder", folderId);
   url.searchParams.set("v", token);
   return url.toString();

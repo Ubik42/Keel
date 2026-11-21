@@ -411,7 +411,7 @@ describe('requestTimeoutForCommand', () => {
       assetId: 'asset-1',
       revisionId: 'revision-1',
       format: 'glb',
-      renderUrl: 'serpent://source/library-1/asset-1',
+      renderUrl: 'keel://source/library-1/asset-1',
       companionMap: [],
       sourceAuthorizations: [],
       hdriPresetId: 'studio-small-09',

@@ -32,7 +32,7 @@ export type FontViewerSurfaceProps = {
   api: SerpentLibraryApi | null;
   libraryId: string;
   assetId: string;
-  /** Resolved `serpent://source/...` URL of the font file. */
+  /** Resolved `keel://source/...` URL of the font file. */
   sourceUrl: string;
   isFullscreen: boolean;
   onPresentationReady?: () => void;
@@ -60,7 +60,7 @@ function languageLabelKey(language: FontPreviewLanguage): string {
  * Serpent-485aeb: font viewer.
  *
  * The glyphs are rendered by the Renderer itself through a `FontFace` loaded
- * from the `serpent://source` route (a same-scheme request the CSP already
+ * from the `keel://source` route (a same-scheme request the CSP already
  * allows), so the viewer is plain DOM: language, preview text, size, weight
  * (variable fonts only) and bold/italic/underline are view-only settings,
  * mouse-wheel resizes, and Escape keeps working after the user clicks inside

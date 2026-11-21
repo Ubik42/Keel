@@ -48,7 +48,7 @@ import type { ShortcutEventLike } from "../shared/shortcut-resolution";
 import { ZoomableImage } from "./zoomable-preview-image";
 
 type RendererWindow = Window & {
-  serpent?: { shell?: SerpentShellApi };
+  keel?: { shell?: SerpentShellApi };
 };
 
 const SCRUB_STEP_SECONDS = 5;
@@ -453,7 +453,7 @@ function GifAnimatedStage({
 
   useEffect(() => {
     if (keyboardShortcutsDisabled || !session) return;
-    const shell = (window as RendererWindow).serpent?.shell;
+    const shell = (window as RendererWindow).keel?.shell;
     if (!shell?.setViewerVideoShortcutsActive || !shell.onViewerVideoShortcut) {
       return;
     }

@@ -45,9 +45,9 @@ test("sidebar tasks support switches, persistent drag ordering and groups", asyn
     const ids = await window.evaluate(async () => {
       const api = (
         globalThis as typeof globalThis & {
-          serpent: { library: SerpentLibraryApi };
+          keel: { library: SerpentLibraryApi };
         }
-      ).serpent.library;
+      ).keel.library;
       const open = await api.listOpen();
       if (!open.ok) throw Error("No library");
       const libraryId = open.value[0]!.libraryId;
@@ -84,9 +84,9 @@ test("sidebar tasks support switches, persistent drag ordering and groups", asyn
       window.evaluate(async () => {
         const api = (
           globalThis as typeof globalThis & {
-            serpent: { library: SerpentLibraryApi };
+            keel: { library: SerpentLibraryApi };
           }
-        ).serpent.library;
+        ).keel.library;
         const open = await api.listOpen();
         if (!open.ok) throw Error("No library");
         const r = await api.getAutomaticTaskLayout({

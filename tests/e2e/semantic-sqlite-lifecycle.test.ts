@@ -20,12 +20,12 @@ async function openSemanticSettings(window: Page): Promise<void> {
 
 async function findImportedAssetCard(window: Page, fileName: string) {
   const assetId = await window.evaluate(async (name) => {
-    const api = (globalThis as typeof globalThis & { serpent: { library: {
+    const api = (globalThis as typeof globalThis & { keel: { library: {
       listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
       listAssets(input: { libraryId: string; recursive: boolean }): Promise<{
         ok: boolean; value?: Array<{ assetId: string; relativeFilePath: string }>;
       }>;
-    } } }).serpent.library;
+    } } }).keel.library;
     const opened = await api.listOpen();
     const libraryId = opened.value?.[0]?.libraryId;
     if (!opened.ok || !libraryId) throw new Error('The semantic fixture library is not open.');
@@ -140,10 +140,10 @@ test('persists Worker-owned vectors through full app restart and reuses them for
     await window.getByRole('button', { name: '创建', exact: true }).click();
     await window.getByRole('button', { name: '导入文件', exact: true }).first().click();
     await window.evaluate(async () => {
-      const api = (globalThis as typeof globalThis & { serpent: { library: {
+      const api = (globalThis as typeof globalThis & { keel: { library: {
         listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
         importFiles(input: { libraryId: string }): Promise<{ ok: boolean }>;
-      } } }).serpent.library;
+      } } }).keel.library;
       const opened = await api.listOpen();
       const libraryId = opened.value?.[0]?.libraryId;
       if (!opened.ok || !libraryId) throw new Error('The semantic fixture library is not open.');
@@ -167,13 +167,13 @@ test('persists Worker-owned vectors through full app restart and reuses them for
     await chooseStandardOption(window.getByRole('combobox', { name: '默认模型' }), { label: 'Local semantic fixture' });
 
     const readIndexState = () => window.evaluate(async () => {
-      const api = (globalThis as typeof globalThis & { serpent: { library: {
+      const api = (globalThis as typeof globalThis & { keel: { library: {
         listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
         embeddingIndexStatus(input: { libraryId: string; modelId: string; run: boolean; restart: boolean }): Promise<{
           ok: boolean; value?: { phase: string; done: number; total: number; failedCount: number };
         }>;
         embeddingListServices(): Promise<{ ok: boolean; value?: Array<{ id: string; name: string }> }>;
-      } } }).serpent.library;
+      } } }).keel.library;
       const opened = await api.listOpen();
       const services = await api.embeddingListServices();
       const libraryId = opened.value?.[0]?.libraryId;
@@ -228,7 +228,7 @@ test('persists Worker-owned vectors through full app restart and reuses them for
     await window.screenshot({ path: path.join(process.cwd(), 'test-results', 'semantic-sqlite-lifecycle.png') });
 
     const ids = await window.evaluate(async () => {
-      const api = (globalThis as typeof globalThis & { serpent: { library: {
+      const api = (globalThis as typeof globalThis & { keel: { library: {
         listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
         listAssets(input: { libraryId: string; query?: string; limit?: number }): Promise<{
           ok: boolean; value?: { assets: Array<{ assetId: string; relativeFilePath: string }> };
@@ -240,7 +240,7 @@ test('persists Worker-owned vectors through full app restart and reuses them for
         embeddingSimilar(input: { libraryId: string; modelId: string; assetId: string }): Promise<{
           ok: boolean; value?: { status: string; assetIds: string[] };
         }>;
-      } } }).serpent.library;
+      } } }).keel.library;
       const opened = await api.listOpen();
       const libraryId = opened.value?.[0]?.libraryId;
       const services = await api.embeddingListServices();

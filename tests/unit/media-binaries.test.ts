@@ -248,7 +248,7 @@ describe.skipIf(process.platform === 'win32')('media binary release gate', () =>
       const appBundle = path.join(packageRoot, 'Serpent.app');
       writeFixtureFile(
         path.join(appBundle, 'Contents', 'Info.plist'),
-        '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0"><dict><key>CFBundleExecutable</key><string>Serpent</string><key>CFBundleIdentifier</key><string>dev.serpent.package-test</string><key>CFBundlePackageType</key><string>APPL</string></dict></plist>\n',
+        '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0"><dict><key>CFBundleExecutable</key><string>Serpent</string><key>CFBundleIdentifier</key><string>dev.keel.package-test</string><key>CFBundlePackageType</key><string>APPL</string></dict></plist>\n',
       );
       mkdirSync(path.join(appBundle, 'Contents', 'MacOS'), { recursive: true });
       cpSync('/usr/bin/true', path.join(appBundle, 'Contents', 'MacOS', 'Serpent'));

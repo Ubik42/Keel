@@ -947,7 +947,7 @@ export function listDialogContributions(
 }
 
 /**
- * Iframe documents share `serpent-plugin://`. The protocol allowlist must
+ * Iframe documents share `keel-plugin://`. The protocol allowlist must
  * include every Manifest target that has an HTML entry, including dialogs.
  */
 export function listPluginUiFrameContributions(

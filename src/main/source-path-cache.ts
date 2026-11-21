@@ -1,5 +1,5 @@
 /**
- * Main-process cache for source paths used by the `serpent://source` protocol.
+ * Main-process cache for source paths used by the `keel://source` protocol.
  *
  * A document viewer can issue several range requests for one revision before
  * the first page/video frame is visible. Coalescing those requests keeps the

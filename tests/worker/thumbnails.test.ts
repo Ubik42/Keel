@@ -3289,7 +3289,7 @@ describe('visible-window header probe (Serpent-visible-window)', () => {
     const root = temporaryRoot();
     const service = new LibraryService({
       documentThumbnailRenderer: async ({ url, signal }) => {
-        expect(url).toContain('serpent://source/');
+        expect(url).toContain('keel://source/');
         expect(signal?.aborted ?? false).toBe(false);
         // 1x1 white PNG returned by the Main offscreen capture.
         return {

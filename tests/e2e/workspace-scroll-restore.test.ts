@@ -40,7 +40,7 @@ async function createFolderViaApi(window: Page, name: string) {
       listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
       createFolder(input: { libraryId: string; name: string }): Promise<{ ok: boolean }>;
     };
-    const library = (globalThis as typeof globalThis & { serpent: { library: LibraryApi } }).serpent.library;
+    const library = (globalThis as typeof globalThis & { keel: { library: LibraryApi } }).keel.library;
     const opened = await library.listOpen();
     const libraryId = opened.value?.[0]?.libraryId;
     if (!opened.ok || !libraryId) throw new Error("no library");

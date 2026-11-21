@@ -9,7 +9,7 @@ describe("resolveSequenceFrameUrl", () => {
       thumbnailArtifactId: "artifact-1",
       previewKind: "source",
       previewRevisionId: "revision-1",
-    })).toBe("serpent://preview/library-1/artifact-1");
+    })).toBe("keel://preview/library-1/artifact-1");
   });
 
   it("uses the frame's own revision-pinned source URL", () => {
@@ -18,7 +18,7 @@ describe("resolveSequenceFrameUrl", () => {
       thumbnailArtifactId: null,
       previewKind: "source",
       previewRevisionId: "revision-2",
-    })).toBe("serpent://source/library-1/asset-2?revision=revision-2");
+    })).toBe("keel://source/library-1/asset-2?revision=revision-2");
   });
 
   it("does not borrow another frame's URL when no preview is admitted", () => {

@@ -110,13 +110,13 @@ describe("ZoomableImage cached load vs decode token", () => {
   }
 
   it("promotes a cache-hit original after switching back to the same image", async () => {
-    await renderImage("serpent://source/a", "serpent://preview/a");
+    await renderImage("keel://source/a", "keel://preview/a");
     expect(viewerLayer(container!)).toBe("full");
 
-    await renderImage("serpent://source/b", "serpent://preview/b");
+    await renderImage("keel://source/b", "keel://preview/b");
     expect(viewerLayer(container!)).toBe("full");
 
-    await renderImage("serpent://source/a", "serpent://preview/a");
+    await renderImage("keel://source/a", "keel://preview/a");
     expect(viewerLayer(container!)).toBe("full");
   });
 });

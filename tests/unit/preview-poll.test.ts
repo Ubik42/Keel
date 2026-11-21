@@ -12,7 +12,7 @@ const directReady = {
   mediaType: 'video',
   playbackMode: 'source',
   sourceCodecs: ['avc1.42E01E'],
-  url: 'serpent://source/lib/asset?revision=r1',
+  url: 'keel://source/lib/asset?revision=r1',
   playbackToken: 'asset:r1',
   kind: 'source',
 };
@@ -90,7 +90,7 @@ describe('preview poll policy (BUG-VIEWER-001)', () => {
     expect(
       samePreviewPlayback(directReady, {
         ...directReady,
-        url: 'serpent://source/lib/asset?revision=r2',
+        url: 'keel://source/lib/asset?revision=r2',
       }),
     ).toBe(false);
   });

@@ -11,7 +11,7 @@ import {
 
 describe('extension-recent-browse-folders', () => {
   it('records and reads recent browsed folders per library', () => {
-    const dir = mkdtempSync(path.join(tmpdir(), 'serpent-ext-browse-'));
+    const dir = mkdtempSync(path.join(tmpdir(), 'keel-ext-browse-'));
     const filePath = path.join(dir, 'browse.json');
     try {
       recordExtensionBrowseFolder(filePath, 'lib-a', 'folder-1');

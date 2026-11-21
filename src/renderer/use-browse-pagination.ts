@@ -50,8 +50,8 @@ import {
 
 const browseDiagnosticsEnabled = Boolean(
   (globalThis as typeof globalThis & {
-    serpent?: { e2e?: unknown };
-  }).serpent?.e2e,
+    keel?: { e2e?: unknown };
+  }).keel?.e2e,
 );
 
 /** Page size for browse/search first load and window fetches. */
@@ -668,7 +668,7 @@ export function useBrowsePagination(
         // Serpent-9e1d8d: issue-time marker. The existing -result/-page events
         // only fire on resolution/apply, so jump-latency attribution could not
         // separate renderer decision delay from worker query cost.
-        window.dispatchEvent(new CustomEvent("serpent:e2e-browse-request", {
+        window.dispatchEvent(new CustomEvent("keel:e2e-browse-request", {
           detail: {
             requestOffset: offset,
             requestLimit: limit,
@@ -711,7 +711,7 @@ export function useBrowsePagination(
           result = await fetchLivePage();
         }
         if (browseDiagnosticsEnabled) {
-          window.dispatchEvent(new CustomEvent("serpent:e2e-browse-result", {
+          window.dispatchEvent(new CustomEvent("keel:e2e-browse-result", {
             detail: {
               requestOffset: offset,
               requestLimit: limit,
@@ -739,7 +739,7 @@ export function useBrowsePagination(
           snippets?: Array<{ assetId: string; text: string }>;
         };
         if (browseDiagnosticsEnabled) {
-          window.dispatchEvent(new CustomEvent("serpent:e2e-browse-page", {
+          window.dispatchEvent(new CustomEvent("keel:e2e-browse-page", {
             detail: {
               requestOffset: offset,
               requestLimit: limit,

@@ -302,7 +302,7 @@ describe('Desktop Console automation IPC', () => {
       auditSink: journal,
       auditLogger: { error: () => undefined },
     });
-    const scriptFile = path.join(root, 'rating.serpent.ts');
+    const scriptFile = path.join(root, 'rating.keel.ts');
     const scriptFiles = new AutomationScriptFileService({
       selectOpenScript: async () => undefined,
       selectSaveScript: async () => scriptFile,
@@ -352,12 +352,12 @@ describe('Desktop Console automation IPC', () => {
     } };
     const root = mkdtempSync(path.join(tmpdir(), 'serpent-automation-ipc-recent-'));
     roots.push(root);
-    const scriptFile = path.join(root, 'recent.serpent.ts');
+    const scriptFile = path.join(root, 'recent.keel.ts');
     const source = "return await serpent.assets.search({ query: 'Ser' });";
     const recentScripts = createJsonFileAutomationRecentScriptsStore(path.join(root, 'recent.json'), {
       newHandle: () => 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
     });
-    recentScripts.record('recent.serpent.ts', scriptFile);
+    recentScripts.record('recent.keel.ts', scriptFile);
     const scriptFiles = new AutomationScriptFileService({
       selectOpenScript: async () => undefined,
       selectSaveScript: async () => undefined,
@@ -382,7 +382,7 @@ describe('Desktop Console automation IPC', () => {
       ok: true,
       entries: [{
         handle: 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
-        displayName: 'recent.serpent.ts',
+        displayName: 'recent.keel.ts',
         lastOpenedAt: expect.any(String),
       }],
     });
@@ -400,7 +400,7 @@ describe('Desktop Console automation IPC', () => {
     });
     expect(reopened).toMatchObject({
       ok: true,
-      displayName: 'recent.serpent.ts',
+      displayName: 'recent.keel.ts',
       source,
     });
     expect(JSON.stringify(reopened)).not.toContain(scriptFile);

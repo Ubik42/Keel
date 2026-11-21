@@ -39,12 +39,12 @@ async function createNavigationFixture(
       }): Promise<Result<unknown>>;
     };
     const bridge = globalThis as typeof globalThis & {
-      serpent: { library: LibraryApi };
+      keel: { library: LibraryApi };
     };
-    const opened = await bridge.serpent.library.listOpen();
+    const opened = await bridge.keel.library.listOpen();
     const libraryId = opened.value?.[0]?.libraryId;
     if (!opened.ok || !libraryId) throw new Error("Expected an open library.");
-    const folder = await bridge.serpent.library.createFolder({
+    const folder = await bridge.keel.library.createFolder({
       libraryId,
       name: targetFolderName,
     });

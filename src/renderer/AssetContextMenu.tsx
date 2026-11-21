@@ -9,7 +9,7 @@ import type {
 import { assetParentFolderCoverTarget } from "../shared/folder-cover-target";
 
 type RendererWindow = Window & {
-  serpent?: {
+  keel?: {
     library?: SerpentLibraryApi;
     plugins?: SerpentPluginManagerApi;
   };
@@ -550,7 +550,7 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
       return;
     }
     let cancelled = false;
-    void (window as RendererWindow).serpent?.library
+    void (window as RendererWindow).keel?.library
       ?.pendingAiAssets({ libraryId: props.libraryId, assetIds })
       .then((result) => {
         if (!cancelled && result.ok) {

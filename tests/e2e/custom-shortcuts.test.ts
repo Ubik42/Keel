@@ -46,8 +46,8 @@ test("persists custom shortcut overrides through preload and Main", async () => 
     await window.waitForLoadState("domcontentloaded");
     const initial = await window.evaluate(async () => {
       const api = (window as unknown as {
-        serpent?: { shortcuts?: { get(): Promise<unknown> } };
-      }).serpent?.shortcuts;
+        keel?: { shortcuts?: { get(): Promise<unknown> } };
+      }).keel?.shortcuts;
       return api?.get() ?? null;
     });
     expect(initial).not.toBeNull();
@@ -55,7 +55,7 @@ test("persists custom shortcut overrides through preload and Main", async () => 
     const saved = await window.evaluate(
       async ({ platform: targetPlatform }) => {
         const api = (window as unknown as {
-          serpent?: {
+          keel?: {
             shortcuts?: {
               set(input: {
                 platform: string;
@@ -63,7 +63,7 @@ test("persists custom shortcut overrides through preload and Main", async () => 
               }): Promise<{ ok: boolean }>;
             };
           };
-        }).serpent?.shortcuts;
+        }).keel?.shortcuts;
         return api?.set({
           platform: targetPlatform,
           bindings: {
@@ -77,8 +77,8 @@ test("persists custom shortcut overrides through preload and Main", async () => 
 
     const exported = await window.evaluate(async () => {
       const api = (window as unknown as {
-        serpent?: { shortcuts?: { exportToFile(): Promise<{ ok: boolean }> } };
-      }).serpent?.shortcuts;
+        keel?: { shortcuts?: { exportToFile(): Promise<{ ok: boolean }> } };
+      }).keel?.shortcuts;
       return api?.exportToFile() ?? null;
     });
     expect(exported?.ok).toBe(true);
@@ -97,8 +97,8 @@ test("persists custom shortcut overrides through preload and Main", async () => 
     writeFileSync(importPath, JSON.stringify(exportedSettings), "utf8");
     const imported = await window.evaluate(async () => {
       const api = (window as unknown as {
-        serpent?: { shortcuts?: { importFromFile(): Promise<{ ok: boolean }> } };
-      }).serpent?.shortcuts;
+        keel?: { shortcuts?: { importFromFile(): Promise<{ ok: boolean }> } };
+      }).keel?.shortcuts;
       return api?.importFromFile() ?? null;
     });
     expect(imported?.ok).toBe(true);
@@ -117,8 +117,8 @@ test("persists custom shortcut overrides through preload and Main", async () => 
     const restored = await restoredWindow.evaluate(
       async ({ platform: targetPlatform }) => {
         const api = (window as unknown as {
-          serpent?: { shortcuts?: { get(): Promise<unknown> } };
-        }).serpent?.shortcuts;
+          keel?: { shortcuts?: { get(): Promise<unknown> } };
+        }).keel?.shortcuts;
         const snapshot = await api?.get();
         if (!snapshot || typeof snapshot !== "object") return null;
         return (snapshot as {

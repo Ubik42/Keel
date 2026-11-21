@@ -20,7 +20,7 @@ import {
  * `src/renderer/assets/hdri/` and are emitted as build assets via
  * `import.meta.glob` (`?url`); see `vite.renderer.config.ts` `assetsInclude`.
  * The packaged viewer does NOT fetch these Vite URLs (file:// fetch is
- * blocked); it loads the same files through `serpent://app-assets/hdri/<name>`
+ * blocked); it loads the same files through `keel://app-assets/hdri/<name>`
  * (slice C, `src/main/app-assets.ts`).
  */
 

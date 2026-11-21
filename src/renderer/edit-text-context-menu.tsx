@@ -4,7 +4,7 @@ import { isEditableTextTarget } from '../shared/edit-context-menu';
 import { useContextMenu } from './context-menu';
 
 type RendererWindow = Window & {
-  serpent?: {
+  keel?: {
     shell?: {
       showEditContextMenu?: (point: {
         x: number;
@@ -32,7 +32,7 @@ export function EditTextContextMenuHost() {
       if (!isEditableTextTarget(event.target)) return;
 
       const show =
-        (window as RendererWindow).serpent?.shell?.showEditContextMenu;
+        (window as RendererWindow).keel?.shell?.showEditContextMenu;
       if (typeof show !== 'function') return;
 
       event.preventDefault();

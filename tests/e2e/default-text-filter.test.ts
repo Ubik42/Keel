@@ -23,7 +23,7 @@ test('hides text by default and reveals it when the format filter is cleared', a
     writeFileSync(path.join(root, '文本筛选', '设置.json'), '{}');
     writeFileSync(path.join(root, '文本筛选', '图片.svg'), '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><rect width="32" height="32" fill="red"/></svg>');
     await expect.poll(async () => window.evaluate(async () => {
-      const api = (globalThis as typeof globalThis & { serpent: { library: SerpentLibraryApi } }).serpent.library;
+      const api = (globalThis as typeof globalThis & { keel: { library: SerpentLibraryApi } }).keel.library;
       const open = await api.listOpen(); if (!open.ok) throw Error('No library');
       const assets = await api.listAssets({ libraryId: open.value[0]!.libraryId, recursive: true });
       return assets.ok ? assets.value.length : 0;

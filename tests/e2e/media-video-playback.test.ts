@@ -356,7 +356,7 @@ test("plays a direct MP4 and a generated WebM fallback through the asset viewer"
     const directVideo = directViewer.locator("video.preview-video");
     await expect
       .poll(() => directVideo.getAttribute("src"), { timeout: 30_000 })
-      .toMatch(/^serpent:\/\/source\//);
+      .toMatch(/^keel:\/\/source\//);
     await expectPlayableAndSeekable(directVideo);
     const directVideoChrome = directViewer.locator(".preview-video-controls");
     const directFullscreenButton = directViewer.getByRole("button", {
@@ -489,7 +489,7 @@ test("plays a direct MP4 and a generated WebM fallback through the asset viewer"
     const proxyVideo = proxyViewer.locator("video.preview-video");
     await expect
       .poll(() => proxyVideo.getAttribute("src"), { timeout: 10_000 })
-      .toMatch(/^serpent:\/\/source\//);
+      .toMatch(/^keel:\/\/source\//);
     // The native Electron media stack accepts the small WMV fixture on some
     // macOS builds even though Chromium's normal web playback matrix does
     // not. Keep the source-first assertion above, then exercise the same
@@ -505,7 +505,7 @@ test("plays a direct MP4 and a generated WebM fallback through the asset viewer"
     });
     await expect
       .poll(() => proxyVideo.getAttribute("src"), { timeout: 30_000 })
-      .toMatch(/^serpent:\/\/proxy\//);
+      .toMatch(/^keel:\/\/proxy\//);
     await expectPlayableAndSeekable(proxyVideo);
     const proxyNotice = proxyViewer.getByRole("status");
     await expect(proxyNotice).toContainText(
@@ -535,7 +535,7 @@ test("plays a direct MP4 and a generated WebM fallback through the asset viewer"
     const proxyJobStatus = await window.evaluate(async () => {
       const api = (
         globalThis as typeof globalThis & {
-          serpent: {
+          keel: {
             library: {
               listOpen(): Promise<{
                 ok: boolean;
@@ -550,7 +550,7 @@ test("plays a direct MP4 and a generated WebM fallback through the asset viewer"
             };
           };
         }
-      ).serpent.library;
+      ).keel.library;
       const opened = await api.listOpen();
       const libraryId = opened.value?.[0]?.libraryId;
       if (!opened.ok || !libraryId) return null;
@@ -572,7 +572,7 @@ test("plays a direct MP4 and a generated WebM fallback through the asset viewer"
     const flvVideo = flvViewer.locator("video.preview-video");
     await expect
       .poll(() => flvVideo.getAttribute("src"), { timeout: 10_000 })
-      .toMatch(/^serpent:\/\/source\//);
+      .toMatch(/^keel:\/\/source\//);
     // Exercise the explicit unsupported-source fallback deterministically,
     // then verify that FLV's generated MP4 proxy decodes and supports seeking.
     await flvVideo.evaluate((element) => {
@@ -584,7 +584,7 @@ test("plays a direct MP4 and a generated WebM fallback through the asset viewer"
     });
     await expect
       .poll(() => flvVideo.getAttribute("src"), { timeout: 30_000 })
-      .toMatch(/^serpent:\/\/proxy\//);
+      .toMatch(/^keel:\/\/proxy\//);
     await expectPlayableAndSeekable(flvVideo);
   } finally {
     await application?.close();

@@ -492,10 +492,10 @@ function waitForAbortable<T>(promise: Promise<T>, signal?: AbortSignal): Promise
 
 /** URL builders mirror 3d-viewer/url-remap (kept local to avoid a renderer import). */
 function modelSourceUrl(libraryId: string, assetId: string, revisionId: string): string {
-  return `serpent://source/${libraryId}/${assetId}?revision=${encodeURIComponent(revisionId)}`;
+  return `keel://source/${libraryId}/${assetId}?revision=${encodeURIComponent(revisionId)}`;
 }
 function modelPreviewUrl(libraryId: string, artifactId: string): string {
-  return `serpent://preview/${libraryId}/${artifactId}`;
+  return `keel://preview/${libraryId}/${artifactId}`;
 }
 
 async function renderModelThumbnailViaMain(input: {

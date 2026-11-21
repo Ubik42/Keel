@@ -25,7 +25,7 @@ export type ShortcutFileImportResult =
   | { readonly ok: true; readonly bindings: ShortcutBindings }
   | { readonly ok: false; readonly error: string; readonly canceled?: boolean };
 
-/** Narrow preload API exposed as window.serpent.shortcuts. */
+/** Narrow preload API exposed as window.keel.shortcuts. */
 export type SerpentShortcutsApi = {
   get(): Promise<ShortcutBindings>;
   set(input: ShortcutBindingsSetRequest): Promise<ShortcutBindingsSetResult>;

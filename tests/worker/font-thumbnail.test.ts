@@ -68,7 +68,7 @@ describe('font thumbnail generation', () => {
     });
     expect(result?.artifactId).toBeTruthy();
     expect(capturedUrls).toHaveLength(1);
-    expect(capturedUrls[0]).toContain('serpent://source/');
+    expect(capturedUrls[0]).toContain('keel://source/');
     expect(capturedUrls[0]).toContain('sample=font');
     expect(capturedUrls[0]).toContain('revision=');
 

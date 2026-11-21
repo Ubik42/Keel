@@ -18,7 +18,7 @@ function makeJob(overrides: Partial<ModelThumbnailRenderRequest> = {}): ModelThu
     assetId: 'asset-1',
     revisionId: 'rev-1',
     format: 'glb',
-    renderUrl: 'serpent://preview/lib-1/art-1',
+    renderUrl: 'keel://preview/lib-1/art-1',
     companionMap: [],
     hdriPresetId: 'ferndale-studio-03',
     width: 512,
@@ -84,7 +84,7 @@ describe('offscreen thumbnail frame pipeline (slice E, page side)', () => {
     expect(deps.loadModel).toHaveBeenCalledWith(
       expect.objectContaining({
         format: 'glb',
-        sourceUrl: 'serpent://preview/lib-1/art-1',
+        sourceUrl: 'keel://preview/lib-1/art-1',
         libraryId: 'lib-1',
       }),
     );
@@ -95,7 +95,7 @@ describe('offscreen thumbnail frame pipeline (slice E, page side)', () => {
     const loadHdrData = deps.loadHdrData as ReturnType<typeof vi.fn>;
     await renderModelThumbnailFrame(makeJob(), deps);
     expect(loadHdrData).toHaveBeenCalledWith(
-      'serpent://app-assets/hdri/ferndale_studio_03_1k.hdr',
+      'keel://app-assets/hdri/ferndale_studio_03_1k.hdr',
     );
   });
 

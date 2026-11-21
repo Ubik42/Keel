@@ -25,10 +25,10 @@ test('tag appearance, reverse image drop and persistent interface scale', async 
     const tag = panel.getByRole('treeitem', { name: '角色', exact: true });
     await expect(tag).toBeVisible();
     const libraryId = await window.evaluate(async () => {
-      const api = (globalThis as typeof globalThis & { serpent: { library: SerpentLibraryApi } }).serpent.library;
+      const api = (globalThis as typeof globalThis & { keel: { library: SerpentLibraryApi } }).keel.library;
       const result = await api.listOpen(); if (!result.ok) throw new Error('No library'); return result.value[0]!.libraryId;
     });
-    const tags = () => window.evaluate(async id => { const api = (globalThis as typeof globalThis & { serpent: { library: SerpentLibraryApi } }).serpent.library; const result = await api.listTags({ libraryId: id }); if (!result.ok) throw new Error('No tags'); return result.value; }, libraryId);
+    const tags = () => window.evaluate(async id => { const api = (globalThis as typeof globalThis & { keel: { library: SerpentLibraryApi } }).keel.library; const result = await api.listTags({ libraryId: id }); if (!result.ok) throw new Error('No tags'); return result.value; }, libraryId);
     expect((await tags())[0]?.appearance?.colorId).toBeTruthy();
     expect((await tags())[0]?.appearance?.glyphValue).toBeTruthy();
     await tag.click({ button: 'right' });

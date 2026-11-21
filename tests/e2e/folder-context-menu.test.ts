@@ -274,12 +274,12 @@ test("restores the default cover only when a folder has a custom cover", async (
     const { libraryId, folderId, assetId } = await window.evaluate(async () => {
       type Result<T> = { ok: boolean; value?: T; error?: { message?: string } };
       const library = (globalThis as typeof globalThis & {
-        serpent: { library: {
+        keel: { library: {
           listOpen(): Promise<Result<Array<{ libraryId: string }>>>;
           listFolders(input: { libraryId: string }): Promise<Result<Array<{ folderId: string; name: string }>>>;
           listAssets(input: { libraryId: string; recursive: boolean }): Promise<Result<Array<{ assetId: string }>>>;
         } };
-      }).serpent.library;
+      }).keel.library;
       const opened = await library.listOpen();
       const libraryId = opened.value?.[0]?.libraryId;
       if (!opened.ok || !libraryId) throw new Error("Expected an open library.");
@@ -297,14 +297,14 @@ test("restores the default cover only when a folder has a custom cover", async (
 
     await window.evaluate(async ({ libraryId, folderId, assetId }) => {
       const api = (globalThis as typeof globalThis & {
-        serpent: { library: {
+        keel: { library: {
           setFolderCoverFromAsset(input: {
             libraryId: string;
             folderIds: string[];
             assetId: string;
           }): Promise<{ ok: boolean; error?: { message?: string } }>;
         } };
-      }).serpent.library;
+      }).keel.library;
       const result = await api.setFolderCoverFromAsset({
         libraryId,
         folderIds: [folderId],
@@ -328,14 +328,14 @@ test("restores the default cover only when a folder has a custom cover", async (
 
     await expect.poll(async () => window.evaluate(async (folderId) => {
       const api = (globalThis as typeof globalThis & {
-        serpent: { library: {
+        keel: { library: {
           listFolderBrowseEntries(input: {
             libraryId: string;
             parentFolderId: string | null;
           }): Promise<{ ok: boolean; value?: Array<{ folderId: string; hasCustomCover?: boolean }> }>;
           listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
         } };
-      }).serpent.library;
+      }).keel.library;
       const opened = await api.listOpen();
       const libraryId = opened.value?.[0]?.libraryId;
       if (!opened.ok || !libraryId) return null;

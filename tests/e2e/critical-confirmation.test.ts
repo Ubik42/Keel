@@ -42,7 +42,7 @@ test("uses the in-app dialog for library disk deletion", async () => {
 
     const libraryId = await window.evaluate(async () => {
       const bridge = globalThis as typeof globalThis & {
-        serpent: {
+        keel: {
           library: {
             listOpen(): Promise<{
               ok: boolean;
@@ -52,7 +52,7 @@ test("uses the in-app dialog for library disk deletion", async () => {
           };
         };
       };
-      const result = await bridge.serpent.library.listOpen();
+      const result = await bridge.keel.library.listOpen();
       if (!result.ok || !result.value?.[0]) {
         throw new Error(result.error?.message ?? "Expected an open library.");
       }
@@ -62,7 +62,7 @@ test("uses the in-app dialog for library disk deletion", async () => {
     const openCriticalDialog = async () => {
       const deletion = window.evaluate(async (id) => {
         const bridge = globalThis as typeof globalThis & {
-          serpent: {
+          keel: {
             library: {
               deleteLibraryFromDisk(input: { libraryId: string }): Promise<{
                 ok: boolean;
@@ -71,7 +71,7 @@ test("uses the in-app dialog for library disk deletion", async () => {
             };
           };
         };
-        const result = await bridge.serpent.library.deleteLibraryFromDisk({
+        const result = await bridge.keel.library.deleteLibraryFromDisk({
           libraryId: id,
         });
         return result;

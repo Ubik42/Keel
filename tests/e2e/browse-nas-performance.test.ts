@@ -98,7 +98,7 @@ async function installProbe(window: Page): Promise<void> {
       },
       recordSrc(image: HTMLImageElement): void {
         const src = image.getAttribute("src");
-        if (!src || !src.startsWith("serpent://")) return;
+        if (!src || !src.startsWith("keel://")) return;
         probe.mediaSrcWrites += 1;
         probe.srcCounts[src] = (probe.srcCounts[src] ?? 0) + 1;
         const writes = (probe.srcWritesByElement.get(image) ?? 0) + 1;
@@ -193,8 +193,8 @@ async function snapshot(window: Page): Promise<ProbeSnapshot> {
   let sourceSrcWrites = 0;
   for (const url of urls) {
     const count = raw.srcCounts[url] ?? 0;
-    if (url.startsWith("serpent://preview/")) previewSrcWrites += count;
-    else if (url.startsWith("serpent://source/")) sourceSrcWrites += count;
+    if (url.startsWith("keel://preview/")) previewSrcWrites += count;
+    else if (url.startsWith("keel://source/")) sourceSrcWrites += count;
   }
   return {
     ...raw,

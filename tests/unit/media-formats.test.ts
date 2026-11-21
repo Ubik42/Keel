@@ -77,7 +77,7 @@ describe('media format registry', () => {
     expect(isChromiumDirectPlayVideoExtension('.mkv')).toBe(false);
   });
 
-  it('serves H.264 playback proxies as video/mp4 over serpent://', () => {
+  it('serves H.264 playback proxies as video/mp4 over keel://', () => {
     expect(artifactProtocolMimeForExtension('proxy.mp4')).toBe('video/mp4');
     expect(artifactProtocolMimeForExtension('.MP4')).toBe('video/mp4');
     expect(artifactProtocolMimeForExtension('.webm')).toBe('video/webm');

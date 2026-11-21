@@ -4,7 +4,7 @@
  *
  * This module owns every `model` pipeline decision the Worker makes:
  * - preview resolution: a model always resolves to its original source via
- *   `serpent://source/<libraryId>/<assetId>?revision=...` (Main builds the URL
+ *   `keel://source/<libraryId>/<assetId>?revision=...` (Main builds the URL
  *   from playbackMode/sourceRevisionId, same path as direct-play video);
  * - companion mapping: the relative-path → assetId index for the model's
  *   directory (recursive), used by slice C to rewrite OBJ+MTL / FBX external

@@ -64,7 +64,7 @@ test("creates, closes, and reopens a library through the sandboxed UI", async ()
       () =>
         new Promise<string[]>((resolve) => {
           const bridge = globalThis as typeof globalThis & {
-            serpent: {
+            keel: {
               library: {
                 onLifecycle(
                   listener: (event: { type: string }) => void,
@@ -73,7 +73,7 @@ test("creates, closes, and reopens a library through the sandboxed UI", async ()
             };
           };
           const eventTypes: string[] = [];
-          const unsubscribe = bridge.serpent.library.onLifecycle((event) => {
+          const unsubscribe = bridge.keel.library.onLifecycle((event) => {
             eventTypes.push(event.type);
             if (event.type === "library.closed") {
               unsubscribe();
@@ -101,7 +101,7 @@ test("creates, closes, and reopens a library through the sandboxed UI", async ()
         jobs: unknown[];
       };
       const bridge = globalThis as typeof globalThis & {
-        serpent: {
+        keel: {
           library: {
             listOpen(): Promise<Result<Array<{ libraryId: string }>>>;
             listMediaJobs(input: {
@@ -111,12 +111,12 @@ test("creates, closes, and reopens a library through the sandboxed UI", async ()
           };
         };
       };
-      const opened = await bridge.serpent.library.listOpen();
+      const opened = await bridge.keel.library.listOpen();
       const libraryId = opened.ok ? opened.value[0]?.libraryId : undefined;
       if (!libraryId) throw new Error("Expected the newly created library to be open.");
       const [summary, detailed] = await Promise.all([
-        bridge.serpent.library.listMediaJobs({ libraryId, summaryOnly: true }),
-        bridge.serpent.library.listMediaJobs({ libraryId }),
+        bridge.keel.library.listMediaJobs({ libraryId, summaryOnly: true }),
+        bridge.keel.library.listMediaJobs({ libraryId }),
       ]);
       if (!summary.ok || !detailed.ok) {
         throw new Error("Could not read media job status through the preload bridge.");
@@ -255,7 +255,7 @@ test("restores the recent library and focuses the last browsed asset after a ful
       .poll(async () =>
         window.evaluate(async () => {
           const bridge = globalThis as typeof globalThis & {
-            serpent: {
+            keel: {
               library: {
                 listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
                 listAssets(input: {
@@ -268,10 +268,10 @@ test("restores the recent library and focuses the last browsed asset after a ful
               };
             };
           };
-          const opened = await bridge.serpent.library.listOpen();
+          const opened = await bridge.keel.library.listOpen();
           const libraryId = opened.value?.[0]?.libraryId;
           if (!opened.ok || !libraryId) return false;
-          const listed = await bridge.serpent.library.listAssets({
+          const listed = await bridge.keel.library.listAssets({
             libraryId,
             recursive: true,
           });

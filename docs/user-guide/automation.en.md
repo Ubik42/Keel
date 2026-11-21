@@ -31,7 +31,7 @@ MCP lets an external AI tool read and organize Serpent assets. It works on this 
 
 The default address is `http://127.0.0.1:47342/mcp`. Each client connection has its own authorization. Keep the copied connection information private, and revoke the client from MCP settings when you no longer trust it.
 
-After connecting, the Agent receives the basic usage rules in the MCP server instructions and `tools/list`. It should then call `serpent_library_list_open` or `serpent_library_list_recent` to obtain a `libraryId`; if it asks which library to use, let it list the libraries first and choose by ID. Every library-scoped call must include that explicit `libraryId`; critical operations also require the Agent's second-step confirmation.
+After connecting, the Agent receives the basic usage rules in the MCP server instructions and `tools/list`. It should then call `keel_library_list_open` or `keel_library_list_recent` to obtain a `libraryId`; if it asks which library to use, let it list the libraries first and choose by ID. Every library-scoped call must include that explicit `libraryId`; critical operations also require the Agent's second-step confirmation.
 
 ![MCP settings and client configuration](../assets/ui/MCP-settings.png)
 

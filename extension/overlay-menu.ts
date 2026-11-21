@@ -43,7 +43,7 @@ function createMenuShell(clientX: number, clientY: number, titleText: string): {
   dispose: () => void;
 } {
   const host = document.createElement('div');
-  host.setAttribute('data-serpent-overlay-menu', 'true');
+  host.setAttribute('data-keel-overlay-menu', 'true');
   Object.assign(host.style, {
     position: 'fixed',
     left: `${clientX}px`,
@@ -152,7 +152,7 @@ async function requestSave(
     targetFolderId,
   };
   await sendRuntimeMessage<SaveResponse>({
-    type: 'serpent-save-request',
+    type: 'keel-save-request',
     intent,
   });
 }
@@ -165,13 +165,13 @@ export async function showOverlaySaveMenu(
   const { list, dispose } = createMenuShell(
     clientX,
     clientY,
-    '保存到 Serpent',
+    '保存到 Keel',
   );
 
   let connected: boolean;
   try {
     const status = await sendRuntimeMessage<ConnectionStatusResponse>({
-      type: 'serpent-connection-status',
+      type: 'keel-connection-status',
     });
     connected = status.kind === 'connected';
   } catch {
@@ -209,7 +209,7 @@ export async function showOverlaySaveMenu(
   try {
     const foldersResponse = await sendRuntimeMessage<
       FolderListResponse | FolderListErrorResponse
-    >({ type: 'serpent-list-folders' });
+    >({ type: 'keel-list-folders' });
 
     if (foldersResponse.kind === 'ok') {
       for (const folder of foldersResponse.folders) {

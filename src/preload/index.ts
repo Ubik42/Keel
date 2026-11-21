@@ -54,7 +54,7 @@ const e2eDiagnostics = Object.freeze({
 });
 
 contextBridge.exposeInMainWorld(
-  'serpent',
+  'keel',
   Object.freeze({
     library,
     shell,

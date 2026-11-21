@@ -223,7 +223,7 @@ export async function callSerpentMcpTool(
       return {
         ok: false,
         code: 'MCP_LIBRARY_TARGET_REQUIRED',
-        message: `MCP tool ${tool.name} requires an explicit libraryId. Use serpent_library_list_open or serpent_library_create first.`,
+        message: `MCP tool ${tool.name} requires an explicit libraryId. Use keel_library_list_open or keel_library_create first.`,
       };
     }
     explicitLibraryId = rawRecord.libraryId.trim();

@@ -708,7 +708,7 @@ const AssetPreviewModalContent = forwardRef<
     // For a source-backed video, keep the existing playback error until
     // `loadedmetadata` gives proof that the recreated media element can play.
     // Clearing it immediately can leave an unplayable source mounted with no
-    // second error event on Chromium's custom `serpent://` scheme.
+    // second error event on Chromium's custom `keel://` scheme.
     const retainedPlaybackError =
       playbackErrorRef.current ??
       error ??

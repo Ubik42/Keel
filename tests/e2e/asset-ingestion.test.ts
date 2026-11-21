@@ -364,7 +364,7 @@ interface AssetSnapshot {
 async function listAllAssets(window: Page): Promise<AssetSnapshot[]> {
   return window.evaluate(async () => {
     const bridge = globalThis as typeof globalThis & {
-      serpent: {
+      keel: {
         library: {
           listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
           listAssets(input: {
@@ -374,10 +374,10 @@ async function listAllAssets(window: Page): Promise<AssetSnapshot[]> {
         };
       };
     };
-    const open = await bridge.serpent.library.listOpen();
+    const open = await bridge.keel.library.listOpen();
     const libraryId = open.value?.[0]?.libraryId;
     if (!open.ok || !libraryId) throw new Error('Expected an open library.');
-    const result = await bridge.serpent.library.listAssets({ libraryId, recursive: true });
+    const result = await bridge.keel.library.listAssets({ libraryId, recursive: true });
     if (!result.ok || !result.value) throw new Error('Could not list assets.');
     return result.value;
   });
@@ -403,7 +403,7 @@ async function prepareAndAbandonConflict(window: Page): Promise<{
       nameConflictCount: number;
     }
     const bridge = globalThis as typeof globalThis & {
-      serpent: {
+      keel: {
         library: {
           listOpen(): Promise<Result<Array<{ libraryId: string }>>>;
           listFolders(input: { libraryId: string }): Promise<Result<Array<{ folderId: string; name: string }>>>;
@@ -417,20 +417,20 @@ async function prepareAndAbandonConflict(window: Page): Promise<{
         };
       };
     };
-    const open = await bridge.serpent.library.listOpen();
+    const open = await bridge.keel.library.listOpen();
     const libraryId = open.value?.[0]?.libraryId;
     if (!open.ok || !libraryId) throw new Error('Expected an open library.');
-    const folders = await bridge.serpent.library.listFolders({ libraryId });
+    const folders = await bridge.keel.library.listFolders({ libraryId });
     const targetFolderId = folders.value?.find((folder) => folder.name === '项目')?.folderId;
     if (!folders.ok || !targetFolderId) throw new Error('Expected the project folder.');
-    const prepared = await bridge.serpent.library.importFiles({ libraryId, targetFolderId });
+    const prepared = await bridge.keel.library.importFiles({ libraryId, targetFolderId });
     if (!prepared.ok || !prepared.value || !('importId' in prepared.value)) {
       throw new Error('Expected an import conflict plan.');
     }
     const plan = prepared.value;
-    const abandoned = await bridge.serpent.library.abandonImport({ importId: plan.importId });
+    const abandoned = await bridge.keel.library.abandonImport({ importId: plan.importId });
     if (!abandoned.ok) throw new Error('Could not abandon the conflict plan.');
-    const replay = await bridge.serpent.library.resolveImport({
+    const replay = await bridge.keel.library.resolveImport({
       importId: plan.importId,
       suspectedDuplicate: 'skip',
       nameConflict: 'keep-both',
@@ -463,7 +463,7 @@ async function importFilesAndResolveConflict(
       nameConflictCount: number;
     }
     const bridge = globalThis as typeof globalThis & {
-      serpent: {
+      keel: {
         library: {
           listOpen(): Promise<Result<Array<{ libraryId: string }>>>;
           listFolders(input: { libraryId: string }): Promise<Result<Folder[]>>;
@@ -476,17 +476,17 @@ async function importFilesAndResolveConflict(
         };
       };
     };
-    const open = await bridge.serpent.library.listOpen();
+    const open = await bridge.keel.library.listOpen();
     const libraryId = open.value?.[0]?.libraryId;
     if (!open.ok || !libraryId) throw new Error('Expected an open library.');
     const folders = folderName === null
       ? undefined
-      : await bridge.serpent.library.listFolders({ libraryId });
+      : await bridge.keel.library.listFolders({ libraryId });
     const targetFolderId = folders?.value?.find((folder) => folder.name === folderName)?.folderId;
     if (folderName !== null && (!folders?.ok || !targetFolderId)) {
       throw new Error(`Expected folder ${folderName}.`);
     }
-    const prepared = await bridge.serpent.library.importFiles({
+    const prepared = await bridge.keel.library.importFiles({
       libraryId,
       ...(targetFolderId ? { targetFolderId } : {}),
     });
@@ -494,7 +494,7 @@ async function importFilesAndResolveConflict(
       throw new Error('Expected an import conflict plan.');
     }
     const plan = prepared.value;
-    const resolved = await bridge.serpent.library.resolveImport({
+    const resolved = await bridge.keel.library.resolveImport({
       importId: plan.importId,
       suspectedDuplicate: 'create-copy',
       nameConflict: 'keep-both',
@@ -510,7 +510,7 @@ async function importFilesToProject(window: Page): Promise<void> {
     interface Folder { folderId: string; name: string }
     interface Completion { assets: unknown[] }
     const bridge = globalThis as typeof globalThis & {
-      serpent: {
+      keel: {
         library: {
           listOpen(): Promise<Result<Array<{ libraryId: string }>>>;
           listFolders(input: { libraryId: string }): Promise<Result<Folder[]>>;
@@ -518,13 +518,13 @@ async function importFilesToProject(window: Page): Promise<void> {
         };
       };
     };
-    const open = await bridge.serpent.library.listOpen();
+    const open = await bridge.keel.library.listOpen();
     const libraryId = open.value?.[0]?.libraryId;
     if (!open.ok || !libraryId) throw new Error('Expected an open library.');
-    const folders = await bridge.serpent.library.listFolders({ libraryId });
+    const folders = await bridge.keel.library.listFolders({ libraryId });
     const targetFolderId = folders.value?.find((folder) => folder.name === '项目')?.folderId;
     if (!folders.ok || !targetFolderId) throw new Error('Expected the project folder.');
-    const imported = await bridge.serpent.library.importFiles({ libraryId, targetFolderId });
+    const imported = await bridge.keel.library.importFiles({ libraryId, targetFolderId });
     if (!imported.ok || !imported.value || !('assets' in imported.value)) {
       throw new Error('Expected the initial file import to complete.');
     }
@@ -541,7 +541,7 @@ async function preparePendingConflict(window: Page): Promise<{
       value?: T;
     }
     const bridge = globalThis as typeof globalThis & {
-      serpent: {
+      keel: {
         library: {
           listOpen(): Promise<Result<Array<{ libraryId: string }>>>;
           listFolders(input: { libraryId: string }): Promise<Result<Array<{ folderId: string; name: string }>>>;
@@ -554,17 +554,17 @@ async function preparePendingConflict(window: Page): Promise<{
         };
       };
     };
-    const open = await bridge.serpent.library.listOpen();
+    const open = await bridge.keel.library.listOpen();
     const libraryId = open.value?.[0]?.libraryId;
     if (!open.ok || !libraryId) throw new Error('Expected an open library.');
-    const folders = await bridge.serpent.library.listFolders({ libraryId });
+    const folders = await bridge.keel.library.listFolders({ libraryId });
     const targetFolderId = folders.value?.find((folder) => folder.name === '项目')?.folderId;
     if (!folders.ok || !targetFolderId) throw new Error('Expected the project folder.');
-    const prepared = await bridge.serpent.library.importFiles({ libraryId, targetFolderId });
+    const prepared = await bridge.keel.library.importFiles({ libraryId, targetFolderId });
     if (!prepared.ok || !prepared.value || !('importId' in prepared.value)) {
       throw new Error('Expected a pending conflict plan.');
     }
-    const forged = await bridge.serpent.library.resolveImport({
+    const forged = await bridge.keel.library.resolveImport({
       importId: 'forged-import-token',
       suspectedDuplicate: 'skip',
       nameConflict: 'keep-both',
@@ -576,7 +576,7 @@ async function preparePendingConflict(window: Page): Promise<{
 async function resolveImportToken(window: Page, importId: string): Promise<boolean> {
   return window.evaluate(async (token) => {
     const bridge = globalThis as typeof globalThis & {
-      serpent: {
+      keel: {
         library: {
           resolveImport(input: {
             importId: string;
@@ -586,7 +586,7 @@ async function resolveImportToken(window: Page, importId: string): Promise<boole
         };
       };
     };
-    return (await bridge.serpent.library.resolveImport({
+    return (await bridge.keel.library.resolveImport({
       importId: token,
       suspectedDuplicate: 'skip',
       nameConflict: 'keep-both',
@@ -605,7 +605,7 @@ async function refreshAllAssets(window: Page): Promise<{
       value?: T;
     }
     const bridge = globalThis as typeof globalThis & {
-      serpent: {
+      keel: {
         library: {
           listOpen(): Promise<Result<Array<{ libraryId: string }>>>;
           refreshAssets(input: { libraryId: string }): Promise<Result<{
@@ -616,10 +616,10 @@ async function refreshAllAssets(window: Page): Promise<{
         };
       };
     };
-    const open = await bridge.serpent.library.listOpen();
+    const open = await bridge.keel.library.listOpen();
     const libraryId = open.value?.[0]?.libraryId;
     if (!open.ok || !libraryId) throw new Error('Expected an open library.');
-    const result = await bridge.serpent.library.refreshAssets({ libraryId });
+    const result = await bridge.keel.library.refreshAssets({ libraryId });
     if (!result.ok || !result.value) throw new Error('Could not refresh assets.');
     return result.value;
   });

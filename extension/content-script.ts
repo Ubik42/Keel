@@ -15,7 +15,7 @@ import { showSaveToast } from './save-bubble';
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (!message || typeof message !== 'object') return;
   const type = Reflect.get(message, 'type');
-  if (type === 'serpent-local-context-save-request') {
+  if (type === 'keel-local-context-save-request') {
     void (async () => {
       const mediaUrl = Reflect.get(message, 'mediaUrl');
       const targetFolderId = Reflect.get(message, 'targetFolderId');
@@ -34,19 +34,19 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         return;
       }
       chrome.runtime.sendMessage({
-        type: 'serpent-local-save-request',
+        type: 'keel-local-save-request',
         ...localUpload,
         ...(targetFolderId === undefined ? {} : { targetFolderId }),
       }, (response) => {
         if (chrome.runtime.lastError) {
-          showSaveToast('无法保存到 Serpent', '本地图片上传失败。');
+          showSaveToast('无法保存到 Keel', '本地图片上传失败。');
         } else {
           const notification = response && typeof response === 'object'
             ? Reflect.get(response, 'notification')
             : undefined;
           const title = notification && typeof notification === 'object'
             ? Reflect.get(notification, 'title')
-            : '无法保存到 Serpent';
+            : '无法保存到 Keel';
           const message = notification && typeof notification === 'object'
             ? Reflect.get(notification, 'message')
             : '本地图片上传失败。';
@@ -60,9 +60,9 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     })();
     return true;
   }
-  if (type !== 'serpent-save-feedback') return;
+  if (type !== 'keel-save-feedback') return;
   if (Reflect.get(message, 'state') === 'saving') {
-    showSaveToast('正在保存到 Serpent', '发送中…');
+    showSaveToast('正在保存到 Keel', '发送中…');
   } else {
     showSaveToast(Reflect.get(message, 'title'), Reflect.get(message, 'message'));
   }
@@ -70,9 +70,9 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 });
 
 // 右键保存走 Chrome 扩展原生 contextMenus（background.ts），不拦截页面右键，
-// 避免浮层菜单替换整站原生菜单（Serpent-ak94 / 用户反馈 2026-07-26）。
+// 避免浮层菜单替换整站原生菜单（Keel-ak94 / 用户反馈 2026-07-26）。
 
-// Serpent-c0ml / REQ-EXT-005：拖拽图片/视频时展开树状保存菜单（全站点生效）。
+// Keel-c0ml / REQ-EXT-005：拖拽图片/视频时展开树状保存菜单（全站点生效）。
 // 可在扩展设置中关闭；内容脚本侧缓存开关并监听变更，避免每次 dragstart 都读存储。
 let radialMenuEnabled = true;
 void readDragRadialMenuEnabled().then((enabled) => {

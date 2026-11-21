@@ -1,7 +1,7 @@
 /* global URLSearchParams, location, document, window, crypto */
 
 const contributionId = new URLSearchParams(location.search).get('contributionId')
-  ?? 'com.serpent.iframe-workspace-probe.workspace-probe';
+  ?? 'com.keel.iframe-workspace-probe.workspace-probe';
 const instanceId = decodeURIComponent(location.pathname.split('/')[1] || '');
 const status = document.querySelector('#status');
 

@@ -700,7 +700,7 @@ describe('OpenAIVendorAdapter', () => {
     expect(requestBody?.response_format).toMatchObject({
       type: 'json_schema',
       json_schema: {
-        name: 'serpent_asset_analysis',
+        name: 'keel_asset_analysis',
         strict: true,
         schema: {
           required: ['description', 'tags', 'rating'],

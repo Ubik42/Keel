@@ -49,7 +49,7 @@ describe('fixed trusted Host probe fixture', () => {
       libraryDirectory: library,
       source: { kind: 'local-directory', fingerprint: 'fixture:trusted-host-probe' },
     });
-    expect(installed.package.manifest.id).toBe('com.serpent.trusted-host-probe');
+    expect(installed.package.manifest.id).toBe('com.keel.trusted-host-probe');
     expect(installed.package.manifest.runtime.mode).toBe('unrestricted');
     expect(existsSync(path.join(installed.package.packageDirectory, 'entry/main.js'))).toBe(true);
 
@@ -76,7 +76,7 @@ describe('fixed trusted Host probe fixture', () => {
             void storage.execute({
               operation: message.operation,
               scope: message.scope ?? 'library',
-              pluginId: 'com.serpent.trusted-host-probe',
+              pluginId: 'com.keel.trusted-host-probe',
               libraryId: 'library-trusted-probe',
               libraryDirectory: library,
               permissions: [...permissions],
@@ -113,7 +113,7 @@ describe('fixed trusted Host probe fixture', () => {
       type: 'plugin-trusted.activate',
       instanceId,
       libraryId: 'library-trusted-probe',
-      pluginId: 'com.serpent.trusted-host-probe',
+      pluginId: 'com.keel.trusted-host-probe',
       version: '1.0.0',
       packageHash: installed.package.lock.packageHash,
       packageDirectory: installed.package.packageDirectory,
@@ -128,7 +128,7 @@ describe('fixed trusted Host probe fixture', () => {
     expect(posted.some((message) => message.type === 'plugin-trusted.activated')).toBe(true);
 
     const document = JSON.parse(readFileSync(
-      path.join(library, PLUGIN_LIBRARY_DATA_DIRECTORY, 'com.serpent.trusted-host-probe.json'),
+      path.join(library, PLUGIN_LIBRARY_DATA_DIRECTORY, 'com.keel.trusted-host-probe.json'),
       'utf8',
     )) as { values: Record<string, unknown> };
     expect(document.values['host-probe']).toEqual({

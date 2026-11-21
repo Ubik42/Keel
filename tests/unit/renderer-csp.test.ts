@@ -17,20 +17,20 @@ function directive(name: string): string[] {
 describe('Renderer content security policy', () => {
   it('permits only the application media scheme at the image and video sinks', () => {
     expect(policy).toBeDefined();
-    expect(directive('img-src')).toContain('serpent:');
-    expect(directive('media-src')).toContain('serpent:');
+    expect(directive('img-src')).toContain('keel:');
+    expect(directive('media-src')).toContain('keel:');
     expect(directive('script-src')).not.toContain("'unsafe-eval'");
     expect(directive('script-src')).not.toContain('*');
   });
 
-  it('permits serpent:// fetches (3D viewer + model pipeline, slice C)', () => {
+  it('permits keel:// fetches (3D viewer + model pipeline, slice C)', () => {
     // three r185 loaders use fetch: GLB artifacts, companion textures, .hdr
-    // environment maps and .gltf/.obj/.mtl text all load over serpent:// in
+    // environment maps and .gltf/.obj/.mtl text all load over keel:// in
     // the packaged app (file:// fetch is blocked). Embedded glTF buffers and
     // images use data: URLs, and GLB bufferView textures are decoded through
     // blob: URLs (ImageBitmapLoader) — all need the explicit, non-network
     // allowance.
-    expect(directive('connect-src')).toContain('serpent:');
+    expect(directive('connect-src')).toContain('keel:');
     expect(directive('connect-src')).toContain('data:');
     expect(directive('connect-src')).toContain('blob:');
     expect(directive('connect-src')).not.toContain('*');

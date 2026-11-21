@@ -206,7 +206,7 @@ export async function renderModelThumbnailFrame(
         log('offscreen-thumbnail.stage.hdri-loading', { presetId: preset.id });
         environment = await loadWithTimeout(
           loadHdrEnvironmentForFrame(
-            `serpent://app-assets/hdri/${preset.fileName}`,
+            `keel://app-assets/hdri/${preset.fileName}`,
             {
               renderer: deps.renderer,
               pmrem: deps.pmrem,

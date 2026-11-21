@@ -121,7 +121,7 @@ describe('AI natural-language search planner', () => {
 
   it('forces Anthropic to return the one constrained search tool', async () => {
     const fetchFn = vi.fn<typeof fetch>().mockResolvedValue(jsonResponse({
-      content: [{ type: 'tool_use', name: 'serpent_prepare_search', input: rawPlan }],
+      content: [{ type: 'tool_use', name: 'keel_prepare_search', input: rawPlan }],
     }));
     const plan = await planAiSearch({
       apiFormat: 'anthropic', model: 'claude-sonnet-4-20250514', apiKey: 'secret',
@@ -129,7 +129,7 @@ describe('AI natural-language search planner', () => {
     });
     expect(plan.keywords).toEqual(['science fiction', 'city']);
     const request = JSON.parse(String(fetchFn.mock.calls[0]![1]?.body)) as Record<string, unknown>;
-    expect(request.tool_choice).toEqual({ type: 'tool', name: 'serpent_prepare_search' });
+    expect(request.tool_choice).toEqual({ type: 'tool', name: 'keel_prepare_search' });
     expect(request.thinking).toBeUndefined();
   });
 

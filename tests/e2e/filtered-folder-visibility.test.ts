@@ -67,8 +67,8 @@ test('toolbar filters hide empty folder subtrees and refresh after metadata edit
     // Seed only the temporary library through the typed public preload API.
     const fixture = await window.evaluate(async () => {
       const api = (globalThis as typeof globalThis & {
-        serpent: { library: SerpentLibraryApi };
-      }).serpent.library;
+        keel: { library: SerpentLibraryApi };
+      }).keel.library;
       function value<T>(result: LibraryApiResult<T>): T {
         if (!result.ok) throw new Error(result.error.message);
         return result.value;

@@ -74,7 +74,7 @@ export function BrowseLayoutPreview({
   const t = useT();
   const artifactId = previewArtifactId ?? entry.previewArtifactId;
   const previewSrc = artifactId
-    ? `serpent://preview/${libraryId}/${artifactId}`
+    ? `keel://preview/${libraryId}/${artifactId}`
     : entry.previewKind === "source" && entry.previewRevisionId
       ? sourceSrc(libraryId, entry.assetId, entry.previewRevisionId)
       : undefined;

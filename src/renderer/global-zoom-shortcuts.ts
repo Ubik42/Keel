@@ -20,7 +20,7 @@ import { hasActiveModalDialog } from "./use-dialog-focus-trap";
 
 export type GlobalZoomAction = "in" | "out" | "reset";
 
-export const GLOBAL_ZOOM_MENU_ACTION_EVENT = "serpent:global-zoom-menu-action";
+export const GLOBAL_ZOOM_MENU_ACTION_EVENT = "keel:global-zoom-menu-action";
 
 export function dispatchGlobalZoomMenuAction(action: GlobalZoomAction): void {
   window.dispatchEvent(

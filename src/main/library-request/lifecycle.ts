@@ -431,7 +431,7 @@ export type LibraryDeleteFromDiskRuntime = {
 };
 
 /**
- * Drop serpent:// file handles before the Worker tries to rm the root.
+ * Drop keel:// file handles before the Worker tries to rm the root.
  * Always end this fence in `finally`; ZIP import preserves library_id.
  */
 export function maybeBeginLibraryDeleteFromDisk(

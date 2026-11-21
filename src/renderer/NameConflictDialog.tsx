@@ -44,7 +44,7 @@ export function NameConflictDialog({
         {nameConflicts.map((item, index) => {
           const thumb =
             item.existingThumbnailArtifactId && libraryId
-              ? `serpent://preview/${libraryId}/${item.existingThumbnailArtifactId}`
+              ? `keel://preview/${libraryId}/${item.existingThumbnailArtifactId}`
               : null;
           return (
             <li

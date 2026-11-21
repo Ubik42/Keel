@@ -836,13 +836,13 @@ test("maintains consistent preferences, accessible names, zoom behavior, and avo
       window.evaluate(() =>
         (
           globalThis as typeof globalThis & {
-            serpent: {
+            keel: {
               e2e: {
                 getRequestCount(type: "asset.search.request"): number;
               };
             };
           }
-        ).serpent.e2e.getRequestCount("asset.search.request"),
+        ).keel.e2e.getRequestCount("asset.search.request"),
       );
     const searchRequestsBefore = await assetSearchRequestCount();
 
@@ -965,7 +965,7 @@ test("maintains consistent preferences, accessible names, zoom behavior, and avo
     await window.evaluate(async () => {
       const api = (
         globalThis as typeof globalThis & {
-          serpent: {
+          keel: {
             library: {
               listOpen(): Promise<{
                 ok: boolean;
@@ -978,7 +978,7 @@ test("maintains consistent preferences, accessible names, zoom behavior, and avo
             };
           };
         }
-      ).serpent.library;
+      ).keel.library;
       const open = await api.listOpen();
       const libraryId = open.value?.[0]?.libraryId;
       if (!libraryId) throw new Error("No open library");
@@ -1067,7 +1067,7 @@ test("maintains consistent preferences, accessible names, zoom behavior, and avo
     const libraryId: string | null = await window.evaluate(async () => {
       const result = await (
         globalThis as unknown as {
-          serpent: {
+          keel: {
             library: {
               listOpen(): Promise<{
                 ok: boolean;
@@ -1076,7 +1076,7 @@ test("maintains consistent preferences, accessible names, zoom behavior, and avo
             };
           };
         }
-      ).serpent.library.listOpen();
+      ).keel.library.listOpen();
       return result.ok ? (result.value[0]?.libraryId ?? null) : null;
     });
     expect(libraryId).toBeTruthy();
@@ -1087,7 +1087,7 @@ test("maintains consistent preferences, accessible names, zoom behavior, and avo
       ({ libId, assetId }) =>
         (
           globalThis as unknown as {
-            serpent: {
+            keel: {
               library: {
                 trashAssets(input: {
                   libraryId: string;
@@ -1096,7 +1096,7 @@ test("maintains consistent preferences, accessible names, zoom behavior, and avo
               };
             };
           }
-        ).serpent.library.trashAssets({
+        ).keel.library.trashAssets({
           libraryId: libId,
           assetIds: [assetId],
         }),

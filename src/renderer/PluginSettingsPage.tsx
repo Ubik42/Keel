@@ -137,7 +137,7 @@ function confirmationHintKey(
 }
 
 function shellApi(): RendererShellApi | undefined {
-  return (window as unknown as { serpent?: { shell?: RendererShellApi } }).serpent?.shell;
+  return (window as unknown as { keel?: { shell?: RendererShellApi } }).keel?.shell;
 }
 
 function formatInstallBytes(value: number): string {

@@ -149,8 +149,8 @@ test('recovers an interrupted import after a complete Electron process restart',
     // state is durable. Kill the complete app as soon as placement is seen.
     const importPromise = interruptedWindow.evaluate(async () => {
       const bridge = (globalThis as typeof globalThis & {
-        serpent: { library: { importFiles: (input: { libraryId: string }) => Promise<unknown>; listOpen: () => Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }> } };
-      }).serpent;
+        keel: { library: { importFiles: (input: { libraryId: string }) => Promise<unknown>; listOpen: () => Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }> } };
+      }).keel;
       const opened = await bridge.library.listOpen();
       const libraryId = opened.value?.[0]?.libraryId;
       if (!opened.ok || !libraryId) throw new Error('Expected an open library.');

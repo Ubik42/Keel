@@ -59,7 +59,7 @@ test('activates the fixed standard Host probe and writes library storage', async
     const storagePath = path.join(
       libraryDirectory,
       PLUGIN_LIBRARY_DATA_DIRECTORY,
-      'com.serpent.standard-host-probe.json',
+      'com.keel.standard-host-probe.json',
     );
 
     await expect.poll(() => existsSync(storagePath), {

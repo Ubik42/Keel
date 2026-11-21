@@ -64,7 +64,7 @@ test('plugin view contract: mount, theme-without-reload, reload, unmount, librar
   function probeFrame(): Frame | null {
     for (const window of application.windows()) {
       const frame = window.frames().find(
-        (candidate) => candidate.url().includes('serpent-plugin://') && candidate.url().includes('view-contract-probe'),
+        (candidate) => candidate.url().includes('keel-plugin://') && candidate.url().includes('view-contract-probe'),
       );
       if (frame !== undefined) return frame;
     }
@@ -76,7 +76,7 @@ test('plugin view contract: mount, theme-without-reload, reload, unmount, librar
     const panel = window.locator('.plugin-sidebar-view-panel');
     await expect(panel).toBeVisible();
     try {
-      await expect.poll(() => probeFrame()?.url() ?? '', { timeout: 30_000 }).toContain('serpent-plugin://');
+      await expect.poll(() => probeFrame()?.url() ?? '', { timeout: 30_000 }).toContain('keel-plugin://');
     } catch (error) {
       const panelHtml = await panel.evaluate((element) => element.innerHTML).catch(() => 'unavailable');
       const frameUrls = application.windows()

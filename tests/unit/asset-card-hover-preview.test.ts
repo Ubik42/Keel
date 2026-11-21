@@ -127,14 +127,14 @@ describe("resolveActivePreviewAssetId", () => {
 
 describe("coverSrc", () => {
   it("builds the serpent preview URL", () => {
-    expect(coverSrc("lib-a", "art-b")).toBe("serpent://preview/lib-a/art-b");
+    expect(coverSrc("lib-a", "art-b")).toBe("keel://preview/lib-a/art-b");
   });
 });
 
 describe("sourceSrc", () => {
   it("pins the source URL to the authorized revision", () => {
     expect(sourceSrc("lib-a", "asset-b", "rev-c")).toBe(
-      "serpent://source/lib-a/asset-b?revision=rev-c",
+      "keel://source/lib-a/asset-b?revision=rev-c",
     );
   });
 });
@@ -153,38 +153,38 @@ describe("resolveLivePreviewMedia (Serpent-a9n)", () => {
     expect(
       resolveLivePreviewMedia(true, {
         status: "ready",
-        url: "serpent://source/lib/gif-1",
+        url: "keel://source/lib/gif-1",
         mediaType: "image",
       }),
-    ).toEqual({ url: "serpent://source/lib/gif-1", kind: "gif" });
+    ).toEqual({ url: "keel://source/lib/gif-1", kind: "gif" });
   });
 
   it("plays a ready video as 'video' when active", () => {
     expect(
       resolveLivePreviewMedia(true, {
         status: "ready",
-        url: "serpent://source/lib/vid-1",
+        url: "keel://source/lib/vid-1",
         mediaType: "video",
-        posterUrl: "serpent://preview/lib/poster-1",
+        posterUrl: "keel://preview/lib/poster-1",
       }),
-    ).toEqual({ url: "serpent://source/lib/vid-1", kind: "video" });
+    ).toEqual({ url: "keel://source/lib/vid-1", kind: "video" });
   });
 
   it("plays a ready audio as 'audio' when active (Serpent hover 音频工单)", () => {
     expect(
       resolveLivePreviewMedia(true, {
         status: "ready",
-        url: "serpent://source/lib/aud-1",
+        url: "keel://source/lib/aud-1",
         mediaType: "audio",
       }),
-    ).toEqual({ url: "serpent://source/lib/aud-1", kind: "audio" });
+    ).toEqual({ url: "keel://source/lib/aud-1", kind: "audio" });
   });
 
   it("does not play when inactive — this is how Inspector multi-selection stays static", () => {
     expect(
       resolveLivePreviewMedia(false, {
         status: "ready",
-        url: "serpent://source/lib/vid-1",
+        url: "keel://source/lib/vid-1",
         mediaType: "video",
       }),
     ).toEqual({ url: undefined, kind: null });
@@ -215,7 +215,7 @@ describe("resolveLivePreviewMedia (Serpent-a9n)", () => {
     expect(
       resolveLivePreviewMedia(true, {
         status: "ready",
-        url: "serpent://source/lib/other-1",
+        url: "keel://source/lib/other-1",
         mediaType: "other",
       }),
     ).toEqual({ url: undefined, kind: null });
@@ -265,7 +265,7 @@ describe("resolveAssetCardCoverUrl", () => {
         previewRevisionId: "rev-1",
       }),
     ).toEqual({
-      url: "serpent://source/lib/a1?revision=rev-1",
+      url: "keel://source/lib/a1?revision=rev-1",
       usedSourceFallback: true,
     });
   });

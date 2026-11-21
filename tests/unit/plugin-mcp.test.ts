@@ -33,7 +33,7 @@ describe('PLUGIN-031 manifest and MCP exposure contract', () => {
       description: 'MCP probe',
       author: 'Serpent',
       license: 'MIT',
-      engines: { serpent: '>=0.2.0 <1.0.0', pluginApi: 1 },
+      engines: { keel: '>=0.2.0 <1.0.0', pluginApi: 1 },
       runtime: { mode: 'restricted', entry: 'entry/main.js' },
       permissions: ['library.read'],
       contributes: {
@@ -105,7 +105,7 @@ describe('PLUGIN-031 manifest and MCP exposure contract', () => {
 describe('PLUGIN-031 MCP call gate', () => {
   it('returns not found for an unknown tool before parsing plugin-only arguments', async () => {
     const result = await callSerpentMcpTool({
-      toolName: 'serpent_plugin_unknown_command',
+      toolName: 'keel_plugin_unknown_command',
       arguments: {},
       context: mcpContext(writeExposure),
       exposure: writeExposure,

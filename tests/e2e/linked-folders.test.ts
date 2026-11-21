@@ -333,13 +333,13 @@ async function startDeleteProgressCapture(window: Page): Promise<void> {
   await window.evaluate(() => {
     const library = (
       globalThis as typeof globalThis & {
-        serpent: {
+        keel: {
           library: {
             onProgress(listener: (event: { type?: string }) => void): () => void;
           };
         };
       }
-    ).serpent.library;
+    ).keel.library;
     const store = globalThis as typeof globalThis & {
       __serpentDeleteProgress?: Array<Record<string, unknown>>;
     };
@@ -415,7 +415,7 @@ async function confirmLinkedFolderDiskDelete(
 async function listAllAssets(window: Page): Promise<AssetSnapshot[]> {
   return window.evaluate(async () => {
     const bridge = globalThis as typeof globalThis & {
-      serpent: {
+      keel: {
         library: {
           listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
           listAssets(input: {
@@ -425,10 +425,10 @@ async function listAllAssets(window: Page): Promise<AssetSnapshot[]> {
         };
       };
     };
-    const open = await bridge.serpent.library.listOpen();
+    const open = await bridge.keel.library.listOpen();
     const libraryId = open.value?.[0]?.libraryId;
     if (!open.ok || !libraryId) throw new Error('Expected an open library.');
-    const result = await bridge.serpent.library.listAssets({ libraryId, recursive: true });
+    const result = await bridge.keel.library.listAssets({ libraryId, recursive: true });
     if (!result.ok || !result.value) throw new Error('Could not list assets.');
     return result.value;
   });
@@ -679,7 +679,7 @@ test('imports a linked folder as a child of a managed folder', async () => {
       await window.evaluate(async (parentId) => {
         const api = (
           globalThis as typeof globalThis & {
-            serpent: {
+            keel: {
               library: {
                 listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
                 listLinkedFolders(input: { libraryId: string }): Promise<{
@@ -689,7 +689,7 @@ test('imports a linked folder as a child of a managed folder', async () => {
               };
             };
           }
-        ).serpent.library;
+        ).keel.library;
         const open = await api.listOpen();
         const libraryId = open.value?.[0]?.libraryId;
         if (!libraryId) return null;
@@ -738,7 +738,7 @@ test('imports a linked folder as a child of a managed folder', async () => {
     const rejection = await window.evaluate(async () => {
       const api = (
         globalThis as typeof globalThis & {
-          serpent: {
+          keel: {
             library: {
               listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
               importFolderAsLinked(input: {
@@ -747,7 +747,7 @@ test('imports a linked folder as a child of a managed folder', async () => {
             };
           };
         }
-      ).serpent.library;
+      ).keel.library;
       const open = await api.listOpen();
       const libraryId = open.value?.[0]?.libraryId;
       if (!libraryId) return null;

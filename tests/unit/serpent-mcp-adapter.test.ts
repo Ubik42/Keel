@@ -92,14 +92,14 @@ describe('Serpent MCP tool catalog', () => {
     const listed = listSerpentMcpTools(readExposure);
     expect(listed.apiVersion).toBe(1);
     expect(listed.tools.length).toBeGreaterThan(0);
-    expect(listed.tools.map((tool) => tool.name)).toContain('serpent_asset_search');
-    expect(listed.tools.map((tool) => tool.name)).toContain('serpent_library_change_sequence');
-    expect(listed.tools.map((tool) => tool.name)).toContain('serpent_asset_ai_content_get');
-    expect(listed.tools.map((tool) => tool.name)).toContain('serpent_execution_status');
-    expect(listed.tools.map((tool) => tool.name)).toContain('serpent_ui_notify');
-    expect(listed.tools.map((tool) => tool.name)).toContain('serpent_tag_create');
-    expect(listed.tools.map((tool) => tool.name)).toContain('serpent_folder_create');
-    expect(listed.tools.find((tool) => tool.name === 'serpent_tag_create')).toMatchObject({
+    expect(listed.tools.map((tool) => tool.name)).toContain('keel_asset_search');
+    expect(listed.tools.map((tool) => tool.name)).toContain('keel_library_change_sequence');
+    expect(listed.tools.map((tool) => tool.name)).toContain('keel_asset_ai_content_get');
+    expect(listed.tools.map((tool) => tool.name)).toContain('keel_execution_status');
+    expect(listed.tools.map((tool) => tool.name)).toContain('keel_ui_notify');
+    expect(listed.tools.map((tool) => tool.name)).toContain('keel_tag_create');
+    expect(listed.tools.map((tool) => tool.name)).toContain('keel_folder_create');
+    expect(listed.tools.find((tool) => tool.name === 'keel_tag_create')).toMatchObject({
       riskTier: 'controlled',
       requestableCapabilities: ['tag.write'],
       canPersistPermission: true,
@@ -109,14 +109,14 @@ describe('Serpent MCP tool catalog', () => {
   it('exposes execution- and plan-approved write tools after local write access is granted', () => {
     const listed = listSerpentMcpTools(writeExposure);
     const names = listed.tools.map((tool) => tool.name);
-    expect(names).toContain('serpent_tag_create');
-    expect(names).toContain('serpent_folder_create');
-    expect(names).toContain('serpent_ai_enqueue');
-    expect(names).toContain('serpent_library_create');
-    expect(names).toContain('serpent_file_import');
-    expect(names).toContain('serpent_asset_trash');
-    expect(names).toContain('serpent_asset_move');
-    expect(names).toContain('serpent_asset_rename_file');
+    expect(names).toContain('keel_tag_create');
+    expect(names).toContain('keel_folder_create');
+    expect(names).toContain('keel_ai_enqueue');
+    expect(names).toContain('keel_library_create');
+    expect(names).toContain('keel_file_import');
+    expect(names).toContain('keel_asset_trash');
+    expect(names).toContain('keel_asset_move');
+    expect(names).toContain('keel_asset_rename_file');
     expect(listed.tools.every((tool) => tool.approvalPolicy === 'none'
       || tool.approvalPolicy === 'execution'
       || tool.approvalPolicy === 'plan')).toBe(true);
@@ -126,18 +126,18 @@ describe('Serpent MCP tool catalog', () => {
     const listed = listSerpentMcpTools(writeExposure);
     const forbidden = /(?:^|_)(?:eval|shell|sql|fetch|net|fs|process|exec)(?:_|$)/iu;
     for (const tool of listed.tools) {
-      expect(tool.name).toMatch(/^serpent_[a-z0-9_]+$/u);
+      expect(tool.name).toMatch(/^keel_[a-z0-9_]+$/u);
       expect(tool.name).not.toMatch(forbidden);
       expect(tool.inputSchema).toBeTypeOf('object');
       expect(tool.annotations.openWorldHint).toBe(false);
     }
-    expect(resolveSerpentMcpTool('serpent_eval_code', writeExposure)).toBeUndefined();
+    expect(resolveSerpentMcpTool('keel_eval_code', writeExposure)).toBeUndefined();
   });
 
   it('exposes explicit filesystem paths and library targets to MCP clients', () => {
     const listed = listSerpentMcpTools(writeExposure);
-    const libraryCreate = listed.tools.find((tool) => tool.name === 'serpent_library_create');
-    const fileImport = listed.tools.find((tool) => tool.name === 'serpent_file_import');
+    const libraryCreate = listed.tools.find((tool) => tool.name === 'keel_library_create');
+    const fileImport = listed.tools.find((tool) => tool.name === 'keel_file_import');
     expect(libraryCreate?.inputSchema).toHaveProperty('properties.selectedParentPath');
     expect(fileImport?.inputSchema).toHaveProperty('properties.sourcePaths');
     expect(fileImport?.inputSchema).toHaveProperty('properties.libraryId');
@@ -156,7 +156,7 @@ describe('Serpent MCP tools/call → Gateway', () => {
     });
     const gateway = createAutomationCommandGateway(worker, resolver());
     const result = await callSerpentMcpTool({
-      toolName: 'serpent_library_inspect',
+      toolName: 'keel_library_inspect',
       arguments: { libraryId: 'library-1' },
       context: mcpContext(readExposure),
       exposure: readExposure,
@@ -187,7 +187,7 @@ describe('Serpent MCP tools/call → Gateway', () => {
     });
     const gateway = createAutomationCommandGateway(worker, resolver());
     const result = await callSerpentMcpTool({
-      toolName: 'serpent_library_inspect',
+      toolName: 'keel_library_inspect',
       arguments: { libraryId: 'library-1' },
       context: mcpContext(readExposure),
       exposure: readExposure,
@@ -205,7 +205,7 @@ describe('Serpent MCP tools/call → Gateway', () => {
     });
     const gateway = createAutomationCommandGateway(worker, resolver());
     const result = await callSerpentMcpTool({
-      toolName: 'serpent_library_inspect',
+      toolName: 'keel_library_inspect',
       arguments: { libraryId: 'library-1' },
       context: mcpContext(readExposure),
       exposure: readExposure,
@@ -223,7 +223,7 @@ describe('Serpent MCP tools/call → Gateway', () => {
     });
     const gateway = createAutomationCommandGateway(worker, resolver());
     const result = await callSerpentMcpTool({
-      toolName: 'serpent_library_inspect',
+      toolName: 'keel_library_inspect',
       arguments: { libraryId: 'library-1' },
       context: mcpContext(readExposure),
       exposure: readExposure,
@@ -239,7 +239,7 @@ describe('Serpent MCP tools/call → Gateway', () => {
     });
     const gateway = createAutomationCommandGateway(worker, resolver());
     const result = await callSerpentMcpTool({
-      toolName: 'serpent_library_inspect',
+      toolName: 'keel_library_inspect',
       arguments: { libraryId: 'library-1' },
       context: mcpContext(readExposure),
       exposure: readExposure,
@@ -260,7 +260,7 @@ describe('Serpent MCP tools/call → Gateway', () => {
     controller.abort();
     const gateway = createAutomationCommandGateway(worker, resolver());
     const result = await callSerpentMcpTool({
-      toolName: 'serpent_library_inspect',
+      toolName: 'keel_library_inspect',
       arguments: { libraryId: 'library-1' },
       context: mcpContext(readExposure),
       exposure: readExposure,
@@ -299,7 +299,7 @@ describe('Serpent MCP tools/call → Gateway', () => {
       },
     });
     const result = await callSerpentMcpTool({
-      toolName: 'serpent_execution_status',
+      toolName: 'keel_execution_status',
       arguments: {},
       context: mcpContext(readExposure),
       exposure: readExposure,
@@ -336,7 +336,7 @@ describe('Serpent MCP tools/call → Gateway', () => {
         : undefined,
     });
     const result = await callSerpentMcpTool({
-      toolName: 'serpent_asset_search',
+      toolName: 'keel_asset_search',
       arguments: { libraryId: 'library-1', query: 'name:sunny', limit: 50 },
       context: mcpContext(readExposure),
       exposure: readExposure,
@@ -370,7 +370,7 @@ describe('Serpent MCP tools/call → Gateway', () => {
       },
     });
     const result = await callSerpentMcpTool({
-      toolName: 'serpent_tag_create',
+      toolName: 'keel_tag_create',
       arguments: { libraryId: 'library-1', name: 'x' },
       context: mcpContext(readExposure),
       exposure: readExposure,
@@ -384,7 +384,7 @@ describe('Serpent MCP tools/call → Gateway', () => {
     const worker = new RecordingWorker({ ok: true, type: 'library.list', libraries: [] });
     const gateway = createAutomationCommandGateway(worker, resolver());
     const result = await callSerpentMcpTool({
-      toolName: 'serpent_library_inspect',
+      toolName: 'keel_library_inspect',
       arguments: { libraryId: 'library-1' },
       context: undefined,
       exposure: readExposure,
@@ -402,14 +402,14 @@ describe('Serpent MCP tools/call → Gateway', () => {
     });
     expect(server).toBeTruthy();
     expect(listSerpentMcpTools(readExposure).tools.map((tool) => tool.name))
-      .toContain('serpent_asset_search');
+      .toContain('keel_asset_search');
   });
 
   it('keeps exported plugin tools behind the local write-access gate', async () => {
     const worker = new RecordingWorker({ ok: true, type: 'library.list', libraries: [] });
     const gateway = createAutomationCommandGateway(worker, resolver());
     const pluginTool = {
-      name: 'serpent_plugin_com_example_probe_declared',
+      name: 'keel_plugin_com_example_probe_declared',
       description: 'Declared plugin command',
       pluginId: 'com.example.probe',
       commandId: 'declared',
@@ -483,7 +483,7 @@ describe('Serpent MCP dangerous two-phase challenge (Serpent-8b5b.2)', () => {
       idempotencyKey: 'delete-permanent-1',
     };
     const first = await callSerpentMcpTool({
-      toolName: 'serpent_asset_delete_permanent',
+      toolName: 'keel_asset_delete_permanent',
       arguments: input,
       context: mcpContext(readExposure),
       exposure: readExposure,
@@ -500,7 +500,7 @@ describe('Serpent MCP dangerous two-phase challenge (Serpent-8b5b.2)', () => {
     const challenge = first.result as { challengeId: string; planHash: string };
 
     const confirmed = await callSerpentMcpTool({
-      toolName: 'serpent_asset_delete_permanent',
+      toolName: 'keel_asset_delete_permanent',
       arguments: {
         ...input,
         challengeId: challenge.challengeId,
@@ -543,7 +543,7 @@ describe('Serpent MCP dangerous two-phase challenge (Serpent-8b5b.2)', () => {
       idempotencyKey: 'delete-permanent-2',
     };
     const first = await callSerpentMcpTool({
-      toolName: 'serpent_asset_delete_permanent',
+      toolName: 'keel_asset_delete_permanent',
       arguments: input,
       context: mcpContext(readExposure),
       exposure: readExposure,
@@ -552,7 +552,7 @@ describe('Serpent MCP dangerous two-phase challenge (Serpent-8b5b.2)', () => {
     if (!first.ok) throw new Error('expected challenge result');
 
     const forged = await callSerpentMcpTool({
-      toolName: 'serpent_asset_delete_permanent',
+      toolName: 'keel_asset_delete_permanent',
       arguments: {
         ...input,
         challengeId: '00000000-0000-4000-8000-0000000000ff',
@@ -593,7 +593,7 @@ describe('Serpent MCP permission profiles through the gateway (Serpent-8b5b.8)',
     const worker = new RecordingWorker({ ok: true, type: 'tag.created', tag: { tagId: 'tag-1', name: 'x', assetCount: 0 } });
     const gateway = profileGateway(worker, 'auto');
     const result = await callSerpentMcpTool({
-      toolName: 'serpent_tag_create',
+      toolName: 'keel_tag_create',
       arguments: { libraryId: 'library-1', name: 'x' },
       context: mcpContext(readExposure),
       exposure: readExposure,
@@ -616,7 +616,7 @@ describe('Serpent MCP permission profiles through the gateway (Serpent-8b5b.8)',
       clientCredentialId: profileCredentials[2],
     });
     const first = await callSerpentMcpTool({
-      toolName: 'serpent_asset_delete_permanent',
+      toolName: 'keel_asset_delete_permanent',
       arguments: { libraryId: 'library-1', assetIds: ['00000000-0000-4000-8000-000000000010'], idempotencyKey: 'full-access-delete-1' },
       context: fullAccessContext,
       exposure: readExposure,
@@ -650,7 +650,7 @@ describe('Serpent MCP jobs, idempotency and reconnect (Serpent-8b5b.4)', () => {
     });
     const gateway = createAutomationCommandGateway(worker, writeResolver(['job.manage']));
     const result = await callSerpentMcpTool({
-      toolName: 'serpent_media_jobs_cancel',
+      toolName: 'keel_media_jobs_cancel',
       arguments: { libraryId: 'library-1', jobIds: ['job-1', 'job-2'] },
       context: mcpContext(readExposure),
       exposure: readExposure,
@@ -683,7 +683,7 @@ describe('Serpent MCP jobs, idempotency and reconnect (Serpent-8b5b.4)', () => {
     // session context, no prior calls, the same worker state is reachable.
     for (let i = 0; i < 2; i += 1) {
       const result = await callSerpentMcpTool({
-        toolName: 'serpent_media_jobs_list',
+        toolName: 'keel_media_jobs_list',
         arguments: { libraryId: 'library-1', limit: 10 },
         context: mcpContext(readExposure),
         exposure: readExposure,
@@ -722,14 +722,14 @@ describe('Serpent MCP jobs, idempotency and reconnect (Serpent-8b5b.4)', () => {
       idempotencyKey: 'import-8b5b4-1',
     };
     const first = await callSerpentMcpTool({
-      toolName: 'serpent_file_import',
+      toolName: 'keel_file_import',
       arguments: input,
       context: mcpContext(readExposure),
       exposure: readExposure,
       gateway,
     });
     const second = await callSerpentMcpTool({
-      toolName: 'serpent_file_import',
+      toolName: 'keel_file_import',
       arguments: input,
       context: mcpContext(readExposure),
       exposure: readExposure,

@@ -272,7 +272,7 @@ export function generatePluginSdkTypeDeclaration(_moduleSpecifier = '@serpent/pl
     '    };',
     '  }',
     '',
-    '  const serpent: SerpentPluginApi;',
+    '  const keel: SerpentPluginApi;',
     '}',
     '',
   ].join('\n');

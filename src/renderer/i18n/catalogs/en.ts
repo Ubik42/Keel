@@ -395,7 +395,7 @@ export const en = {
       emptySource: "Enter a script first.",
       fileErrors: {
         cancelled: "No script was opened or saved.",
-        "invalid-script-file": "Choose a .serpent.js or .serpent.ts script file.",
+        "invalid-script-file": "Choose a .keel.js or .keel.ts script file (older .serpent.js / .serpent.ts files also work).",
         "source-too-large": "The script exceeds the 64 KB limit. Split it into smaller pieces and try again.",
         "io-failed": "The script file could not be read or saved. Check that it is accessible.",
         "recent-script-not-found": "That script could not be found. It may have been moved or deleted."
@@ -1205,7 +1205,7 @@ export const en = {
     openLibraryChooser: {
       title: "Open library",
       help: "Open an existing Serpent library, pull one from a sync server, or convert Eagle / Billfish into a new Serpent library.",
-      serpent: "Open Serpent library",
+      keel: "Open Keel library",
       external: "Open external library"
     }
   },

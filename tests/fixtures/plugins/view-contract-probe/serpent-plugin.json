@@ -1,6 +1,6 @@
 {
   "manifestVersion": 1,
-  "id": "com.serpent.view-contract-probe",
+  "id": "com.keel.view-contract-probe",
   "version": "1.0.0",
   "name": "View Contract Probe",
   "description": "Records host view-contract messages for PLUGIN view E2E (Serpent-ex46.7).",

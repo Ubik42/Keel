@@ -2,7 +2,7 @@
  * Offscreen HTML document thumbnail renderer (Serpent-8ca259).
  *
  * Main owns a short-lived offscreen BrowserWindow that loads the HTML source
- * via serpent://source and captures a screenshot with webContents.capturePage().
+ * via keel://source and captures a screenshot with webContents.capturePage().
  * The PNG bytes return to the Worker, which persists the artifact row.
  *
  * Security: the window is created sandboxed (no preload, no Node integration,

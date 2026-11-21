@@ -64,7 +64,7 @@ describe('plugin theme token packages (PLUGIN-032)', () => {
 
   it('builds a schema-valid plugin-ui.theme-changed message with plugin aliases', () => {
     const message = buildPluginUiThemeHostMessage({
-      contributionId: 'com.serpent.iframe-workspace-probe.workspace-probe',
+      contributionId: 'com.keel.iframe-workspace-probe.workspace-probe',
       instanceId: 'instance-a',
       resolvedTheme: 'light',
       revision: 4,

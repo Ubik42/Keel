@@ -108,7 +108,7 @@ Console 的脚本源最多 64 KiB；脚本输出逐行收集，单行最多 16 K
 
 `library.changeSequence()` 返回当前资源库变更序号。它是并发/复核用的观察点，不是锁，也不是事务快照。脚本不能把一连串命令包装成跨资源库事务；每个 Gateway 命令独立校验并记录。
 
-当前 Console 没有脚本内的 `execution.status` API。停止按钮、关闭 Console/窗口会取消执行，并尝试完成本次 Worker history group；长时间调用的最终状态应在 Console 的结果和执行日志中确认。MCP 有额外的 `serpent_execution_status` 工具，但那是 MCP 传输面，不是脚本公共 API。
+当前 Console 没有脚本内的 `execution.status` API。停止按钮、关闭 Console/窗口会取消执行，并尝试完成本次 Worker history group；长时间调用的最终状态应在 Console 的结果和执行日志中确认。MCP 有额外的 `keel_execution_status` 工具，但那是 MCP 传输面，不是脚本公共 API。
 
 ## 保存、打开和最近脚本
 
@@ -138,4 +138,4 @@ Console 的脚本源最多 64 KiB；脚本输出逐行收集，单行最多 16 K
 
 当前 Registry/类型声明还描述了 `execution.status`、`media.jobs.list`、`ai.jobs.status`、`ai.enqueue` 等命令，但 Desktop Console 的实际 `serpent` guest 投影当前未注入 `jobs` 或执行状态命名空间；不要在 Console 脚本中依赖 `serpent.jobs` 或 `serpent.execution`。类型声明的宽类型也不代表 Console 已提供稳定字段。
 
-未承诺的能力包括通用 CLI、`serpent run`/`serpent repl`、任意 filesystem、SQLite、Shell、网络、MCP JSON-RPC 特有通知/资源引用、Desktop DOM/像素控制和永久删除。MCP 的 `serpent_desktop_*` 是附着 Desktop 的工具，不会出现在 Console 的 `serpent` 对象中。
+未承诺的能力包括通用 CLI、`serpent run`/`serpent repl`、任意 filesystem、SQLite、Shell、网络、MCP JSON-RPC 特有通知/资源引用、Desktop DOM/像素控制和永久删除。MCP 的 `keel_desktop_*` 是附着 Desktop 的工具，不会出现在 Console 的 `serpent` 对象中。

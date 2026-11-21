@@ -47,7 +47,7 @@ import { hasActiveModalDialog } from "./use-dialog-focus-trap";
 import type { ShortcutEventLike } from "../shared/shortcut-resolution";
 
 type RendererWindow = Window & {
-  serpent?: { shell?: SerpentShellApi };
+  keel?: { shell?: SerpentShellApi };
 };
 
 export interface VideoPlayerControlsProps {
@@ -329,7 +329,7 @@ export function VideoPlayerControls({
   // Ctrl+Arrow is included so Chromium does not consume it as history navigation.
   useEffect(() => {
     if (keyboardShortcutsDisabled) return;
-    const shell = (window as RendererWindow).serpent?.shell;
+    const shell = (window as RendererWindow).keel?.shell;
     if (!shell?.setViewerVideoShortcutsActive || !shell.onViewerVideoShortcut) {
       return;
     }

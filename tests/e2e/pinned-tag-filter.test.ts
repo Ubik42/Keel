@@ -38,13 +38,13 @@ test('tag browsing clears on folder navigation while pinned tags remain scoped',
     await expect(child).toBeVisible();
     await expect(tree.locator('.tag-tree-guide')).toHaveCount(1);
     await expect.poll(async () => window.evaluate(async () => {
-      const api=(globalThis as typeof globalThis & {serpent:{library:SerpentLibraryApi}}).serpent.library;
+      const api=(globalThis as typeof globalThis & {keel:{library:SerpentLibraryApi}}).keel.library;
       const open=await api.listOpen();if(!open.ok)return 0;
       const assets=await api.listAssets({libraryId:open.value[0]!.libraryId,recursive:true});
       return assets.ok ? assets.value.length : 0;
     }), {timeout:20000}).toBe(2);
     const assetId=await window.evaluate(async()=>{
-      const api=(globalThis as typeof globalThis & {serpent:{library:SerpentLibraryApi}}).serpent.library;
+      const api=(globalThis as typeof globalThis & {keel:{library:SerpentLibraryApi}}).keel.library;
       const open=await api.listOpen();if(!open.ok)throw Error('No library');
       const assets=await api.listAssets({libraryId:open.value[0]!.libraryId,recursive:true});
       if(!assets.ok)throw Error('No assets');return assets.value.find(a=>a.displayName==='带标签.svg')!.assetId;

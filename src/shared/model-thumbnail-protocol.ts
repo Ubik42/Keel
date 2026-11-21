@@ -12,7 +12,7 @@
  *
  * The render request carries everything the offscreen page needs to load and
  * frame the model without any path or SQL capability: the model URL
- * (serpent://source for source formats, serpent://preview for the FBX→GLB
+ * (keel://source for source formats, keel://preview for the FBX→GLB
  * conversion product), the companion texture index (relative path → assetId)
  * and the HDRI preset id. Bytes return to the Worker, which alone persists
  * the artifact row.
@@ -86,7 +86,7 @@ export const modelThumbnailRenderRequestSchema = z.object({
   revisionId: z.string().min(1).max(255),
   /** glb/gltf/obj/stl load their source URL; fbx arrives pre-converted as 'glb'. */
   format: z.enum(MODEL_THUMBNAIL_FORMATS),
-  /** serpent://source/...?revision= or serpent://preview/<libraryId>/<artifactId>. */
+  /** keel://source/...?revision= or keel://preview/<libraryId>/<artifactId>. */
   renderUrl: z.string().min(1).max(4096),
   companionMap: z.array(modelThumbnailCompanionSchema).max(5000),
   hdriPresetId: z.string().min(1).max(128),
@@ -102,7 +102,7 @@ export type ModelThumbnailRenderRequest = z.infer<typeof modelThumbnailRenderReq
 /**
  * Main-only authorization scope for source requests made during an offscreen
  * render. The Worker resolves these paths before asking Main to render so the
- * renderer never re-enters the Worker through `serpent://source` while the
+ * renderer never re-enters the Worker through `keel://source` while the
  * thumbnail job is awaiting the frame.
  */
 export const modelThumbnailSourceAuthorizationSchema = z.object({

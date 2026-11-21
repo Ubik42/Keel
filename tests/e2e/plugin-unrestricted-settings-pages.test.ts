@@ -11,7 +11,7 @@ import { PLUGIN_LIBRARY_DATA_DIRECTORY } from '../../src/plugins/plugin-package'
 test.describe.configure({ timeout: 180_000 });
 
 const FIXTURE_ROOT = path.resolve('tests/fixtures/plugins/unrestricted-settings-probe');
-const PLUGIN_ID = 'com.serpent.unrestricted-settings-probe';
+const PLUGIN_ID = 'com.keel.unrestricted-settings-probe';
 const PROBE_PNG = Buffer.from(
   'iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAAEklEQVQImWM4kKBwIEGBAUIBACWOBQHzNCW5AAAAAElFTkSuQmCC',
   'base64',
@@ -40,7 +40,7 @@ type ContributionListing = {
 async function listContributions(window: Page, libraryId: string): Promise<ContributionListing> {
   return window.evaluate(async (id) => {
     const api = (window as unknown as {
-      serpent?: {
+      keel?: {
         plugins?: {
           listPluginContributions: (input: {
             libraryId: string;
@@ -57,7 +57,7 @@ async function listContributions(window: Page, libraryId: string): Promise<Contr
           }> }>;
         };
       };
-    }).serpent?.plugins;
+    }).keel?.plugins;
     if (api === undefined) return { error: 'no-plugin-api' as const, menus: [], pages: [] };
     const menus = await api.listPluginContributions({ libraryId: id, target: 'menus.asset' });
     const pages = await api.listPluginContributions({ libraryId: id, target: 'settings.pages' });
@@ -75,7 +75,7 @@ async function listContributions(window: Page, libraryId: string): Promise<Contr
         id: item.id,
         pluginId: item.pluginId,
         target: item.target,
-        hasUrl: typeof item.url === 'string' && item.url.startsWith('serpent-plugin:'),
+        hasUrl: typeof item.url === 'string' && item.url.startsWith('keel-plugin:'),
       })),
     };
   }, libraryId);
@@ -84,12 +84,12 @@ async function listContributions(window: Page, libraryId: string): Promise<Contr
 async function readOpenLibraryId(window: Page): Promise<string> {
   const libraryId = await window.evaluate(async () => {
     const api = (window as unknown as {
-      serpent?: {
+      keel?: {
         library?: {
           listOpen: () => Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
         };
       };
-    }).serpent?.library;
+    }).keel?.library;
     if (api === undefined) return undefined;
     const open = await api.listOpen();
     return open.ok ? open.value?.[0]?.libraryId : undefined;

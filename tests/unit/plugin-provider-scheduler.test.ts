@@ -34,7 +34,7 @@ describe('PluginProviderScheduler', () => {
     const registration: PluginProviderRegistration = {
       pluginInstanceId: '11111111-1111-4111-8111-111111111111',
       libraryId: 'library-1',
-      pluginId: 'com.serpent.derived-field-probe',
+      pluginId: 'com.keel.derived-field-probe',
       packageHash: 'a'.repeat(64),
       providerId: 'ext-upper',
       kind: 'derived-field',
@@ -94,7 +94,7 @@ describe('PluginProviderScheduler', () => {
     const registration: PluginProviderRegistration = {
       pluginInstanceId: '22222222-2222-4222-8222-222222222222',
       libraryId: 'library-1',
-      pluginId: 'com.serpent.search-probe',
+      pluginId: 'com.keel.search-probe',
       packageHash: 'b'.repeat(64),
       providerId: 'fixed-token',
       kind: 'search',
@@ -150,7 +150,7 @@ describe('PluginProviderScheduler', () => {
     const registration: PluginProviderRegistration = {
       pluginInstanceId: '44444444-4444-4444-8444-444444444444',
       libraryId: 'library-1',
-      pluginId: 'com.serpent.search-probe',
+      pluginId: 'com.keel.search-probe',
       packageHash: 'c'.repeat(64),
       providerId: 'fixed-token',
       kind: 'search',
@@ -200,7 +200,7 @@ describe('PluginProviderScheduler', () => {
     const registration: PluginProviderRegistration = {
       pluginInstanceId: '66666666-6666-4666-8666-666666666666',
       libraryId: 'library-1',
-      pluginId: 'com.serpent.preview-thumbnail-probe',
+      pluginId: 'com.keel.preview-thumbnail-probe',
       packageHash: 'd'.repeat(64),
       providerId: 'probe-thumbnail',
       kind: 'thumbnail',
@@ -258,7 +258,7 @@ describe('PluginProviderScheduler', () => {
     const registration: PluginProviderRegistration = {
       pluginInstanceId: '77777777-7777-4777-8777-777777777777',
       libraryId: 'library-1',
-      pluginId: 'com.serpent.preview-thumbnail-probe',
+      pluginId: 'com.keel.preview-thumbnail-probe',
       packageHash: 'e'.repeat(64),
       providerId: 'probe-preview',
       kind: 'preview',
@@ -310,7 +310,7 @@ describe('PluginProviderScheduler', () => {
     const registration: PluginProviderRegistration = {
       pluginInstanceId: '88888888-8888-4888-8888-888888888888',
       libraryId: 'library-1',
-      pluginId: 'com.serpent.preview-thumbnail-probe',
+      pluginId: 'com.keel.preview-thumbnail-probe',
       packageHash: 'f'.repeat(64),
       providerId: 'probe-metadata',
       kind: 'metadata',
@@ -373,7 +373,7 @@ describe('PluginProviderScheduler', () => {
     const registration: PluginProviderRegistration = {
       pluginInstanceId: '99999999-9999-4999-8999-999999999999',
       libraryId: 'library-1',
-      pluginId: 'com.serpent.preview-thumbnail-probe',
+      pluginId: 'com.keel.preview-thumbnail-probe',
       packageHash: '0'.repeat(64),
       providerId: 'probe-metadata',
       kind: 'metadata',
@@ -423,7 +423,7 @@ describe('PluginProviderScheduler', () => {
     const registration: PluginProviderRegistration = {
       pluginInstanceId: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
       libraryId: 'library-1',
-      pluginId: 'com.serpent.preview-thumbnail-probe',
+      pluginId: 'com.keel.preview-thumbnail-probe',
       packageHash: '1'.repeat(64),
       providerId: 'probe-import',
       kind: 'import',
@@ -475,7 +475,7 @@ describe('PluginProviderScheduler', () => {
     const registration: PluginProviderRegistration = {
       pluginInstanceId: 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
       libraryId: 'library-1',
-      pluginId: 'com.serpent.preview-thumbnail-probe',
+      pluginId: 'com.keel.preview-thumbnail-probe',
       packageHash: '2'.repeat(64),
       providerId: 'probe-import',
       kind: 'import',
@@ -515,7 +515,7 @@ describe('PluginProviderScheduler', () => {
     const registration: PluginProviderRegistration = {
       pluginInstanceId: 'dddddddd-dddd-4ddd-8ddd-dddddddddddd',
       libraryId: 'library-1',
-      pluginId: 'com.serpent.preview-thumbnail-probe',
+      pluginId: 'com.keel.preview-thumbnail-probe',
       packageHash: '3'.repeat(64),
       providerId: 'probe-export',
       kind: 'export',
@@ -577,7 +577,7 @@ describe('PluginProviderScheduler', () => {
     const registration: PluginProviderRegistration = {
       pluginInstanceId: 'eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee',
       libraryId: 'library-1',
-      pluginId: 'com.serpent.preview-thumbnail-probe',
+      pluginId: 'com.keel.preview-thumbnail-probe',
       packageHash: '4'.repeat(64),
       providerId: 'probe-ai',
       kind: 'ai',
@@ -636,7 +636,7 @@ describe('PluginProviderScheduler', () => {
     const registration: PluginProviderRegistration = {
       pluginInstanceId: 'ffffffff-ffff-4fff-8fff-ffffffffffff',
       libraryId: 'library-1',
-      pluginId: 'com.serpent.preview-thumbnail-probe',
+      pluginId: 'com.keel.preview-thumbnail-probe',
       packageHash: '5'.repeat(64),
       providerId: 'probe-ai',
       kind: 'ai',

@@ -30,7 +30,7 @@ describe('MCP permission contract', () => {
     });
 
     const tools = listSerpentMcpTools(readExposure).tools;
-    expect(tools.some((tool) => tool.name === 'serpent_tag_create')).toBe(true);
+    expect(tools.some((tool) => tool.name === 'keel_tag_create')).toBe(true);
     for (const tool of tools) {
       const descriptor = getAutomationCommandDescriptor(tool.commandId);
       expect(descriptor).toBeDefined();

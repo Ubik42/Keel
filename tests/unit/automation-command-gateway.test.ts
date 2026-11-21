@@ -255,7 +255,7 @@ describe('Automation Command Registry', () => {
       if (!['execution.status', 'library.list-open', 'library.list-recent', 'library.open', 'library.show-in-desktop', 'ui.notify', 'library.delete-from-disk'].includes(command.commandId)) {
         expect(command.requiredCapabilities.length).toBeGreaterThan(0);
       }
-      expect(command.mcp.toolName).toMatch(/^serpent_/u);
+      expect(command.mcp.toolName).toMatch(/^keel_/u);
       expect(command.mcp.outputLimit).toBeLessThanOrEqual(AUTOMATION_MAX_PAGE_SIZE);
       expect(command.inputSchema.toJSONSchema()).toBeTypeOf('object');
       expect(command.resultSchema.toJSONSchema()).toBeTypeOf('object');
@@ -270,7 +270,7 @@ describe('Automation Command Registry', () => {
     expect(description.commands.map((command) => command.commandId)).toContain('asset.ai-content.get');
 
     const declaration = generateAutomationTypeDeclaration('@serpent/test-api');
-    expect(declaration).toContain('const serpent: SerpentAutomationApi');
+    expect(declaration).toContain('const keel: SerpentAutomationApi');
     expect(declaration).toContain('interface SerpentScriptAssetSearchPage');
     expect(declaration).toContain('readonly currentRevisionId: string;');
     expect(declaration).toContain('readonly mimeType: string | null;');

@@ -145,7 +145,7 @@ export function PdfViewerSurface({
   // The parent keys the surface by asset, so a source change remounts this
   // component and the state below starts fresh — no synchronous reset needed.
   //
-  // `serpent://` is intentionally not an http(s) URL. pdf.js therefore falls
+  // `keel://` is intentionally not an http(s) URL. pdf.js therefore falls
   // back to its XHR network stream and does not issue Range requests for the
   // custom protocol. Use PDFDataRangeTransport over the existing authenticated
   // protocol instead: the renderer never receives a filesystem path, and the

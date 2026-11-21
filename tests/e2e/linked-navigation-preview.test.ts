@@ -76,7 +76,7 @@ test('decodes direct JPG and # TGA previews with 4k linked directories, and reta
     await expect(viewerImage).toBeVisible();
     await expect.poll(() => viewerImage.evaluate((element) => element instanceof HTMLImageElement
       && element.complete && element.naturalWidth === 480 && element.naturalHeight === 480)).toBe(true);
-    await expect(viewerImage).toHaveAttribute('src', /^serpent:\/\/source\//u);
+    await expect(viewerImage).toHaveAttribute('src', /^keel:\/\/source\//u);
     await window.keyboard.press('Escape');
     await quit(application);
     application = undefined;

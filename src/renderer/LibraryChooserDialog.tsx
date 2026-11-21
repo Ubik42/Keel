@@ -156,7 +156,7 @@ export function OpenLibraryChooserDialog({
             type="button"
           >
             <Icon name="folder" size={15} />
-            {t("dialog.openLibraryChooser.serpent")}
+            {t("dialog.openLibraryChooser.keel")}
           </button>
           {onOpenSyncLibrary ? (
             <button

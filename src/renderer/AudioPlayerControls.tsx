@@ -52,7 +52,7 @@ import type { ViewerPlaybackHandle } from "./video-player-controls";
 import type { VideoSeekJumpMode } from "./video-seek-jump-preferences";
 
 type RendererWindow = Window & {
-  serpent?: { shell?: SerpentShellApi };
+  keel?: { shell?: SerpentShellApi };
 };
 
 export interface AudioPlayerControlsProps {
@@ -217,7 +217,7 @@ export function AudioPlayerControls({
 
   useEffect(() => {
     if (keyboardShortcutsDisabled) return;
-    const shell = (window as RendererWindow).serpent?.shell;
+    const shell = (window as RendererWindow).keel?.shell;
     if (!shell?.setViewerVideoShortcutsActive || !shell.onViewerVideoShortcut) return;
 
     const syncArmed = () => {

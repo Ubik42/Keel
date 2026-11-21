@@ -324,12 +324,12 @@ test("custom menu accelerators sync, yield to text inputs, and viewer keys run o
       .toMatchObject({ enabled: true });
     await window.evaluate(() => {
       const shell = (window as unknown as {
-        serpent?: {
+        keel?: {
           shell?: {
             onApplicationMenuCommand(listener: (command: { command: string }) => void): () => void;
           };
         };
-      }).serpent?.shell;
+      }).keel?.shell;
       shell?.onApplicationMenuCommand(({ command }) => {
         if (command !== "window.toggle-fullscreen") return;
         const target = window as unknown as { __fullscreenShortcutCommandCount?: number };

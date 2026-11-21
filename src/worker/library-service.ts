@@ -7071,7 +7071,7 @@ export class LibraryService {
   /** Cache the first H.264 encoder that actually encodes a 1-frame probe. */
   private readonly videoProxyEncoderByFfmpegPath = new Map<string, string | null>();
   /**
-   * Serving a serpent:// preview used to repeat one artifact lookup and four
+   * Serving a keel:// preview used to repeat one artifact lookup and four
    * containment filesystem probes for every image request. The cache is
    * scoped by library and invalidated by the durable library change sequence;
    * entries are never shared across libraries or usages.
@@ -24432,7 +24432,7 @@ export class LibraryService {
       options?.sample === 'font'
         ? `&sample=font${fontSampleQuerySuffix(options.fontMetadata ?? null)}`
         : '';
-    const url = `serpent://source/${encodeURIComponent(input.libraryId)}/${encodeURIComponent(input.assetId)}?revision=${encodeURIComponent(revisionId)}${sampleQuery}`;
+    const url = `keel://source/${encodeURIComponent(input.libraryId)}/${encodeURIComponent(input.assetId)}?revision=${encodeURIComponent(revisionId)}${sampleQuery}`;
     if (execution.signal?.aborted) {
       throw new DOMException('Media job cancelled before HTML render.', 'AbortError');
     }
@@ -26638,7 +26638,7 @@ export class LibraryService {
    * Audio path (Serpent-0x5 / Serpent-690060): extract metadata, then store a
    * grid `thumbnail` from embedded album art when present, otherwise a
    * waveform PNG. Viewer strip stays a wide waveform (`video_poster`).
-   * Playback uses the native source via `serpent://source` — no proxy needed.
+   * Playback uses the native source via `keel://source` — no proxy needed.
    */
   private async generateAudioArtifacts(
     input: { libraryId: string; assetId: string },
@@ -30169,7 +30169,7 @@ export class LibraryService {
     }
 
     // PDF/HTML documents and PDF-compatible AI files open the original source
-    // through serpent://source; the renderer previews them with pdfjs / an
+    // through keel://source; the renderer previews them with pdfjs / an
     // embedded browser. No thumbnail job is required to open.
     if (mediaType === 'document' && asset.current_revision_id) {
       const extension = path.extname(asset.relative_file_path).toLowerCase();
@@ -30217,7 +30217,7 @@ export class LibraryService {
       };
     }
 
-    // Text assets are previewed via capped IPC (asset.text.read), not serpent://.
+    // Text assets are previewed via capped IPC (asset.text.read), not keel://.
     // Still mark ready so the viewer can open without a thumbnail job.
     if (mediaType === 'text' && asset.current_revision_id) {
       const extension = path.extname(asset.relative_file_path).toLowerCase();
@@ -30233,7 +30233,7 @@ export class LibraryService {
       };
     }
 
-    // Models resolve to their original source (serpent://source via
+    // Models resolve to their original source (keel://source via
     // playbackMode/sourceRevisionId, same route as direct-play video). The
     // renderer's 3D surface (slice C) loads it with three.js; thumbnail/poster
     // artifacts are not needed for the viewer. Resolution logic lives in

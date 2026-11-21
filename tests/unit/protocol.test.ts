@@ -1484,7 +1484,7 @@ describe('preview response protocol', () => {
       mediaType: 'video',
       status: 'failed',
       kind: 'webm_proxy',
-      posterUrl: 'serpent://preview/library-01/poster-01',
+      posterUrl: 'keel://preview/library-01/poster-01',
       errorCode: 'FFMPEG_REQUIRED',
     });
     expect(result).toMatchObject({ status: 'failed', errorCode: 'FFMPEG_REQUIRED' });
@@ -1499,7 +1499,7 @@ describe('preview response protocol', () => {
       mediaType: 'audio',
       status: 'ready',
       kind: 'audio_proxy',
-      url: 'serpent://proxy/library-01/artifact-01',
+      url: 'keel://proxy/library-01/artifact-01',
       playbackMode: 'proxy',
     })).toMatchObject({ kind: 'audio_proxy', playbackMode: 'proxy' });
   });
@@ -1512,7 +1512,7 @@ describe('preview response protocol', () => {
       mediaType: 'image',
       status: 'ready',
       kind: 'thumbnail',
-      url: 'serpent://preview/library-01/artifact-01',
+      url: 'keel://preview/library-01/artifact-01',
       exrPlanes: [
         { index: 0, label: 'Part 0: beauty' },
         { index: 1, label: 'Part 1: depth' },

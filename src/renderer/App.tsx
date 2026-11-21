@@ -709,7 +709,7 @@ const SHORTCUT_PLATFORM: CommandPlatform = IS_MAC_PLATFORM ? "mac" : "windows";
 const NETWORK_LIBRARY_RELOAD_INTERVAL_MS = 750;
 
 type RendererWindow = Window & {
-  serpent?: {
+  keel?: {
     library?: SerpentLibraryApi;
     shell?: SerpentShellApi;
     automation?: SerpentAutomationScriptApi;
@@ -877,10 +877,10 @@ function AppInner() {
   const shortcutRuntimeVersion = useShortcutRuntimeVersion();
   const t = useT();
   const { locale } = useLocale();
-  const rawLibraryApi = (window as RendererWindow).serpent?.library;
-  const nativeAssetDragEnabled = !(window as RendererWindow).serpent?.e2e
-    || Boolean((window as RendererWindow).serpent?.e2e?.useNativeAssetDrag);
-  const shellApi = (window as RendererWindow).serpent?.shell;
+  const rawLibraryApi = (window as RendererWindow).keel?.library;
+  const nativeAssetDragEnabled = !(window as RendererWindow).keel?.e2e
+    || Boolean((window as RendererWindow).keel?.e2e?.useNativeAssetDrag);
+  const shellApi = (window as RendererWindow).keel?.shell;
 
   useEffect(() => {
     document.body.classList.toggle("platform-darwin", IS_MAC_PLATFORM);
@@ -1820,15 +1820,15 @@ function AppInner() {
   const pluginContributionRefreshKey = `${appSettingsOpen ? "settings" : "browse"}:${pluginContributionEpoch}`;
   const pluginSidebarRefreshKey = pluginContributionRefreshKey;
   useEffect(() => {
-    const api = (window as RendererWindow).serpent?.plugins;
+    const api = (window as RendererWindow).keel?.plugins;
     if (api?.onContributionsChanged === undefined) return;
     return api.onContributionsChanged(() => {
       setPluginContributionEpoch((current) => current + 1);
     });
   }, []);
-  const pluginManagerApi = (window as RendererWindow).serpent?.plugins;
+  const pluginManagerApi = (window as RendererWindow).keel?.plugins;
   const pluginSidebarViews = usePluginSidebarViews(
-    (window as RendererWindow).serpent?.plugins,
+    (window as RendererWindow).keel?.plugins,
     library?.libraryId,
     isPluginSidebarViewsEnabled(library?.libraryId),
     pluginSidebarRefreshKey,
@@ -2083,7 +2083,7 @@ function AppInner() {
   }, []);
 
   async function refreshAppLog(automationCorrelationId = appLogAutomationCorrelationId): Promise<void> {
-    const bridge = (window as RendererWindow).serpent?.shell;
+    const bridge = (window as RendererWindow).keel?.shell;
     if (!bridge?.readAppLog) {
       setAppLogEntries([]);
       setAppLogErrorCode("read_failure");
@@ -2114,7 +2114,7 @@ function AppInner() {
   }
 
   function revealAppLog(): void {
-    const bridge = (window as RendererWindow).serpent?.shell;
+    const bridge = (window as RendererWindow).keel?.shell;
     if (!bridge?.revealAppLog) {
       setError(t("toast.aiRevealLogFailed"));
       return;
@@ -9823,7 +9823,7 @@ function AppInner() {
       let toreDown = false;
       try {
       await closeAssetPreview(false);
-      // Serpent-dfgg: Chromium keeps serpent:// thumbnail/source files mapped
+      // Serpent-dfgg: Chromium keeps keel:// thumbnail/source files mapped
       // until <img> unmounts. Drop the browse canvas before asking the Worker
       // to rm the library root, then wait one paint so handles actually close.
       flushSync(() => {
@@ -11479,7 +11479,7 @@ function AppInner() {
   usePluginShortcutKeyboard({
     enabled: Boolean(library) && !showTagManagement && !showPluginSidebarView,
     platform: SHORTCUT_PLATFORM,
-    pluginApi: (window as RendererWindow).serpent?.plugins,
+    pluginApi: (window as RendererWindow).keel?.plugins,
     libraryId: library?.libraryId,
     refreshKey: pluginSidebarRefreshKey,
     previewOpen: Boolean(previewAsset),
@@ -11723,7 +11723,7 @@ function AppInner() {
   // macOS three-finger swipe while viewing → previous/next (same order as arrows).
   useEffect(() => {
     if (!previewAsset) return;
-    const shellBridge = (window as RendererWindow).serpent?.shell;
+    const shellBridge = (window as RendererWindow).keel?.shell;
     if (!shellBridge?.onSwipe) return;
     return shellBridge.onSwipe((direction) => {
       if (direction === "left") {
@@ -11748,7 +11748,7 @@ function AppInner() {
   // Serpent-oy07: sync BrowserWindow focus to document (native macOS traffic lights
   // dim on inactive via hiddenInset; renderer can mirror for shell chrome).
   useEffect(() => {
-    const shellBridge = (window as RendererWindow).serpent?.shell;
+    const shellBridge = (window as RendererWindow).keel?.shell;
     if (!shellBridge?.onWindowFocusChanged) return;
     const apply = (focused: boolean) => {
       document.documentElement.dataset.windowFocused = focused
@@ -12669,9 +12669,9 @@ function AppInner() {
         jobStatusCoordinatorRef.current?.noteActivity("plugin");
       }
     };
-    window.addEventListener("serpent:plugin-command-completed", onPluginCommandCompleted);
+    window.addEventListener("keel:plugin-command-completed", onPluginCommandCompleted);
     return () => {
-      window.removeEventListener("serpent:plugin-command-completed", onPluginCommandCompleted);
+      window.removeEventListener("keel:plugin-command-completed", onPluginCommandCompleted);
     };
   }, [library]);
 
@@ -13934,7 +13934,7 @@ function AppInner() {
             <PluginToolbarButtons
               disabled={busy || library === null || showTagManagement || showPluginSidebarView}
               libraryId={library?.libraryId}
-              pluginApi={(window as RendererWindow).serpent?.plugins}
+              pluginApi={(window as RendererWindow).keel?.plugins}
               refreshKey={pluginContributionRefreshKey}
               selectedAssetIds={selectedAssetIds}
               selectedAssets={selectedVisibleAssets}
@@ -13945,7 +13945,7 @@ function AppInner() {
         <PluginWorkspaceViews
           disabled={busy || library === null || showTagManagement || showPluginSidebarView}
           libraryId={library?.libraryId}
-          pluginApi={(window as RendererWindow).serpent?.plugins}
+          pluginApi={(window as RendererWindow).keel?.plugins}
           refreshKey={pluginContributionRefreshKey}
         />
         {!showTagManagement && !showPluginSidebarView && (
@@ -14243,7 +14243,7 @@ function AppInner() {
             <PluginSidebarViewPanel
               activeView={activePluginSidebarView}
               libraryId={library.libraryId}
-              pluginApi={(window as RendererWindow).serpent?.plugins}
+              pluginApi={(window as RendererWindow).keel?.plugins}
             />
           ) : library && showTagManagement ? (
             <TagManagementWorkspace
@@ -14493,14 +14493,14 @@ function AppInner() {
                         event.dataTransfer.effectAllowed = "copyMove";
                         // REQ-DND-003: replace Chromium's full-card ghost with
                         // the small, translucent, rounded preview tile
-                        // (asset-drag-preview.ts); the same serpent:// URL as
+                        // (asset-drag-preview.ts); the same keel:// URL as
                         // the card's <img>, so it is already cached.
                         const preview = showAssetDragPreview({
                           thumbnailUrl:
                             asset.thumbnailStatus === "ready" &&
                             asset.thumbnailArtifactId &&
                             library
-                              ? `serpent://preview/${library.libraryId}/${asset.thumbnailArtifactId}`
+                              ? `keel://preview/${library.libraryId}/${asset.thumbnailArtifactId}`
                               : null,
                           fileName: asset.displayName,
                           count: ids.length,
@@ -15116,7 +15116,7 @@ function AppInner() {
                 ? () => navigateAssetPreview(visibleAssets[previewIndex - 1]!)
                 : undefined
             }
-            pluginApi={(window as RendererWindow).serpent?.plugins}
+            pluginApi={(window as RendererWindow).keel?.plugins}
             pluginContributionRefreshKey={pluginContributionRefreshKey}
           />
           </>
@@ -15174,7 +15174,7 @@ function AppInner() {
         selectedAssets={selectedAssets}
         multiEdit={multiEdit}
         versionConflict={versionConflict}
-        pluginApi={(window as RendererWindow).serpent?.plugins}
+        pluginApi={(window as RendererWindow).keel?.plugins}
         libraryId={library?.libraryId}
         pluginContributionRefreshKey={pluginContributionRefreshKey}
         extractedMetadataRefreshKey={extractedMetadataRefreshKey}
@@ -15460,10 +15460,10 @@ function AppInner() {
             "https://github.com/dolag233/Serpent-Extension/releases/latest",
           );
         }}
-        pluginApi={(window as RendererWindow).serpent?.plugins}
+        pluginApi={(window as RendererWindow).keel?.plugins}
         pluginContributionRefreshKey={pluginContributionRefreshKey}
         libraryId={library?.libraryId}
-        mcpApi={(window as RendererWindow).serpent?.mcp}
+        mcpApi={(window as RendererWindow).keel?.mcp}
         open={appSettingsOpen}
         showCardSyncStatus={canvasPrefs.fields.badgeSync}
         onShowCardSyncStatusChange={(checked) => {
@@ -15673,7 +15673,7 @@ function AppInner() {
       )}
       {library && api && <AutomaticTasksDialog key={library.libraryId} api={api} libraryId={library.libraryId} initialTaskId={automaticTaskEditorId} open={automaticTasksOpen} currentQueryJson={JSON.stringify(currentQueryDefinition())} tags={tags} folders={folders} onClose={() => setAutomaticTasksOpen(false)} onOpenScripts={() => {setAutomaticTasksOpen(false);setScriptSandboxPreviewOpen(true);}} onChanged={async()=>{const r=await api.listTags({libraryId:library.libraryId});if(r.ok)setTags(r.value);}} />}
       <ScriptSandboxPreviewDialog
-        automation={(window as RendererWindow).serpent?.automation}
+        automation={(window as RendererWindow).keel?.automation}
         libraryId={library?.libraryId ?? null}
         onClose={() => {
           setScriptSandboxPreviewOpen(false);
@@ -15690,7 +15690,7 @@ function AppInner() {
         version={KEEL_VERSION}
         onClose={() => setAboutOpen(false)}
         onOpenGitHub={() => {
-          const bridge = (window as RendererWindow).serpent?.shell;
+          const bridge = (window as RendererWindow).keel?.shell;
           if (!bridge?.openExternalUrl) return;
           void bridge.openExternalUrl("https://github.com/Ubik42/Keel");
         }}
@@ -15906,7 +15906,7 @@ function AppInner() {
         libraryId={library?.libraryId}
         pluginBrowseScope={pluginBrowseScope}
         pluginViewerState={pluginViewerState}
-        pluginApi={(window as RendererWindow).serpent?.plugins}
+        pluginApi={(window as RendererWindow).keel?.plugins}
         pluginContributionRefreshKey={pluginContributionRefreshKey}
         tags={tags}
         linkedFolders={linkedFolders}

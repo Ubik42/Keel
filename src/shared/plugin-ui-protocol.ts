@@ -198,7 +198,7 @@ export function parsePluginUiHostMessage(input: unknown): PluginUiHostMessage {
 
 /**
  * Sandboxed iframes without allow-same-origin normally report an opaque
- * `null` origin. Chromium custom-scheme documents (serpent-plugin://) may
+ * `null` origin. Chromium custom-scheme documents (keel-plugin://) may
  * instead report the scheme+host origin even inside allow-scripts sandboxes.
  * Source identity remains mandatory either way.
  */
@@ -207,7 +207,7 @@ export function isTrustedPluginUiMessage(input: {
   source: unknown;
   expectedOrigin: string;
   expectedSource: unknown;
-  /** Optional `serpent-plugin://<pluginId>` origin accepted from plugin UI frames. */
+  /** Optional `keel-plugin://<pluginId>` origin accepted from plugin UI frames. */
   expectedPluginOrigin?: string;
 }): boolean {
   if (input.source !== input.expectedSource) return false;

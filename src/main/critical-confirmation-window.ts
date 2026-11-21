@@ -58,7 +58,7 @@ button:disabled { cursor: default; opacity: .65; }
 </main>
 <script>
 (async () => {
-  const api = window.serpentCriticalConfirmation;
+  const api = window.keelCriticalConfirmation;
   const heading = document.getElementById('critical-heading');
   const message = document.getElementById('critical-message');
   const detail = document.getElementById('critical-detail');

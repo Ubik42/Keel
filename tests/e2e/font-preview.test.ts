@@ -73,7 +73,7 @@ test("a font asset renders a card sample and a viewer preview with real glyphs",
 
     // 卡片样张来自 offscreen 样张页生成的 artifact（不是通用文件图标）。
     const cardImage = card.locator("img").first();
-    await expect(cardImage).toHaveAttribute("src", /^serpent:\/\/preview\//, {
+    await expect(cardImage).toHaveAttribute("src", /^keel:\/\/preview\//, {
       timeout: 30_000,
     });
     await expectDecodedImage(cardImage);

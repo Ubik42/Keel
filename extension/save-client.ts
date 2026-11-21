@@ -118,7 +118,7 @@ function rejectionReason(body: string): string | undefined {
   return undefined;
 }
 
-async function requestSerpent(
+async function requestKeel(
   path: string,
   init: RequestInit,
   fetchFn: FetchFunction,
@@ -127,20 +127,20 @@ async function requestSerpent(
     try {
       return await fetchFn(`${KEEL_HOST}:${port}${path}`, init);
     } catch {
-      // Serpent may have selected the next fallback port.
+      // Keel may have selected the next fallback port.
     }
   }
   return null;
 }
 
-export async function probeSerpentConnection(
+export async function probeKeelConnection(
   fetchFn: FetchFunction = fetch,
 ): Promise<ConnectionOutcome> {
-  const ping = await requestSerpent('/ping', { method: 'GET' }, fetchFn);
+  const ping = await requestKeel('/ping', { method: 'GET' }, fetchFn);
   if (!ping) return { kind: 'offline' };
   if (ping.status !== 200) return { kind: 'offline' };
 
-  const folders = await requestSerpent('/folders', { method: 'GET' }, fetchFn);
+  const folders = await requestKeel('/folders', { method: 'GET' }, fetchFn);
   if (!folders) return { kind: 'offline' };
   // 200 = library open; 503 = app up but no library — still "connected" for icon.
   if (folders.status === 200 || folders.status === 503) return { kind: 'connected' };
@@ -154,7 +154,7 @@ function parseFolderList(body: string): {
 } {
   const parsed = JSON.parse(body) as unknown;
   if (!parsed || typeof parsed !== 'object') {
-    return { folders: [], recentBrowsedFolderIds: [], libraryDisplayName: 'Serpent' };
+    return { folders: [], recentBrowsedFolderIds: [], libraryDisplayName: 'Keel' };
   }
   const folders = Reflect.get(parsed, 'folders');
   const recentBrowsedFolderIds = Reflect.get(parsed, 'recentBrowsedFolderIds');
@@ -162,7 +162,7 @@ function parseFolderList(body: string): {
   const libraryDisplayName =
     typeof libraryDisplayNameValue === 'string' && libraryDisplayNameValue.trim()
       ? libraryDisplayNameValue.trim()
-      : 'Serpent';
+      : 'Keel';
   const folderList = !Array.isArray(folders) ? [] : folders.flatMap((entry) => {
     if (!entry || typeof entry !== 'object') return [];
     const folderId = Reflect.get(entry, 'folderId');
@@ -191,10 +191,10 @@ function parseFolderList(body: string): {
   return { folders: folderList, recentBrowsedFolderIds: browsed, libraryDisplayName };
 }
 
-export async function fetchSerpentFolders(
+export async function fetchKeelFolders(
   fetchFn: FetchFunction = fetch,
 ): Promise<FolderListOutcome> {
-  const response = await requestSerpent('/folders', { method: 'GET' }, fetchFn);
+  const response = await requestKeel('/folders', { method: 'GET' }, fetchFn);
   if (!response) return { kind: 'unreachable' };
 
   let body: string;
@@ -271,7 +271,7 @@ function fileExtension(filename: string): string {
   return filename.slice(dot).toLowerCase();
 }
 
-/** Align URL-derived filenames with the response Content-Type (Serpent-1jyi). */
+/** Align URL-derived filenames with the response Content-Type (Keel-1jyi). */
 export function alignFilenameWithContentType(
   filename: string,
   contentType: string,
@@ -322,8 +322,8 @@ export function sniffContentType(body: ArrayBuffer): string | undefined {
 }
 
 /**
- * Fetch media in the browser with cookies + page referrer (Serpent-1jyi).
- * This is the anti-hotlink path; Serpent no longer re-downloads the URL.
+ * Fetch media in the browser with cookies + page referrer (Keel-1jyi).
+ * This is the anti-hotlink path; Keel no longer re-downloads the URL.
  */
 export async function fetchMediaInBrowser(
   intent: SaveIntent,
@@ -393,27 +393,27 @@ export async function deliverSaveUpload(
   const headers: Record<string, string> = {
     'Content-Type': 'application/octet-stream',
     'Content-Length': String(media.body.byteLength),
-    'X-Serpent-Kind': intent.kind,
-    'X-Serpent-Content-Type': media.contentType,
-    'X-Serpent-Filename': encodeURIComponent(media.filename),
-    'X-Serpent-Focus-App-After-Save': String(behavior.focusAppAfterSave),
-    'X-Serpent-Reveal-In-Library': String(behavior.revealInLibraryAfterSave),
+    'X-Keel-Kind': intent.kind,
+    'X-Keel-Content-Type': media.contentType,
+    'X-Keel-Filename': encodeURIComponent(media.filename),
+    'X-Keel-Focus-App-After-Save': String(behavior.focusAppAfterSave),
+    'X-Keel-Reveal-In-Library': String(behavior.revealInLibraryAfterSave),
   };
   if (intent.sourcePageUrl) {
-    headers['X-Serpent-Source-Page-Url'] = encodeURIComponent(intent.sourcePageUrl);
+    headers['X-Keel-Source-Page-Url'] = encodeURIComponent(intent.sourcePageUrl);
   }
   if (intent.mediaUrl) {
-    headers['X-Serpent-Media-Url'] = encodeURIComponent(intent.mediaUrl);
+    headers['X-Keel-Media-Url'] = encodeURIComponent(intent.mediaUrl);
   }
   if (!intent.sourcePageUrl && !intent.mediaUrl) {
-    headers['X-Serpent-Local-File'] = 'true';
+    headers['X-Keel-Local-File'] = 'true';
   }
   if (intent.targetFolderId !== undefined) {
-    headers['X-Serpent-Target-Folder-Id'] =
+    headers['X-Keel-Target-Folder-Id'] =
       intent.targetFolderId === null ? 'null' : encodeURIComponent(intent.targetFolderId);
   }
 
-  const response = await requestSerpent(
+  const response = await requestKeel(
     '/save-upload',
     {
       method: 'POST',
@@ -459,18 +459,18 @@ export function notificationForOutcome(outcome: SaveOutcome): UserNotification {
   switch (outcome.kind) {
     case 'accepted':
       return {
-        title: '已发送到 Serpent',
-        message: 'Serpent 已接收保存请求。',
+        title: '已发送到 Keel',
+        message: 'Keel 已接收保存请求。',
       };
     case 'rejected':
       return {
-        title: 'Serpent 拒绝了保存请求',
+        title: 'Keel 拒绝了保存请求',
         message: `HTTP ${outcome.status}：${outcome.reason}`,
       };
     case 'unreachable':
       return {
-        title: '无法连接 Serpent',
-        message: '请先启动 Serpent 桌面应用并打开资源库，然后重新保存。',
+        title: '无法连接 Keel',
+        message: '请先启动 Keel 桌面应用并打开资源库，然后重新保存。',
       };
     case 'fetch_failed': {
       const hotlinkHint = outcome.reason.startsWith('HTTP 403')

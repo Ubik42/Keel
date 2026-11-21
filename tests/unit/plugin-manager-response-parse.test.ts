@@ -139,7 +139,7 @@ describe('plugin manager response parse', () => {
         title: `Probe ${target}`,
         target,
         entryPath: 'entry/ui/index.html',
-        url: `serpent-plugin://com.example.probe/59847245-d394-4012-ad75-35f837393a8f/entry/ui/index.html?libraryId=library-a&contributionId=com.example.probe.${target}`,
+        url: `keel-plugin://com.example.probe/59847245-d394-4012-ad75-35f837393a8f/entry/ui/index.html?libraryId=library-a&contributionId=com.example.probe.${target}`,
       }],
     });
     expect(parsed.ok).toBe(true);
@@ -149,7 +149,7 @@ describe('plugin manager response parse', () => {
       kind: 'view',
       target,
       pluginId: 'com.example.probe',
-      url: expect.stringMatching(/^serpent-plugin:\/\//u),
+      url: expect.stringMatching(/^keel-plugin:\/\//u),
     });
   });
 
@@ -175,7 +175,7 @@ describe('plugin manager response parse', () => {
           title: `Probe ${target}`,
           target,
           entryPath: 'entry/ui/index.html',
-          url: `serpent-plugin://com.example.probe/${instanceId}/entry/ui/index.html?libraryId=library-a&contributionId=com.example.probe.${target}`,
+          url: `keel-plugin://com.example.probe/${instanceId}/entry/ui/index.html?libraryId=library-a&contributionId=com.example.probe.${target}`,
         })),
       ],
     });
@@ -193,8 +193,8 @@ describe('plugin manager response parse', () => {
       ok: true,
       contributions: [{
         kind: 'menu',
-        id: 'com.dolag.serpent.image-upscaler.upscale.selection',
-        pluginId: 'com.dolag.serpent.image-upscaler',
+        id: 'com.dolag.keel.image-upscaler.upscale.selection',
+        pluginId: 'com.dolag.keel.image-upscaler',
         pluginInstanceId: '59847245-d394-4012-ad75-35f837393a8f',
         commandId: 'upscale.selection',
         title: '图像超分辨率（选中图像）',

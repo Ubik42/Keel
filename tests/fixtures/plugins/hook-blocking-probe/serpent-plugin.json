@@ -1,6 +1,6 @@
 {
   "manifestVersion": 1,
-  "id": "com.serpent.hook-blocking-probe",
+  "id": "com.keel.hook-blocking-probe",
   "version": "1.0.0",
   "name": "Hook Blocking Probe",
   "description": "Fixed test plugin that blocks asset.trash through an onWill hook.",

@@ -44,7 +44,7 @@ describe('fixed standard Host probe fixture', () => {
       libraryDirectory: library,
       source: { kind: 'local-directory', fingerprint: 'fixture:standard-host-probe' },
     });
-    expect(installed.package.manifest.id).toBe('com.serpent.standard-host-probe');
+    expect(installed.package.manifest.id).toBe('com.keel.standard-host-probe');
 
     const storage = new PluginStorageStore(userData);
     const entryAbsolute = path.join(installed.package.packageDirectory, 'entry/main.js');
@@ -59,7 +59,7 @@ describe('fixed standard Host probe fixture', () => {
       executeStorageOperation: async (input) => storage.execute({
         operation: input.operation,
         scope: input.scope ?? 'library',
-        pluginId: 'com.serpent.standard-host-probe',
+        pluginId: 'com.keel.standard-host-probe',
         libraryId: 'library-probe',
         libraryDirectory: library,
         permissions: ['library.read', 'storage.read', 'storage.write', 'asset.read'],
@@ -71,7 +71,7 @@ describe('fixed standard Host probe fixture', () => {
 
     expect(result.ok).toBe(true);
     const document = JSON.parse(readFileSync(
-      path.join(library, PLUGIN_LIBRARY_DATA_DIRECTORY, 'com.serpent.standard-host-probe.json'),
+      path.join(library, PLUGIN_LIBRARY_DATA_DIRECTORY, 'com.keel.standard-host-probe.json'),
       'utf8',
     )) as { values: Record<string, unknown> };
     expect(document.values['host-probe']).toEqual({

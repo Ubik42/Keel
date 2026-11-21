@@ -634,6 +634,8 @@ export function createPluginTrustedHostHandler(options: {
         pluginInstanceId: request.instanceId,
         installationScope: request.installScope,
         instanceScope: { kind: request.instanceScope },
+        keel: serpent,
+        // Pre-rename name, kept for installed plugins.
         serpent,
       }));
       active.activated = true;

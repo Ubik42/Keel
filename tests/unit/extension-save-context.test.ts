@@ -10,7 +10,7 @@ function contexts(
 }
 
 describe("resolveExtensionSaveContext", () => {
-  it("uses the focused Serpent window when it has an active library", () => {
+  it("uses the focused Keel window when it has an active library", () => {
     const resolved = resolveExtensionSaveContext({
       focusedWindowId: 2,
       lastTargetWindowId: 1,

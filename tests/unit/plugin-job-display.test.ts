@@ -10,7 +10,7 @@ import {
 
 describe("plugin job display", () => {
   it("turns a reverse-domain plugin id into a readable fallback name", () => {
-    expect(formatPluginJobPluginName("com.dolag.serpent.image-upscaler")).toBe("Image Upscaler");
+    expect(formatPluginJobPluginName("com.dolag.keel.image-upscaler")).toBe("Image Upscaler");
   });
 
   it("calculates the percentage from authoritative counters", () => {

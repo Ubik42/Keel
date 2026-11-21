@@ -17,7 +17,7 @@ function validJob() {
     assetId: 'asset-1',
     revisionId: 'rev-1',
     format: 'glb' as const,
-    renderUrl: 'serpent://preview/lib-1/artifact-1',
+    renderUrl: 'keel://preview/lib-1/artifact-1',
     companionMap: [{
       relativeFilePath: 'props/robot.fbm/albedo.png',
       assetId: 'asset-2',

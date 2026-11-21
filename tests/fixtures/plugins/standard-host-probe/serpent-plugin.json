@@ -1,6 +1,6 @@
 {
   "manifestVersion": 1,
-  "id": "com.serpent.standard-host-probe",
+  "id": "com.keel.standard-host-probe",
   "version": "1.0.0",
   "name": "Standard Host Probe",
   "description": "Fixed test plugin that activates through the standard QuickJS Host and writes namespaced storage.",

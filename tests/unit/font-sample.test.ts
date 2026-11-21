@@ -9,11 +9,11 @@ import type { FontLanguage } from "../../src/shared/font-metadata";
 
 // Serpent-485aeb：字体卡片封面样张页。
 describe("font sample page", () => {
-  const fontUrl = "serpent://source/lib-1/asset-1?revision=rev-1";
+  const fontUrl = "keel://source/lib-1/asset-1?revision=rev-1";
 
   it("embeds the font with the same-origin source URL", () => {
     const html = createFontSamplePage({ fontUrl, family: "DejaVu Sans", language: "latin" });
-    expect(html).toContain('src: url("serpent://source/lib-1/asset-1?revision=rev-1")');
+    expect(html).toContain('src: url("keel://source/lib-1/asset-1?revision=rev-1")');
     expect(html).toContain('font-family: "SerpentFontSample"');
     // 封面主文字字号调大过（用户反馈第 6 条：主文字再大一点点）。
     expect(html).toContain("font-size: 76px");
@@ -65,10 +65,10 @@ describe("font sample page", () => {
   it("strips the sample-only keys from the font URL and reads the label inputs", () => {
     const request = resolveFontSampleRequest(
       new URL(
-        "serpent://source/lib-1/asset-1?revision=rev-1&sample=font&family=Noto%20Sans%20JP&lang=ja&script=ja",
+        "keel://source/lib-1/asset-1?revision=rev-1&sample=font&family=Noto%20Sans%20JP&lang=ja&script=ja",
       ),
     );
-    expect(request.fontUrl).toBe("serpent://source/lib-1/asset-1?revision=rev-1");
+    expect(request.fontUrl).toBe("keel://source/lib-1/asset-1?revision=rev-1");
     expect(request.family).toBe("Noto Sans JP");
     expect(request.language).toBe("ja");
 
@@ -79,13 +79,13 @@ describe("font sample page", () => {
     expect(unknown.language).toBeNull();
 
     const html = createFontSamplePage({ ...request });
-    expect(html).toContain('src: url("serpent://source/lib-1/asset-1?revision=rev-1")');
+    expect(html).toContain('src: url("keel://source/lib-1/asset-1?revision=rev-1")');
     expect(html).toContain("フォントプレビュー AaBbCc 0123");
   });
 
   it("escapes the family name and the URL so the sheet cannot be injected into", () => {
     const html = createFontSamplePage({
-      fontUrl: 'serpent://source/lib-1/asset-1?revision="><script>',
+      fontUrl: 'keel://source/lib-1/asset-1?revision="><script>',
       family: "<img src=x onerror=alert(1)>",
     });
     expect(html).not.toContain("<img src=x");

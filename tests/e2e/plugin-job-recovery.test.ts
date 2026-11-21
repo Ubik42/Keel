@@ -12,7 +12,7 @@ import { PLUGIN_LIBRARY_DATA_DIRECTORY } from '../../src/plugins/plugin-package'
 test.describe.configure({ timeout: 180_000 });
 
 const FIXTURE_ROOT = path.resolve('tests/fixtures/plugins/job-probe');
-const PLUGIN_ID = 'com.serpent.job-probe';
+const PLUGIN_ID = 'com.keel.job-probe';
 
 type PluginStorageDocument = {
   values: Record<string, unknown>;
@@ -99,11 +99,11 @@ test('does not resume a plugin job after the whole Electron process restarts', a
   );
   const readJobSnapshots = async (page: Page, id: string): Promise<PluginJobSnapshot[]> => page.evaluate(async (libraryId) => {
     const result = await (window as unknown as {
-      serpent?: { library?: { listPluginJobs: (input: { libraryId: string }) => Promise<{
+      keel?: { library?: { listPluginJobs: (input: { libraryId: string }) => Promise<{
         ok: boolean;
         value?: { jobs: Array<PluginJobSnapshot> };
       }> } };
-    }).serpent?.library?.listPluginJobs({ libraryId });
+    }).keel?.library?.listPluginJobs({ libraryId });
     if (result?.ok !== true) return [];
     return result.value?.jobs ?? [];
   }, id);
@@ -129,20 +129,20 @@ test('does not resume a plugin job after the whole Electron process restarts', a
 
     const libraryId = await window.evaluate(async () => {
       const result = await (window as unknown as {
-        serpent?: { library?: { listOpen: () => Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }> } };
-      }).serpent?.library?.listOpen();
+        keel?: { library?: { listOpen: () => Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }> } };
+      }).keel?.library?.listOpen();
       return result?.ok === true ? result.value?.[0]?.libraryId ?? null : null;
     });
     expect(libraryId).toEqual(expect.any(String));
     const runStartCommand = async (page: Page): Promise<{ ok: boolean; executed?: boolean; code?: string }> => page.evaluate(async ({ id, pluginId }) => {
       return (window as unknown as {
-        serpent?: { plugins?: { runPluginCommand: (input: {
+        keel?: { plugins?: { runPluginCommand: (input: {
           type: 'plugin-manager.run-command';
           libraryId: string;
           pluginId: string;
           commandId: string;
         }) => Promise<{ ok: boolean; executed?: boolean; code?: string }> } };
-      }).serpent?.plugins?.runPluginCommand({
+      }).keel?.plugins?.runPluginCommand({
         type: 'plugin-manager.run-command',
         libraryId: id,
         pluginId,

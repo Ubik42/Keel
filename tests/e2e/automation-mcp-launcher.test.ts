@@ -58,7 +58,7 @@ test('Desktop embedded MCP exposes and reconnects over authenticated HTTP', asyn
   const window = await application.firstWindow();
   await window.evaluate(async () => {
     const bridge = (globalThis as typeof globalThis & {
-      serpent: {
+      keel: {
         mcp: {
           request(input: { type: 'create-client-config'; input: { format: 'generic-json' } }): Promise<{
             ok: boolean;
@@ -66,7 +66,7 @@ test('Desktop embedded MCP exposes and reconnects over authenticated HTTP', asyn
           }>;
         };
       };
-    }).serpent;
+    }).keel;
     const response = await bridge.mcp.request({
       type: 'create-client-config',
       input: { format: 'generic-json' },
@@ -90,12 +90,12 @@ test('Desktop embedded MCP exposes and reconnects over authenticated HTTP', asyn
     await client.connect(transport);
     const tools = await client.listTools();
     expect(tools.tools.map((tool) => tool.name)).toEqual(expect.arrayContaining([
-      'serpent_library_list_open',
-      'serpent_library_create',
-      'serpent_asset_search',
+      'keel_library_list_open',
+      'keel_library_create',
+      'keel_asset_search',
     ]));
     const listed = await client.callTool({
-      name: 'serpent_library_list_open',
+      name: 'keel_library_list_open',
       arguments: {},
     });
     expect(listed).toBeDefined();
@@ -108,7 +108,7 @@ test('Desktop embedded MCP exposes and reconnects over authenticated HTTP', asyn
     });
     await reconnected.connect(reconnectTransport);
     const reconnectedTools = await reconnected.listTools();
-    expect(reconnectedTools.tools.map((tool) => tool.name)).toContain('serpent_library_list_open');
+    expect(reconnectedTools.tools.map((tool) => tool.name)).toContain('keel_library_list_open');
     await reconnected.close();
     await reconnectTransport.close();
   } finally {
@@ -172,7 +172,7 @@ test('Desktop MCP startup repairs an unreadable existing pepper without rotating
     const window = await application.firstWindow();
     const response = await window.evaluate(async () => {
       const bridge = (globalThis as typeof globalThis & {
-        serpent: {
+        keel: {
           mcp: {
             request(input: { type: 'get' }): Promise<{
               ok: boolean;
@@ -181,7 +181,7 @@ test('Desktop MCP startup repairs an unreadable existing pepper without rotating
             }>;
           };
         };
-      }).serpent;
+      }).keel;
       return bridge.mcp.request({ type: 'get' });
     });
 
@@ -231,7 +231,7 @@ test('Desktop MCP settings reports an invalid key file separately from an unauth
     const window = await application.firstWindow();
     const response = await window.evaluate(async () => {
       const bridge = (globalThis as typeof globalThis & {
-        serpent: {
+        keel: {
           mcp: {
             request(input: { type: 'get' }): Promise<{
               ok: boolean;
@@ -241,7 +241,7 @@ test('Desktop MCP settings reports an invalid key file separately from an unauth
             }>;
           };
         };
-      }).serpent;
+      }).keel;
       return bridge.mcp.request({ type: 'get' });
     });
 

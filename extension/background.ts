@@ -16,10 +16,10 @@ import { installHotlinkRules } from './hotlink-sites';
 import { isFileUrl } from './media-target';
 import { readExtensionSaveBehavior } from './preferences';
 import {
-  fetchSerpentFolders,
+  fetchKeelFolders,
   deliverSaveUpload,
   notificationForOutcome,
-  probeSerpentConnection,
+  probeKeelConnection,
   saveIntentFromContextMenu,
   saveMediaViaBrowser,
   type SaveIntent,
@@ -27,10 +27,10 @@ import {
   type UserNotification,
 } from './save-client';
 
-const MENU_ROOT_ID = 'serpent-save';
-const MENU_ROOT_FOLDER_ID = 'serpent-save-root';
-const MENU_SEPARATOR_ID = 'serpent-save-sep';
-const CONNECTION_ALARM = 'serpent-connection-check';
+const MENU_ROOT_ID = 'keel-save';
+const MENU_ROOT_FOLDER_ID = 'keel-save-root';
+const MENU_SEPARATOR_ID = 'keel-save-sep';
+const CONNECTION_ALARM = 'keel-connection-check';
 const ICON_SIZES = [32, 48, 64, 128] as const;
 
 let notificationSequence = 0;
@@ -97,8 +97,8 @@ function setToolbarIcon(connected: boolean): void {
   });
   chrome.action.setTitle({
     title: connected
-      ? 'Serpent 已连接'
-      : 'Serpent 未连接，请启动桌面应用并打开资源库',
+      ? 'Keel 已连接'
+      : 'Keel 未连接，请启动桌面应用并打开资源库',
   });
 }
 
@@ -193,7 +193,7 @@ async function refreshFolderMenus(): Promise<void> {
       return;
     }
 
-    const outcome = await fetchSerpentFolders();
+    const outcome = await fetchKeelFolders();
     if (outcome.kind !== 'ok') {
       await removeDynamicFolderMenus();
       return;
@@ -261,7 +261,7 @@ async function refreshFolderMenus(): Promise<void> {
 }
 
 async function refreshConnectionState(): Promise<void> {
-  const outcome = await probeSerpentConnection();
+  const outcome = await probeKeelConnection();
   const nextState = outcome.kind === 'connected' ? 'connected' : 'disconnected';
   connectionState = nextState;
   setToolbarIcon(nextState === 'connected');
@@ -271,12 +271,12 @@ async function refreshConnectionState(): Promise<void> {
 /**
  * Fast path for content-script probes: ping only, then reply.
  * Folder contextMenus rebuild is deferred — awaiting it here made
- * `serpent-connection-status` miss sendResponse on large libraries
+ * `keel-connection-status` miss sendResponse on large libraries
  * (message port closed → drag menu always showed 未连接 while the
- * toolbar icon was already bright). Serpent-a8mm.
+ * toolbar icon was already bright). Keel-a8mm.
  */
 async function probeAndReplyConnectionState(): Promise<'connected' | 'disconnected'> {
-  const outcome = await probeSerpentConnection();
+  const outcome = await probeKeelConnection();
   const nextState = outcome.kind === 'connected' ? 'connected' : 'disconnected';
   connectionState = nextState;
   setToolbarIcon(nextState === 'connected');
@@ -301,7 +301,7 @@ function showNotification(notification: UserNotification): void {
     if (!behavior.notificationsEnabled) return;
     notificationSequence += 1;
     chrome.notifications.create(
-      `serpent-save-${Date.now()}-${notificationSequence}`,
+      `keel-save-${Date.now()}-${notificationSequence}`,
       {
         type: 'basic',
         iconUrl: 'icons/icon-128.png',
@@ -330,7 +330,7 @@ async function saveIntentAndNotify(intent: SaveIntent): Promise<UserNotification
   const behavior = await readExtensionSaveBehavior();
   const outcome = await saveMediaViaBrowser(intent, behavior);
   if (outcome.kind === 'accepted') {
-    const foldersOutcome = await fetchSerpentFolders();
+    const foldersOutcome = await fetchKeelFolders();
     if (foldersOutcome.kind === 'ok') {
       const folderId =
         typeof intent.targetFolderId === 'string' ? intent.targetFolderId : null;
@@ -394,7 +394,7 @@ async function saveLocalUploadAndNotify(input: {
   );
 
   if (outcome.kind === 'accepted') {
-    const foldersOutcome = await fetchSerpentFolders();
+    const foldersOutcome = await fetchKeelFolders();
     if (foldersOutcome.kind === 'ok') {
       await rememberRecentFolder(
         typeof input.targetFolderId === 'string' ? input.targetFolderId : null,
@@ -419,7 +419,7 @@ function notifySaveFeedback(
   if (!tab?.id) return;
   chrome.tabs.sendMessage(
     tab.id,
-    { type: 'serpent-save-feedback', ...payload },
+    { type: 'keel-save-feedback', ...payload },
     () => {
       void chrome.runtime.lastError;
     },
@@ -427,17 +427,17 @@ function notifySaveFeedback(
 }
 
 async function handleContextMenuClick(
-  info: SerpentContextMenuClickData,
+  info: KeelContextMenuClickData,
 ): Promise<void> {
   if (connectionState !== 'connected') {
     showNotification({
-      title: '无法保存到 Serpent',
-      message: '请先启动 Serpent 桌面应用并打开资源库。',
+      title: '无法保存到 Keel',
+      message: '请先启动 Keel 桌面应用并打开资源库。',
     });
     notifySaveFeedback(info.tab, {
       state: 'done',
-      title: '无法保存到 Serpent',
-      message: '请先启动 Serpent 桌面应用并打开资源库。',
+      title: '无法保存到 Keel',
+      message: '请先启动 Keel 桌面应用并打开资源库。',
     });
     return;
   }
@@ -456,7 +456,7 @@ async function handleContextMenuClick(
       chrome.tabs.sendMessage(
         info.tab.id,
         {
-          type: 'serpent-local-context-save-request',
+          type: 'keel-local-context-save-request',
           mediaUrl: info.srcUrl,
           kind: info.mediaType === 'video' ? 'video' : 'image',
           targetFolderId,
@@ -468,12 +468,12 @@ async function handleContextMenuClick(
       return;
     }
     showNotification({
-      title: '无法保存到 Serpent',
+      title: '无法保存到 Keel',
       message: '这个媒体或页面不是可下载的 HTTP(S) 地址。',
     });
     notifySaveFeedback(info.tab, {
       state: 'done',
-      title: '无法保存到 Serpent',
+      title: '无法保存到 Keel',
       message: '这个媒体或页面不是可下载的 HTTP(S) 地址。',
     });
     return;
@@ -509,7 +509,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
   const type = Reflect.get(message, 'type');
 
-  if (type === 'serpent-connection-status') {
+  if (type === 'keel-connection-status') {
     void probeAndReplyConnectionState()
       .then((kind) => {
         sendResponse({ kind });
@@ -522,9 +522,9 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     return true;
   }
 
-  if (type === 'serpent-list-folders') {
+  if (type === 'keel-list-folders') {
     void (async () => {
-      const outcome = await fetchSerpentFolders();
+      const outcome = await fetchKeelFolders();
       if (outcome.kind === 'ok') {
         const recentFolderIds = await readRecentFolderIds();
         const hints = buildSaveMenuFolderHints(
@@ -546,12 +546,12 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     return true;
   }
 
-  if (type === 'serpent-save-request') {
+  if (type === 'keel-save-request') {
     void (async () => {
       if (connectionState !== 'connected') {
         const notification = {
-          title: '无法保存到 Serpent',
-          message: '请先启动 Serpent 桌面应用并打开资源库。',
+          title: '无法保存到 Keel',
+          message: '请先启动 Keel 桌面应用并打开资源库。',
         };
         showNotification(notification);
         sendResponse({ notification });
@@ -562,7 +562,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       if (!intentValue || typeof intentValue !== 'object') {
         sendResponse({
           notification: {
-            title: '无法保存到 Serpent',
+            title: '无法保存到 Keel',
             message: '保存请求无效。',
           },
         });
@@ -580,7 +580,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       ) {
         sendResponse({
           notification: {
-            title: '无法保存到 Serpent',
+            title: '无法保存到 Keel',
             message: '这个媒体或页面不是可下载的 HTTP(S) 地址。',
           },
         });
@@ -602,12 +602,12 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     return true;
   }
 
-  if (type === 'serpent-local-save-request') {
+  if (type === 'keel-local-save-request') {
     void (async () => {
       if (connectionState !== 'connected') {
         const notification = {
-          title: '无法保存到 Serpent',
-          message: '请先启动 Serpent 桌面应用并打开资源库。',
+          title: '无法保存到 Keel',
+          message: '请先启动 Keel 桌面应用并打开资源库。',
         };
         showNotification(notification);
         sendResponse({ notification });
@@ -630,7 +630,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       ) {
         sendResponse({
           notification: {
-            title: '无法保存到 Serpent',
+            title: '无法保存到 Keel',
             message: '本地媒体保存请求无效。',
           },
         });

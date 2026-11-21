@@ -1,4 +1,4 @@
-interface SerpentContextMenuClickData {
+interface KeelContextMenuClickData {
   menuItemId: string | number;
   mediaType?: 'image' | 'video' | 'audio';
   pageUrl?: string;
@@ -6,11 +6,11 @@ interface SerpentContextMenuClickData {
   tab?: { id?: number };
 }
 
-interface SerpentContextMenuShownInfo {
+interface KeelContextMenuShownInfo {
   contexts: Array<'image' | 'video' | 'audio' | 'page' | 'selection' | 'link'>;
 }
 
-interface SerpentChromeApi {
+interface KeelChromeApi {
   runtime: {
     lastError?: { message?: string };
     onInstalled: {
@@ -66,10 +66,10 @@ interface SerpentChromeApi {
     remove(id: string, callback?: () => void): void;
     removeAll(callback?: () => void): void;
     onClicked: {
-      addListener(callback: (info: SerpentContextMenuClickData) => void): void;
+      addListener(callback: (info: KeelContextMenuClickData) => void): void;
     };
     onShown?: {
-      addListener(callback: (info: SerpentContextMenuShownInfo) => void): void;
+      addListener(callback: (info: KeelContextMenuShownInfo) => void): void;
     };
   };
   tabs: {
@@ -135,4 +135,4 @@ interface SerpentChromeApi {
   };
 }
 
-declare const chrome: SerpentChromeApi;
+declare const chrome: KeelChromeApi;

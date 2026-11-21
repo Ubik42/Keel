@@ -105,12 +105,12 @@ test("saving auto sync during transfer on the configured WebDAV server", async (
     await expect(window.getByText(remoteName, { exact: true }).first()).toBeVisible();
 
     const setup = await window.evaluate(async () => {
-      const api = (globalThis as typeof globalThis & { serpent: { library: {
+      const api = (globalThis as typeof globalThis & { keel: { library: {
         listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
         syncListServers(): Promise<{ ok: boolean; value?: Array<{ id: string; hasPassword: boolean }> }>;
         syncProbe(input: { serverId: string }): Promise<{ ok: boolean; value?: { auth: string; supportsContentTransfer: boolean }; error?: { code: string; reason?: string } }>;
         importFiles(input: { libraryId: string }): Promise<{ ok: boolean; error?: { code: string } }>;
-      } } }).serpent.library;
+      } } }).keel.library;
       const opened = await api.listOpen();
       const listed = await api.syncListServers();
       const libraryId = opened.value?.[0]?.libraryId;
@@ -134,9 +134,9 @@ test("saving auto sync during transfer on the configured WebDAV server", async (
     await syncCard.getByRole("textbox", { name: "同步文件夹名称" }).fill(remoteName);
 
     await window.evaluate(({ libraryId, serverId, directoryName }) => {
-      const api = (globalThis as typeof globalThis & { serpent: { library: {
+      const api = (globalThis as typeof globalThis & { keel: { library: {
         syncRun(input: { libraryId: string; serverId: string; directoryName: string }): Promise<{ ok: boolean; value?: { report: { uploads: number } }; error?: { code: string } }>;
-      } } }).serpent.library;
+      } } }).keel.library;
       const state = globalThis as typeof globalThis & { __realSyncRun?: Promise<unknown>; __realSyncDone?: boolean };
       state.__realSyncDone = false;
       state.__realSyncRun = api.syncRun({ libraryId, serverId, directoryName }).then((value) => {
@@ -156,9 +156,9 @@ test("saving auto sync during transfer on the configured WebDAV server", async (
     expect(await window.evaluate(() => (globalThis as typeof globalThis & { __realSyncDone?: boolean }).__realSyncDone)).toBe(false);
     await expect(syncCard.getByText("连接失败")).toBeHidden();
     const binding = await window.evaluate(async (libraryId) => {
-      const api = (globalThis as typeof globalThis & { serpent: { library: {
+      const api = (globalThis as typeof globalThis & { keel: { library: {
         syncGetBinding(input: { libraryId: string }): Promise<{ ok: boolean; value?: { enabled: boolean; directoryName: string } }>;
-      } } }).serpent.library;
+      } } }).keel.library;
       return api.syncGetBinding({ libraryId });
     }, setup.libraryId);
     expect(binding.value).toMatchObject({ enabled: true, directoryName: remoteName });

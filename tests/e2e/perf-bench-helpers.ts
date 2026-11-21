@@ -173,7 +173,7 @@ export type RendererProbe = {
 /**
  * Install the in-page probes once per window: long tasks, card mount/move churn,
  * `src` reassignment churn, rAF frame deltas and the renderer's own browse-page
- * events (`serpent:e2e-browse-*`, emitted by `use-browse-pagination`).
+ * events (`keel:e2e-browse-*`, emitted by `use-browse-pagination`).
  */
 export async function installRendererProbe(window: Page): Promise<void> {
   await window.evaluate(() => {
@@ -223,7 +223,7 @@ export async function installRendererProbe(window: Page): Promise<void> {
     };
     const recordSrc = (image: HTMLImageElement): void => {
       const src = image.getAttribute("src");
-      if (!src || !src.startsWith("serpent://")) return;
+      if (!src || !src.startsWith("keel://")) return;
       // An inserted image can be reported both by childList and by a src
       // attribute record in the same observer batch. Count one binding per
       // element/source pair, not two observer records for one DOM update.
@@ -269,13 +269,13 @@ export async function installRendererProbe(window: Page): Promise<void> {
     };
     requestAnimationFrame(tick);
 
-    globalThis.addEventListener("serpent:e2e-browse-request", () => {
+    globalThis.addEventListener("keel:e2e-browse-request", () => {
       probe.browseRequests += 1;
     });
-    globalThis.addEventListener("serpent:e2e-browse-result", () => {
+    globalThis.addEventListener("keel:e2e-browse-result", () => {
       probe.browseResults += 1;
     });
-    globalThis.addEventListener("serpent:e2e-browse-page", () => {
+    globalThis.addEventListener("keel:e2e-browse-page", () => {
       probe.browsePages += 1;
     });
   });

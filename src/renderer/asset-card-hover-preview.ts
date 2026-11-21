@@ -56,7 +56,7 @@ export function coverSrc(
   libraryId: string,
   thumbnailArtifactId: string,
 ): string {
-  return `serpent://preview/${libraryId}/${thumbnailArtifactId}`;
+  return `keel://preview/${libraryId}/${thumbnailArtifactId}`;
 }
 
 /**
@@ -77,7 +77,7 @@ export function sourceSrc(
   assetId: string,
   revisionId: string,
 ): string {
-  return `serpent://source/${libraryId}/${assetId}?revision=${encodeURIComponent(revisionId)}`;
+  return `keel://source/${libraryId}/${assetId}?revision=${encodeURIComponent(revisionId)}`;
 }
 
 export function resolveAssetCardCoverUrl(input: {

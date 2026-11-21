@@ -50,11 +50,11 @@ test('uses the shared search and tag expressions to filter real asset cards', as
     const assetId = await assetCard.getAttribute('data-asset-id');
     if (!assetId) throw new Error('Expected the imported asset to have an id.');
     await window.evaluate(async (targetAssetId) => {
-      const api = (globalThis as typeof globalThis & { serpent: { library: {
+      const api = (globalThis as typeof globalThis & { keel: { library: {
         listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
         createTag(input: { libraryId: string; name: string }): Promise<{ ok: boolean; value?: { tagId: string } }>;
         assignTags(input: { libraryId: string; assetIds: string[]; tagIds: string[] }): Promise<{ ok: boolean }>;
-      } } }).serpent.library;
+      } } }).keel.library;
       const open = await api.listOpen();
       const libraryId = open.value?.[0]?.libraryId;
       if (!open.ok || !libraryId) throw new Error('No open library.');
@@ -141,13 +141,13 @@ test('organizes, finds, trashes, and restores an imported asset through the UI',
     const assetId = await assetCard.getAttribute('data-asset-id');
     expect(assetId).toBeTruthy();
     const readMetadataVersion = () => window.evaluate(async (selectedAssetId) => {
-      const api = (globalThis as typeof globalThis & { serpent: { library: {
+      const api = (globalThis as typeof globalThis & { keel: { library: {
         getAssetMetadata(input: { libraryId: string; assetId: string }): Promise<{
           ok: boolean;
           value?: { entityVersion: number };
         }>;
         listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
-      } } }).serpent.library;
+      } } }).keel.library;
       const open = await api.listOpen();
       const libraryId = open.value?.[0]?.libraryId;
       if (!libraryId || !selectedAssetId) throw new Error('No selected asset');
@@ -174,10 +174,10 @@ test('organizes, finds, trashes, and restores an imported asset through the UI',
     // because large-library scope navigation intentionally skips sidebar
     // queries.
     await window.evaluate(async () => {
-      const api = (globalThis as typeof globalThis & { serpent: { library: {
+      const api = (globalThis as typeof globalThis & { keel: { library: {
         listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
         createTag(input: { libraryId: string; name: string }): Promise<{ ok: boolean }>;
-      } } }).serpent.library;
+      } } }).keel.library;
       const open = await api.listOpen();
       const libraryId = open.value?.[0]?.libraryId;
       if (!libraryId) throw new Error('No open library');
@@ -250,11 +250,11 @@ test('organizes, finds, trashes, and restores an imported asset through the UI',
     await expect.poll(readMetadataVersion).toBeGreaterThan(versionAfterDescriptionClear);
     const versionAfterSourceClear = await readStableMetadataVersion();
     const clearedMetadata = await window.evaluate(async () => {
-      const api = (globalThis as typeof globalThis & { serpent: { library: {
+      const api = (globalThis as typeof globalThis & { keel: { library: {
         listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
         listAssets(input: { libraryId: string; folderId?: string; recursive: boolean }): Promise<{ ok: boolean; value?: Array<{ assetId: string }> }>;
         getAssetMetadata(input: { libraryId: string; assetId: string }): Promise<{ ok: boolean; value?: { description: string | null; sourcePageUrl: string | null } }>;
-      } } }).serpent.library;
+      } } }).keel.library;
       const open = await api.listOpen();
       const libraryId = open.value?.[0]?.libraryId;
       if (!libraryId) throw new Error('No open library');
@@ -276,13 +276,13 @@ test('organizes, finds, trashes, and restores an imported asset through the UI',
     await expect.poll(async () => {
       const version = await readMetadataVersion();
       const metadata = await window.evaluate(async (selectedAssetId) => {
-        const api = (globalThis as typeof globalThis & { serpent: { library: {
+        const api = (globalThis as typeof globalThis & { keel: { library: {
           getAssetMetadata(input: { libraryId: string; assetId: string }): Promise<{
             ok: boolean;
             value?: { description: string | null; rating: number };
           }>;
           listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
-        } } }).serpent.library;
+        } } }).keel.library;
         const open = await api.listOpen();
         const libraryId = open.value?.[0]?.libraryId;
         if (!libraryId || !selectedAssetId) throw new Error('No selected asset');
@@ -387,10 +387,10 @@ test('multi-select performs batch organization, trash, restore, and permanent de
     // The sidebar no longer creates tags (REQ-TAG-001); seed the tag through
     // the library API, then refresh the sidebar summaries explicitly.
     await window.evaluate(async () => {
-      const api = (globalThis as typeof globalThis & { serpent: { library: {
+      const api = (globalThis as typeof globalThis & { keel: { library: {
         listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
         createTag(input: { libraryId: string; name: string }): Promise<{ ok: boolean }>;
-      } } }).serpent.library;
+      } } }).keel.library;
       const open = await api.listOpen();
       const libraryId = open.value?.[0]?.libraryId;
       if (!libraryId) throw new Error('No open library');
@@ -415,10 +415,10 @@ test('multi-select performs batch organization, trash, restore, and permanent de
     await expect(window.locator('.workspace-notice')).toContainText('已为 2 项资产添加标签');
 
     const counts = await window.evaluate(async () => {
-      const api = (globalThis as typeof globalThis & { serpent: { library: {
+      const api = (globalThis as typeof globalThis & { keel: { library: {
         listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
         listTags(input: { libraryId: string }): Promise<{ ok: boolean; value?: Array<{ name: string; assetCount: number }> }>;
-      } } }).serpent.library;
+      } } }).keel.library;
       const open = await api.listOpen();
       const libraryId = open.value?.[0]?.libraryId;
       if (!libraryId) throw new Error('No open library');
@@ -429,9 +429,9 @@ test('multi-select performs batch organization, trash, restore, and permanent de
 
     const searchRequestCount = () => window.evaluate(() => (
       globalThis as typeof globalThis & {
-        serpent: { e2e: { getRequestCount(type: 'asset.search.request'): number } };
+        keel: { e2e: { getRequestCount(type: 'asset.search.request'): number } };
       }
-    ).serpent.e2e.getRequestCount('asset.search.request'));
+    ).keel.e2e.getRequestCount('asset.search.request'));
     const tagSearchCount = await searchRequestCount();
     // The sidebar no longer enumerates tags (REQ-TAG-001); enter the
     // tag-filtered view through the retained 标签过滤 entry instead.

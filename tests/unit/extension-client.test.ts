@@ -5,7 +5,7 @@ import {
   deliverSaveUpload,
   fetchMediaInBrowser,
   notificationForOutcome,
-  probeSerpentConnection,
+  probeKeelConnection,
   saveIntentFromContextMenu,
   saveMediaViaBrowser,
   sniffContentType,
@@ -155,9 +155,9 @@ describe('browser extension save client', () => {
         body: mediaBody,
         headers: expect.objectContaining({
           'Content-Type': 'application/octet-stream',
-          'X-Serpent-Kind': 'image',
-          'X-Serpent-Content-Type': 'image/png',
-          'X-Serpent-Filename': encodeURIComponent('shot.png'),
+          'X-Keel-Kind': 'image',
+          'X-Keel-Content-Type': 'image/png',
+          'X-Keel-Filename': encodeURIComponent('shot.png'),
         }),
       }),
     );
@@ -179,8 +179,8 @@ describe('browser extension save client', () => {
     ).resolves.toEqual({ kind: 'accepted' });
 
     const request = (fetchFn.mock.calls[0] as unknown as [string, { headers?: Record<string, string> }])?.[1];
-    expect(request.headers).not.toHaveProperty('X-Serpent-Source-Page-Url');
-    expect(request.headers).not.toHaveProperty('X-Serpent-Media-Url');
+    expect(request.headers).not.toHaveProperty('X-Keel-Source-Page-Url');
+    expect(request.headers).not.toHaveProperty('X-Keel-Media-Url');
   });
 
   it('tries fallback ports after connection failures', async () => {
@@ -254,7 +254,7 @@ describe('browser extension save client', () => {
     });
   });
 
-  it('reports Serpent as unreachable only after every configured port fails', async () => {
+  it('reports Keel as unreachable only after every configured port fails', async () => {
     const fetchFn = vi.fn(async () => {
       throw new TypeError('connection refused');
     });
@@ -300,13 +300,13 @@ describe('browser extension save client', () => {
     });
   });
 
-  it('probes Serpent via /ping and /folders without a token', async () => {
+  it('probes Keel via /ping and /folders without a token', async () => {
     const fetchFn = vi
       .fn()
       .mockResolvedValueOnce(mockFetchResponse({ status: 200 }))
       .mockResolvedValueOnce(mockFetchResponse({ status: 200, text: '{"folders":[]}' }));
 
-    await expect(probeSerpentConnection(fetchFn)).resolves.toEqual({ kind: 'connected' });
+    await expect(probeKeelConnection(fetchFn)).resolves.toEqual({ kind: 'connected' });
     expect(fetchFn.mock.calls.map(([url, init]) => [url, init?.method])).toEqual([
       ['http://127.0.0.1:19876/ping', 'GET'],
       ['http://127.0.0.1:19876/folders', 'GET'],
@@ -317,12 +317,12 @@ describe('browser extension save client', () => {
     }
   });
 
-  it('reports offline when ping cannot reach Serpent', async () => {
+  it('reports offline when ping cannot reach Keel', async () => {
     const fetchFn = vi.fn(async () => {
       throw new TypeError('connection refused');
     });
 
-    await expect(probeSerpentConnection(fetchFn)).resolves.toEqual({ kind: 'offline' });
+    await expect(probeKeelConnection(fetchFn)).resolves.toEqual({ kind: 'offline' });
     expect(fetchFn).toHaveBeenCalledTimes(KEEL_PORTS.length);
   });
 
@@ -341,8 +341,8 @@ describe('browser extension save client', () => {
 
   it('maps every outcome to an explicit user notification', () => {
     expect(notificationForOutcome({ kind: 'accepted' })).toEqual({
-      title: '已发送到 Serpent',
-      message: 'Serpent 已接收保存请求。',
+      title: '已发送到 Keel',
+      message: 'Keel 已接收保存请求。',
     });
     expect(
       notificationForOutcome({
@@ -351,12 +351,12 @@ describe('browser extension save client', () => {
         reason: 'forbidden origin',
       }),
     ).toEqual({
-      title: 'Serpent 拒绝了保存请求',
+      title: 'Keel 拒绝了保存请求',
       message: 'HTTP 403：forbidden origin',
     });
     expect(notificationForOutcome({ kind: 'unreachable' })).toEqual({
-      title: '无法连接 Serpent',
-      message: '请先启动 Serpent 桌面应用并打开资源库，然后重新保存。',
+      title: '无法连接 Keel',
+      message: '请先启动 Keel 桌面应用并打开资源库，然后重新保存。',
     });
     expect(
       notificationForOutcome({

@@ -33,15 +33,15 @@ const companionMap = new Map<string, ModelCompanionAsset>([
 ]);
 
 describe('url-remap (Serpent-qvc6 / 3D-12)', () => {
-  it('builds serpent://preview and serpent://source URLs', () => {
+  it('builds keel://preview and keel://source URLs', () => {
     expect(serpentPreviewUrl('lib-1', 'art-9')).toBe(
-      'serpent://preview/lib-1/art-9',
+      'keel://preview/lib-1/art-9',
     );
     expect(serpentSourceUrl('lib-1', 'asset-1')).toBe(
-      'serpent://source/lib-1/asset-1',
+      'keel://source/lib-1/asset-1',
     );
     expect(serpentSourceUrl('lib-1', 'asset-1', 'rev a/b')).toBe(
-      'serpent://source/lib-1/asset-1?revision=rev%20a%2Fb',
+      'keel://source/lib-1/asset-1?revision=rev%20a%2Fb',
     );
   });
 
@@ -68,7 +68,7 @@ describe('url-remap (Serpent-qvc6 / 3D-12)', () => {
         libraryId: 'lib-1',
         companionMap,
       }),
-    ).toBe('serpent://source/lib-1/asset-normal?revision=rev-1');
+    ).toBe('keel://source/lib-1/asset-normal?revision=rev-1');
   });
 
   it('leaves unmatched relative references untouched (material degrade)', () => {
@@ -83,7 +83,7 @@ describe('url-remap (Serpent-qvc6 / 3D-12)', () => {
 
   it('passes absolute and data URLs through untouched', () => {
     for (const url of [
-      'serpent://preview/lib-1/art-9',
+      'keel://preview/lib-1/art-9',
       'https://example.com/tex.png',
       'data:image/png;base64,AAAA',
       'file:///tmp/tex.png',
@@ -101,7 +101,7 @@ describe('url-remap (Serpent-qvc6 / 3D-12)', () => {
         libraryId: 'lib-1',
         companionMap,
       }),
-    ).toBe('serpent://source/lib-1/asset-normal?revision=rev-1');
+    ).toBe('keel://source/lib-1/asset-normal?revision=rev-1');
     // Exact path wins over basename when both exist.
     expect(
       remapCompanionUrlByBasename({
@@ -109,13 +109,13 @@ describe('url-remap (Serpent-qvc6 / 3D-12)', () => {
         libraryId: 'lib-1',
         companionMap,
       }),
-    ).toBe('serpent://source/lib-1/asset-normal?revision=rev-1');
+    ).toBe('keel://source/lib-1/asset-normal?revision=rev-1');
   });
 
   it('never basename-matches absolute URLs', () => {
     expect(
       remapCompanionUrlByBasename({
-        fileName: 'serpent://preview/lib-1/asset-albedo',
+        fileName: 'keel://preview/lib-1/asset-albedo',
         libraryId: 'lib-1',
         companionMap,
       }),
@@ -136,7 +136,7 @@ describe('url-remap (Serpent-qvc6 / 3D-12)', () => {
       remapCompanionUrl({ relativePath: path, libraryId: 'lib-1', companionMap });
     const rewritten = rewriteGltfUris(gltf, remap);
     expect(rewritten.images?.[0]?.uri).toBe(
-      'serpent://source/lib-1/asset-albedo?revision=rev-1',
+      'keel://source/lib-1/asset-albedo?revision=rev-1',
     );
     expect(rewritten.images?.[1]?.uri).toBe('data:image/png;base64,AAAA');
     expect(rewritten.images?.[2]?.uri).toBeUndefined();
@@ -182,10 +182,10 @@ describe('url-remap (Serpent-qvc6 / 3D-12)', () => {
       remapCompanionUrl({ relativePath: path, libraryId: 'lib-1', companionMap });
     const rewritten = rewriteMtlTextureRefs(mtl, remap);
     expect(rewritten).toContain(
-      'map_Kd -s 1 1 1 serpent://source/lib-1/asset-albedo?revision=rev-1',
+      'map_Kd -s 1 1 1 keel://source/lib-1/asset-albedo?revision=rev-1',
     );
     expect(rewritten).toContain(
-      'map_Ks serpent://source/lib-1/asset-normal-subdir?revision=rev-1',
+      'map_Ks keel://source/lib-1/asset-normal-subdir?revision=rev-1',
     );
     // Unmatched references stay as-is (material degrades).
     expect(rewritten).toContain('bump bump.png');

@@ -722,7 +722,7 @@ describe('Plugin package IPC bridge', () => {
     })).resolves.toMatchObject({ ok: true, resolutions: [{ status: 'resolved' }] });
   });
 
-  it('enriches settings.pages with serpent-plugin:// url and survives Preload parse', async () => {
+  it('enriches settings.pages with keel-plugin:// url and survives Preload parse', async () => {
     const userData = temporaryRoot('serpent-plugin-ipc-contrib-user-');
     const instanceId = '59847245-d394-4012-ad75-35f837393a8f';
     const handler = createPluginPackageRequestHandler({
@@ -764,7 +764,7 @@ describe('Plugin package IPC bridge', () => {
         target: 'settings.pages',
         entryPath: 'entry/ui/settings.html',
         url: expect.stringMatching(
-          /^serpent-plugin:\/\/com\.example\.probe\/59847245-d394-4012-ad75-35f837393a8f\/entry\/ui\/settings\.html/u,
+          /^keel-plugin:\/\/com\.example\.probe\/59847245-d394-4012-ad75-35f837393a8f\/entry\/ui\/settings\.html/u,
         ),
       }],
     });
@@ -776,7 +776,7 @@ describe('Plugin package IPC bridge', () => {
     expect(parsed.contributions[0]).toMatchObject({
       kind: 'view',
       target: 'settings.pages',
-      url: expect.stringMatching(/^serpent-plugin:\/\//u),
+      url: expect.stringMatching(/^keel-plugin:\/\//u),
     });
   });
 });

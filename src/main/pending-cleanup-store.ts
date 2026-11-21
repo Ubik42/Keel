@@ -9,7 +9,7 @@ import {
 /**
  * Serpent-65d837: UserData store of library roots that were renamed aside
  * (`.del-*`) but could not be deleted while a Windows handle (Chromium
- * `serpent://` stream, Defender scan, Explorer) was still open. Main owns this
+ * `keel://` stream, Defender scan, Explorer) was still open. Main owns this
  * store; the Library Worker owns the actual file deletion via
  * `system.cleanup-pending-deletions`. Entries are removed again once cleanup
  * succeeds, so a leftover aside is never silently forgotten.

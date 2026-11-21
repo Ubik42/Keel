@@ -474,7 +474,7 @@ test("ordinary browsing continuously appends every asset without page controls",
     const setup = await window.evaluate(async (expectedAssetCount) => {
       const serpent = (
         globalThis as typeof globalThis & {
-          serpent: {
+          keel: {
             library: {
               listOpen(): Promise<{
                 ok: boolean;
@@ -500,7 +500,7 @@ test("ordinary browsing continuously appends every asset without page controls",
             };
           };
         }
-      ).serpent;
+      ).keel;
       const open = await serpent.library.listOpen();
       const libraryId = open.value?.[0]?.libraryId;
       if (!open.ok || !libraryId) throw new Error("Expected an open library.");
@@ -559,7 +559,7 @@ test("ordinary browsing continuously appends every asset without page controls",
     const trashed = await window.evaluate(async ({ libraryId, assetIds }) => {
       const serpent = (
         globalThis as typeof globalThis & {
-          serpent: {
+          keel: {
             library: {
               trashAssets(input: {
                 libraryId: string;
@@ -568,7 +568,7 @@ test("ordinary browsing continuously appends every asset without page controls",
             };
           };
         }
-      ).serpent;
+      ).keel;
       return serpent.library.trashAssets({ libraryId, assetIds });
     }, setup);
     expect(trashed.ok).toBe(true);

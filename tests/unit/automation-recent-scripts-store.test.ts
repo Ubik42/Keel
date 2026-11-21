@@ -34,16 +34,16 @@ describe('AutomationRecentScriptsStore', () => {
       })(),
     });
 
-    store.record('rating.serpent.ts', '/Users/test/scripts/rating.serpent.ts');
+    store.record('rating.keel.ts', '/Users/test/scripts/rating.keel.ts');
     expect(store.list()).toEqual([{
       handle: handleA,
-      displayName: 'rating.serpent.ts',
+      displayName: 'rating.keel.ts',
       lastOpenedAt: '2026-07-31T08:00:00.000Z',
     }]);
     expect(store.list().every((entry) => !('absolutePath' in entry))).toBe(true);
     // store 以 path.resolve 规范化存储（Windows 下会带盘符）
     expect(store.resolvePath(handleA)).toBe(
-      path.resolve('/Users/test/scripts/rating.serpent.ts'),
+      path.resolve('/Users/test/scripts/rating.keel.ts'),
     );
   });
 
@@ -57,24 +57,24 @@ describe('AutomationRecentScriptsStore', () => {
         return () => (next += 1) === 1 ? handleA : handleB;
       })(),
     });
-    const firstPath = '/tmp/first.serpent.ts';
-    const secondPath = '/tmp/second.serpent.ts';
+    const firstPath = '/tmp/first.keel.ts';
+    const secondPath = '/tmp/second.keel.ts';
 
-    store.record('first.serpent.ts', firstPath);
+    store.record('first.keel.ts', firstPath);
     tick = 1;
-    store.record('second.serpent.ts', secondPath);
+    store.record('second.keel.ts', secondPath);
     tick = 2;
-    store.record('first.serpent.ts', firstPath);
+    store.record('first.keel.ts', firstPath);
 
     expect(store.list()).toEqual([
       {
         handle: handleA,
-        displayName: 'first.serpent.ts',
+        displayName: 'first.keel.ts',
         lastOpenedAt: '2026-07-31T08:02:00.000Z',
       },
       {
         handle: handleB,
-        displayName: 'second.serpent.ts',
+        displayName: 'second.keel.ts',
         lastOpenedAt: '2026-07-31T08:01:00.000Z',
       },
     ]);

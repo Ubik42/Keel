@@ -48,7 +48,7 @@ export type SerpentMcpServerOptions = {
  */
 export const KEEL_MCP_INSTRUCTIONS = [
   'After initialize, call tools/list to discover the available Serpent tools.',
-  'Call serpent_library_list_open or serpent_library_list_recent to obtain a libraryId.',
+  'Call keel_library_list_open or keel_library_list_recent to obtain a libraryId.',
   'Every library-scoped tool call must include that explicit libraryId; desktop focus is never an implicit target.',
   'Critical operations first return an exact challenge and require a second confirmation call.',
 ].join(' ');
@@ -73,7 +73,7 @@ export function createSerpentMcpServer(options: SerpentMcpServerOptions): Server
   const { backend, gateway } = options;
   const server = new Server(
     {
-      name: options.serverName ?? 'serpent',
+      name: options.serverName ?? 'keel',
       version: options.serverVersion ?? String(AUTOMATION_API_VERSION),
     },
     {

@@ -22,7 +22,7 @@ export function resolveInspectorPreviewSrc(
     asset.thumbnailArtifactId &&
     library
   ) {
-    return `serpent://preview/${library.libraryId}/${asset.thumbnailArtifactId}`;
+    return `keel://preview/${library.libraryId}/${asset.thumbnailArtifactId}`;
   }
   if (
     library

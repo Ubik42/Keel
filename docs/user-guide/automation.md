@@ -31,7 +31,7 @@ MCP 是一种让外部 AI 工具读取和整理 Serpent 资产的连接方式。
 
 默认连接地址是 `http://127.0.0.1:47342/mcp`。每个客户端连接都有自己的授权。请妥善保护复制出的连接信息；不再使用某个客户端时，可以在 MCP 设置中撤销它。
 
-Agent 连接后会从 MCP 的服务器说明和 `tools/list` 自动获知基本用法，再调用 `serpent_library_list_open` 或 `serpent_library_list_recent` 获取 `libraryId`。如果 Agent 询问要操作哪个资源库，让它先列出资源库并使用返回的 ID。所有资源库相关操作都必须明确带上这个 `libraryId`；删除等关键操作还需要 Agent 的二次确认。
+Agent 连接后会从 MCP 的服务器说明和 `tools/list` 自动获知基本用法，再调用 `keel_library_list_open` 或 `keel_library_list_recent` 获取 `libraryId`。如果 Agent 询问要操作哪个资源库，让它先列出资源库并使用返回的 ID。所有资源库相关操作都必须明确带上这个 `libraryId`；删除等关键操作还需要 Agent 的二次确认。
 
 ![MCP 设置和客户端配置](../assets/ui/MCP-settings.png)
 

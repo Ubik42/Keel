@@ -50,10 +50,10 @@ test("saving auto sync while a manual WebDAV transfer is blocked returns before 
     await expect(window.getByText("Fixture", { exact: true }).first()).toBeVisible();
 
     const setup = await window.evaluate(async (baseUrl) => {
-      const api = (globalThis as typeof globalThis & { serpent: { library: {
+      const api = (globalThis as typeof globalThis & { keel: { library: {
         listOpen(): Promise<{ ok: boolean; value?: Array<{ libraryId: string }> }>;
         syncSaveServer(input: { baseUrl: string }): Promise<{ ok: boolean; value?: { id: string } }>;
-      } } }).serpent.library;
+      } } }).keel.library;
       const opened = await api.listOpen();
       const serverResult = await api.syncSaveServer({ baseUrl });
       const libraryId = opened.value?.[0]?.libraryId;
@@ -63,19 +63,19 @@ test("saving auto sync while a manual WebDAV transfer is blocked returns before 
     }, server.baseUrl);
 
     await window.evaluate(({ libraryId, serverId }) => {
-      const api = (globalThis as typeof globalThis & { serpent: { library: {
+      const api = (globalThis as typeof globalThis & { keel: { library: {
         syncRun(input: { libraryId: string; serverId: string; directoryName: string }): Promise<unknown>;
-      } } }).serpent.library;
+      } } }).keel.library;
       (globalThis as typeof globalThis & { __fixtureSyncRun?: Promise<unknown> }).__fixtureSyncRun =
         api.syncRun({ libraryId, serverId, directoryName: "Fixture" });
     }, setup);
     await putEntered;
 
     const saved = await window.evaluate(async ({ libraryId, serverId }) => {
-      const api = (globalThis as typeof globalThis & { serpent: { library: {
+      const api = (globalThis as typeof globalThis & { keel: { library: {
         syncSaveBinding(input: { libraryId: string; serverId: string; directoryName: string; enabled: boolean; pollIntervalMs: number; showCardSyncStatus: boolean }): Promise<{ ok: boolean }>;
         syncGetBinding(input: { libraryId: string }): Promise<{ ok: boolean; value?: { enabled?: boolean; pollIntervalMs?: number; showCardSyncStatus?: boolean } }>;
-      } } }).serpent.library;
+      } } }).keel.library;
       return Promise.race([
         (async () => {
           const save = await api.syncSaveBinding({
@@ -106,9 +106,9 @@ test("saving auto sync while a manual WebDAV transfer is blocked returns before 
     await new Promise((resolve) => setTimeout(resolve, 1_000));
     expect(manifestWrites).toBe(1);
     const after = await window.evaluate(async (libraryId) => {
-      const api = (globalThis as typeof globalThis & { serpent: { library: {
+      const api = (globalThis as typeof globalThis & { keel: { library: {
         syncGetBinding(input: { libraryId: string }): Promise<{ ok: boolean; value?: { enabled?: boolean; pollIntervalMs?: number; showCardSyncStatus?: boolean } }>;
-      } } }).serpent.library;
+      } } }).keel.library;
       return api.syncGetBinding({ libraryId });
     }, setup.libraryId);
     expect(after.value).toMatchObject({ enabled: true, pollIntervalMs: 60_000, showCardSyncStatus: false });

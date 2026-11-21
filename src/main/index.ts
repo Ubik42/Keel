@@ -526,7 +526,13 @@ import {
   cleanupClipboardImage,
   cleanupStaleClipboardImages,
 } from "./desktop-ingestion";
-import { serpentProtocolSchemes } from "./serpent-protocol-privileges";
+import {
+  KEEL_PLUGIN_PROTOCOL_SCHEME,
+  KEEL_PROTOCOL_SCHEME,
+  handleProtocolWithLegacyAlias,
+  legacyProtocolSchemes,
+  serpentProtocolSchemes,
+} from "./serpent-protocol-privileges";
 import {
   parsePluginUiAssetRequestFromNavigation,
   rewritePluginUiHtmlAssetUrls,
@@ -587,8 +593,8 @@ if (allowMultiInstance && process.env.KEEL_E2E !== "1") {
 }
 
 // Before app.ready: stream privilege is required for seekable <video>/<audio>
-// over serpent:// Range responses (Serpent-jh2).
-protocol.registerSchemesAsPrivileged(serpentProtocolSchemes());
+// over keel:// Range responses (Serpent-jh2).
+protocol.registerSchemesAsPrivileged([...serpentProtocolSchemes(), ...legacyProtocolSchemes()]);
 
 // E2E（本地/CI）：虚拟化 runner 的 GPU 不可靠，白屏会让所有交互测试
 // 超时（CI mac 上 69 个 E2E 全挂）。禁用硬件加速换取稳定渲染。
@@ -941,7 +947,7 @@ function pendingLibraryCleanupPath(): string {
 
 // Serpent-65d837: backoff schedule for asking the Worker to remove `.del-*`
 // aside roots left behind by a disk deletion. Windows handles (Defender scan,
-// Explorer, lingering `serpent://` streams) usually close within seconds, so a
+// Explorer, lingering `keel://` streams) usually close within seconds, so a
 // few short retries resolve it without user action; anything still remaining
 // stays persisted and is retried on the next app launch.
 const PENDING_CLEANUP_RETRY_DELAYS_MS = [1_000, 2_000, 4_000, 8_000, 16_000, 30_000];
@@ -2218,7 +2224,7 @@ async function createMainWindow(): Promise<void> {
   window.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
   window.webContents.on("will-navigate", (event) => event.preventDefault());
   window.webContents.session.on("will-download", (event, item) => {
-    if (item.getURL().startsWith("serpent-plugin:")) event.preventDefault();
+    if (item.getURL().startsWith("keel-plugin:")) event.preventDefault();
   });
   // VIEWER-018: letter keys under CJK IME — Menu accelerators + IMM32 suspend
   // are primary on Windows; before-input remains a cross-platform fallback.
@@ -3097,7 +3103,7 @@ async function selectAutomationScriptToOpen(): Promise<string | undefined> {
     createNativeDialogHost(),
     'openAutomationScript',
     process.env.KEEL_E2E_OPEN_AUTOMATION_SCRIPT,
-    [{ name: 'Serpent scripts', extensions: ['serpent.js', 'serpent.ts'] }],
+    [{ name: 'Keel scripts', extensions: ['keel.js', 'keel.ts', 'serpent.js', 'serpent.ts'] }],
   );
 }
 
@@ -3107,8 +3113,8 @@ async function selectAutomationScriptToSave(): Promise<string | undefined> {
     'saveAutomationScript',
     process.env.KEEL_E2E_SAVE_AUTOMATION_SCRIPT,
     {
-      defaultPath: 'Untitled.serpent.ts',
-      filters: [{ name: 'Serpent scripts', extensions: ['serpent.js', 'serpent.ts'] }],
+      defaultPath: 'Untitled.keel.ts',
+      filters: [{ name: 'Keel scripts', extensions: ['keel.js', 'keel.ts'] }],
     },
   );
 }
@@ -5985,10 +5991,10 @@ async function startApplication(): Promise<void> {
     sendToLiveWebContents(mainWindow?.webContents, THUMBNAIL_CHANNEL, event);
   });
 
-  // Register serpent:// custom protocol for serving thumbnail/preview artifacts.
-  // The renderer uses serpent://preview/<libraryId>/<artifactId> URLs in <img> tags.
+  // Register keel:// custom protocol for serving thumbnail/preview artifacts.
+  // The renderer uses keel://preview/<libraryId>/<artifactId> URLs in <img> tags.
   // Main resolves the artifact path via Worker, reads the file, and returns bytes.
-  protocol.handle("serpent", async (request) => {
+  handleProtocolWithLegacyAlias(protocol, KEEL_PROTOCOL_SCHEME, async (request) => {
     try {
       const url = new URL(request.url);
       if (url.hostname === APP_ASSET_HOST) {
@@ -6064,7 +6070,7 @@ async function startApplication(): Promise<void> {
           "serpent-protocol.invalid-host",
           "Rejected unsupported artifact protocol host.",
         );
-        return new Response("Invalid serpent:// path", { status: 400 });
+        return new Response("Invalid keel:// path", { status: 400 });
       }
       // Serpent-866c20：序列帧确认面板要在导入前预览候选帧。Renderer 只拿到
       // Main 自己发出的不透明 offerId 与帧号，真实路径由这里从候选清单解析——
@@ -6397,7 +6403,7 @@ async function startApplication(): Promise<void> {
     }
   });
 
-  protocol.handle("serpent-plugin", async (request) => {
+  handleProtocolWithLegacyAlias(protocol, KEEL_PLUGIN_PROTOCOL_SCHEME, async (request) => {
     const parsed = parsePluginUiAssetRequestFromNavigation(
       request.url,
       request.headers.get("referer") ?? request.headers.get("Referer"),
@@ -6423,7 +6429,7 @@ async function startApplication(): Promise<void> {
           "utf8",
         );
       }
-      const pluginOrigin = `serpent-plugin://${parsed.pluginId}`;
+      const pluginOrigin = `keel-plugin://${parsed.pluginId}`;
       return new Response(new Uint8Array(body), {
         headers: {
           "cache-control": "no-store",
