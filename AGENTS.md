@@ -1,6 +1,6 @@
 # 本地开发约定
 
-- 本仓库是 Ubik42/Serpent 的个人版本。默认直接在 main 分支开发并推送 origin；upstream 保留 dolag233/Serpent，用于获取上游更新。
+- 本仓库基于 dolag233/Serpent（MIT），2026-11-21 起独立开发，不再合并上游，正在改名为 Ouro。长期任务入口为 GOAL.md，计划与进度记录在 docs/进度.md。默认直接在 main 分支开发，推送只在用户要求时进行；upstream 只作参考。
 - 工程固定在 D:\manage\_tools\Serpent。开发版使用独立配置目录，图形启动入口为 Start-Serpent.exe，命令行入口保留 Start-Serpent.cmd。
 - 新建资源库默认 storageLayout=root，用户可以选择 assets。没有 storage-layout.json 的旧库按 Assets 模式打开。现有库的布局不自动转换。
 - useExistingFolder=true 时，在所选现有目录中创建根目录资源库。只创建 .serpent；已有元数据时拒绝覆盖；初始化失败只清理本次创建的元数据。
