@@ -11,7 +11,7 @@ import type { ThemePreferencesStorage } from './theme-preferences';
  * semantic color editor. They provide one stable accent that can be paired
  * with any theme profile without replacing the profile's surface palette.
  */
-export const THEME_ACCENT_PREF_KEY = 'serpent.theme-accent.v1';
+export const THEME_ACCENT_PREF_KEY = 'keel.theme-accent.v1';
 
 export const THEME_ACCENT_PRESETS = [
   { id: 'blue', hex: ACCENT_PRESET_HEX[0], labelKey: 'settings.themeAccentBlue' },

@@ -21,7 +21,7 @@ import type { ThemePreferencesStorage } from './theme-preferences';
  * null while a built-in profile is selected.
  */
 export const USER_THEMES_VERSION = 1 as const;
-export const USER_THEMES_KEY = 'serpent.user-themes.v1';
+export const USER_THEMES_KEY = 'keel.user-themes.v1';
 export const USER_THEME_NAME_MAX = 40;
 export const USER_THEMES_MAX = 48;
 

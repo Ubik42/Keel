@@ -27,7 +27,7 @@ export interface TagFilterRecencyStorage {
   removeItem(key: string): void;
 }
 
-export const TAG_FILTER_RECENCY_KEY = "serpent.tag-filter-recency.v1";
+export const TAG_FILTER_RECENCY_KEY = "keel.tag-filter-recency.v1";
 export const TAG_FILTER_RECENCY_LIMIT = 8;
 
 export const DEFAULT_TAG_FILTER_RECENCY: TagFilterRecency = {

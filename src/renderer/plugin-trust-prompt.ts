@@ -68,7 +68,7 @@ export function collectPendingLibraryPluginTrust(
   return pending.sort((left, right) => left.pluginId.localeCompare(right.pluginId));
 }
 
-const DISMISS_STORAGE_KEY = 'serpent.plugin-trust-prompt.dismissed.v1';
+const DISMISS_STORAGE_KEY = 'keel.plugin-trust-prompt.dismissed.v1';
 
 type DismissStore = Record<string, string[]>;
 

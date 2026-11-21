@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const IMAGE_ROTATION_PREFERENCES_KEY = "serpent.image-rotation.v1";
+export const IMAGE_ROTATION_PREFERENCES_KEY = "keel.image-rotation.v1";
 
 export interface ImageRotationPreferences {
   readonly version: 1;

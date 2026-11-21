@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const TASK_COMPLETION_SOUND_PREFERENCES_KEY =
-  "serpent.task-completion-sound.v1";
+  "keel.task-completion-sound.v1";
 
 export interface TaskCompletionSoundPreferences {
   readonly version: 1;

@@ -7,7 +7,7 @@ import {
 } from "../shared/color-filter-presets";
 import { isColorHex, normalizeColorHex } from "../shared/color-hsl";
 
-export const COLOR_FILTER_PREFS_KEY = "serpent.color-filter-prefs.v1";
+export const COLOR_FILTER_PREFS_KEY = "keel.color-filter-prefs.v1";
 export const MAX_CUSTOM_FILTER_COLORS = 12;
 
 const hexSchema = z.string().regex(/^#[0-9A-Fa-f]{6}$/u);

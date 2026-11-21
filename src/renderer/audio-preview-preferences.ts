@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const AUDIO_PREVIEW_PREFERENCES_KEY = "serpent.audio-preview.v1";
+export const AUDIO_PREVIEW_PREFERENCES_KEY = "keel.audio-preview.v1";
 
 export interface AudioPreviewPreferences {
   readonly version: 1;

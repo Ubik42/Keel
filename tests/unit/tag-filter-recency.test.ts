@@ -64,13 +64,13 @@ describe("tag-filter-recency (REQ-FILTER-020)", () => {
     );
     expect(
       loadTagFilterRecency(
-        memoryStorage({ "serpent.tag-filter-recency.v1": "{not-json" }),
+        memoryStorage({ "keel.tag-filter-recency.v1": "{not-json" }),
       ),
     ).toEqual(DEFAULT_TAG_FILTER_RECENCY);
     expect(
       loadTagFilterRecency(
         memoryStorage({
-          "serpent.tag-filter-recency.v1": JSON.stringify({ version: 2 }),
+          "keel.tag-filter-recency.v1": JSON.stringify({ version: 2 }),
         }),
       ),
     ).toEqual(DEFAULT_TAG_FILTER_RECENCY);

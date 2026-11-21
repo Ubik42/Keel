@@ -6,7 +6,7 @@
 /** Enough settled queries to fill four wrapped rows of short chips. */
 export const SEARCH_HISTORY_LIMIT = 24;
 export const SEARCH_HISTORY_ROW_LIMIT = 4;
-export const SEARCH_HISTORY_STORAGE_KEY = "serpent.search-history.v1";
+export const SEARCH_HISTORY_STORAGE_KEY = "keel.search-history.v1";
 
 export type SearchHistoryStorage = {
   getItem(key: string): string | null;

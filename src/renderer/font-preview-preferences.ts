@@ -16,7 +16,7 @@ import {
   type FontPreviewLanguage,
 } from './font-viewer-settings';
 
-export const FONT_PREVIEW_TEXT_PREF_KEY = 'serpent.font-preview-text.v1';
+export const FONT_PREVIEW_TEXT_PREF_KEY = 'keel.font-preview-text.v1';
 
 export type FontPreviewTexts = Readonly<Partial<Record<FontPreviewLanguage, string>>>;
 

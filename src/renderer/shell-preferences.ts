@@ -49,7 +49,7 @@ const shellPreferencesSchema = z.object({
     .max(INSPECTOR_PANEL_WIDTH_MAX),
 });
 
-export const SHELL_PREF_KEY = 'serpent.shell-prefs.v1';
+export const SHELL_PREF_KEY = 'keel.shell-prefs.v1';
 
 export const DEFAULT_SHELL_PREFERENCES: ShellPreferences = {
   version: 1,

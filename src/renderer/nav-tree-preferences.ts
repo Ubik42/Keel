@@ -21,7 +21,7 @@ const navTreePreferencesSchema = z.object({
   collapsedFolderIds: z.array(z.string().min(1)).max(2000),
 });
 
-export const NAV_TREE_PREF_KEY = "serpent.nav-tree-prefs.v1";
+export const NAV_TREE_PREF_KEY = "keel.nav-tree-prefs.v1";
 
 export const DEFAULT_NAV_TREE_PREFERENCES: NavTreePreferences = {
   version: 1,

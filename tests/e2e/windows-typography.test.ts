@@ -272,7 +272,7 @@ test("uses coherent Windows UI fonts and readable caption sizes", async (
 
     await window.evaluate(() => {
       localStorage.setItem(
-        "serpent.theme-prefs.v1",
+        "keel.theme-prefs.v1",
         JSON.stringify({ version: 1, theme: "light" }),
       );
     });

@@ -22,7 +22,7 @@ import {
   type ModelDisplayMode,
 } from './model-display-mode';
 
-export const VIEWER3D_PREFERENCES_KEY = 'serpent.viewer3d.preferences';
+export const VIEWER3D_PREFERENCES_KEY = 'keel.viewer3d.preferences';
 
 export interface Viewer3dPreferences {
   presetId: HdriPresetId;

@@ -70,7 +70,7 @@ test('uses the shared search and tag expressions to filter real asset cards', as
     await expect(assetCard).toHaveCount(0);
     await searchBox.fill('tag=角色');
     await expect(assetCard).toBeVisible();
-    await expect.poll(() => window.evaluate(() => window.localStorage.getItem('serpent.search-history.v1'))).toContain('tag=角色');
+    await expect.poll(() => window.evaluate(() => window.localStorage.getItem('keel.search-history.v1'))).toContain('tag=角色');
     await searchBox.fill('tag=角');
     await expect(window.locator('.search-history-item').filter({ hasText: 'tag=角色' })).toBeVisible();
     await searchBox.evaluate((input: HTMLInputElement) => input.setSelectionRange(input.value.length, input.value.length));

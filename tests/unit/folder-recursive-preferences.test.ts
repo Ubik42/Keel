@@ -55,7 +55,7 @@ describe('folder-recursive-preferences (REQ-FOLDER-009)', () => {
 
   it('rejects corrupt storage', () => {
     const storage = memoryStorage({
-      'serpent.folder-recursive.v1': '{not-json',
+      'keel.folder-recursive.v1': '{not-json',
     });
     expect(loadFolderRecursivePreferences(storage)).toEqual(
       DEFAULT_FOLDER_RECURSIVE_PREFERENCES,

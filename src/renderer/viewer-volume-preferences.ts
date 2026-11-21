@@ -12,7 +12,7 @@ export interface ViewerVolumePreferences {
   readonly muted: boolean;
 }
 
-export const VIEWER_VOLUME_PREF_KEY = "serpent.viewer-volume.v1";
+export const VIEWER_VOLUME_PREF_KEY = "keel.viewer-volume.v1";
 export const VIEWER_VOLUME_STEP = 0.05;
 
 const viewerVolumeSchema = z.object({

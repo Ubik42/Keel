@@ -24,7 +24,7 @@ export type StoredWorkspaceTabsSession = {
 const MAX_STORED_TABS = 50;
 
 export function workspaceTabsSessionKey(libraryId: string): string {
-  return `serpent.workspace-tabs.v1.${libraryId}`;
+  return `keel.workspace-tabs.v1.${libraryId}`;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

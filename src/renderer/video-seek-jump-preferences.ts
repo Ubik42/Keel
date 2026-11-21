@@ -16,7 +16,7 @@ export interface VideoSeekJumpPreferences {
   readonly percent: number;
 }
 
-export const VIDEO_SEEK_JUMP_PREFERENCES_KEY = "serpent.video-seek-jump.v1";
+export const VIDEO_SEEK_JUMP_PREFERENCES_KEY = "keel.video-seek-jump.v1";
 
 export const VIDEO_SEEK_JUMP_MIN_SECONDS = 0.1;
 export const VIDEO_SEEK_JUMP_MAX_SECONDS = 3600;

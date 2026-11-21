@@ -18,7 +18,7 @@ export interface RadiusPreferencesStorage {
   removeItem?(key: string): void;
 }
 
-export const RADIUS_PREF_KEY = "serpent.radius-prefs.v1";
+export const RADIUS_PREF_KEY = "keel.radius-prefs.v1";
 
 export const RADIUS_LEVEL_MIN = 0;
 export const RADIUS_LEVEL_MAX = 3;

@@ -107,9 +107,9 @@ const canvasPreferencesSchema = z
 // Constants
 // ---------------------------------------------------------------------------
 
-export const PREF_KEY = 'serpent.canvas-prefs.v1';
-const LEGACY_VIEW_MODE_KEY = 'serpent.asset-view-mode';
-const LEGACY_CARD_SIZE_KEY = 'serpent.asset-card-size';
+export const PREF_KEY = 'keel.canvas-prefs.v1';
+const LEGACY_VIEW_MODE_KEY = 'keel.asset-view-mode';
+const LEGACY_CARD_SIZE_KEY = 'keel.asset-card-size';
 
 export const DEFAULT_CANVAS_PREFERENCES: CanvasPreferences = {
   version: 1,
@@ -172,8 +172,8 @@ function resolveStorage(storage?: CanvasPreferencesStorage): CanvasPreferencesSt
 // ---------------------------------------------------------------------------
 
 /**
- * Attempt to migrate from the legacy flat keys (`serpent.asset-view-mode` and
- * `serpent.asset-card-size`).  Returns `undefined` when neither key is present
+ * Attempt to migrate from the legacy flat keys (`keel.asset-view-mode` and
+ * `keel.asset-card-size`).  Returns `undefined` when neither key is present
  * or when the stored values cannot be parsed.
  */
 function migrateLegacy(
@@ -218,7 +218,7 @@ function migrateLegacy(
  * - Returns a stored v1 value only after it passes Zod validation.
  * - When v1 is absent, corrupt, or invalid (unknown version, out-of-range
  *   cardSize, invalid viewMode, etc.), attempts migration from the complete
- *   legacy pair `serpent.asset-view-mode` + `serpent.asset-card-size`.
+ *   legacy pair `keel.asset-view-mode` + `keel.asset-card-size`.
  * - Legacy keys are cleared on successful migration. If migration fails
  *   because the pair is incomplete or invalid, falls back to defaults.
  */

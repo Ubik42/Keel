@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const IMAGE_SEQUENCE_PREFERENCES_KEY = "serpent.image-sequence.v1";
+export const IMAGE_SEQUENCE_PREFERENCES_KEY = "keel.image-sequence.v1";
 
 export interface ImageSequencePreferencesStorage {
   getItem(key: string): string | null;

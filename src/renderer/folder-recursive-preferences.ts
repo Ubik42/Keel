@@ -21,7 +21,7 @@ export interface FolderRecursivePreferencesStorage {
   removeItem(key: string): void;
 }
 
-export const FOLDER_RECURSIVE_PREF_KEY = 'serpent.folder-recursive.v1';
+export const FOLDER_RECURSIVE_PREF_KEY = 'keel.folder-recursive.v1';
 
 export const DEFAULT_FOLDER_RECURSIVE_PREFERENCES: FolderRecursivePreferences = {
   version: 1,

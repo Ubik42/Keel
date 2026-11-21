@@ -34,7 +34,7 @@ export function TagTreeSidebar(props: TagTreeSidebarProps) {
   const t = useT();
   const [appearanceDraft, setAppearanceDraft] = useState<{ id: string; value: EntityAppearance | null } | null>(null);
   const [query, setQuery] = useState('');
-  const storageKey = `serpent.tag-tree.collapsed.${props.libraryId}`;
+  const storageKey = `keel.tag-tree.collapsed.${props.libraryId}`;
   const [collapsed, setCollapsed] = useState<Set<string>>(() => {
     try { return new Set(JSON.parse(localStorage.getItem(storageKey) ?? '[]') as string[]); } catch { return new Set(); }
   });

@@ -102,9 +102,9 @@ const SOURCES = [
 
 async function applyTheme(window: Page, theme: ThemeCase): Promise<void> {
   await window.evaluate((value) => {
-    localStorage.setItem("serpent.theme-prefs.v1", JSON.stringify({ version: 1, theme: value.mode }));
+    localStorage.setItem("keel.theme-prefs.v1", JSON.stringify({ version: 1, theme: value.mode }));
     localStorage.setItem(
-      "serpent.theme-profile.v3",
+      "keel.theme-profile.v3",
       JSON.stringify({ version: 3, preset: value.preset, overrides: {} }),
     );
   }, theme);

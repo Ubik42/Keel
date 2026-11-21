@@ -59,11 +59,11 @@ describe('background preferences contract v3', () => {
     );
     expect(validateBackgroundPreferences(DEFAULT_BACKGROUND_PREFERENCES)).toBe(true);
     expect(BACKGROUND_PREFERENCES_KEY).toBe(
-      'serpent.background-preferences.v3',
+      'keel.background-preferences.v3',
     );
     expect(BACKGROUND_PREFERENCES_LEGACY_KEYS).toEqual([
-      'serpent.background-preferences.v2',
-      'serpent.background-preferences.v1',
+      'keel.background-preferences.v2',
+      'keel.background-preferences.v1',
     ]);
   });
 

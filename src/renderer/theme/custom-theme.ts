@@ -9,7 +9,7 @@ import type { ThemePreferencesStorage } from './theme-preferences';
  * elevation, and stacking tokens are not user-overridable through this API.
  */
 export const CUSTOM_THEME_VERSION = 1 as const;
-export const CUSTOM_THEME_PREF_KEY = 'serpent.custom-theme.v1';
+export const CUSTOM_THEME_PREF_KEY = 'keel.custom-theme.v1';
 
 export const CUSTOM_THEME_COLOR_TOKENS = [
   '--ui-surface-canvas',

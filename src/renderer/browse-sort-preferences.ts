@@ -23,7 +23,7 @@ export interface BrowseSortPreferencesStorage {
   removeItem(key: string): void;
 }
 
-export const BROWSE_SORT_PREF_KEY = 'serpent.browse-sort-prefs.v1';
+export const BROWSE_SORT_PREF_KEY = 'keel.browse-sort-prefs.v1';
 
 export const DEFAULT_BROWSE_SORT_PREFERENCES: BrowseSortPreferences = {
   version: 1,

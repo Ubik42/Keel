@@ -23,7 +23,7 @@ const aiUiPreferencesSchema = z.object({
   showAiBadges: z.boolean(),
 });
 
-export const AI_UI_PREF_KEY = "serpent.ai-ui-prefs.v1";
+export const AI_UI_PREF_KEY = "keel.ai-ui-prefs.v1";
 
 export const DEFAULT_AI_UI_PREFERENCES: AiUiPreferences = {
   version: 1,

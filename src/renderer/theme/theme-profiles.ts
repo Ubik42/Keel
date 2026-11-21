@@ -22,9 +22,9 @@ import type { ThemePreferencesStorage } from './theme-preferences';
  * a profile no longer switches the global light/dark preference.
  */
 export const THEME_PROFILE_VERSION = 3 as const;
-export const THEME_PROFILE_PREF_KEY = 'serpent.theme-profile.v3';
+export const THEME_PROFILE_PREF_KEY = 'keel.theme-profile.v3';
 /** v2 persisted key: four fixed presets (vscode-dark/serpent-dark/serpent-light/soft-light). */
-export const THEME_PROFILE_LEGACY_KEY = 'serpent.theme-profile.v2';
+export const THEME_PROFILE_LEGACY_KEY = 'keel.theme-profile.v2';
 
 export const THEME_PROFILE_IDS = ['serpent', 'vscode', 'soft', 'midnight', 'mist', 'sand', 'forest', 'indigo', 'rose', 'ocean', 'copper', 'ink', 'lilac', 'citrus', 'paper', 'slate', 'film', 'mono', 'blush', 'olive', 'charcoal', 'silver', 'graphite', 'smoke', 'ash', 'notion', 'onedark', 'code', 'azure', 'teal', 'jade', 'amber', 'orchid', 'coral'] as const;
 

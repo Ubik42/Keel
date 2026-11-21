@@ -21,7 +21,7 @@ export interface SemanticSearchPreferencesStorage {
   setItem(key: string, value: string): void;
 }
 
-export const SEMANTIC_SEARCH_PREF_KEY = "serpent.semantic-search.v1";
+export const SEMANTIC_SEARCH_PREF_KEY = "keel.semantic-search.v1";
 
 export const DEFAULT_SEMANTIC_SEARCH_PREFERENCES: SemanticSearchPreferences = {
   version: 1,

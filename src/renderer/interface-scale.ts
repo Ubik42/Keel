@@ -1,4 +1,4 @@
-export const INTERFACE_SCALE_KEY = 'serpent.interface-scale.v1';
+export const INTERFACE_SCALE_KEY = 'keel.interface-scale.v1';
 export function normalizeInterfaceScale(value: unknown): number {
   return typeof value === 'number' && Number.isFinite(value) ? Math.max(75, Math.min(200, Math.round(value / 5) * 5)) : 100;
 }

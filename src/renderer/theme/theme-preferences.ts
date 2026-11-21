@@ -20,7 +20,7 @@ export interface ThemePreferencesStorage {
 
 const themePreferenceSchema = z.enum(['light', 'dark', 'system']);
 
-export const THEME_PREF_KEY = 'serpent.theme-prefs.v1';
+export const THEME_PREF_KEY = 'keel.theme-prefs.v1';
 
 /** First-run / empty-storage preference (product: follow system). */
 export const DEFAULT_THEME_PREFERENCE: ThemePreference = 'system';

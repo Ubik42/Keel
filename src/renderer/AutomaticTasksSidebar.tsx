@@ -38,7 +38,7 @@ export function AutomaticTasksSidebar(props: {
     try {
       return new Set(
         JSON.parse(
-          localStorage.getItem(`serpent.task-groups.collapsed.${libraryId}`) ??
+          localStorage.getItem(`keel.task-groups.collapsed.${libraryId}`) ??
             "[]",
         ),
       );
@@ -143,7 +143,7 @@ export function AutomaticTasksSidebar(props: {
     setCollapsed(next);
     try {
       localStorage.setItem(
-        `serpent.task-groups.collapsed.${libraryId}`,
+        `keel.task-groups.collapsed.${libraryId}`,
         JSON.stringify([...next]),
       );
     } catch {

@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 /** Versioned renderer-owned persistence key for the application backdrop. */
 export const BACKGROUND_PREFERENCES_VERSION = 3 as const;
-export const BACKGROUND_PREFERENCES_KEY = 'serpent.background-preferences.v3';
+export const BACKGROUND_PREFERENCES_KEY = 'keel.background-preferences.v3';
 /**
  * Legacy persisted keys. v1 stored images without metadata and rejected user
  * files above ~3 MB; v2 added auto-compression and image provenance, kept a
@@ -11,8 +11,8 @@ export const BACKGROUND_PREFERENCES_KEY = 'serpent.background-preferences.v3';
  * slider (inverted semantics), and replaces `cover` with `fill`.
  */
 export const BACKGROUND_PREFERENCES_LEGACY_KEYS = [
-  'serpent.background-preferences.v2',
-  'serpent.background-preferences.v1',
+  'keel.background-preferences.v2',
+  'keel.background-preferences.v1',
 ] as const;
 
 /**

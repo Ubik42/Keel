@@ -32,7 +32,7 @@ export interface ShadowPreferencesStorage {
   removeItem(key: string): void;
 }
 
-export const SHADOW_PREF_KEY = "serpent.shadow-prefs.v1";
+export const SHADOW_PREF_KEY = "keel.shadow-prefs.v1";
 
 export const SHADOW_LEVEL_MIN = 0;
 export const SHADOW_LEVEL_MAX = 3;

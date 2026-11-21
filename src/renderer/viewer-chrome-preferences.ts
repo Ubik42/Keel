@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const VIEWER_CHROME_PREFERENCES_KEY = "serpent.viewer-chrome.v1";
+export const VIEWER_CHROME_PREFERENCES_KEY = "keel.viewer-chrome.v1";
 
 export interface ViewerChromePreferencesStorage {
   getItem(key: string): string | null;

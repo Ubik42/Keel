@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'serpent.show-missing-linked-files';
+const STORAGE_KEY = 'keel.show-missing-linked-files';
 
 export interface LinkedMissingPreferenceStorage {
   getItem(key: string): string | null;

@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { customThemeSchema, type CustomTheme } from './custom-theme';
 import type { ThemePreferencesStorage } from './theme-preferences';
 
-export const THEME_COLOR_DRAFTS_KEY = 'serpent.theme-color-drafts.v1';
+export const THEME_COLOR_DRAFTS_KEY = 'keel.theme-color-drafts.v1';
 const draftSchema = z.strictObject({
   customTheme: customThemeSchema,
   accentHex: z.string().regex(/^#[0-9a-f]{6}$/iu).nullable(),

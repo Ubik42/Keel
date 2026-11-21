@@ -35,7 +35,7 @@ export type BrowseStateForSession = {
 const SCOPED_KINDS = new Set(["folder", "tag"]);
 
 export function browserSessionKey(libraryId: string): string {
-  return `serpent.browser-session.v1.${libraryId}`;
+  return `keel.browser-session.v1.${libraryId}`;
 }
 
 export function readBrowserSession(

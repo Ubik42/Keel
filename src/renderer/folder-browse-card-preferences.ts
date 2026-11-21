@@ -5,7 +5,7 @@ import { z } from "zod";
 // ---------------------------------------------------------------------------
 
 export const FOLDER_BROWSE_CARD_PREFERENCES_KEY =
-  "serpent.folder-browse-cards.v1";
+  "keel.folder-browse-cards.v1";
 
 export const FOLDER_BROWSE_CARD_PREFERENCES_CHANGED =
   "serpent:folder-browse-cards-changed";

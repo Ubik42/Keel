@@ -11,7 +11,7 @@ export interface ImportConflictPreferencesStorage {
   removeItem(key: string): void;
 }
 
-export const IMPORT_CONFLICT_PREF_KEY = 'serpent.import-conflict.v1';
+export const IMPORT_CONFLICT_PREF_KEY = 'keel.import-conflict.v1';
 
 export type RememberedNameConflictDecision = 'keep-both' | 'replace' | 'skip';
 export type RememberedDuplicateDecision = 'skip' | 'merge' | 'create-copy';

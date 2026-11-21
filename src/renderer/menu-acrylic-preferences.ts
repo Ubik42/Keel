@@ -13,7 +13,7 @@ export interface MenuAcrylicPreferencesStorage {
   setItem(key: string, value: string): void;
 }
 
-export const MENU_ACRYLIC_PREF_KEY = "serpent.menu-acrylic-prefs.v1";
+export const MENU_ACRYLIC_PREF_KEY = "keel.menu-acrylic-prefs.v1";
 export const MENU_ACRYLIC_LEVEL_MIN = 0;
 export const MENU_ACRYLIC_LEVEL_MAX = 3;
 

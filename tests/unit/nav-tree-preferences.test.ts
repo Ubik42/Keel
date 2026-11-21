@@ -45,7 +45,7 @@ describe("nav-tree-preferences", () => {
 
   it("drops legacy collapsedCollectionIds from v1 data", () => {
     const storage = memoryStorage({
-      "serpent.nav-tree-prefs.v1": JSON.stringify({
+      "keel.nav-tree-prefs.v1": JSON.stringify({
         version: 1,
         collapsedFolderIds: ["f1"],
         collapsedCollectionIds: ["col-a"],

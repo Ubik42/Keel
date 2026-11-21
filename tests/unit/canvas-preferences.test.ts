@@ -37,8 +37,8 @@ function createStorageStub(initial?: Record<string, string>): StorageStub {
   };
 }
 
-const LEGACY_VIEW_MODE_KEY = 'serpent.asset-view-mode';
-const LEGACY_CARD_SIZE_KEY = 'serpent.asset-card-size';
+const LEGACY_VIEW_MODE_KEY = 'keel.asset-view-mode';
+const LEGACY_CARD_SIZE_KEY = 'keel.asset-card-size';
 
 describe('loadCanvasPreferences', () => {
   it('returns defaults when the key is absent', () => {

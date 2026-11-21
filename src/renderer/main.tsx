@@ -1,3 +1,4 @@
+import './migrate-legacy-storage';
 import { applyInterfaceScale, loadInterfaceScale } from './interface-scale';
 import '@fontsource-variable/noto-sans-sc/index.css';
 // Windows-only HarmonyOS face; vite aliases this to an empty stub on macOS/Linux

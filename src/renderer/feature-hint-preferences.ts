@@ -10,7 +10,7 @@ import { z } from "zod";
 // and is then marked as seen so it never repeats.
 // ---------------------------------------------------------------------------
 
-export const FEATURE_HINT_PREFERENCES_KEY = "serpent.feature-hints.v2";
+export const FEATURE_HINT_PREFERENCES_KEY = "keel.feature-hints.v2";
 
 export interface FeatureHintPreferences {
   readonly version: 2;

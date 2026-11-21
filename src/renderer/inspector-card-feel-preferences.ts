@@ -17,7 +17,7 @@ export interface InspectorCardFeelPreferencesStorage {
 }
 
 export const INSPECTOR_CARD_FEEL_PREF_KEY =
-  "serpent.inspector-card-feel-prefs.v1";
+  "keel.inspector-card-feel-prefs.v1";
 
 const inspectorCardFeelPreferencesSchema = z.object({
   version: z.literal(1),

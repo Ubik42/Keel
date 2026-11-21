@@ -62,7 +62,7 @@ async function writeMixedAspectPng(sourcePath: string, index: number) {
 
 async function storedCardSize(window: Page): Promise<number> {
   return window.evaluate(() => {
-    const raw = localStorage.getItem("serpent.canvas-prefs.v1");
+    const raw = localStorage.getItem("keel.canvas-prefs.v1");
     const parsed = raw ? (JSON.parse(raw) as { cardSize?: unknown }) : null;
     return typeof parsed?.cardSize === "number" ? parsed.cardSize : 160;
   });
@@ -231,7 +231,7 @@ test("restores canvas preferences after a full restart", async () => {
 
     // Verify localStorage contains the correct persisted object
     const storedPrefs = await window.evaluate(() => {
-      const raw = localStorage.getItem("serpent.canvas-prefs.v1");
+      const raw = localStorage.getItem("keel.canvas-prefs.v1");
       return raw ? JSON.parse(raw) : null;
     });
     expect(storedPrefs).toEqual(expect.objectContaining({

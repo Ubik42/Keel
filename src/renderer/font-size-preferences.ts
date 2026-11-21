@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const FONT_SIZE_PREFERENCES_KEY = "serpent.font-size-preferences.v1";
+export const FONT_SIZE_PREFERENCES_KEY = "keel.font-size-preferences.v1";
 export const FONT_SIZE_PREFERENCES_VERSION = 1;
 
 export const FONT_SIZE_OPTIONS = [

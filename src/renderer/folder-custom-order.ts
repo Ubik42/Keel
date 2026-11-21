@@ -6,7 +6,7 @@
  * numeric sequence per row is enough.
  */
 
-const FOLDER_STORAGE_PREFIX = "serpent.folder-custom-order.v1.";
+const FOLDER_STORAGE_PREFIX = "keel.folder-custom-order.v1.";
 
 export type FolderDropEdge = "before" | "after";
 

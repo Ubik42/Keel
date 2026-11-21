@@ -31,7 +31,7 @@ const folderSortPreferencesSchema = z.object({
   order: z.enum(["asc", "desc"]).optional(),
 });
 
-export const FOLDER_SORT_PREF_KEY = "serpent.folder-sort-prefs.v1";
+export const FOLDER_SORT_PREF_KEY = "keel.folder-sort-prefs.v1";
 
 export const DEFAULT_FOLDER_SORT_PREFERENCES: FolderSortPreferences = {
   version: 1,

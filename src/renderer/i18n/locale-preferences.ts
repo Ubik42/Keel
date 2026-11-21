@@ -22,7 +22,7 @@ export interface LocalePreferencesStorage {
 const localePreferenceSchema = z.enum(['system', 'zh-CN', 'en']);
 const appLocaleSchema = z.enum(['zh-CN', 'en']);
 
-export const LOCALE_PREF_KEY = 'serpent.locale-prefs.v1';
+export const LOCALE_PREF_KEY = 'keel.locale-prefs.v1';
 
 /** Fallback catalog / translator fallback when a key is missing. */
 export const DEFAULT_LOCALE: AppLocale = 'zh-CN';

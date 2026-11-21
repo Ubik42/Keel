@@ -5,7 +5,7 @@ import { z } from 'zod';
  * Writes only `--accent` on :root; CSS color-mix derives soft/ring/dark/soft-fg.
  */
 
-export const ACCENT_PREF_KEY = 'serpent.accent-prefs.v1';
+export const ACCENT_PREF_KEY = 'keel.accent-prefs.v1';
 
 export const DEFAULT_ACCENT_HEX = '#3b82f6';
 
