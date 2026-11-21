@@ -3422,11 +3422,14 @@ function AppInner() {
   const importMenuCopy = resolveImportMenuCopy(organizationBrowseScope);
 
   const browseEmptyState = useMemo(() => {
+    // The default "hide text" format filter does not count as narrowing, so an
+    // empty library still shows the import call to action.
+    const defaultFormatFilter = formatFilter === "text" && excludeFormatFilter;
     const discoverySnapshot = {
       colorFilter,
       excludeColorFilter,
-      formatFilter,
-      excludeFormatFilter,
+      formatFilter: defaultFormatFilter ? "" : formatFilter,
+      excludeFormatFilter: defaultFormatFilter ? false : excludeFormatFilter,
       tagFilter,
       tagFilterExpression,
       tagFilterMode,
