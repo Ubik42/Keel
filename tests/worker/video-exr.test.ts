@@ -103,7 +103,7 @@ function buildTgaDimensions(width: number, height: number): Buffer {
 
 it('escapes Windows paths embedded in FFmpeg filtergraphs', () => {
   expect(escapeFfmpegFilterPath(String.raw`C:\Keel\fonts\DejaVuSans.ttf`))
-    .toBe(String.raw`C\:/Serpent/fonts/DejaVuSans.ttf`);
+    .toBe(String.raw`C\:/Keel/fonts/DejaVuSans.ttf`);
   expect(escapeFfmpegFilterPath("/tmp/Serpent's font.ttf"))
     .toBe("/tmp/Serpent\\'s font.ttf");
 });

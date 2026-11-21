@@ -68,7 +68,7 @@ describe("folder custom covers", () => {
       folderId: folder.folderId,
     });
     expect(resolved).not.toBeNull();
-    expect(resolved!.absolutePath.includes(`${path.sep}.serpent${path.sep}folder-covers${path.sep}`)).toBe(true);
+    expect(resolved!.absolutePath.includes(`${path.sep}.keel${path.sep}folder-covers${path.sep}`)).toBe(true);
     expect(existsSync(resolved!.absolutePath)).toBe(true);
 
     service.clearFolderCustomCovers({

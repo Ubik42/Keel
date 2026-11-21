@@ -215,7 +215,7 @@ describe("AudioPlayerControls trail pump (Serpent-mrsm)", () => {
         };
       },
     };
-    Object.defineProperty(window, "serpent", {
+    Object.defineProperty(window, "keel", {
       configurable: true,
       value: { shell },
     });
