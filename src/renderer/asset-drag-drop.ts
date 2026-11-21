@@ -12,7 +12,7 @@
 // managed files via copyAssets (Serpent-2vn).
 // ---------------------------------------------------------------------------
 
-export const MANAGED_ASSETS_DRAG_TYPE = 'application/x-serpent-managed-assets';
+export const MANAGED_ASSETS_DRAG_TYPE = 'application/x-keel-managed-assets';
 
 /** Minimal per-asset facts the drop resolution needs. */
 export interface DragAssetFact {

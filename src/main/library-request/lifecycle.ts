@@ -321,7 +321,7 @@ export async function applyExternalLibrarySourceCleanup(
 
 /**
  * A Billfish archive has no stable library root name after extraction:
- * the worker sees a temporary `serpent-external-library-*` directory.
+ * the worker sees a temporary `keel-external-library-*` directory.
  * Keep the archive stem as the user-facing default all the way through
  * the Main→Renderer boundary, even if an older worker response falls
  * back to that temporary directory name.

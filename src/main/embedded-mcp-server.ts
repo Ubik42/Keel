@@ -19,7 +19,7 @@ import type {
   AutomationExecutionJournal,
   AutomationLibraryContextChangedEvent,
 } from './automation-execution-journal';
-import { createSerpentMcpServer, type KeelMcpSessionEvent } from '../mcp/create-keel-mcp-server';
+import { createKeelMcpServer, type KeelMcpSessionEvent } from '../mcp/create-keel-mcp-server';
 import type { KeelMcpPluginToolBridge } from '../mcp/call-tool';
 import {
   MCP_ENDPOINT_PATH,
@@ -757,7 +757,7 @@ export class EmbeddedMcpServer {
         return unsubscribe;
       },
     };
-    const mcpServer = createSerpentMcpServer({
+    const mcpServer = createKeelMcpServer({
       backend,
       gateway: this.#gateway,
       serverName: 'keel',

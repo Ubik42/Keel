@@ -8,7 +8,7 @@ import {
   EMBEDDING_AUDIO_WINDOW_SECONDS,
 } from "../shared/embedding/profile";
 
-const TEMP_PREFIX = "serpent-embedding-audio-";
+const TEMP_PREFIX = "keel-embedding-audio-";
 const STALE_TEMP_MS = 60 * 60 * 1000;
 
 export function embeddingAudioFfmpegArgs(input: {

@@ -46,7 +46,7 @@ function projectGuestRelativeFilePath(value: unknown): string {
   return portableRelativePathSchema.safeParse(value).success ? value : '';
 }
 
-export function projectSerpentGuestAssetPageResult(value: unknown): unknown {
+export function projectKeelGuestAssetPageResult(value: unknown): unknown {
   if (!value || typeof value !== 'object' || !Array.isArray((value as { items?: unknown }).items)) {
     return value;
   }
@@ -84,7 +84,7 @@ export function projectSerpentGuestAssetPageResult(value: unknown): unknown {
   };
 }
 
-export function projectSerpentGuestLibraryInspectResult(value: unknown): unknown {
+export function projectKeelGuestLibraryInspectResult(value: unknown): unknown {
   if (!value || typeof value !== 'object') return value;
   const library = value as Record<string, unknown>;
   if (typeof library.libraryId !== 'string') return value;
@@ -95,7 +95,7 @@ export function projectSerpentGuestLibraryInspectResult(value: unknown): unknown
 }
 
 /** Folder paths are intentionally reduced to id/name relationships for guests. */
-export function projectSerpentGuestFolderPageResult(value: unknown): unknown {
+export function projectKeelGuestFolderPageResult(value: unknown): unknown {
   if (!value || typeof value !== 'object' || !Array.isArray((value as { items?: unknown }).items)) {
     return value;
   }
@@ -125,7 +125,7 @@ export function projectSerpentGuestFolderPageResult(value: unknown): unknown {
   };
 }
 
-export function projectSerpentGuestFolderSummary(value: unknown): unknown {
+export function projectKeelGuestFolderSummary(value: unknown): unknown {
   if (!value || typeof value !== 'object') return value;
   const folder = value as Record<string, unknown>;
   if (typeof folder.id === 'string') {
@@ -143,7 +143,7 @@ export function projectSerpentGuestFolderSummary(value: unknown): unknown {
   };
 }
 
-export function projectSerpentGuestTagPageResult(value: unknown): unknown {
+export function projectKeelGuestTagPageResult(value: unknown): unknown {
   if (!value || typeof value !== 'object' || !Array.isArray((value as { items?: unknown }).items)) {
     return value;
   }
@@ -180,7 +180,7 @@ export function projectSerpentGuestTagPageResult(value: unknown): unknown {
 }
 
 /** Linked folder absoluteRootPath must never reach the guest. */
-export function projectSerpentGuestLinkedFolderPageResult(value: unknown): unknown {
+export function projectKeelGuestLinkedFolderPageResult(value: unknown): unknown {
   if (!value || typeof value !== 'object' || !Array.isArray((value as { items?: unknown }).items)) {
     return value;
   }
@@ -216,13 +216,13 @@ const scriptGuestCommandDefinitions: readonly KeelGuestCommandDefinition[] = [
     path: 'assets.search',
     commandId: 'asset.search',
     buildInput: (input = {}) => input,
-    projectResult: projectSerpentGuestAssetPageResult,
+    projectResult: projectKeelGuestAssetPageResult,
   },
   {
     path: 'assets.list',
     commandId: 'asset.list',
     buildInput: (input = {}) => input,
-    projectResult: projectSerpentGuestAssetPageResult,
+    projectResult: projectKeelGuestAssetPageResult,
   },
   {
     path: 'assets.getMetadata',
@@ -322,7 +322,7 @@ const scriptGuestCommandDefinitions: readonly KeelGuestCommandDefinition[] = [
     path: 'library.inspect',
     commandId: 'library.inspect',
     buildInput: () => ({}),
-    projectResult: projectSerpentGuestLibraryInspectResult,
+    projectResult: projectKeelGuestLibraryInspectResult,
   },
   {
     path: 'library.changeSequence',
@@ -338,7 +338,7 @@ const scriptGuestCommandDefinitions: readonly KeelGuestCommandDefinition[] = [
     path: 'folders.list',
     commandId: 'folder.list',
     buildInput: (input = {}) => input,
-    projectResult: projectSerpentGuestFolderPageResult,
+    projectResult: projectKeelGuestFolderPageResult,
   },
   {
     path: 'folders.create',
@@ -347,13 +347,13 @@ const scriptGuestCommandDefinitions: readonly KeelGuestCommandDefinition[] = [
       name,
       ...(parentFolderId === undefined ? {} : { parentFolderId }),
     }),
-    projectResult: projectSerpentGuestFolderSummary,
+    projectResult: projectKeelGuestFolderSummary,
   },
   {
     path: 'tags.list',
     commandId: 'tag.list',
     buildInput: (input = {}) => input,
-    projectResult: projectSerpentGuestTagPageResult,
+    projectResult: projectKeelGuestTagPageResult,
   },
   {
     path: 'tags.create',
@@ -374,7 +374,7 @@ const scriptGuestCommandDefinitions: readonly KeelGuestCommandDefinition[] = [
     path: 'linkedFolders.list',
     commandId: 'linked-folder.list',
     buildInput: (input = {}) => input,
-    projectResult: projectSerpentGuestLinkedFolderPageResult,
+    projectResult: projectKeelGuestLinkedFolderPageResult,
   },
   {
     path: 'files.import',
@@ -385,7 +385,7 @@ const scriptGuestCommandDefinitions: readonly KeelGuestCommandDefinition[] = [
     path: 'trash.list',
     commandId: 'asset.list-trash',
     buildInput: () => ({}),
-    projectResult: projectSerpentGuestAssetPageResult,
+    projectResult: projectKeelGuestAssetPageResult,
   },
   {
     path: 'trash.restoreIfOriginalVacant',
@@ -507,12 +507,12 @@ function setNestedMethod(
   root[namespace] = target;
 }
 
-export function createSerpentGuestApi(adapters: KeelGuestApiAdapters): KeelGuestApi;
-export function createSerpentGuestApi(
+export function createKeelGuestApi(adapters: KeelGuestApiAdapters): KeelGuestApi;
+export function createKeelGuestApi(
   adapters: KeelGuestApiAdapters,
   targetLibraryId: string,
 ): KeelGuestCommandApi;
-export function createSerpentGuestApi(
+export function createKeelGuestApi(
   adapters: KeelGuestApiAdapters,
   targetLibraryId?: string,
 ): KeelGuestApi | KeelGuestCommandApi {
@@ -538,7 +538,7 @@ export function createSerpentGuestApi(
       const parsed = pluginTargetLibraryIdSchema.safeParse(libraryId);
       if (!parsed.success) throw new Error('Invalid target library id.');
       // A fresh API closes over the target; no ambient API object is mutated.
-      return createSerpentGuestApi(adapters, parsed.data);
+      return createKeelGuestApi(adapters, parsed.data);
     },
   });
 }

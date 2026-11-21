@@ -187,7 +187,7 @@ async function installRefreshProbe(window: Page): Promise<void> {
     };
 
     const globals = globalThis as typeof globalThis & {
-      __serpentDeleteRefreshProbe?: {
+      __keelDeleteRefreshProbe?: {
         begin(input: { kind: RefreshKind; assetId?: string; folderId?: string; folderName?: string }): void;
         read(): RefreshProbeResult;
         state: State | null;
@@ -256,7 +256,7 @@ async function installRefreshProbe(window: Page): Promise<void> {
     };
 
     const read = (): RefreshProbeResult => {
-      const state = globals.__serpentDeleteRefreshProbe?.state;
+      const state = globals.__keelDeleteRefreshProbe?.state;
       if (!state) {
         return {
           firstSettle: { firstVisibleMs: null, layoutStableMs: null, geometry: null },
@@ -442,14 +442,14 @@ async function installRefreshProbe(window: Page): Promise<void> {
       },
       read,
     };
-    globals.__serpentDeleteRefreshProbe = probe;
+    globals.__keelDeleteRefreshProbe = probe;
   });
 }
 
 async function readRefreshProbe(window: Page): Promise<RefreshProbeResult> {
   return window.evaluate(() => (globalThis as typeof globalThis & {
-    __serpentDeleteRefreshProbe: { read(): RefreshProbeResult };
-  }).__serpentDeleteRefreshProbe.read());
+    __keelDeleteRefreshProbe: { read(): RefreshProbeResult };
+  }).__keelDeleteRefreshProbe.read());
 }
 
 async function waitForFirstSettle(window: Page): Promise<RefreshProbeResult> {
@@ -816,8 +816,8 @@ test("measures visible asset deletion geometry and folder refresh on an isolated
     await resetRendererCounters(window);
     const trashLogBefore = readSessionLog(userDataPath);
     await window.evaluate((id) => (globalThis as typeof globalThis & {
-      __serpentDeleteRefreshProbe: { begin(input: { kind: RefreshKind; assetId: string }): void };
-    }).__serpentDeleteRefreshProbe.begin({ kind: "asset.trash", assetId: id }), assetId);
+      __keelDeleteRefreshProbe: { begin(input: { kind: RefreshKind; assetId: string }): void };
+    }).__keelDeleteRefreshProbe.begin({ kind: "asset.trash", assetId: id }), assetId);
     const trashStartedAt = Date.now();
     assetIsTrashed = true;
     await trashAction.click();
@@ -849,8 +849,8 @@ test("measures visible asset deletion geometry and folder refresh on an isolated
     await resetRendererCounters(window);
     const createLogBefore = readSessionLog(userDataPath);
     await window.evaluate((name) => (globalThis as typeof globalThis & {
-      __serpentDeleteRefreshProbe: { begin(input: { kind: RefreshKind; folderName: string }): void };
-    }).__serpentDeleteRefreshProbe.begin({ kind: "folder.create", folderName: name }), folderName);
+      __keelDeleteRefreshProbe: { begin(input: { kind: RefreshKind; folderName: string }): void };
+    }).__keelDeleteRefreshProbe.begin({ kind: "folder.create", folderName: name }), folderName);
     const createStartedAt = Date.now();
     await input.press("Enter");
     const createdRow = window.locator(
@@ -880,8 +880,8 @@ test("measures visible asset deletion geometry and folder refresh on an isolated
     await resetRendererCounters(window);
     const deleteLogBefore = readSessionLog(userDataPath);
     await window.evaluate((id) => (globalThis as typeof globalThis & {
-      __serpentDeleteRefreshProbe: { begin(input: { kind: RefreshKind; folderId: string }): void };
-    }).__serpentDeleteRefreshProbe.begin({ kind: "folder.delete", folderId: id }), createdFolderId);
+      __keelDeleteRefreshProbe: { begin(input: { kind: RefreshKind; folderId: string }): void };
+    }).__keelDeleteRefreshProbe.begin({ kind: "folder.delete", folderId: id }), createdFolderId);
     const deleteStartedAt = Date.now();
     await deleteAction.click();
     await confirmFolderDiskDelete(window);

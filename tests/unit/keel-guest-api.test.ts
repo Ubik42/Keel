@@ -1,11 +1,11 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { createSerpentGuestApi } from '../../src/scripting/keel-guest-api';
+import { createKeelGuestApi } from '../../src/scripting/keel-guest-api';
 
 describe('Keel Guest API library scopes', () => {
   it('creates an immutable forLibrary scope without changing ambient calls', async () => {
     const executeCommand = vi.fn(async () => ({ items: [] }));
-    const serpent = createSerpentGuestApi({ executeCommand });
+    const serpent = createKeelGuestApi({ executeCommand });
 
     await serpent.assets!.list!();
     const scoped = serpent.forLibrary('library-2');
@@ -22,7 +22,7 @@ describe('Keel Guest API library scopes', () => {
   });
 
   it('does not expose a mutable target on the scoped command API', () => {
-    const serpent = createSerpentGuestApi({ executeCommand: async () => undefined });
+    const serpent = createKeelGuestApi({ executeCommand: async () => undefined });
     const scoped = serpent.forLibrary('library-2');
 
     expect(scoped).not.toHaveProperty('forLibrary');
@@ -31,7 +31,7 @@ describe('Keel Guest API library scopes', () => {
 
   it('maps ui.openDialog onto ui.dialog and unwraps the completion payload', async () => {
     const executeCommand = vi.fn(async () => ({ result: { crf: 23 } }));
-    const serpent = createSerpentGuestApi({ executeCommand });
+    const serpent = createKeelGuestApi({ executeCommand });
 
     await expect(serpent.ui!.openDialog!({
       dialogId: 'converter',
@@ -63,7 +63,7 @@ describe('Keel Guest API library scopes', () => {
       limit: 200,
       hasMore: false,
     }));
-    const serpent = createSerpentGuestApi({ executeCommand });
+    const serpent = createKeelGuestApi({ executeCommand });
     await expect(serpent.assets!.list!({ recursive: true, limit: 200, offset: 0 })).resolves.toEqual({
       items: [{
         id: 'asset-nested',
@@ -106,7 +106,7 @@ describe('Keel Guest API library scopes', () => {
       limit: 50,
       hasMore: false,
     }));
-    const serpent = createSerpentGuestApi({ executeCommand });
+    const serpent = createKeelGuestApi({ executeCommand });
     await expect(serpent.assets!.list!()).resolves.toMatchObject({
       items: [{
         id: 'asset-a',
@@ -117,7 +117,7 @@ describe('Keel Guest API library scopes', () => {
 
   it('forwards a complete file name through assets.renameFile', async () => {
     const executeCommand = vi.fn(async () => ({ assetId: 'asset-1', name: 'clip.webm' }));
-    const serpent = createSerpentGuestApi({ executeCommand });
+    const serpent = createKeelGuestApi({ executeCommand });
     await serpent.assets!.renameFile!('asset-1', 'clip', { fileName: 'clip.webm' });
     expect(executeCommand).toHaveBeenCalledWith('asset.rename-file', {
       assetId: 'asset-1',
@@ -135,7 +135,7 @@ describe('Keel Guest API library scopes', () => {
       ffmpegPath: '/host/ffmpeg',
       ffprobePath: '/host/ffprobe',
     }));
-    const serpent = createSerpentGuestApi({ executeCommand });
+    const serpent = createKeelGuestApi({ executeCommand });
 
     await expect(serpent.media!.getBinaryPaths!()).resolves.toEqual({
       ffmpegPath: '/host/ffmpeg',

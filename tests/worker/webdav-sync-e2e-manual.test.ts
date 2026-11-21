@@ -1,7 +1,7 @@
 /**
  * 真实 WebDAV 验收（本机已配置的同步服务器）。
  *
- * 只创建 `serpent-e2e-<timestamp>` 临时远端目录，测完删除该目录。
+ * 只创建 `keel-e2e-<timestamp>` 临时远端目录，测完删除该目录。
  * 禁止写入或删除用户已有同步文件夹。
  *
  * 凭据从环境变量读取，不写进本文件：
@@ -28,7 +28,7 @@ import {
 } from '../../src/shared/sync-paths';
 
 const probeUrl = process.env.KEEL_WEBDAV_PROBE_URL;
-const TEMP_REMOTE_PREFIX = 'serpent-e2e-';
+const TEMP_REMOTE_PREFIX = 'keel-e2e-';
 const roots: string[] = [];
 
 function rootConfig(directoryName: string): SyncRootConfig {

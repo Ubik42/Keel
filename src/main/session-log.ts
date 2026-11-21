@@ -1,7 +1,7 @@
 /**
  * Per-session diagnostic logs (Serpent-wgmy).
  *
- * 每次启动写入 `serpent-<本地时间戳>.log`（如 serpent-20260816T221412.log），
+ * 每次启动写入 `keel-<本地时间戳>.log`（如 keel-20260816T221412.log），
  * 不再向单一 serpent.log 无限追加；磁盘上最多保留最近 MAX_SESSION_LOGS 份，
  * 启动时按 mtime 清理最旧。清理/命名失败不得阻断启动（调用方 catch）。
  */
@@ -9,7 +9,9 @@
 import { existsSync, readdirSync, statSync, unlinkSync } from 'node:fs';
 import path from 'node:path';
 
-export const SESSION_LOG_PREFIX = 'serpent-';
+export const SESSION_LOG_PREFIX = 'keel-';
+/** Logs written before the rename; still pruned with the current ones. */
+const LEGACY_SESSION_LOG_PREFIX = 'serpent-';
 export const MAX_SESSION_LOGS = 100;
 export const SESSION_LOG_SUFFIX = '.log';
 
@@ -73,7 +75,7 @@ export function pruneSessionLogs(
     return [];
   }
   const sessionFiles = entries
-    .filter((name) => name.startsWith(SESSION_LOG_PREFIX) && name.endsWith(SESSION_LOG_SUFFIX))
+    .filter((name) => (name.startsWith(SESSION_LOG_PREFIX) || name.startsWith(LEGACY_SESSION_LOG_PREFIX)) && name.endsWith(SESSION_LOG_SUFFIX))
     .map((name) => path.join(logsDir, name))
     .filter((filePath) => {
       try {

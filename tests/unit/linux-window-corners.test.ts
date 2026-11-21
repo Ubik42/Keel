@@ -43,6 +43,6 @@ describe("linux rounded window corners", () => {
   it("emits rounded clip CSS with a square escape hatch", () => {
     const css = linuxRoundedCornersCss(8);
     expect(css).toContain("round 8px");
-    expect(css).toContain("serpent-window-square");
+    expect(css).toContain("keel-window-square");
   });
 });

@@ -14,7 +14,7 @@ import {
 } from '../../src/mcp/plugin-tool-catalog';
 import { PluginMcpExposureStore } from '../../src/main/plugin-mcp-exposure-store';
 import { PluginMcpToolProvider } from '../../src/main/plugin-mcp-tool-provider';
-import { callSerpentMcpTool } from '../../src/mcp/call-tool';
+import { callKeelMcpTool } from '../../src/mcp/call-tool';
 import { mcpContext, readExposure, writeExposure } from './keel-mcp-test-fixtures';
 
 const roots: string[] = [];
@@ -104,7 +104,7 @@ describe('PLUGIN-031 manifest and MCP exposure contract', () => {
 
 describe('PLUGIN-031 MCP call gate', () => {
   it('returns not found for an unknown tool before parsing plugin-only arguments', async () => {
-    const result = await callSerpentMcpTool({
+    const result = await callKeelMcpTool({
       toolName: 'keel_plugin_unknown_command',
       arguments: {},
       context: mcpContext(writeExposure),
@@ -124,7 +124,7 @@ describe('PLUGIN-031 MCP call gate', () => {
   });
 
   it('rejects a plugin call without an explicit libraryId', async () => {
-    const result = await callSerpentMcpTool({
+    const result = await callKeelMcpTool({
       toolName: pluginMcpToolName('com.example.mcp-probe', 'declared'),
       arguments: { assetIds: ['asset-1'] },
       context: mcpContext(writeExposure),
@@ -145,7 +145,7 @@ describe('PLUGIN-031 MCP call gate', () => {
 
   it('does not invoke an exported plugin command from a read-only MCP connection', async () => {
     const toolName = pluginMcpToolName('com.example.mcp-probe', 'declared');
-    const result = await callSerpentMcpTool({
+    const result = await callKeelMcpTool({
       toolName,
       arguments: { libraryId: 'library-1', assetIds: ['asset-1'] },
       context: mcpContext(readExposure),
@@ -229,7 +229,7 @@ describe('PLUGIN-031 MCP call gate', () => {
   });
 
   it('refuses a plugin command that is not currently listed', async () => {
-    const result = await callSerpentMcpTool({
+    const result = await callKeelMcpTool({
       toolName: pluginMcpToolName('com.example.mcp-probe', 'declared'),
       arguments: { libraryId: 'library-1', assetIds: ['asset-1'] },
       context: mcpContext(writeExposure),
@@ -253,7 +253,7 @@ describe('PLUGIN-031 MCP call gate', () => {
   it('routes a declared plugin command with only bounded context IDs', async () => {
     const calls: unknown[] = [];
     const toolName = pluginMcpToolName('com.example.mcp-probe', 'declared');
-    const result = await callSerpentMcpTool({
+    const result = await callKeelMcpTool({
       toolName,
       arguments: { libraryId: 'library-1', assetIds: ['asset-1'] },
       context: mcpContext(writeExposure),

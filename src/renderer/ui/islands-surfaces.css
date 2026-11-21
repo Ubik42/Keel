@@ -3,11 +3,11 @@
 .app-shell.ui-shell-style-scope {
   display: contents;
 }
-body.serpent-modal-open .ui-shell-style-scope > :is(.dialog-backdrop, [data-modal-popover="true"]) {
+body.keel-modal-open .ui-shell-style-scope > :is(.dialog-backdrop, [data-modal-popover="true"]) {
   /* Only dialogs and menus owned by a dialog bypass the background lock. */
   pointer-events: auto;
 }
-body.serpent-modal-open .ui-shell-style-scope > [data-modal-popover="true"] {
+body.keel-modal-open .ui-shell-style-scope > [data-modal-popover="true"] {
   /* Later body portal order places the menu over its modal, below caption. */
   z-index: var(--ui-layer-modal-backdrop);
 }

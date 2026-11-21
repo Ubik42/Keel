@@ -11395,9 +11395,9 @@ function AppInner() {
 
   useEffect(() => {
     // Serpent-0rk: freeze shell pointer targets while any modal is open.
-    document.body.classList.toggle("serpent-modal-open", dialogFocusTrapActive);
+    document.body.classList.toggle("keel-modal-open", dialogFocusTrapActive);
     return () => {
-      document.body.classList.remove("serpent-modal-open");
+      document.body.classList.remove("keel-modal-open");
     };
   }, [dialogFocusTrapActive]);
 
@@ -12628,8 +12628,8 @@ function AppInner() {
         else setPluginJobs(value as PluginJobStatus);
         // Diagnostics for the performance benchmark; counts only, no identifiers.
         (
-          globalThis as unknown as { __serpentJobStatusStats?: unknown }
-        ).__serpentJobStatusStats = coordinator.stats();
+          globalThis as unknown as { __keelJobStatusStats?: unknown }
+        ).__keelJobStatusStats = coordinator.stats();
       },
       onSettled: (kind) => {
         if (kind === "media") setMediaJobsLoading(false);
@@ -15793,7 +15793,7 @@ function AppInner() {
       <OpenLibraryChooserDialog
         open={openLibraryChooserOpen}
         onCancel={() => setOpenLibraryChooserOpen(false)}
-        onOpenSerpent={() => {
+        onOpenKeel={() => {
           setOpenLibraryChooserOpen(false);
           if (library) setDialog(null);
           void runLibraryOperation("open");

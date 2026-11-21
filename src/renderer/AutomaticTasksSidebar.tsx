@@ -15,7 +15,7 @@ import {
   moveAutomaticTaskGroup,
   dissolveAutomaticTaskGroup,
 } from "./automatic-task-layout";
-const DRAG_TYPE = "application/x-serpent-automatic-task";
+const DRAG_TYPE = "application/x-keel-automatic-task";
 type TaskDrag = { kind: "task" | "group"; id: string };
 export function AutomaticTasksSidebar(props: {
   api: KeelLibraryApi;

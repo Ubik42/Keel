@@ -38,7 +38,7 @@ async function decodeWithOiio(
   filename: string,
 ): Promise<DecodedTextureRgba | null> {
   const extension = safeExtension(filename);
-  const directory = await mkdtemp(path.join(tmpdir(), 'serpent-tex-'));
+  const directory = await mkdtemp(path.join(tmpdir(), 'keel-tex-'));
   try {
     const input = path.join(directory, `source${extension}`);
     const output = path.join(directory, 'decoded.png');

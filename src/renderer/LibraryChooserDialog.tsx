@@ -28,7 +28,7 @@ export interface ImportLibraryChooserDialogProps {
 
 export interface OpenLibraryChooserDialogProps {
   open: boolean;
-  onOpenSerpent: () => void;
+  onOpenKeel: () => void;
   /** Pull a library from a configured WebDAV server. */
   onOpenSyncLibrary?: () => void;
   onOpenEagle?: () => void;
@@ -120,7 +120,7 @@ function useChooserExpanded(open: boolean): {
  */
 export function OpenLibraryChooserDialog({
   open,
-  onOpenSerpent,
+  onOpenKeel,
   onOpenSyncLibrary,
   onOpenEagle,
   onOpenBillfish,
@@ -152,7 +152,7 @@ export function OpenLibraryChooserDialog({
         <div className="dialog-actions is-stacked">
           <button
             className="primary-button"
-            onClick={onOpenSerpent}
+            onClick={onOpenKeel}
             type="button"
           >
             <Icon name="folder" size={15} />

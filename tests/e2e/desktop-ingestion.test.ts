@@ -108,7 +108,7 @@ test('pastes a Main-owned clipboard image into the current folder', async () => 
     expect(readdirSync(projectDirectory).filter((name) => /^Clipboard .*\.png$/.test(name))).toHaveLength(2);
 
     const tempPath = await application.evaluate(({ app }) => app.getPath('temp'));
-    await expect.poll(() => readdirSync(tempPath).filter((name) => name.startsWith('serpent-clipboard-'))).toEqual([]);
+    await expect.poll(() => readdirSync(tempPath).filter((name) => name.startsWith('keel-clipboard-'))).toEqual([]);
   } finally {
     await application.close();
     rmSync(temporaryRoot, { recursive: true, force: true });

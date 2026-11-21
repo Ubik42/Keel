@@ -41,7 +41,7 @@ function unionLiteral(values: readonly string[]): string {
  * third-party package. Later SDK releases can add methods without exposing
  * Renderer, Main, Worker, Node or Zod implementation details.
  */
-export function generatePluginSdkTypeDeclaration(_moduleSpecifier = '@serpent/plugin-api'): string {
+export function generatePluginSdkTypeDeclaration(_moduleSpecifier = '@keel/plugin-api'): string {
   void _moduleSpecifier;
   const permissions = unionLiteral(pluginPermissionSchema.options);
   const targets = unionLiteral(pluginContributionTargetSchema.options);

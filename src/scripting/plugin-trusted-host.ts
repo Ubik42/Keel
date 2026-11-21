@@ -31,7 +31,7 @@ import {
 } from '../shared/plugin-trusted-runtime-protocol';
 import type { PluginRuntimeDeactivateReason } from '../shared/plugin-runtime-utility-protocol';
 import {
-  createSerpentGuestApi,
+  createKeelGuestApi,
 } from './keel-guest-api';
 import {
   createPluginWidgetEventQueue,
@@ -195,7 +195,7 @@ async function loadTrustedEntry(absoluteEntry: string): Promise<TrustedExports> 
   throw new Error('Trusted plugin entry must export setup().');
 }
 
-function createSerpentBridge(
+function createKeelBridge(
   instance: ActiveInstance,
   postMessage: (message: PluginTrustedChildMessage) => void,
 ): Record<string, unknown> {
@@ -443,7 +443,7 @@ function createSerpentBridge(
     }),
   };
 
-  const guestApi = createSerpentGuestApi({
+  const guestApi = createKeelGuestApi({
     executeCommand: callHost,
     widgetDialog: {
       nextEvent: (sessionId) => {
@@ -467,7 +467,7 @@ function createSerpentBridge(
         throw new Error('Invalid target library id.');
       }
       return {
-        ...createSerpentGuestApi({
+        ...createKeelGuestApi({
           executeCommand: callHost,
           widgetDialog: {
             nextEvent: (sessionId) => {
@@ -628,7 +628,7 @@ export function createPluginTrustedHostHandler(options: {
 
       const exported = await loadTrustedEntry(absoluteEntry);
       active.exports = exported;
-      const serpent = createSerpentBridge(active, options.postMessage);
+      const serpent = createKeelBridge(active, options.postMessage);
       await exported.setup?.(Object.assign({}, serpent, {
         pluginId: request.pluginId,
         pluginInstanceId: request.instanceId,

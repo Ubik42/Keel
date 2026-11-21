@@ -28,7 +28,7 @@ interface OffscreenThumbnailBridge {
 declare global {
   interface Window {
     offscreenThumbnail?: OffscreenThumbnailBridge;
-    __serpentOffscreenThumbnailDebug?: {
+    __keelOffscreenThumbnailDebug?: {
       requestId: string | null;
       stage: string;
     };
@@ -37,7 +37,7 @@ declare global {
 
 let renderer: WebGLRenderer | null = null;
 let activeJobId: string | null = null;
-window.__serpentOffscreenThumbnailDebug = { requestId: null, stage: 'booting' };
+window.__keelOffscreenThumbnailDebug = { requestId: null, stage: 'booting' };
 
 function ensureRenderer(): WebGLRenderer {
   if (renderer && !renderer.domElement.isConnected) {
@@ -78,7 +78,7 @@ function ensureRenderer(): WebGLRenderer {
 }
 
 const bridge = window.offscreenThumbnail;
-window.__serpentOffscreenThumbnailDebug.stage = 'bridge-ready';
+window.__keelOffscreenThumbnailDebug.stage = 'bridge-ready';
 console.log('offscreen-thumbnail.page-start', { hasBridge: Boolean(bridge) });
 if (!bridge) {
   // Loaded outside the offscreen host (e.g. someone opens the page in a
@@ -87,7 +87,7 @@ if (!bridge) {
 }
 
 bridge.onRender((job) => {
-  window.__serpentOffscreenThumbnailDebug = {
+  window.__keelOffscreenThumbnailDebug = {
     requestId: job.requestId,
     stage: 'render-received',
   };
@@ -100,7 +100,7 @@ bridge.onRender((job) => {
     // WebGL creation happens before the frame pipeline can return a typed
     // result. Report it explicitly so the card shows the actual rendering
     // capability failure instead of a generic model failure.
-    window.__serpentOffscreenThumbnailDebug = {
+    window.__keelOffscreenThumbnailDebug = {
       requestId: job.requestId,
       stage: 'outcome:webgl-unavailable',
     };
@@ -120,7 +120,7 @@ bridge.onRender((job) => {
     // bundled environment. The frame pipeline still falls back to its key
     // light if the environment asset cannot be loaded.
     log: (message, context) => {
-      window.__serpentOffscreenThumbnailDebug = {
+      window.__keelOffscreenThumbnailDebug = {
         requestId: job.requestId,
         stage: message,
       };
@@ -128,7 +128,7 @@ bridge.onRender((job) => {
     },
   })
     .then((outcome) => {
-      window.__serpentOffscreenThumbnailDebug = {
+      window.__keelOffscreenThumbnailDebug = {
         requestId: job.requestId,
         stage: `outcome:${outcome.status}`,
       };
@@ -136,7 +136,7 @@ bridge.onRender((job) => {
       bridge.sendFrame({ requestId: job.requestId, ...outcome });
     })
     .catch((error: unknown) => {
-      window.__serpentOffscreenThumbnailDebug = {
+      window.__keelOffscreenThumbnailDebug = {
         requestId: job.requestId,
         stage: 'outcome:throw',
       };

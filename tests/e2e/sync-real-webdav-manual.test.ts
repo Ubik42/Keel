@@ -35,7 +35,7 @@ test("saving auto sync during transfer on the configured WebDAV server", async (
   if (disk.bavail * disk.bsize < fixtureBytes * 3) throw new Error("Insufficient free disk space for the fixture.");
   const localState = path.join(path.dirname(configPath!), "Local State");
   if (!existsSync(localState)) throw new Error("Saved credentials require the profile's Local State encryption key.");
-  const remoteName = `serpent-e2e-${randomUUID()}`;
+  const remoteName = `keel-e2e-${randomUUID()}`;
   const remoteUrl = new URL(`${remoteName}/`, configured.baseUrl.endsWith("/") ? configured.baseUrl : `${configured.baseUrl}/`);
   const temporaryRoot = mkdtempSync(path.join(tempBase, "serpent-real-sync-e2e-"));
   const userData = path.join(temporaryRoot, "user-data");

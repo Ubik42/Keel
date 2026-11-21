@@ -19,8 +19,8 @@ export function libraryExportDefaultName(
     sanitized && sanitized !== '.' && sanitized !== '..' &&
     !WINDOWS_RESERVED_BASE_NAME.test(sanitized)
       ? sanitized
-      : 'serpent-library-export';
+      : 'keel-library-export';
   if (format !== 'zip') return baseName;
   const withoutZipSuffix = baseName.replace(/(?:\.zip)+$/iu, '');
-  return `${withoutZipSuffix || 'serpent-library-export'}.zip`;
+  return `${withoutZipSuffix || 'keel-library-export'}.zip`;
 }

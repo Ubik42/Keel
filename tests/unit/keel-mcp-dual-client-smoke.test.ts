@@ -7,8 +7,8 @@ import {
   type AutomationExecutionResolver,
   type AutomationWorkerClient,
 } from '../../src/automation/command-gateway';
-import { createSerpentMcpServer } from '../../src/mcp/create-keel-mcp-server';
-import { listSerpentMcpTools } from '../../src/mcp/tool-catalog';
+import { createKeelMcpServer } from '../../src/mcp/create-keel-mcp-server';
+import { listKeelMcpTools } from '../../src/mcp/tool-catalog';
 import type { WorkerCommand } from '../../src/shared/protocol/requests';
 import type { WorkerResult } from '../../src/shared/protocol/responses';
 import { mcpContext, readCapabilities, readExposure } from './keel-mcp-test-fixtures';
@@ -57,7 +57,7 @@ describe('Keel MCP dual-client smoke (Phase C)', () => {
   it('serves tools/list and tools/call to an MCP SDK Client over linked in-memory transport', async () => {
     const worker = new RecordingWorker();
     const gateway = createAutomationCommandGateway(worker, resolver());
-    const server = createSerpentMcpServer({
+    const server = createKeelMcpServer({
       gateway,
       backend: {
         getExecutionContext: () => mcpContext(readExposure),
@@ -74,7 +74,7 @@ describe('Keel MCP dual-client smoke (Phase C)', () => {
     ]);
 
     const listed = await client.listTools();
-    const catalogNames = listSerpentMcpTools(readExposure).tools.map((tool) => tool.name);
+    const catalogNames = listKeelMcpTools(readExposure).tools.map((tool) => tool.name);
     expect(listed.tools.map((tool) => tool.name).sort()).toEqual([...catalogNames].sort());
     // Requestable tools stay discoverable while the Permission Broker owns the
     // ask/allow decision at call time.
@@ -98,7 +98,7 @@ describe('Keel MCP dual-client smoke (Phase C)', () => {
   it('serves the same Registry tools to a second MCP SDK Client identity', async () => {
     const worker = new RecordingWorker();
     const gateway = createAutomationCommandGateway(worker, resolver());
-    const server = createSerpentMcpServer({
+    const server = createKeelMcpServer({
       gateway,
       backend: {
         getExecutionContext: () => mcpContext(readExposure),

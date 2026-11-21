@@ -1783,7 +1783,7 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
           onDragOver={(event) => {
             if (
               event.dataTransfer.types.includes(
-                "application/x-serpent-managed-assets",
+                "application/x-keel-managed-assets",
               )
             ) {
               // 与 managed 文件夹一致：普通拖=移动、Option 拖=复制

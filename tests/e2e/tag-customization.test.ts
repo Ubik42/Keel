@@ -45,7 +45,7 @@ test('tag appearance, reverse image drop and persistent interface scale', async 
     const second = window.locator('.asset-card').filter({ hasText: 'second.png' }).first();
     await expect(second).toBeVisible();
     await card.click(); await second.click({ modifiers: ['Control'] });
-    const transfer = await window.evaluateHandle(id => { const data = new DataTransfer(); data.setData('application/x-serpent-tag', id); return data; }, (await tags())[0]!.tagId);
+    const transfer = await window.evaluateHandle(id => { const data = new DataTransfer(); data.setData('application/x-keel-tag', id); return data; }, (await tags())[0]!.tagId);
     await tag.dispatchEvent('dragstart', { dataTransfer: transfer });
     await card.dispatchEvent('dragover', { dataTransfer: transfer });
     await expect(card).toHaveAttribute('data-tag-drop-target', 'true');

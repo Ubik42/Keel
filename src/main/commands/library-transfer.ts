@@ -23,7 +23,7 @@ export async function executeLibraryTransferMainCommand(
     case "library.export.request": {
       const host = runtime.createNativeDialogHost();
       const defaultExportName = libraryExportDefaultName(
-        request.libraryName ?? "serpent-library-export",
+        request.libraryName ?? "keel-library-export",
         request.format,
       );
       // Windows 的保存对话框对文件名-only 的 defaultPath 不预填文件名

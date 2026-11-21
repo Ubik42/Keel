@@ -90,11 +90,11 @@ html, body { background: transparent !important; }
   clip-path: inset(0 round ${radius}px);
   overflow: hidden;
 }
-html.serpent-window-square #root { border-radius: 0; clip-path: none; }
+html.keel-window-square #root { border-radius: 0; clip-path: none; }
 /* Caption buttons portal to body (outside #root clip). Round the close
    hover so it follows the window corner instead of painting a square nub. */
 .windows-caption-button-close { border-top-right-radius: ${radius}px; }
-html.serpent-window-square .windows-caption-button-close { border-top-right-radius: 0; }
+html.keel-window-square .windows-caption-button-close { border-top-right-radius: 0; }
 `;
 }
 
@@ -117,7 +117,7 @@ export function attachLinuxRoundedCorners(window: BrowserWindow): void {
     const square = window.isMaximized() || window.isFullScreen();
     void window.webContents
       .executeJavaScript(
-        `document.documentElement.classList.toggle("serpent-window-square", ${square ? "true" : "false"})`,
+        `document.documentElement.classList.toggle("keel-window-square", ${square ? "true" : "false"})`,
         true,
       )
       .catch(() => undefined);

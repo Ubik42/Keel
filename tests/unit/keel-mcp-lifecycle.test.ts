@@ -5,8 +5,8 @@ import {
   type AutomationExecutionResolver,
   type AutomationWorkerClient,
 } from '../../src/automation/command-gateway';
-import { callSerpentMcpTool } from '../../src/mcp/call-tool';
-import { listSerpentMcpTools } from '../../src/mcp/tool-catalog';
+import { callKeelMcpTool } from '../../src/mcp/call-tool';
+import { listKeelMcpTools } from '../../src/mcp/tool-catalog';
 import type { WorkerCommand } from '../../src/shared/protocol/requests';
 import type { WorkerResult } from '../../src/shared/protocol/responses';
 import { mcpContext, writeExposure } from './keel-mcp-test-fixtures';
@@ -89,7 +89,7 @@ async function callTool(
   const gateway = createAutomationCommandGateway(worker, resolver(), {
     filePlanApprovalHandler: { prepareAndApprove: async () => undefined },
   });
-  return callSerpentMcpTool({
+  return callKeelMcpTool({
     toolName,
     arguments: arguments_,
     context: mcpContext(writeExposure),
@@ -100,7 +100,7 @@ async function callTool(
 
 describe('MCP lifecycle commands: folder (Serpent-dcb1)', () => {
   it('exposes rename/move/delete-empty tools', () => {
-    const names = listSerpentMcpTools(writeExposure).tools.map((tool) => tool.name);
+    const names = listKeelMcpTools(writeExposure).tools.map((tool) => tool.name);
     expect(names).toContain('keel_folder_rename');
     expect(names).toContain('keel_folder_move');
     expect(names).toContain('keel_folder_delete_empty');
@@ -168,7 +168,7 @@ describe('MCP lifecycle commands: folder (Serpent-dcb1)', () => {
 
 describe('MCP lifecycle commands: library (Serpent-96ys)', () => {
   it('exposes list-recent/close/rename/export/import/delete tools', () => {
-    const names = listSerpentMcpTools(writeExposure).tools.map((tool) => tool.name);
+    const names = listKeelMcpTools(writeExposure).tools.map((tool) => tool.name);
     for (const name of [
       'keel_library_list_recent',
       'keel_library_close',

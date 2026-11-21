@@ -20,7 +20,7 @@ import {
 import {
   automationLibraryContextForMcpTool,
   mcpExposureAllowsWrite,
-  resolveSerpentMcpTool,
+  resolveKeelMcpTool,
   type KeelMcpToolExposure,
 } from './tool-catalog';
 
@@ -111,12 +111,12 @@ function outputWithinBudget(value: unknown, maxBytes: number): boolean {
 }
 
 /** Maps one MCP tools/call into a Main-owned Gateway envelope. */
-export async function callSerpentMcpTool(
+export async function callKeelMcpTool(
   input: KeelMcpCallToolInput,
 ): Promise<KeelMcpCallToolResult> {
   const context = contextWithRequestSignal(input.context, input.signal);
   const executionId = context?.executionId;
-  const tool = resolveSerpentMcpTool(input.toolName, input.exposure);
+  const tool = resolveKeelMcpTool(input.toolName, input.exposure);
   if (!tool) {
     const knownRegistryTool = automationCommandRegistry.some((descriptor) => descriptor.mcp.toolName === input.toolName);
     const knownPluginTool = input.pluginTools?.isKnown(input.toolName) === true;

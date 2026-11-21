@@ -76,9 +76,9 @@ export function logBrowseScrollWrite(
 
 export function installBrowseScrollWriteSpy(canvas: HTMLElement): () => void {
   if (!BROWSE_SCROLL_DEBUG) return () => undefined;
-  const element = canvas as HTMLElement & { __serpentBrowseScrollSpy?: boolean };
-  if (element.__serpentBrowseScrollSpy) return () => undefined;
-  element.__serpentBrowseScrollSpy = true;
+  const element = canvas as HTMLElement & { __keelBrowseScrollSpy?: boolean };
+  if (element.__keelBrowseScrollSpy) return () => undefined;
+  element.__keelBrowseScrollSpy = true;
 
   const descriptor =
     Object.getOwnPropertyDescriptor(Element.prototype, "scrollTop") ??
@@ -115,7 +115,7 @@ export function installBrowseScrollWriteSpy(canvas: HTMLElement): () => void {
   }) as HTMLElement["scrollTo"];
 
   return () => {
-    delete element.__serpentBrowseScrollSpy;
+    delete element.__keelBrowseScrollSpy;
     if (descriptor) Object.defineProperty(canvas, "scrollTop", descriptor);
     canvas.scrollTo = originalScrollTo;
   };

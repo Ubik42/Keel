@@ -33,9 +33,9 @@ export const appLogAutomationCorrelationIdSchema = z.string()
 export type AppLogAutomationCorrelationId = z.infer<typeof appLogAutomationCorrelationIdSchema>;
 
 // Main owns the absolute path, while the preload only receives this basename.
-// Accept both the legacy serpent.log and session-scoped serpent-*.log names.
+// Session logs are keel-*.log; serpent.log / serpent-*.log come from before the rename.
 export const appLogFileNameSchema = z.string()
-  .regex(/^serpent(?:-[A-Za-z0-9._-]+)?\.log$/u);
+  .regex(/^(?:keel|serpent)(?:-[A-Za-z0-9._-]+)?\.log$/u);
 
 export type ReadAppLogRequest = {
   automationCorrelationId?: AppLogAutomationCorrelationId;

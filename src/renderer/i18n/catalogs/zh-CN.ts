@@ -1152,7 +1152,7 @@ export const zhCN = {
       version: "版本 {version}",
       description: "让素材整理、预览与检索保持快速、清晰和可控。Keel 使用 MIT 许可证发布。",
       github: "访问 GitHub 仓库",
-      etymology: "serpent noun /ˈsɝː.pənt/ 神话中的蛇，取自尘世巨蟒耶梦加得",
+      etymology: "keel noun /kiːl/ 龙骨，船底纵贯首尾、使船保持稳定的主梁",
       origin: "基于 dolag233/Serpent（MIT）开发。"
     },
     openSource: {
@@ -1818,7 +1818,7 @@ export const zhCN = {
       title: "同步",
       hint: "通过 WebDAV 与其他设备或同事共享此资源库。同一文件在两台设备都修改时会生成冲突副本。",
       webdavUrl: "WebDAV 地址",
-      webdavUrlHint: "可为服务端的任意子路径，例如 https://nas.local/dav/share/serpent/；省略 http:// 时会自动补全。",
+      webdavUrlHint: "可为服务端的任意子路径，例如 https://nas.local/dav/share/keel/；省略 http:// 时会自动补全。",
       credentials: "凭据",
       credentialsHint: "可选；留空表示匿名连接。密码经应用内存传递，不写入库文件。",
       username: "用户名",

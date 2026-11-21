@@ -234,15 +234,15 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
     }));
     await window.evaluate(() => {
       const root = globalThis as typeof globalThis & {
-        __serpentBrowsePages?: unknown[];
-        __serpentLongTasks?: number[];
+        __keelBrowsePages?: unknown[];
+        __keelLongTasks?: number[];
       };
-      root.__serpentBrowsePages = [];
-      root.__serpentLongTasks = [];
+      root.__keelBrowsePages = [];
+      root.__keelLongTasks = [];
       if ("PerformanceObserver" in globalThis) {
         const observer = new PerformanceObserver((list) => {
           for (const entry of list.getEntries()) {
-            root.__serpentLongTasks!.push(entry.duration);
+            root.__keelLongTasks!.push(entry.duration);
           }
         });
         observer.observe({ entryTypes: ["longtask"] });
@@ -251,7 +251,7 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
       // jump; the default 250-entry buffer overflows across jumps.
       performance.setResourceTimingBufferSize(8192);
       const capture = ((event: CustomEvent) => {
-        root.__serpentBrowsePages!.push({
+        root.__keelBrowsePages!.push({
           at: performance.now(),
           detail: event.detail,
         });
@@ -420,11 +420,11 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
           }).keel.e2e;
           const searchRequestsBefore = diagnostics.getRequestCount("asset.search.request");
           const eventRoot = globalThis as typeof globalThis & {
-            __serpentBrowsePages?: unknown[];
-            __serpentLongTasks?: number[];
+            __keelBrowsePages?: unknown[];
+            __keelLongTasks?: number[];
           };
-          eventRoot.__serpentBrowsePages = [];
-          eventRoot.__serpentLongTasks = [];
+          eventRoot.__keelBrowsePages = [];
+          eventRoot.__keelLongTasks = [];
           const startedAt = performance.now();
           let firstVisualWaveAt: number | null = null;
           let firstVisualWaveDecodedImages = 0;
@@ -633,7 +633,7 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
                     naturalHeight: image?.naturalHeight ?? 0,
                   };
                 });
-                const pageEvents = eventRoot.__serpentBrowsePages ?? [];
+                const pageEvents = eventRoot.__keelBrowsePages ?? [];
                 const pageTimeline = pageEvents.flatMap((event) => {
                   if (
                     typeof event !== "object"
@@ -720,8 +720,8 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
                   pageTimeline,
                   fetchStages,
                   doneTimeline,
-                  longTaskCount: eventRoot.__serpentLongTasks?.length ?? 0,
-                  longTaskMaxMs: Math.max(0, ...(eventRoot.__serpentLongTasks ?? [])),
+                  longTaskCount: eventRoot.__keelLongTasks?.length ?? 0,
+                  longTaskMaxMs: Math.max(0, ...(eventRoot.__keelLongTasks ?? [])),
                   imageStates,
                   gatePassed,
                   timedOut: !strictDone,

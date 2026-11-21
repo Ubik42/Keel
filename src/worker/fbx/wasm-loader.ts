@@ -76,11 +76,11 @@ let modulePromise: Promise<KeelUfbxModule> | null = null;
 /**
  * Load (once) and return the ufbx WASM module. Serializes on the module
  * singleton; the bridge keeps global output state so callers must not run two
- * conversions concurrently — route through withSerpentUfbx or the single-flight
+ * conversions concurrently — route through withKeelUfbx or the single-flight
  * queue in convert-command.ts. A failed load is not cached, so a later call
  * (e.g. after resources/ufbx was built) can retry.
  */
-export function loadSerpentUfbxModule(): Promise<KeelUfbxModule> {
+export function loadKeelUfbxModule(): Promise<KeelUfbxModule> {
   if (modulePromise) return modulePromise;
   modulePromise = (async () => {
     const dir = resolveUfbxDir();
@@ -119,7 +119,7 @@ export function loadSerpentUfbxModule(): Promise<KeelUfbxModule> {
 }
 
 /** Test-only hook: drop the cached module so the next call re-resolves. */
-export function resetSerpentUfbxModuleForTest(): void {
+export function resetKeelUfbxModuleForTest(): void {
   modulePromise = null;
 }
 
@@ -127,16 +127,16 @@ export function resetSerpentUfbxModuleForTest(): void {
  * Enqueue a task against the singleton WASM module, guaranteeing serialized
  * access (the bridge keeps global output state).
  */
-export async function withSerpentUfbx<T>(
+export async function withKeelUfbx<T>(
   task: (module: KeelUfbxModule) => Promise<T>,
 ): Promise<T> {
-  const module = await loadSerpentUfbxModule();
-  return withSerpentUfbxChain(task, module);
+  const module = await loadKeelUfbxModule();
+  return withKeelUfbxChain(task, module);
 }
 
 let chainTail: Promise<unknown> = Promise.resolve();
 
-function withSerpentUfbxChain<T>(
+function withKeelUfbxChain<T>(
   task: (module: KeelUfbxModule) => Promise<T>,
   module: KeelUfbxModule,
 ): Promise<T> {
@@ -150,7 +150,7 @@ export async function parseFbxBytes(
   fbxBytes: Buffer,
   options: { filename: string; maxTriangles?: number },
 ): Promise<Buffer> {
-  return withSerpentUfbx(async (module) => {
+  return withKeelUfbx(async (module) => {
     const optsJson = Buffer.from(
       JSON.stringify({
         filename: options.filename,

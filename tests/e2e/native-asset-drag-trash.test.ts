@@ -64,11 +64,11 @@ async function installNativeDragStartSpy(application: ElectronApplication): Prom
     const window = BrowserWindow.getAllWindows().find((candidate) => !candidate.isDestroyed());
     if (!window) throw new Error('The application window is unavailable.');
     const testGlobal = globalThis as typeof globalThis & {
-      __serpentNativeDragStartFiles?: string[][];
+      __keelNativeDragStartFiles?: string[][];
     };
-    testGlobal.__serpentNativeDragStartFiles = [];
+    testGlobal.__keelNativeDragStartFiles = [];
     window.webContents.startDrag = (item) => {
-      testGlobal.__serpentNativeDragStartFiles?.push(
+      testGlobal.__keelNativeDragStartFiles?.push(
         item.files ? [...item.files] : [item.file],
       );
     };
@@ -80,9 +80,9 @@ async function readNativeDragStartFiles(
 ): Promise<string[][]> {
   return application.evaluate(() => {
     const testGlobal = globalThis as typeof globalThis & {
-      __serpentNativeDragStartFiles?: string[][];
+      __keelNativeDragStartFiles?: string[][];
     };
-    return testGlobal.__serpentNativeDragStartFiles ?? [];
+    return testGlobal.__keelNativeDragStartFiles ?? [];
   });
 }
 

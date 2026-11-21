@@ -4504,7 +4504,7 @@ input[type="range"] {
 }
 
 /* While a modal is open, freeze shell chrome so hover popovers (filters) cannot open. */
-body.serpent-modal-open .app-shell {
+body.keel-modal-open .app-shell {
   pointer-events: none;
 }
 
@@ -16172,8 +16172,8 @@ select.ai-config-input.ai-config-languages {
 .window-edge-resize-ne { top: 0; right: 0; }
 .window-edge-resize-sw { bottom: 0; left: 0; }
 .window-edge-resize-se { bottom: 0; right: 0; }
-html.serpent-window-square.serpent-window-maximized .window-edge-resize-layer,
-html.serpent-window-square .window-edge-resize-layer.is-disabled {
+html.keel-window-square.keel-window-maximized .window-edge-resize-layer,
+html.keel-window-square .window-edge-resize-layer.is-disabled {
   display: none;
 }
 
@@ -18322,7 +18322,7 @@ html.serpent-window-square .window-edge-resize-layer.is-disabled {
 :root {
   --window-corner-radius: 8px;
 }
-html.serpent-window-square {
+html.keel-window-square {
   --window-corner-radius: 0px;
 }
 

@@ -7,7 +7,7 @@
 // ---------------------------------------------------------------------------
 
 export const MANAGED_FOLDERS_DRAG_TYPE =
-  'application/x-serpent-managed-folders';
+  'application/x-keel-managed-folders';
 
 export interface FolderDragFact {
   readonly folderId: string;

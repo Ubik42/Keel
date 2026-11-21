@@ -143,7 +143,7 @@ describe("OpenLibraryChooserDialog", () => {
   });
 
   it("keeps Eagle and Billfish collapsed until 打开外部资源库 is expanded", async () => {
-    const onOpenSerpent = vi.fn();
+    const onOpenKeel = vi.fn();
     const onOpenEagle = vi.fn();
     const onOpenBillfish = vi.fn();
     container = document.createElement("div");
@@ -157,7 +157,7 @@ describe("OpenLibraryChooserDialog", () => {
           { children: null, initialPreference: "zh-CN" },
           createElement(OpenLibraryChooserDialog, {
             open: true,
-            onOpenSerpent,
+            onOpenKeel,
             onOpenSyncLibrary: vi.fn(),
             onOpenEagle,
             onOpenBillfish,
@@ -198,13 +198,13 @@ describe("OpenLibraryChooserDialog", () => {
     await act(async () => {
       serpent?.click();
     });
-    expect(onOpenSerpent).toHaveBeenCalledTimes(1);
+    expect(onOpenKeel).toHaveBeenCalledTimes(1);
     expect(onOpenEagle).not.toHaveBeenCalled();
     expect(onOpenBillfish).toHaveBeenCalledTimes(1);
   });
 
   it("offers 打开同步资源库 as a top-level open action", async () => {
-    const onOpenSerpent = vi.fn();
+    const onOpenKeel = vi.fn();
     const onOpenSyncLibrary = vi.fn();
     container = document.createElement("div");
     document.body.append(container);
@@ -217,7 +217,7 @@ describe("OpenLibraryChooserDialog", () => {
           { children: null, initialPreference: "zh-CN" },
           createElement(OpenLibraryChooserDialog, {
             open: true,
-            onOpenSerpent,
+            onOpenKeel,
             onOpenSyncLibrary,
             onOpenEagle: vi.fn(),
             onOpenBillfish: vi.fn(),
@@ -242,6 +242,6 @@ describe("OpenLibraryChooserDialog", () => {
       sync?.click();
     });
     expect(onOpenSyncLibrary).toHaveBeenCalledTimes(1);
-    expect(onOpenSerpent).not.toHaveBeenCalled();
+    expect(onOpenKeel).not.toHaveBeenCalled();
   });
 });

@@ -51,7 +51,7 @@ export interface StagedClipboardImage {
   filePath: string;
 }
 
-const CLIPBOARD_STAGE_PREFIX = 'serpent-clipboard-';
+const CLIPBOARD_STAGE_PREFIX = 'keel-clipboard-';
 const MAX_CLIPBOARD_IMAGE_BYTES = 500 * 1024 * 1024;
 
 export function stageClipboardImage(

@@ -49,7 +49,7 @@ test('tag browsing clears on folder navigation while pinned tags remain scoped',
       const assets=await api.listAssets({libraryId:open.value[0]!.libraryId,recursive:true});
       if(!assets.ok)throw Error('No assets');return assets.value.find(a=>a.displayName==='带标签.svg')!.assetId;
     });
-    const transfer=await window.evaluateHandle(id=>{const d=new DataTransfer();d.setData('application/x-serpent-managed-assets',JSON.stringify([id]));return d;},assetId);
+    const transfer=await window.evaluateHandle(id=>{const d=new DataTransfer();d.setData('application/x-keel-managed-assets',JSON.stringify([id]));return d;},assetId);
     await child.dispatchEvent('dragover',{dataTransfer:transfer});await child.dispatchEvent('drop',{dataTransfer:transfer});
     await expect(parent.locator('.nav-count')).toHaveText('1');
     const folderRow=window.locator('.navigation-pane button.nav-row[data-nav-folder-kind="managed"][data-hover-tip="目标"]');

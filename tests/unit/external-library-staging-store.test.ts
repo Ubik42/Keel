@@ -28,7 +28,7 @@ describe('external library staging store', () => {
   });
 
   it('round-trips managed staging roots and ignores other paths', () => {
-    const kept = path.join(storeDirectory, 'serpent-external-library-keep');
+    const kept = path.join(storeDirectory, 'keel-external-library-keep');
     expect(
       writeExternalLibraryStagingRoots(storePath, [
         kept,

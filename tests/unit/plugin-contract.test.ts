@@ -491,7 +491,7 @@ describe('Plugin contribution registry and generated SDK', () => {
   });
 
   it('generates a standalone Plugin API v1 declaration and transport-safe description', () => {
-    const declaration = generatePluginSdkTypeDeclaration('@serpent/plugin-api');
+    const declaration = generatePluginSdkTypeDeclaration('@keel/plugin-api');
     const description = describePluginApi();
 
     expect(PLUGIN_MANIFEST_VERSION).toBe(1);

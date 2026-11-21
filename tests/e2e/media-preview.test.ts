@@ -253,8 +253,8 @@ test("generates a decoded thumbnail and keeps asset viewer context coherent", as
     // hiding the already-painted placeholder.
     await window.evaluate(() => {
       const global = globalThis as typeof globalThis & {
-        __serpentImageDecodeGate?: ImageDecodeGate;
-        __serpentRestoreImageDecode?: () => void;
+        __keelImageDecodeGate?: ImageDecodeGate;
+        __keelRestoreImageDecode?: () => void;
       };
       const originalDecode = HTMLImageElement.prototype.decode;
       const pending = new Set<() => void>();
@@ -285,8 +285,8 @@ test("generates a decoded thumbnail and keeps asset viewer context coherent", as
         gate.released = false;
         gate.fullDecodeCalls = 0;
       };
-      global.__serpentImageDecodeGate = gate;
-      global.__serpentRestoreImageDecode = () => {
+      global.__keelImageDecodeGate = gate;
+      global.__keelRestoreImageDecode = () => {
         HTMLImageElement.prototype.decode = originalDecode;
       };
     });
@@ -306,10 +306,10 @@ test("generates a decoded thumbnail and keeps asset viewer context coherent", as
         stableFullFrames: 0,
       };
       const global = globalThis as typeof globalThis & {
-        __serpentImageTransitionTrace?: ImageTransitionTrace;
-        __serpentImageTransitionObserver?: MutationObserver;
+        __keelImageTransitionTrace?: ImageTransitionTrace;
+        __keelImageTransitionObserver?: MutationObserver;
       };
-      global.__serpentImageTransitionTrace = trace;
+      global.__keelImageTransitionTrace = trace;
       const inspect = () => {
         const region = [...document.querySelectorAll<HTMLElement>('[role="region"]')]
           .find((candidate) => candidate.getAttribute("aria-label")?.endsWith("查看页面"));
@@ -369,7 +369,7 @@ test("generates a decoded thumbnail and keeps asset viewer context coherent", as
         attributes: true,
         attributeFilter: ["class", "src"],
       });
-      global.__serpentImageTransitionObserver = observer;
+      global.__keelImageTransitionObserver = observer;
       inspect();
     });
     await window.keyboard.press("Space");
@@ -396,8 +396,8 @@ test("generates a decoded thumbnail and keeps asset viewer context coherent", as
           window.evaluate(
             () =>
               (globalThis as typeof globalThis & {
-                __serpentImageDecodeGate?: ImageDecodeGate;
-              }).__serpentImageDecodeGate?.fullDecodeCalls ?? 0,
+                __keelImageDecodeGate?: ImageDecodeGate;
+              }).__keelImageDecodeGate?.fullDecodeCalls ?? 0,
           ),
         { timeout: 15_000 },
       )
@@ -408,30 +408,30 @@ test("generates a decoded thumbnail and keeps asset viewer context coherent", as
     ).toBeVisible();
     await window.evaluate(() => {
       const global = globalThis as typeof globalThis & {
-        __serpentImageDecodeGate?: ImageDecodeGate;
+        __keelImageDecodeGate?: ImageDecodeGate;
       };
-      global.__serpentImageDecodeGate?.releaseAll?.();
+      global.__keelImageDecodeGate?.releaseAll?.();
     });
     await expectImageDecoded(preview.locator("img.preview-image:not(.is-hidden)"));
     await expect
       .poll(() =>
         window.evaluate(
           () => (globalThis as typeof globalThis & {
-            __serpentImageTransitionTrace?: { done: boolean };
-          }).__serpentImageTransitionTrace?.done ?? false,
+            __keelImageTransitionTrace?: { done: boolean };
+          }).__keelImageTransitionTrace?.done ?? false,
         ),
         { timeout: 15_000 },
       )
       .toBe(true);
     const imageTransitionTrace = await window.evaluate(() => {
       const global = globalThis as typeof globalThis & {
-        __serpentImageTransitionTrace?: ImageTransitionTrace;
-        __serpentImageTransitionObserver?: MutationObserver;
+        __keelImageTransitionTrace?: ImageTransitionTrace;
+        __keelImageTransitionObserver?: MutationObserver;
       };
-      global.__serpentImageTransitionObserver?.disconnect();
-      const trace = global.__serpentImageTransitionTrace;
-      delete global.__serpentImageTransitionObserver;
-      delete global.__serpentImageTransitionTrace;
+      global.__keelImageTransitionObserver?.disconnect();
+      const trace = global.__keelImageTransitionTrace;
+      delete global.__keelImageTransitionObserver;
+      delete global.__keelImageTransitionTrace;
       return {
         placeholderReplacedAtFull: trace?.placeholderReplacedAtFull ?? null,
         samples: trace?.samples ?? [],
@@ -544,9 +544,9 @@ test("generates a decoded thumbnail and keeps asset viewer context coherent", as
     await preview.getByRole("button", { name: "适应" }).click();
     await window.evaluate(() => {
       const global = globalThis as typeof globalThis & {
-        __serpentImageDecodeGate?: ImageDecodeGate;
+        __keelImageDecodeGate?: ImageDecodeGate;
       };
-      global.__serpentImageDecodeGate?.reset?.();
+      global.__keelImageDecodeGate?.reset?.();
     });
     await window.evaluate(() => {
       type ViewerTraceSample = {
@@ -555,7 +555,7 @@ test("generates a decoded thumbnail and keeps asset viewer context coherent", as
       };
       type ViewerTrace = { done: boolean; samples: ViewerTraceSample[] };
       const trace: ViewerTrace = { done: false, samples: [] };
-      (globalThis as typeof globalThis & { __serpentViewerTrace?: ViewerTrace }).__serpentViewerTrace = trace;
+      (globalThis as typeof globalThis & { __keelViewerTrace?: ViewerTrace }).__keelViewerTrace = trace;
       let frame = 0;
       const sample = () => {
         const roots = [...document.querySelectorAll<HTMLElement>(
@@ -596,15 +596,15 @@ test("generates a decoded thumbnail and keeps asset viewer context coherent", as
     await expect
       .poll(() =>
         window.evaluate(
-          () => (globalThis as typeof globalThis & { __serpentViewerTrace?: { done: boolean } }).__serpentViewerTrace?.done ?? false,
+          () => (globalThis as typeof globalThis & { __keelViewerTrace?: { done: boolean } }).__keelViewerTrace?.done ?? false,
         ),
       )
       .toBe(true);
     const viewerTrace = await window.evaluate(() => {
       const trace = (globalThis as typeof globalThis & {
-        __serpentViewerTrace?: { done: boolean; samples: Array<{ visibleRoots: number; visibleDecodedImages: number }> };
-      }).__serpentViewerTrace;
-      delete (globalThis as typeof globalThis & { __serpentViewerTrace?: unknown }).__serpentViewerTrace;
+        __keelViewerTrace?: { done: boolean; samples: Array<{ visibleRoots: number; visibleDecodedImages: number }> };
+      }).__keelViewerTrace;
+      delete (globalThis as typeof globalThis & { __keelViewerTrace?: unknown }).__keelViewerTrace;
       return trace?.samples ?? [];
     });
     expect(viewerTrace.length).toBeGreaterThan(0);
@@ -625,8 +625,8 @@ test("generates a decoded thumbnail and keeps asset viewer context coherent", as
           window.evaluate(
             () =>
               (globalThis as typeof globalThis & {
-                __serpentImageDecodeGate?: ImageDecodeGate;
-              }).__serpentImageDecodeGate?.fullDecodeCalls ?? 0,
+                __keelImageDecodeGate?: ImageDecodeGate;
+              }).__keelImageDecodeGate?.fullDecodeCalls ?? 0,
           ),
         { timeout: 15_000 },
       )
@@ -634,19 +634,19 @@ test("generates a decoded thumbnail and keeps asset viewer context coherent", as
     await expect(nextFullPreviewImage).toHaveClass(/is-hidden/);
     await window.evaluate(() => {
       const global = globalThis as typeof globalThis & {
-        __serpentImageDecodeGate?: ImageDecodeGate;
+        __keelImageDecodeGate?: ImageDecodeGate;
       };
-      global.__serpentImageDecodeGate?.releaseAll?.();
+      global.__keelImageDecodeGate?.releaseAll?.();
     });
     await expectImageDecoded(nextPreview.locator("img.preview-image:not(.is-hidden)"));
     await window.evaluate(() => {
       const global = globalThis as typeof globalThis & {
-        __serpentImageDecodeGate?: ImageDecodeGate;
-        __serpentRestoreImageDecode?: () => void;
+        __keelImageDecodeGate?: ImageDecodeGate;
+        __keelRestoreImageDecode?: () => void;
       };
-      global.__serpentRestoreImageDecode?.();
-      delete global.__serpentImageDecodeGate;
-      delete global.__serpentRestoreImageDecode;
+      global.__keelRestoreImageDecode?.();
+      delete global.__keelImageDecodeGate;
+      delete global.__keelRestoreImageDecode;
     });
     await expect(
       window

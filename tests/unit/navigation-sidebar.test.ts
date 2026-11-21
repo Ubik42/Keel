@@ -415,7 +415,7 @@ describe("NavigationSidebar virtual library root", () => {
       .find((row) => /Trash|回收站/u.test(row.textContent ?? ""));
     expect(trashRow).toBeDefined();
     const transfer = createDragTransfer(
-      ["application/x-serpent-managed-assets"],
+      ["application/x-keel-managed-assets"],
       [],
       "none",
     );
@@ -897,7 +897,7 @@ describe("NavigationSidebar folder-section blank area", () => {
     });
     const list = folderList(nav);
     const assetTransfer = {
-      ...createDragTransfer(["application/x-serpent-managed-assets"]),
+      ...createDragTransfer(["application/x-keel-managed-assets"]),
       getData: () => JSON.stringify(["asset-1"]),
     } as unknown as DataTransfer;
     const fileTransfer = {

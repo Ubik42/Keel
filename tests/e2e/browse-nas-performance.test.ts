@@ -124,7 +124,7 @@ async function installProbe(window: Page): Promise<void> {
         });
       },
     };
-    (window as unknown as { __serpentProbe: unknown }).__serpentProbe = probe;
+    (window as unknown as { __keelProbe: unknown }).__keelProbe = probe;
 
     const observer = new MutationObserver((records) => {
       for (const record of records) {
@@ -166,7 +166,7 @@ async function installProbe(window: Page): Promise<void> {
 async function snapshot(window: Page): Promise<ProbeSnapshot> {
   const raw = await window.evaluate(() => {
     const probe = (window as unknown as {
-      __serpentProbe: {
+      __keelProbe: {
         slotCreated: number;
         slotMoved: number;
         slotRemoved: number;
@@ -176,7 +176,7 @@ async function snapshot(window: Page): Promise<ProbeSnapshot> {
         mediaSrcWrites: number;
         srcCounts: Record<string, number>;
       };
-    }).__serpentProbe;
+    }).__keelProbe;
     return {
       slotCreated: probe.slotCreated,
       slotMoved: probe.slotMoved,
@@ -476,7 +476,7 @@ test("measures canvas stability while scrolling a real library", async () => {
         ]),
       ),
       mainLog: {
-        sourceRequests: countLogEvents(logText, "serpent-protocol.source-request"),
+        sourceRequests: countLogEvents(logText, "keel-protocol.source-request"),
         mediaJobInterrupted: countLogEvents(logText, "worker.media-job.interrupted"),
         previewCacheHit: countScopedLogEvents(logText, "preview-cache", "hit"),
         previewCacheMiss: countScopedLogEvents(logText, "preview-cache", "miss"),

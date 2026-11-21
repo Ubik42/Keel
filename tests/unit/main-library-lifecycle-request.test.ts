@@ -116,7 +116,7 @@ test("billfish inspect keeps the archive stem as the display name", () => {
       sourceRootPath: "C:\\libraries\\archive.zip",
       sourceDisplayName: "Archive",
     },
-    { ok: true, type: "library.billfish-inspected", displayName: "serpent-external-library-temp" },
+    { ok: true, type: "library.billfish-inspected", displayName: "keel-external-library-temp" },
   )).toEqual({
     ok: true,
     type: "library.billfish-inspected",

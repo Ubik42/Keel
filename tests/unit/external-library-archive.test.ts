@@ -13,7 +13,7 @@ import {
 import { EXTERNAL_LIBRARY_STAGING_PREFIX } from '../../src/main/disk-free-space';
 
 async function tempDirectory(): Promise<string> {
-  return mkdtemp(path.join(os.tmpdir(), 'serpent-external-library-test-'));
+  return mkdtemp(path.join(os.tmpdir(), 'keel-external-library-test-'));
 }
 
 function writeZip(archivePath: string, entries: Record<string, string>): void {

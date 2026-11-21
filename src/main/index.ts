@@ -576,7 +576,7 @@ if (process.env.KEEL_E2E === "1") {
     "userData",
     explicitUserDataPath && path.isAbsolute(explicitUserDataPath)
       ? explicitUserDataPath
-      : path.join(tmpdir(), "serpent-e2e-user-data", String(process.pid)),
+      : path.join(tmpdir(), "keel-e2e-user-data", String(process.pid)),
   );
 }
 
@@ -1784,7 +1784,7 @@ function getDecryptedProfileApiKey(profileId: string): string {
 }
 
 function focusMainWindow(): boolean {
-  return focusSerpentWindow(
+  return focusKeelWindow(
     mainWindow && !mainWindow.isDestroyed() ? mainWindow.id : undefined,
   );
 }
@@ -1830,7 +1830,7 @@ async function exportShortcutBindingsFile(): Promise<ShortcutFileExportResult> {
       const options: Electron.SaveDialogOptions = {
         title: copy.title,
         buttonLabel: copy.buttonLabel,
-        defaultPath: "serpent-shortcuts.json",
+        defaultPath: "keel-shortcuts.json",
         filters: [{ name: copy.filterName ?? "JSON", extensions: ["json"] }],
       };
       const result = mainWindow
@@ -2053,7 +2053,7 @@ function handleSecondInstance(): void {
   focusMainWindow();
 }
 
-function focusSerpentWindow(windowId?: number): boolean {
+function focusKeelWindow(windowId?: number): boolean {
   if (!shouldHandleSecondaryLaunch({ applicationQuitting })) return false;
   const target =
     windowId === undefined
@@ -2722,7 +2722,7 @@ async function handleSaveUpload(
       assetId: result.asset.assetId,
     });
     if (upload.focusAppAfterSave) {
-      focusSerpentWindow(saveRouting.targetWindowId ?? undefined);
+      focusKeelWindow(saveRouting.targetWindowId ?? undefined);
     }
     if (upload.revealInLibrary) {
       publishExtensionSaveCompleted(saveRouting.targetWindowId, {
@@ -4716,7 +4716,7 @@ async function startApplication(): Promise<void> {
         );
         void offscreenWindow.webContents
           .executeJavaScript(
-            "({ readyState: document.readyState, body: document.body.innerHTML, hasBridge: Boolean(window.offscreenThumbnail), debug: window.__serpentOffscreenThumbnailDebug })",
+            "({ readyState: document.readyState, body: document.body.innerHTML, hasBridge: Boolean(window.offscreenThumbnail), debug: window.__keelOffscreenThumbnailDebug })",
           )
           .then((state) => {
             logger?.info(
@@ -6008,7 +6008,7 @@ async function startApplication(): Promise<void> {
         });
         if (!response) {
           logger?.info(
-            "serpent-protocol.app-asset-missing",
+            "keel-protocol.app-asset-missing",
             "Rejected unknown or unverified app-asset route.",
             { route: url.pathname },
           );
@@ -6048,13 +6048,13 @@ async function startApplication(): Promise<void> {
               rangeHeader: request.headers.get("range"),
               signal: bindLibraryMediaReadSignal(folderLibraryId, request.signal),
               onStreamError: (error) =>
-                logger?.error("serpent-protocol.folder-cover-stream", error, {
+                logger?.error("keel-protocol.folder-cover-stream", error, {
                   libraryId: folderLibraryId,
                 }),
             },
           );
         } catch (error) {
-          logger?.error("serpent-protocol.folder-cover-read", error, {
+          logger?.error("keel-protocol.folder-cover-read", error, {
             libraryId: folderLibraryId,
           });
           return new Response("Folder cover unreadable", { status: 404 });
@@ -6067,7 +6067,7 @@ async function startApplication(): Promise<void> {
         url.hostname !== "import-frame"
       ) {
         logger?.info(
-          "serpent-protocol.invalid-host",
+          "keel-protocol.invalid-host",
           "Rejected unsupported artifact protocol host.",
         );
         return new Response("Invalid keel:// path", { status: 400 });
@@ -6119,14 +6119,14 @@ async function startApplication(): Promise<void> {
               rangeHeader: request.headers.get("range"),
               signal: request.signal,
               onStreamError: (error) =>
-                logger?.error("serpent-protocol.import-frame-stream", error, {
+                logger?.error("keel-protocol.import-frame-stream", error, {
                   sequenceIndex,
                   frameNumber,
                 }),
             },
           );
         } catch (error) {
-          logger?.error("serpent-protocol.import-frame-read", error, {
+          logger?.error("keel-protocol.import-frame-read", error, {
             sequenceIndex,
             frameNumber,
           });
@@ -6136,7 +6136,7 @@ async function startApplication(): Promise<void> {
       const parts = url.pathname.replace(/^\/+/, "").split("/");
       if (parts.length !== 2) {
         logger?.info(
-          "serpent-protocol.invalid-path",
+          "keel-protocol.invalid-path",
           "Rejected malformed artifact protocol URL.",
         );
         return new Response("Invalid URL format", { status: 400 });
@@ -6150,7 +6150,7 @@ async function startApplication(): Promise<void> {
         artifactId.includes("..")
       ) {
         logger?.info(
-          "serpent-protocol.invalid-identifiers",
+          "keel-protocol.invalid-identifiers",
           "Rejected malformed artifact identifiers.",
         );
         return new Response("Invalid identifiers", { status: 400 });
@@ -6161,7 +6161,7 @@ async function startApplication(): Promise<void> {
 
       if (!workerClient) {
         logger?.error(
-          "serpent-protocol.worker-unavailable",
+          "keel-protocol.worker-unavailable",
           new Error("Library Worker is unavailable."),
         );
         return new Response("Worker unavailable", { status: 503 });
@@ -6173,7 +6173,7 @@ async function startApplication(): Promise<void> {
           return new Response("Worker unavailable", { status: 503 });
         }
         logger?.info(
-          "serpent-protocol.source-request",
+          "keel-protocol.source-request",
           "Resolving a source asset request.",
           { libraryId, assetId: artifactId },
         );
@@ -6203,7 +6203,7 @@ async function startApplication(): Promise<void> {
         const revisionId = url.searchParams.get("revision");
         if (!revisionId || !/^[A-Za-z0-9_-]{1,255}$/.test(revisionId)) {
           logger?.info(
-            "serpent-protocol.invalid-revision",
+            "keel-protocol.invalid-revision",
             "Rejected malformed source revision token.",
           );
           return new Response("Invalid revision", { status: 400 });
@@ -6225,14 +6225,14 @@ async function startApplication(): Promise<void> {
                 rangeHeader: request.headers.get("range"),
                 signal: bindLibraryMediaReadSignal(libraryId, request.signal),
                 onStreamError: (error) =>
-                  logger?.error("serpent-protocol.model-source-stream", error, {
+                  logger?.error("keel-protocol.model-source-stream", error, {
                     libraryId,
                     assetId: artifactId,
                   }),
               },
             );
           } catch (error) {
-            logger?.error("serpent-protocol.model-source-read", error, {
+            logger?.error("keel-protocol.model-source-read", error, {
               libraryId,
               assetId: artifactId,
             });
@@ -6271,7 +6271,7 @@ async function startApplication(): Promise<void> {
         } catch (error) {
           sourcePathCache.delete(libraryId, artifactId, revisionId);
           logger?.info(
-            "serpent-protocol.source-stale",
+            "keel-protocol.source-stale",
             "Rejected missing or stale source token.",
             { libraryId, assetId: artifactId },
           );
@@ -6298,7 +6298,7 @@ async function startApplication(): Promise<void> {
               rangeHeader: request.headers.get("range"),
               signal: bindLibraryMediaReadSignal(libraryId, request.signal),
               onStreamError: (error) =>
-                logger?.error("serpent-protocol.source-stream", error, {
+                logger?.error("keel-protocol.source-stream", error, {
                   libraryId,
                   assetId: artifactId,
                 }),
@@ -6318,7 +6318,7 @@ async function startApplication(): Promise<void> {
           return response;
         } catch (error) {
           sourcePathCache.delete(libraryId, artifactId, revisionId);
-          logger?.error("serpent-protocol.source-read", error, {
+          logger?.error("keel-protocol.source-read", error, {
             libraryId,
             assetId: artifactId,
           });
@@ -6375,7 +6375,7 @@ async function startApplication(): Promise<void> {
             rangeHeader: request.headers.get("range"),
             signal: bindLibraryMediaReadSignal(libraryId, request.signal),
             onStreamError: (error) =>
-              logger?.error("serpent-protocol.stream", error, {
+              logger?.error("keel-protocol.stream", error, {
                 libraryId,
                 artifactId,
               }),
@@ -6386,7 +6386,7 @@ async function startApplication(): Promise<void> {
         }
         return response;
       } catch (error) {
-        logger?.error("serpent-protocol.read", error, {
+        logger?.error("keel-protocol.read", error, {
           libraryId,
           artifactId,
         });
@@ -6398,7 +6398,7 @@ async function startApplication(): Promise<void> {
         return new Response("Artifact file missing", { status: 404 });
       }
     } catch (error) {
-      logger?.error("serpent-protocol", error, { url: request.url });
+      logger?.error("keel-protocol", error, { url: request.url });
       return new Response("Internal error", { status: 500 });
     }
   });

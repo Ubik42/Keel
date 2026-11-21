@@ -545,7 +545,7 @@ test("measures wheel scrolling and a real library switch", async () => {
         .map((line) => line.slice(0, 260))
         .slice(-40),
       mainLog: {
-        sourceRequests: countLogEvents(logText, "serpent-protocol.source-request"),
+        sourceRequests: countLogEvents(logText, "keel-protocol.source-request"),
         mediaJobInterrupted: countLogEvents(logText, "worker.media-job.interrupted"),
       },
     };

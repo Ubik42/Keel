@@ -3242,7 +3242,7 @@ export function describeAutomationCommands(): {
  * only after the runtime/console delivery phase chooses its public module id.
  */
 export function generateAutomationTypeDeclaration(
-  _moduleSpecifier = '@serpent/automation',
+  _moduleSpecifier = '@keel/automation',
 ): string {
   // Saved scripts must not import internal Zod schemas or app modules merely
   // to receive completions. Keep the generated public declaration standalone.

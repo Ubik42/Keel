@@ -6,10 +6,10 @@ import {
 
 import type { AutomationCommandGateway, AutomationExecutionContext } from '../automation/command-gateway';
 import { AUTOMATION_API_VERSION } from '../automation/command-registry';
-import { callSerpentMcpTool, type KeelMcpPluginToolBridge } from './call-tool';
+import { callKeelMcpTool, type KeelMcpPluginToolBridge } from './call-tool';
 import { shouldEmitCommandCompleted } from './command-completed-filter';
 import type { PluginMcpToolDefinition } from './plugin-tool-catalog';
-import { listSerpentMcpTools, mcpExposureAllowsWrite, type KeelMcpToolExposure } from './tool-catalog';
+import { listKeelMcpTools, mcpExposureAllowsWrite, type KeelMcpToolExposure } from './tool-catalog';
 
 export type KeelMcpSessionEvent =
   | { type: 'context-changed' }
@@ -69,7 +69,7 @@ function toolResultText(payload: unknown): {
 }
 
 /** Creates the only MCP protocol implementation used by Keel. */
-export function createSerpentMcpServer(options: KeelMcpServerOptions): Server {
+export function createKeelMcpServer(options: KeelMcpServerOptions): Server {
   const { backend, gateway } = options;
   const server = new Server(
     {
@@ -94,7 +94,7 @@ export function createSerpentMcpServer(options: KeelMcpServerOptions): Server {
   };
 
   server.setRequestHandler(ListToolsRequestSchema, async () => {
-    const listed = listSerpentMcpTools(currentExposure());
+    const listed = listKeelMcpTools(currentExposure());
     const pluginDefinitions = pluginTools();
     const names = new Set(listed.tools.map((tool) => tool.name));
     for (const tool of pluginDefinitions) {
@@ -140,7 +140,7 @@ export function createSerpentMcpServer(options: KeelMcpServerOptions): Server {
         }
       };
     await reportProgress?.(0, 1, 'Keel is running the tool.');
-    const result = await callSerpentMcpTool({
+    const result = await callKeelMcpTool({
       toolName: request.params.name,
       arguments: request.params.arguments ?? {},
       context: backend.getExecutionContext(),

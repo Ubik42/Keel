@@ -147,7 +147,7 @@ function withChallengeConfirmationFields(
 }
 
 /** Builds the single MCP tools/list projection from the Automation Registry. */
-export function listSerpentMcpTools(
+export function listKeelMcpTools(
   exposure: KeelMcpToolExposure,
 ): { apiVersion: typeof AUTOMATION_API_VERSION; tools: KeelMcpToolDefinition[] } {
   const tools: KeelMcpToolDefinition[] = [];
@@ -204,11 +204,11 @@ export function listSerpentMcpTools(
   return { apiVersion: AUTOMATION_API_VERSION, tools };
 }
 
-export function resolveSerpentMcpTool(
+export function resolveKeelMcpTool(
   toolName: string,
   exposure: KeelMcpToolExposure,
 ): KeelMcpToolDefinition | undefined {
-  return listSerpentMcpTools(exposure).tools.find((tool) => tool.name === toolName);
+  return listKeelMcpTools(exposure).tools.find((tool) => tool.name === toolName);
 }
 
 export function automationLibraryContextForMcpTool(

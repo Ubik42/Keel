@@ -468,7 +468,7 @@ test("switches Inspector assets without connection flashes or mixed metadata", a
 
     await window.evaluate(() => {
       const testWindow = globalThis as typeof globalThis & {
-        __serpentInspectorSwitchTrace?: {
+        __keelInspectorSwitchTrace?: {
           disconnect: () => void;
           snapshots: InspectorSwitchSnapshot[];
         };
@@ -518,7 +518,7 @@ test("switches Inspector assets without connection flashes or mixed metadata", a
         animationFrame = requestAnimationFrame(sampleFrames);
       };
       sampleFrames();
-      testWindow.__serpentInspectorSwitchTrace = {
+      testWindow.__keelInspectorSwitchTrace = {
         disconnect: () => {
           observer.disconnect();
           cancelAnimationFrame(animationFrame);
@@ -539,12 +539,12 @@ test("switches Inspector assets without connection flashes or mixed metadata", a
     const snapshots = await window.evaluate(() => {
       const trace = (
         globalThis as typeof globalThis & {
-          __serpentInspectorSwitchTrace?: {
+          __keelInspectorSwitchTrace?: {
             disconnect: () => void;
             snapshots: InspectorSwitchSnapshot[];
           };
         }
-      ).__serpentInspectorSwitchTrace;
+      ).__keelInspectorSwitchTrace;
       if (!trace) throw new Error("Inspector switching trace was not installed");
       trace.disconnect();
       return trace.snapshots;

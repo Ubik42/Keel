@@ -41,7 +41,7 @@ describe('sessionLogPathFor', () => {
   it('builds the plain snake/underscore-free session path', () => {
     const d = new Date(2026, 7, 16, 22, 14, 12);
     expect(sessionLogPathFor('/tmp/logs', d)).toBe(
-      path.join('/tmp/logs', 'serpent-20260816T221412.log'),
+      path.join('/tmp/logs', 'keel-20260816T221412.log'),
     );
   });
 });
@@ -51,26 +51,26 @@ describe('chooseUniqueSessionLogPath', () => {
     const d = new Date(2026, 7, 16, 22, 14, 12);
     const exists = () => false;
     expect(chooseUniqueSessionLogPath('/tmp/logs', d, exists, 42)).toBe(
-      path.join('/tmp/logs', 'serpent-20260816T221412.log'),
+      path.join('/tmp/logs', 'keel-20260816T221412.log'),
     );
   });
 
   it('falls back to millisecond precision on a same-second collision', () => {
     const d = new Date(2026, 7, 16, 22, 14, 12, 345);
     const exists = (filePath: string) =>
-      filePath === path.join('/tmp/logs', 'serpent-20260816T221412.log');
+      filePath === path.join('/tmp/logs', 'keel-20260816T221412.log');
     expect(chooseUniqueSessionLogPath('/tmp/logs', d, exists, 42)).toBe(
-      path.join('/tmp/logs', 'serpent-20260816T221412345.log'),
+      path.join('/tmp/logs', 'keel-20260816T221412345.log'),
     );
   });
 
   it('falls back to pid when the millisecond file also collides', () => {
     const d = new Date(2026, 7, 16, 22, 14, 12, 345);
     const exists = (filePath: string) =>
-      filePath === path.join('/tmp/logs', 'serpent-20260816T221412.log') ||
-      filePath === path.join('/tmp/logs', 'serpent-20260816T221412345.log');
+      filePath === path.join('/tmp/logs', 'keel-20260816T221412.log') ||
+      filePath === path.join('/tmp/logs', 'keel-20260816T221412345.log');
     expect(chooseUniqueSessionLogPath('/tmp/logs', d, exists, 99)).toBe(
-      path.join('/tmp/logs', 'serpent-20260816T221412-99.log'),
+      path.join('/tmp/logs', 'keel-20260816T221412-99.log'),
     );
   });
 });

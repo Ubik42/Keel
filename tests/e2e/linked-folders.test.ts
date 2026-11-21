@@ -341,12 +341,12 @@ async function startDeleteProgressCapture(window: Page): Promise<void> {
       }
     ).keel.library;
     const store = globalThis as typeof globalThis & {
-      __serpentDeleteProgress?: Array<Record<string, unknown>>;
+      __keelDeleteProgress?: Array<Record<string, unknown>>;
     };
-    store.__serpentDeleteProgress = [];
+    store.__keelDeleteProgress = [];
     library.onProgress((event) => {
       if (event.type !== 'delete.progress') return;
-      store.__serpentDeleteProgress!.push(event as Record<string, unknown>);
+      store.__keelDeleteProgress!.push(event as Record<string, unknown>);
     });
   });
 }
@@ -356,18 +356,18 @@ async function readDeleteProgress(
 ): Promise<DeleteProgressSnapshot[]> {
   return window.evaluate(() => {
     const store = globalThis as typeof globalThis & {
-      __serpentDeleteProgress?: DeleteProgressSnapshot[];
+      __keelDeleteProgress?: DeleteProgressSnapshot[];
     };
-    return store.__serpentDeleteProgress ?? [];
+    return store.__keelDeleteProgress ?? [];
   });
 }
 
 async function resetDeleteProgress(window: Page): Promise<void> {
   await window.evaluate(() => {
     const store = globalThis as typeof globalThis & {
-      __serpentDeleteProgress?: unknown[];
+      __keelDeleteProgress?: unknown[];
     };
-    store.__serpentDeleteProgress = [];
+    store.__keelDeleteProgress = [];
   });
 }
 

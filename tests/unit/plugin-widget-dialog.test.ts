@@ -10,7 +10,7 @@ import {
   runPluginWidgetDialog,
 } from '../../src/plugins/plugin-widget-toolkit';
 import { pluginUiDialogRequestPayloadSchema } from '../../src/shared/plugin-ui-dialog-bridge';
-import { createSerpentGuestApi } from '../../src/scripting/keel-guest-api';
+import { createKeelGuestApi } from '../../src/scripting/keel-guest-api';
 import { PLUGIN_WIDGET_OPEN_DIALOG_WRAP_SOURCE } from '../../src/scripting/plugin-widget-guest-source';
 
 describe('plugin widget IR', () => {
@@ -284,7 +284,7 @@ describe('serpent.ui.openDialog widget wrap', () => {
 
   it('still maps dialogId calls onto ui.dialog', async () => {
     const executeCommand = vi.fn(async () => ({ result: { crf: 23 } }));
-    const serpent = createSerpentGuestApi({ executeCommand });
+    const serpent = createKeelGuestApi({ executeCommand });
     await expect(serpent.ui!.openDialog!({
       dialogId: 'converter',
       payload: { kind: 'convert' },
@@ -303,7 +303,7 @@ describe('serpent.ui.openDialog widget wrap', () => {
       }
       return { patched: true };
     });
-    const serpent = createSerpentGuestApi({
+    const serpent = createKeelGuestApi({
       executeCommand,
       widgetDialog: {
         nextEvent: async () => null,

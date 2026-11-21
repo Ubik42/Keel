@@ -1,7 +1,7 @@
 import { lstat, mkdir, statfs } from 'node:fs/promises';
 import path from 'node:path';
 
-export const EXTERNAL_LIBRARY_STAGING_PREFIX = 'serpent-external-library-';
+export const EXTERNAL_LIBRARY_STAGING_PREFIX = 'keel-external-library-';
 export const EXTRACT_HEADROOM_RATIO = 0.1;
 export const EXTRACT_HEADROOM_MIN_BYTES = 64 * 1024 * 1024;
 const NON_ZIP_SIZE_MULTIPLIER = 3;

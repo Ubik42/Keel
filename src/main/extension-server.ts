@@ -125,7 +125,7 @@ function isAllowedOrigin(origin: string | string[] | undefined): boolean {
 const MAX_SAVE_JSON_BYTES = 16 * 1024;
 /** Same cap as Worker remote download (500 MB). */
 export const MAX_EXTENSION_UPLOAD_BYTES = 500 * 1024 * 1024;
-const UPLOAD_STAGE_PREFIX = 'serpent-ext-upload-';
+const UPLOAD_STAGE_PREFIX = 'keel-ext-upload-';
 
 function jsonResponse(
   res: http.ServerResponse,

@@ -8,7 +8,7 @@ import {
   automationCriticalOperationRegistry,
   getAutomationCommandDescriptor,
 } from '../../src/automation/command-registry';
-import { listSerpentMcpTools } from '../../src/mcp/tool-catalog';
+import { listKeelMcpTools } from '../../src/mcp/tool-catalog';
 import { mcpAccessModeSchema, mcpCredentialPermissionSchema } from '../../src/shared/mcp';
 import { readCapabilities, readExposure } from './keel-mcp-test-fixtures';
 
@@ -29,7 +29,7 @@ describe('MCP permission contract', () => {
       mode: 'auto',
     });
 
-    const tools = listSerpentMcpTools(readExposure).tools;
+    const tools = listKeelMcpTools(readExposure).tools;
     expect(tools.some((tool) => tool.name === 'keel_tag_create')).toBe(true);
     for (const tool of tools) {
       const descriptor = getAutomationCommandDescriptor(tool.commandId);

@@ -1167,7 +1167,7 @@ export const en = {
       version: "Version {version}",
       description: "Keep asset organization, preview, and retrieval fast, clear, and controllable. Keel is released under the MIT license.",
       github: "Visit GitHub repository",
-      etymology: "serpent noun /ˈsɝː.pənt/ a mythic serpent, named after Jörmungandr",
+      etymology: "keel noun /kiːl/ the backbone along the bottom of a ship that keeps it steady",
       origin: "Based on dolag233/Serpent (MIT)."
     },
     openSource: {
@@ -1836,7 +1836,7 @@ export const en = {
       title: "Sync",
       hint: "Share this library with other devices or teammates over WebDAV. Conflicting edits to the same file produce conflict copies.",
       webdavUrl: "WebDAV URL",
-      webdavUrlHint: "Any server subpath works, e.g. https://nas.local/dav/share/serpent/; http:// is added automatically when omitted.",
+      webdavUrlHint: "Any server subpath works, e.g. https://nas.local/dav/share/keel/; http:// is added automatically when omitted.",
       credentials: "Credentials",
       credentialsHint: "Optional; leave blank for anonymous access. Passwords travel in app memory only, never into library files.",
       username: "Username",

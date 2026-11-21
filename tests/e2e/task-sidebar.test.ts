@@ -117,7 +117,7 @@ test("sidebar tasks support switches, persistent drag ordering and groups", asyn
         ({ kind, id }) => {
           const d = new DataTransfer();
           d.setData(
-            "application/x-serpent-automatic-task",
+            "application/x-keel-automatic-task",
             JSON.stringify({ kind, id }),
           );
           return d;

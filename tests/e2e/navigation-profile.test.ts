@@ -243,17 +243,17 @@ type NavigationClickMarker = { sequence: number; identity: string; atEpochMs: nu
 async function installNavigationClickProbe(window: Page): Promise<void> {
   await window.evaluate(() => {
     const host = window as typeof window & {
-      __serpentNavigationClickMarker?: NavigationClickMarker;
-      __serpentNavigationClickSequence?: number;
+      __keelNavigationClickMarker?: NavigationClickMarker;
+      __keelNavigationClickSequence?: number;
     };
     document.addEventListener("click", (event) => {
       const target = event.target instanceof Element
         ? event.target.closest<HTMLButtonElement>("button.nav-row")
         : null;
       if (!target) return;
-      const sequence = (host.__serpentNavigationClickSequence ?? 0) + 1;
-      host.__serpentNavigationClickSequence = sequence;
-      host.__serpentNavigationClickMarker = {
+      const sequence = (host.__keelNavigationClickSequence ?? 0) + 1;
+      host.__keelNavigationClickSequence = sequence;
+      host.__keelNavigationClickMarker = {
         sequence,
         identity: [
           target.dataset.navFolderKind ?? "",
@@ -272,9 +272,9 @@ async function readNavigationClickMarker(
 ): Promise<NavigationClickMarker | null> {
   return window.evaluate((previous) => {
     const host = window as typeof window & {
-      __serpentNavigationClickMarker?: NavigationClickMarker;
+      __keelNavigationClickMarker?: NavigationClickMarker;
     };
-    const marker = host.__serpentNavigationClickMarker;
+    const marker = host.__keelNavigationClickMarker;
     return marker && marker.sequence > previous ? marker : null;
   }, previousSequence);
 }
@@ -957,8 +957,8 @@ test("profile navigation hotspots on a real library", async () => {
         const before = await visibleCardIds(window);
         const actionStartedAt = Date.now();
         const previousSequence = await window.evaluate(() =>
-          (window as typeof window & { __serpentNavigationClickSequence?: number })
-            .__serpentNavigationClickSequence ?? 0,
+          (window as typeof window & { __keelNavigationClickSequence?: number })
+            .__keelNavigationClickSequence ?? 0,
         );
         await window.locator(".navigation-pane button.nav-row").nth(scope.index).click();
         const clickMarker = await readNavigationClickMarker(window, previousSequence);
@@ -1136,8 +1136,8 @@ test("profile navigation hotspots on a real library", async () => {
       await window.screenshot({ path: path.join(outDir!, "wheel.png") });
     }
     const jobStatusStats = await window.evaluate(() =>
-      (globalThis as typeof globalThis & { __serpentJobStatusStats?: unknown })
-        .__serpentJobStatusStats ?? null,
+      (globalThis as typeof globalThis & { __keelJobStatusStats?: unknown })
+        .__keelJobStatusStats ?? null,
     );
     const mediaJobsDialogOpen = await window.evaluate(() =>
       document.querySelector("#media-jobs-dialog") !== null,

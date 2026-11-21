@@ -54,7 +54,7 @@ test('tag tree creates children, filters descendants, assigns assets and moves t
     }, libraryId);
     await expect.poll(async () => (await catalog()).length, { timeout: 20_000 }).toBe(2);
     const npcId = (await catalog()).find((asset) => asset.displayName === 'npc.svg')!.assetId;
-    const transfer = await window.evaluateHandle((id) => { const data = new DataTransfer(); data.setData('application/x-serpent-managed-assets', JSON.stringify([id])); return data; }, npcId);
+    const transfer = await window.evaluateHandle((id) => { const data = new DataTransfer(); data.setData('application/x-keel-managed-assets', JSON.stringify([id])); return data; }, npcId);
     await child.dispatchEvent('dragover', { dataTransfer: transfer });
     await child.dispatchEvent('drop', { dataTransfer: transfer });
     await expect(parent.locator('.nav-count')).toHaveText('1');
@@ -64,7 +64,7 @@ test('tag tree creates children, filters descendants, assigns assets and moves t
     await window.screenshot({ path: test.info().outputPath('tag-tree-linked-assets.png') });
     const childId = await child.getAttribute('data-tag-id');
     const scene = tree.getByRole('treeitem', { name: '场景', exact: true });
-    const tagTransfer = await window.evaluateHandle((id) => { const data = new DataTransfer(); data.setData('application/x-serpent-tag', id!); return data; }, childId);
+    const tagTransfer = await window.evaluateHandle((id) => { const data = new DataTransfer(); data.setData('application/x-keel-tag', id!); return data; }, childId);
     await child.dispatchEvent('dragstart', { dataTransfer: tagTransfer });
     await scene.dispatchEvent('dragover', { dataTransfer: tagTransfer });
     await scene.dispatchEvent('drop', { dataTransfer: tagTransfer });

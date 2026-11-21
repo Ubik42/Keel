@@ -18,10 +18,10 @@ describe('libraryExportDefaultName', () => {
 
   it('falls back for blank and Windows-reserved names', () => {
     expect(libraryExportDefaultName('   ', 'folder')).toBe(
-      'serpent-library-export',
+      'keel-library-export',
     );
     expect(libraryExportDefaultName('CON', 'zip')).toBe(
-      'serpent-library-export.zip',
+      'keel-library-export.zip',
     );
   });
 });

@@ -55,7 +55,7 @@ describe('desktop drop path resolution', () => {
 
 describe('clipboard staging', () => {
   it('writes private PNG staging and removes it after Worker preparation', () => {
-    const root = mkdtempSync(path.join(tmpdir(), 'serpent-clipboard-unit-'));
+    const root = mkdtempSync(path.join(tmpdir(), 'keel-clipboard-unit-'));
     roots.push(root);
     const staged = stageClipboardImage({
       isEmpty: () => false,
@@ -68,11 +68,11 @@ describe('clipboard staging', () => {
   });
 
   it('reports empty clipboard images and sweeps only Serpent-owned stale staging', () => {
-    const root = mkdtempSync(path.join(tmpdir(), 'serpent-clipboard-sweep-'));
+    const root = mkdtempSync(path.join(tmpdir(), 'keel-clipboard-sweep-'));
     roots.push(root);
     expect(() => stageClipboardImage({ isEmpty: () => true, toPNG: () => Buffer.alloc(0) }, root))
       .toThrow('CLIPBOARD_IMAGE_NOT_FOUND');
-    mkdirSync(path.join(root, 'serpent-clipboard-stale'));
+    mkdirSync(path.join(root, 'keel-clipboard-stale'));
     mkdirSync(path.join(root, 'someone-elses-temp'));
     expect(cleanupStaleClipboardImages(root)).toBe(1);
     expect(existsSync(path.join(root, 'someone-elses-temp'))).toBe(true);
@@ -173,7 +173,7 @@ describe('windows clipboard image extraction', () => {
   });
 
   it('reads images referenced as temp files inside the HTML Format', () => {
-    const root = mkdtempSync(path.join(tmpdir(), 'serpent-clipboard-html-'));
+    const root = mkdtempSync(path.join(tmpdir(), 'keel-clipboard-html-'));
     roots.push(root);
     const imagePath = path.join(root, 'staged.png');
     writeFileSync(imagePath, pngBytes);
