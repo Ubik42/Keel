@@ -1456,7 +1456,7 @@ export const en = {
     pluginInstallLocalZipAction: "Install ZIP",
     pluginInstallLocalZipHint: "Choose a plugin ZIP archive.",
     pluginInstallLocalFolderAction: "Install folder",
-    pluginInstallLocalFolderHint: "Choose a plugin folder that contains serpent-plugin.json.",
+    pluginInstallLocalFolderHint: "Choose a plugin folder that contains keel-plugin.json.",
     pluginGitHubRepository: "GitHub repository or Release URL",
     pluginGitHubPlaceholder: "https://github.com/owner/plugin",
     pluginGitHubInvalidRepository: "Enter a valid HTTPS GitHub repository, owner/repository, or Release URL.",

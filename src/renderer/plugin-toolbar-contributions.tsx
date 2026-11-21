@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 
-import type { SerpentPluginManagerApi } from "../shared/plugin-manager-api";
+import type { KeelPluginManagerApi } from "../shared/plugin-manager-api";
 import type { PluginContributionContext, PluginInvocationAssetSource } from "../plugins/plugin-context";
 import {
   resolvePluginContributionConditions,
@@ -53,7 +53,7 @@ export function buildPluginToolbarDescriptors(
 }
 
 export function usePluginToolbarContributions(
-  pluginApi: SerpentPluginManagerApi | undefined,
+  pluginApi: KeelPluginManagerApi | undefined,
   libraryId: string | undefined,
   enabled: boolean,
   refreshKey: string | null,
@@ -93,7 +93,7 @@ export function usePluginToolbarContributions(
 }
 
 export async function runPluginToolbarCommand(
-  pluginApi: SerpentPluginManagerApi,
+  pluginApi: KeelPluginManagerApi,
   libraryId: string,
   item: PluginToolbarDescriptor,
   context: {
@@ -114,7 +114,7 @@ export function PluginToolbarButtons({
   refreshKey,
   context,
 }: {
-  pluginApi: SerpentPluginManagerApi | undefined;
+  pluginApi: KeelPluginManagerApi | undefined;
   libraryId: string | undefined;
   selectedAssetIds: readonly string[];
   selectedAssets?: readonly PluginInvocationAssetSource[];

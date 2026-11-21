@@ -94,6 +94,7 @@ test('does not resume a plugin job after the whole Electron process restarts', a
   const libraryDirectory = path.join(temporaryRoot, libraryName);
   const storagePath = path.join(
     libraryDirectory,
+    '.keel',
     PLUGIN_LIBRARY_DATA_DIRECTORY,
     `${PLUGIN_ID}.json`,
   );

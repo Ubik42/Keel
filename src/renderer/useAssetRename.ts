@@ -2,7 +2,7 @@ import { requestConfirmation } from "./local-confirmation";
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
 
 import type { AssetSummary } from "../shared/asset-types";
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 import type { RendererLibrarySummary } from "../shared/protocol/responses";
 import { PUBLIC_ERROR_MESSAGES_ZH, toMessage } from "./error-utils";
 import {
@@ -52,7 +52,7 @@ export type AssetRenameCommitResolution =
   | { action: "keep-editing" };
 
 export interface UseAssetRenameParams {
-  api: SerpentLibraryApi | null;
+  api: KeelLibraryApi | null;
   library: RendererLibrarySummary | null;
   visibleAssets: AssetSummary[];
   reloadCurrentContent: () => Promise<void>;

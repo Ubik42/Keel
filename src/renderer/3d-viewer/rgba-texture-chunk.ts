@@ -35,7 +35,7 @@ export function applyDecodedRgbaTextures(
     const materials = Array.isArray(materialValue) ? materialValue : [materialValue];
     for (const material of materials) {
       if (!isTexturedMaterial(material)) continue;
-      const slots = material.userData.serpentRgbaTextures;
+      const slots = material.userData.keelRgbaTextures;
       if (!slots || typeof slots !== 'object') continue;
       for (const [slot, index] of Object.entries(slots)) {
         if (typeof index !== 'number') continue;
@@ -44,7 +44,7 @@ export function applyDecodedRgbaTextures(
         assignSlot(material, slot, makeDataTexture(image, COLOR_SLOTS.has(slot)));
         applied += 1;
       }
-      const scale = material.userData.serpentNormalScale;
+      const scale = material.userData.keelNormalScale;
       if (typeof scale === 'number') material.normalScale.set(scale, scale);
       material.needsUpdate = true;
     }
@@ -89,8 +89,8 @@ function assignSlot(
 
 function isTexturedMaterial(value: unknown): value is MeshStandardMaterial & {
   userData: {
-    serpentRgbaTextures?: unknown;
-    serpentNormalScale?: unknown;
+    keelRgbaTextures?: unknown;
+    keelNormalScale?: unknown;
   };
 } {
   if (!value || typeof value !== 'object') return false;

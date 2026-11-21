@@ -109,7 +109,7 @@ test("a font asset renders a card sample and a viewer preview with real glyphs",
       const first = getComputedStyle(row).fontFamily.split(",")[0] ?? "";
       return first.trim().replaceAll('"', "");
     });
-    expect(fontFamily.startsWith("SerpentFontViewer-")).toBe(true);
+    expect(fontFamily.startsWith("KeelFontViewer-")).toBe(true);
     await expect
       .poll(
         () =>

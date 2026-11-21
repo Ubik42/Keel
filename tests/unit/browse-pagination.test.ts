@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import type { AssetSummary } from "../../src/shared/asset-types";
-import type { SerpentLibraryApi } from "../../src/shared/library-api";
+import type { KeelLibraryApi } from "../../src/shared/library-api";
 import { nextUnfilledBrowsePageOffset } from "../../src/renderer/browse-window-slots";
 import {
   fetchBrowseScopeAssetIdsGuarded,
@@ -66,7 +66,7 @@ const rankedDefinition: BrowsePageDefinition = {
 describe("fetchBrowseScopeIds (Serpent-ws4k select-all id set)", () => {
   it("uses the complete semantic ranking snapshot for scope selection", async () => {
     const searchAssets = vi.fn();
-    const api = { searchAssets } as unknown as SerpentLibraryApi;
+    const api = { searchAssets } as unknown as KeelLibraryApi;
     expect(await fetchBrowseScopeIds({ api, definition: rankedDefinition })).toEqual([
       "rank-1",
       "rank-2",
@@ -83,7 +83,7 @@ describe("fetchBrowseScopeIds (Serpent-ws4k select-all id set)", () => {
     }));
     const api = {
       searchAssets,
-    } as unknown as SerpentLibraryApi;
+    } as unknown as KeelLibraryApi;
 
     expect(await fetchBrowseScopeIds({ api, definition: searchDefinition })).toEqual([
       "a",
@@ -100,7 +100,7 @@ describe("fetchBrowseScopeIds (Serpent-ws4k select-all id set)", () => {
         ok: false as const,
         error: { code: "FOLDER_NOT_FOUND", message: "gone" },
       })),
-    } as unknown as SerpentLibraryApi;
+    } as unknown as KeelLibraryApi;
 
     expect(await fetchBrowseScopeIds({ api, definition: searchDefinition })).toBeNull();
   });
@@ -109,7 +109,7 @@ describe("fetchBrowseScopeIds (Serpent-ws4k select-all id set)", () => {
 describe("fetchBrowseLayout (Serpent-sa65 compact geometry index)", () => {
   it("does not replace semantic order with an ordinary search layout", async () => {
     const searchAssets = vi.fn();
-    const api = { searchAssets } as unknown as SerpentLibraryApi;
+    const api = { searchAssets } as unknown as KeelLibraryApi;
     expect(await fetchBrowseLayout({ api, definition: rankedDefinition })).toBeNull();
     expect(searchAssets).not.toHaveBeenCalled();
   });
@@ -122,7 +122,7 @@ describe("fetchBrowseLayout (Serpent-sa65 compact geometry index)", () => {
     }));
     const api = {
       searchAssets,
-    } as unknown as SerpentLibraryApi;
+    } as unknown as KeelLibraryApi;
 
     expect(await fetchBrowseLayout({ api, definition: searchDefinition })).toEqual(layout);
     expect(searchAssets).toHaveBeenCalledWith(
@@ -137,7 +137,7 @@ describe("fetchBrowseLayout (Serpent-sa65 compact geometry index)", () => {
     }));
     const api = {
       searchAssets,
-    } as unknown as SerpentLibraryApi;
+    } as unknown as KeelLibraryApi;
 
     expect(await fetchBrowseLayout({ api, definition: searchDefinition })).toBeNull();
   });
@@ -156,7 +156,7 @@ describe("fetchRankedBrowsePage (semantic result stream)", () => {
       ok: true as const,
       value: [asset("rank-3"), asset("rank-2")],
     }));
-    const api = { listAssets } as unknown as SerpentLibraryApi;
+    const api = { listAssets } as unknown as KeelLibraryApi;
     const result = await fetchRankedBrowsePage({
       api,
       definition: rankedDefinition,
@@ -221,7 +221,7 @@ describe("fetchRankedBrowsePage (semantic result stream)", () => {
     const listAssets = vi.fn()
       .mockResolvedValueOnce({ ok: true as const, value: [] })
       .mockResolvedValueOnce({ ok: true as const, value: [asset("rank-51"), asset("rank-50")] });
-    const api = { listAssets } as unknown as SerpentLibraryApi;
+    const api = { listAssets } as unknown as KeelLibraryApi;
     const rankedAssetIds = Array.from({ length: 75 }, (_, index) => `rank-${index}`);
     const result = await fetchFirstRankedBrowsePage({
       api,
@@ -247,7 +247,7 @@ describe("fetchRankedBrowsePage (semantic result stream)", () => {
     const listAssets = vi.fn(async () => ({ ok: true as const, value: [] }));
     const rankedAssetIds = Array.from({ length: 27 }, (_, index) => `rank-${index}`);
     const result = await fetchFirstRankedBrowsePage({
-      api: { listAssets } as unknown as SerpentLibraryApi,
+      api: { listAssets } as unknown as KeelLibraryApi,
       libraryId: "lib-1",
       rankedAssetIds,
       pageSize: 25,
@@ -259,7 +259,7 @@ describe("fetchRankedBrowsePage (semantic result stream)", () => {
   it("returns null for ordinary browse definitions", async () => {
     const listAssets = vi.fn();
     expect(await fetchRankedBrowsePage({
-      api: { listAssets } as unknown as SerpentLibraryApi,
+      api: { listAssets } as unknown as KeelLibraryApi,
       definition: searchDefinition,
       offset: 0,
       limit: 30,
@@ -299,7 +299,7 @@ describe("fetchBrowseScopeAssetIdsGuarded (Serpent-ws4k select-all race)", () =>
     let generation = 1;
     const fetch = vi.fn(async () => ["stale-a", "stale-b"]);
     const pending = fetchBrowseScopeAssetIdsGuarded({
-      api: {} as SerpentLibraryApi,
+      api: {} as KeelLibraryApi,
       definition: searchDefinition,
       currentGeneration: () => generation,
       fetch,
@@ -314,7 +314,7 @@ describe("fetchBrowseScopeAssetIdsGuarded (Serpent-ws4k select-all race)", () =>
     const fetch = vi.fn(async () => ["a", "b"]);
     expect(
       await fetchBrowseScopeAssetIdsGuarded({
-        api: {} as SerpentLibraryApi,
+        api: {} as KeelLibraryApi,
         definition: searchDefinition,
         currentGeneration: () => 1,
         fetch,
@@ -334,7 +334,7 @@ describe("fetchBrowseScopeAssetIdsGuarded (Serpent-ws4k select-all race)", () =>
     ).toBeNull();
     expect(
       await fetchBrowseScopeAssetIdsGuarded({
-        api: {} as SerpentLibraryApi,
+        api: {} as KeelLibraryApi,
         definition: null,
         currentGeneration: () => 1,
         fetch,

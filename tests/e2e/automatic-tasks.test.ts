@@ -2,7 +2,7 @@ import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { _electron as electron, expect, test } from "@playwright/test";
-import type { SerpentLibraryApi } from "../../src/shared/library-api";
+import type { KeelLibraryApi } from "../../src/shared/library-api";
 import { resolveElectronExecutablePath } from "./electron-test-helpers";
 import { removePathWithSyncRetry } from "../../src/worker/windows-fs-retry";
 
@@ -59,7 +59,7 @@ test("independent automatic tasks replace group entries and apply tags manually 
       window.evaluate(async () => {
         const api = (
           globalThis as typeof globalThis & {
-            keel: { library: SerpentLibraryApi };
+            keel: { library: KeelLibraryApi };
           }
         ).keel.library;
         const opened = await api.listOpen();
@@ -77,7 +77,7 @@ test("independent automatic tasks replace group entries and apply tags manually 
           window.evaluate(async () => {
             const api = (
               globalThis as typeof globalThis & {
-                keel: { library: SerpentLibraryApi };
+                keel: { library: KeelLibraryApi };
               }
             ).keel.library;
             const opened = await api.listOpen();

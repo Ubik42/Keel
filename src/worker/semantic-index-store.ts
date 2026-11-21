@@ -17,12 +17,12 @@ const MAX_QUERY_CANDIDATES = 100_000;
 
 function ensureSemanticDatabasePath(libraryPath: string): string {
   const libraryRoot = realpathSync(libraryPath);
-  const serpentDirectory = libraryMetaDir(libraryRoot);
-  const serpentInfo = lstatSync(serpentDirectory);
-  if (!serpentInfo.isDirectory() || serpentInfo.isSymbolicLink()) {
+  const keelDirectory = libraryMetaDir(libraryRoot);
+  const keelInfo = lstatSync(keelDirectory);
+  if (!keelInfo.isDirectory() || keelInfo.isSymbolicLink()) {
     throw new Error('The semantic index directory is not a safe library directory.');
   }
-  const semanticDirectory = path.join(serpentDirectory, 'semantic');
+  const semanticDirectory = path.join(keelDirectory, 'semantic');
   try {
     lstatSync(semanticDirectory);
   } catch (error) {
@@ -47,10 +47,10 @@ function ensureSemanticDatabasePath(libraryPath: string): string {
 
 function semanticDatabasePathForExistingLibrary(libraryPath: string): string {
   const root = realpathSync(libraryPath);
-  const serpentDirectory = libraryMetaDir(root);
-  const serpentInfo = lstatSync(serpentDirectory);
-  if (!serpentInfo.isDirectory() || serpentInfo.isSymbolicLink()) throw new Error('Unsafe library metadata directory.');
-  const semanticDirectory = path.join(serpentDirectory, 'semantic');
+  const keelDirectory = libraryMetaDir(root);
+  const keelInfo = lstatSync(keelDirectory);
+  if (!keelInfo.isDirectory() || keelInfo.isSymbolicLink()) throw new Error('Unsafe library metadata directory.');
+  const semanticDirectory = path.join(keelDirectory, 'semantic');
   const semanticInfo = lstatSync(semanticDirectory);
   if (!semanticInfo.isDirectory() || semanticInfo.isSymbolicLink()) throw new Error('Unsafe semantic index directory.');
   const databasePath = path.join(semanticDirectory, 'index.sqlite');

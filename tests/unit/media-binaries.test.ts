@@ -431,7 +431,7 @@ it('uses one LibRaw- and zlib-enabled media manifest for macOS and Windows build
   );
   expect(windowsOiioScript).toContain("'openimageio[libraw,opencolorio,tools]'");
   // 工作目录不得与 Squirrel/Inno 安装目录 %LOCALAPPDATA%\Serpent 撞名
-  expect(windowsScript).toContain("Join-Path $env:LOCALAPPDATA 'SerpentMediaBuild\\win32-x64'");
+  expect(windowsScript).toContain("Join-Path $env:LOCALAPPDATA 'KeelMediaBuild\\win32-x64'");
 });
 
 it('keeps the PNG encoder required for audio waveform thumbnails in the FFmpeg overlay', () => {

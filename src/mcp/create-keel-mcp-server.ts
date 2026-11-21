@@ -6,27 +6,27 @@ import {
 
 import type { AutomationCommandGateway, AutomationExecutionContext } from '../automation/command-gateway';
 import { AUTOMATION_API_VERSION } from '../automation/command-registry';
-import { callSerpentMcpTool, type SerpentMcpPluginToolBridge } from './call-tool';
+import { callSerpentMcpTool, type KeelMcpPluginToolBridge } from './call-tool';
 import { shouldEmitCommandCompleted } from './command-completed-filter';
 import type { PluginMcpToolDefinition } from './plugin-tool-catalog';
-import { listSerpentMcpTools, mcpExposureAllowsWrite, type SerpentMcpToolExposure } from './tool-catalog';
+import { listSerpentMcpTools, mcpExposureAllowsWrite, type KeelMcpToolExposure } from './tool-catalog';
 
-export type SerpentMcpSessionEvent =
+export type KeelMcpSessionEvent =
   | { type: 'context-changed' }
   | { type: 'tools-changed' }
   | { type: 'library-changed'; libraryId: string; changeSequence: number };
 
-export interface SerpentMcpSessionBackend {
+export interface KeelMcpSessionBackend {
   getExecutionContext(): AutomationExecutionContext | undefined;
-  getToolExposure(): SerpentMcpToolExposure;
-  getPluginTools(): SerpentMcpPluginToolBridge | undefined;
+  getToolExposure(): KeelMcpToolExposure;
+  getPluginTools(): KeelMcpPluginToolBridge | undefined;
   /** Last known library change sequence for the response echo (ADR-0031 §2). */
   getLibraryChangeSequence?(libraryId: string): number | undefined;
-  subscribe?(listener: (event: SerpentMcpSessionEvent) => void): () => void;
+  subscribe?(listener: (event: KeelMcpSessionEvent) => void): () => void;
 }
 
-export type SerpentMcpServerOptions = {
-  backend: SerpentMcpSessionBackend;
+export type KeelMcpServerOptions = {
+  backend: KeelMcpSessionBackend;
   gateway: AutomationCommandGateway;
   serverName?: string;
   serverVersion?: string;
@@ -69,7 +69,7 @@ function toolResultText(payload: unknown): {
 }
 
 /** Creates the only MCP protocol implementation used by Serpent. */
-export function createSerpentMcpServer(options: SerpentMcpServerOptions): Server {
+export function createSerpentMcpServer(options: KeelMcpServerOptions): Server {
   const { backend, gateway } = options;
   const server = new Server(
     {
@@ -82,7 +82,7 @@ export function createSerpentMcpServer(options: SerpentMcpServerOptions): Server
     },
   );
 
-  const currentExposure = (): SerpentMcpToolExposure => backend.getToolExposure();
+  const currentExposure = (): KeelMcpToolExposure => backend.getToolExposure();
   const pluginTools = (): readonly PluginMcpToolDefinition[] => {
     const exposure = currentExposure();
     const writeEnabled = mcpExposureAllowsWrite(exposure);

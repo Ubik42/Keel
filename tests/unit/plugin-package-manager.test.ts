@@ -58,7 +58,7 @@ function createManager(userDataDirectory: string): PluginPackageManager {
   return new PluginPackageManager({
     userDataDirectory,
     deviceId: path.basename(userDataDirectory),
-    serpentVersion: '0.2.4',
+    keelVersion: '0.2.4',
     pluginApiVersion: 1,
     platform: 'darwin',
     arch: 'arm64',
@@ -112,7 +112,7 @@ describe('PluginPackageManager installation and integrity', () => {
     const manager = new PluginPackageManager({
       userDataDirectory: userData,
       deviceId: path.basename(userData),
-      serpentVersion: '0.2.4',
+      keelVersion: '0.2.4',
       pluginApiVersion: 1,
       platform: 'darwin',
       arch: 'arm64',
@@ -153,7 +153,7 @@ describe('PluginPackageManager installation and integrity', () => {
     const manager = new PluginPackageManager({
       userDataDirectory: userData,
       deviceId: 'device-1',
-      serpentVersion: '0.2.4',
+      keelVersion: '0.2.4',
       pluginApiVersion: 1,
       platform: 'darwin',
       arch: 'arm64',
@@ -225,7 +225,7 @@ describe('PluginPackageManager installation and integrity', () => {
     });
 
     const managerB = createManager(userB);
-    expect(readFileSync(path.join(library, PLUGIN_LIBRARY_LOCK_FILE), 'utf8')).toContain('com.example.palette-tools');
+    expect(readFileSync(path.join(library, '.keel', PLUGIN_LIBRARY_LOCK_FILE), 'utf8')).toContain('com.example.palette-tools');
     await expect(managerB.listInstalled({ scope: 'library', libraryDirectory: library })).resolves.toMatchObject([
       { status: 'valid', package: { lock: { pluginId: 'com.example.palette-tools' } }, trust: undefined },
     ]);

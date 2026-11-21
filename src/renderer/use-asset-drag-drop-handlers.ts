@@ -1,7 +1,7 @@
 import { useCallback, type MutableRefObject } from "react";
 
 import type { AssetSummary } from "../shared/asset-types";
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 import type { RendererLibrarySummary } from "../shared/protocol/responses";
 import {
   resolveFolderDrop,
@@ -13,7 +13,7 @@ import { LibraryOperationError, toMessage } from "./error-utils";
 import { useLocale, useT } from "./i18n";
 
 export type UseAssetDragDropHandlersParams = {
-  api: SerpentLibraryApi | null;
+  api: KeelLibraryApi | null;
   library: RendererLibrarySummary | null;
   assets: AssetSummary[];
   assetScope: string;

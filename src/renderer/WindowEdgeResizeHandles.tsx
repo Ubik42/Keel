@@ -6,14 +6,14 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 
-import type { SerpentShellApi } from "../shared/external-url";
+import type { KeelShellApi } from "../shared/external-url";
 import {
   WINDOW_RESIZE_EDGES,
   type WindowResizeEdge,
 } from "../shared/window-edge-resize";
 
 type Props = {
-  shell: SerpentShellApi | null | undefined;
+  shell: KeelShellApi | null | undefined;
 };
 
 const EDGE_CURSOR: Record<WindowResizeEdge, string> = {

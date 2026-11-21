@@ -21,10 +21,10 @@ import {
   automationLibraryContextForMcpTool,
   mcpExposureAllowsWrite,
   resolveSerpentMcpTool,
-  type SerpentMcpToolExposure,
+  type KeelMcpToolExposure,
 } from './tool-catalog';
 
-export type SerpentMcpCallToolSuccess = {
+export type KeelMcpCallToolSuccess = {
   ok: true;
   toolName: string;
   commandId?: AutomationCommandId;
@@ -37,7 +37,7 @@ export type SerpentMcpCallToolSuccess = {
   undoGroupId?: string;
 };
 
-export type SerpentMcpCallToolFailure = {
+export type KeelMcpCallToolFailure = {
   ok: false;
   code:
     | 'MCP_TOOL_NOT_FOUND'
@@ -57,9 +57,9 @@ export type SerpentMcpCallToolFailure = {
   gateway?: AutomationGatewayResult;
 };
 
-export type SerpentMcpCallToolResult = SerpentMcpCallToolSuccess | SerpentMcpCallToolFailure;
+export type KeelMcpCallToolResult = KeelMcpCallToolSuccess | KeelMcpCallToolFailure;
 
-export type SerpentMcpPluginToolBridge = {
+export type KeelMcpPluginToolBridge = {
   list: (libraryId?: string) => readonly PluginMcpToolDefinition[];
   isKnown: (toolName: string, libraryId?: string) => boolean;
   call: (input: {
@@ -72,13 +72,13 @@ export type SerpentMcpPluginToolBridge = {
   }) => Promise<unknown>;
 };
 
-export type SerpentMcpCallToolInput = {
+export type KeelMcpCallToolInput = {
   toolName: string;
   arguments: unknown;
   context: AutomationExecutionContext | undefined;
-  exposure: SerpentMcpToolExposure;
+  exposure: KeelMcpToolExposure;
   gateway: AutomationCommandGateway;
-  pluginTools?: SerpentMcpPluginToolBridge;
+  pluginTools?: KeelMcpPluginToolBridge;
   /** ADR-0031 §2: last known library change sequence for the response echo. */
   getLibraryChangeSequence?: (libraryId: string) => number | undefined;
   signal?: AbortSignal;
@@ -101,7 +101,7 @@ function contextWithRequestSignal(
   return { ...context, abortSignal: AbortSignal.any([executionSignal, requestSignal]) };
 }
 
-function outputLimitFor(input: SerpentMcpCallToolInput): number {
+function outputLimitFor(input: KeelMcpCallToolInput): number {
   return input.context?.resourceBudget?.maxOutputBytes ?? 1024 * 1024;
 }
 
@@ -112,8 +112,8 @@ function outputWithinBudget(value: unknown, maxBytes: number): boolean {
 
 /** Maps one MCP tools/call into a Main-owned Gateway envelope. */
 export async function callSerpentMcpTool(
-  input: SerpentMcpCallToolInput,
-): Promise<SerpentMcpCallToolResult> {
+  input: KeelMcpCallToolInput,
+): Promise<KeelMcpCallToolResult> {
   const context = contextWithRequestSignal(input.context, input.signal);
   const executionId = context?.executionId;
   const tool = resolveSerpentMcpTool(input.toolName, input.exposure);
@@ -261,7 +261,7 @@ export async function callSerpentMcpTool(
     const gatewayError = (gatewayResult as { error: { code: string; message?: string; currentEntityVersion?: number } }).error;
     return {
       ok: false,
-      code: gatewayError.code as SerpentMcpCallToolFailure['code'],
+      code: gatewayError.code as KeelMcpCallToolFailure['code'],
       message: gatewayError.message ?? gatewayError.code,
       // Serpent review: structured error contract (§10) — transient codes are
       // flagged retryable, entity-version conflicts carry the current version.

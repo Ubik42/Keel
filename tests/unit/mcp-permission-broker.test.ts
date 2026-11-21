@@ -19,7 +19,7 @@ afterEach(() => {
 });
 
 function policyStore(): McpPermissionPolicyStore {
-  const root = mkdtempSync(path.join(tmpdir(), 'serpent-mcp-broker-'));
+  const root = mkdtempSync(path.join(tmpdir(), 'keel-mcp-broker-'));
   roots.push(root);
   return new McpPermissionPolicyStore(root);
 }

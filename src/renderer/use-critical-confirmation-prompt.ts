@@ -4,10 +4,10 @@ import type {
   CriticalConfirmationDecision,
   CriticalConfirmationPrompt,
 } from "../shared/critical-confirmation";
-import type { SerpentShellApi } from "../shared/external-url";
+import type { KeelShellApi } from "../shared/external-url";
 
 export function useCriticalConfirmationPrompt(
-  shell: SerpentShellApi | undefined,
+  shell: KeelShellApi | undefined,
 ): {
   request: CriticalConfirmationPrompt | null;
   decide: (decision: CriticalConfirmationDecision) => void;

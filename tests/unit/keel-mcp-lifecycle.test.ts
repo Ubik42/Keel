@@ -9,7 +9,7 @@ import { callSerpentMcpTool } from '../../src/mcp/call-tool';
 import { listSerpentMcpTools } from '../../src/mcp/tool-catalog';
 import type { WorkerCommand } from '../../src/shared/protocol/requests';
 import type { WorkerResult } from '../../src/shared/protocol/responses';
-import { mcpContext, writeExposure } from './serpent-mcp-test-fixtures';
+import { mcpContext, writeExposure } from './keel-mcp-test-fixtures';
 
 /**
  * Serpent 接管（另一个 agent 的 MCP 生命周期 WIP）：新命令的执行层覆盖。

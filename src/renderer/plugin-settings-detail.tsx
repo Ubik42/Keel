@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import type {
   PluginManagerUiDescriptorContribution,
   PluginManagerPackageSummary,
-  SerpentPluginManagerApi,
+  KeelPluginManagerApi,
 } from '../shared/plugin-manager-api';
 import type { PluginUiDescriptor } from '../shared/plugin-ui-descriptor';
 import { PluginHostSettingsFields } from './plugin-host-settings-fields';
@@ -39,7 +39,7 @@ export function collectPluginSettingsNavEntries(
 }
 
 export function usePluginSettingsNavEntries(
-  pluginApi: SerpentPluginManagerApi | undefined,
+  pluginApi: KeelPluginManagerApi | undefined,
   libraryId: string | undefined,
   refreshKey: string | null,
 ): PluginSettingsNavEntry[] {
@@ -84,7 +84,7 @@ export function PluginSettingsDetailPage({
   pluginName,
   refreshKey,
 }: {
-  pluginApi: SerpentPluginManagerApi | undefined;
+  pluginApi: KeelPluginManagerApi | undefined;
   libraryId: string | undefined;
   pluginId: string;
   pluginName: string;

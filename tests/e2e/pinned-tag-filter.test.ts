@@ -2,7 +2,7 @@ import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { _electron as electron, expect, test } from '@playwright/test';
-import type { SerpentLibraryApi } from '../../src/shared/library-api';
+import type { KeelLibraryApi } from '../../src/shared/library-api';
 import { resolveElectronExecutablePath } from './electron-test-helpers';
 import { removePathWithSyncRetry } from '../../src/worker/windows-fs-retry';
 
@@ -38,13 +38,13 @@ test('tag browsing clears on folder navigation while pinned tags remain scoped',
     await expect(child).toBeVisible();
     await expect(tree.locator('.tag-tree-guide')).toHaveCount(1);
     await expect.poll(async () => window.evaluate(async () => {
-      const api=(globalThis as typeof globalThis & {keel:{library:SerpentLibraryApi}}).keel.library;
+      const api=(globalThis as typeof globalThis & {keel:{library:KeelLibraryApi}}).keel.library;
       const open=await api.listOpen();if(!open.ok)return 0;
       const assets=await api.listAssets({libraryId:open.value[0]!.libraryId,recursive:true});
       return assets.ok ? assets.value.length : 0;
     }), {timeout:20000}).toBe(2);
     const assetId=await window.evaluate(async()=>{
-      const api=(globalThis as typeof globalThis & {keel:{library:SerpentLibraryApi}}).keel.library;
+      const api=(globalThis as typeof globalThis & {keel:{library:KeelLibraryApi}}).keel.library;
       const open=await api.listOpen();if(!open.ok)throw Error('No library');
       const assets=await api.listAssets({libraryId:open.value[0]!.libraryId,recursive:true});
       if(!assets.ok)throw Error('No assets');return assets.value.find(a=>a.displayName==='带标签.svg')!.assetId;

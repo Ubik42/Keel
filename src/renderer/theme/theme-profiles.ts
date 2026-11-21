@@ -180,7 +180,7 @@ function tokens(palette: Palette): ThemeProfileTokenMap {
   };
 }
 
-const serpentDark = tokens({
+const keelDark = tokens({
   canvas: '#202124',
   pane: '#282a2d',
   raised: '#303238',
@@ -228,7 +228,7 @@ const serpentDark = tokens({
   dangerContent: '#ffe0e3',
 });
 
-const serpentLight = tokens({
+const keelLight = tokens({
   canvas: '#f8f8fa',
   pane: '#f3f3f5',
   raised: '#ffffff',
@@ -3433,7 +3433,7 @@ export const THEME_PROFILE_PRESETS: Readonly<
   serpent: {
     id: 'serpent',
     label: 'Serpent',
-    tokens: { dark: serpentDark, light: serpentLight },
+    tokens: { dark: keelDark, light: keelLight },
   },
   vscode: {
     id: 'vscode',

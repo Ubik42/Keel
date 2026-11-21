@@ -17,7 +17,7 @@ import {
 
 import type { AssetMetadataResult, AssetSummary } from "../shared/asset-types";
 import type { BrowseMembershipChange } from "./browse-filter-membership";
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 import type { RendererLibrarySummary } from "../shared/protocol/responses";
 import { LibraryOperationError, toMessage } from "./error-utils";
 import { useLocale, useT } from "./i18n";
@@ -32,7 +32,7 @@ export type InspectorAiContent = {
 };
 
 export type UseInspectorAssetMetadataParams = {
-  api: SerpentLibraryApi | null;
+  api: KeelLibraryApi | null;
   library: RendererLibrarySummary | null;
   selectedAssetId: string | undefined;
   selectedAssetIdRef: MutableRefObject<string | undefined>;

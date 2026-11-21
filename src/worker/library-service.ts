@@ -5976,10 +5976,10 @@ export function openConfiguredDatabase(
 
 function createDirectoryLayout(libraryPath: string, layout: LibraryStorageLayout): void {
   if (layout === 'assets') mkdirSync(path.join(libraryPath, 'Assets'));
-  const serpentPath = libraryMetaDir(libraryPath);
-  mkdirSync(serpentPath);
+  const keelPath = libraryMetaDir(libraryPath);
+  mkdirSync(keelPath);
   for (const directoryName of REGENERABLE_DIRECTORIES) {
-    mkdirSync(path.join(serpentPath, directoryName));
+    mkdirSync(path.join(keelPath, directoryName));
   }
 }
 
@@ -8508,9 +8508,9 @@ export class LibraryService {
   }
 
   private assertSafeOperationsRoot(libraryPath: string): string {
-    const serpentPath = libraryMetaDir(libraryPath);
-    if (!realDirectoryExists(serpentPath)) throw new LibraryServiceError('LIBRARY_CORRUPT');
-    const operationsPath = path.join(serpentPath, 'operations');
+    const keelPath = libraryMetaDir(libraryPath);
+    if (!realDirectoryExists(keelPath)) throw new LibraryServiceError('LIBRARY_CORRUPT');
+    const operationsPath = path.join(keelPath, 'operations');
     let operationsEntry;
     try {
       operationsEntry = lstatSync(operationsPath);
@@ -8521,7 +8521,7 @@ export class LibraryService {
     if (!operationsEntry.isDirectory() || operationsEntry.isSymbolicLink()) {
       throw new LibraryServiceError('LIBRARY_CORRUPT');
     }
-    const relation = path.relative(realpathSync(serpentPath), realpathSync(operationsPath));
+    const relation = path.relative(realpathSync(keelPath), realpathSync(operationsPath));
     if (relation !== 'operations') throw new LibraryServiceError('LIBRARY_CORRUPT');
     return operationsPath;
   }
@@ -47641,13 +47641,13 @@ export class LibraryService {
   }
 
   private canAttemptDatabaseRecovery(libraryPath: string): boolean {
-    const serpentPath = libraryMetaDir(libraryPath);
+    const keelPath = libraryMetaDir(libraryPath);
     const primaryPath = databasePath(libraryPath);
     // A symlink in the metadata boundary is a path-integrity violation, not
     // ordinary SQLite damage. Never rename or rescue through it; preserve the
     // existing NOT_A_LIBRARY rejection and avoid touching a victim target.
     try {
-      if (lstatSync(serpentPath).isSymbolicLink() || lstatSync(primaryPath).isSymbolicLink()) {
+      if (lstatSync(keelPath).isSymbolicLink() || lstatSync(primaryPath).isSymbolicLink()) {
         return false;
       }
     } catch {
@@ -47655,7 +47655,7 @@ export class LibraryService {
       // the ladder will decide whether a backup or Assets rescue is possible.
     }
     return realDirectoryExists(managedStoragePath(libraryPath)) &&
-      realDirectoryExists(serpentPath);
+      realDirectoryExists(keelPath);
   }
 
   private primaryDatabaseIsDamaged(libraryPath: string): boolean {
@@ -47724,15 +47724,15 @@ export class LibraryService {
   }
 
   private restoreDatabaseBackup(libraryPath: string, backupPath: string): void {
-    const serpentPath = libraryMetaDir(libraryPath);
+    const keelPath = libraryMetaDir(libraryPath);
     const quarantinePath = path.join(
-      serpentPath,
+      keelPath,
       'corrupt-backup',
       `library.db.primary-${Date.now()}-${randomUUID()}.db`,
     );
     const primaryPath = databasePath(libraryPath);
     const restoreStagePath = path.join(
-      serpentPath,
+      keelPath,
       `.library.db.restore-${randomUUID()}.tmp`,
     );
     mkdirSync(path.dirname(quarantinePath), { recursive: true });
@@ -47757,9 +47757,9 @@ export class LibraryService {
     libraryPath: string,
     primaryFailure: unknown,
   ): { reportPath?: string; recoveredAssetCount: number } {
-    const serpentPath = libraryMetaDir(libraryPath);
+    const keelPath = libraryMetaDir(libraryPath);
     const primaryPath = databasePath(libraryPath);
-    const quarantineDirectory = path.join(serpentPath, 'corrupt-backup');
+    const quarantineDirectory = path.join(keelPath, 'corrupt-backup');
     const quarantinePath = path.join(
       quarantineDirectory,
       `library.db.primary-${Date.now()}-${randomUUID()}.db`,
@@ -47910,7 +47910,7 @@ export class LibraryService {
     connection: DatabaseConnection;
     library: LibraryRow;
     canonicalPath: string;
-    serpentPath: string;
+    keelPath: string;
     networkStorage?: boolean;
     storageKind?: LibraryStorageKind;
     libraryVersion?: number;
@@ -47928,7 +47928,7 @@ export class LibraryService {
     if (existingSummary) return existingSummary;
     try {
       for (const directoryName of REGENERABLE_DIRECTORIES) {
-        mkdirSync(path.join(input.serpentPath, directoryName), { recursive: true });
+        mkdirSync(path.join(input.keelPath, directoryName), { recursive: true });
       }
     } catch (error) {
       throw new LibraryServiceError('LIBRARY_NOT_WRITABLE', { cause: error });
@@ -48229,8 +48229,8 @@ export class LibraryService {
         throw new LibraryServiceError('NOT_A_LIBRARY');
       }
     }
-    const serpentPath = libraryMetaDir(canonicalPath);
-    if (!realDirectoryExists(serpentPath) || !realFileExists(databasePath(canonicalPath))) {
+    const keelPath = libraryMetaDir(canonicalPath);
+    if (!realDirectoryExists(keelPath) || !realFileExists(databasePath(canonicalPath))) {
       throw new LibraryServiceError('NOT_A_LIBRARY');
     }
     const storageKind = this.options.storageKindOverrideForTests
@@ -48301,7 +48301,7 @@ export class LibraryService {
           connection,
           library,
           canonicalPath,
-          serpentPath,
+          keelPath,
           networkStorage,
           libraryVersion: probedVersion,
           supportedSchemaVersion: SUPPORTED_SCHEMA_VERSION,
@@ -48337,7 +48337,7 @@ export class LibraryService {
         connection,
         library,
         canonicalPath,
-        serpentPath,
+        keelPath,
         networkStorage,
         storageKind,
         startServices: true,
@@ -48418,9 +48418,9 @@ export class LibraryService {
         throw new LibraryServiceError('NOT_A_LIBRARY');
       }
     }
-    const serpentPath = libraryMetaDir(canonicalPath);
+    const keelPath = libraryMetaDir(canonicalPath);
     const filename = databasePath(canonicalPath);
-    if (!realDirectoryExists(serpentPath) || !realFileExists(filename)) {
+    if (!realDirectoryExists(keelPath) || !realFileExists(filename)) {
       throw new LibraryServiceError('NOT_A_LIBRARY');
     }
     const networkStorage = (

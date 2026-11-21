@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 import type { ImportConflictPlan } from "../shared/protocol/responses";
 import {
   isDialogEscapeLayerActive,
@@ -12,7 +12,7 @@ import { isImeKeyboardEvent } from "./ime-safe-dismiss";
 import { useLocale, useT } from "./i18n";
 
 export type UseDialogEscapeDismissParams = {
-  api: SerpentLibraryApi | null;
+  api: KeelLibraryApi | null;
   snapshot: DialogEscapeSnapshot;
   cancelAssetRename: () => void;
   cancelImageSequenceImport: () => void;

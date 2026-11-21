@@ -172,12 +172,12 @@ describe('theme profile contract v3', () => {
     expect(storage.memory.has(THEME_PROFILE_LEGACY_KEY)).toBe(false);
 
     // serpent-light and serpent-dark both collapse onto the serpent theme.
-    const serpentLight = parseThemeProfile({
+    const keelLight = parseThemeProfile({
       version: 2,
       preset: 'serpent-light',
       overrides: {},
     });
-    expect(serpentLight.preset).toBe('serpent');
+    expect(keelLight.preset).toBe('serpent');
     expect(parseThemeProfile({ version: 2, preset: 'soft-light', overrides: {} }).preset).toBe('soft');
   });
 

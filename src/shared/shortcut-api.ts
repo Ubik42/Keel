@@ -26,7 +26,7 @@ export type ShortcutFileImportResult =
   | { readonly ok: false; readonly error: string; readonly canceled?: boolean };
 
 /** Narrow preload API exposed as window.keel.shortcuts. */
-export type SerpentShortcutsApi = {
+export type KeelShortcutsApi = {
   get(): Promise<ShortcutBindings>;
   set(input: ShortcutBindingsSetRequest): Promise<ShortcutBindingsSetResult>;
   exportToFile(): Promise<ShortcutFileExportResult>;

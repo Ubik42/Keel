@@ -14,7 +14,7 @@ import {
 import type { PluginWidgetNode, PluginWidgetValue } from '../shared/plugin-widget-ir';
 import type {
   PluginManagerDialogContribution,
-  SerpentPluginManagerApi,
+  KeelPluginManagerApi,
 } from '../shared/plugin-manager-api';
 import {
   buildPluginIframeViewDescriptors,
@@ -62,7 +62,7 @@ function buildDialogDescriptor(
 
 /** Subscribes to Main's open-dialog requests and tracks the active one. */
 export function usePluginUiDialogRequest(
-  pluginApi: SerpentPluginManagerApi | undefined,
+  pluginApi: KeelPluginManagerApi | undefined,
 ): {
   request: PluginUiDialogRequestPayload | null;
   clearRequest(): void;
@@ -123,7 +123,7 @@ function PluginDialogOverlay({
 }
 
 async function loadDialogDescriptor(
-  pluginApi: SerpentPluginManagerApi,
+  pluginApi: KeelPluginManagerApi,
   request: PluginUiDialogRequestPayload,
 ): Promise<PluginIframeViewDescriptor & { width?: number; height?: number } | null> {
   if (request.dialogId === undefined) return null;
@@ -158,7 +158,7 @@ function PluginWidgetDialogBody({
   request,
   onComplete,
 }: {
-  pluginApi: SerpentPluginManagerApi | undefined;
+  pluginApi: KeelPluginManagerApi | undefined;
   request: PluginUiDialogRequestPayload & {
     sessionId: string;
     title: string;
@@ -225,7 +225,7 @@ function PluginIframeDialogBody({
   request,
   onComplete,
 }: {
-  pluginApi: SerpentPluginManagerApi | undefined;
+  pluginApi: KeelPluginManagerApi | undefined;
   request: PluginUiDialogRequestPayload;
   onComplete: (result: unknown | null) => void;
 }): ReactNode {
@@ -325,7 +325,7 @@ export function PluginUiDialogHost({
   pluginApi,
   onOpenChange,
 }: {
-  pluginApi: SerpentPluginManagerApi | undefined;
+  pluginApi: KeelPluginManagerApi | undefined;
   onOpenChange?: (open: boolean) => void;
 }): ReactNode {
   const { request, clearRequest } = usePluginUiDialogRequest(pluginApi);

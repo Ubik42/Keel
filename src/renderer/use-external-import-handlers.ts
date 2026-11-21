@@ -7,7 +7,7 @@ import {
   type MutableRefObject,
 } from "react";
 
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 import type {
   ImportCompletion,
   ImportConflictPlan,
@@ -45,7 +45,7 @@ import { useLocale, useT } from "./i18n";
 import { importSummaryMessage } from "./import-summary";
 
 export type UseExternalImportHandlersParams = {
-  api: SerpentLibraryApi | null;
+  api: KeelLibraryApi | null;
   library: RendererLibrarySummary | null;
   busy: boolean;
   autoDetectImageSequences: boolean;
@@ -204,7 +204,7 @@ export function useExternalImportHandlers({
 
   const applyDesktopImportResult = useCallback(
     async (
-      result: Awaited<ReturnType<SerpentLibraryApi["importDropped"]>>,
+      result: Awaited<ReturnType<KeelLibraryApi["importDropped"]>>,
     ): Promise<void> => {
       if (!result.ok) {
         throw new LibraryOperationError(result.error);

@@ -30,12 +30,12 @@
 import type { ModelCompanionAsset } from '../../shared/model-companions';
 
 /** Build a `keel://preview/<libraryId>/<artifactId>` artifact URL. */
-export function serpentPreviewUrl(libraryId: string, artifactId: string): string {
+export function keelPreviewUrl(libraryId: string, artifactId: string): string {
   return `keel://preview/${libraryId}/${artifactId}`;
 }
 
 /** Build a `keel://source/<libraryId>/<assetId>?revision=<id>` source URL. */
-export function serpentSourceUrl(
+export function keelSourceUrl(
   libraryId: string,
   assetId: string,
   revisionId?: string,
@@ -84,7 +84,7 @@ export function remapCompanionUrl(input: {
   if (!normalized) return null;
   const companion = companionMap.get(normalized);
   return companion
-    ? serpentSourceUrl(libraryId, companion.assetId, companion.revisionId)
+    ? keelSourceUrl(libraryId, companion.assetId, companion.revisionId)
     : null;
 }
 
@@ -103,12 +103,12 @@ export function remapCompanionUrlByBasename(input: {
   const normalized = normalizeCompanionPath(input.fileName);
   if (!normalized) return null;
   const exact = input.companionMap.get(normalized);
-  if (exact) return serpentSourceUrl(input.libraryId, exact.assetId, exact.revisionId);
+  if (exact) return keelSourceUrl(input.libraryId, exact.assetId, exact.revisionId);
   const basename = normalized.split('/').pop();
   if (!basename) return null;
   for (const [relativePath, companion] of input.companionMap) {
     if (relativePath.split('/').pop() === basename) {
-      return serpentSourceUrl(input.libraryId, companion.assetId, companion.revisionId);
+      return keelSourceUrl(input.libraryId, companion.assetId, companion.revisionId);
     }
   }
   return null;

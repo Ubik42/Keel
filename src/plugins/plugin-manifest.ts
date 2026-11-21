@@ -10,7 +10,16 @@ import {
 
 export const PLUGIN_MANIFEST_VERSION = 1 as const;
 export const PLUGIN_API_VERSION = 1 as const;
-export const PLUGIN_MANIFEST_FILE_NAME = 'serpent-plugin.json';
+export const PLUGIN_MANIFEST_FILE_NAME = 'keel-plugin.json';
+/** Pre-rename manifest name; packages and installed plugins may still use it. */
+export const LEGACY_PLUGIN_MANIFEST_FILE_NAME = 'serpent-plugin.json';
+
+/** Manifest file a package uses: `keel-plugin.json`, else the legacy name. */
+export function pluginManifestFileName(hasFile: (name: string) => boolean): string {
+  return hasFile(PLUGIN_MANIFEST_FILE_NAME) || !hasFile(LEGACY_PLUGIN_MANIFEST_FILE_NAME)
+    ? PLUGIN_MANIFEST_FILE_NAME
+    : LEGACY_PLUGIN_MANIFEST_FILE_NAME;
+}
 
 const pluginIdPattern = /^[a-z0-9][a-z0-9._-]{1,62}[a-z0-9]$/u;
 const localIdPattern = /^[a-z0-9][a-z0-9._-]{0,63}$/u;
@@ -956,7 +965,7 @@ export function getPluginMcpExportedCommandIds(manifest: PluginManifest): Set<st
 }
 
 export interface PluginCompatibilityTarget {
-  serpentVersion: string;
+  keelVersion: string;
   pluginApiVersion: number;
   platform: z.infer<typeof pluginPlatformSchema>;
   arch: z.infer<typeof pluginArchitectureSchema>;
@@ -975,7 +984,7 @@ export function validatePluginManifestCompatibility(
   manifest: PluginManifest,
   target: PluginCompatibilityTarget,
 ): PluginCompatibilityResult {
-  if (!satisfiesSemverRange(target.serpentVersion, manifest.engines.keel ?? manifest.engines.serpent ?? '')) {
+  if (!satisfiesSemverRange(target.keelVersion, manifest.engines.keel ?? manifest.engines.serpent ?? '')) {
     return {
       ok: false,
       code: 'PLUGIN_KEEL_VERSION_UNSUPPORTED',

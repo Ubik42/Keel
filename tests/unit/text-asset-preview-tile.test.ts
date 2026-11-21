@@ -8,7 +8,7 @@ import {
   invalidateTextAssetPreviewCache,
   TextAssetPreviewTile,
 } from "../../src/renderer/TextAssetPreviewTile";
-import type { SerpentLibraryApi } from "../../src/shared/library-api";
+import type { KeelLibraryApi } from "../../src/shared/library-api";
 
 let root: Root | null = null;
 let host: HTMLDivElement | null = null;
@@ -47,7 +47,7 @@ function renderTile(fileName: string, assetId: string, content: string): void {
         mimeType: "text/plain",
       },
     }),
-  } as unknown as SerpentLibraryApi;
+  } as unknown as KeelLibraryApi;
   act(() => {
     root?.render(createElement(LocaleProvider, {
       initialPreference: "zh-CN",

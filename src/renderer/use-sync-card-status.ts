@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 import {
   overlaySyncCardStatus,
   type SyncCardPersistedStatus,
@@ -13,7 +13,7 @@ const STATUS_REQUEST_CAP = 300;
 const EMPTY_STATUSES: ReadonlyMap<string, SyncCardPersistedStatus> = new Map();
 
 export function useSyncCardStatuses(input: {
-  api: SerpentLibraryApi | null | undefined;
+  api: KeelLibraryApi | null | undefined;
   libraryId: string | undefined;
   bound: boolean;
   showBadges: boolean;

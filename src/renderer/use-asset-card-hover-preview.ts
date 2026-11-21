@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import type {
   PreviewResolution,
-  SerpentLibraryApi,
+  KeelLibraryApi,
 } from "../shared/library-api";
 import { resolveActivePreviewAssetId } from "./asset-card-hover-preview";
 
@@ -16,7 +16,7 @@ function resolutionKey(libraryId: string, assetId: string): string {
 }
 
 export function useAssetCardHoverPreview(input: {
-  api: SerpentLibraryApi | null | undefined;
+  api: KeelLibraryApi | null | undefined;
   libraryId: string | undefined;
   primarySelectedAssetId: string | undefined;
   isPreviewable: (assetId: string) => boolean;

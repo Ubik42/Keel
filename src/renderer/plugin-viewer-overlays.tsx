@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react';
 
 import type {
   PluginManagerViewerOverlayContribution,
-  SerpentPluginManagerApi,
+  KeelPluginManagerApi,
 } from '../shared/plugin-manager-api';
 import {
   buildPluginIframeViewDescriptors,
@@ -21,7 +21,7 @@ export function buildPluginViewerOverlayDescriptors(
 }
 
 export function usePluginViewerOverlays(
-  pluginApi: SerpentPluginManagerApi | undefined,
+  pluginApi: KeelPluginManagerApi | undefined,
   libraryId: string | undefined,
   enabled: boolean,
   refreshKey: string | null,
@@ -59,7 +59,7 @@ export function PluginViewerOverlays({
   disabled = false,
   refreshKey,
 }: {
-  pluginApi: SerpentPluginManagerApi | undefined;
+  pluginApi: KeelPluginManagerApi | undefined;
   libraryId: string | undefined;
   disabled?: boolean;
   refreshKey: string | null;

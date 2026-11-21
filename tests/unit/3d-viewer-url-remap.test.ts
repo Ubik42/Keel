@@ -9,8 +9,8 @@ import {
   remapCompanionUrlByBasename,
   rewriteGltfUris,
   rewriteMtlTextureRefs,
-  serpentPreviewUrl,
-  serpentSourceUrl,
+  keelPreviewUrl,
+  keelSourceUrl,
 } from '../../src/renderer/3d-viewer/url-remap';
 
 const companion = (
@@ -34,13 +34,13 @@ const companionMap = new Map<string, ModelCompanionAsset>([
 
 describe('url-remap (Serpent-qvc6 / 3D-12)', () => {
   it('builds keel://preview and keel://source URLs', () => {
-    expect(serpentPreviewUrl('lib-1', 'art-9')).toBe(
+    expect(keelPreviewUrl('lib-1', 'art-9')).toBe(
       'keel://preview/lib-1/art-9',
     );
-    expect(serpentSourceUrl('lib-1', 'asset-1')).toBe(
+    expect(keelSourceUrl('lib-1', 'asset-1')).toBe(
       'keel://source/lib-1/asset-1',
     );
-    expect(serpentSourceUrl('lib-1', 'asset-1', 'rev a/b')).toBe(
+    expect(keelSourceUrl('lib-1', 'asset-1', 'rev a/b')).toBe(
       'keel://source/lib-1/asset-1?revision=rev%20a%2Fb',
     );
   });

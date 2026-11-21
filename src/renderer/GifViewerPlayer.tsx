@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 
-import type { SerpentShellApi } from "../shared/external-url";
+import type { KeelShellApi } from "../shared/external-url";
 import type { ViewerVideoShortcutAction } from "../shared/viewer-video-shortcuts";
 import { openGifFrameSource, type GifFrameSource } from "./gif-frame-source";
 import {
@@ -48,7 +48,7 @@ import type { ShortcutEventLike } from "../shared/shortcut-resolution";
 import { ZoomableImage } from "./zoomable-preview-image";
 
 type RendererWindow = Window & {
-  keel?: { shell?: SerpentShellApi };
+  keel?: { shell?: KeelShellApi };
 };
 
 const SCRUB_STEP_SECONDS = 5;

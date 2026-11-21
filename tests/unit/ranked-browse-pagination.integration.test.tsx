@@ -5,7 +5,7 @@ import { createRoot } from "react-dom/client";
 import { describe, expect, it, vi } from "vitest";
 
 import type { AssetSummary } from "../../src/shared/asset-types";
-import type { SerpentLibraryApi } from "../../src/shared/library-api";
+import type { KeelLibraryApi } from "../../src/shared/library-api";
 import type { VirtualBrowseLayout } from "../../src/renderer/browse/virtual-browse-layout";
 import {
   resolveBrowseCanvasLayout,
@@ -68,7 +68,7 @@ describe("ranked browse pagination canvas integration", () => {
           .reverse()
           .map(asset),
       }));
-      const api = { listAssets } as unknown as SerpentLibraryApi;
+      const api = { listAssets } as unknown as KeelLibraryApi;
       let current: HarnessState | null = null;
 
       function Harness() {

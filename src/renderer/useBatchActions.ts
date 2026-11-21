@@ -1,6 +1,6 @@
 import { requestConfirmation } from "./local-confirmation";
 import type { LinkedFolderSummary, TagSummary } from "../shared/asset-types";
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 import type { RendererLibrarySummary } from "../shared/protocol/responses";
 import { LibraryOperationError, toMessage } from "./error-utils";
 import { formatBatchTagNotice } from "./batch-tag-notice";
@@ -8,7 +8,7 @@ import { translateForLocale, useLocale } from "./i18n";
 import { appendSemanticCleanupNotice } from "./semantic-cleanup-notice";
 
 export interface UseBatchActionsParams {
-  api: SerpentLibraryApi | null;
+  api: KeelLibraryApi | null;
   library: RendererLibrarySummary | null;
   setUiState: (state: "loading" | "importing" | "ready") => void;
   setTags: (tags: TagSummary[]) => void;

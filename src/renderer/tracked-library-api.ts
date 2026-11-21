@@ -1,11 +1,11 @@
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 
 /**
  * Library requests that can mutate the catalog or its source files. Keeping
  * this list at the API boundary means a new renderer action cannot silently
  * bypass the library-switch safety warning just because it lives in a hook.
  */
-const LIBRARY_WRITE_METHODS: ReadonlySet<keyof SerpentLibraryApi> = new Set([
+const LIBRARY_WRITE_METHODS: ReadonlySet<keyof KeelLibraryApi> = new Set([
   "rename",
   "undoOperationHistory",
   "redoOperationHistory",
@@ -113,7 +113,7 @@ const LIBRARY_WRITE_METHODS: ReadonlySet<keyof SerpentLibraryApi> = new Set([
  * them on the Renderer write FIFO (the same gate as import/export) delayed
  * cancel until the transfer finished, then flushed one toast per click.
  */
-const LIBRARY_PREEMPTIVE_METHODS: ReadonlySet<keyof SerpentLibraryApi> = new Set([
+const LIBRARY_PREEMPTIVE_METHODS: ReadonlySet<keyof KeelLibraryApi> = new Set([
   "cancelLibraryImport",
   "cancelLibraryExport",
   "cancelMediaJobs",
@@ -122,22 +122,22 @@ const LIBRARY_PREEMPTIVE_METHODS: ReadonlySet<keyof SerpentLibraryApi> = new Set
 ]);
 
 export function createTrackedLibraryApi(
-  api: SerpentLibraryApi,
+  api: KeelLibraryApi,
   onWriteStart: () => void,
   onWriteEnd: () => void,
   runWrite?: <T>(operation: () => Promise<T>) => Promise<T>,
-): SerpentLibraryApi {
+): KeelLibraryApi {
   // The preload bridge is frozen deliberately. A Proxy cannot return a
   // different function for a non-writable, non-configurable property, so use
   // a shallow mutable target while retaining the bridge's function values.
-  const proxyTarget = { ...api } as SerpentLibraryApi;
+  const proxyTarget = { ...api } as KeelLibraryApi;
   return new Proxy(proxyTarget, {
     get(target, property, receiver) {
       const value = Reflect.get(target, property, receiver);
       if (typeof property !== "string" || typeof value !== "function") {
         return value;
       }
-      const method = property as keyof SerpentLibraryApi;
+      const method = property as keyof KeelLibraryApi;
       if (LIBRARY_PREEMPTIVE_METHODS.has(method)) {
         return value;
       }

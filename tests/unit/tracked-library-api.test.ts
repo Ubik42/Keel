@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import type { SerpentLibraryApi } from "../../src/shared/library-api";
+import type { KeelLibraryApi } from "../../src/shared/library-api";
 import { createTrackedLibraryApi } from "../../src/renderer/tracked-library-api";
 
 describe("createTrackedLibraryApi", () => {
@@ -10,7 +10,7 @@ describe("createTrackedLibraryApi", () => {
     const api = {
       trashAssets: vi.fn(async () => ({ ok: true, value: { trashedCount: 1 } })),
       listAssets: vi.fn(async () => ({ ok: true, value: [] })),
-    } as unknown as SerpentLibraryApi;
+    } as unknown as KeelLibraryApi;
     const tracked = createTrackedLibraryApi(
       api,
       () => starts.push("start"),
@@ -47,7 +47,7 @@ describe("createTrackedLibraryApi", () => {
         order.push("cancel");
         return { ok: true, value: { importId: "import-1" } };
       }),
-    } as unknown as SerpentLibraryApi;
+    } as unknown as KeelLibraryApi;
 
     let writeChain = Promise.resolve();
     const runWrite = <T,>(operation: () => Promise<T>): Promise<T> => {
@@ -78,7 +78,7 @@ describe("createTrackedLibraryApi", () => {
     const onWriteEnd = vi.fn();
     const api = Object.freeze({
       trashAssets: async () => ({ ok: true, value: { trashedCount: 1 } }),
-    }) as unknown as SerpentLibraryApi;
+    }) as unknown as KeelLibraryApi;
     const tracked = createTrackedLibraryApi(api, onWriteStart, onWriteEnd);
 
     await expect(
@@ -95,7 +95,7 @@ describe("createTrackedLibraryApi", () => {
       trashAssets: () => {
         throw new Error("bridge unavailable");
       },
-    } as unknown as SerpentLibraryApi;
+    } as unknown as KeelLibraryApi;
     const tracked = createTrackedLibraryApi(api, onWriteStart, onWriteEnd);
 
     expect(() => tracked.trashAssets({ libraryId: "library", assetIds: [] })).toThrow(

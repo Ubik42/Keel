@@ -5,14 +5,14 @@ import {
   mcpSettingsSnapshotSchema,
   type McpSettingsRequest,
   type McpSettingsSnapshot,
-  type SerpentMcpSettingsApi,
+  type KeelMcpSettingsApi,
 } from '../../shared/mcp';
 import {
   MCP_SETTINGS_EVENT_CHANNEL,
   MCP_SETTINGS_REQUEST_CHANNEL,
 } from '../../shared/protocol/channels';
 
-export const mcp: SerpentMcpSettingsApi = Object.freeze({
+export const mcp: KeelMcpSettingsApi = Object.freeze({
   async request(input: McpSettingsRequest) {
     return mcpSettingsResponseSchema.parse(
       await ipcRenderer.invoke(MCP_SETTINGS_REQUEST_CHANNEL, input),

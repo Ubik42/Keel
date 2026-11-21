@@ -1,12 +1,12 @@
 import { useCallback } from "react";
 
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 import type { RendererLibrarySummary } from "../shared/protocol/responses";
 import { toMessage } from "./error-utils";
 import { useLocale, useT } from "./i18n";
 
 export type UseShellFileActionsParams = {
-  api: SerpentLibraryApi | null;
+  api: KeelLibraryApi | null;
   library: RendererLibrarySummary | null;
   setError: (message: string | null) => void;
   setNotice: (message: string) => void;

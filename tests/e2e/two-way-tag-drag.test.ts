@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { resolveElectronExecutablePath } from './electron-test-helpers';
 import { removePathWithSyncRetry } from '../../src/worker/windows-fs-retry';
-import type { SerpentLibraryApi } from '../../src/shared/library-api';
+import type { KeelLibraryApi } from '../../src/shared/library-api';
 
 test.setTimeout(120_000);
 test('native multi-image drops add a tag and reverse tag drops affect only the target image', async () => {
@@ -62,7 +62,7 @@ test('native multi-image drops add a tag and reverse tag drops affect only the t
     // Both images stay selected. A tag dropped onto one card affects that card only.
     await panel.getByRole('treeitem', { name: '单张', exact: true }).dragTo(cards.nth(0));
     const metadata = async (assetId: string) => page.evaluate(async (id) => {
-      const api = (window as typeof window & { keel: { library: SerpentLibraryApi } }).keel.library;
+      const api = (window as typeof window & { keel: { library: KeelLibraryApi } }).keel.library;
       const open = await api.listOpen(); if (!open.ok) throw new Error('No library');
       const result = await api.getAssetMetadata({ libraryId: open.value[0]!.libraryId, assetId: id });
       if (!result.ok) throw new Error('No metadata'); return result.value.tags.map(tag => tag.name).sort();

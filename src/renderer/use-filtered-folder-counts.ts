@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import type { FilterClause } from "../shared/asset-types";
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 
 export interface FilteredFolderCounts {
   all: number;
@@ -10,7 +10,7 @@ export interface FilteredFolderCounts {
 }
 
 export interface UseFilteredFolderCountsOptions {
-  api: Pick<SerpentLibraryApi, "listFilteredFolderCounts"> | null | undefined;
+  api: Pick<KeelLibraryApi, "listFilteredFolderCounts"> | null | undefined;
   libraryId: string | undefined;
   filters: FilterClause[] | undefined;
   showIgnored: boolean;

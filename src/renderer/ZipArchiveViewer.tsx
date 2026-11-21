@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 import { formatBytes } from "./format-file-meta";
 import { useT } from "./i18n";
 
@@ -27,7 +27,7 @@ export function ZipArchiveViewer({
   fallbackSrc,
   onPresentationReady,
 }: {
-  api: SerpentLibraryApi;
+  api: KeelLibraryApi;
   libraryId: string;
   assetId: string;
   fallbackSrc: string | null;

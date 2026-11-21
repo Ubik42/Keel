@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import type { PluginContributionContext, PluginInvocationAssetSource } from "../plugins/plugin-context";
 import { parseElectronAccelerator } from "../shared/plugin-accelerator";
-import type { SerpentPluginManagerApi } from "../shared/plugin-manager-api";
+import type { KeelPluginManagerApi } from "../shared/plugin-manager-api";
 import {
   matchesShortcut,
   type CommandPlatform,
@@ -63,7 +63,7 @@ export function buildPluginShortcutDescriptors(
 }
 
 export function usePluginShortcutContributions(
-  pluginApi: SerpentPluginManagerApi | undefined,
+  pluginApi: KeelPluginManagerApi | undefined,
   libraryId: string | undefined,
   enabled: boolean,
   refreshKey: string | null,
@@ -118,7 +118,7 @@ export function matchPluginShortcut(
 }
 
 export async function runPluginShortcutCommand(
-  pluginApi: SerpentPluginManagerApi,
+  pluginApi: KeelPluginManagerApi,
   libraryId: string,
   item: PluginShortcutDescriptor,
   context: {
@@ -133,7 +133,7 @@ export async function runPluginShortcutCommand(
 export function usePluginShortcutKeyboard(args: {
   readonly enabled: boolean;
   readonly platform: CommandPlatform;
-  readonly pluginApi: SerpentPluginManagerApi | undefined;
+  readonly pluginApi: KeelPluginManagerApi | undefined;
   readonly libraryId: string | undefined;
   readonly refreshKey: string | null;
   readonly previewOpen: boolean;

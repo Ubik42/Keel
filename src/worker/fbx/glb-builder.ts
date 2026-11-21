@@ -359,8 +359,8 @@ export async function buildGlb(input: GlbBuildInput): Promise<GlbBuildOutput> {
     if (emissiveTex !== undefined) gltfMat.emissiveTexture = { index: emissiveTex };
     if (Object.keys(rgbaSlots).length > 0) {
       gltfMat.extras = {
-        serpentRgbaTextures: rgbaSlots,
-        ...(rgbaSlots.normal === undefined ? {} : { serpentNormalScale: mat.normalScale || 1 }),
+        keelRgbaTextures: rgbaSlots,
+        ...(rgbaSlots.normal === undefined ? {} : { keelNormalScale: mat.normalScale || 1 }),
       };
     }
     if (mat.alphaMode === 'blend') gltfMat.alphaMode = 'BLEND';

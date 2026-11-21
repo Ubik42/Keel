@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 
 import type { PluginContributionContext, PluginInvocationAssetSource } from "../plugins/plugin-context";
-import type { SerpentPluginManagerApi } from "../shared/plugin-manager-api";
+import type { KeelPluginManagerApi } from "../shared/plugin-manager-api";
 import {
   resolvePluginContributionConditions,
   runPluginMenuCommand,
@@ -54,7 +54,7 @@ export function buildPluginViewerActionDescriptors(
 }
 
 export function usePluginViewerActionContributions(
-  pluginApi: SerpentPluginManagerApi | undefined,
+  pluginApi: KeelPluginManagerApi | undefined,
   libraryId: string | undefined,
   enabled: boolean,
   refreshKey: string | null,
@@ -102,7 +102,7 @@ export function PluginViewerActionButtons({
   refreshKey,
   context,
 }: {
-  pluginApi: SerpentPluginManagerApi | undefined;
+  pluginApi: KeelPluginManagerApi | undefined;
   libraryId: string | undefined;
   assetId: string;
   asset?: PluginInvocationAssetSource;

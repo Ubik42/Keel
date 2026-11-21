@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react';
 
 import type {
   PluginManagerWorkspaceViewContribution,
-  SerpentPluginManagerApi,
+  KeelPluginManagerApi,
 } from '../shared/plugin-manager-api';
 import {
   buildPluginIframeViewDescriptors,
@@ -19,7 +19,7 @@ export function buildPluginWorkspaceViewDescriptors(
 }
 
 export function usePluginWorkspaceViews(
-  pluginApi: SerpentPluginManagerApi | undefined,
+  pluginApi: KeelPluginManagerApi | undefined,
   libraryId: string | undefined,
   enabled: boolean,
   refreshKey: string | null,
@@ -57,7 +57,7 @@ export function PluginWorkspaceViews({
   disabled = false,
   refreshKey,
 }: {
-  pluginApi: SerpentPluginManagerApi | undefined;
+  pluginApi: KeelPluginManagerApi | undefined;
   libraryId: string | undefined;
   disabled?: boolean;
   refreshKey: string | null;

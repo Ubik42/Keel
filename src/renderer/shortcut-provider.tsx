@@ -18,11 +18,11 @@ import {
   type ShortcutOverride,
   type ShortcutPlatformBindings,
 } from "../shared/shortcut-bindings";
-import type { SerpentShortcutsApi } from "../shared/shortcut-api";
+import type { KeelShortcutsApi } from "../shared/shortcut-api";
 import { setShortcutRuntime } from "./shortcut-runtime";
 
 type ShortcutsWindow = Window & {
-  keel?: { shortcuts?: SerpentShortcutsApi };
+  keel?: { shortcuts?: KeelShortcutsApi };
 };
 
 export type ShortcutSettingsContextValue = {
@@ -48,7 +48,7 @@ export type ShortcutSettingsContextValue = {
 const ShortcutSettingsContext =
   createContext<ShortcutSettingsContextValue | null>(null);
 
-function resolveApi(): SerpentShortcutsApi | undefined {
+function resolveApi(): KeelShortcutsApi | undefined {
   return (window as ShortcutsWindow).keel?.shortcuts;
 }
 

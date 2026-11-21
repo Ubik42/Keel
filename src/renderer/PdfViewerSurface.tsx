@@ -7,7 +7,7 @@ import type {
 } from "pdfjs-dist/types/src/display/api";
 import pdfjsWorkerUrl from "pdfjs-dist/build/pdf.worker.mjs?url";
 
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 import { isMacPlatform } from "./commands/command-types";
 import {
   GLOBAL_ZOOM_MENU_ACTION_EVENT,
@@ -28,7 +28,7 @@ import {
 } from "./pdf-viewer-layout";
 
 export type PdfViewerSurfaceProps = {
-  api: SerpentLibraryApi;
+  api: KeelLibraryApi;
   libraryId: string;
   assetId: string;
   sourceUrl: string | null;

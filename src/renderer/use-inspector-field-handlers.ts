@@ -13,8 +13,8 @@ import {
 } from "react";
 
 import type { AssetMetadataResult, AssetSummary } from "../shared/asset-types";
-import type { SerpentLibraryApi } from "../shared/library-api";
-import type { SerpentShellApi } from "../shared/external-url";
+import type { KeelLibraryApi } from "../shared/library-api";
+import type { KeelShellApi } from "../shared/external-url";
 import { toOpenableExternalUrl } from "../shared/external-url";
 import type { RendererLibrarySummary } from "../shared/protocol/responses";
 import { toMessage } from "./error-utils";
@@ -28,8 +28,8 @@ import type {
 } from "./use-inspector-asset-metadata";
 
 export type UseInspectorFieldHandlersParams = {
-  api: SerpentLibraryApi | null;
-  shellApi: SerpentShellApi | null | undefined;
+  api: KeelLibraryApi | null;
+  shellApi: KeelShellApi | null | undefined;
   library: RendererLibrarySummary | null;
   selectedAsset: AssetSummary | undefined;
   selectedAssetId: string | undefined;

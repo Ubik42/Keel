@@ -19,7 +19,7 @@ import {
 import type { AssetMetadataResult, AssetSummary } from "../shared/asset-types";
 import type { BrowseMembershipChange } from "./browse-filter-membership";
 import { notifyBrowseFilterMembership } from "./use-inspector-asset-metadata";
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 import type { RendererLibrarySummary } from "../shared/protocol/responses";
 import { formatBatchRatingNotice } from "./batch-tag-notice";
 import { LibraryOperationError, toMessage } from "./error-utils";
@@ -31,7 +31,7 @@ import {
 } from "./inspector-multi-edit";
 
 export type UseInspectorMultiEditParams = {
-  api: SerpentLibraryApi | null;
+  api: KeelLibraryApi | null;
   library: RendererLibrarySummary | null;
   selectedAssetIds: readonly string[];
   selectedAssetIdRef: MutableRefObject<string | undefined>;

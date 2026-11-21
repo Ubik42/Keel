@@ -225,6 +225,7 @@ test('lists menus.asset and settings.pages after enable, and after recent-librar
     const libraryDirectory = path.join(temporaryRoot, libraryName);
     const storagePath = path.join(
       libraryDirectory,
+      '.keel',
       PLUGIN_LIBRARY_DATA_DIRECTORY,
       `${PLUGIN_ID}.json`,
     );

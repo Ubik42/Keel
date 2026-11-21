@@ -46,13 +46,13 @@ import { listenForShortcutInputs } from "./shortcut-runtime";
 import { hasActiveModalDialog } from "./use-dialog-focus-trap";
 import { isTypingKeyboardTarget } from "./video-player-controls";
 import type { ShortcutEventLike } from "../shared/shortcut-resolution";
-import type { SerpentShellApi } from "../shared/external-url";
+import type { KeelShellApi } from "../shared/external-url";
 import type { ViewerVideoShortcutAction } from "../shared/viewer-video-shortcuts";
 import type { ViewerPlaybackHandle } from "./video-player-controls";
 import type { VideoSeekJumpMode } from "./video-seek-jump-preferences";
 
 type RendererWindow = Window & {
-  keel?: { shell?: SerpentShellApi };
+  keel?: { shell?: KeelShellApi };
 };
 
 export interface AudioPlayerControlsProps {

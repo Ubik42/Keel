@@ -4,7 +4,7 @@ import type {
   PluginManagerCommandContribution,
   PluginManagerUiDescriptorContribution,
   PluginHostMenuTarget,
-  SerpentPluginManagerApi,
+  KeelPluginManagerApi,
 } from "../shared/plugin-manager-api";
 import type { PluginUiMenuItem } from "../shared/plugin-ui-descriptor";
 import {
@@ -719,7 +719,7 @@ export function buildPluginMenuDescriptors(
 export const buildPluginAssetMenuDescriptors = buildPluginMenuDescriptors;
 
 export function usePluginMenuContributions(
-  pluginApi: SerpentPluginManagerApi | undefined,
+  pluginApi: KeelPluginManagerApi | undefined,
   libraryId: string | undefined,
   target: PluginHostMenuTarget,
   enabled: boolean,
@@ -782,7 +782,7 @@ export function usePluginMenuContributions(
 }
 
 export async function runPluginMenuCommand(
-  pluginApi: SerpentPluginManagerApi,
+  pluginApi: KeelPluginManagerApi,
   libraryId: string,
   item: Pick<PluginMenuDescriptor, 'contributionId' | 'id'>,
   context: {

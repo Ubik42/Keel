@@ -110,7 +110,7 @@ describe('MCP credential pepper ACL hardening (Serpent-8b5b.7)', () => {
   });
 
   it('reports the key path and system error when its parent directory cannot be created', () => {
-    const root = mkdtempSync(path.join(tmpdir(), 'serpent-mcp-credential-directory-error-'));
+    const root = mkdtempSync(path.join(tmpdir(), 'keel-mcp-credential-directory-error-'));
     const filename = path.join(root, 'missing', 'mcp-client-credential-pepper');
     const createError = Object.assign(new Error('permission denied'), { code: 'EACCES' });
     const createDirectory = vi.fn(() => { throw createError; });
@@ -130,7 +130,7 @@ describe('MCP credential pepper ACL hardening (Serpent-8b5b.7)', () => {
 
 describe('MCP credential token persistence', () => {
   it('keeps the client and token stable when copying it again', () => {
-    const root = mkdtempSync(path.join(tmpdir(), 'serpent-mcp-credential-persistence-'));
+    const root = mkdtempSync(path.join(tmpdir(), 'keel-mcp-credential-persistence-'));
     try {
       const store = new McpClientCredentialStore(root);
       const issued = store.issue('Agent');
@@ -148,7 +148,7 @@ describe('MCP credential token persistence', () => {
   });
 
   it('does not return a missing or revoked credential token', () => {
-    const root = mkdtempSync(path.join(tmpdir(), 'serpent-mcp-credential-persistence-missing-'));
+    const root = mkdtempSync(path.join(tmpdir(), 'keel-mcp-credential-persistence-missing-'));
     try {
       const store = new McpClientCredentialStore(root);
       expect(store.tokenFor('00000000-0000-4000-8000-000000000000')).toBeUndefined();

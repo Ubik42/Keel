@@ -19,8 +19,8 @@ import type {
   AutomationExecutionJournal,
   AutomationLibraryContextChangedEvent,
 } from './automation-execution-journal';
-import { createSerpentMcpServer, type SerpentMcpSessionEvent } from '../mcp/create-serpent-mcp-server';
-import type { SerpentMcpPluginToolBridge } from '../mcp/call-tool';
+import { createSerpentMcpServer, type KeelMcpSessionEvent } from '../mcp/create-keel-mcp-server';
+import type { KeelMcpPluginToolBridge } from '../mcp/call-tool';
 import {
   MCP_ENDPOINT_PATH,
   MCP_MAX_PORT,
@@ -68,7 +68,7 @@ export interface EmbeddedMcpServerOptions {
   gateway: AutomationCommandGateway;
   workerClient: EmbeddedMcpWorkerClient;
   logger: EmbeddedMcpLogger;
-  getPluginTools: () => SerpentMcpPluginToolBridge | undefined;
+  getPluginTools: () => KeelMcpPluginToolBridge | undefined;
   permissionPolicyStore?: McpPermissionPolicyStore;
   permissionBroker?: AutomationPermissionBroker;
   initializeTimeoutMs?: number;
@@ -280,7 +280,7 @@ export class EmbeddedMcpServer {
   readonly #gateway: AutomationCommandGateway;
   readonly #workerClient: EmbeddedMcpWorkerClient;
   readonly #logger: EmbeddedMcpLogger;
-  readonly #getPluginTools: () => SerpentMcpPluginToolBridge | undefined;
+  readonly #getPluginTools: () => KeelMcpPluginToolBridge | undefined;
   readonly #onCommandCompleted: EmbeddedMcpServerOptions['onCommandCompleted'];
   readonly #permissionPolicyStore?: McpPermissionPolicyStore;
   readonly #permissionBroker?: AutomationPermissionBroker;
@@ -747,11 +747,11 @@ export class EmbeddedMcpServer {
           hostCapabilities: ['desktop-ui'] as const,
         };
       },
-      getPluginTools: (): SerpentMcpPluginToolBridge | undefined => this.#getPluginTools(),
+      getPluginTools: (): KeelMcpPluginToolBridge | undefined => this.#getPluginTools(),
       getLibraryChangeSequence: (libraryId: string): number | undefined => {
         return this.#libraryChangeSequences.get(libraryId);
       },
-      subscribe: (listener: (event: SerpentMcpSessionEvent) => void) => {
+      subscribe: (listener: (event: KeelMcpSessionEvent) => void) => {
         const onContext = (): void => listener({ type: 'context-changed' });
         const unsubscribe = this.#journal.onContextChanged(onContext);
         return unsubscribe;
@@ -850,7 +850,7 @@ export class EmbeddedMcpServer {
     this.#publish();
   }
 
-  #notifySessions(event: SerpentMcpSessionEvent): void {
+  #notifySessions(event: KeelMcpSessionEvent): void {
     for (const session of this.#sessions.values()) {
       // The session backend reads current context lazily; this notification is
       // only a protocol hint and never carries a path or secret.

@@ -221,7 +221,7 @@ describe('PluginActivationCoordinator', () => {
       } as never,
       readEntryFile: async () => 'async function setup() {}',
       compatibility: {
-        serpentVersion: '0.2.0',
+        keelVersion: '0.2.0',
         pluginApiVersion: 1,
         platform: 'darwin',
         arch: 'arm64',
@@ -294,7 +294,7 @@ describe('PluginActivationCoordinator', () => {
         deactivateLibrary: vi.fn(),
       } as never,
       compatibility: {
-        serpentVersion: '0.2.0',
+        keelVersion: '0.2.0',
         pluginApiVersion: 1,
         platform: 'darwin',
         arch: 'arm64',
@@ -371,7 +371,7 @@ describe('PluginActivationCoordinator', () => {
         deactivateLibrary: vi.fn(),
       } as never,
       compatibility: {
-        serpentVersion: '0.2.0',
+        keelVersion: '0.2.0',
         pluginApiVersion: 1,
         platform: 'darwin',
         arch: 'arm64',

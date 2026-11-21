@@ -14,7 +14,7 @@ import type {
   PluginManagerRequest,
   PluginManagerResolutionCandidate,
   PluginManagerResolutionSummary,
-  SerpentPluginManagerApi,
+  KeelPluginManagerApi,
 } from '../shared/plugin-manager-api';
 import type { PluginInstallProgress } from '../shared/plugin-install-progress';
 import { parseGitHubRepositoryUrl } from '../shared/plugin-github-url';
@@ -28,14 +28,14 @@ import { Select } from './ui/primitives';
 import { useLocale, useT } from './i18n';
 
 type PluginSettingsPageProps = {
-  readonly api: SerpentPluginManagerApi | undefined;
+  readonly api: KeelPluginManagerApi | undefined;
   readonly libraryId: string | undefined;
   readonly onOpenPluginSettings?: (pluginId: string) => void;
   readonly refreshKey: string | null;
 };
 
 type PluginSnapshot = Extract<
-  Awaited<ReturnType<SerpentPluginManagerApi['request']>>,
+  Awaited<ReturnType<KeelPluginManagerApi['request']>>,
   { ok: true; packages: unknown }
 >;
 
@@ -54,7 +54,7 @@ type RendererShellApi = {
 };
 
 function formatPluginManagerFailure(
-  response: Extract<Awaited<ReturnType<SerpentPluginManagerApi['request']>>, { ok: false }>,
+  response: Extract<Awaited<ReturnType<KeelPluginManagerApi['request']>>, { ok: false }>,
   t: ReturnType<typeof useT>,
 ): string {
   if (response.message !== undefined && response.message.trim() !== '') {

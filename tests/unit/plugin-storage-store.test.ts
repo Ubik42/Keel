@@ -49,7 +49,7 @@ describe('PluginStorageStore', () => {
       permissions: ['storage.write', 'storage.read'],
     });
 
-    const libraryPath = path.join(library, PLUGIN_LIBRARY_DATA_DIRECTORY, 'com.example.demo.json');
+    const libraryPath = path.join(library, '.keel', PLUGIN_LIBRARY_DATA_DIRECTORY, 'com.example.demo.json');
     const libraryDocument = JSON.parse(readFileSync(libraryPath, 'utf8')) as {
       values: Record<string, unknown>;
     };

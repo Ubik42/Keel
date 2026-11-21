@@ -33,7 +33,7 @@ import { VIEWER_CHROME_TAB_INDEX } from "./viewer-focus-policy";
 import { applyViewerVolumeToMedia } from "./viewer-volume-preferences";
 import { loadVideoSeekJumpPreferences } from "./video-seek-jump-preferences";
 import { bindVerticalWheelSteps } from "./viewer-wheel-intent";
-import type { SerpentShellApi } from "../shared/external-url";
+import type { KeelShellApi } from "../shared/external-url";
 import type { ViewerVideoShortcutAction } from "../shared/viewer-video-shortcuts";
 import {
   IDENTITY_VIEWER_DISPLAY_TRANSFORM,
@@ -47,7 +47,7 @@ import { hasActiveModalDialog } from "./use-dialog-focus-trap";
 import type { ShortcutEventLike } from "../shared/shortcut-resolution";
 
 type RendererWindow = Window & {
-  keel?: { shell?: SerpentShellApi };
+  keel?: { shell?: KeelShellApi };
 };
 
 export interface VideoPlayerControlsProps {

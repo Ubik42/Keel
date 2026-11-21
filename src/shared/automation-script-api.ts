@@ -258,7 +258,7 @@ export const automationScriptUndoResultSchema = z.union([
 ]);
 export type AutomationScriptUndoResult = z.infer<typeof automationScriptUndoResultSchema>;
 
-export interface SerpentAutomationScriptApi {
+export interface KeelAutomationScriptApi {
   open(): Promise<AutomationScriptFileResult>;
   save(input: AutomationScriptSaveInput): Promise<AutomationScriptFileResult>;
   recentList(): Promise<AutomationRecentScriptsListResult>;

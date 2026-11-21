@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import type { EntityAppearance } from "../shared/entity-appearance";
 import type { FolderBrowseEntry } from "../shared/asset-types";
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 import { coverSrc } from "./asset-card-hover-preview";
 import { AppearanceGlyph } from "./AppearanceGlyph";
 import { folderAutomaticCoverSrc, folderCoverImageSrc } from "./folder-cover";
@@ -32,7 +32,7 @@ function normalizeFolderRelativePath(relativePath: string): string {
 }
 
 export function useFolderInspector(input: {
-  api: SerpentLibraryApi | null | undefined;
+  api: KeelLibraryApi | null | undefined;
   libraryId: string | null;
   enabled: boolean;
   cardEntries: readonly FolderBrowseEntry[];

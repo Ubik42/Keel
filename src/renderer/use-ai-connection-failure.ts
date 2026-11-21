@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useReducer, useRef } from "react";
 
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 import type { AiJob } from "../shared/protocol/responses";
 import {
   INITIAL_CONNECTION_FAILURE_GATE,
@@ -12,7 +12,7 @@ import {
 } from "./ai-connection-failure";
 
 export interface UseAiConnectionFailureParams {
-  api: SerpentLibraryApi | null;
+  api: KeelLibraryApi | null;
   libraryId: string | null | undefined;
   /** Latest AI job counters (progress events); used to detect failed growth. */
   failedCount: number;

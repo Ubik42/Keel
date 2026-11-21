@@ -22,7 +22,7 @@ import { parseShowEditContextMenuResult } from '../../shared/edit-context-menu';
 import {
   parseOpenExternalUrlResult,
   type RevealAppLogResult,
-  type SerpentShellApi,
+  type KeelShellApi,
   type ShellSwipeDirection,
 } from '../../shared/external-url';
 import {
@@ -132,7 +132,7 @@ export function parseReadAppLogResult(input: unknown): ReadAppLogResult {
   return { ok: false, code: 'read_failure' };
 }
 
-export const shell: SerpentShellApi = Object.freeze({
+export const shell: KeelShellApi = Object.freeze({
   setInterfaceScale(percent: number) {
     if (!Number.isFinite(percent)) return;
     webFrame.setZoomFactor(Math.max(75, Math.min(200, percent)) / 100);

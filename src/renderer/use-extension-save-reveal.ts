@@ -1,7 +1,7 @@
 import type { MutableRefObject } from 'react';
 import { useEffect } from 'react';
 
-import type { SerpentLibraryApi } from '../shared/library-api';
+import type { KeelLibraryApi } from '../shared/library-api';
 import {
   pendingRevealFromAssets,
   type AssetBrowseScope,
@@ -9,7 +9,7 @@ import {
 } from './pending-asset-reveal';
 
 export type UseExtensionSaveRevealArgs = {
-  api: SerpentLibraryApi | null;
+  api: KeelLibraryApi | null;
   libraryId: string | undefined;
   chooseFolderRef: MutableRefObject<(scope: AssetBrowseScope) => Promise<void>>;
   pendingRevealRef: MutableRefObject<PendingAssetReveal | null>;

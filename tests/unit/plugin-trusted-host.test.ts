@@ -14,7 +14,7 @@ import {
   KEEL_GUEST_PALETTE_METHODS,
   KEEL_GUEST_TAG_METHODS,
   KEEL_GUEST_TRASH_METHODS,
-} from '../../src/scripting/serpent-guest-api';
+} from '../../src/scripting/keel-guest-api';
 import type { PluginTrustedChildMessage } from '../../src/shared/plugin-trusted-runtime-protocol';
 import { pluginTrustedParentMessageSchema } from '../../src/shared/plugin-trusted-runtime-protocol';
 

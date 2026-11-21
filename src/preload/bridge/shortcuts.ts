@@ -12,7 +12,7 @@ import {
   type ShortcutBindings,
 } from "../../shared/shortcut-bindings";
 import type {
-  SerpentShortcutsApi,
+  KeelShortcutsApi,
   ShortcutBindingsSetRequest,
   ShortcutBindingsSetResult,
   ShortcutFileExportResult,
@@ -23,7 +23,7 @@ function parseBindings(payload: unknown): ShortcutBindings {
   return parseShortcutBindings(payload) ?? DEFAULT_SHORTCUT_BINDINGS;
 }
 
-export const shortcuts: SerpentShortcutsApi = Object.freeze({
+export const shortcuts: KeelShortcutsApi = Object.freeze({
   async get() {
     return parseBindings(await ipcRenderer.invoke(SHORTCUT_BINDINGS_GET_CHANNEL));
   },

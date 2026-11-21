@@ -4,7 +4,7 @@ import {
   MCP_DEFAULT_PORT,
   type McpConfigFormat,
   type McpSettingsSnapshot,
-  type SerpentMcpSettingsApi,
+  type KeelMcpSettingsApi,
 } from "../shared/mcp";
 import { Icon } from "./Icons";
 import { isImeKeyboardEvent } from "./ime-safe-dismiss";
@@ -57,7 +57,7 @@ export function McpSettingsPage({
   api,
   onOpenAppLog,
 }: {
-  api?: SerpentMcpSettingsApi;
+  api?: KeelMcpSettingsApi;
   onOpenAppLog?: () => void;
 }): ReactNode {
   const t = useT();
@@ -91,7 +91,7 @@ export function McpSettingsPage({
     setPortDraft(String(nextSnapshot.preferences.port));
   }) ?? undefined, [api]);
 
-  async function request(input: Parameters<SerpentMcpSettingsApi["request"]>[0]): Promise<void> {
+  async function request(input: Parameters<KeelMcpSettingsApi["request"]>[0]): Promise<void> {
     if (!api) return;
     setBusy(true);
     setError(null);

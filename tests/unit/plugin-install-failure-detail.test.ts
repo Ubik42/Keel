@@ -46,7 +46,7 @@ describe('plugin install failure detail', () => {
       manager: new PluginPackageManager({
         userDataDirectory: userData,
         deviceId: 'test-device',
-        serpentVersion: '0.2.4',
+        keelVersion: '0.2.4',
         pluginApiVersion: 1,
         platform: 'darwin',
         arch: 'arm64',
@@ -76,7 +76,7 @@ describe('plugin install failure detail', () => {
       manager: new PluginPackageManager({
         userDataDirectory: userData,
         deviceId: 'test-device',
-        serpentVersion: '0.2.4',
+        keelVersion: '0.2.4',
         pluginApiVersion: 1,
         platform: 'darwin',
         arch: 'arm64',

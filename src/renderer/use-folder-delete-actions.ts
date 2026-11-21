@@ -1,7 +1,7 @@
 import { requestConfirmation } from "./local-confirmation";
 import { useCallback, useLayoutEffect, useRef } from "react";
 
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 import { LibraryOperationError, toMessage } from "./error-utils";
 import { translateForLocale, type AppLocale } from "./i18n";
 import {
@@ -29,7 +29,7 @@ export type FolderDiskDeleteTarget =
     };
 
 interface UseFolderDeleteActionsParams {
-  api: SerpentLibraryApi | null;
+  api: KeelLibraryApi | null;
   libraryId: string | null;
   locale: AppLocale;
   assetScope: string;

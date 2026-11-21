@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 
 import type {
   PluginManagerSidebarViewContribution,
-  SerpentPluginManagerApi,
+  KeelPluginManagerApi,
 } from '../shared/plugin-manager-api';
 import {
   buildPluginIframeViewDescriptors,
@@ -30,7 +30,7 @@ export function isPluginSidebarViewsEnabled(
 }
 
 export function usePluginSidebarViews(
-  pluginApi: SerpentPluginManagerApi | undefined,
+  pluginApi: KeelPluginManagerApi | undefined,
   libraryId: string | undefined,
   enabled: boolean,
   refreshKey: string | null,
@@ -68,7 +68,7 @@ export function PluginSidebarViewPanel({
   libraryId,
 }: {
   activeView: PluginSidebarViewDescriptor | undefined;
-  pluginApi: SerpentPluginManagerApi | undefined;
+  pluginApi: KeelPluginManagerApi | undefined;
   libraryId: string | undefined;
 }): ReactNode {
   if (activeView === undefined) return null;

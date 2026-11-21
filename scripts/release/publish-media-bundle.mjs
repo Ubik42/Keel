@@ -3,7 +3,7 @@
  * 上传媒体 bundle 到 Serpent-Build Release（单一 Release + 标准 asset 名）。
  *
  * 策略（2026-08-08 产品确定）：
- *   - 只保留一个 Release（tag media-v0.1.1，标题 SerpentBuildDependencies）
+ *   - 只保留一个 Release（tag media-v0.1.1，标题 KeelBuildDependencies）
  *   - asset 用标准名（serpent-media-<platform>.zip），更新时删除旧资产再上传
  *
  * 用法：

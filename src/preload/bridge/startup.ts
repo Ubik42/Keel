@@ -10,7 +10,7 @@ import {
   type StartupPreferencesSnapshot,
 } from '../../shared/startup-preferences';
 
-export type SerpentStartupApi = {
+export type KeelStartupApi = {
   get(): Promise<StartupPreferencesSnapshot>;
   set(input: {
     openAtLogin: boolean;
@@ -21,7 +21,7 @@ async function readSnapshot(payload: unknown): Promise<StartupPreferencesSnapsho
   return parseStartupPreferencesSnapshot(payload) ?? DEFAULT_STARTUP_PREFERENCES_SNAPSHOT;
 }
 
-export const startup: SerpentStartupApi = Object.freeze({
+export const startup: KeelStartupApi = Object.freeze({
   async get() {
     return readSnapshot(await ipcRenderer.invoke(STARTUP_PREFERENCES_GET_CHANNEL));
   },

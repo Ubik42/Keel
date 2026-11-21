@@ -33,7 +33,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 import type { AssetSummary } from '../../shared/asset-types';
 import type { FbxConvertErrorCode } from '../../shared/fbx-conversion';
-import type { SerpentLibraryApi } from '../../shared/library-api';
+import type { KeelLibraryApi } from '../../shared/library-api';
 import { useLocale } from '../i18n';
 import { useTheme } from '../theme';
 import {
@@ -76,7 +76,7 @@ import { ModelViewerStatsOverlay, ModelViewerToolbar } from './viewer-toolbar';
 import './viewer-surface.css';
 
 export interface ModelViewerSurfaceProps {
-  readonly api: SerpentLibraryApi;
+  readonly api: KeelLibraryApi;
   readonly asset: AssetSummary;
   readonly libraryId: string;
   /** `keel://source/...` URL of the model asset. */

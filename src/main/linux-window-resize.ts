@@ -63,7 +63,7 @@ function loadX11ResizeApi(): X11ResizeApi | undefined {
     const koffi = require("koffi") as KoffiModule;
     cachedKoffi = koffi;
     const lib = koffi.load("libX11.so.6");
-    cachedEventType = koffi.struct("SerpentXClientMessageEvent", {
+    cachedEventType = koffi.struct("KeelXClientMessageEvent", {
       type: "int",
       serial: "unsigned long",
       send_event: "int",

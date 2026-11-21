@@ -2,11 +2,11 @@ import { useEffect, useState, type ReactElement } from "react";
 import { createPortal } from "react-dom";
 
 import { useT } from "./i18n";
-import type { SerpentShellApi } from "../shared/external-url";
+import type { KeelShellApi } from "../shared/external-url";
 import type { WindowControlAction } from "../shared/window-controls";
 
 type ShellBridge = Pick<
-  SerpentShellApi,
+  KeelShellApi,
   "windowControl" | "onWindowMaximizedChanged"
 >;
 

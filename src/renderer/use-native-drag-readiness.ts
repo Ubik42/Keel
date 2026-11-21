@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import type { SerpentLibraryApi } from '../shared/library-api';
+import type { KeelLibraryApi } from '../shared/library-api';
 import type { NativeDragReadinessEvent } from '../shared/native-drag-readiness';
 
 const NO_READY_ASSETS: ReadonlySet<string> = new Set();
@@ -24,7 +24,7 @@ export function applyNativeDragReadiness(
 
 /** Paths stay in Main; Renderer only knows when the native drag cache is safe to use. */
 export function useNativeDragReadyIds(
-  api: SerpentLibraryApi | undefined,
+  api: KeelLibraryApi | undefined,
   libraryId: string | undefined,
 ): ReadonlySet<string> {
   const [readyByLibrary, setReadyByLibrary] = useState<ReadonlyMap<string, ReadonlySet<string>>>(

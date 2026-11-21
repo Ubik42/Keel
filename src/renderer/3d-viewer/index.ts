@@ -108,8 +108,8 @@ export {
   remapCompanionUrlByBasename,
   rewriteGltfUris,
   rewriteMtlTextureRefs,
-  serpentPreviewUrl,
-  serpentSourceUrl,
+  keelPreviewUrl,
+  keelSourceUrl,
   type GltfJsonLike,
 } from './url-remap';
 export {

@@ -32,7 +32,7 @@ import {
 import type { PluginRuntimeDeactivateReason } from '../shared/plugin-runtime-utility-protocol';
 import {
   createSerpentGuestApi,
-} from './serpent-guest-api';
+} from './keel-guest-api';
 import {
   createPluginWidgetEventQueue,
   type PluginWidgetEventQueue,

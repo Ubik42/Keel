@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 import type { TagSummary, ManagedFolderSummary } from "../shared/asset-types";
 import type {
   AutomaticTask,
@@ -54,7 +54,7 @@ function describeConditions(value: string): string {
   }
 }
 export function AutomaticTasksDialog(props: {
-  api: SerpentLibraryApi;
+  api: KeelLibraryApi;
   libraryId: string;
   open: boolean;
   initialTaskId?: string | null;
@@ -107,7 +107,7 @@ export function AutomaticTasksDialog(props: {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [api, libraryId, open, props.initialTaskId]);
   async function perform(
-    action: () => ReturnType<SerpentLibraryApi["listAutomaticTasks"]>,
+    action: () => ReturnType<KeelLibraryApi["listAutomaticTasks"]>,
   ) {
     setBusy(true);
     setError("");

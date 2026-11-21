@@ -9,7 +9,7 @@ if ($env:OS -ne 'Windows_NT' -or $env:PROCESSOR_ARCHITECTURE -ne 'AMD64') {
 $Root = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
 $Lock = Get-Content (Join-Path $Root 'resources/media-binaries/source-lock.json') -Raw | ConvertFrom-Json
 $ManifestRoot = Join-Path $Root 'resources/media-binaries/vcpkg'
-$DefaultWork = Join-Path $env:LOCALAPPDATA 'SerpentMediaBuild\win32-x64'
+$DefaultWork = Join-Path $env:LOCALAPPDATA 'KeelMediaBuild\win32-x64'
 $Work = if ($env:KEEL_MEDIA_BUILD_DIR) { $env:KEEL_MEDIA_BUILD_DIR } else { $DefaultWork }
 $VcpkgRoot = Join-Path $Work 'vcpkg'
 $OverlayRoot = Join-Path $Work 'overlay-ports'

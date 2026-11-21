@@ -10,14 +10,14 @@ import {
 } from '../plugins/plugin-widget-toolkit';
 import type { PluginWidgetEvent } from '../shared/plugin-widget-ir';
 
-export type SerpentGuestCommandDefinition = {
+export type KeelGuestCommandDefinition = {
   readonly path: `${string}.${string}`;
   readonly commandId: PluginHostCommandId;
   readonly buildInput: (...args: unknown[]) => unknown;
   readonly projectResult?: (value: unknown) => unknown;
 };
 
-export type SerpentGuestApiAdapters = {
+export type KeelGuestApiAdapters = {
   executeCommand: (
     commandId: PluginHostCommandId,
     input: unknown,
@@ -34,11 +34,11 @@ export type SerpentGuestApiAdapters = {
   };
 };
 
-export type SerpentGuestCommandNamespace = Record<string, (...args: unknown[]) => Promise<unknown>>;
-export type SerpentGuestCommandApi = Record<string, SerpentGuestCommandNamespace>;
-export type SerpentGuestApi = SerpentGuestCommandApi & {
+export type KeelGuestCommandNamespace = Record<string, (...args: unknown[]) => Promise<unknown>>;
+export type KeelGuestCommandApi = Record<string, KeelGuestCommandNamespace>;
+export type KeelGuestApi = KeelGuestCommandApi & {
   /** Create an immutable command API scoped to one already-open library. */
-  forLibrary(libraryId: string): SerpentGuestCommandApi;
+  forLibrary(libraryId: string): KeelGuestCommandApi;
 };
 
 function projectGuestRelativeFilePath(value: unknown): string {
@@ -211,7 +211,7 @@ export function projectSerpentGuestLinkedFolderPageResult(value: unknown): unkno
   };
 }
 
-const scriptGuestCommandDefinitions: readonly SerpentGuestCommandDefinition[] = [
+const scriptGuestCommandDefinitions: readonly KeelGuestCommandDefinition[] = [
   {
     path: 'assets.search',
     commandId: 'asset.search',
@@ -404,7 +404,7 @@ const scriptGuestCommandDefinitions: readonly SerpentGuestCommandDefinition[] = 
   },
 ];
 
-const pluginOnlyGuestCommandDefinitions: readonly SerpentGuestCommandDefinition[] = [
+const pluginOnlyGuestCommandDefinitions: readonly KeelGuestCommandDefinition[] = [
   {
     path: 'ui.openDialog',
     commandId: 'ui.dialog',
@@ -428,7 +428,7 @@ const pluginOnlyGuestCommandDefinitions: readonly SerpentGuestCommandDefinition[
   },
 ];
 
-const guestCommandDefinitions: readonly SerpentGuestCommandDefinition[] = [
+const guestCommandDefinitions: readonly KeelGuestCommandDefinition[] = [
   ...scriptGuestCommandDefinitions,
   ...pluginOnlyGuestCommandDefinitions,
 ];
@@ -466,8 +466,8 @@ export const KEEL_GUEST_NAMESPACES = [
 ] as const;
 
 function wrapUiOpenDialog(
-  api: SerpentGuestCommandApi,
-  adapters: SerpentGuestApiAdapters,
+  api: KeelGuestCommandApi,
+  adapters: KeelGuestApiAdapters,
   targetLibraryId?: string,
 ): void {
   const namespace = api.ui;
@@ -497,7 +497,7 @@ function wrapUiOpenDialog(
 }
 
 function setNestedMethod(
-  root: SerpentGuestCommandApi,
+  root: KeelGuestCommandApi,
   namespace: string,
   method: string,
   value: (...args: unknown[]) => Promise<unknown>,
@@ -507,16 +507,16 @@ function setNestedMethod(
   root[namespace] = target;
 }
 
-export function createSerpentGuestApi(adapters: SerpentGuestApiAdapters): SerpentGuestApi;
+export function createSerpentGuestApi(adapters: KeelGuestApiAdapters): KeelGuestApi;
 export function createSerpentGuestApi(
-  adapters: SerpentGuestApiAdapters,
+  adapters: KeelGuestApiAdapters,
   targetLibraryId: string,
-): SerpentGuestCommandApi;
+): KeelGuestCommandApi;
 export function createSerpentGuestApi(
-  adapters: SerpentGuestApiAdapters,
+  adapters: KeelGuestApiAdapters,
   targetLibraryId?: string,
-): SerpentGuestApi | SerpentGuestCommandApi {
-  const api: SerpentGuestCommandApi = {};
+): KeelGuestApi | KeelGuestCommandApi {
+  const api: KeelGuestCommandApi = {};
   for (const definition of guestCommandDefinitions) {
     const [namespace, method] = definition.path.split('.');
     if (namespace === undefined || method === undefined) {
@@ -534,7 +534,7 @@ export function createSerpentGuestApi(
   wrapUiOpenDialog(api, adapters, targetLibraryId);
   if (targetLibraryId !== undefined) return api;
   return Object.assign(api, {
-    forLibrary(libraryId: string): SerpentGuestCommandApi {
+    forLibrary(libraryId: string): KeelGuestCommandApi {
       const parsed = pluginTargetLibraryIdSchema.safeParse(libraryId);
       if (!parsed.success) throw new Error('Invalid target library id.');
       // A fresh API closes over the target; no ambient API object is mutated.

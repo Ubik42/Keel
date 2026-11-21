@@ -37,10 +37,10 @@ const MAX_SEMANTIC_CLEANUP_QUEUE_BYTES = 4 * 1024 * 1024;
 
 function semanticCleanupQueueDirectory(libraryPath: string): string {
   const libraryRoot = realpathSync(libraryPath);
-  const serpentPath = libraryMetaDir(libraryRoot);
-  const serpent = lstatSync(serpentPath);
+  const keelPath = libraryMetaDir(libraryRoot);
+  const serpent = lstatSync(keelPath);
   if (!serpent.isDirectory() || serpent.isSymbolicLink()) throw new Error('Unsafe semantic cleanup directory.');
-  const semanticPath = path.join(serpentPath, 'semantic');
+  const semanticPath = path.join(keelPath, 'semantic');
   try {
     const semantic = lstatSync(semanticPath);
     if (!semantic.isDirectory() || semantic.isSymbolicLink()) throw new Error('Unsafe semantic cleanup directory.');

@@ -15,7 +15,7 @@ $ManifestRoot = Join-Path $Root 'resources/media-binaries/vcpkg'
 # 注意：不得使用 `%LOCALAPPDATA%\Serpent` 下的子目录——Squirrel 安装目录
 # 恰为 `%LOCALAPPDATA%\<包名>`（serpent，不区分大小写），撞名会让 Squirrel
 # 全量安装时尝试删除 vcpkg 构建树而失败（PathTooLongException）。
-$DefaultWork = Join-Path $env:LOCALAPPDATA 'SerpentMediaBuild\win32-x64'
+$DefaultWork = Join-Path $env:LOCALAPPDATA 'KeelMediaBuild\win32-x64'
 $Work = if ($env:KEEL_MEDIA_BUILD_DIR) { $env:KEEL_MEDIA_BUILD_DIR } else { $DefaultWork }
 $VcpkgRoot = Join-Path $Work 'vcpkg'
 $OverlayRoot = Join-Path $Work 'overlay-ports'

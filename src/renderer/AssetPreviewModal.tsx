@@ -15,9 +15,9 @@ import { isMarkdownTextName } from "../shared/text-media";
 import { thumbnailEventConcernsAsset } from "./thumbnail-completion-projection";
 import type {
   PreviewResolution,
-  SerpentLibraryApi,
+  KeelLibraryApi,
 } from "../shared/library-api";
-import type { SerpentPluginManagerApi } from "../shared/plugin-manager-api";
+import type { KeelPluginManagerApi } from "../shared/plugin-manager-api";
 import { createPluginMenuContributionContext } from "./plugin-contribution-context";
 import { buildPluginViewerState } from "./plugin-context-state";
 import { useT, type TranslateFn } from "./i18n";
@@ -96,7 +96,7 @@ import { isMacPlatform } from "./commands/command-types";
 import { isBakeableStillImageFile } from "../shared/bakeable-still-image";
 
 interface AssetPreviewModalProps {
-  api: SerpentLibraryApi;
+  api: KeelLibraryApi;
   asset: AssetSummary;
   /** When on, quarter-turns of bakeable stills are written into the file. */
   bakeImageRotation?: boolean;
@@ -110,7 +110,7 @@ interface AssetPreviewModalProps {
   onPrevious?: () => void;
   /** Shell Info stack for 3D non-blocking notices (MODEL-004). */
   onInfoNotice?: (message: string) => void;
-  pluginApi?: SerpentPluginManagerApi;
+  pluginApi?: KeelPluginManagerApi;
   pluginContributionRefreshKey?: string | null;
   /** Keep this viewer mounted off-screen while the next asset becomes ready. */
   preloadOnly?: boolean;

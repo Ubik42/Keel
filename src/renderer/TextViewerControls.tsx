@@ -10,8 +10,8 @@ import {
 } from "react";
 
 import { parseAssetMarkdown } from "../plugins/plugin-readme-markdown";
-import type { SerpentShellApi } from "../shared/external-url";
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelShellApi } from "../shared/external-url";
+import type { KeelLibraryApi } from "../shared/library-api";
 import { TEXT_VIEWER_MAX_BYTES, countTextLines } from "../shared/text-media";
 import { LibraryOperationError, messageForPublicError, toMessage } from "./error-utils";
 import { Icon } from "./Icons";
@@ -22,7 +22,7 @@ import { applyTextViewerTextareaLayout } from "./text-viewer-layout";
 import { invalidateTextAssetPreviewCache } from "./TextAssetPreviewTile";
 
 export type TextViewerControlsProps = {
-  api: SerpentLibraryApi;
+  api: KeelLibraryApi;
   libraryId: string;
   assetId: string;
   /** `.md` / `.markdown` can switch between the source editor and rendered preview. */
@@ -50,8 +50,8 @@ export function resetTextViewerModeForTests(): void {
   persistMarkdownPreview = true;
 }
 
-function shellApi(): SerpentShellApi | undefined {
-  return (window as Window & { keel?: { shell?: SerpentShellApi } }).keel?.shell;
+function shellApi(): KeelShellApi | undefined {
+  return (window as Window & { keel?: { shell?: KeelShellApi } }).keel?.shell;
 }
 
 export const TextViewerControls = forwardRef<

@@ -17,6 +17,7 @@ import {
   parseSemver,
   pluginIdSchema,
   pluginManifestSchema,
+  LEGACY_PLUGIN_MANIFEST_FILE_NAME,
   PLUGIN_MANIFEST_FILE_NAME,
   validatePluginManifestCompatibility,
 } from '../plugins/plugin-manifest';
@@ -1284,7 +1285,7 @@ export class PluginPackageManager {
 
   #assertCompatible(manifest: PluginManifest): void {
     const compatibility = validatePluginManifestCompatibility(manifest, {
-      serpentVersion: this.options.serpentVersion,
+      keelVersion: this.options.keelVersion,
       pluginApiVersion: this.options.pluginApiVersion,
       platform: this.options.platform,
       arch: this.options.arch,
@@ -1300,7 +1301,8 @@ export class PluginPackageManager {
   ): Promise<PluginInstalledPackageStatus | undefined> {
     try {
       await lstat(packageDirectory);
-      const manifestRaw = await readFile(path.join(packageDirectory, PLUGIN_MANIFEST_FILE_NAME), 'utf8');
+      const manifestRaw = await readFile(path.join(packageDirectory, PLUGIN_MANIFEST_FILE_NAME), 'utf8')
+        .catch(() => readFile(path.join(packageDirectory, LEGACY_PLUGIN_MANIFEST_FILE_NAME), 'utf8'));
       const parsedManifest = pluginManifestSchema.safeParse(JSON.parse(manifestRaw));
       if (!parsedManifest.success) {
         throw new Error(`The installed plugin manifest is invalid: ${formatPluginManifestValidationIssues(parsedManifest.error)}`);

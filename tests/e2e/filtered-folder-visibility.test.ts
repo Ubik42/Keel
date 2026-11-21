@@ -6,7 +6,7 @@ import path from 'node:path';
 import { _electron as electron, expect, test, type Page } from '@playwright/test';
 import sharp from 'sharp';
 
-import type { LibraryApiResult, SerpentLibraryApi } from '../../src/shared/library-api';
+import type { LibraryApiResult, KeelLibraryApi } from '../../src/shared/library-api';
 import {
   assetCard,
   electronLaunchEnv,
@@ -67,7 +67,7 @@ test('toolbar filters hide empty folder subtrees and refresh after metadata edit
     // Seed only the temporary library through the typed public preload API.
     const fixture = await window.evaluate(async () => {
       const api = (globalThis as typeof globalThis & {
-        keel: { library: SerpentLibraryApi };
+        keel: { library: KeelLibraryApi };
       }).keel.library;
       function value<T>(result: LibraryApiResult<T>): T {
         if (!result.ok) throw new Error(result.error.message);

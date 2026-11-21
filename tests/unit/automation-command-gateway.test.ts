@@ -270,8 +270,8 @@ describe('Automation Command Registry', () => {
     expect(description.commands.map((command) => command.commandId)).toContain('asset.ai-content.get');
 
     const declaration = generateAutomationTypeDeclaration('@serpent/test-api');
-    expect(declaration).toContain('const keel: SerpentAutomationApi');
-    expect(declaration).toContain('interface SerpentScriptAssetSearchPage');
+    expect(declaration).toContain('const keel: KeelAutomationApi');
+    expect(declaration).toContain('interface KeelScriptAssetSearchPage');
     expect(declaration).toContain('readonly currentRevisionId: string;');
     expect(declaration).toContain('readonly mimeType: string | null;');
     expect(declaration).toContain('readonly byteSize: number;');
@@ -284,11 +284,11 @@ describe('Automation Command Registry', () => {
     expect(declaration).toContain('renameFiles(items: readonly');
     expect(declaration).toContain('restoreIfOriginalVacant(assetIds: readonly string[]');
     expect(declaration).toContain('tags: {');
-    expect(declaration).toContain('create(name: string): Promise<SerpentScriptTag>');
+    expect(declaration).toContain('create(name: string): Promise<KeelScriptTag>');
     expect(declaration).toContain('folders: {');
     expect(declaration).toContain('create(name: string, parentFolderId?: string | null)');
     expect(declaration).toContain('setMetadata(input: { assetId: string');
-    expect(declaration).toContain('getAiContent(assetId: string): Promise<SerpentAiContent>');
+    expect(declaration).toContain('getAiContent(assetId: string): Promise<KeelAiContent>');
     expect(declaration).toContain('enqueue(input?: { assetIds?: readonly string[]');
     expect(declaration).not.toContain('zod');
     expect(declaration).not.toContain('cli');

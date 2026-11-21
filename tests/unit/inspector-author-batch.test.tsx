@@ -6,7 +6,7 @@ import { LocaleProvider } from '../../src/renderer/i18n';
 import { useInspectorFieldHandlers, type UseInspectorFieldHandlersParams } from '../../src/renderer/use-inspector-field-handlers';
 import { useInspectorMultiEdit } from '../../src/renderer/use-inspector-multi-edit';
 import { assetMetadataResultSchema } from '../../src/shared/asset-types';
-import type { SerpentLibraryApi } from '../../src/shared/library-api';
+import type { KeelLibraryApi } from '../../src/shared/library-api';
 
 it('writes a mixed author to the whole selection only after user input', async () => {
   const host = document.createElement('div');
@@ -44,7 +44,7 @@ it('persists the new author to both real multi-edit cache entries and clears bot
   const write = vi.fn(async ({ assetId, author, expectedVersion }: {assetId: string; author: string; expectedVersion: number}) => ({
     ok: true as const, value: { ...cache.get(assetId)!, author: author || null, entityVersion: expectedVersion + 1 },
   }));
-  const api = { setAssetMetadata: write } as unknown as SerpentLibraryApi;
+  const api = { setAssetMetadata: write } as unknown as KeelLibraryApi;
   let handlers: ReturnType<typeof useInspectorFieldHandlers>;
   function Harness() {
     const [editAuthor, setEditAuthor] = useState('');

@@ -116,7 +116,7 @@ export type RevealAppLogResult =
   | { ok: true }
   | { ok: false; code: 'unauthorized_sender' | 'log_missing' | 'shell_failure' };
 
-export interface SerpentShellApi {
+export interface KeelShellApi {
   setInterfaceScale?(percent: number): void;
   /** 打开外部 HTTP(S) 链接；失败时返回公开错误码（不含 URL）。 */
   openExternalUrl(url: string): Promise<OpenExternalUrlResult>;

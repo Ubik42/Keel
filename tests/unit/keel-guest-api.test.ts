@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { createSerpentGuestApi } from '../../src/scripting/serpent-guest-api';
+import { createSerpentGuestApi } from '../../src/scripting/keel-guest-api';
 
 describe('Serpent Guest API library scopes', () => {
   it('creates an immutable forLibrary scope without changing ambient calls', async () => {

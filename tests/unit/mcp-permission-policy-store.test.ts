@@ -14,7 +14,7 @@ afterEach(() => {
 
 describe('MCP access mode store', () => {
   it('defaults every credential to Auto and persists Full Access per credential', () => {
-    const root = mkdtempSync(path.join(tmpdir(), 'serpent-mcp-policy-'));
+    const root = mkdtempSync(path.join(tmpdir(), 'keel-mcp-policy-'));
     roots.push(root);
     const store = new McpPermissionPolicyStore(root);
     const credentialA = '00000000-0000-4000-8000-000000000001';
@@ -30,7 +30,7 @@ describe('MCP access mode store', () => {
   });
 
   it('switches back to Auto and clears a credential without affecting another', () => {
-    const root = mkdtempSync(path.join(tmpdir(), 'serpent-mcp-policy-'));
+    const root = mkdtempSync(path.join(tmpdir(), 'keel-mcp-policy-'));
     roots.push(root);
     const store = new McpPermissionPolicyStore(root);
     const credentialA = '00000000-0000-4000-8000-000000000003';
@@ -48,7 +48,7 @@ describe('MCP access mode store', () => {
   });
 
   it('fails closed for invalid credential ids and ignores corrupted or legacy policy files', () => {
-    const root = mkdtempSync(path.join(tmpdir(), 'serpent-mcp-policy-'));
+    const root = mkdtempSync(path.join(tmpdir(), 'keel-mcp-policy-'));
     roots.push(root);
     writeFileSync(path.join(root, 'mcp-permission-policies.json'), '{not-json');
 
@@ -68,7 +68,7 @@ describe('MCP access mode store', () => {
   });
 
   it('migrates the removed read-only/read-write profiles to Auto', () => {
-    const root = mkdtempSync(path.join(tmpdir(), 'serpent-mcp-policy-'));
+    const root = mkdtempSync(path.join(tmpdir(), 'keel-mcp-policy-'));
     roots.push(root);
     const autoCredential = '00000000-0000-4000-8000-000000000006';
     const fullCredential = '00000000-0000-4000-8000-000000000007';

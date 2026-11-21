@@ -1,4 +1,4 @@
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 import type { MediaJob } from "../shared/protocol/responses";
 
 const TERMINAL_MEDIA_JOB_STATUSES = new Set<MediaJob["status"]>([
@@ -28,7 +28,7 @@ export async function waitForMediaArtifactRetry({
   pollIntervalMs = 200,
   signal,
 }: {
-  api: Pick<SerpentLibraryApi, "listMediaJobs">;
+  api: Pick<KeelLibraryApi, "listMediaJobs">;
   libraryId: string;
   assetId: string;
   artifactKind: "thumbnail" | "webm_proxy" | "audio_proxy";

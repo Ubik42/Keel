@@ -7,11 +7,11 @@ import {
   type AutomationExecutionResolver,
   type AutomationWorkerClient,
 } from '../../src/automation/command-gateway';
-import { createSerpentMcpServer } from '../../src/mcp/create-serpent-mcp-server';
+import { createSerpentMcpServer } from '../../src/mcp/create-keel-mcp-server';
 import { listSerpentMcpTools } from '../../src/mcp/tool-catalog';
 import type { WorkerCommand } from '../../src/shared/protocol/requests';
 import type { WorkerResult } from '../../src/shared/protocol/responses';
-import { mcpContext, readCapabilities, readExposure } from './serpent-mcp-test-fixtures';
+import { mcpContext, readCapabilities, readExposure } from './keel-mcp-test-fixtures';
 
 function resolver(): AutomationExecutionResolver {
   return {

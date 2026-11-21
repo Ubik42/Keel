@@ -1438,7 +1438,7 @@ export const zhCN = {
     pluginInstallLocalZipAction: "安装 ZIP",
     pluginInstallLocalZipHint: "选择插件 ZIP 压缩包。",
     pluginInstallLocalFolderAction: "安装文件夹",
-    pluginInstallLocalFolderHint: "选择含 serpent-plugin.json 的插件文件夹。",
+    pluginInstallLocalFolderHint: "选择含 keel-plugin.json 的插件文件夹。",
     pluginGitHubRepository: "GitHub 仓库或 Release 链接",
     pluginGitHubPlaceholder: "https://github.com/owner/plugin",
     pluginGitHubInvalidRepository: "请输入有效的 GitHub HTTPS 仓库地址、owner/repository 或 Release 链接。",

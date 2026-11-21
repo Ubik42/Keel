@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 import {
   clearFontPreviewText,
   loadFontPreviewTexts,
@@ -29,7 +29,7 @@ import { FontViewerMenu } from "./font-viewer-menu";
 import { useT } from "./i18n";
 
 export type FontViewerSurfaceProps = {
-  api: SerpentLibraryApi | null;
+  api: KeelLibraryApi | null;
   libraryId: string;
   assetId: string;
   /** Resolved `keel://source/...` URL of the font file. */
@@ -38,7 +38,7 @@ export type FontViewerSurfaceProps = {
   onPresentationReady?: () => void;
 };
 
-const FONT_FACE_FAMILY_PREFIX = "SerpentFontViewer";
+const FONT_FACE_FAMILY_PREFIX = "KeelFontViewer";
 /** 可变字体的 FontFace 声明一个范围，浏览器才会用 `wght` 轴而不是合成加粗。 */
 const VARIABLE_WEIGHT_DESCRIPTOR = "100 900";
 

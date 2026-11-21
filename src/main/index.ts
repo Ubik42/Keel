@@ -531,8 +531,8 @@ import {
   KEEL_PROTOCOL_SCHEME,
   handleProtocolWithLegacyAlias,
   legacyProtocolSchemes,
-  serpentProtocolSchemes,
-} from "./serpent-protocol-privileges";
+  keelProtocolSchemes,
+} from "./keel-protocol-privileges";
 import {
   parsePluginUiAssetRequestFromNavigation,
   rewritePluginUiHtmlAssetUrls,
@@ -594,7 +594,7 @@ if (allowMultiInstance && process.env.KEEL_E2E !== "1") {
 
 // Before app.ready: stream privilege is required for seekable <video>/<audio>
 // over keel:// Range responses (Serpent-jh2).
-protocol.registerSchemesAsPrivileged([...serpentProtocolSchemes(), ...legacyProtocolSchemes()]);
+protocol.registerSchemesAsPrivileged([...keelProtocolSchemes(), ...legacyProtocolSchemes()]);
 
 // E2E（本地/CI）：虚拟化 runner 的 GPU 不可靠，白屏会让所有交互测试
 // 超时（CI mac 上 69 个 E2E 全挂）。禁用硬件加速换取稳定渲染。
@@ -5614,7 +5614,7 @@ async function startApplication(): Promise<void> {
     pluginPackageManager = new PluginPackageManager({
       userDataDirectory: app.getPath('userData'),
       deviceId: await loadOrCreatePluginDeviceId(app.getPath('userData')),
-      serpentVersion: app.getVersion(),
+      keelVersion: app.getVersion(),
       pluginApiVersion: PLUGIN_API_VERSION,
       ...pluginCompatibility,
       nodeAbi,
@@ -5634,7 +5634,7 @@ async function startApplication(): Promise<void> {
       contributions: createContributionRegistry(),
       providers: createPluginProviderRegistry(),
       compatibility: {
-        serpentVersion: app.getVersion(),
+        keelVersion: app.getVersion(),
         pluginApiVersion: PLUGIN_API_VERSION,
         ...pluginCompatibility,
         nodeAbi,

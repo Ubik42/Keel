@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 import type {
   ImportConflictPlan,
   ImportCompletion,
@@ -17,7 +17,7 @@ import { useT } from "./i18n";
 import type { AppLocale } from "./i18n/types";
 
 export type UseFolderOrganizeActionsParams = {
-  api: SerpentLibraryApi | null;
+  api: KeelLibraryApi | null;
   libraryId: string | null;
   locale: AppLocale;
   setNotice: (message: string, historyEntryId?: string) => void;

@@ -8,7 +8,7 @@
  * 前置：
  *   - 已执行 npm run package（Inno 从 out/Keel-win32-x64 打包）
  *   - Inno Setup 工具：KEEL_INNO_TOOLS 指向含 ISCC.exe 的目录，否则
- *     默认 %LOCALAPPDATA%\SerpentTools\inno\tools（NuGet Tools.InnoSetup
+ *     默认 %LOCALAPPDATA%\KeelTools\inno\tools（NuGet Tools.InnoSetup
  *     解压即用，见 CLAUDE.md）
  *
  * 用法：node scripts/inno-build.mjs [--out <dir>]
@@ -37,7 +37,7 @@ function packageVersion() {
 
 const defaultIscc = process.env.KEEL_INNO_TOOLS
   ? path.resolve(process.env.KEEL_INNO_TOOLS, 'ISCC.exe')
-  : path.join(process.env.LOCALAPPDATA || '', 'SerpentTools', 'inno', 'tools', 'ISCC.exe');
+  : path.join(process.env.LOCALAPPDATA || '', 'KeelTools', 'inno', 'tools', 'ISCC.exe');
 
 const defaultOut = path.join(repoRoot, 'out', 'make', 'inno');
 

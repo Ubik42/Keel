@@ -11,7 +11,7 @@ function createNavigationId(): string {
 
 import { ipcRenderer, webUtils } from 'electron';
 
-import type { AiJobStatus, LibraryApiResult, LinkedAssetDeleteResult, MediaJobStatus, PluginJobStatus, PreviewResolution, RelinkAssetResult, SerpentLibraryApi, SyncCapabilities, SyncReport } from '../../shared/library-api';
+import type { AiJobStatus, LibraryApiResult, LinkedAssetDeleteResult, MediaJobStatus, PluginJobStatus, PreviewResolution, RelinkAssetResult, KeelLibraryApi, SyncCapabilities, SyncReport } from '../../shared/library-api';
 import type { EmbeddingInstallProgress } from '../../shared/embedding/install-progress';
 import type { MutationReceipt } from '../../shared/performance-contract';
 import { summarizePluginJobs } from '../../shared/plugin-job-status';
@@ -130,7 +130,7 @@ function emitE2eBrowseSessionResponse(
   }));
 }
 
-export const library: SerpentLibraryApi = Object.freeze({
+export const library: KeelLibraryApi = Object.freeze({
   async create({
     displayName,
     storageLayout,

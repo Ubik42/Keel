@@ -5,7 +5,7 @@ import {
   useState,
 } from 'react';
 
-import type { SerpentPluginManagerApi } from '../shared/plugin-manager-api';
+import type { KeelPluginManagerApi } from '../shared/plugin-manager-api';
 import {
   collectPendingLibraryPluginTrust,
   dismissPendingLibraryPluginTrust,
@@ -29,7 +29,7 @@ export type UsePluginTrustPromptResult = {
  * an explicit refresh after package-manager mutations.
  */
 export function usePluginTrustPrompt(options: {
-  api: SerpentPluginManagerApi | undefined;
+  api: KeelPluginManagerApi | undefined;
   libraryId: string | undefined;
   /** Skip prompting while the plugins settings page is already open. */
   suppressWhileSettingsOpen?: boolean;

@@ -1,3 +1,4 @@
+import { pluginManifestFileName } from '../plugins/plugin-manifest';
 import { createHash } from 'node:crypto';
 import { copyFile, lstat, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -122,12 +123,15 @@ export async function inspectPluginDirectory(
     }
   };
   await visit('');
-  const manifestPath = safeContainedPath(directory, 'serpent-plugin.json');
+  const manifestPath = safeContainedPath(
+    directory,
+    pluginManifestFileName((name) => files.some((file) => file.path === name)),
+  );
   let manifestBytes: Buffer;
   try {
     manifestBytes = await readFile(manifestPath);
   } catch {
-    throw new PluginPackageManagerError('PLUGIN_SOURCE_READ_FAILED', 'The plugin package must contain serpent-plugin.json.');
+    throw new PluginPackageManagerError('PLUGIN_SOURCE_READ_FAILED', 'The plugin package must contain keel-plugin.json.');
   }
   let manifestValue: unknown;
   try {

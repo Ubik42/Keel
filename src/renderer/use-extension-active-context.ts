@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 import { resolveExtensionActiveContextTarget } from "./extension-active-context";
 
 export type UseExtensionActiveContextArgs = {
-  readonly api: SerpentLibraryApi | null;
+  readonly api: KeelLibraryApi | null;
   readonly libraryId: string | null;
   readonly showTrash: boolean;
   readonly activeTagId: string | null;

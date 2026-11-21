@@ -8,7 +8,7 @@ import {
 import type {
   PluginManagerPluginSettingDiagnostic,
   PluginManagerPluginSettingSection,
-  SerpentPluginManagerApi,
+  KeelPluginManagerApi,
 } from '../shared/plugin-manager-api';
 import type { PluginUiDescriptor } from '../shared/plugin-ui-descriptor';
 import { useT } from './i18n';
@@ -25,7 +25,7 @@ import {
 } from './ui/primitives';
 
 type PluginHostSettingsFieldsProps = {
-  readonly api: SerpentPluginManagerApi | undefined;
+  readonly api: KeelPluginManagerApi | undefined;
   readonly pluginId: string;
   readonly scope: 'user' | 'library';
   readonly libraryId: string | undefined;

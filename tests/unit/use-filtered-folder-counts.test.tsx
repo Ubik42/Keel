@@ -9,9 +9,9 @@ import {
   type UseFilteredFolderCountsOptions,
 } from "../../src/renderer/use-filtered-folder-counts";
 import type { FilterClause } from "../../src/shared/asset-types";
-import type { SerpentLibraryApi } from "../../src/shared/library-api";
+import type { KeelLibraryApi } from "../../src/shared/library-api";
 
-type CountResult = Awaited<ReturnType<SerpentLibraryApi["listFilteredFolderCounts"]>>;
+type CountResult = Awaited<ReturnType<KeelLibraryApi["listFilteredFolderCounts"]>>;
 
 function deferred<T>() {
   let resolve!: (value: T) => void;
@@ -25,7 +25,7 @@ function deferred<T>() {
 
 function createApi() {
   const requests: ReturnType<typeof deferred<CountResult>>[] = [];
-  const listFilteredFolderCounts = vi.fn<SerpentLibraryApi["listFilteredFolderCounts"]>(() => {
+  const listFilteredFolderCounts = vi.fn<KeelLibraryApi["listFilteredFolderCounts"]>(() => {
     const request = deferred<CountResult>();
     requests.push(request);
     return request.promise;

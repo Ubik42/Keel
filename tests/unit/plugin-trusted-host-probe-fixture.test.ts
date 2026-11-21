@@ -37,7 +37,7 @@ describe('fixed trusted Host probe fixture', () => {
     const manager = new PluginPackageManager({
       userDataDirectory: userData,
       deviceId: 'trusted-probe-device',
-      serpentVersion: '0.2.4',
+      keelVersion: '0.2.4',
       pluginApiVersion: 1,
       platform: 'darwin',
       arch: 'arm64',
@@ -128,7 +128,7 @@ describe('fixed trusted Host probe fixture', () => {
     expect(posted.some((message) => message.type === 'plugin-trusted.activated')).toBe(true);
 
     const document = JSON.parse(readFileSync(
-      path.join(library, PLUGIN_LIBRARY_DATA_DIRECTORY, 'com.keel.trusted-host-probe.json'),
+      path.join(library, '.keel', PLUGIN_LIBRARY_DATA_DIRECTORY, 'com.keel.trusted-host-probe.json'),
       'utf8',
     )) as { values: Record<string, unknown> };
     expect(document.values['host-probe']).toEqual({

@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { z } from 'zod';
 
 import {
-  PLUGIN_MANIFEST_FILE_NAME,
+  pluginManifestFileName,
   pluginIdSchema,
   pluginManifestSchema,
   pluginPackagePathSchema,
@@ -205,9 +205,9 @@ function comparePackagePath(left: PluginPackageFile, right: PluginPackageFile): 
   return left.path < right.path ? -1 : 1;
 }
 
-function requiredPackagePaths(manifest: PluginManifest): string[] {
+function requiredPackagePaths(manifest: PluginManifest, manifestFileName: string): string[] {
   return [
-    PLUGIN_MANIFEST_FILE_NAME,
+    manifestFileName,
     'README.md',
     'LICENSE',
     manifest.runtime.entry,
@@ -265,12 +265,13 @@ export function validatePluginPackageSnapshot(
       `The plugin manifest is invalid: ${formatPluginManifestValidationIssues(parsedManifest.error)}`,
     );
   }
-  const manifestFile = files.find((file) => file.path === PLUGIN_MANIFEST_FILE_NAME);
+  const manifestFileName = pluginManifestFileName((name) => files.some((file) => file.path === name));
+  const manifestFile = files.find((file) => file.path === manifestFileName);
   if (manifestFile === undefined || manifestFile.sha256 !== snapshot.manifestSha256) {
     return failure('PLUGIN_PACKAGE_INTEGRITY_MISMATCH', 'The manifest digest does not match the packaged manifest file.');
   }
   const filePaths = new Set(files.map((file) => file.path));
-  const missingPath = requiredPackagePaths(parsedManifest.data).find((path) => !filePaths.has(path));
+  const missingPath = requiredPackagePaths(parsedManifest.data, manifestFileName).find((path) => !filePaths.has(path));
   if (missingPath !== undefined) {
     return failure('PLUGIN_PACKAGE_REQUIRED_FILE_MISSING', `The plugin package is missing ${missingPath}.`);
   }

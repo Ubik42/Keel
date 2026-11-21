@@ -1,6 +1,6 @@
 import type { AutomationExecutionContext } from '../../src/automation/command-gateway';
 import type { AutomationCapability } from '../../src/automation/command-registry';
-import type { SerpentMcpToolExposure } from '../../src/mcp/tool-catalog';
+import type { KeelMcpToolExposure } from '../../src/mcp/tool-catalog';
 
 export const readCapabilities = [
   'library.read',
@@ -29,14 +29,14 @@ export const allCapabilities = [
   'ui.notify',
 ] as const satisfies readonly AutomationCapability[];
 
-export const readExposure: SerpentMcpToolExposure = {
+export const readExposure: KeelMcpToolExposure = {
   accessMode: 'auto',
   activeLibraryId: 'library-1',
   grantedCapabilities: readCapabilities,
   hostCapabilities: [],
 };
 
-export const writeExposure: SerpentMcpToolExposure = {
+export const writeExposure: KeelMcpToolExposure = {
   accessMode: 'full-access',
   activeLibraryId: 'library-1',
   grantedCapabilities: allCapabilities,
@@ -44,7 +44,7 @@ export const writeExposure: SerpentMcpToolExposure = {
 };
 
 export function mcpContext(
-  exposure: SerpentMcpToolExposure = readExposure,
+  exposure: KeelMcpToolExposure = readExposure,
   overrides: Partial<AutomationExecutionContext> = {},
 ): AutomationExecutionContext {
   const libraryId = exposure.activeLibraryId ?? 'library-1';

@@ -118,7 +118,7 @@ export function createFontSamplePage(input: FontSamplePageInput): string {
     <meta charset="utf-8" />
     <style>
       @font-face {
-        font-family: "SerpentFontSample";
+        font-family: "KeelFontSample";
         src: url("${safeFontUrl}");
         font-display: block;
       }
@@ -127,7 +127,7 @@ export function createFontSamplePage(input: FontSamplePageInput): string {
       body {
         background: ${background};
         color: ${foreground};
-        font-family: "SerpentFontSample", system-ui, sans-serif;
+        font-family: "KeelFontSample", system-ui, sans-serif;
         display: flex;
         flex-direction: column;
         justify-content: center;

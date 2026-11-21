@@ -779,7 +779,7 @@ export function parsePluginManagerResponse(input: unknown): PluginManagerRespons
 }
 
 /** Narrow preload API; it intentionally has no filesystem or Electron access. */
-export interface SerpentPluginManagerApi {
+export interface KeelPluginManagerApi {
   request(input: PluginManagerRequest): Promise<PluginManagerResponse>;
   /** Main → Renderer request to host a plugin modal dialog (Serpent-a3de58). */
   onPluginUiDialogRequest?(listener: (request: PluginUiDialogRequestPayload) => void): () => void;

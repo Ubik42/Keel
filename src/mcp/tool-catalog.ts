@@ -11,7 +11,7 @@ import {
 import type { McpAccessMode } from '../shared/mcp';
 
 /** Credential policy only. It deliberately contains no active library state. */
-export type SerpentMcpToolExposure = {
+export type KeelMcpToolExposure = {
   accessMode?: McpAccessMode;
   /** @deprecated retained for non-MCP adapters while migration completes. */
   activeLibraryId?: string | null;
@@ -20,14 +20,14 @@ export type SerpentMcpToolExposure = {
   hostCapabilities: readonly ('desktop-ui')[];
 };
 
-export function mcpExposureAllowsWrite(exposure: SerpentMcpToolExposure): boolean {
+export function mcpExposureAllowsWrite(exposure: KeelMcpToolExposure): boolean {
   // Registry tools are static in both modes. Plugin tools have their own
   // declaration/permission surface; until that surface is projected into the
   // stateless contract, only Full Access may expose them.
   return exposure.accessMode === 'full-access';
 }
 
-export type SerpentMcpToolDefinition = {
+export type KeelMcpToolDefinition = {
   name: string;
   commandId: AutomationCommandId;
   description: string;
@@ -68,7 +68,7 @@ function libraryContextForDescriptor(
 
 function shouldExpose(
   descriptor: AutomationCommandDescriptor,
-  exposure: SerpentMcpToolExposure,
+  exposure: KeelMcpToolExposure,
 ): boolean {
   if (!isMcpEligible(descriptor)) return false;
   if (descriptor.criticalOperation === true) {
@@ -148,9 +148,9 @@ function withChallengeConfirmationFields(
 
 /** Builds the single MCP tools/list projection from the Automation Registry. */
 export function listSerpentMcpTools(
-  exposure: SerpentMcpToolExposure,
-): { apiVersion: typeof AUTOMATION_API_VERSION; tools: SerpentMcpToolDefinition[] } {
-  const tools: SerpentMcpToolDefinition[] = [];
+  exposure: KeelMcpToolExposure,
+): { apiVersion: typeof AUTOMATION_API_VERSION; tools: KeelMcpToolDefinition[] } {
+  const tools: KeelMcpToolDefinition[] = [];
   const seenNames = new Set<string>();
 
   for (const descriptor of automationCommandRegistry) {
@@ -206,13 +206,13 @@ export function listSerpentMcpTools(
 
 export function resolveSerpentMcpTool(
   toolName: string,
-  exposure: SerpentMcpToolExposure,
-): SerpentMcpToolDefinition | undefined {
+  exposure: KeelMcpToolExposure,
+): KeelMcpToolDefinition | undefined {
   return listSerpentMcpTools(exposure).tools.find((tool) => tool.name === toolName);
 }
 
 export function automationLibraryContextForMcpTool(
-  tool: SerpentMcpToolDefinition,
+  tool: KeelMcpToolDefinition,
 ): 'none' | 'active' | 'transition' {
   const descriptor = automationCommandRegistry.find((candidate) => candidate.commandId === tool.commandId);
   if (descriptor === undefined) return 'none';

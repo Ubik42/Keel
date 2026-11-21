@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import type { ImageSequenceSummary } from "../shared/asset-types";
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 import { iconActionAttrs } from "./icon-action-attrs";
 import { Icon } from "./Icons";
 import { useT } from "./i18n";
@@ -13,7 +13,7 @@ import { ZoomableImage } from "./zoomable-preview-image";
 import { resolveSequenceFrameUrl } from "./sequence-frame-preview";
 
 export interface ImageSequencePlayerProps {
-  api: SerpentLibraryApi;
+  api: KeelLibraryApi;
   displayTransform: ViewerDisplayTransform;
   isFullscreen: boolean;
   /** Keep preloaded navigation surfaces from capturing global shortcuts. */

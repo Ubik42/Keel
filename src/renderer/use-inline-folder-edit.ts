@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 import type { RendererLibrarySummary } from "../shared/protocol/responses";
 import { parseLinkedVirtualFolderId } from "../shared/linked-folder-tree";
 import { lookupMessage, useLocale, useT } from "./i18n";
@@ -35,7 +35,7 @@ import {
  */
 
 export interface UseInlineFolderEditParams {
-  api: SerpentLibraryApi | null;
+  api: KeelLibraryApi | null;
   library: RendererLibrarySummary | null;
   setNotice: (message: string, historyEntryId?: string) => void;
   reloadCurrentContent: (options?: { navigationPriority?: "mutation" }) => Promise<void>;

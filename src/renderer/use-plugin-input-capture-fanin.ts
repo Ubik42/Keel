@@ -13,7 +13,7 @@ import {
   shouldRendererConsumeDomEvent,
   shouldRendererForwardKeyboard,
 } from '../shared/plugin-input-capture-renderer';
-import type { SerpentShellApi } from '../shared/external-url';
+import type { KeelShellApi } from '../shared/external-url';
 import { isTypingKeyboardTarget } from './video-player-controls';
 
 function isEditableCaptureTarget(target: EventTarget | null): boolean {
@@ -31,7 +31,7 @@ function isEditableCaptureTarget(target: EventTarget | null): boolean {
  * composition/text/pointer/wheel and viewer/view keyboard.
  */
 export function usePluginInputCaptureFanIn(input: {
-  readonly shell: SerpentShellApi | undefined;
+  readonly shell: KeelShellApi | undefined;
   readonly enabled: boolean;
   readonly previewOpen: boolean;
 }): void {

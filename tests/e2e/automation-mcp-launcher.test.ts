@@ -34,7 +34,7 @@ function freePort(): Promise<number> {
 }
 
 test('Desktop embedded MCP exposes and reconnects over authenticated HTTP', async () => {
-  const temporaryRoot = mkdtempSync(path.join(tmpdir(), 'serpent-mcp-http-e2e-'));
+  const temporaryRoot = mkdtempSync(path.join(tmpdir(), 'keel-mcp-http-e2e-'));
   const port = await freePort();
   writeFileSync(path.join(temporaryRoot, 'mcp-settings.json'), JSON.stringify({
     version: 1,
@@ -83,7 +83,7 @@ test('Desktop embedded MCP exposes and reconnects over authenticated HTTP', asyn
   const token = tokenMatch[1];
 
   try {
-    const client = new Client({ name: 'serpent-mcp-http-e2e', version: '1.0.0' });
+    const client = new Client({ name: 'keel-mcp-http-e2e', version: '1.0.0' });
     const transport = new StreamableHTTPClientTransport(new URL(endpoint), {
       requestInit: { headers: { Authorization: `Bearer ${token}` } },
     });
@@ -102,7 +102,7 @@ test('Desktop embedded MCP exposes and reconnects over authenticated HTTP', asyn
     await client.close();
     await transport.close();
 
-    const reconnected = new Client({ name: 'serpent-mcp-http-e2e-reconnect', version: '1.0.0' });
+    const reconnected = new Client({ name: 'keel-mcp-http-e2e-reconnect', version: '1.0.0' });
     const reconnectTransport = new StreamableHTTPClientTransport(new URL(endpoint), {
       requestInit: { headers: { Authorization: `Bearer ${token}` } },
     });
@@ -129,7 +129,7 @@ test('Desktop embedded MCP exposes and reconnects over authenticated HTTP', asyn
 test('Desktop MCP startup repairs an unreadable existing pepper without rotating its key', async () => {
   test.skip(process.platform !== 'win32', 'Windows ACL repair is specific to Windows.');
 
-  const temporaryRoot = mkdtempSync(path.join(tmpdir(), 'serpent-mcp-pepper-acl-e2e-'));
+  const temporaryRoot = mkdtempSync(path.join(tmpdir(), 'keel-mcp-pepper-acl-e2e-'));
   const pepperPath = path.join(temporaryRoot, 'mcp-client-credential-pepper');
   let currentSid: string | undefined;
   let issued: ReturnType<McpClientCredentialStore['issue']> | undefined;
@@ -210,7 +210,7 @@ test('Desktop MCP startup repairs an unreadable existing pepper without rotating
 });
 
 test('Desktop MCP settings reports an invalid key file separately from an unauthorized sender', async () => {
-  const temporaryRoot = mkdtempSync(path.join(tmpdir(), 'serpent-mcp-pepper-invalid-e2e-'));
+  const temporaryRoot = mkdtempSync(path.join(tmpdir(), 'keel-mcp-pepper-invalid-e2e-'));
   const pepperPath = path.join(temporaryRoot, 'mcp-client-credential-pepper');
   const originalPepper = Buffer.alloc(31, 0x23);
   writeFileSync(pepperPath, originalPepper);

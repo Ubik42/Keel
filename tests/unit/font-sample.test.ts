@@ -14,7 +14,7 @@ describe("font sample page", () => {
   it("embeds the font with the same-origin source URL", () => {
     const html = createFontSamplePage({ fontUrl, family: "DejaVu Sans", language: "latin" });
     expect(html).toContain('src: url("keel://source/lib-1/asset-1?revision=rev-1")');
-    expect(html).toContain('font-family: "SerpentFontSample"');
+    expect(html).toContain('font-family: "KeelFontSample"');
     // 封面主文字字号调大过（用户反馈第 6 条：主文字再大一点点）。
     expect(html).toContain("font-size: 76px");
     expect(html).toContain("font-size: 34px");

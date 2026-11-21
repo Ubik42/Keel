@@ -13,7 +13,7 @@ import { pluginTargetLibraryIdSchema } from '../plugins/plugin-commands';
 import {
   KEEL_GUEST_COMMANDS,
   KEEL_SCRIPT_GUEST_COMMANDS,
-} from './serpent-guest-api';
+} from './keel-guest-api';
 import { projectPluginStorageResult } from './plugin-storage-result';
 import type { PluginDomainEvent } from '../plugins/plugin-domain-events';
 import type { PluginHookDecision, PluginHookInvoke } from '../plugins/plugin-hooks';

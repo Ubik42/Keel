@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 
-import type { SerpentPluginManagerApi } from "../shared/plugin-manager-api";
+import type { KeelPluginManagerApi } from "../shared/plugin-manager-api";
 import type { PluginContributionContext, PluginInvocationAssetSource } from "../plugins/plugin-context";
 import {
   resolvePluginContributionConditions,
@@ -56,7 +56,7 @@ export function buildPluginInspectorSectionDescriptors(
 }
 
 export function usePluginInspectorSectionContributions(
-  pluginApi: SerpentPluginManagerApi | undefined,
+  pluginApi: KeelPluginManagerApi | undefined,
   libraryId: string | undefined,
   enabled: boolean,
   refreshKey: string | null,
@@ -104,7 +104,7 @@ export function PluginInspectorSections({
   refreshKey,
   context,
 }: {
-  pluginApi: SerpentPluginManagerApi | undefined;
+  pluginApi: KeelPluginManagerApi | undefined;
   libraryId: string | undefined;
   selectedAssetIds: readonly string[];
   selectedAssets?: readonly PluginInvocationAssetSource[];

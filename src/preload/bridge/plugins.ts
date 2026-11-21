@@ -6,7 +6,7 @@ import {
   type PluginHostContributionTarget,
   type PluginManagerRequest,
   type PluginManagerResponse,
-  type SerpentPluginManagerApi,
+  type KeelPluginManagerApi,
 } from '../../shared/plugin-manager-api';
 import {
   PLUGIN_CONTRIBUTIONS_CHANGED_CHANNEL,
@@ -27,7 +27,7 @@ import {
   type PluginUiWidgetEventPayload,
 } from '../../shared/plugin-ui-dialog-bridge';
 
-export const plugins: SerpentPluginManagerApi = Object.freeze({
+export const plugins: KeelPluginManagerApi = Object.freeze({
   async request(input: PluginManagerRequest): Promise<PluginManagerResponse> {
     const raw = await ipcRenderer.invoke(PLUGIN_MANAGER_CHANNEL, input);
     try {
@@ -87,55 +87,55 @@ export const plugins: SerpentPluginManagerApi = Object.freeze({
       ...(input.target === undefined ? {} : { target: input.target }),
     });
     return 'contributions' in response || response.ok === false
-      ? response as Awaited<ReturnType<SerpentPluginManagerApi['listPluginContributions']>>
+      ? response as Awaited<ReturnType<KeelPluginManagerApi['listPluginContributions']>>
       : { ok: false as const, code: 'operation-failed' as const };
   },
   async runPluginCommand(input: Extract<PluginManagerRequest, { type: 'plugin-manager.run-command' }>) {
     const response = await this.request(input);
     return 'executed' in response || response.ok === false
-      ? response as Awaited<ReturnType<SerpentPluginManagerApi['runPluginCommand']>>
+      ? response as Awaited<ReturnType<KeelPluginManagerApi['runPluginCommand']>>
       : { ok: false as const, code: 'operation-failed' as const };
   },
   async searchProviders(input: Extract<PluginManagerRequest, { type: 'plugin-manager.search-providers' }>) {
     const response = await this.request(input);
     return 'search' in response || response.ok === false
-      ? response as Awaited<ReturnType<SerpentPluginManagerApi['searchProviders']>>
+      ? response as Awaited<ReturnType<KeelPluginManagerApi['searchProviders']>>
       : { ok: false as const, code: 'operation-failed' as const };
   },
   async previewProvider(input: Extract<PluginManagerRequest, { type: 'plugin-manager.preview-provider' }>) {
     const response = await this.request(input);
     return 'media' in response || response.ok === false
-      ? response as Awaited<ReturnType<SerpentPluginManagerApi['previewProvider']>>
+      ? response as Awaited<ReturnType<KeelPluginManagerApi['previewProvider']>>
       : { ok: false as const, code: 'operation-failed' as const };
   },
   async thumbnailProvider(input: Extract<PluginManagerRequest, { type: 'plugin-manager.thumbnail-provider' }>) {
     const response = await this.request(input);
     return 'media' in response || response.ok === false
-      ? response as Awaited<ReturnType<SerpentPluginManagerApi['thumbnailProvider']>>
+      ? response as Awaited<ReturnType<KeelPluginManagerApi['thumbnailProvider']>>
       : { ok: false as const, code: 'operation-failed' as const };
   },
   async metadataProvider(input: Extract<PluginManagerRequest, { type: 'plugin-manager.metadata-provider' }>) {
     const response = await this.request(input);
     return 'metadata' in response || response.ok === false
-      ? response as Awaited<ReturnType<SerpentPluginManagerApi['metadataProvider']>>
+      ? response as Awaited<ReturnType<KeelPluginManagerApi['metadataProvider']>>
       : { ok: false as const, code: 'operation-failed' as const };
   },
   async importProvider(input: Extract<PluginManagerRequest, { type: 'plugin-manager.import-provider' }>) {
     const response = await this.request(input);
     return 'import' in response || response.ok === false
-      ? response as Awaited<ReturnType<SerpentPluginManagerApi['importProvider']>>
+      ? response as Awaited<ReturnType<KeelPluginManagerApi['importProvider']>>
       : { ok: false as const, code: 'operation-failed' as const };
   },
   async exportProvider(input: Extract<PluginManagerRequest, { type: 'plugin-manager.export-provider' }>) {
     const response = await this.request(input);
     return 'export' in response || response.ok === false
-      ? response as Awaited<ReturnType<SerpentPluginManagerApi['exportProvider']>>
+      ? response as Awaited<ReturnType<KeelPluginManagerApi['exportProvider']>>
       : { ok: false as const, code: 'operation-failed' as const };
   },
   async aiProvider(input: Extract<PluginManagerRequest, { type: 'plugin-manager.ai-provider' }>) {
     const response = await this.request(input);
     return 'ai' in response || response.ok === false
-      ? response as Awaited<ReturnType<SerpentPluginManagerApi['aiProvider']>>
+      ? response as Awaited<ReturnType<KeelPluginManagerApi['aiProvider']>>
       : { ok: false as const, code: 'operation-failed' as const };
   },
   onContributionsChanged(listener: (event: {

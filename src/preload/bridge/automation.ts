@@ -21,7 +21,7 @@ import {
   type AutomationScriptSaveInput,
   type AutomationScriptStartInput,
   type AutomationScriptUndoInput,
-  type SerpentAutomationScriptApi,
+  type KeelAutomationScriptApi,
 } from '../../shared/automation-script-api';
 import {
   AUTOMATION_SCRIPT_CANCEL_CHANNEL,
@@ -37,7 +37,7 @@ import {
   AUTOMATION_SCRIPT_UNDO_CHANNEL,
 } from '../../shared/protocol/channels';
 
-export const automation: SerpentAutomationScriptApi = Object.freeze({
+export const automation: KeelAutomationScriptApi = Object.freeze({
   async open() {
     return automationScriptFileResultSchema.parse(
       await ipcRenderer.invoke(AUTOMATION_SCRIPT_OPEN_CHANNEL),

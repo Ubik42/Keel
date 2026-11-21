@@ -10,7 +10,7 @@ import {
   runPluginWidgetDialog,
 } from '../../src/plugins/plugin-widget-toolkit';
 import { pluginUiDialogRequestPayloadSchema } from '../../src/shared/plugin-ui-dialog-bridge';
-import { createSerpentGuestApi } from '../../src/scripting/serpent-guest-api';
+import { createSerpentGuestApi } from '../../src/scripting/keel-guest-api';
 import { PLUGIN_WIDGET_OPEN_DIALOG_WRAP_SOURCE } from '../../src/scripting/plugin-widget-guest-source';
 
 describe('plugin widget IR', () => {

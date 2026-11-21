@@ -9,7 +9,7 @@ import type {
   AutomationScriptHistoryEntry,
   AutomationRecentScriptEntry,
   AutomationScriptRuntimeFailureCode,
-  SerpentAutomationScriptApi,
+  KeelAutomationScriptApi,
 } from '../shared/automation-script-api';
 import { Icon } from './Icons';
 import { iconActionAttrs } from './icon-action-attrs';
@@ -103,7 +103,7 @@ export function ScriptSandboxPreviewDialog({
   /** Opens the existing diagnostics surface scoped to this run's log ID. */
   onOpenExecutionLog?(logId: string): void;
   libraryId: string | null;
-  automation: SerpentAutomationScriptApi | undefined;
+  automation: KeelAutomationScriptApi | undefined;
 }): ReactNode {
   const t = useT();
   const executionIdRef = useRef<string | null>(null);

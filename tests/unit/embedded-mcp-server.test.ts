@@ -95,7 +95,7 @@ async function createServerHarness(options: {
   sessionIdleTimeoutMs?: number;
   gateway?: AutomationCommandGateway;
 } = {}) {
-  const userDataPath = mkdtempSync(path.join(tmpdir(), 'serpent-mcp-http-'));
+  const userDataPath = mkdtempSync(path.join(tmpdir(), 'keel-mcp-http-'));
   roots.push(userDataPath);
   const port = await freePort();
   const settings = new McpSettingsStore(userDataPath);

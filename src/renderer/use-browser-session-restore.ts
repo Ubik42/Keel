@@ -14,7 +14,7 @@ import {
 } from "react";
 
 import type { AssetSummary } from "../shared/asset-types";
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 import type { RendererLibrarySummary } from "../shared/protocol/responses";
 import {
   buildBrowserSessionFromBrowseState,
@@ -39,7 +39,7 @@ import {
 } from "./workspace-nav-history";
 
 export type UseBrowserSessionRestoreArgs = {
-  api: SerpentLibraryApi | null;
+  api: KeelLibraryApi | null;
   loadContent: LoadContentForRestore;
   /** Keep the workspace covered until the restored library is coherent. */
   setLibraryLoading: (state: { name: string | null } | null) => void;

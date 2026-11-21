@@ -56,7 +56,7 @@ import {
   remapCompanionUrlByBasename,
   rewriteGltfUris,
   rewriteMtlTextureRefs,
-  serpentPreviewUrl,
+  keelPreviewUrl,
   type GltfJsonLike,
 } from './url-remap';
 
@@ -178,7 +178,7 @@ async function loadFbx(input: LoadModelSceneInput): Promise<LoadedModelScene> {
         // The cached GLB carries embedded textures; point GLTFLoader at the
         // artifact URL.
         const loader = input.deps?.gltf ?? new GLTFLoader();
-        const artifactUrl = serpentPreviewUrl(input.libraryId, result.glbArtifactId);
+        const artifactUrl = keelPreviewUrl(input.libraryId, result.glbArtifactId);
         const response = await fetch(artifactUrl);
         if (!response.ok) {
           throw new Error(`FBX scene fetch failed (${response.status})`);

@@ -448,12 +448,12 @@ async function runBenchmark() {
       }
       const physicalCount = fs.readdirSync(assetsPath).length;
       if (physicalCount !== scenario.existing) throw new Error(`On-disk seed count mismatch for ${scenario.id}.`);
-      const serpentPath = path.join(library.libraryPath, '.keel');
-      const serpentSnapshotPath = path.join(stateSnapshots, scenario.id);
-      assertOwnedPathNoSymlink(serpentPath, runDir);
-      assertNoSymlinkTree(serpentPath);
-      fs.cpSync(serpentPath, serpentSnapshotPath, { recursive: true });
-      fixtures.set(scenario.id, { ...scenario, library, serpentPath, serpentSnapshotPath, assetsPath });
+      const keelPath = path.join(library.libraryPath, '.keel');
+      const keelSnapshotPath = path.join(stateSnapshots, scenario.id);
+      assertOwnedPathNoSymlink(keelPath, runDir);
+      assertNoSymlinkTree(keelPath);
+      fs.cpSync(keelPath, keelSnapshotPath, { recursive: true });
+      fixtures.set(scenario.id, { ...scenario, library, keelPath, keelSnapshotPath, assetsPath });
     }
 
     async function resetFixture(scenario) {
@@ -462,7 +462,7 @@ async function runBenchmark() {
         activeService = undefined;
       }
       const fixture = fixtures.get(scenario.id);
-      restoreOwnedDirectoryContents(fixture.serpentSnapshotPath, fixture.serpentPath, runDir);
+      restoreOwnedDirectoryContents(fixture.keelSnapshotPath, fixture.keelPath, runDir);
       for (const sourcePath of sourcePathsByScenario.get(scenario.id)) {
         const destination = path.join(fixture.assetsPath, path.basename(sourcePath));
         assertOwnedPathNoSymlink(destination, runDir);

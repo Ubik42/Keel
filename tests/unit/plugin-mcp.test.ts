@@ -15,7 +15,7 @@ import {
 import { PluginMcpExposureStore } from '../../src/main/plugin-mcp-exposure-store';
 import { PluginMcpToolProvider } from '../../src/main/plugin-mcp-tool-provider';
 import { callSerpentMcpTool } from '../../src/mcp/call-tool';
-import { mcpContext, readExposure, writeExposure } from './serpent-mcp-test-fixtures';
+import { mcpContext, readExposure, writeExposure } from './keel-mcp-test-fixtures';
 
 const roots: string[] = [];
 

@@ -1,7 +1,7 @@
 import { useLayoutEffect } from "react";
 
 import { resolveRendererPlatform } from "./renderer-platform";
-import type { SerpentShellApi } from "../shared/external-url";
+import type { KeelShellApi } from "../shared/external-url";
 
 export const PLUGIN_WIDGET_EDITABLE_SELECTOR =
   "input:not(:disabled), textarea:not(:disabled), select:not(:disabled)";
@@ -12,7 +12,7 @@ const STEAL_FOCUS_COOLDOWN_MS = 400;
 
 type RendererWindow = Window & {
   keel?: {
-    shell?: Pick<SerpentShellApi, "windowControl">;
+    shell?: Pick<KeelShellApi, "windowControl">;
   };
 };
 

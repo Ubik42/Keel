@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 import type {
   TagSummary,
   LinkedFolderSummary,
@@ -10,8 +10,8 @@ import { assetParentFolderCoverTarget } from "../shared/folder-cover-target";
 
 type RendererWindow = Window & {
   keel?: {
-    library?: SerpentLibraryApi;
-    plugins?: SerpentPluginManagerApi;
+    library?: KeelLibraryApi;
+    plugins?: KeelPluginManagerApi;
   };
 };
 import type { EntityAppearance, EntityAppearanceTarget } from "../shared/entity-appearance";
@@ -60,7 +60,7 @@ import {
   type MenuSkipScopeOptions,
 } from "./menu-skip-report";
 import { canCreateImageSequenceFromSelection } from "./image-sequence-selection";
-import type { SerpentPluginManagerApi } from "../shared/plugin-manager-api";
+import type { KeelPluginManagerApi } from "../shared/plugin-manager-api";
 import type { PluginContributionContext } from "../plugins/plugin-context";
 import {
   placePluginMenuItemsAroundHost,
@@ -331,7 +331,7 @@ interface AssetContextMenuProps {
   busy?: boolean;
   pluginBrowseScope?: Partial<PluginContributionContext["browse"]>;
   pluginViewerState?: Partial<PluginContributionContext["viewer"]>;
-  pluginApi?: SerpentPluginManagerApi;
+  pluginApi?: KeelPluginManagerApi;
   pluginContributionRefreshKey?: string | null;
   tags: TagSummary[];
   linkedFolders: LinkedFolderSummary[];

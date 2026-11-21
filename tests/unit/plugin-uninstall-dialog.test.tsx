@@ -10,7 +10,7 @@ import type {
   PluginManagerPackageSummary,
   PluginManagerRequest,
   PluginManagerResponse,
-  SerpentPluginManagerApi,
+  KeelPluginManagerApi,
 } from '../../src/shared/plugin-manager-api';
 
 const packageSummary = {
@@ -75,7 +75,7 @@ describe('PluginUninstallDialog', () => {
     container = document.createElement('div');
     document.body.append(container);
     root = createRoot(container);
-    const api = { request } as unknown as SerpentPluginManagerApi;
+    const api = { request } as unknown as KeelPluginManagerApi;
     await act(async () => {
       root?.render(createElement(
         LocaleProvider,

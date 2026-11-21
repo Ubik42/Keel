@@ -4,7 +4,7 @@ import {
   ContextMenuItem,
 } from "./context-menu";
 import { useEffect, useRef, useState, type DragEvent } from "react";
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 import {
   automaticTaskToConfig,
   type AutomaticTask,
@@ -18,7 +18,7 @@ import {
 const DRAG_TYPE = "application/x-serpent-automatic-task";
 type TaskDrag = { kind: "task" | "group"; id: string };
 export function AutomaticTasksSidebar(props: {
-  api: SerpentLibraryApi;
+  api: KeelLibraryApi;
   libraryId: string;
   onCreate: () => void;
   onEdit: (id: string) => void;

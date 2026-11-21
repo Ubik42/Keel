@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { parseAssetMarkdown } from "../plugins/plugin-readme-markdown";
-import type { SerpentLibraryApi } from "../shared/library-api";
+import type { KeelLibraryApi } from "../shared/library-api";
 import { isMarkdownTextName, textCardPreviewSnippet } from "../shared/text-media";
 import { useT } from "./i18n";
 import { PluginReadmeView } from "./PluginReadmeView";
@@ -15,7 +15,7 @@ function cacheKey(libraryId: string, assetId: string, revisionId: string): strin
 }
 
 export type TextAssetPreviewTileProps = {
-  api: SerpentLibraryApi;
+  api: KeelLibraryApi;
   libraryId: string;
   assetId: string;
   /** Busts cache when the text revision changes. */

@@ -6,7 +6,7 @@ import {
   type PluginMcpCommandContext,
   type PluginMcpToolDefinition,
 } from '../mcp/plugin-tool-catalog';
-import type { SerpentMcpPluginToolBridge } from '../mcp/call-tool';
+import type { KeelMcpPluginToolBridge } from '../mcp/call-tool';
 
 /**
  * Main-owned bridge between MCP and active plugin command contributions.
@@ -14,7 +14,7 @@ import type { SerpentMcpPluginToolBridge } from '../mcp/call-tool';
  * owning plugin is active for the bound library. MCP still applies the local
  * write-access gate before invoking this bridge.
  */
-export class PluginMcpToolProvider implements SerpentMcpPluginToolBridge {
+export class PluginMcpToolProvider implements KeelMcpPluginToolBridge {
   constructor(
     private readonly options: {
       activationCoordinator: PluginActivationCoordinator;

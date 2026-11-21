@@ -8,9 +8,9 @@ import {
   type AutomationWorkerClient,
 } from '../../src/automation/command-gateway';
 import type { AutomationCapability, AutomationFileOperationPlanProof } from '../../src/automation/command-registry';
-import { callSerpentMcpTool, type SerpentMcpPluginToolBridge } from '../../src/mcp/call-tool';
-import { createSerpentMcpServer } from '../../src/mcp/create-serpent-mcp-server';
-import { listSerpentMcpTools, resolveSerpentMcpTool, type SerpentMcpToolExposure } from '../../src/mcp/tool-catalog';
+import { callSerpentMcpTool, type KeelMcpPluginToolBridge } from '../../src/mcp/call-tool';
+import { createSerpentMcpServer } from '../../src/mcp/create-keel-mcp-server';
+import { listSerpentMcpTools, resolveSerpentMcpTool, type KeelMcpToolExposure } from '../../src/mcp/tool-catalog';
 import type { WorkerCommand } from '../../src/shared/protocol/requests';
 import type { WorkerResult } from '../../src/shared/protocol/responses';
 import {
@@ -18,7 +18,7 @@ import {
   readCapabilities,
   readExposure,
   writeExposure,
-} from './serpent-mcp-test-fixtures';
+} from './keel-mcp-test-fixtures';
 import { McpPermissionBroker } from '../../src/main/mcp-permission-broker';
 import { McpPermissionPolicyStore } from '../../src/main/mcp-permission-policy-store';
 import { McpOperationChallengeStore } from '../../src/main/mcp-operation-challenge';
@@ -37,7 +37,7 @@ const profileCredentials = [
   '00000000-0000-4000-8000-0000000000cc',
 ];
 function createTestPermissionBroker(mode?: 'auto' | 'full-access'): McpPermissionBroker {
-  const root = mkdtempSync(path.join(tmpdir(), 'serpent-mcp-challenge-'));
+  const root = mkdtempSync(path.join(tmpdir(), 'keel-mcp-challenge-'));
   challengeRoots.push(root);
   const store = new McpPermissionPolicyStore(root);
   const broker = new McpPermissionBroker({
@@ -52,8 +52,8 @@ function createTestPermissionBroker(mode?: 'auto' | 'full-access'): McpPermissio
 }
 
 function backend(
-  exposure: SerpentMcpToolExposure = readExposure,
-  pluginTools?: SerpentMcpPluginToolBridge,
+  exposure: KeelMcpToolExposure = readExposure,
+  pluginTools?: KeelMcpPluginToolBridge,
 ) {
   return {
     getExecutionContext: () => mcpContext(exposure),

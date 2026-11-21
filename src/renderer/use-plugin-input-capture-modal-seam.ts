@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import type { SerpentShellApi } from '../shared/external-url';
+import type { KeelShellApi } from '../shared/external-url';
 import type { DialogEscapeSnapshot } from './dialog-escape-stack';
 import {
   isPluginInputCaptureSystemModalDomOpen,
@@ -9,7 +9,7 @@ import {
 
 /** Notify Main broker to pause capture while Host modals are open. */
 export function usePluginInputCaptureModalSeam(input: {
-  readonly shell: SerpentShellApi | undefined;
+  readonly shell: KeelShellApi | undefined;
   readonly snapshot: DialogEscapeSnapshot;
 }): void {
   useEffect(() => {

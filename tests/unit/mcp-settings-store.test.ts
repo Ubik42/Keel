@@ -14,7 +14,7 @@ afterEach(() => {
 
 describe('MCP settings store', () => {
   it('does not expose the removed device-level skip-approval preference', () => {
-    const root = mkdtempSync(path.join(tmpdir(), 'serpent-mcp-settings-'));
+    const root = mkdtempSync(path.join(tmpdir(), 'keel-mcp-settings-'));
     roots.push(root);
     const store = new McpSettingsStore(root);
 
@@ -22,7 +22,7 @@ describe('MCP settings store', () => {
   });
 
   it('migrates a pre-toggle settings file without resetting existing preferences', () => {
-    const root = mkdtempSync(path.join(tmpdir(), 'serpent-mcp-settings-'));
+    const root = mkdtempSync(path.join(tmpdir(), 'keel-mcp-settings-'));
     roots.push(root);
     mkdirSync(root, { recursive: true });
     writeFileSync(path.join(root, 'mcp-settings.json'), JSON.stringify({

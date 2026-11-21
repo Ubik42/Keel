@@ -16,7 +16,7 @@ import path from 'node:path';
  * is required at runtime so Vite never bundles the WASM into the worker.
  */
 
-export interface SerpentUfbxModule {
+export interface KeelUfbxModule {
   _serpent_parse(fbxPtr: number, fbxSize: number, optsPtr: number): number;
   _serpent_error(): number;
   _serpent_out_ptr(): number;
@@ -30,7 +30,7 @@ export interface SerpentUfbxModule {
 
 type EmscriptenFactory = (overrides?: {
   locateFile?: (file: string) => string;
-}) => Promise<SerpentUfbxModule>;
+}) => Promise<KeelUfbxModule>;
 
 interface EmscriptenModuleExports {
   default?: EmscriptenFactory;
@@ -71,7 +71,7 @@ export function resolveUfbxDir(): string | null {
   return null;
 }
 
-let modulePromise: Promise<SerpentUfbxModule> | null = null;
+let modulePromise: Promise<KeelUfbxModule> | null = null;
 
 /**
  * Load (once) and return the ufbx WASM module. Serializes on the module
@@ -80,7 +80,7 @@ let modulePromise: Promise<SerpentUfbxModule> | null = null;
  * queue in convert-command.ts. A failed load is not cached, so a later call
  * (e.g. after resources/ufbx was built) can retry.
  */
-export function loadSerpentUfbxModule(): Promise<SerpentUfbxModule> {
+export function loadSerpentUfbxModule(): Promise<KeelUfbxModule> {
   if (modulePromise) return modulePromise;
   modulePromise = (async () => {
     const dir = resolveUfbxDir();
@@ -128,7 +128,7 @@ export function resetSerpentUfbxModuleForTest(): void {
  * access (the bridge keeps global output state).
  */
 export async function withSerpentUfbx<T>(
-  task: (module: SerpentUfbxModule) => Promise<T>,
+  task: (module: KeelUfbxModule) => Promise<T>,
 ): Promise<T> {
   const module = await loadSerpentUfbxModule();
   return withSerpentUfbxChain(task, module);
@@ -137,8 +137,8 @@ export async function withSerpentUfbx<T>(
 let chainTail: Promise<unknown> = Promise.resolve();
 
 function withSerpentUfbxChain<T>(
-  task: (module: SerpentUfbxModule) => Promise<T>,
-  module: SerpentUfbxModule,
+  task: (module: KeelUfbxModule) => Promise<T>,
+  module: KeelUfbxModule,
 ): Promise<T> {
   const result = chainTail.then(() => task(module));
   chainTail = result.catch(() => undefined);

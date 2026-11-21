@@ -1,7 +1,7 @@
 import { useCallback, useRef } from 'react';
 
 import type { ManagedFolderSummary } from '../shared/asset-types';
-import type { SerpentLibraryApi } from '../shared/library-api';
+import type { KeelLibraryApi } from '../shared/library-api';
 import { LibraryOperationError, toMessage } from './error-utils';
 import {
   resolveDraggedFolderIdsForTrash,
@@ -12,7 +12,7 @@ import { isBrowseScopeAffectedByFolderTrash } from './folder-trash-scope';
 import { useLocale, useT } from './i18n';
 
 export type UseFolderDragDropHandlersParams = {
-  api: SerpentLibraryApi | null;
+  api: KeelLibraryApi | null;
   libraryId: string | null;
   assetScope: string;
   folders: readonly ManagedFolderSummary[];

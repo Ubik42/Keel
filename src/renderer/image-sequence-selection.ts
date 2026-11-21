@@ -1,5 +1,5 @@
 import type { AssetSummary } from "../shared/asset-types";
-import type { LibraryApiResult, SerpentLibraryApi } from "../shared/library-api";
+import type { LibraryApiResult, KeelLibraryApi } from "../shared/library-api";
 
 /** Matches `asset.list` / `asset.list.request` `assetIds` max. */
 export const LIST_ASSETS_BY_ID_MAX = 10_000;
@@ -56,7 +56,7 @@ export function orderAssetSummariesByIds(
  * paths and dimensions without waiting for scroll-load.
  */
 export async function resolveAssetSummariesForSelection(input: {
-  listAssets: SerpentLibraryApi["listAssets"];
+  listAssets: KeelLibraryApi["listAssets"];
   libraryId: string;
   assetIds: readonly string[];
   loadedAssets: readonly AssetSummary[];

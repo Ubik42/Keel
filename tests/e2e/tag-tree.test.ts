@@ -2,7 +2,7 @@ import { existsSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { _electron as electron, expect, test } from '@playwright/test';
-import type { SerpentLibraryApi } from '../../src/shared/library-api';
+import type { KeelLibraryApi } from '../../src/shared/library-api';
 import { resolveElectronExecutablePath } from './electron-test-helpers';
 import { removePathWithSyncRetry } from '../../src/worker/windows-fs-retry';
 test.setTimeout(120_000);
@@ -45,11 +45,11 @@ test('tag tree creates children, filters descendants, assigns assets and moves t
     writeFileSync(path.join(root, '标签树测试', 'npc.svg'), '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><rect width="16" height="16" fill="red"/></svg>');
     writeFileSync(path.join(root, '标签树测试', 'scene.svg'), '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><rect width="16" height="16" fill="blue"/></svg>');
     const libraryId = await window.evaluate(async () => {
-      const api = (globalThis as typeof globalThis & { keel: { library: SerpentLibraryApi } }).keel.library;
+      const api = (globalThis as typeof globalThis & { keel: { library: KeelLibraryApi } }).keel.library;
       const result = await api.listOpen(); if (!result.ok) throw new Error('No library'); return result.value[0]!.libraryId;
     });
     const catalog = async () => window.evaluate(async (id) => {
-      const api = (globalThis as typeof globalThis & { keel: { library: SerpentLibraryApi } }).keel.library;
+      const api = (globalThis as typeof globalThis & { keel: { library: KeelLibraryApi } }).keel.library;
       const result = await api.listAssets({ libraryId: id, recursive: true }); if (!result.ok) throw new Error('No assets'); return result.value;
     }, libraryId);
     await expect.poll(async () => (await catalog()).length, { timeout: 20_000 }).toBe(2);

@@ -8,7 +8,7 @@ import {
   resetTextViewerModeForTests,
   TextViewerControls,
 } from "../../src/renderer/TextViewerControls";
-import type { SerpentLibraryApi } from "../../src/shared/library-api";
+import type { KeelLibraryApi } from "../../src/shared/library-api";
 
 const NOTES = [
   "# Creatures",
@@ -55,7 +55,7 @@ function renderViewer(content: string): void {
         mimeType: "text/markdown",
       },
     }),
-  } as unknown as SerpentLibraryApi;
+  } as unknown as KeelLibraryApi;
   act(() => {
     root?.render(createElement(LocaleProvider, {
       initialPreference: "zh-CN",

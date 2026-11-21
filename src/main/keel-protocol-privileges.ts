@@ -18,7 +18,7 @@ export const KEEL_PROTOCOL_PRIVILEGES = {
   corsEnabled: true,
 } as const;
 
-export function serpentProtocolSchemes() {
+export function keelProtocolSchemes() {
   return [
     {
       scheme: KEEL_PROTOCOL_SCHEME,
@@ -44,7 +44,7 @@ export const LEGACY_PROTOCOL_SCHEMES: Readonly<Record<string, string>> = {
 };
 
 export function legacyProtocolSchemes() {
-  return serpentProtocolSchemes().map((entry) => ({
+  return keelProtocolSchemes().map((entry) => ({
     ...entry,
     scheme: LEGACY_PROTOCOL_SCHEMES[entry.scheme]!,
   }));

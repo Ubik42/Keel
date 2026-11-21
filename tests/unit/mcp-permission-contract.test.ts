@@ -10,7 +10,7 @@ import {
 } from '../../src/automation/command-registry';
 import { listSerpentMcpTools } from '../../src/mcp/tool-catalog';
 import { mcpAccessModeSchema, mcpCredentialPermissionSchema } from '../../src/shared/mcp';
-import { readCapabilities, readExposure } from './serpent-mcp-test-fixtures';
+import { readCapabilities, readExposure } from './keel-mcp-test-fixtures';
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const currentManual = [

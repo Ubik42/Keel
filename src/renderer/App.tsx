@@ -202,7 +202,7 @@ import { resolveSearchFolderResults } from "./search-folder-results";
 import { useT, useLocale, translateForLocale, type AppLocale } from "./i18n";
 import type { AiApiFormat } from "../shared/ai-endpoints";
 import { DEFAULT_AI_API_FORMAT, DEFAULT_AI_MODELS } from "../shared/ai-endpoints";
-import type { SerpentMcpSettingsApi } from "../shared/mcp";
+import type { KeelMcpSettingsApi } from "../shared/mcp";
 import type { HistoryStatus } from "../shared/protocol/responses";
 import { isEditableTextTarget } from "../shared/edit-context-menu";
 import type { SearchQuery } from "../shared/asset-types";
@@ -544,7 +544,7 @@ import {
 import { isSemanticSearchModelId, type EmbeddingIndexSnapshot, type SemanticSearchModelId } from "../shared/embedding/profile";
 import { compactFormatFilterTokens } from "../shared/text-media";
 import type {
-  SerpentLibraryApi,
+  KeelLibraryApi,
   EmbeddingHttpServiceSummary,
   LibraryApiResult,
   ImportValidatedResult,
@@ -552,9 +552,9 @@ import type {
   AiJobStatus,
   PluginJobStatus,
 } from "../shared/library-api";
-import type { SerpentShellApi } from "../shared/external-url";
-import type { SerpentAutomationScriptApi } from '../shared/automation-script-api';
-import type { SerpentPluginManagerApi } from '../shared/plugin-manager-api';
+import type { KeelShellApi } from "../shared/external-url";
+import type { KeelAutomationScriptApi } from '../shared/automation-script-api';
+import type { KeelPluginManagerApi } from '../shared/plugin-manager-api';
 import type { PluginContributionContext } from "../plugins/plugin-context";
 import type { AppLogEntry, ReadAppLogResult } from "../shared/app-log";
 import type {
@@ -710,11 +710,11 @@ const NETWORK_LIBRARY_RELOAD_INTERVAL_MS = 750;
 
 type RendererWindow = Window & {
   keel?: {
-    library?: SerpentLibraryApi;
-    shell?: SerpentShellApi;
-    automation?: SerpentAutomationScriptApi;
-    plugins?: SerpentPluginManagerApi;
-    mcp?: SerpentMcpSettingsApi;
+    library?: KeelLibraryApi;
+    shell?: KeelShellApi;
+    automation?: KeelAutomationScriptApi;
+    plugins?: KeelPluginManagerApi;
+    mcp?: KeelMcpSettingsApi;
     e2e?: {
       useNativeAssetDrag?: boolean;
       getRequestCount: (type: string) => number;

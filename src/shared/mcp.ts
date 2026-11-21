@@ -158,7 +158,7 @@ export const mcpSettingsResponseSchema = z.union([
 ]);
 export type McpSettingsResponse = z.infer<typeof mcpSettingsResponseSchema>;
 
-export interface SerpentMcpSettingsApi {
+export interface KeelMcpSettingsApi {
   request(input: McpSettingsRequest): Promise<McpSettingsResponse>;
   onChanged(listener: (snapshot: McpSettingsSnapshot) => void): () => void;
 }

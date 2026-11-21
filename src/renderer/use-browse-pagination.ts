@@ -23,7 +23,7 @@ import type {
   SearchScope,
   SortDefinition,
 } from "../shared/asset-types";
-import type { LibraryApiResult, SerpentLibraryApi } from "../shared/library-api";
+import type { LibraryApiResult, KeelLibraryApi } from "../shared/library-api";
 import type { VirtualBrowseLayout } from "./browse/virtual-browse-layout";
 import {
   DEFAULT_SEMANTIC_SEARCH_PAGE_SIZE,
@@ -147,7 +147,7 @@ export function browsePageFilledOffsets(options: {
 
 /** Fetch one ordered summary batch from a semantic ID snapshot without keyword search. */
 export async function fetchRankedBrowsePage(options: {
-  api: SerpentLibraryApi;
+  api: KeelLibraryApi;
   definition: BrowsePageDefinition;
   offset: number;
   limit: number;
@@ -182,7 +182,7 @@ export async function fetchRankedBrowsePage(options: {
 }
 
 export async function fetchFirstRankedBrowsePage(options: {
-  api: SerpentLibraryApi;
+  api: KeelLibraryApi;
   libraryId: string;
   rankedAssetIds: readonly string[];
   pageSize: SemanticSearchPageSize;
@@ -230,7 +230,7 @@ export type BeginBrowsePage = (
  * the hook wraps it in a generation guard so a stale result is never applied.
  */
 export async function fetchBrowseScopeIds(options: {
-  api: SerpentLibraryApi;
+  api: KeelLibraryApi;
   definition: BrowsePageDefinition;
 }): Promise<string[] | null> {
   const { api, definition } = options;
@@ -260,7 +260,7 @@ export async function fetchBrowseScopeIds(options: {
 
 /** Fetch only the full-scope identity + geometry index used by virtual layout. */
 export async function fetchBrowseLayout(options: {
-  api: SerpentLibraryApi;
+  api: KeelLibraryApi;
   definition: BrowsePageDefinition;
 }): Promise<BrowseLayoutEntry[] | null> {
   const { api, definition } = options;
@@ -293,11 +293,11 @@ export async function fetchBrowseLayout(options: {
  * dispatchSelectionKeyboardAction / hasBrowseAssets).
  */
 export async function fetchBrowseScopeAssetIdsGuarded(options: {
-  api: SerpentLibraryApi | null;
+  api: KeelLibraryApi | null;
   definition: BrowsePageDefinition | null;
   currentGeneration: () => number;
   fetch?: (input: {
-    api: SerpentLibraryApi;
+    api: KeelLibraryApi;
     definition: BrowsePageDefinition;
   }) => Promise<string[] | null>;
 }): Promise<string[] | null> {
@@ -361,7 +361,7 @@ export function registerBrowseSearchPage(
 }
 
 export type UseBrowsePaginationArgs = {
-  api: SerpentLibraryApi | null;
+  api: KeelLibraryApi | null;
   setAssets: Dispatch<SetStateAction<AssetSummary[]>>;
   setTrashedAssets: Dispatch<SetStateAction<AssetSummary[]>>;
   setBrowseLayout: Dispatch<SetStateAction<BrowseLayoutEntry[]>>;

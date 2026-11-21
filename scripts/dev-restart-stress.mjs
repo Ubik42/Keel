@@ -27,7 +27,7 @@ const electronApp =
     ? "node_modules\\electron\\dist\\electron.exe"
     : "node_modules/electron/dist/Electron.app/Contents/MacOS/Electron";
 
-function serpentElectronRunning() {
+function keelElectronRunning() {
   if (process.platform === "win32") return false;
   try {
     execSync(`pgrep -f "${projectRoot}/${electronApp}"`, { stdio: "ignore" });
@@ -103,7 +103,7 @@ async function runRound() {
 
   try {
     const mount = await waitForMountVerified(logOffset);
-    const electronAlive = serpentElectronRunning();
+    const electronAlive = keelElectronRunning();
     return {
       ok: mount.ok && electronAlive,
       mount,

@@ -45,8 +45,8 @@ import {
   isEmbeddedImageMetadataExtension,
   mediaTypeHasPixelResolution,
 } from "../shared/media-formats";
-import type { PreviewResolution, SerpentLibraryApi } from "../shared/library-api";
-import type { SerpentPluginManagerApi } from "../shared/plugin-manager-api";
+import type { PreviewResolution, KeelLibraryApi } from "../shared/library-api";
+import type { KeelPluginManagerApi } from "../shared/plugin-manager-api";
 import type { PluginContributionContext } from "../plugins/plugin-context";
 import type {
   RendererLibrarySummary,
@@ -166,7 +166,7 @@ export interface InspectorPanelProps {
   /** Full multi-selection in canvas order; primary is still `selectedAsset`. */
   selectedAssets?: AssetSummary[];
   library: RendererLibrarySummary | null;
-  api?: SerpentLibraryApi | null;
+  api?: KeelLibraryApi | null;
   allAssetCount: number;
   folderCount: number;
   loadMetadata: () => void;
@@ -212,7 +212,7 @@ export interface InspectorPanelProps {
   onPaletteColorCopy?: (color: string, copied: boolean) => void;
   /** 在系统浏览器中打开当前源链接（URL 有效性由主进程二次校验）。 */
   onOpenSourceUrl?: () => void;
-  pluginApi?: SerpentPluginManagerApi;
+  pluginApi?: KeelPluginManagerApi;
   libraryId?: string;
   pluginContributionRefreshKey?: string | null;
   /** Re-read progressive extracted metadata after a secondary job commits. */
@@ -236,7 +236,7 @@ function InspectorHeroSinglePreview({
   library: RendererLibrarySummary | null;
   /** Ready GIF/video resolution to loop-play (Serpent-a9n); null = static only. */
   livePreview?: PreviewResolution | null;
-  api?: SerpentLibraryApi | null;
+  api?: KeelLibraryApi | null;
   cardFeelEnabled?: boolean;
 }) {
   const previewSrc = resolveInspectorPreviewSrc(asset, library);
@@ -517,7 +517,7 @@ function InspectorHero({
   selectionCount: number;
   /** Serpent-a9n: only ever passed/used for single selection. */
   livePreview?: PreviewResolution | null;
-  api?: SerpentLibraryApi | null;
+  api?: KeelLibraryApi | null;
   cardFeelEnabled?: boolean;
 }) {
   const { t } = useLocale();

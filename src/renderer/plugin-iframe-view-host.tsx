@@ -11,7 +11,7 @@ import {
   PLUGIN_UI_THEME_TOKEN_NAMES,
   type PluginThemePackage,
 } from '../plugins/plugin-themes';
-import type { SerpentPluginManagerApi } from '../shared/plugin-manager-api';
+import type { KeelPluginManagerApi } from '../shared/plugin-manager-api';
 import {
   isTrustedPluginUiMessage,
   parsePluginUiIframeMessage,
@@ -162,7 +162,7 @@ export function PluginIframeViewHost({
   dialogSubmitNonce,
 }: {
   view: PluginIframeViewDescriptor;
-  pluginApi: SerpentPluginManagerApi | undefined;
+  pluginApi: KeelPluginManagerApi | undefined;
   libraryId: string | undefined;
   className?: string;
   title?: string;

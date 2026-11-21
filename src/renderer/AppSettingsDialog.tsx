@@ -28,8 +28,8 @@ import type { CanvasPreferences, CanvasCaptionAlign } from "./canvas-preferences
 import { Icon } from "./Icons";
 import { iconActionAttrs } from "./icon-action-attrs";
 import { useT } from "./i18n";
-import type { SerpentPluginManagerApi } from "../shared/plugin-manager-api";
-import type { SerpentMcpSettingsApi } from "../shared/mcp";
+import type { KeelPluginManagerApi } from "../shared/plugin-manager-api";
+import type { KeelMcpSettingsApi } from "../shared/mcp";
 import { DialogShell } from "./ui/patterns";
 
 export interface AppSettingsDialogProps {
@@ -56,10 +56,10 @@ export interface AppSettingsDialogProps {
   onToggleImageSequenceDetection: () => void;
   onOpenAppLog?: () => void;
   onOpenExtensionReleases?: () => void;
-  pluginApi?: SerpentPluginManagerApi;
+  pluginApi?: KeelPluginManagerApi;
   pluginContributionRefreshKey?: string | null;
   libraryId?: string;
-  mcpApi?: SerpentMcpSettingsApi;
+  mcpApi?: KeelMcpSettingsApi;
   syncServerCallbacks: SyncServerSettingsCallbacks;
   embeddingServicesApi?: EmbeddingCatalogApi;
   showCardSyncStatus: boolean;

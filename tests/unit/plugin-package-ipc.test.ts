@@ -41,7 +41,7 @@ function createManager(userDataDirectory: string): PluginPackageManager {
   return new PluginPackageManager({
     userDataDirectory,
     deviceId: path.basename(userDataDirectory),
-    serpentVersion: '0.2.4',
+    keelVersion: '0.2.4',
     pluginApiVersion: 1,
     platform: 'darwin',
     arch: 'arm64',

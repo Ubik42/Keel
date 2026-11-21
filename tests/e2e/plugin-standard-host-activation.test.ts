@@ -58,6 +58,7 @@ test('activates the fixed standard Host probe and writes library storage', async
     const libraryDirectory = path.join(temporaryRoot, libraryName);
     const storagePath = path.join(
       libraryDirectory,
+      '.keel',
       PLUGIN_LIBRARY_DATA_DIRECTORY,
       'com.keel.standard-host-probe.json',
     );

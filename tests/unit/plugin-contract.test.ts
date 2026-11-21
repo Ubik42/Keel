@@ -268,21 +268,21 @@ describe('Plugin v1 manifest contract', () => {
     });
 
     expect(validatePluginManifestCompatibility(manifest, {
-      serpentVersion: '0.2.4',
+      keelVersion: '0.2.4',
       pluginApiVersion: 1,
       platform: 'darwin',
       arch: 'arm64',
       nodeAbi: 140,
     })).toEqual({ ok: true });
     expect(validatePluginManifestCompatibility(manifest, {
-      serpentVersion: '0.2.4',
+      keelVersion: '0.2.4',
       pluginApiVersion: 1,
       platform: 'win32',
       arch: 'x64',
       nodeAbi: 140,
     })).toMatchObject({ ok: false, code: 'PLUGIN_PLATFORM_UNSUPPORTED' });
     expect(validatePluginManifestCompatibility(manifest, {
-      serpentVersion: '1.0.0',
+      keelVersion: '1.0.0',
       pluginApiVersion: 1,
       platform: 'darwin',
       arch: 'arm64',
@@ -498,18 +498,18 @@ describe('Plugin contribution registry and generated SDK', () => {
     expect(PLUGIN_API_VERSION).toBe(1);
     expect(description.apiVersion).toBe(1);
     expect(description.manifestSchema).toMatchObject({ type: 'object' });
-    expect(declaration).toContain('interface SerpentPluginApi');
+    expect(declaration).toContain('interface KeelPluginApi');
     expect(declaration).toContain("'asset.read'");
     expect(declaration).toContain('registerContribution');
     expect(declaration).toContain('hooks');
     expect(declaration).toContain('onWill');
     expect(declaration).toContain('forLibrary');
-    expect(declaration).toContain('SerpentPluginScopedApi');
+    expect(declaration).toContain('KeelPluginScopedApi');
     expect(declaration).toContain('get(key: string, options?: { readonly scope?: \'library\' | \'user\' }): Promise<unknown | null>;');
     expect(declaration).toContain('delete(key: string, options?: { readonly scope?: \'library\' | \'user\' }): Promise<boolean>;');
     expect(declaration).toContain('listKeys(options?: { readonly scope?: \'library\' | \'user\' }): Promise<readonly string[]>;');
     for (const method of [
-      'list(input?: SerpentPluginPageInput): Promise<unknown>;',
+      'list(input?: KeelPluginPageInput): Promise<unknown>;',
       'getExtractedMetadata(assetId: string): Promise<unknown>;',
       'readonly folders:',
       'readonly tags:',
@@ -527,7 +527,7 @@ describe('Plugin contribution registry and generated SDK', () => {
     expect(declaration).toContain('readonly folderIds?: readonly string[];');
     expect(declaration).not.toContain('collectionIds');
     expect(declaration).not.toContain('readonly collections:');
-    expect(declaration).toContain("Pick<SerpentPluginApi['jobs'], 'enqueue' | 'reportProgress' | 'cancel' | 'pause' | 'resume' | 'retry'>");
+    expect(declaration).toContain("Pick<KeelPluginApi['jobs'], 'enqueue' | 'reportProgress' | 'cancel' | 'pause' | 'resume' | 'retry'>");
     expect(declaration).toContain('reportProgress');
     expect(declaration).not.toContain('zod');
     expect(declaration).not.toContain('node:');
