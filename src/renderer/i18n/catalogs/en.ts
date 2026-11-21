@@ -1497,7 +1497,6 @@ export const en = {
   },
   settings: {
     interfaceStyle: "Interface style",
-    interfaceNew: "New UI",
     interfaceLegacy: "Legacy UI",
 
     title: "Settings",

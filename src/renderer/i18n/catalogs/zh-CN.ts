@@ -1478,7 +1478,6 @@ export const zhCN = {
   },
   settings: {
     interfaceStyle: "界面样式",
-    interfaceNew: "新 UI",
     interfaceLegacy: "旧 UI",
 
     title: "通用设置",

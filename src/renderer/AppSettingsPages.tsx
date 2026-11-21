@@ -1,6 +1,5 @@
 import { loadInterfaceScale, saveInterfaceScale } from './interface-scale';
 import { isImeKeyboardEvent } from "./ime-safe-dismiss";
-import { setShellLayout, useShellLayout } from "./ui/use-shell-layout";
 import { useState, type ReactNode } from "react";
 
 import {
@@ -419,7 +418,6 @@ export function AssetsSettingsPage({
 
 export function AppearanceSettingsPage(): ReactNode {
   const [interfaceScale, setInterfaceScale] = useState(loadInterfaceScale);
-  const shellLayout = useShellLayout();
   const t = useT();
   const { preferences: fontSizePrefs, setPreference: setFontSizePreference } = useFontSize();
   const { preferences: shadowPrefs, setValues: setShadowValues } = useElevation();
@@ -440,14 +438,6 @@ export function AppearanceSettingsPage(): ReactNode {
             <span>{t("settings.themeHint")}</span>
           </div>
           <div className="app-settings-theme-actions">
-            <label className="app-settings-layout-toggle">
-              <span>{t("settings.interfaceNew")}</span>
-              <Switch
-                aria-label={t("settings.interfaceNew")}
-                checked={shellLayout === "islands"}
-                onCheckedChange={(enabled) => setShellLayout(enabled ? "islands" : "legacy")}
-              />
-            </label>
             <ThemeModePicker />
           </div>
         </div>
