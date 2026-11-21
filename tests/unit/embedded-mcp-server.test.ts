@@ -204,7 +204,7 @@ describe('Embedded MCP Streamable HTTP server', () => {
     await client.connect(transport);
     expect(harness.journal.list()).toHaveLength(1);
     expect(harness.journal.list()[0]!.status).toBe('running');
-    // Serpent review: the SDK transport's close() only aborts its streams —
+    // Keel review: the SDK transport's close() only aborts its streams —
     // it does NOT send the protocol DELETE — so the server-side session
     // teardown must be driven explicitly (this is what a well-behaved MCP
     // client does on disconnect).

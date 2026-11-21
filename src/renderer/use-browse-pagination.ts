@@ -385,7 +385,7 @@ export type UseBrowsePaginationResult = {
   /** Full-scope asset ids for select-all / invert (idsOnly query). */
   fetchScopeAssetIds: () => Promise<string[] | null>;
   /**
-   * Serpent-关联刷新: fold a local deletion into the pagination bookkeeping so
+   * Keel-关联刷新: fold a local deletion into the pagination bookkeeping so
    * an in-flight/next append cannot resurrect deleted rows and the offset
    * counters stay consistent until the deferred full reconcile re-registers.
    */

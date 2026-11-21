@@ -1,4 +1,4 @@
-// Library availability is Serpent's hardest product baseline.
+// Library availability is Keel's hardest product baseline.
 // A library must open, stay writable, and remain usable after close/reopen,
 // schema skew, migration failure, and database damage. Desktop never presents
 // a read-only library. `npm run test:library-availability` is the required

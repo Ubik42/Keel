@@ -4,7 +4,7 @@ import test from 'node:test';
 
 import { isSerpentDevElectronCommand } from '../../scripts/kill-stale-dev.mjs';
 
-const root = path.win32.join('fixture', 'Serpent');
+const root = path.win32.join('fixture', 'Keel');
 const ownExecutable = path.win32.join(root, 'node_modules', 'electron', 'dist', 'electron.exe');
 
 test('Windows dev cleanup matches only this checkout Electron binary', () => {

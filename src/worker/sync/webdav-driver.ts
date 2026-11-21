@@ -57,7 +57,7 @@ interface DigestChallenge {
   algorithm?: string;
 }
 
-const USER_AGENT = 'Serpent/0.1 sync';
+const USER_AGENT = 'Keel/0.1 sync';
 
 function encodePathSegment(segment: string): string {
   return encodeURIComponent(segment)

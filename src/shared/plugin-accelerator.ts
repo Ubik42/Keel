@@ -113,7 +113,7 @@ export function parseElectronAccelerator(
 
 /**
  * Formats a plugin accelerator using the same compact platform conventions as
- * Serpent's built-in menus. The manifest keeps Electron's portable spelling;
+ * Keel's built-in menus. The manifest keeps Electron's portable spelling;
  * only the renderer-facing label is platform-specific.
  */
 export function formatElectronAcceleratorLabel(
@@ -152,7 +152,7 @@ function chordsEqual(left: PlatformShortcutChord, right: PlatformShortcutChord):
 
 /**
  * Returns the reserved core command id when the accelerator collides with a
- * Serpent chord on either platform; otherwise null.
+ * Keel chord on either platform; otherwise null.
  */
 export function findReservedAcceleratorConflict(accelerator: string): string | null {
   for (const platform of ['mac', 'windows'] as const) {

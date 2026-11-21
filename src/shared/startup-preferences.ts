@@ -62,7 +62,7 @@ export function startupPlatformSupported(platform: string): boolean {
 
 /**
  * OS login-item payload. Unpackaged and automated sessions do not register,
- * because the running executable is not the installed Serpent app.
+ * because the running executable is not the installed Keel app.
  * Windows always sends an empty argument list so a previously stored
  * launch argument is cleared.
  */

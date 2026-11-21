@@ -6,7 +6,7 @@ import type {
 } from "../shared/library-api";
 import { resolveActivePreviewAssetId } from "./asset-card-hover-preview";
 
-// Serpent hover-play anti-mistouch: fast scrolling across cards must not
+// Keel hover-play anti-mistouch: fast scrolling across cards must not
 // trigger preview loading. 500ms of sustained hover before any resource
 // request goes out (user-reported 2026-08-22).
 const DEFAULT_DEBOUNCE_MS = 500;

@@ -1,7 +1,7 @@
 {
   "asset": {
     "version": "2.0",
-    "generator": "Serpent E2E fixture"
+    "generator": "Keel E2E fixture"
   },
   "scene": 0,
   "scenes": [

@@ -43,7 +43,7 @@ export interface SidebarCommandActions {
   readonly collapseFolderTree: (folderId: string) => void;
   /** Open move-target dialog for managed folder(s). */
   readonly moveFolder: (folderIds: string[]) => void;
-  /** 托管文件夹 → Serpent 回收站。 */
+  /** 托管文件夹 → Keel 回收站。 */
   readonly trashManagedFolder: (folderId: string, name: string) => void;
   /** 托管或链接文件夹 → 不可逆的硬盘删除。 */
   readonly deleteFolderFromDisk: (folderId: string, name: string) => void;

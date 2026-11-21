@@ -16,7 +16,7 @@ describe('external library staging disk policy', () => {
     expect(requiredStagingBytes(2_000 * 1024 * 1024)).toBe(2_000 * 1024 * 1024 + 200 * 1024 * 1024);
   });
 
-  it('only treats Serpent extract directories as managed staging roots', () => {
+  it('only treats Keel extract directories as managed staging roots', () => {
     expect(isManagedExternalLibraryStagingPath(`${EXTERNAL_LIBRARY_STAGING_PREFIX}abc123`)).toBe(true);
     expect(isManagedExternalLibraryStagingPath('not-a-staging-dir')).toBe(false);
   });

@@ -11,7 +11,7 @@ import {
 const payload = {
   title: '确认危险操作',
   heading: '从磁盘删除这个资源库？',
-  message: '资源库“测试库”及其 Serpent 管理的目录将被永久删除。',
+  message: '资源库“测试库”及其 Keel 管理的目录将被永久删除。',
   detail: '此操作无法撤销。关联文件夹的源目录不会被删除。',
   cancelLabel: '取消',
   confirmLabel: '从磁盘删除',

@@ -40,7 +40,7 @@ function isDirectory(directoryPath: string): boolean {
 
 /**
  * Normalize, optionally create, and prove a writable parent folder for a new
- * Serpent library. Trailing separators from Windows folder pickers are stripped
+ * Keel library. Trailing separators from Windows folder pickers are stripped
  * by `normalizeAbsolutePath` before the dirname identity check in
  * `targetLibraryPath`.
  */

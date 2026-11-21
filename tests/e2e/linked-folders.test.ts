@@ -105,7 +105,7 @@ test('imports a linked folder, reconciles external changes, and relinks after th
     const aBefore = before.find((asset) => asset.displayName === 'a.png');
     expect(aBefore?.availability).toBe('available');
 
-    // External overwrite of the linked source file (not via Serpent).
+    // External overwrite of the linked source file (not via Keel).
     writeFileSync(path.join(sourceRoot, 'a.png'), Buffer.from('aaaaaa'));
     await window.getByRole('button', { name: '刷新磁盘变化' }).click();
     const afterOverwrite = await listAllAssets(window);
@@ -140,7 +140,7 @@ test('imports a linked folder, reconciles external changes, and relinks after th
     expect(bAfterMove?.availability).toBe('available');
     expect(afterMove.some((asset) => asset.displayName === 'b.png')).toBe(false);
 
-    // If the source was removed outside Serpent, the missing linked record can
+    // If the source was removed outside Keel, the missing linked record can
     // still be cleared from the normal asset menu without reporting a trash
     // failure for a path that no longer exists.
     rmSync(path.join(sourceRoot, 'sub', 'c.png'));

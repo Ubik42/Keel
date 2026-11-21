@@ -55,7 +55,7 @@ const COVER_SAMPLE_CHARS = 'AaBbCc 0123';
 
 /**
  * Cover text of the font card: `「字体预览 AaBbCc 0123」` in the font's own
- * language plus `「{family} · Serpent」`. Falls back to a language-neutral first
+ * language plus `「{family} · Keel」`. Falls back to a language-neutral first
  * line when the language is unknown.
  */
 export function fontSampleCoverText(input: {
@@ -67,7 +67,7 @@ export function fontSampleCoverText(input: {
   const family = input.family?.trim();
   return {
     primary: label ? `${label} ${COVER_SAMPLE_CHARS}` : COVER_SAMPLE_CHARS,
-    secondary: family ? `${family} · Serpent` : 'Serpent',
+    secondary: family ? `${family} · Keel` : 'Keel',
     htmlLang: language ? COVER_LABELS[language].htmlLang : 'en',
   };
 }

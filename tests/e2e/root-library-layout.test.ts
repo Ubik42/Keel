@@ -25,7 +25,7 @@ test('creates root storage by default and offers the compatible Assets layout', 
     const layout = window.getByRole('combobox', { name: '素材存放位置' });
     await expect(layout).toHaveValue('root');
     await layout.selectOption('assets');
-    await expect(window.getByText('素材统一存放在 Assets 子目录中，兼容原版 Serpent 的资源库结构。')).toBeVisible();
+    await expect(window.getByText('素材统一存放在 Assets 子目录中，兼容原版 Keel 的资源库结构。')).toBeVisible();
     await layout.selectOption('root');
     await window.getByRole('textbox', { name: '名称', exact: true }).fill('日常记录');
     await window.screenshot({ path: test.info().outputPath('root-create.png') });

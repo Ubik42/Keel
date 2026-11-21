@@ -28,7 +28,7 @@ export function shouldActivateExternalImportOverlay(
 
 /**
  * Only consume a native file drop as an internal drag when every file maps
- * back to one of the assets Serpent started dragging. External files must
+ * back to one of the assets Keel started dragging. External files must
  * continue through the import flow, even when their path matches a library
  * asset or a mixed batch contains a partial match.
  */

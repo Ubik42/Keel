@@ -213,7 +213,7 @@ export const automationCapabilityRegistry = [
   {
     capability: 'content.write',
     displayName: '修改资产内容',
-    description: '替换、暂存或修改受 Serpent 管理的资产文件。',
+    description: '替换、暂存或修改受 Keel 管理的资产文件。',
     riskTier: 'controlled',
     defaultPolicy: 'ask',
     canPersist: true,
@@ -285,7 +285,7 @@ export const automationCapabilityRegistry = [
   {
     capability: 'file.move',
     displayName: '移动文件',
-    description: '移动受 Serpent 管理的资产文件。',
+    description: '移动受 Keel 管理的资产文件。',
     riskTier: 'controlled',
     defaultPolicy: 'ask',
     canPersist: true,
@@ -293,7 +293,7 @@ export const automationCapabilityRegistry = [
   {
     capability: 'file.rename',
     displayName: '重命名文件',
-    description: '重命名受 Serpent 管理的资产文件。',
+    description: '重命名受 Keel 管理的资产文件。',
     riskTier: 'controlled',
     defaultPolicy: 'ask',
     canPersist: true,
@@ -301,7 +301,7 @@ export const automationCapabilityRegistry = [
   {
     capability: 'trash.write',
     displayName: '移入回收站',
-    description: '将资产移入 Serpent 回收站，以便后续恢复或清理。',
+    description: '将资产移入 Keel 回收站，以便后续恢复或清理。',
     riskTier: 'controlled',
     defaultPolicy: 'ask',
     canPersist: true,
@@ -317,7 +317,7 @@ export const automationCapabilityRegistry = [
   {
     capability: 'ui.notify',
     displayName: '向桌面显示提示',
-    description: '在 Serpent 桌面显示受限的信息提示。',
+    description: '在 Keel 桌面显示受限的信息提示。',
     riskTier: 'safe',
     defaultPolicy: 'allow',
     canPersist: false,
@@ -325,7 +325,7 @@ export const automationCapabilityRegistry = [
   {
     capability: 'ui.dialogs',
     displayName: '打开插件设置对话框',
-    description: '在 Serpent 桌面弹出该插件声明的模态设置对话框并读取其提交结果。',
+    description: '在 Keel 桌面弹出该插件声明的模态设置对话框并读取其提交结果。',
     riskTier: 'controlled',
     defaultPolicy: 'ask',
     canPersist: true,
@@ -514,7 +514,7 @@ export const automationCommandInputSchemas = {
   'ui.notify': z.strictObject({
     severity: z.enum(['info', 'warning', 'error']),
     message: z.string().min(1).max(500),
-    // Serpent review: the accepted stateless design keeps ui.notify strictly
+    // Keel review: the accepted stateless design keeps ui.notify strictly
     // non-blocking — the old dialog mode (blocking error window) was removed.
     mode: z.literal('toast').default('toast'),
     title: z.string().min(1).max(120).optional(),
@@ -2097,7 +2097,7 @@ export const automationCommandRegistry = [
   {
     commandId: 'asset.trash',
     apiVersion: AUTOMATION_API_VERSION,
-    summary: '将托管资产移入 Serpent 回收站；不会永久删除文件。',
+    summary: '将托管资产移入 Keel 回收站；不会永久删除文件。',
     deprecated: false,
     inputSchema: automationCommandInputSchemas['asset.trash'],
     resultSchema: automationCommandResultSchemas['asset.trash'],

@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "name": "Hook Blocking Probe",
   "description": "Fixed test plugin that blocks asset.trash through an onWill hook.",
-  "author": "Serpent",
+  "author": "Keel",
   "license": "MIT",
   "engines": {
     "serpent": ">=0.1.0 <1.0.0",

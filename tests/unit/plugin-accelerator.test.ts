@@ -24,7 +24,7 @@ describe('plugin-accelerator', () => {
     });
   });
 
-  it('detects collisions with core Serpent shortcuts', () => {
+  it('detects collisions with core Keel shortcuts', () => {
     expect(findReservedAcceleratorConflict('CmdOrCtrl+F')).toBe('workspace.focus-search');
     expect(findReservedAcceleratorConflict('F9')).toBeNull();
   });

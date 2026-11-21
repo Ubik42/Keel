@@ -329,7 +329,7 @@ describe('Billfish library import', () => {
     }
   });
 
-  it('inspects and opens Billfish as a new Serpent library', async () => {
+  it('inspects and opens Billfish as a new Keel library', async () => {
     const root = temporaryRoot();
     const sourceRootPath = writeBillfishLibrary(root);
     const service = new LibraryService({

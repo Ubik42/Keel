@@ -126,7 +126,7 @@ function folderDropAssets(assets: readonly DragAssetFact[]): DragAssetFact[] {
   );
 }
 
-/** Assets eligible for the Serpent trash: linked files stay outside the trash. */
+/** Assets eligible for the Keel trash: linked files stay outside the trash. */
 function movableAssets(assets: readonly DragAssetFact[]): DragAssetFact[] {
   return assets.filter(
     (asset) =>
@@ -183,7 +183,7 @@ export interface TrashDropResolution {
 /**
  * Resolve a drop onto the trash row: same eligibility as the batch 移至回收站
  * menu action (managed + available + not already trashed); skips are counted
- * for the result toast. Linked assets never enter the Serpent trash.
+ * for the result toast. Linked assets never enter the Keel trash.
  * Copy mode does not apply (trash remains a move/delete target).
  */
 export function resolveTrashDrop(

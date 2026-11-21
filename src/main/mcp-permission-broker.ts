@@ -165,7 +165,7 @@ export class McpPermissionBroker implements AutomationPermissionBroker {
         .filter((id): id is string => typeof id === 'string')
         .map((id) => ({ id }));
     }
-    // Serpent review (P2-3): library-scoped critical commands (delete-from-
+    // Keel review (P2-3): library-scoped critical commands (delete-from-
     // disk) surface their library target in the challenge risk report.
     if (typeof record.libraryId === 'string') return [{ id: record.libraryId }];
     if (Array.isArray(record.folderIds)) {

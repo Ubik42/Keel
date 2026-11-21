@@ -172,8 +172,8 @@ test("library switcher, breadcrumbs, and workspace history", async () => {
 
       await settingsButton.click();
       await window.getByRole("menuitem", { name: "关于", exact: true }).hover();
-      await window.getByRole("menuitem", { name: "关于 Serpent", exact: true }).click();
-      const aboutDialog = window.getByRole("dialog", { name: "Serpent" });
+      await window.getByRole("menuitem", { name: "关于 Keel", exact: true }).click();
+      const aboutDialog = window.getByRole("dialog", { name: "Keel" });
       await expect(aboutDialog).toBeVisible();
       await expect(window.getByText(`版本 ${packageVersion}`, { exact: true })).toBeVisible();
       const refreshButton = aboutDialog.getByRole("button", { name: "检查更新" });
@@ -192,7 +192,7 @@ test("library switcher, breadcrumbs, and workspace history", async () => {
       await expect(window.getByRole("dialog")).toHaveCount(0);
     } else {
       await clickNativeApplicationMenuItem(application, "about.keel");
-      const aboutDialog = window.getByRole("dialog", { name: "Serpent" });
+      const aboutDialog = window.getByRole("dialog", { name: "Keel" });
       await expect(aboutDialog).toBeVisible();
       const refreshButton = aboutDialog.getByRole("button", { name: "检查更新" });
       await expect(refreshButton).toBeVisible();
@@ -390,7 +390,7 @@ test("library switcher, breadcrumbs, and workspace history", async () => {
       window.getByRole("dialog", { name: "打开资源库" }),
     ).toBeVisible();
     await expect(
-      window.getByRole("button", { name: "打开 Serpent 资源库" }),
+      window.getByRole("button", { name: "打开 Keel 资源库" }),
     ).toBeVisible();
     await expect(
       window.getByRole("button", { name: "打开同步资源库…" }),

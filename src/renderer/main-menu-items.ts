@@ -67,7 +67,7 @@ const APPLICATION_MENU_ITEM_COMMANDS: Readonly<Record<string, ApplicationMenuCom
   "library.show-missing-linked": "library.show-missing-linked",
   "window.background-jobs": "window.background-jobs",
   "window.diagnostics": "window.diagnostics",
-  "about.serpent": "about.serpent",
+  "about.keel": "about.keel",
   "about.github": "about.github",
   "about.open-source": "about.open-source",
   "about.diagnostics": "about.diagnostics",
@@ -388,8 +388,8 @@ export function buildMainMenuSections({
       icon: "info",
       items: [
         {
-          id: "about.serpent",
-          label: label(locale, "shell.mainMenuAboutSerpent"),
+          id: "about.keel",
+          label: label(locale, "shell.mainMenuAboutKeel"),
           onSelect: actions.openAbout,
         },
         {
@@ -416,7 +416,7 @@ export function buildMainMenuSections({
         },
         {
           // Serpent-0fe8b4: 菜单里不再显示版本号（无用的 disabled 项），
-          // 改为「检查更新」——点击打开关于 Serpent 页面，该页面负责
+          // 改为「检查更新」——点击打开关于 Keel 页面，该页面负责
           // 自动更新流程（检查/下载/安装/进度）。
           id: "about.check-update",
           label: label(locale, "shell.mainMenuCheckUpdate"),

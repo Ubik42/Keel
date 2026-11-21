@@ -39,7 +39,7 @@ export const searchExpressionSchema = z.strictObject({ version: z.literal(1), ro
 /**
  * Canonical path form that is safe to expose across the Renderer boundary.
  *
- * Serpent persists relative paths with POSIX separators on every platform.
+ * Keel persists relative paths with POSIX separators on every platform.
  * Rejecting absolute, drive-qualified, backslash-separated, empty, and dot
  * segments keeps a parsed value relative without relying on the host OS path
  * implementation.
@@ -698,7 +698,7 @@ export type SmartCollectionQueryDefinition = z.infer<typeof smartCollectionQuery
 
 /**
  * A provider-generated search plan is intentionally limited to values already
- * understood by Serpent's ordinary search engine. It cannot carry SQL,
+ * understood by Keel's ordinary search engine. It cannot carry SQL,
  * filesystem paths, arbitrary operators, or executable expressions.
  */
 export const aiSearchPlanSchema = z.strictObject({

@@ -170,7 +170,7 @@ describe("resolveLivePreviewMedia (Serpent-a9n)", () => {
     ).toEqual({ url: "keel://source/lib/vid-1", kind: "video" });
   });
 
-  it("plays a ready audio as 'audio' when active (Serpent hover 音频工单)", () => {
+  it("plays a ready audio as 'audio' when active (Keel hover 音频工单)", () => {
     expect(
       resolveLivePreviewMedia(true, {
         status: "ready",
@@ -329,7 +329,7 @@ describe("resolveAssetCardCoverUrl", () => {
   });
 });
 
-describe("resolveLiveVideoMuted (Serpent hover 音频工单)", () => {
+describe("resolveLiveVideoMuted (Keel hover 音频工单)", () => {
   it("plays sound only on hover with the preference on", () => {
     expect(
       resolveLiveVideoMuted({
@@ -368,7 +368,7 @@ describe("resolveLiveVideoMuted (Serpent hover 音频工单)", () => {
   });
 });
 
-describe("shouldPlayLiveAudio (Serpent hover 音频工单)", () => {
+describe("shouldPlayLiveAudio (Keel hover 音频工单)", () => {
   it("plays audio only on hover with the preference on", () => {
     expect(
       shouldPlayLiveAudio({ hovering: true, hoverAudioPlay: true }),

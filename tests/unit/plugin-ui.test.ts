@@ -30,7 +30,7 @@ describe('plugin custom UI contract', () => {
       version: '1.0.0',
       name: 'Iframe probe',
       description: 'Probe',
-      author: 'Serpent',
+      author: 'Keel',
       license: 'MIT',
       engines: { keel: '>=0.1.0', pluginApi: 1 },
       runtime: { mode: 'restricted', entry: 'entry/main.js' },

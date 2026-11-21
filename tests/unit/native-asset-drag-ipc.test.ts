@@ -4,7 +4,7 @@ import { ASSET_NATIVE_DRAG_CHANNEL } from '../../src/shared/protocol/channels';
 import { sendNativeAssetDrag } from '../../src/preload/native-asset-drag';
 
 describe('native asset drag IPC', () => {
-  it('uses one-way async IPC so dropping back into Serpent cannot deadlock', () => {
+  it('uses one-way async IPC so dropping back into Keel cannot deadlock', () => {
     const send = vi.fn();
 
     expect(sendNativeAssetDrag(

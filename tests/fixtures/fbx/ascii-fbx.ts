@@ -169,7 +169,7 @@ export function buildAsciiFbx(options: AsciiFbxOptions = {}): Buffer {
 FBXHeaderExtension:  {
 	FBXHeaderVersion: 1003
 	FBXVersion: 7400
-	Creator: "Serpent test fixture"
+	Creator: "Keel test fixture"
 }
 GlobalSettings:  {
 	Version: 1000

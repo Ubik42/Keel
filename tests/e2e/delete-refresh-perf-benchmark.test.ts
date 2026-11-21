@@ -126,7 +126,7 @@ function validateIsolatedCopy(sourcePath: string, targetPath: string): string {
   if (!existsSync(sourceDatabase) || !existsSync(targetDatabase)
     || !existsSync(sourceAssets) || !existsSync(targetAssets)
     || !lstatSync(sourceAssets).isDirectory() || !lstatSync(targetAssets).isDirectory()) {
-    throw new Error("Both configured directories must contain a Serpent library database.");
+    throw new Error("Both configured directories must contain a Keel library database.");
   }
   try {
     accessSync(targetRealPath, constants.W_OK);

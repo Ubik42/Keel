@@ -27,7 +27,7 @@ export interface AutomationScriptFileServiceOptions {
 }
 
 /**
- * Main-owned file picker and source binding for saved Serpent scripts.
+ * Main-owned file picker and source binding for saved Keel scripts.
  *
  * Renderer receives source text and a display name, never the selected path.
  * The opaque handle is sender-bound and tied to the exact text Main read or

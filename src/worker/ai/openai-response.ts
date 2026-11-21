@@ -431,7 +431,7 @@ function normalizeContent(
         : undefined;
     }
     // A direct object in message.content is not standard Chat Completions,
-    // but several local relays emit it. It still goes through Serpent's Zod
+    // but several local relays emit it. It still goes through Keel's Zod
     // domain parser before it can be written.
     if (value.type === undefined) return { kind: 'json_value', value, ...metadata };
   }

@@ -1080,7 +1080,7 @@ const focusedContexts = new Map<
   number,
   { libraryId: string | null; selectedFolderId?: string }
 >();
-// Last Serpent window that published browse context or received OS focus.
+// Last Keel window that published browse context or received OS focus.
 let lastExtensionTargetWindowId: number | undefined;
 
 // Keeps selected roots in Main. Renderer receives only an opaque, one-shot token.
@@ -2418,7 +2418,7 @@ async function createMainWindow(): Promise<void> {
         .filter(Boolean)
         .join("\n");
       logger?.error("main.window.load", detail);
-      dialog.showErrorBox("Serpent renderer failed to load", detail);
+      dialog.showErrorBox("Keel renderer failed to load", detail);
     });
     try {
       await loadRendererDevUrl(window, MAIN_WINDOW_VITE_DEV_SERVER_URL, logger, {
@@ -2442,7 +2442,7 @@ async function createMainWindow(): Promise<void> {
     } catch (error) {
       logger?.error("main.window.dev-load", error);
       dialog.showErrorBox(
-        "Serpent renderer failed to load",
+        "Keel renderer failed to load",
         error instanceof Error ? error.message : String(error),
       );
       throw error;
@@ -2506,7 +2506,7 @@ async function handleListFolders(): Promise<ListFoldersDisposition> {
     return { ok: false, status: 500, reason: "unexpected worker response" };
   }
 
-  let libraryDisplayName = "Serpent";
+  let libraryDisplayName = "Keel";
   const librariesResult = await workerClient.request({ type: "library.list" });
   if (librariesResult.ok && librariesResult.type === "library.list") {
     const match = librariesResult.libraries.find(
@@ -2595,7 +2595,7 @@ async function handleSaveIntent(
       "extension-server.save",
       focusedWindow
         ? "No active library in focused window; dropping save intent."
-        : "No focused Serpent window and no fallback browse context; dropping save intent.",
+        : "No focused Keel window and no fallback browse context; dropping save intent.",
       {
         focusedWindowId: focusedWindow?.id ?? null,
         lastTargetWindowId: lastExtensionTargetWindowId ?? null,
@@ -2668,7 +2668,7 @@ async function handleSaveUpload(
       "extension-server.save-upload",
       focusedWindow
         ? "No active library in focused window; dropping upload."
-        : "No focused Serpent window and no fallback browse context; dropping upload.",
+        : "No focused Keel window and no fallback browse context; dropping upload.",
       {
         focusedWindowId: focusedWindow?.id ?? null,
         lastTargetWindowId: lastExtensionTargetWindowId ?? null,
@@ -4232,7 +4232,7 @@ async function confirmCriticalLibraryDeletion(libraryId: string): Promise<boolea
     heading: english ? 'Delete this library from disk?' : '从磁盘删除这个资源库？',
     message: english
       ? `The library “${library.displayName}” and its Serpent-managed directory will be permanently deleted.`
-      : `资源库“${library.displayName}”及其 Serpent 管理的目录将被永久删除。`,
+      : `资源库“${library.displayName}”及其 Keel 管理的目录将被永久删除。`,
     detail: english
       ? 'This cannot be undone. Linked-folder source directories are not included.'
       : '此操作无法撤销。关联文件夹的源目录不会被删除。',
@@ -4343,10 +4343,10 @@ function criticalRendererCopy(
       };
     case 'trash-purge':
       return {
-        heading: english ? 'Empty the Serpent trash permanently?' : '永久清空 Serpent 回收站？',
+        heading: english ? 'Empty the Keel trash permanently?' : '永久清空 Keel 回收站？',
         message: english
-          ? 'All assets currently in the Serpent trash will be permanently deleted.'
-          : 'Serpent 回收站中的全部资产将被永久删除。',
+          ? 'All assets currently in the Keel trash will be permanently deleted.'
+          : 'Keel 回收站中的全部资产将被永久删除。',
         detail: english
           ? 'This cannot be undone and the files will not go to the application trash.'
           : '此操作无法撤销，文件不会进入应用回收站。',
@@ -4524,10 +4524,10 @@ async function normalizeMcpCommandInput(input: {
 async function startApplication(): Promise<void> {
   // Serpent-tluf: the macOS About panel is customized here (ready-late is
   // fine for it); app.setName lives at module top level so the application
-  // menu's first item shows "Serpent" from the very first frame.
+  // menu's first item shows "Keel" from the very first frame.
   if (process.platform === "darwin") {
     app.setAboutPanelOptions({
-      applicationName: "Serpent",
+      applicationName: "Keel",
       applicationVersion: app.getVersion(),
     });
   }
@@ -4965,9 +4965,9 @@ async function startApplication(): Promise<void> {
       uiNotifyHandler: {
         notify: (input) => {
           if (!mainWindow || mainWindow.isDestroyed()) {
-            throw new Error('The Serpent window is not available to show a notification.');
+            throw new Error('The Keel window is not available to show a notification.');
           }
-          // Serpent review: ui.notify is strictly non-blocking (toast only);
+          // Keel review: ui.notify is strictly non-blocking (toast only);
           // the dialog mode was removed from the registry input schema.
           mainWindow.webContents.send(SHELL_NOTIFY_CHANNEL, {
             severity: input.severity,
@@ -5215,7 +5215,7 @@ async function startApplication(): Promise<void> {
   scriptRuntimeSupervisor = new ScriptRuntimeSupervisor({
     modulePath: path.join(__dirname, 'script_runtime_utility.js'),
     fork: (modulePath) => utilityProcess.fork(modulePath, [], {
-      serviceName: 'Serpent Script Runtime',
+      serviceName: 'Keel Script Runtime',
       stdio: 'pipe',
     }),
     logger,
@@ -5555,7 +5555,7 @@ async function startApplication(): Promise<void> {
   pluginRuntimeSupervisor = new PluginRuntimeSupervisor({
     modulePath: path.join(__dirname, 'plugin_standard_host.js'),
     fork: (modulePath) => utilityProcess.fork(modulePath, [], {
-      serviceName: 'Serpent Plugin Standard Host',
+      serviceName: 'Keel Plugin Standard Host',
       stdio: 'pipe',
     }),
     executeHostCommand: executePluginHostCommand,
@@ -5580,7 +5580,7 @@ async function startApplication(): Promise<void> {
   pluginTrustedRuntimeSupervisor = new PluginTrustedRuntimeSupervisor({
     modulePath: path.join(__dirname, 'plugin_trusted_host.js'),
     fork: (modulePath) => utilityProcess.fork(modulePath, [], {
-      serviceName: 'Serpent Plugin Trusted Host',
+      serviceName: 'Keel Plugin Trusted Host',
       stdio: 'pipe',
     }),
     executeHostCommand: executePluginHostCommand,
@@ -5799,7 +5799,7 @@ async function startApplication(): Promise<void> {
       }
     });
   } catch (error) {
-    // Serpent review: an unrecoverable MCP construction failure (e.g. the
+    // Keel review: an unrecoverable MCP construction failure (e.g. the
     // credential pepper ACL cannot be restricted on Windows) must disable the
     // MCP service, never the whole app — the settings IPC answers
     // MCP_SETTINGS_UNAVAILABLE while embeddedMcpServer stays undefined.
@@ -7124,7 +7124,7 @@ async function startApplication(): Promise<void> {
 // Serpent-tluf: must run before app ready — the macOS application menu's
 // first item always displays the application name, and a ready-late
 // setName is too late for it (dev otherwise shows "Electron").
-app.setName("Serpent");
+app.setName("Keel");
 
 if (!hasSingleInstanceLock) {
   app.quit();
@@ -7137,7 +7137,7 @@ if (!hasSingleInstanceLock) {
     .catch((error: unknown) => {
       logger?.error("main.startup", error);
       dialog.showErrorBox(
-        "Serpent could not start",
+        "Keel could not start",
         toPublicError(error).message,
       );
       app.quit();

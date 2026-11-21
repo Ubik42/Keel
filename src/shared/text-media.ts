@@ -52,7 +52,7 @@ export const TEXT_EXTENSIONS = [
 export const FORMAT_TEXT_TOKEN = "text";
 
 /**
- * Format-filter token for extensions Serpent does not classify
+ * Format-filter token for extensions Keel does not classify
  * (`detectMediaType` → `other`). Not an extension itself.
  */
 export const FORMAT_UNKNOWN_TOKEN = "unknown";
@@ -187,7 +187,7 @@ export function formatFilterHasTextToken(formatFilter: string): boolean {
   return formatFilterTokens(formatFilter).includes(FORMAT_TEXT_TOKEN);
 }
 
-/** True when the format field asks for types Serpent does not recognize. */
+/** True when the format field asks for types Keel does not recognize. */
 export function formatFilterHasUnknownToken(
   formatFilter: string | readonly string[],
 ): boolean {

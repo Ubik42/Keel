@@ -420,7 +420,7 @@ describe('Linked folder import', () => {
     const originalAsset = before[0]!;
     const originalRevisionId = originalAsset.currentRevisionId;
 
-    // External overwrite of the linked source file (not via Serpent).
+    // External overwrite of the linked source file (not via Keel).
     writeFileSync(path.join(sourceRoot, 'a.png'), 'aaaaaa');
 
     const refresh = service.refreshManagedAssets(created.libraryId);
@@ -923,7 +923,7 @@ describe('Linked folder import', () => {
       rules: disabledRules,
     });
 
-    // Add a new file externally (not through Serpent).
+    // Add a new file externally (not through Keel).
     writeFileSync(path.join(sourceRoot, 'c.png'), 'ccc');
 
     // Refresh should discover and register the new file.

@@ -108,7 +108,7 @@ export const internalLibrarySummarySchema = z.strictObject({
   displayName: nonBlankString,
   storageLayout: z.enum(['root', 'assets']).optional(),
   libraryPath: nonBlankString,
-  // Serpent-033e: the library was written by a newer Serpent build than the
+  // Serpent-033e: the library was written by a newer Keel build than the
   // running one. Desktop still opens it writable (additive schema; extra
   // columns/rows are ignored). libraryVersion/supportedSchemaVersion remain
   // for diagnostics. Inspection-only handles may still set readOnly.

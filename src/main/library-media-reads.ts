@@ -28,7 +28,7 @@ export function unblockLibraryMediaReads(libraryId: string): void {
 
 /**
  * Delete-from-disk must drop Chromium file handles before Worker `rm`.
- * The fence is request-scoped: Serpent ZIP import keeps the same
+ * The fence is request-scoped: Keel ZIP import keeps the same
  * `library_id`, so a leaked block 410s every `keel://` URL after the
  * user re-imports that library.
  */

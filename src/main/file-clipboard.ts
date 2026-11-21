@@ -2,7 +2,7 @@
  * OS file-path clipboard for Finder / Explorer interoperability (clarification #5).
  *
  * Electron 43 has no clipboard.writeFilePaths; we write/read platform pasteboard
- * formats so copied folders/files can paste outside Serpent and vice versa.
+ * formats so copied folders/files can paste outside Keel and vice versa.
  *
  * Renderer never sees absolute paths (REQ-COMMAND-003): Main only.
  */

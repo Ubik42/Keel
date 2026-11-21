@@ -1,5 +1,5 @@
 /**
- * Whether Serpent should generate or surface raster thumbnail failures for an
+ * Whether Keel should generate or surface raster thumbnail failures for an
  * asset. Text and unknown `other` formats show the generic file icon. Supported
  * image formats are categorized as `image` even when their preview must first
  * be derived by OIIO, so every supported image receives the same card and

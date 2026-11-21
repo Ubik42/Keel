@@ -290,7 +290,7 @@ function rebuildWindowsAcceleratorMenu(): void {
   ];
 
   Menu.setApplicationMenu(
-    Menu.buildFromTemplate([{ label: "Serpent", submenu }]),
+    Menu.buildFromTemplate([{ label: "Keel", submenu }]),
   );
   hideMenuBarOnAllWindows();
   menuInstalled = true;

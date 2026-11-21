@@ -65,7 +65,7 @@ function clampZoom(zoom: number): number {
  * scrollable column with pdfjs-dist (browser build). Pages keep their
  * aspect ratio, span the viewer width, and never flex-shrink into strips.
  *
- * Zoom/pan follows the image/video viewer interaction model (Serpent 工单):
+ * Zoom/pan follows the image/video viewer interaction model (Keel 工单):
  * - Cmd/Ctrl+= / - / 0 zoom at the viewport center, 0 resets to fit width
  *   (global-zoom-shortcuts, same chords as images/videos);
  * - Ctrl+wheel / pinch zooms; the plain wheel scrolls the column (page
@@ -315,7 +315,7 @@ export function PdfViewerSurface({
     const layoutNode = (element: HTMLElement, size: PdfPageSize) => {
       applyPdfPageBox(element, contentWidth(), size.width, size.height);
       // The wrap CSS pins width:100% to the viewport; an explicit width lets
-      // zoomed pages overflow and unlocks horizontal scrolling (Serpent P2).
+      // zoomed pages overflow and unlocks horizontal scrolling (Keel P2).
       element.style.width = `${Math.round(contentWidth())}px`;
       element.dataset.pdfPageWidth = String(size.width);
       element.dataset.pdfPageHeight = String(size.height);
@@ -403,7 +403,7 @@ export function PdfViewerSurface({
             // Render BEFORE mounting: swapping the placeholder for a wrap that
             // still holds a blank canvas flashes white. Rendering off-DOM and
             // replacing afterwards keeps the previous page visible until the
-            // crisp bitmap is ready (Serpent P2: no white flash on zoom).
+            // crisp bitmap is ready (Keel P2: no white flash on zoom).
             const renderTask = page.render({ canvas, canvasContext: context, viewport });
             renderTasks.add(renderTask);
             try {

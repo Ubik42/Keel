@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "name": "View Contract Probe",
   "description": "Records host view-contract messages for PLUGIN view E2E (Serpent-ex46.7).",
-  "author": "Serpent",
+  "author": "Keel",
   "license": "MIT",
   "engines": {
     "serpent": ">=0.1.0 <1.0.0",

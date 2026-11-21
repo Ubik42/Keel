@@ -50,7 +50,7 @@ export type KeelMcpCallToolFailure = {
     | PublicErrorCode
     | 'MCP_GATEWAY_FAILURE';
   message: string;
-  /** Serpent review: structured error contract (§10) — retryable + version. */
+  /** Keel review: structured error contract (§10) — retryable + version. */
   retryable?: boolean;
   currentVersion?: number;
   libraryId?: string;
@@ -125,7 +125,7 @@ export async function callSerpentMcpTool(
     // a real plugin tool would require; otherwise typoed calls get a
     // misleading target error and ordinary registry tools can be misclassified.
     if (!knownRegistryTool && !knownPluginTool) {
-      return { ok: false, code: 'MCP_TOOL_NOT_FOUND', message: `Unknown Serpent MCP tool: ${input.toolName}` };
+      return { ok: false, code: 'MCP_TOOL_NOT_FOUND', message: `Unknown Keel MCP tool: ${input.toolName}` };
     }
     if (knownRegistryTool && !knownPluginTool) {
       return { ok: false, code: 'MCP_TOOL_NOT_EXPOSED', message: `MCP tool ${input.toolName} is not enabled.` };
@@ -202,7 +202,7 @@ export async function callSerpentMcpTool(
     if (knownRegistryTool) {
       return { ok: false, code: 'MCP_TOOL_NOT_EXPOSED', message: `MCP tool ${input.toolName} is not enabled.` };
     }
-    return { ok: false, code: 'MCP_TOOL_NOT_FOUND', message: `Unknown Serpent MCP tool: ${input.toolName}` };
+    return { ok: false, code: 'MCP_TOOL_NOT_FOUND', message: `Unknown Keel MCP tool: ${input.toolName}` };
   }
 
   if (executionId === undefined || executionId.trim().length === 0) {
@@ -263,7 +263,7 @@ export async function callSerpentMcpTool(
       ok: false,
       code: gatewayError.code as KeelMcpCallToolFailure['code'],
       message: gatewayError.message ?? gatewayError.code,
-      // Serpent review: structured error contract (§10) — transient codes are
+      // Keel review: structured error contract (§10) — transient codes are
       // flagged retryable, entity-version conflicts carry the current version.
       ...(RETRYABLE_GATEWAY_CODES.has(gatewayError.code) ? { retryable: true } : {}),
       ...(gatewayError.currentEntityVersion === undefined

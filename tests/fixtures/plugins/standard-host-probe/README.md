@@ -1,3 +1,3 @@
 # Standard Host Probe
 
-Fixed Serpent plugin used by automated Host activation tests.
+Fixed Keel plugin used by automated Host activation tests.

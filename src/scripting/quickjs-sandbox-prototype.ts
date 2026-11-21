@@ -256,14 +256,14 @@ function assertSourceIsAllowed(source: string, fileName: string): void {
   const visit = (node: ts.Node): void => {
     if (rejected) return;
     if (ts.isImportDeclaration(node) || ts.isImportEqualsDeclaration(node) || ts.isExportDeclaration(node)) {
-      rejected = 'Modules are not available in Serpent scripts.';
+      rejected = 'Modules are not available in Keel scripts.';
       return;
     }
     if (
       ts.isCallExpression(node) &&
       node.expression.kind === ts.SyntaxKind.ImportKeyword
     ) {
-      rejected = 'Dynamic import is not available in Serpent scripts.';
+      rejected = 'Dynamic import is not available in Keel scripts.';
       return;
     }
     if (
@@ -271,11 +271,11 @@ function assertSourceIsAllowed(source: string, fileName: string): void {
       ts.isIdentifier(node.expression) &&
       (node.expression.text === 'eval' || node.expression.text === 'Function')
     ) {
-      rejected = 'Dynamic code construction is not available in Serpent scripts.';
+      rejected = 'Dynamic code construction is not available in Keel scripts.';
       return;
     }
     if (ts.isIdentifier(node) && node.text === 'globalThis') {
-      rejected = 'Global-object reflection is not available in Serpent scripts.';
+      rejected = 'Global-object reflection is not available in Keel scripts.';
       return;
     }
     if (
@@ -285,7 +285,7 @@ function assertSourceIsAllowed(source: string, fileName: string): void {
       'asteriskToken' in node &&
       node.asteriskToken
     ) {
-      rejected = 'Async generators are not available in Serpent scripts.';
+      rejected = 'Async generators are not available in Keel scripts.';
       return;
     }
     ts.forEachChild(node, visit);

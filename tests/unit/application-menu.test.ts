@@ -314,10 +314,10 @@ describe("macOS product menu mirror (Serpent-q0b1)", () => {
     };
     walk(template);
     expect(keys.length).toBeGreaterThan(0);
-    // No custom item may carry a hardcoded display label — the Serpent app
+    // No custom item may carry a hardcoded display label — the Keel app
     // menu name is the only hardcoded label (brand name is not localized).
     const hardcodedLabels = template.filter((item) => typeof item.label === "string");
-    expect(hardcodedLabels.map((item) => item.label)).toEqual(["Serpent"]);
+    expect(hardcodedLabels.map((item) => item.label)).toEqual(["Keel"]);
     // Every key resolves in BOTH catalogs (zh primary, en fallback).
     for (const key of keys) {
       expect(lookupMessage(zhCN, key), `zh key ${key}`).toBeDefined();

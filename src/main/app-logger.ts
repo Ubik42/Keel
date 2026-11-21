@@ -158,7 +158,7 @@ export class AppLogger {
       appendFileSync(this.filePath, line);
     } catch (error) {
       // Logging must not replace the primary application failure.
-      console.error('Serpent could not write its application log.', error);
+      console.error('Keel could not write its application log.', error);
     }
     if (this.mirrorPath) {
       try {

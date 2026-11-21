@@ -16,7 +16,7 @@ export interface UseBatchActionsParams {
   setError: (msg: string | null) => void;
   reloadCurrentContent: () => Promise<void>;
   /**
-   * Serpent-关联刷新: remove the deleted asset ids from the visible list and
+   * Keel-关联刷新: remove the deleted asset ids from the visible list and
    * adjust scope counts locally, deferring the expensive full reload to the
    * background. Deleting a linked asset used to wait for a whole searchAssets
    * round trip (~10s on large libraries) before the card disappeared.

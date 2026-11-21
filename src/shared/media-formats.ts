@@ -1,7 +1,7 @@
 /**
  * Product-level media format registry.
  *
- * An extension appearing here means Serpent has an owned thumbnail/preview
+ * An extension appearing here means Keel has an owned thumbnail/preview
  * path for it. It deliberately does not mean that Chromium can play or render
  * the original file directly; the Worker selects a derivative where needed.
  */

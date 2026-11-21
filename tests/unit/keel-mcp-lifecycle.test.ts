@@ -12,7 +12,7 @@ import type { WorkerResult } from '../../src/shared/protocol/responses';
 import { mcpContext, writeExposure } from './keel-mcp-test-fixtures';
 
 /**
- * Serpent 接管（另一个 agent 的 MCP 生命周期 WIP）：新命令的执行层覆盖。
+ * Keel 接管（另一个 agent 的 MCP 生命周期 WIP）：新命令的执行层覆盖。
  * 每个命令验证：MCP 工具暴露 + 输入经 gateway 路由到正确的 worker 命令。
  * Worker 结果用各命令 workerResultSchema 的最小合法 shape。
  */

@@ -207,7 +207,7 @@ export function createGltfModelBytes(index: number): Buffer {
 }
 
 export function createTextBytes(index: number, extension: string): Buffer {
-  const body = `Serpent large-library ${index}\nseed-token line\n`;
+  const body = `Keel large-library ${index}\nseed-token line\n`;
   if (extension === 'json') {
     return Buffer.from(`${JSON.stringify({ index, kind: 'text', body }, null, 2)}\n`, 'utf8');
   }

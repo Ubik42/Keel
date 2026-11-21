@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "name": "UI Descriptor Probe",
   "description": "Fixture for the Host-rendered Plugin UI Contract v1.",
-  "author": "Serpent Tests",
+  "author": "Keel Tests",
   "license": "MIT",
   "engines": {
     "serpent": ">=0.2.0 <1.0.0",

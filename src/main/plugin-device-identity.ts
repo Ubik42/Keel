@@ -8,7 +8,7 @@ export const PLUGIN_DEVICE_ID_FILE_NAME = 'plugin-device-id';
 const DEVICE_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/iu;
 
 /**
- * Returns a stable identifier for this local Serpent profile. A corrupt or
+ * Returns a stable identifier for this local Keel profile. A corrupt or
  * missing value gets replaced, intentionally invalidating local trust rather
  * than sharing it through a resource library.
  */

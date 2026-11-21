@@ -2,7 +2,7 @@
  * Application menu template without Electron page-zoom roles (Serpent-46i9).
  *
  * Electron's default View menu registers zoomIn / zoomOut / resetZoom with
- * Cmd/Ctrl+=,-,0. Those accelerators steal the chords from Serpent's own
+ * Cmd/Ctrl+=,-,0. Those accelerators steal the chords from Keel's own
  * viewer/canvas zoom and would apply Chromium page zoom instead. This
  * template keeps Edit/File/Window roles (copy/paste, quit, …) and a View
  * submenu that intentionally omits page-zoom roles.
@@ -86,7 +86,7 @@ export type ApplicationMenuCommand =
   | "library.show-missing-linked"
   | "window.background-jobs"
   | "window.diagnostics"
-  | "about.serpent"
+  | "about.keel"
   | "about.github"
   | "about.open-source"
   | "about.diagnostics"
@@ -116,7 +116,7 @@ export type ApplicationMenuItemTemplate = {
    */
   readonly labelKey?: string;
   readonly submenu?: readonly ApplicationMenuItemTemplate[];
-  /** Custom Serpent command (wired in Main when installing the menu). */
+  /** Custom Keel command (wired in Main when installing the menu). */
   readonly command?: ApplicationMenuCommand;
   /** Literal display label; when set it wins over `labelKey`. */
   readonly labelValue?: string;
@@ -228,9 +228,9 @@ export function buildApplicationMenuTemplate(
   ];
 
   const macAppMenu: ApplicationMenuItemTemplate = {
-    label: "Serpent",
+    label: "Keel",
     submenu: [
-      { role: "about", labelKey: "shell.mainMenuAboutSerpent" },
+      { role: "about", labelKey: "shell.mainMenuAboutKeel" },
       { type: "separator" },
       { role: "services", labelKey: "shell.mainMenuServices" },
       { type: "separator" },
@@ -359,7 +359,7 @@ export function buildApplicationMenuTemplate(
 
   const helpSubmenu: ApplicationMenuItemTemplate[] = isMac
     ? [
-        commandItem("about.serpent", "shell.mainMenuAboutSerpent"),
+        commandItem("about.keel", "shell.mainMenuAboutKeel"),
         commandItem("about.github", "shell.mainMenuVisitGitHub"),
         commandItem("about.open-source", "shell.mainMenuOpenSource"),
         commandItem("about.diagnostics", "settings.viewDiagnostics"),

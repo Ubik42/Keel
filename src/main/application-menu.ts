@@ -145,7 +145,7 @@ function enrichMenuTemplate(
     if (item.submenu) {
       return {
         ...item,
-        // Serpent review: keep hardcoded brand labels ("Serpent" app menu)
+        // Keel review: keep hardcoded brand labels ("Keel" app menu)
         // when the item carries no labelKey.
         label: resolvedLabel ?? item.labelValue ?? item.label,
         submenu: enrichMenuTemplate(item.submenu, locale),
@@ -161,7 +161,7 @@ function enrichMenuTemplate(
 }
 
 /**
- * Install Serpent's application menu (no page-zoom accelerator roles).
+ * Install Keel's application menu (no page-zoom accelerator roles).
  * Call once during app ready so macOS defaults cannot steal
  * Cmd/Ctrl+=,-,0 from renderer zoom shortcuts (Serpent-46i9).
  *

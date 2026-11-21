@@ -11,7 +11,7 @@ export interface CreateDialogProps {
   open: boolean;
   /**
    * Serpent-kipk: `start` is the no-library surface; `form` is the name
-   * prompt for creating a Serpent library; `eagle`/`billfish` are the same
+   * prompt for creating a Keel library; `eagle`/`billfish` are the same
    * name prompt after a validated external source, before choosing the save
    * location.
    */

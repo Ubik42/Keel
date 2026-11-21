@@ -32,7 +32,7 @@ export interface CanvasPreferences {
     /** WebDAV sync mark on the thumbnail corner (Serpent-871f34). */
     readonly badgeSync: boolean;
   };
-  /** Audio assets play in-place on hover (Serpent hover 音频). */
+  /** Audio assets play in-place on hover (Keel hover 音频). */
   readonly hoverAudioPlay: boolean;
   /** Video hover preview plays sound (off by default to avoid noise). */
   readonly hoverVideoSound: boolean;

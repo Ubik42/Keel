@@ -171,7 +171,7 @@ export const semverRangeSchema = z.string().min(1).max(256).superRefine((value, 
   if (!isValidSemverRange(value)) {
     context.addIssue({
       code: 'custom',
-      message: 'Serpent engine ranges use explicit SemVer comparators (for example >=0.2.0 <1.0.0).',
+      message: 'Keel engine ranges use explicit SemVer comparators (for example >=0.2.0 <1.0.0).',
     });
   }
 });

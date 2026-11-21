@@ -24,8 +24,8 @@ function restoreMainWindow(getMainWindow: WindowsTrayOptions["getMainWindow"]): 
 
 function menuLabels(locale: AppLocale): { show: string; quit: string } {
   return locale === "zh-CN"
-    ? { show: "显示 Serpent", quit: "退出 Serpent" }
-    : { show: "Show Serpent", quit: "Quit Serpent" };
+    ? { show: "显示 Keel", quit: "退出 Keel" }
+    : { show: "Show Keel", quit: "Quit Keel" };
 }
 
 /**
@@ -42,7 +42,7 @@ export function createWindowsTray(
   if (!image) return undefined;
 
   const tray = new Tray(image.resize({ width: 16, height: 16 }));
-  tray.setToolTip("Serpent");
+  tray.setToolTip("Keel");
 
   const rebuildMenu = (locale: AppLocale): void => {
     const labels = menuLabels(locale);

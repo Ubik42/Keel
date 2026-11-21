@@ -129,7 +129,7 @@ test("a font asset renders a card sample and a viewer preview with real glyphs",
       if (!context) return -1;
       context.fillStyle = "#000";
       context.font = `48px "${family}"`;
-      context.fillText("Serpent", 4, 60);
+      context.fillText("Keel", 4, 60);
       const data = context.getImageData(0, 0, canvas.width, canvas.height).data;
       let painted = 0;
       for (let index = 3; index < data.length; index += 4) {
@@ -252,8 +252,8 @@ test("a font asset renders a card sample and a viewer preview with real glyphs",
     const textField = window.getByLabel("预览文字");
     const resetButton = window.getByRole("button", { name: "恢复默认文字" });
     await expect(resetButton).toBeDisabled();
-    await textField.fill("Serpent 字体");
-    await expect(specimenRows.first()).toHaveText("Serpent 字体");
+    await textField.fill("Keel 字体");
+    await expect(specimenRows.first()).toHaveText("Keel 字体");
     await expect(resetButton).toBeEnabled();
     // 切到德文是德文默认文案，切回英文仍是刚才输入的文字（按语言持久化）。
     await languageSelect.click();
@@ -261,7 +261,7 @@ test("a font asset renders a card sample and a viewer preview with real glyphs",
     await expect(specimenRows.first()).toContainText("Schrift Vorschau");
     await languageSelect.click();
     await window.getByRole("option", { name: "英文" }).click();
-    await expect(specimenRows.first()).toHaveText("Serpent 字体");
+    await expect(specimenRows.first()).toHaveText("Keel 字体");
     // 撤回：回到该语言的默认文字。
     await resetButton.click();
     await expect(specimenRows.first()).toContainText("AaBbCc");

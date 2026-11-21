@@ -38,7 +38,7 @@ function httpStatusToErrorKind(
  * Alibaba Cloud Model Studio's native DashScope multimodal transport.
  *
  * The response is still a JSON HTTP envelope, but the model result is a
- * JSON-object text value. That portable result is validated by Serpent's
+ * JSON-object text value. That portable result is validated by Keel's
  * existing domain schema before an asset can be written.
  */
 export class DashScopeVendorAdapter implements VendorAdapter {

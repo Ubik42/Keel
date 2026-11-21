@@ -58,7 +58,7 @@ describe("LibraryLoadingOverlay", () => {
     expect(html).toContain("取消打开");
     expect(html).toContain('role="progressbar"');
     expect(html).not.toContain("进度");
-    expect(html).not.toContain("Serpent 正在");
+    expect(html).not.toContain("Keel 正在");
   });
 
   it("lets the user choose another library without dismissing the load", async () => {
@@ -83,6 +83,6 @@ describe("LibraryLoadingOverlay", () => {
     expect(html).toContain("正在删除“示例资源库”资源库");
     expect(html).toContain('role="progressbar"');
     expect(html).not.toContain("取消打开");
-    expect(html).not.toContain("Serpent 正在");
+    expect(html).not.toContain("Keel 正在");
   });
 });

@@ -2236,7 +2236,7 @@ describe('processThumbnailQueue', () => {
 
     const failed = mediaJobOfKind(service, created.libraryId, 'generate_thumbnail')!;
     expect(failed.status).toBe('failed');
-    expect(failed.errorDetail).toContain('local Serpent log');
+    expect(failed.errorDetail).toContain('local Keel log');
     expect(failed.errorDetail).not.toContain(root);
     const diagnosticError = (diagnostics[0] as { error?: Error } | undefined)?.error;
     expect(diagnosticError).toBeInstanceOf(Error);

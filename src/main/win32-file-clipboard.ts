@@ -1,10 +1,10 @@
 /**
- * Windows native CF_HDROP clipboard writer (Serpent 新工单4 / PureRef).
+ * Windows native CF_HDROP clipboard writer (Keel 新工单4 / PureRef).
  *
  * Electron's `clipboard.writeBuffer('CF_HDROP', …)` registers a *custom*
  * format named "CF_HDROP" (RegisterClipboardFormat) instead of the predefined
  * CF_HDROP (ID 15) that Explorer/PureRef/Get-Clipboard -Format FileDropList
- * read — assets copied from Serpent were invisible to external apps. This
+ * read — assets copied from Keel were invisible to external apps. This
  * module calls the Win32 clipboard API directly via koffi (pure NAPI, no
  * native build) so the standard CF_HDROP + CF_UNICODETEXT payloads land on
  * the real formats, matching what Explorer writes when you copy files.

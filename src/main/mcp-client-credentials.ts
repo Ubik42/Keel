@@ -139,7 +139,7 @@ export function buildPepperFileAclArgs(filename: string, userSid: string): strin
   return [filename, '/inheritance:r', '/grant:r', `*${userSid}:F`];
 }
 
-/** Preserve existing ACL entries and add access for the user now running Serpent. */
+/** Preserve existing ACL entries and add access for the user now running Keel. */
 export function buildPepperFileAccessRepairArgs(filename: string, userSid: string): string[] {
   return [filename, '/grant:r', `*${userSid}:F`];
 }
@@ -377,7 +377,7 @@ export class McpClientCredentialStore {
     const record = this.findByToken(token);
     if (record === undefined || record.revokedAt !== null) return undefined;
     record.lastUsedAt = new Date().toISOString();
-    // Serpent review: a chatty agent would otherwise rewrite the whole file
+    // Keel review: a chatty agent would otherwise rewrite the whole file
     // on every request; coalesce lastUsedAt updates into one write.
     if (this.#persistTimer === undefined) {
       this.#persistTimer = setTimeout(() => {

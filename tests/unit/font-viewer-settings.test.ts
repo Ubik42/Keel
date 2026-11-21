@@ -25,7 +25,7 @@ describe("font viewer settings", () => {
       const text = defaultFontViewerText(language);
       expect(text.length).toBeGreaterThan(0);
       // 每个语言都要有拉丁字母、数字与同一套符号（9 个，满足「常用符号 <= 10」）。
-      expect(text).toContain("Serpent");
+      expect(text).toContain("Keel");
       expect(text).toContain("0123");
       expect(text).toContain("!?.;:@&%#");
       expect(text.match(/[!?.;:@&%#]/gu) ?? []).toHaveLength(9);
@@ -34,11 +34,11 @@ describe("font viewer settings", () => {
       expect(text).not.toContain("永字八法");
     }
     // 用户点名的中文示例原文。
-    expect(defaultFontViewerText("zh-Hans")).toBe("字体文字预览 Serpent 0123 !?.;:@&%#");
-    expect(defaultFontViewerText("zh-Hant")).toBe("字型文字預覽 Serpent 0123 !?.;:@&%#");
+    expect(defaultFontViewerText("zh-Hans")).toBe("字体文字预览 Keel 0123 !?.;:@&%#");
+    expect(defaultFontViewerText("zh-Hant")).toBe("字型文字預覽 Keel 0123 !?.;:@&%#");
     expect(defaultFontViewerText("ja")).toContain("フォント文字プレビュー");
     expect(defaultFontViewerText("ko")).toContain("폰트 문자 미리보기");
-    expect(defaultFontViewerText("en")).toBe("AaBbCc 0123 Serpent !?.;:@&%#");
+    expect(defaultFontViewerText("en")).toBe("AaBbCc 0123 Keel !?.;:@&%#");
     // 常见欧洲语言（用户要求支持德语/法语/西班牙语等）。
     expect(defaultFontViewerText("de")).toContain("Schrift Vorschau");
     expect(defaultFontViewerText("fr")).toContain("Aperçu de police");

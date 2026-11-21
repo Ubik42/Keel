@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { createSerpentGuestApi } from '../../src/scripting/keel-guest-api';
 
-describe('Serpent Guest API library scopes', () => {
+describe('Keel Guest API library scopes', () => {
   it('creates an immutable forLibrary scope without changing ambient calls', async () => {
     const executeCommand = vi.fn(async () => ({ items: [] }));
     const serpent = createSerpentGuestApi({ executeCommand });

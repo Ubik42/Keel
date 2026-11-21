@@ -1,4 +1,4 @@
-// Serpent 新工单4: Windows CF_HDROP 剪贴板 — PureRef 等外部应用可粘贴。
+// Keel 新工单4: Windows CF_HDROP 剪贴板 — PureRef 等外部应用可粘贴。
 // Electron writeBuffer('CF_HDROP') 注册的是同名自定义格式，Explorer/PureRef
 // 读标准 CF_HDROP(ID 15) 读不到；win32-file-clipboard 用 koffi 直调 Win32 API。
 // 本测试用 PowerShell Get-Clipboard -Format FileDropList 验证（与 Explorer

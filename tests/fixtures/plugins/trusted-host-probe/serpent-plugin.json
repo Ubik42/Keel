@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "name": "Trusted Host Probe",
   "description": "Fixed test plugin that activates through the trusted Node Host and writes namespaced storage.",
-  "author": "Serpent",
+  "author": "Keel",
   "license": "MIT",
   "engines": {
     "serpent": ">=0.1.0 <1.0.0",

@@ -109,7 +109,7 @@ export function colorSpaceInfoFromName(
 
 export function defaultImageColorSpace(extension: string): ImageColorSpaceInfo {
   const normalized = extension.toLowerCase();
-  // OpenEXR stores scene-referred floating point values. Existing Serpent
+  // OpenEXR stores scene-referred floating point values. Existing Keel
   // previews intentionally use the same default for TGA to preserve the
   // established OIIO route until a file profile says otherwise.
   const id = normalized === '.exr' || normalized === '.tga'

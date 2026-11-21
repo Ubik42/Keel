@@ -282,7 +282,7 @@ export class LibraryWorkerClient {
     // the process that owns SQLite and the filesystem. Never set in production.
     const inspectPort = process.env.KEEL_WORKER_INSPECT;
     const child = utilityProcess.fork(this.#modulePath, [], {
-      serviceName: 'Serpent Library Worker',
+      serviceName: 'Keel Library Worker',
       stdio: 'pipe',
       ...(inspectPort && /^\d+$/.test(inspectPort)
         ? { execArgv: [`--inspect=127.0.0.1:${inspectPort}`] }

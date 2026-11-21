@@ -69,7 +69,7 @@ export type LibrarySwitcherProps = {
   libraryName: string | null;
   disabled?: boolean;
   onCreateLibrary: () => void;
-  /** Opens the open-library chooser (existing Serpent + third-party + sync). */
+  /** Opens the open-library chooser (existing Keel + third-party + sync). */
   onOpenLibrary: () => void;
   /** @deprecated Kept for callers while the library menu is consolidated. */
   onCloseLibrary: () => void;

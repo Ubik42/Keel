@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "name": "Preview Thumbnail Probe",
   "description": "Returns deterministic bounded PNG bytes for .probe assets.",
-  "author": "Serpent",
+  "author": "Keel",
   "license": "MIT",
   "engines": {
     "serpent": ">=0.1.0 <1.0.0",

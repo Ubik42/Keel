@@ -39,11 +39,11 @@ describe("resolveAppIconCandidates", () => {
         cwd: "/workspace/Serpent",
         isPackaged: true,
         platform: "win32",
-        resourcesPath: "C:\\Serpent\\resources",
+        resourcesPath: "C:\\Keel\\resources",
       }),
     ).toEqual([
-      path.join("C:\\Serpent\\resources", "app.png"),
-      path.join("C:\\Serpent\\resources", "app.ico"),
+      path.join("C:\\Keel\\resources", "app.png"),
+      path.join("C:\\Keel\\resources", "app.ico"),
     ]);
   });
 });

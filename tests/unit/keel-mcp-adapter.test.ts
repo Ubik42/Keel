@@ -87,7 +87,7 @@ class RecordingWorker implements AutomationWorkerClient {
   }
 }
 
-describe('Serpent MCP tool catalog', () => {
+describe('Keel MCP tool catalog', () => {
   it('lists requestable Registry tools even when ordinary write permissions are still ask-on-call', () => {
     const listed = listSerpentMcpTools(readExposure);
     expect(listed.apiVersion).toBe(1);
@@ -144,7 +144,7 @@ describe('Serpent MCP tool catalog', () => {
   });
 });
 
-describe('Serpent MCP tools/call → Gateway', () => {
+describe('Keel MCP tools/call → Gateway', () => {
   it('routes a public tool through the Gateway with source mcp', async () => {
     const worker = new RecordingWorker({
       ok: true,
@@ -461,7 +461,7 @@ describe('Serpent MCP tools/call → Gateway', () => {
   });
 });
 
-describe('Serpent MCP dangerous two-phase challenge (Serpent-8b5b.2)', () => {
+describe('Keel MCP dangerous two-phase challenge (Serpent-8b5b.2)', () => {
   function dangerousGateway(worker: RecordingWorker) {
     return createAutomationCommandGateway(worker, resolver(), {
       permissionBroker: createTestPermissionBroker(),
@@ -569,7 +569,7 @@ describe('Serpent MCP dangerous two-phase challenge (Serpent-8b5b.2)', () => {
   });
 });
 
-describe('Serpent MCP permission profiles through the gateway (Serpent-8b5b.8)', () => {
+describe('Keel MCP permission profiles through the gateway (Serpent-8b5b.8)', () => {
   function profileGateway(worker: RecordingWorker, mode: 'auto' | 'full-access') {
     const index = mode === 'auto' ? 0 : 2;
     const credentialId = profileCredentials[index]!;
@@ -640,7 +640,7 @@ function writeResolver(extraCapabilities: readonly AutomationCapability[]): Auto
   };
 }
 
-describe('Serpent MCP jobs, idempotency and reconnect (Serpent-8b5b.4)', () => {
+describe('Keel MCP jobs, idempotency and reconnect (Serpent-8b5b.4)', () => {
   it('cancels media jobs by id and reports the cancelled count', async () => {
     const worker = new RecordingWorker({
       ok: true,

@@ -15,7 +15,7 @@ export function isCardHoverPreviewable(asset: {
   // request client preview (that stacks a second layer and flickers).
   if (asset.sequence && asset.sequence.frameCount >= 3) return false;
   if (asset.mediaType === "video") return true;
-  // Audio plays in-place on hover (Serpent hover 音频工单).
+  // Audio plays in-place on hover (Keel hover 音频工单).
   if (asset.mediaType === "audio") return true;
   return fileExtensionLabel(asset.displayName) === "GIF";
 }
@@ -164,7 +164,7 @@ export function resolveLivePreviewMedia(
 }
 
 /**
- * Video hover preview muted state (Serpent hover 音频工单): sound only plays
+ * Video hover preview muted state (Keel hover 音频工单): sound only plays
  * while the pointer is actually hovering and the preference is on; primary
  * selection keeps the silent preview, and the viewer's own mute wins always.
  */

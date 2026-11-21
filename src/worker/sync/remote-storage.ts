@@ -3,7 +3,7 @@
  *
  * 同步编排层只依赖这里的文件语义（list/read/write/delete/mkdir/move/
  * exists + 能力探测），与具体协议无关。WebDAV 是第一个实现；未来可
- * 增加 S3 兼容存储或 Serpent Cloud。所有 path 为以库目录为根的
+ * 增加 S3 兼容存储或 Keel Cloud。所有 path 为以库目录为根的
  * portable 相对路径（`/` 分隔、不以 `/` 开头）。
  */
 

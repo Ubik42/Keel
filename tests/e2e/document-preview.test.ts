@@ -182,7 +182,7 @@ test("opens a multi-page PDF with one rendered wrap per page, no placeholder lef
   }
 });
 
-test("zooms the PDF viewer via toolbar and Ctrl+wheel, pans by drag (Serpent P2 工单)", async () => {
+test("zooms the PDF viewer via toolbar and Ctrl+wheel, pans by drag (Keel P2 工单)", async () => {
   const temporaryRoot = mkdtempSync(path.join(tmpdir(), "serpent-pdf-zoom-e2e-"));
   const libraryName = "PDF 缩放验收";
   const libraryPath = path.join(temporaryRoot, libraryName);
@@ -396,7 +396,7 @@ test("opens an HTML asset in the embedded browser viewer (Serpent-8ca259)", asyn
   const htmlSourcePath = path.join(temporaryRoot, "page.html");
   writeFileSync(
     htmlSourcePath,
-    '<!doctype html><html><head><style>body{background:#123456;color:#fff;font-family:sans-serif}</style></head><body><h1 id="serpent-html-marker">Serpent HTML Preview</h1></body></html>',
+    '<!doctype html><html><head><style>body{background:#123456;color:#fff;font-family:sans-serif}</style></head><body><h1 id="serpent-html-marker">Keel HTML Preview</h1></body></html>',
   );
 
   const executablePath = resolveElectronExecutablePath();
@@ -433,7 +433,7 @@ test("opens an HTML asset in the embedded browser viewer (Serpent-8ca259)", asyn
     // (cross-origin safe) to reach the embedded document's marker element.
     const frame = window.frameLocator(".html-viewer-iframe");
     await expect(frame.locator("#serpent-html-marker")).toBeVisible({ timeout: 20_000 });
-    await expect(frame.locator("#serpent-html-marker")).toHaveText("Serpent HTML Preview");
+    await expect(frame.locator("#serpent-html-marker")).toHaveText("Keel HTML Preview");
   } finally {
     await application.close();
     rmSync(temporaryRoot, { recursive: true, force: true });

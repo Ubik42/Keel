@@ -126,7 +126,7 @@ async function loadReadyThumbnail(
 
 /**
  * Builds a bounded upload for cloud analysis from the source file when sharp
- * can decode it; otherwise falls back to Serpent's thumbnail derivative and
+ * can decode it; otherwise falls back to Keel's thumbnail derivative and
  * re-encodes it under the same edge cap. Never uploads an unbounded original.
  */
 export async function loadAiImageInput(

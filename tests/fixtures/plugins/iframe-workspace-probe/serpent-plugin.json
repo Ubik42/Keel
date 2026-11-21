@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "name": "Iframe Workspace Probe",
   "description": "Fixed sandboxed workspace iframe fixture for PLUGIN-016.",
-  "author": "Serpent",
+  "author": "Keel",
   "license": "MIT",
   "engines": {
     "serpent": ">=0.1.0 <1.0.0",

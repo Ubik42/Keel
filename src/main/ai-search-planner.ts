@@ -172,12 +172,12 @@ const GEMINI_AI_SEARCH_PLAN_SCHEMA = {
   },
 } as const;
 
-const SYSTEM_PROMPT = `You translate a user's natural-language request into a Serpent digital-asset search plan.
+const SYSTEM_PROMPT = `You translate a user's natural-language request into a Keel digital-asset search plan.
 Return only the required structured object. Never output SQL, code, filesystem paths, IDs, or new operators.
 Use concise literal keywords. Put related alternative terms in synonyms and unwanted concepts in exclusions.
 Allowed categorical filters: format, tag, rating (0-5 strings), favorite/source_url (empty values means presence), availability (available or missing).
 Allowed numeric filters: width/height in pixels, aspect_ratio as a positive ratio, duration_ms in milliseconds. Numeric filters use ranges; categorical filters use values. Unused arrays must be empty.
-Only add a sort when the user explicitly asks for ordering. The ordinary parameterized Serpent search engine will execute the plan.`;
+Only add a sort when the user explicitly asks for ordering. The ordinary parameterized Keel search engine will execute the plan.`;
 
 type Fetch = typeof globalThis.fetch;
 
@@ -356,7 +356,7 @@ function providerRequest(
       messages: [{ role: 'user', content: input.naturalQuery }],
       tools: [{
         name: 'keel_prepare_search',
-        description: 'Prepare a constrained Serpent search plan.',
+        description: 'Prepare a constrained Keel search plan.',
         input_schema: AI_SEARCH_PLAN_JSON_SCHEMA,
       }],
       tool_choice: { type: 'tool', name: 'keel_prepare_search' },

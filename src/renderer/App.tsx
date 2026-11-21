@@ -7649,7 +7649,7 @@ function AppInner() {
     });
   }
 
-  // Serpent-关联刷新: asset/folder deletions must clear cards immediately
+  // Keel-关联刷新: asset/folder deletions must clear cards immediately
   // instead of waiting for a full searchAssets round trip (~10s on large
   // libraries). Remove ids locally, adjust scope counts, and quietly
   // re-reconcile once in the background (derived sidebar/folder data stays
@@ -7673,7 +7673,7 @@ function AppInner() {
       setTrashedAssets((current) => removeAssetIdsLocally(current, removed));
       setSearchTotal((current) => decrementScopeCount(current, removedCount));
       setAllAssetCount((current) => Math.max(0, current - removedCount));
-      // Serpent-关联刷新: fold the deletion into the pagination bookkeeping so
+      // Keel-关联刷新: fold the deletion into the pagination bookkeeping so
       // an in-flight append cannot resurrect the removed rows.
       const restoreBrowseState = removeLocallyFromBrowse(assetIds, removedCount);
       if (deferredReconcileTimerRef.current !== undefined) {
@@ -11004,7 +11004,7 @@ function AppInner() {
         scheduleSilentReload();
         return;
       }
-      // Serpent-关联刷新: batch mutations (delete/trash/relink) broadcast one
+      // Keel-关联刷新: batch mutations (delete/trash/relink) broadcast one
       // asset.changed per asset — debounce so a 500-asset delete triggers one
       // reconcile instead of 500 queued full reloads. Local removal already
       // cleared the cards; this reload only reconciles derived data.
@@ -12955,7 +12955,7 @@ function AppInner() {
         ? t("shell.mainMenuRedo")
         : t("shell.mainMenuRedoCount", { count: operationHistory.redoTop.affectedCount }),
     );
-    // Serpent-接管: the native menu accelerator must NOT intercept Cmd/Ctrl+Z
+    // Keel-接管: the native menu accelerator must NOT intercept Cmd/Ctrl+Z
     // while a text field is focused — Chromium's native text undo/redo would
     // be swallowed. The item is only enabled for the business history outside
     // editable text (which is also what the in-app menu labels advertise).
@@ -12979,7 +12979,7 @@ function AppInner() {
     );
   }, [busy, dialogFocusTrapActive, editableTextFocused, operationHistory, shellApi, t]);
 
-  // Serpent-接管: Windows has no native menu bar (its accelerators are gone),
+  // Keel-接管: Windows has no native menu bar (its accelerators are gone),
   // so the business undo/redo shortcuts live in the renderer. A focused text
   // field keeps Ctrl+Z/Ctrl+Shift+Z for Chromium's native text undo/redo.
   useEffect(() => {
@@ -14473,7 +14473,7 @@ function AppInner() {
                           // Electron's supported path is an asynchronous
                           // one-way IPC from dragstart. A synchronous round
                           // trip deadlocks when this native file drag returns
-                          // to Serpent as a drop. The OS drag carries Files,
+                          // to Keel as a drop. The OS drag carries Files,
                           // so the canvas must not treat it as an import.
                           beginInternalAssetDrag();
                           event.preventDefault();

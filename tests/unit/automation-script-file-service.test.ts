@@ -21,7 +21,7 @@ function root(): string {
 }
 
 describe('AutomationScriptFileService', () => {
-  it('opens a user-selected Serpent script without exposing its path and binds its handle to the sender and exact source', async () => {
+  it('opens a user-selected Keel script without exposing its path and binds its handle to the sender and exact source', async () => {
     const directory = root();
     const filename = path.join(directory, 'rating.keel.ts');
     const source = "return await serpent.assets.search({ query: 'name:Ser' });";

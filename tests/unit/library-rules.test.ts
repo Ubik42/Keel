@@ -46,7 +46,7 @@ describe('library name rules', () => {
 
 describe('library path rules', () => {
   it('accepts an absolute path and derives a child target', () => {
-    const parentPath = path.resolve('/tmp', 'Serpent tests');
+    const parentPath = path.resolve('/tmp', 'Keel tests');
     expect(normalizeAbsolutePath(parentPath)).toBe(path.normalize(parentPath));
     expect(targetLibraryPath(parentPath, 'Concept Art')).toBe(
       path.join(parentPath, 'Concept Art'),
@@ -54,7 +54,7 @@ describe('library path rules', () => {
   });
 
   it('strips trailing separators so Windows folder-picker paths still join (Serpent-sq4i)', () => {
-    const parentPath = path.resolve('/tmp', 'Serpent tests');
+    const parentPath = path.resolve('/tmp', 'Keel tests');
     const withTrailing = `${parentPath}${path.sep}`;
     expect(stripTrailingPathSeparators(withTrailing)).toBe(parentPath);
     expect(normalizeAbsolutePath(withTrailing)).toBe(path.normalize(parentPath));

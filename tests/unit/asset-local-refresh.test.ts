@@ -14,7 +14,7 @@ function row(assetId: string, name = assetId): Row {
   return { assetId, name };
 }
 
-describe("removeAssetIdsLocally (Serpent-关联刷新)", () => {
+describe("removeAssetIdsLocally (Keel-关联刷新)", () => {
   it("removes only the requested ids and keeps order", () => {
     const assets = [row("a"), row("b"), row("c"), row("d")];
     expect(
@@ -35,7 +35,7 @@ describe("removeAssetIdsLocally (Serpent-关联刷新)", () => {
   });
 });
 
-describe("decrementScopeCount (Serpent-关联刷新)", () => {
+describe("decrementScopeCount (Keel-关联刷新)", () => {
   it("subtracts and clamps at zero", () => {
     expect(decrementScopeCount(10, 3)).toBe(7);
     expect(decrementScopeCount(2, 5)).toBe(0);

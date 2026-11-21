@@ -14,7 +14,7 @@ test.describe.configure({ timeout: 180_000 });
 /**
  * Serpent-95d532: switching libraries must release the previous library's
  * SQLite handle (and its watches) on Windows — otherwise the previous
- * library.db cannot be moved or deleted while Serpent keeps running.
+ * library.db cannot be moved or deleted while Keel keeps running.
  *
  * The probe is file-level on purpose: rename fails EBUSY/EPERM while a handle
  * is held, and deleting the whole library folder also covers leftover watcher

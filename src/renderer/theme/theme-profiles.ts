@@ -3432,7 +3432,7 @@ export const THEME_PROFILE_PRESETS: Readonly<
 > = {
   serpent: {
     id: 'serpent',
-    label: 'Serpent',
+    label: 'Keel',
     tokens: { dark: keelDark, light: keelLight },
   },
   vscode: {

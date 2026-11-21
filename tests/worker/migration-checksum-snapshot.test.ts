@@ -5,7 +5,7 @@
  * auto-analysis suppression）。一条线先打开了真实库，使该库的
  * schema_migrations 行固化了其中一个 checksum；另一条线把不同 SQL 挂到
  * 同一版本号后，verifyMigrationHistory 校验 checksum 不一致 → 旧库报
- * LIBRARY_CORRUPT（"所选文件夹不是有效的 Serpent 资源库"）。
+ * LIBRARY_CORRUPT（"所选文件夹不是有效的 Keel 资源库"）。
  *
  * 守护：任何已发布迁移的 SQL（从而 checksum）一旦改动，本测试即红。
  * 新增迁移只允许在末尾追加版本号，且必须同步更新本快照。

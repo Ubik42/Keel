@@ -131,7 +131,7 @@ export function AutomaticTasksDialog(props: {
         className="create-dialog automatic-tasks-dialog"
         dialogId="automatic-tasks"
         title="自动任务"
-        description="设置触发方式、筛选条件和执行动作。后台每 30 秒检查库变化，分批执行；关闭 Serpent 后停止。"
+        description="设置触发方式、筛选条件和执行动作。后台每 30 秒检查库变化，分批执行；关闭 Keel 后停止。"
         headerActions={
           <button
             className="dialog-close"

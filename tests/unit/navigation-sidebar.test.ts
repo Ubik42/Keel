@@ -290,7 +290,7 @@ describe("NavigationSidebar virtual library root", () => {
     expect(parentFolderRow?.style.paddingLeft).toBe("7px");
     expect(childFolderRow?.style.paddingLeft).toBe("7px");
     // Root-level folders start at depth 0 so they line up with the fixed root
-    // rows; each nested level adds 14px (Serpent: sidebar alignment fix).
+    // rows; each nested level adds 14px (Keel: sidebar alignment fix).
     expect(parentFolderRow?.closest<HTMLElement>(".nav-tree-row")?.style.paddingLeft).toBe(
       "0px",
     );

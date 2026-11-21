@@ -12,9 +12,9 @@ export interface ImportLibraryChooserDialogProps {
   open: boolean;
   onImportFolder: () => void;
   onImportZip: () => void;
-  /** Convert an Eagle library into a new Serpent library (open, not merge). */
+  /** Convert an Eagle library into a new Keel library (open, not merge). */
   onOpenEagle?: () => void;
-  /** Merge an Eagle library into the currently open Serpent library. */
+  /** Merge an Eagle library into the currently open Keel library. */
   onImportEagle?: () => void;
   onOpenBillfish?: () => void;
   onImportBillfish?: () => void;
@@ -115,7 +115,7 @@ function useChooserExpanded(open: boolean): {
 }
 
 /**
- * Menu 「打开资源库」chooser (Serpent-pte2 / Serpent-7zp0): existing Serpent
+ * Menu 「打开资源库」chooser (Serpent-pte2 / Serpent-7zp0): existing Keel
  * library, synced library, plus a collapsed third-party open path.
  */
 export function OpenLibraryChooserDialog({

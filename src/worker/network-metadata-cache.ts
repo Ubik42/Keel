@@ -192,18 +192,18 @@ function configuredCacheDirectory(): string {
   if (e2eUserData) return path.join(path.resolve(e2eUserData), 'library-metadata-cache');
 
   if (process.platform === 'darwin') {
-    return path.join(os.homedir(), 'Library', 'Application Support', 'Serpent', 'library-metadata-cache');
+    return path.join(os.homedir(), 'Library', 'Application Support', 'Keel', 'library-metadata-cache');
   }
   if (process.platform === 'win32') {
     return path.join(
       process.env.LOCALAPPDATA ?? path.join(os.homedir(), 'AppData', 'Local'),
-      'Serpent',
+      'Keel',
       'library-metadata-cache',
     );
   }
   return path.join(
     process.env.XDG_CACHE_HOME ?? path.join(os.homedir(), '.cache'),
-    'Serpent',
+    'Keel',
     'library-metadata-cache',
   );
 }
@@ -908,7 +908,7 @@ export class NetworkMetadataCache {
           rmSync(manifestPath(this.#directory, candidate.cacheKey), { force: true });
           totalBytes -= candidate.byteSize;
         } catch {
-          // A second Serpent process or Windows handle may still own this entry.
+          // A second Keel process or Windows handle may still own this entry.
           // It remains eligible for the next prune pass.
         }
       }

@@ -1,5 +1,5 @@
 /**
- * Local (associated) refresh helpers for asset deletions (Serpent-关联刷新).
+ * Local (associated) refresh helpers for asset deletions (Keel-关联刷新).
  *
  * Deleting/trashing assets must clear the visible cards immediately instead
  * of waiting for a full searchAssets round trip (~10s on large libraries).

@@ -375,9 +375,9 @@ export class AutomationLibraryContextError extends Error {
       : code === 'AUTOMATION_LIBRARY_AUTHORIZATION_REQUIRED'
           ? 'This automation session has not authorized the requested library.'
           : code === 'AUTOMATION_LIBRARY_NOT_OPEN'
-            ? 'The requested library is not open in Serpent.'
+            ? 'The requested library is not open in Keel.'
             : code === 'AUTOMATION_LIBRARY_OPEN_FAILED'
-              ? 'The requested library could not be opened in Serpent.'
+              ? 'The requested library could not be opened in Keel.'
           : 'The automation library context switch was denied.');
     this.name = 'AutomationLibraryContextError';
     this.code = code;

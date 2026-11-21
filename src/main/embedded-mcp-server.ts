@@ -564,7 +564,7 @@ export class EmbeddedMcpServer {
                 : code === 'MCP_SESSION_CLOSED'
                   ? 410
                   : 500;
-        // Serpent review: never leak raw internal error messages (they may
+        // Keel review: never leak raw internal error messages (they may
         // contain disk paths); log the detail, send a fixed message.
         this.#logger.error('mcp.server.request-failed', error, { code, statusCode });
         writeJson(response, statusCode, {
@@ -644,7 +644,7 @@ export class EmbeddedMcpServer {
     if (!allowedHost(request.headers.host, port) || !allowedOrigin(request.headers.origin, port)) {
       writeJson(response, 403, {
         code: 'MCP_CLIENT_UNAUTHORIZED',
-        error: 'MCP requests must originate from the Serpent loopback endpoint.',
+        error: 'MCP requests must originate from the Keel loopback endpoint.',
       });
       return;
     }
@@ -688,7 +688,7 @@ export class EmbeddedMcpServer {
     }
     if (session !== undefined) {
       this.#touchSession(session);
-      // Serpent review: the 'close' listener must stay attached until the
+      // Keel review: the 'close' listener must stay attached until the
       // response actually closes — for GET (SSE) the transport resolves at
       // handoff while the stream stays open, so removing the listeners in a
       // finally would let a dropped SSE client linger until the idle timeout.
@@ -835,7 +835,7 @@ export class EmbeddedMcpServer {
       if (typeof oldest !== 'string') break;
       this.#closedSessionIds.delete(oldest);
     }
-    // Serpent review: endSession matches on the record's sessionId, not the
+    // Keel review: endSession matches on the record's sessionId, not the
     // executionId — the previous call passed the execution id and silently
     // leaked every session's execution as permanently 'running'.
     // The HTTP transport is disposable; the Main-owned execution and any

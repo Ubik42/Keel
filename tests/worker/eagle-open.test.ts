@@ -59,7 +59,7 @@ function writeEagleFixture(eagleRoot: string): void {
 }
 
 describe('Eagle external-library opening (Serpent-768x.1)', () => {
-  it('converts root files and nested folders into a Serpent library at the chosen parent', async () => {
+  it('converts root files and nested folders into a Keel library at the chosen parent', async () => {
     const root = mkdtempSync(path.join(tmpdir(), 'serpent-eagle-open-'));
     roots.push(root);
     const eagleParent = path.join(root, 'eagle-source');

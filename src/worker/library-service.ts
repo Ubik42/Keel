@@ -601,9 +601,9 @@ function safeMediaJobErrorDetail(errorCode: string): string {
     case MEDIA_RESOURCE_EXHAUSTED_ERROR_CODE:
       return 'The system is under memory pressure. Media previews will retry after the load settles.';
     case 'FFMPEG_REQUIRED':
-      return 'The media component needed for video thumbnails is unavailable. Reinstall or repair Serpent.';
+      return 'The media component needed for video thumbnails is unavailable. Reinstall or repair Keel.';
     case 'OIIO_REQUIRED':
-      return 'The OpenImageIO component is unavailable. Reinstall or repair Serpent.';
+      return 'The OpenImageIO component is unavailable. Reinstall or repair Keel.';
     case 'STALE_REVISION':
       return 'The source changed before media processing finished. Retry the current revision.';
     case 'RAW_METADATA_EXTRACTION_FAILED':
@@ -611,11 +611,11 @@ function safeMediaJobErrorDetail(errorCode: string): string {
     case 'PALETTE_SOURCE_NOT_READY':
       return 'The current preview image is not ready. Regenerate the thumbnail or video poster first.';
     case 'PALETTE_EXTRACTION_FAILED':
-      return 'Local palette extraction failed. See the local Serpent log for diagnostic details.';
+      return 'Local palette extraction failed. See the local Keel log for diagnostic details.';
     case IMPORTED_THUMBNAIL_NORMALIZATION_JOB:
       return 'The imported preview could not be normalized. The original imported preview remains available.';
     default:
-      return 'Media processing failed. See the local Serpent log for diagnostic details.';
+      return 'Media processing failed. See the local Keel log for diagnostic details.';
   }
 }
 
@@ -1195,7 +1195,7 @@ function isAlwaysIgnoredAssetPath(relativePath: string): boolean {
 /**
  * Rescue happens only after the normal database and verified backups failed,
  * so counting the physical source files here is both useful for the report
- * and outside the large-library open/import hot path. Symlinks and Serpent's
+ * and outside the large-library open/import hot path. Symlinks and Keel's
  * filesystem noise are excluded to match the managed-source reconciler.
  */
 function countRecoverableAssetFiles(assetsRoot: string): number {
@@ -4674,7 +4674,7 @@ export async function shutdownWorkerResources(
 
 // If the UtilityProcess is terminated without receiving the normal shutdown
 // control message, Node still gives us a synchronous exit hook. This closes
-// the last gap that previously left ffmpeg.exe alive after Serpent stopped.
+// the last gap that previously left ffmpeg.exe alive after Keel stopped.
 process.once('exit', () => {
   for (const processHandle of activeMediaProcesses) killMediaProcess(processHandle);
 });
@@ -5152,7 +5152,7 @@ export interface LibraryServiceOptions {
    * production — it adds a callback per statement.
    */
   onDbStatement?: (sql: string) => void;
-  /** Removes one Serpent trash directory; injectable for platform-error tests. */
+  /** Removes one Keel trash directory; injectable for platform-error tests. */
   removeTrashPath?: (trashPath: string) => void;
   /**
    * Clock for the client-mutation watcher-notification suppression window.
@@ -5923,7 +5923,7 @@ export function openConfiguredDatabase(
     connection.function('serpent_normalize_search_text', { deterministic: true }, normalizeSearchText);
     connection.pragma('foreign_keys = ON');
     connection.pragma('trusted_schema = ON');
-    // A second Serpent process may be finishing a short SQLite transaction
+    // A second Keel process may be finishing a short SQLite transaction
     // while the durable lease is being acquired. Let SQLite wait briefly for
     // that kernel-level lock instead of turning normal contention into an
     // opaque SQLITE_BUSY/INTERNAL_ERROR before our public LIBRARY_BUSY path.
@@ -6637,7 +6637,7 @@ function buildContextualSearchWhere(
 
 /**
  * Schema v24 is the first migration opened routinely by two independent
- * Serpent processes: an existing library can be opened by Desktop while a
+ * Keel processes: an existing library can be opened by Desktop while a
  * future MCP host connects to the same database.  Serialize the v23 -> v24
  * boundary with SQLite's writer mutex, then re-read the version *inside* the
  * transaction.  The second opener therefore observes the committed v24
@@ -6928,7 +6928,7 @@ function verifyDatabase(
  * Open a library that we cannot (or should not) migrate right now, but that
  * is still physically usable. Newer-than-supported schemas keep the canonical
  * prefix and extra additive rows; a stuck migration keeps the last rolled-back
- * version. Both stay writable — Serpent does not offer a read-only library.
+ * version. Both stay writable — Keel does not offer a read-only library.
  */
 function verifyOpenableSchema(connection: DatabaseConnection): LibraryRow {
   const version = schemaVersion(connection);
@@ -9632,7 +9632,7 @@ export class LibraryService {
         this.removeOperation(operationPath);
         continue;
       }
-      // Another Serpent process is still applying under a live Job lease.
+      // Another Keel process is still applying under a live Job lease.
       // Do not roll back its filesystem or clear the operation directory.
       const JOB_LEASE_APPLYING_KINDS = new Set([
         'import',
@@ -10351,7 +10351,7 @@ export class LibraryService {
     } catch (error) {
       if (isSQLiteWriteContention(error)) {
         throw new LibraryWriteCoordinatorError(
-          'Another Serpent session is updating this library.',
+          'Another Keel session is updating this library.',
           'timed-out',
         );
       }
@@ -12030,7 +12030,7 @@ export class LibraryService {
       }
       if (error instanceof HistoryTransitionError) throw error;
       throw new HistoryTransitionError(
-        'The history entry became stale while Serpent was applying the transition.',
+        'The history entry became stale while Keel was applying the transition.',
         'HISTORY_STALE',
       );
     }
@@ -12065,7 +12065,7 @@ export class LibraryService {
 
   /**
    * Polls the durable sequence from the open library connection so a Worker
-   * can observe commits made by another Serpent process. The subscription
+   * can observe commits made by another Keel process. The subscription
    * owns no write lease and must be stopped when the library closes.
    */
   subscribeToChangeSequence(
@@ -13328,7 +13328,7 @@ export class LibraryService {
     if (input.parentFolderId) {
       parent = openLibrary.connection
         .prepare(
-          // Serpent review: managed_folders lives inside the per-library DB —
+          // Keel review: managed_folders lives inside the per-library DB —
           // there is no library_id column (the table is already library-scoped).
           'SELECT folder_id, parent_folder_id, name, relative_path, path_identity FROM managed_folders WHERE folder_id = ?',
         )
@@ -14364,7 +14364,7 @@ export class LibraryService {
       connection: openLibrary.connection,
       values: folderIds,
       buildSql: (placeholders) =>
-        // Serpent review: managed_folders lives inside the per-library DB —
+        // Keel review: managed_folders lives inside the per-library DB —
         // there is no library_id column (the table is already library-scoped).
         `SELECT folder_id, relative_path
            FROM managed_folders
@@ -17924,7 +17924,7 @@ export class LibraryService {
 
   /**
    * Linked subfolders are virtual rows.  Asset-derived prefixes cover normal
-   * populated folders, but an empty directory created from Serpent must also
+   * populated folders, but an empty directory created from Keel must also
    * remain visible after refresh/reopen, so include real directories from the
    * linked root as well.  Symlinks and ignored directories are never followed.
    */
@@ -19217,7 +19217,7 @@ export class LibraryService {
     const pathIdentity = canonicalRoot;
 
     // Serpent-316493 rejection rules: the library's own tree is managed by
-    // Serpent, and a folder already covered by a linked root would be indexed
+    // Keel, and a folder already covered by a linked root would be indexed
     // twice. Both are reported with a specific reason so the UI can explain.
     let canonicalLibraryPath = openLibrary.summary.libraryPath;
     try {
@@ -32550,7 +32550,7 @@ export class LibraryService {
 
   /**
    * Backfill the same low-priority work for libraries imported by an older
-   * Serpent build. This is intentionally bounded and runs only in background
+   * Keel build. This is intentionally bounded and runs only in background
    * scheduling, never in the visible-window fast path.
    */
   private enqueueImportedThumbnailNormalizationJobs(
@@ -40989,7 +40989,7 @@ export class LibraryService {
           !this.linkedRootIsGone(linkedFolder.absolute_root_path);
         const sourceMissing = sourcePath !== undefined && isMissingPathError(error);
         if (sourceMissing && linkedRootOnline) {
-          // A missing linked source has already been removed outside Serpent;
+          // A missing linked source has already been removed outside Keel;
           // there is nothing left to send to the system trash. The index row
           // is still safe to remove because the linked root itself is online,
           // so this is not an offline/uncertain-source case.
@@ -44074,7 +44074,7 @@ export class LibraryService {
 
   /**
    * Eagle already stores a bounded still preview beside every normal item.
-   * Keep that preview as Serpent's ready card artifact; importing a video
+   * Keep that preview as Keel's ready card artifact; importing a video
    * must not decode the full source merely to make the first screen visible.
    */
   private copyEagleThumbnailFile(
@@ -44409,7 +44409,7 @@ export class LibraryService {
   }
 
   /**
-   * Read Eagle root metadata and return the default Serpent display name.
+   * Read Eagle root metadata and return the default Keel display name.
    * Main keeps the source path; Renderer only receives this name for the
    * rename panel that precedes choosing a save location.
    */
@@ -44428,11 +44428,11 @@ export class LibraryService {
   }
 
   /**
-   * Convert an Eagle library into a new Serpent library at a user-chosen
+   * Convert an Eagle library into a new Keel library at a user-chosen
    * parent directory and open the converted result. The Eagle directory is
    * never modified; this is the implementation behind the library-name
    * menu's "Open Eagle library" action. Main inspects the source, the user
-   * confirms a display name, then Main collects the Serpent save location
+   * confirms a display name, then Main collects the Keel save location
    * before this command runs. After that destination is chosen, Main closes
    * any previously open library before conversion starts.
    */
@@ -47707,7 +47707,7 @@ export class LibraryService {
         this.options.sqliteBusyTimeoutMsForTests,
         { readonly: true },
       );
-      // Too-new backups are still usable Serpent databases. Rejecting them as
+      // Too-new backups are still usable Keel databases. Rejecting them as
       // invalid used to skip both slots and fall through to empty Assets rescue.
       verifyOpenableSchema(connection);
       return true;
@@ -48548,7 +48548,7 @@ export class LibraryService {
             family: resolvedAddress.family,
             url: finalUrl,
             signal: controller.signal,
-            headers: { 'User-Agent': 'Serpent/1.0' },
+            headers: { 'User-Agent': 'Keel/1.0' },
           });
           if (![301, 302, 303, 307, 308].includes(response.status)) break;
           response.cancel();

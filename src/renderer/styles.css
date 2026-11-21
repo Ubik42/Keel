@@ -12479,7 +12479,7 @@ select.ai-config-input.ai-config-languages {
   background: rgb(255 255 255 / 50%);
 }
 
-/* Serpent hover 音频: hover 播放只需出声，不显示播放控件。 */
+/* Keel hover 音频: hover 播放只需出声，不显示播放控件。 */
 .asset-card-media-live.audio-live,
 .asset-card-media audio.asset-card-media-live {
   opacity: 0;
@@ -15431,7 +15431,7 @@ select.ai-config-input.ai-config-languages {
   gap: var(--ui-space-3);
 }
 
-/* === Serpent ui-feedback2 (calm DAM + accent) ===
+/* === Keel ui-feedback2 (calm DAM + accent) ===
    Quieter selection, minimal hover, settings layout polish, plain empty
    nav hints, corner-radius tiers via --ui-radius-* tokens.
    Windows-style Linux/Windows frameless shell kept. No macOS chrome
@@ -16178,7 +16178,7 @@ html.serpent-window-square .window-edge-resize-layer.is-disabled {
 }
 
 
-/* === Serpent ui-tabs-viewer: calm image / video / model viewer chrome ===
+/* === Keel ui-tabs-viewer: calm image / video / model viewer chrome ===
    Quieter floating bars, softer contrast, tighter spacing. No library-
    settings / semantic-settings. */
 :root {
@@ -16341,7 +16341,7 @@ html.serpent-window-square .window-edge-resize-layer.is-disabled {
 }
 
 
-/* === Serpent ui-card-caption: caption alignment + micro polish === */
+/* === Keel ui-card-caption: caption alignment + micro polish === */
 .justified-card-slot .asset-caption,
 .masonry-card-slot .asset-caption {
   gap: calc(4px * var(--ui-font-scale));
@@ -19432,7 +19432,7 @@ body.platform-darwin .app-shell[data-shell-layout="islands"] .toolbar-nav-cluste
   padding-bottom: 0;
 }
 
-/* Custom keyboard shortcuts settings (Serpent custom shortcuts) */
+/* Custom keyboard shortcuts settings (Keel custom shortcuts) */
 .shortcut-settings-page {
   display: flex;
   flex-direction: column;

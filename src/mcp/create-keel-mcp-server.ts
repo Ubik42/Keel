@@ -44,10 +44,10 @@ export type KeelMcpServerOptions = {
 
 /**
  * MCP clients receive this during initialize, so an Agent does not have to
- * infer Serpent's targeting and confirmation rules from tool names alone.
+ * infer Keel's targeting and confirmation rules from tool names alone.
  */
 export const KEEL_MCP_INSTRUCTIONS = [
-  'After initialize, call tools/list to discover the available Serpent tools.',
+  'After initialize, call tools/list to discover the available Keel tools.',
   'Call keel_library_list_open or keel_library_list_recent to obtain a libraryId.',
   'Every library-scoped tool call must include that explicit libraryId; desktop focus is never an implicit target.',
   'Critical operations first return an exact challenge and require a second confirmation call.',
@@ -68,7 +68,7 @@ function toolResultText(payload: unknown): {
   return { content: [{ type: 'text', text: serialized }] };
 }
 
-/** Creates the only MCP protocol implementation used by Serpent. */
+/** Creates the only MCP protocol implementation used by Keel. */
 export function createSerpentMcpServer(options: KeelMcpServerOptions): Server {
   const { backend, gateway } = options;
   const server = new Server(
@@ -139,7 +139,7 @@ export function createSerpentMcpServer(options: KeelMcpServerOptions): Server {
           // turn the underlying Gateway result into a second failure.
         }
       };
-    await reportProgress?.(0, 1, 'Serpent is running the tool.');
+    await reportProgress?.(0, 1, 'Keel is running the tool.');
     const result = await callSerpentMcpTool({
       toolName: request.params.name,
       arguments: request.params.arguments ?? {},
@@ -152,7 +152,7 @@ export function createSerpentMcpServer(options: KeelMcpServerOptions): Server {
         ? {}
         : { getLibraryChangeSequence: backend.getLibraryChangeSequence }),
     });
-    await reportProgress?.(1, 1, result.ok ? 'Serpent completed the tool.' : 'Serpent rejected the tool call.');
+    await reportProgress?.(1, 1, result.ok ? 'Keel completed the tool.' : 'Keel rejected the tool call.');
     if (result.ok && result.commandId !== undefined && result.plugin === undefined) {
       // Serpent-fmbr: only executed non-read commands surface on the desktop;
       // read calls and phase-1 challenge reports (nothing executed yet) stay quiet.

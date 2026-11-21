@@ -29,7 +29,7 @@ describe('defaultPinnedHttpTransport', () => {
     const response = await defaultPinnedHttpTransport({
       address: '127.0.0.1',
       family: 4,
-      headers: { 'User-Agent': 'Serpent/Test' },
+      headers: { 'User-Agent': 'Keel/Test' },
       signal: controller.signal,
       // This hostname deliberately cannot resolve. Success proves that the
       // socket lookup consumed the pinned IP instead of consulting DNS again.

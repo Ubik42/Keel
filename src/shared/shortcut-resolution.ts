@@ -131,7 +131,7 @@ function keyLabel(
   return chord.key;
 }
 
-/** Format one chord with the same symbols used by Serpent menus. */
+/** Format one chord with the same symbols used by Keel menus. */
 export function formatShortcutChord(
   chord: ShortcutChord,
   platform: ShortcutPlatform,

@@ -31,7 +31,7 @@ describe('PLUGIN-031 manifest and MCP exposure contract', () => {
       version: '1.0.0',
       name: 'MCP Probe',
       description: 'MCP probe',
-      author: 'Serpent',
+      author: 'Keel',
       license: 'MIT',
       engines: { keel: '>=0.2.0 <1.0.0', pluginApi: 1 },
       runtime: { mode: 'restricted', entry: 'entry/main.js' },

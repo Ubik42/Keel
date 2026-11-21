@@ -2221,7 +2221,7 @@ describe('worker request protocol', () => {
     ).toThrow();
   });
 
-  it('requires both Eagle source and Serpent destination paths to open Eagle', () => {
+  it('requires both Eagle source and Keel destination paths to open Eagle', () => {
     expect(
       parseWorkerRequest({
         requestId: 'req-01',
@@ -2412,7 +2412,7 @@ describe('public errors', () => {
   it('classifies a missing SQLite native module as an engine failure, not library damage', () => {
     const sqliteError = Object.assign(
       new Error(
-        'The specified module could not be found.\r\n\\\\?\\C:\\Program Files\\Serpent\\resources\\app.asar.unpacked\\node_modules\\better-sqlite3\\build\\Release\\better_sqlite3.node',
+        'The specified module could not be found.\r\n\\\\?\\C:\\Program Files\\Keel\\resources\\app.asar.unpacked\\node_modules\\better-sqlite3\\build\\Release\\better_sqlite3.node',
       ),
       { code: 'ERR_DLOPEN_FAILED' },
     );

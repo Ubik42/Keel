@@ -2425,7 +2425,7 @@ export const library: KeelLibraryApi = Object.freeze({
     assetIds: string[];
   }): void {
     // Native drag owns a nested OS event loop until the pointer is released.
-    // Do not make this synchronous: dropping back onto Serpent would otherwise
+    // Do not make this synchronous: dropping back onto Keel would otherwise
     // deadlock the Renderer waiting for Main while Main waits for the drop.
     sendNativeAssetDrag(ipcRenderer, {
       libraryId,

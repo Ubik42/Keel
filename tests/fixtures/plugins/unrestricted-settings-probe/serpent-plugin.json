@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "name": "Unrestricted Settings Probe",
   "description": "Unrestricted host fixture with menus.asset and settings.pages for contribution listing.",
-  "author": "Serpent",
+  "author": "Keel",
   "license": "MIT",
   "engines": {
     "serpent": ">=0.1.0 <1.0.0",

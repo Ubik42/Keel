@@ -258,11 +258,11 @@ export interface KeelLibraryApi {
     libraryId: string;
     assetId: string;
   }): Promise<LibraryApiResult<MissingAssetRecoveryProbe>>;
-  /** Convert and open an Eagle library as a new Serpent library. */
+  /** Convert and open an Eagle library as a new Keel library. */
   inspectEagle(): Promise<LibraryApiResult<{ displayName: string }>>;
   cancelInspectEagle(): Promise<LibraryApiResult<void>>;
   openEagle(input: { displayName: string }): Promise<LibraryApiResult<RendererLibrarySummary>>;
-  /** Convert and open a Billfish library as a new Serpent library. */
+  /** Convert and open a Billfish library as a new Keel library. */
   inspectBillfish(): Promise<LibraryApiResult<{ displayName: string }>>;
   cancelInspectBillfish(): Promise<LibraryApiResult<void>>;
   openBillfish(input: { displayName: string }): Promise<LibraryApiResult<RendererLibrarySummary>>;

@@ -106,7 +106,7 @@ function delay(milliseconds: number): Promise<void> {
 export async function removeExternalLibraryStagingDirectory(directoryPath: string): Promise<void> {
   const resolved = path.resolve(directoryPath);
   if (!isManagedExternalLibraryStagingPath(resolved)) {
-    throw new ExternalLibraryArchiveError('Refusing to delete a directory that is not a Serpent extract staging root.', {
+    throw new ExternalLibraryArchiveError('Refusing to delete a directory that is not a Keel extract staging root.', {
       publicCode: 'INTERNAL_ERROR',
     });
   }
@@ -156,7 +156,7 @@ function wrapExtractError(error: unknown, fallbackMessage: string): ExternalLibr
     });
   }
   if (isStagingPermissionError(error)) {
-    return new ExternalLibraryArchiveError('Serpent could not write the temporary extract directory.', {
+    return new ExternalLibraryArchiveError('Keel could not write the temporary extract directory.', {
       cause: error,
       publicCode: 'LIBRARY_NOT_WRITABLE',
       reason: publicReasonFromError(error),
@@ -343,7 +343,7 @@ async function createStagingDirectory(
   }
   if (sawSpaceError) throw diskFullError(lastError);
   if (sawPermissionError) {
-    throw new ExternalLibraryArchiveError('Serpent could not write the temporary extract directory.', {
+    throw new ExternalLibraryArchiveError('Keel could not write the temporary extract directory.', {
       cause: lastError,
       publicCode: 'LIBRARY_NOT_WRITABLE',
       reason: publicReasonFromError(lastError),

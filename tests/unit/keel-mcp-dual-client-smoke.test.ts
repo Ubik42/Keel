@@ -53,7 +53,7 @@ class RecordingWorker implements AutomationWorkerClient {
   }
 }
 
-describe('Serpent MCP dual-client smoke (Phase C)', () => {
+describe('Keel MCP dual-client smoke (Phase C)', () => {
   it('serves tools/list and tools/call to an MCP SDK Client over linked in-memory transport', async () => {
     const worker = new RecordingWorker();
     const gateway = createAutomationCommandGateway(worker, resolver());

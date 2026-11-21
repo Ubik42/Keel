@@ -80,7 +80,7 @@ describe("appendAssetPage (Serpent-ws4k)", () => {
   });
 });
 
-describe("excludeLocallyDeletedAssets (Serpent-关联刷新)", () => {
+describe("excludeLocallyDeletedAssets (Keel-关联刷新)", () => {
   it("drops ids deleted since the last beginPage", () => {
     expect(
       excludeLocallyDeletedAssets(

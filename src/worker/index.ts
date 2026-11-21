@@ -206,7 +206,7 @@ const visibleDimensionProbeStates = new Map<string, VisibleDimensionProbeState>(
 // request arrived.
 const startupThumbnailVisibleWindows = new Set<string>();
 const latestAssetSearchRequests = new LatestSearchRequestCoordinator();
-// Serpent: a queue that cannot be admitted is either a short burst or a lane
+// Keel: a queue that cannot be admitted is either a short burst or a lane
 // deadlock (a mutation needs a fully idle scheduler, an interactive lane needs
 // no other interactive owner). Report the holder instead of hanging silently.
 const interactiveScheduler = new InteractiveScheduler({
@@ -2252,9 +2252,9 @@ function scheduleThumbnailScene(
 function thumbnailFailureReason(errorCode: string): string {
   switch (errorCode) {
     case 'MEDIA_RESOURCE_EXHAUSTED': return '系统内存压力过高，缩略图任务已延迟重试；请稍后再试。';
-    case 'FFMPEG_REQUIRED': return '无法生成视频缩略图（媒体组件不可用）。请重新安装或修复 Serpent 后重试。';
+    case 'FFMPEG_REQUIRED': return '无法生成视频缩略图（媒体组件不可用）。请重新安装或修复 Keel 后重试。';
     case 'OIIO_REQUIRED': return '缺少 OpenImageIO，无法解码此图片。请安装图像组件后重试。';
-    case 'SHARP_UNAVAILABLE': return '图片解码组件不可用。请重新安装或更新 Serpent 后重试。';
+    case 'SHARP_UNAVAILABLE': return '图片解码组件不可用。请重新安装或更新 Keel 后重试。';
     case 'SOURCE_NOT_FOUND': return '源文件不存在或当前不可访问。请恢复文件后重试。';
     default: return '缩略图生成失败，文件可能损坏或格式不受支持。请检查源文件后重试。';
   }

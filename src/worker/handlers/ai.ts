@@ -612,7 +612,7 @@ export async function executeAiWorkerCommand(
         ...analysisConfig
       } = request.command;
       // This is a process-wide cap. Setting it here makes a saved preference
-      // take effect for the next queue batch without restarting Serpent, while
+      // take effect for the next queue batch without restarting Keel, while
       // the limiter lets already in-flight requests finish safely.
       hooks.providerConcurrencyLimiter.setLimit(concurrencyLimit);
       let processed = 0;

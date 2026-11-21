@@ -364,7 +364,7 @@ export class LibraryWriteCoordinator {
         return new DatabaseLibraryWriteLease(this, ownerId, expiresAt);
       }
       if (deadline !== undefined && this.now() >= deadline) {
-        throw new LibraryWriteCoordinatorError('Another Serpent session is updating this library.', 'timed-out');
+        throw new LibraryWriteCoordinatorError('Another Keel session is updating this library.', 'timed-out');
       }
       await this.sleep(
         deadline === undefined

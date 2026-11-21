@@ -47,7 +47,7 @@ export const AUTOMATION_GATEWAY_ERROR_MESSAGES: Readonly<Record<AutomationGatewa
   AUTOMATION_LIBRARY_CONTEXT_REQUIRED: 'This automation command requires an active library context.',
   AUTOMATION_LIBRARY_CONTEXT_CONFLICT: 'The active library context changed; retry the command with a fresh context.',
   AUTOMATION_LIBRARY_CONTEXT_BUSY: 'The active library context is changing; retry after the transition completes.',
-  AUTOMATION_LIBRARY_NOT_OPEN: 'The requested library is not open in Serpent.',
+  AUTOMATION_LIBRARY_NOT_OPEN: 'The requested library is not open in Keel.',
   AUTOMATION_LIBRARY_AUTHORIZATION_REQUIRED: 'This automation execution has not been authorized for the requested library.',
   AUTOMATION_LIBRARY_SWITCH_DENIED: 'The library context switch was denied by the local user.',
   AUTOMATION_PLAN_STALE: 'The approved automation plan is stale and must be regenerated.',
@@ -55,7 +55,7 @@ export const AUTOMATION_GATEWAY_ERROR_MESSAGES: Readonly<Record<AutomationGatewa
   AUTOMATION_CONCURRENCY_LIMIT_REACHED: 'This automation execution has reached its concurrent command limit.',
   AUTOMATION_EXECUTION_CANCELLED: 'This automation execution has been cancelled.',
   AUTOMATION_EXECUTION_TIMED_OUT: 'This automation execution timed out.',
-  AUTOMATION_RESULT_INVALID: 'Serpent received an invalid result from the automation command.',
+  AUTOMATION_RESULT_INVALID: 'Keel received an invalid result from the automation command.',
 };
 
 export const automationGatewayErrorSchema = z.strictObject({

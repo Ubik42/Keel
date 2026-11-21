@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "name": "Input Capture Probe",
   "description": "Fixed probe for application-scoped keyboard and IME input capture.",
-  "author": "Serpent",
+  "author": "Keel",
   "license": "MIT",
   "engines": {
     "serpent": ">=0.1.0 <1.0.0",

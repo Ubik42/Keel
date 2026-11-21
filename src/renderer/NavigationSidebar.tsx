@@ -162,7 +162,7 @@ function NavRow({
   navFolderKind?: "managed" | "linked";
   /** Serpent-d7acfa: row participates in the sidebar multi-folder selection. */
   multiSelected?: boolean;
-  /** Custom-order drop insertion edge (Serpent: folder 自定义 sort). */
+  /** Custom-order drop insertion edge (Keel: folder 自定义 sort). */
   insertEdge?: FolderDropEdge | null;
 }) {
   // CU-D9: always expose the full label on hover; when a status title is also
@@ -721,7 +721,7 @@ export interface NavigationSidebarProps {
   folderTreeActionsRef?: MutableRefObject<FolderTreeExpandActions | null>;
   /** Resolve an Electron native file drop back to managed asset ids. */
   onResolveManagedAssetDrop?: (files: File[]) => Promise<string[]>;
-  /** True only while Serpent is completing a drag it started from an asset card. */
+  /** True only while Keel is completing a drag it started from an asset card. */
   isInternalAssetDrag?: () => boolean;
 
   // --- Internal asset drag/drop (REQ-DND-001/002 + Serpent-aa3 copy mode) ---
@@ -899,7 +899,7 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
   const [folderSortPrefs, setFolderSortPrefs] = useState<FolderSortPreferences>(
     () => loadFolderSortPreferences(),
   );
-  // Serpent folder custom order: device-local, keyed by library id (the sort
+  // Keel folder custom order: device-local, keyed by library id (the sort
   // mode itself is device-local too).
   const [folderCustomOrder, setFolderCustomOrder] = useState<
     ReadonlyMap<string, number>

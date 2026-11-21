@@ -3,8 +3,8 @@ import { z } from 'zod';
 export const PUBLIC_ERROR_MESSAGES = {
   CANCELLED: 'The request was cancelled.',
   INTERNAL_ERROR:
-    'Serpent hit an unexpected error and could not finish. Open Diagnostics in the app to inspect this session’s log, then retry. If you were opening a library, copy the whole library folder onto a local disk and open it from there.',
-  WORKER_UNAVAILABLE: 'The library service stopped. Restart Serpent to continue.',
+    'Keel hit an unexpected error and could not finish. Open Diagnostics in the app to inspect this session’s log, then retry. If you were opening a library, copy the whole library folder onto a local disk and open it from there.',
+  WORKER_UNAVAILABLE: 'The library service stopped. Restart Keel to continue.',
   INVALID_LIBRARY_NAME: 'Choose a library name that is safe on macOS and Windows.',
   INVALID_LIBRARY_PATH:
     'The selected location is not a usable folder for a library. Choose an existing writable folder — not a file, and not a disconnected drive.',
@@ -36,34 +36,34 @@ export const PUBLIC_ERROR_MESSAGES = {
   LIBRARY_ALREADY_OPEN:
     'The selected library and the currently open library have the same library ID. They may be different paths to the same library. Open it as a different library?',
   LIBRARY_NOT_FOUND:
-    'Serpent cannot find that library folder. It may have been moved, renamed, or the disk may be disconnected. Reconnect the drive or choose the library again from Open Library.',
+    'Keel cannot find that library folder. It may have been moved, renamed, or the disk may be disconnected. Reconnect the drive or choose the library again from Open Library.',
   NOT_A_LIBRARY:
     'The selected folder is not a Keel library (it has no .keel database).',
   LIBRARY_CORRUPT:
-    'Serpent could not read this library’s database (integrity check or migration history failed). Reopen the library so Serpent can restore from a backup. Copy the whole library folder to a local disk first if you want a safety copy.',
+    'Keel could not read this library’s database (integrity check or migration history failed). Reopen the library so Keel can restore from a backup. Copy the whole library folder to a local disk first if you want a safety copy.',
   LIBRARY_ENGINE_UNAVAILABLE:
-    'Serpent could not load its SQLite database engine. This is an application install problem, not damage to your library files. Reinstall Serpent or rebuild native modules; do not restore backups or delete the library folder.',
+    'Keel could not load its SQLite database engine. This is an application install problem, not damage to your library files. Reinstall Keel or rebuild native modules; do not restore backups or delete the library folder.',
   LIBRARY_VERSION_TOO_NEW:
-    'This library was created by a newer version of Serpent, so this app cannot open it. Install the latest Serpent, then open the library again.',
+    'This library was created by a newer version of Keel, so this app cannot open it. Install the latest Keel, then open the library again.',
   LIBRARY_READ_ONLY:
-    'Serpent cannot write to this library because the files are locked or marked read-only. Clear the read-only flag, close other programs using the folder, and retry.',
+    'Keel cannot write to this library because the files are locked or marked read-only. Clear the read-only flag, close other programs using the folder, and retry.',
   LIBRARY_MIGRATION_FAILED:
     'Upgrading this library’s database failed and was rolled back. Your files are unchanged. Open the library again to retry the upgrade; if it keeps failing, copy the library to a local disk and retry.',
   LIBRARY_MIGRATION_STUCK:
-    'This library could not be migrated after repeated attempts. Serpent opened it at the last working schema so you can keep using it. Upgrade Serpent when a fix is available; do not delete the library folder.',
+    'This library could not be migrated after repeated attempts. Keel opened it at the last working schema so you can keep using it. Upgrade Keel when a fix is available; do not delete the library folder.',
   LIBRARY_STRUCTURE_MISMATCH:
-    'This library’s database structure does not match this version of Serpent. Upgrade to the latest Serpent and reopen the library.',
+    'This library’s database structure does not match this version of Keel. Upgrade to the latest Keel and reopen the library.',
   LIBRARY_NOT_WRITABLE:
-    'Serpent could not write files in the selected folder. The folder may lack write permission, the disk may be full or read-only, or another program may have the files locked. Check the folder and NAS connection, then retry.',
+    'Keel could not write files in the selected folder. The folder may lack write permission, the disk may be full or read-only, or another program may have the files locked. Check the folder and NAS connection, then retry.',
   LIBRARY_NETWORK_SHARE:
-    'Serpent could not open or write the library database on this network share (NAS/SMB). NAS libraries use rollback journaling and depend on the share’s file-locking and reconnect behavior. Check the NAS connection and permissions; if it keeps failing, copy the library to a local disk or use WebDAV sync.',
+    'Keel could not open or write the library database on this network share (NAS/SMB). NAS libraries use rollback journaling and depend on the share’s file-locking and reconnect behavior. Check the NAS connection and permissions; if it keeps failing, copy the library to a local disk or use WebDAV sync.',
   LINKED_FOLDER_UNAVAILABLE:
     'This NAS library contains a linked folder that is unavailable on this computer. The library database is intact. Reconnect the folder or relink it on this computer, then open the library again.',
   LIBRARY_IO_ERROR:
-    'Serpent could not complete the library operation because the disk or filesystem reported an I/O error. Check the drive connection, free space, and permissions; if it keeps failing, copy the library to a local disk and inspect Diagnostics.',
+    'Keel could not complete the library operation because the disk or filesystem reported an I/O error. Check the drive connection, free space, and permissions; if it keeps failing, copy the library to a local disk and inspect Diagnostics.',
   LIBRARY_BACKUP_FAILED:
-    'Serpent could not make a safety backup, so nothing was deleted. Check free disk space and library permissions, then try again.',
-  LIBRARY_BUSY: 'This library is being updated by another Serpent window or a brief database lock. Wait a few seconds and retry; do not open the same library from two computers at once.',
+    'Keel could not make a safety backup, so nothing was deleted. Check free disk space and library permissions, then try again.',
+  LIBRARY_BUSY: 'This library is being updated by another Keel window or a brief database lock. Wait a few seconds and retry; do not open the same library from two computers at once.',
   LIBRARY_CLEANUP_FAILED:
     'Creating the library failed, and leftover temporary files could not be removed automatically. Delete any `.keel-create-*.partial` folder next to the chosen location, then retry with a writable folder.',
   LIBRARY_NOT_OPEN: 'That library is not open in this window. Open it again, then retry the action.',
@@ -76,7 +76,7 @@ export const PUBLIC_ERROR_MESSAGES = {
   ASSET_NOT_TRASHED:
     'That asset is not in the trash — it may already have been restored. Refresh the trash list and try again.',
   ASSET_NOT_MANAGED:
-    'That file lives in a linked folder, outside the library’s own storage. Serpent leaves those files where they are — handle it in your file manager.',
+    'That file lives in a linked folder, outside the library’s own storage. Keel leaves those files where they are — handle it in your file manager.',
   INVALID_STATE_TRANSITION:
     'That action is not valid in the library’s current state, which another window or background task may have changed. Refresh disk changes and try again.',
   // Serpent-50c466 audit (2026-09-12): argument/selection guards are a different
@@ -105,13 +105,13 @@ export const PUBLIC_ERROR_MESSAGES = {
   AI_SETTINGS_INCOMPLETE:
     'Automatic analysis is not on yet. Add an API key and choose a model in AI settings, then try again.',
   AI_PROFILE_STORAGE_FAILED:
-    'Serpent could not finish updating this AI connection. Reopen AI settings and retry; if the problem continues, restart the app and inspect Diagnostics.',
+    'Keel could not finish updating this AI connection. Reopen AI settings and retry; if the problem continues, restart the app and inspect Diagnostics.',
   INVALID_ASSET_FILE_NAME: 'Choose a file name that is safe on macOS and Windows.',
   ASSET_FILE_NAME_CONFLICT: 'A file with this name already exists in the asset folder.',
   INVALID_ASSET_METADATA: 'Choose valid asset metadata values, including six-digit hex colors and an HTTP(S) source page URL.',
   INVALID_SEARCH_QUERY: 'Use supported search fields: filename, tags, description, source URL, folder path, or metadata.',
   ASSET_MOVE_CONFLICT: 'The asset move could not be completed because a source or destination changed.',
-  ASSET_SOURCE_TRASH_FAILED: 'Serpent could not move the asset source to the system trash.',
+  ASSET_SOURCE_TRASH_FAILED: 'Keel could not move the asset source to the system trash.',
   AI_ANALYSIS_FAILED: 'The AI service could not analyze this asset.',
   AI_SEARCH_FAILED: 'The AI service could not prepare this search.',
   VERSION_CONFLICT: 'The metadata has been modified by another operation. Please refresh and try again.',
@@ -128,13 +128,13 @@ export const PUBLIC_ERROR_MESSAGES = {
   HISTORY_STALE: 'The files or records changed, so this operation cannot be reversed safely.',
   HISTORY_TOO_LARGE: 'This operation is too large to retain in the undo history.',
   SYNC_CONNECTION_FAILED:
-    'Serpent could not reach the sync server. Check the address, username, password, and that the computer is online. A more specific reason is listed when Serpent can classify the failure.',
+    'Keel could not reach the sync server. Check the address, username, password, and that the computer is online. A more specific reason is listed when Keel can classify the failure.',
   SYNC_IN_PROGRESS: 'This library is syncing right now. Try again after the current sync finishes.',
   DISK_FULL: 'The disk does not have enough free space to complete this operation. Free up space and try again.',
   EMBEDDING_MODEL_INVALID:
     'This semantic model could not be saved. Check the name, weight tier, model folder, and runtime path.',
   EMBEDDING_INSTALL_FAILED:
-    'Serpent could not finish installing this semantic model. If the model files are already downloaded, the local runtime download from GitHub likely failed. Check the network and try again.',
+    'Keel could not finish installing this semantic model. If the model files are already downloaded, the local runtime download from GitHub likely failed. Check the network and try again.',
   EMBEDDING_SERVICE_INVALID:
     'This embedding service could not be saved. Check the name, address, and model name.',
   SEMANTIC_IMAGE_TOO_LARGE:

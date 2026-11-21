@@ -66,7 +66,7 @@ const IMAGE_ASPECTS = [
 ] as const;
 
 /**
- * Game-art long-edge buckets (Serpent 首发用户是游戏美术).
+ * Game-art long-edge buckets (Keel 首发用户是游戏美术).
  * User mix: 1% 8K / 3% 4K / 30% 2K / 60% 1K; the leftover 6% lands on 1K.
  */
 export type LargeLibraryImageSizeBucket = '1k' | '2k' | '4k' | '8k';

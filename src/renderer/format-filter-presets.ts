@@ -64,5 +64,5 @@ export const FORMAT_FILTER_GROUPS: readonly FormatFilterGroup[] = [
 /** The non-extension token chip rendered after the registry groups. */
 export const FORMAT_TEXT_TOKEN = "text" as const;
 
-/** Checkbox token for types Serpent does not classify. */
+/** Checkbox token for types Keel does not classify. */
 export const FORMAT_UNKNOWN_TOKEN = "unknown" as const;

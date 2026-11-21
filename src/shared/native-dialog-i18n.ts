@@ -34,7 +34,7 @@ export function tryParseAppLocaleSync(input: unknown): AppLocaleParseResult {
   return { ok: true, locale: parsed.data.locale };
 }
 
-/** Map Electron `app.getLocale()` / BCP-47 tags to Serpent catalogs. */
+/** Map Electron `app.getLocale()` / BCP-47 tags to Keel catalogs. */
 export function mapSystemLocaleToAppLocale(raw: string): AppLocale {
   const tag = raw.toLowerCase();
   if (tag === "zh" || tag.startsWith("zh-")) return "zh-CN";
@@ -103,7 +103,7 @@ const EN: DialogCatalog = {
     buttonLabel: "Open Billfish Library",
   },
   openEagleLibraryDestination: {
-    title: "Choose the parent folder for the new Serpent library",
+    title: "Choose the parent folder for the new Keel library",
     buttonLabel: "Save here",
   },
   openSyncLibraryDestination: {
@@ -162,12 +162,12 @@ const EN: DialogCatalog = {
   openAutomationScript: {
     title: "Open Automation Script",
     buttonLabel: "Open Script",
-    filterName: "Serpent scripts",
+    filterName: "Keel scripts",
   },
   saveAutomationScript: {
     title: "Save Automation Script",
     buttonLabel: "Save Script",
-    filterName: "Serpent scripts",
+    filterName: "Keel scripts",
   },
   chooseApplication: {
     title: "Choose Application",
@@ -218,7 +218,7 @@ const ZH_CN: DialogCatalog = {
     buttonLabel: "\u6253\u5f00 Billfish \u8d44\u6e90\u5e93",
   },
   openEagleLibraryDestination: {
-    title: "\u9009\u62e9\u7528\u6765\u5b58\u653e\u65b0 Serpent \u8d44\u6e90\u5e93\u7684\u7236\u6587\u4ef6\u5939",
+    title: "\u9009\u62e9\u7528\u6765\u5b58\u653e\u65b0 Keel \u8d44\u6e90\u5e93\u7684\u7236\u6587\u4ef6\u5939",
     buttonLabel: "\u4fdd\u5b58\u5230\u6b64\u5904",
   },
   openSyncLibraryDestination: {
@@ -285,12 +285,12 @@ const ZH_CN: DialogCatalog = {
   openAutomationScript: {
     title: "\u6253\u5f00\u81ea\u52a8\u5316\u811a\u672c",
     buttonLabel: "\u6253\u5f00\u811a\u672c",
-    filterName: "Serpent \u811a\u672c",
+    filterName: "Keel \u811a\u672c",
   },
   saveAutomationScript: {
     title: "\u4fdd\u5b58\u81ea\u52a8\u5316\u811a\u672c",
     buttonLabel: "\u4fdd\u5b58\u811a\u672c",
-    filterName: "Serpent \u811a\u672c",
+    filterName: "Keel \u811a\u672c",
   },
   chooseApplication: {
     title: "\u9009\u62e9\u5e94\u7528",

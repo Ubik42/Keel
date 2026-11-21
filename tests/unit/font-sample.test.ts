@@ -36,7 +36,7 @@ describe("font sample page", () => {
         language: language as FontLanguage,
       });
       expect(cover.primary).toBe(primary);
-      expect(cover.secondary).toBe("Fixture · Serpent");
+      expect(cover.secondary).toBe("Fixture · Keel");
       // 样例字符固定是拉丁字母与数字；封面不出现「永字八法」那类装饰性样例。
       expect(cover.primary.endsWith("AaBbCc 0123")).toBe(true);
       for (const decorative of ["永字八法", "あいうえお", "한국어"]) {
@@ -57,7 +57,7 @@ describe("font sample page", () => {
     expect(cover.primary).not.toContain("Preview");
     expect(fontSampleCoverText({ family: null, language: null })).toEqual({
       primary: "AaBbCc 0123",
-      secondary: "Serpent",
+      secondary: "Keel",
       htmlLang: "en",
     });
   });

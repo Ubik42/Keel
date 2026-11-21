@@ -257,7 +257,7 @@ describe('Plugin v1 manifest contract', () => {
     expect(pluginManifestSchema.safeParse(manifest).success).toBe(false);
   });
 
-  it('checks Serpent version, Plugin API and declared native platform before activation', () => {
+  it('checks Keel version, Plugin API and declared native platform before activation', () => {
     const manifest = pluginManifestSchema.parse({
       ...validManifest,
       runtime: {

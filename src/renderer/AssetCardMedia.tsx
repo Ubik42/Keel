@@ -32,7 +32,7 @@ interface AssetCardMediaProps {
   /**
    * Whether this card is under the pointer. Sound-bearing live previews
    * (audio play, video sound) only run on hover — primary selection keeps
-   * the silent video preview and never plays audio (Serpent hover 音频工单).
+   * the silent video preview and never plays audio (Keel hover 音频工单).
    */
   hovering?: boolean;
   preview: PreviewResolution | null;
@@ -40,7 +40,7 @@ interface AssetCardMediaProps {
   sequence?: ImageSequenceSummary | null;
   /** Serpent-2ajm: generation failed — show the cracked-file icon fallback. */
   failed?: boolean;
-  /** Audio assets play in-place on hover (Serpent hover 音频工单). */
+  /** Audio assets play in-place on hover (Keel hover 音频工单). */
   hoverAudioPlay?: boolean;
   /** Video hover preview plays sound (defaults to muted). */
   hoverVideoSound?: boolean;

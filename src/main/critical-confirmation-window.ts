@@ -16,7 +16,7 @@ const CRITICAL_CONFIRMATION_PAGE = `<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'">
-<title>Serpent</title>
+<title>Keel</title>
 <style>
 :root {
   color-scheme: dark light;
@@ -177,7 +177,7 @@ export function criticalConfirmationWindowOptions(input: {
     maximizable: false,
     skipTaskbar: true,
     backgroundColor: '#17191c',
-    title: 'Serpent',
+    title: 'Keel',
     webPreferences: {
       preload: input.preloadPath,
       sandbox: true,

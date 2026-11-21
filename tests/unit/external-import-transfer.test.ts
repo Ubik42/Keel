@@ -30,7 +30,7 @@ test("an in-app asset drag does not open the import overlay", () => {
   ).toBe(false);
 });
 
-test("only a complete Serpent initiated file drop is consumed as a managed drag", () => {
+test("only a complete Keel initiated file drop is consumed as a managed drag", () => {
   expect(shouldConsumeManagedAssetDrop(false, 1, ["asset-1"])).toBe(false);
   expect(shouldConsumeManagedAssetDrop(true, 1, ["asset-1"])).toBe(true);
   expect(shouldConsumeManagedAssetDrop(true, 2, ["asset-1"])).toBe(false);

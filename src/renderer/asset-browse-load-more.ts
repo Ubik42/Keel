@@ -71,7 +71,7 @@ export function appendAssetPage<T extends { readonly assetId: string }>(
 
 /**
  * Drop rows deleted locally since the last full reconcile from a fetched page
- * (Serpent-关联刷新). Without this, an append page that was fetched before the
+ * (Keel-关联刷新). Without this, an append page that was fetched before the
  * deletion could resurrect the deleted cards.
  */
 export function excludeLocallyDeletedAssets<

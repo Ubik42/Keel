@@ -1,3 +1,3 @@
 # Unrestricted Settings Probe
 
-Fixed Serpent plugin used by contribution listing / settings.pages regression tests.
+Fixed Keel plugin used by contribution listing / settings.pages regression tests.

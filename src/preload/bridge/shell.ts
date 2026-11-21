@@ -312,7 +312,7 @@ export const shell: KeelShellApi = Object.freeze({
       'library.create', 'library.open', 'library.open-recent', 'library.close', 'library.remove',
       'library.delete-from-disk', 'library.import', 'library.import-eagle', 'library.export', 'library.settings',
       'window.background-jobs', 'window.diagnostics',
-      'about.serpent', 'about.github', 'about.open-source', 'about.diagnostics', 'settings',
+      'about.keel', 'about.github', 'about.open-source', 'about.diagnostics', 'settings',
     ];
     const handler = (_event: Electron.IpcRendererEvent, input: unknown) => {
       // Items with a payload arrive as { command, payload }.

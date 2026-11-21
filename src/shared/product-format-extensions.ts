@@ -9,7 +9,7 @@ import {
 import { TEXT_EXTENSIONS } from "./text-media";
 
 /**
- * Dotless extensions Serpent classifies as a known media type
+ * Dotless extensions Keel classifies as a known media type
  * (`detectMediaType` ≠ `other`). Used by the format-filter 「其他」 token.
  */
 export function knownProductFormatExtensionsDotless(): string[] {

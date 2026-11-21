@@ -27,7 +27,7 @@ export interface MigrationFailureRecord {
   /**
    * The build's supported schema version when the failure was recorded.
    * The stuck latch only holds while this matches the current build: after a
-   * Serpent upgrade the migration is retried once, so a newer build can
+   * Keel upgrade the migration is retried once, so a newer build can
    * recover a library the old build could not migrate (0031 §2.2 "失败可恢复").
    */
   supportedSchemaVersion?: number;
