@@ -19,7 +19,8 @@ export function buildMcpClientConfigText(
       return JSON.stringify({
         mcpServers: {
           serpent: {
-            type: 'streamable-http',
+            // Claude Code names Streamable HTTP servers `http`.
+            type: format === 'claude' ? 'http' : 'streamable-http',
             url: endpoint,
             headers: { Authorization: authorization },
           },

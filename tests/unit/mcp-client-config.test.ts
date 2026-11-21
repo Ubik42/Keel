@@ -18,12 +18,12 @@ describe('MCP client config formatters (Serpent-8b5b.5)', () => {
     });
   });
 
-  it('renders the same mcpServers shape for Claude Code and Cursor', () => {
-    for (const format of ['claude', 'cursor'] as const) {
+  it('renders the mcpServers shape for Claude Code and Cursor', () => {
+    for (const [format, type] of [['claude', 'http'], ['cursor', 'streamable-http']] as const) {
       const parsed = JSON.parse(buildMcpClientConfigText(format, ENDPOINT, TOKEN)) as {
         mcpServers: { serpent: unknown };
       };
-      expect(parsed.mcpServers.serpent).toMatchObject({ type: 'streamable-http', url: ENDPOINT });
+      expect(parsed.mcpServers.serpent).toMatchObject({ type, url: ENDPOINT });
     }
   });
 
