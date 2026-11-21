@@ -13798,6 +13798,29 @@ select.ai-config-input.ai-config-languages {
   position: relative;
 }
 
+.inspector-companion-list {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.inspector-companion-list li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  color: var(--muted);
+  font-size: calc(12px * var(--ui-font-scale));
+}
+
+.inspector-companion-list li span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .source-url-field .inspector-input {
   padding-right: 32px;
 }

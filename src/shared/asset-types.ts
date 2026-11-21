@@ -371,6 +371,11 @@ export const assetMetadataResultSchema = z.strictObject({
     name: nonBlankString,
     source: z.enum(['user', 'ai']),
   })).optional().default([]),
+  /** PF: companion files (e.g. `.xmp`) that travel with this asset. */
+  companions: z.array(z.strictObject({
+    assetId: nonBlankString,
+    fileName: nonBlankString,
+  })).max(64).optional(),
   /** Optimistic-concurrency token for AssetMetadata, not a file-content revision. */
   entityVersion: z.number().int().min(0),
   updatedAt: nonBlankString,

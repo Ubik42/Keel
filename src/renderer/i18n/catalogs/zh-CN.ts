@@ -720,6 +720,8 @@ export const zhCN = {
     sourceUrl: "源链接",
     openSourceUrl: "在浏览器中打开源链接",
     sourceUrlInvalid: "源链接不可打开（需要 http/https 且不含凭据）",
+    companions: "附件",
+    companionHint: "伴生文件：随此文件一起移动、改名和删除",
     sourceUrlInvalidHint: "源链接无效，输入 HTTP(S) 链接后可打开",
     openInBrowser: "在浏览器中打开",
     openInBrowserHint: "输入有效的 HTTP(S) 链接后可打开",

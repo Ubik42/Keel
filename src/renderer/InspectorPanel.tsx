@@ -1711,6 +1711,20 @@ export function InspectorPanel(props: InspectorPanelProps) {
                 );
               })()}
 
+              {!isMultiEdit && (assetMetadata?.companions?.length ?? 0) > 0 && (
+                <div className="editor-field">
+                  <span className="micro-label">{t("inspector.companions")}</span>
+                  <ul className="inspector-companion-list" aria-label={t("inspector.companions")}>
+                    {assetMetadata!.companions!.map((companion) => (
+                      <li key={companion.assetId} data-hover-tip={t("inspector.companionHint")}>
+                        <Icon name="file" size={12} />
+                        <span>{companion.fileName}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
             </>
           ) : (
             <div className="inspector-metadata-placeholder" aria-hidden="true" />

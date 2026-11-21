@@ -20925,6 +20925,7 @@ export class LibraryService {
         sourcePageUrl: null,
         author: null,
         tags: this.fetchAssetTags(openLibrary.connection, input.assetId),
+        companions: this.companionSummaries(openLibrary, input.assetId),
         entityVersion: 0,
         updatedAt: new Date(0).toISOString(),
       };
@@ -20942,7 +20943,21 @@ export class LibraryService {
       entityVersion: row.entity_version ?? 0,
       updatedAt: row.updated_at ?? new Date(0).toISOString(),
       tags: this.fetchAssetTags(openLibrary.connection, input.assetId),
+      companions: this.companionSummaries(openLibrary, input.assetId),
     };
+  }
+
+  private companionSummaries(openLibrary: OpenLibrary, assetId: string): Array<{ assetId: string; fileName: string }> {
+    const ids = this.companionAssetIds(openLibrary, [assetId]);
+    if (ids.length === 0) return [];
+    return sqliteAllInChunks<string, { asset_id: string; relative_file_path: string }>({
+      connection: openLibrary.connection,
+      values: ids,
+      buildSql: (placeholders) =>
+        `SELECT asset_id, relative_file_path FROM assets
+          WHERE asset_id IN (${placeholders}) AND deleted_at IS NULL
+          ORDER BY relative_file_path`,
+    }).slice(0, 64).map((row) => ({ assetId: row.asset_id, fileName: path.posix.basename(row.relative_file_path) }));
   }
 
   /**

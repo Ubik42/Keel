@@ -733,6 +733,8 @@ export const en = {
     sourceUrl: "Source URL",
     openSourceUrl: "Open source URL in browser",
     sourceUrlInvalid: "Source URL cannot be opened (http/https without credentials required)",
+    companions: "Attachments",
+    companionHint: "Companion file: moves, renames and is deleted with this file",
     sourceUrlInvalidHint: "Invalid source URL — enter an HTTP(S) link to open",
     openInBrowser: "Open in browser",
     openInBrowserHint: "Enter a valid HTTP(S) URL to open",
