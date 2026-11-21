@@ -1,6 +1,6 @@
 import { createContext, useContext, type ReactNode } from 'react';
 
-import type { PluginReadmeBlock, PluginReadmeInline } from '../plugins/plugin-community-readme';
+import type { PluginReadmeBlock, PluginReadmeInline } from '../plugins/plugin-readme-markdown';
 import { Icon } from './Icons';
 
 const ReadmeLinksInteractive = createContext(true);
@@ -26,7 +26,7 @@ export function PluginReadmeView({
   }
   return (
     <ReadmeLinksInteractive.Provider value={interactive}>
-      <div className="plugin-community-readme">
+      <div className="plugin-readme-markdown">
         {blocks.map((block, index) => (
           <ReadmeBlock block={block} imageLabel={imageLabel} key={`${block.type}:${index}`} onOpenUrl={onOpenUrl} />
         ))}
@@ -53,7 +53,7 @@ function ReadmeBlock({
     }
     case 'table':
       return (
-        <div className="plugin-community-readme-table-wrap">
+        <div className="plugin-readme-markdown-table-wrap">
           <table>
             <thead>
               <tr>
@@ -134,11 +134,11 @@ function ReadmeInlines({
       case 'link': {
         const children = <ReadmeInlines imageLabel={imageLabel} nodes={node.children} onOpenUrl={onOpenUrl} />;
         if (!interactive) {
-          return <span className="plugin-community-readme-link" key={index}>{children}</span>;
+          return <span className="plugin-readme-markdown-link" key={index}>{children}</span>;
         }
         return (
           <button
-            className="plugin-community-readme-link"
+            className="plugin-readme-markdown-link"
             key={index}
             onClick={() => onOpenUrl(node.href)}
             type="button"
@@ -151,7 +151,7 @@ function ReadmeInlines({
         const label = node.alt.trim() === '' ? imageLabel : node.alt;
         if (!interactive) {
           return (
-            <span className="plugin-community-readme-image" key={index}>
+            <span className="plugin-readme-markdown-image" key={index}>
               <Icon name="external-link" size={12} />
               {label}
             </span>
@@ -159,7 +159,7 @@ function ReadmeInlines({
         }
         return (
           <button
-            className="plugin-community-readme-image"
+            className="plugin-readme-markdown-image"
             key={index}
             onClick={() => onOpenUrl(node.href)}
             type="button"

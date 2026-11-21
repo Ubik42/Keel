@@ -10,7 +10,6 @@ import {
 } from 'react';
 
 import type {
-  PluginCommunityCatalogSnapshot,
   PluginManagerPackageSummary,
   PluginManagerRequest,
   PluginManagerResolutionCandidate,
@@ -31,7 +30,6 @@ import { useLocale, useT } from './i18n';
 type PluginSettingsPageProps = {
   readonly api: SerpentPluginManagerApi | undefined;
   readonly libraryId: string | undefined;
-  readonly onOpenCommunity?: () => void;
   readonly onOpenPluginSettings?: (pluginId: string) => void;
   readonly refreshKey: string | null;
 };
@@ -151,7 +149,6 @@ function formatInstallBytes(value: number): string {
 export function PluginSettingsPage({
   api,
   libraryId,
-  onOpenCommunity,
   onOpenPluginSettings,
   refreshKey,
 }: PluginSettingsPageProps): ReactNode {
@@ -160,7 +157,6 @@ export function PluginSettingsPage({
   const currentLibraryId = useRef(libraryId);
   useLayoutEffect(() => { currentLibraryId.current = libraryId; }, [libraryId]);
   const [snapshot, setSnapshot] = useState<PluginSnapshot | undefined>();
-  const [catalog, setCatalog] = useState<PluginCommunityCatalogSnapshot | undefined>();
   const [installOpen, setInstallOpen] = useState(false);
   const [installScope, setInstallScope] = useState<InstallScope>('user');
   const [githubRepository, setGithubRepository] = useState('');
@@ -201,17 +197,6 @@ export function PluginSettingsPage({
       }
       setSnapshot(response);
       setError(undefined);
-      try {
-        const catalogResponse = await api.request({
-          type: 'plugin-manager.community-catalog',
-          refresh: true,
-        });
-        if (catalogResponse.ok && 'catalog' in catalogResponse) {
-          setCatalog(catalogResponse.catalog);
-        }
-      } catch {
-        // Directory overlay is optional; the installed list remains usable.
-      }
     } catch {
       setError(t('settings.pluginOperationFailed', { code: 'bridge-unavailable' }));
     } finally {
@@ -518,15 +503,12 @@ export function PluginSettingsPage({
           const showSettingsAction = newest.status === 'valid'
             && newest.hasSettingsUi
             && onOpenPluginSettings !== undefined;
-          const catalogEntry = catalog?.plugins.find((item) => item.pluginId === pluginId);
           const copy = resolvePluginDisplayCopy({
             locale,
             fallbackName: newest.name,
             fallbackDescription: newest.description ?? pluginId,
             manifestLocales: newest.locales,
-            catalog: catalogEntry,
           });
-          const removed = catalog?.removed.some((item) => item.pluginId === pluginId) === true;
           const githubRepository = newest.source.kind === 'github' ? newest.source.repository : undefined;
           const permissionsTip = newest.permissions.length > 0
             ? t('settings.pluginPermissionsTip', {
@@ -551,24 +533,6 @@ export function PluginSettingsPage({
                       {copy.name}
                       <span className="plugin-settings-package-version-inline">{` - v${newest.version}`}</span>
                     </span>
-                    {catalogEntry?.tier === 'first-party' ? (
-                      <span className="plugin-community-badge plugin-community-badge--first-party">
-                        {t('settings.pluginCommunityOfficial')}
-                      </span>
-                    ) : null}
-                    {catalogEntry?.tier === 'certified' ? (
-                      <span className="plugin-community-badge plugin-community-badge--certified">
-                        {t('settings.pluginCommunityCertified')}
-                      </span>
-                    ) : null}
-                    {removed ? (
-                      <span
-                        className="plugin-community-badge plugin-community-badge--removed"
-                        data-hover-tip={t('settings.pluginCommunityRemovedHint')}
-                      >
-                        {t('settings.pluginCommunityRemoved')}
-                      </span>
-                    ) : null}
                     <div className="plugin-settings-package-source-actions">
                       {githubRepository !== undefined ? (
                         <button
@@ -837,20 +801,11 @@ export function PluginSettingsPage({
           <div className="plugin-settings-overview-actions">
             <button
               className="primary-button"
-              disabled={busy || api === undefined || onOpenCommunity === undefined}
-              onClick={onOpenCommunity}
-              type="button"
-            >
-              {t('settings.pluginCommunityOpen')}
-              <Icon name="external-link" size={13} />
-            </button>
-            <button
-              className="secondary-button"
               disabled={busy || api === undefined}
               onClick={openInstallDialog}
               type="button"
             >
-              {t('settings.pluginCommunityAdvanced')}
+              {t('settings.pluginInstallOpen')}
             </button>
           </div>
         </div>

@@ -5439,17 +5439,17 @@ body.serpent-modal-open .app-shell {
   min-width: 0;
   padding: 16px 20px;
 }
-.preview-markdown .plugin-community-readme {
+.preview-markdown .plugin-readme-markdown {
   font-size: calc(15px * var(--ui-font-scale));
   line-height: 1.6;
 }
-.preview-markdown .plugin-community-readme [data-level="1"] {
+.preview-markdown .plugin-readme-markdown [data-level="1"] {
   font-size: calc(22px * var(--ui-font-scale));
 }
-.preview-markdown .plugin-community-readme [data-level="2"] {
+.preview-markdown .plugin-readme-markdown [data-level="2"] {
   font-size: calc(18px * var(--ui-font-scale));
 }
-.preview-markdown .plugin-community-readme [data-level="3"] {
+.preview-markdown .plugin-readme-markdown [data-level="3"] {
   font-size: calc(16px * var(--ui-font-scale));
 }
 .preview-text-action:focus-visible {
@@ -5572,7 +5572,7 @@ body.serpent-modal-open .app-shell {
   pointer-events: none;
 }
 
-.text-asset-preview-markdown .plugin-community-readme {
+.text-asset-preview-markdown .plugin-readme-markdown {
   display: block;
   height: 100%;
   overflow: hidden;
@@ -5581,42 +5581,42 @@ body.serpent-modal-open .app-shell {
   line-height: 1.35;
 }
 
-.text-asset-preview-markdown .plugin-community-readme-table-wrap {
+.text-asset-preview-markdown .plugin-readme-markdown-table-wrap {
   overflow: hidden;
 }
 
-.text-asset-preview-markdown .plugin-community-readme table {
+.text-asset-preview-markdown .plugin-readme-markdown table {
   table-layout: fixed;
 }
 
-.text-asset-preview-markdown .plugin-community-readme [data-level="1"] {
+.text-asset-preview-markdown .plugin-readme-markdown [data-level="1"] {
   font-size: calc(13px * var(--ui-font-scale));
 }
 
-.text-asset-preview-markdown .plugin-community-readme [data-level="2"] {
+.text-asset-preview-markdown .plugin-readme-markdown [data-level="2"] {
   font-size: calc(12px * var(--ui-font-scale));
 }
 
-.text-asset-preview-markdown .plugin-community-readme [data-level="3"],
-.text-asset-preview-markdown .plugin-community-readme [data-level="4"],
-.text-asset-preview-markdown .plugin-community-readme [data-level="5"],
-.text-asset-preview-markdown .plugin-community-readme [data-level="6"] {
+.text-asset-preview-markdown .plugin-readme-markdown [data-level="3"],
+.text-asset-preview-markdown .plugin-readme-markdown [data-level="4"],
+.text-asset-preview-markdown .plugin-readme-markdown [data-level="5"],
+.text-asset-preview-markdown .plugin-readme-markdown [data-level="6"] {
   font-size: calc(11px * var(--ui-font-scale));
 }
 
-.text-asset-preview-markdown .plugin-community-readme p,
-.text-asset-preview-markdown .plugin-community-readme ul,
-.text-asset-preview-markdown .plugin-community-readme ol,
-.text-asset-preview-markdown .plugin-community-readme blockquote {
+.text-asset-preview-markdown .plugin-readme-markdown p,
+.text-asset-preview-markdown .plugin-readme-markdown ul,
+.text-asset-preview-markdown .plugin-readme-markdown ol,
+.text-asset-preview-markdown .plugin-readme-markdown blockquote {
   margin: 0;
 }
 
-.text-asset-preview-markdown .plugin-community-readme th,
-.text-asset-preview-markdown .plugin-community-readme td {
+.text-asset-preview-markdown .plugin-readme-markdown th,
+.text-asset-preview-markdown .plugin-readme-markdown td {
   padding: 2px 4px;
 }
 
-.inspector-hero-text-preview .text-asset-preview-markdown .plugin-community-readme {
+.inspector-hero-text-preview .text-asset-preview-markdown .plugin-readme-markdown {
   font-size: calc(12px * var(--ui-font-scale));
 }
 
@@ -9209,20 +9209,20 @@ select.ai-config-input.ai-config-languages {
   font-size: calc(12px * var(--ui-font-scale));
 }
 
-.plugin-community-readme-section {
+.plugin-readme-markdown-section {
   display: grid;
   gap: 8px;
   min-width: 0;
 }
 
-.plugin-community-readme-section > h4 {
+.plugin-readme-markdown-section > h4 {
   margin: 0;
   color: var(--text);
   font-size: calc(12px * var(--ui-font-scale));
   font-weight: var(--ui-font-weight-semibold);
 }
 
-.plugin-community-readme {
+.plugin-readme-markdown {
   display: grid;
   gap: 10px;
   min-width: 0;
@@ -9231,93 +9231,93 @@ select.ai-config-input.ai-config-languages {
   line-height: 1.55;
 }
 
-.plugin-community-readme h4,
-.plugin-community-readme h5,
-.plugin-community-readme h6 {
+.plugin-readme-markdown h4,
+.plugin-readme-markdown h5,
+.plugin-readme-markdown h6 {
   margin: 0;
   color: var(--text);
   font-weight: var(--ui-font-weight-semibold);
   line-height: 1.35;
 }
 
-.plugin-community-readme h4 {
+.plugin-readme-markdown h4 {
   font-size: calc(14px * var(--ui-font-scale));
 }
 
-.plugin-community-readme h5 {
+.plugin-readme-markdown h5 {
   font-size: calc(13px * var(--ui-font-scale));
 }
 
-.plugin-community-readme h6 {
+.plugin-readme-markdown h6 {
   font-size: calc(12px * var(--ui-font-scale));
 }
 
-.plugin-community-readme p,
-.plugin-community-readme ul,
-.plugin-community-readme ol,
-.plugin-community-readme blockquote {
+.plugin-readme-markdown p,
+.plugin-readme-markdown ul,
+.plugin-readme-markdown ol,
+.plugin-readme-markdown blockquote {
   margin: 0;
 }
 
-.plugin-community-readme ul,
-.plugin-community-readme ol {
+.plugin-readme-markdown ul,
+.plugin-readme-markdown ol {
   padding-left: 1.2em;
 }
 
-.plugin-community-readme blockquote {
+.plugin-readme-markdown blockquote {
   padding-left: 10px;
   border-left: 2px solid var(--divider);
   color: var(--secondary);
 }
 
-.plugin-community-readme hr {
+.plugin-readme-markdown hr {
   margin: 4px 0;
   border: 0;
   border-top: 1px solid var(--divider);
 }
 
-.plugin-community-readme > * {
+.plugin-readme-markdown > * {
   min-width: 0;
   max-width: 100%;
 }
 
-.plugin-community-readme-table-wrap {
+.plugin-readme-markdown-table-wrap {
   max-width: 100%;
   overflow-x: auto;
 }
 
 /* A max-content table inside this grid sizes the track from the table,
    and the table's percentage width then sizes itself from that track. */
-.plugin-community-readme table {
+.plugin-readme-markdown table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.plugin-community-readme th,
-.plugin-community-readme td {
+.plugin-readme-markdown th,
+.plugin-readme-markdown td {
   padding: 6px 10px;
   border: 1px solid var(--divider);
   vertical-align: top;
   text-align: left;
 }
 
-.plugin-community-readme th.is-center,
-.plugin-community-readme td.is-center {
+.plugin-readme-markdown th.is-center,
+.plugin-readme-markdown td.is-center {
   text-align: center;
 }
 
-.plugin-community-readme th.is-right,
-.plugin-community-readme td.is-right {
+.plugin-readme-markdown th.is-right,
+.plugin-readme-markdown td.is-right {
   text-align: right;
 }
 
-.plugin-community-readme th {
+.plugin-readme-markdown th {
   background: var(--raised);
   color: var(--text);
   font-weight: var(--ui-font-weight-semibold);
 }
 
-.plugin-community-readme pre {
+.plugin-readme-markdown pre {
   overflow-x: auto;
   margin: 0;
   padding: 10px 12px;
@@ -9325,20 +9325,20 @@ select.ai-config-input.ai-config-languages {
   background: var(--raised-2);
 }
 
-.plugin-community-readme code {
+.plugin-readme-markdown code {
   font-family: var(--font-mono);
   font-size: calc(11px * var(--ui-font-scale));
 }
 
-.plugin-community-readme p code,
-.plugin-community-readme li code {
+.plugin-readme-markdown p code,
+.plugin-readme-markdown li code {
   padding: 1px 5px;
   border-radius: calc(4px * var(--ui-radius-scale, 1));
   background: var(--raised-2);
 }
 
-.plugin-community-readme-link,
-.plugin-community-readme-image {
+.plugin-readme-markdown-link,
+.plugin-readme-markdown-image {
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -9352,8 +9352,8 @@ select.ai-config-input.ai-config-languages {
   cursor: pointer;
 }
 
-.plugin-community-readme-link:hover,
-.plugin-community-readme-image:hover {
+.plugin-readme-markdown-link:hover,
+.plugin-readme-markdown-image:hover {
   text-decoration: underline;
 }
 

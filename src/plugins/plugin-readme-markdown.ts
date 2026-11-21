@@ -53,16 +53,6 @@ export function pluginReadmeRawUrl(repositoryUrl: string, releaseTag: string, fi
   return `https://raw.githubusercontent.com/${owner}/${name}/${encodeURIComponent(releaseTag)}/${fileName}`;
 }
 
-export function communityPluginAuthor(input: {
-  readonly author?: string;
-  readonly repo: string;
-}): string {
-  const named = input.author?.trim();
-  if (named !== undefined && named !== '') return named;
-  const owner = input.repo.split('/')[0];
-  return owner !== undefined && owner !== '' ? owner : input.repo;
-}
-
 export function resolveReadmeHref(href: string, context: PluginReadmeResolveContext): string | undefined {
   const trimmed = href.trim();
   if (trimmed === '' || trimmed.startsWith('#') || trimmed.startsWith('mailto:')) return undefined;

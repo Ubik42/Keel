@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 
-import { parseAssetMarkdown } from "../plugins/plugin-community-readme";
+import { parseAssetMarkdown } from "../plugins/plugin-readme-markdown";
 import type { SerpentShellApi } from "../shared/external-url";
 import type { SerpentLibraryApi } from "../shared/library-api";
 import { TEXT_VIEWER_MAX_BYTES, countTextLines } from "../shared/text-media";

@@ -116,20 +116,6 @@ export interface PluginInstallFromGitHubInput {
   downloadOptions?: PluginGitHubDownloadOptions;
 }
 
-export interface PluginInstallFromCommunityInput {
-  pluginId: string;
-  repository: string;
-  releaseTag: string;
-  version: string;
-  assetFileName: string;
-  sha256: string;
-  scope: PluginInstallationScope;
-  libraryDirectory?: string;
-  client: PluginGitHubClient;
-  signal?: AbortSignal;
-  downloadOptions?: PluginGitHubDownloadOptions;
-}
-
 export interface PluginGitHubUpdatePreference {
   pluginId: string;
   sourceFingerprint: string;

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { parseAssetMarkdown } from "../plugins/plugin-community-readme";
+import { parseAssetMarkdown } from "../plugins/plugin-readme-markdown";
 import type { SerpentLibraryApi } from "../shared/library-api";
 import { isMarkdownTextName, textCardPreviewSnippet } from "../shared/text-media";
 import { useT } from "./i18n";

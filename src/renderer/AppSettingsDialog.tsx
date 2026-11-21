@@ -12,7 +12,6 @@ import {
 import { McpSettingsPage } from "./McpSettingsPage";
 import { AppSettingsShortcutsPage } from "./AppSettingsShortcutsPage";
 import { PluginSettingsPage } from "./PluginSettingsPage";
-import { PluginCommunityPage } from "./PluginCommunityPage";
 import { SemanticSearchSettings } from "./SemanticSearchSettings";
 import type { EmbeddingCatalogApi } from "./SemanticSearchSettings";
 import { SyncSettingsPage, type SyncServerSettingsCallbacks } from "./SyncSettingsPage";
@@ -119,9 +118,6 @@ export function AppSettingsDialog({
 }: AppSettingsDialogProps): ReactNode {
   const t = useT();
   const [pluginSettingsPluginId, setPluginSettingsPluginId] = useState<string | null>(null);
-  const [showingCommunity, setShowingCommunity] = useState(false);
-  const [communityPluginId, setCommunityPluginId] = useState<string | undefined>();
-  const [communityDetailTitle, setCommunityDetailTitle] = useState<string | undefined>();
   const [pluginSettingsRefreshKey, setPluginSettingsRefreshKey] = useState(0);
   const pluginSettingsRefreshToken = `${pluginContributionRefreshKey ?? ''}:${pluginSettingsRefreshKey}`;
   const pluginSettingsEntries = usePluginSettingsNavEntries(
@@ -148,25 +144,12 @@ export function AppSettingsDialog({
 
   function selectCategory(category: AppSettingsCategoryId) {
     setPluginSettingsPluginId(null);
-    setShowingCommunity(false);
-    setCommunityPluginId(undefined);
-    setCommunityDetailTitle(undefined);
     onActiveCategoryChange(category);
   }
 
   function openPluginSettings(pluginId: string) {
-    setShowingCommunity(false);
-    setCommunityPluginId(undefined);
-    setCommunityDetailTitle(undefined);
     setPluginSettingsPluginId(pluginId);
     setPluginSettingsRefreshKey((value) => value + 1);
-  }
-
-  function openCommunity() {
-    setPluginSettingsPluginId(null);
-    setCommunityPluginId(undefined);
-    setCommunityDetailTitle(undefined);
-    setShowingCommunity(true);
   }
 
   if (!open) return null;
@@ -207,50 +190,22 @@ export function AppSettingsDialog({
           <main
             aria-labelledby={showingPluginSettings
               ? "app-settings-plugin-settings-heading"
-              : showingCommunity
-                ? "app-settings-plugin-community-heading"
-                : `app-settings-tab-${activeCategory}`}
+              : `app-settings-tab-${activeCategory}`}
             className="app-settings-content"
             id={showingPluginSettings
               ? "app-settings-page-plugin-settings"
-              : showingCommunity
-                ? "app-settings-page-plugin-community"
-                : `app-settings-page-${activeCategory}`}
+              : `app-settings-page-${activeCategory}`}
             role="tabpanel"
           >
             <div className="app-settings-page-heading">
-              {showingCommunity ? (
-                <button
-                  className="plugin-install-back"
-                  onClick={() => {
-                    if (communityPluginId !== undefined) {
-                      setCommunityPluginId(undefined);
-                      setCommunityDetailTitle(undefined);
-                      return;
-                    }
-                    setShowingCommunity(false);
-                  }}
-                  type="button"
-                >
-                  <Icon name="chevron-left" size={14} />
-                  {t("settings.pluginCommunityBack")}
-                </button>
-              ) : null}
               <h3 id={showingPluginSettings
                 ? "app-settings-plugin-settings-heading"
-                : showingCommunity
-                  ? "app-settings-plugin-community-heading"
-                  : undefined}
+                : undefined}
               >
                 {showingPluginSettings
                   ? (activePluginEntry?.name ?? t("settings.categoryPluginSettings"))
-                  : showingCommunity
-                    ? (communityDetailTitle ?? t("settings.pluginCommunity"))
-                    : t(activeCategoryDefinition.labelKey)}
+                  : t(activeCategoryDefinition.labelKey)}
               </h3>
-              {showingCommunity && communityPluginId === undefined ? (
-                <p>{t("settings.pluginCommunityHint")}</p>
-              ) : null}
             </div>
             {showingPluginSettings && pluginSettingsPluginId !== null ? (
               <PluginSettingsDetailPage
@@ -313,23 +268,11 @@ export function AppSettingsDialog({
               />
             ) : null}
             {!showingPluginSettings && activeCategory === "mcp" ? <McpSettingsPage api={mcpApi} onOpenAppLog={onOpenAppLog} /> : null}
-            {!showingPluginSettings && !showingCommunity && activeCategory === "plugins" ? (
+            {!showingPluginSettings && activeCategory === "plugins" ? (
               <PluginSettingsPage
                 api={pluginApi}
                 libraryId={libraryId}
-                onOpenCommunity={openCommunity}
                 onOpenPluginSettings={openPluginSettings}
-                refreshKey={pluginSettingsRefreshToken}
-              />
-            ) : null}
-            {showingCommunity ? (
-              <PluginCommunityPage
-                api={pluginApi}
-                detailPluginId={communityPluginId}
-                libraryId={libraryId}
-                onDetailPluginIdChange={setCommunityPluginId}
-                onDetailTitleChange={setCommunityDetailTitle}
-                onInstalled={() => setPluginSettingsRefreshKey((value) => value + 1)}
                 refreshKey={pluginSettingsRefreshToken}
               />
             ) : null}

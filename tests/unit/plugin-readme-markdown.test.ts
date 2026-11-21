@@ -1,20 +1,19 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-  communityPluginAuthor,
   parseAssetMarkdown,
   parsePluginReadmeMarkdown,
   pluginReadmeCandidates,
   pluginReadmeRawUrl,
   resolveReadmeHref,
-} from '../../src/plugins/plugin-community-readme';
+} from '../../src/plugins/plugin-readme-markdown';
 
 const context = {
   repositoryUrl: 'https://github.com/example/serpent-palette-tools',
   releaseTag: 'v1.2.0',
 };
 
-describe('plugin community readme', () => {
+describe('plugin readme markdown', () => {
   it('picks locale-specific README candidates before the generic file', () => {
     expect(pluginReadmeCandidates('zh-CN')).toEqual([
       'README.zh-CN.md',
@@ -28,11 +27,6 @@ describe('plugin community readme', () => {
     expect(pluginReadmeRawUrl(context.repositoryUrl, context.releaseTag, 'README.zh-CN.md')).toBe(
       'https://raw.githubusercontent.com/example/serpent-palette-tools/v1.2.0/README.zh-CN.md',
     );
-  });
-
-  it('uses catalog author when present and otherwise the GitHub owner', () => {
-    expect(communityPluginAuthor({ author: 'Ada', repo: 'example/serpent-palette-tools' })).toBe('Ada');
-    expect(communityPluginAuthor({ repo: 'example/serpent-palette-tools' })).toBe('example');
   });
 
   it('resolves relative markdown to blob URLs and images to raw URLs', () => {
