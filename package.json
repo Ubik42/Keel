@@ -52,6 +52,7 @@
     "pretest:perf:search": "node scripts/ensure-native.mjs",
     "pretest:e2e": "node scripts/ensure-native.mjs",
     "pretest:e2e:isolated": "node scripts/ensure-native.mjs",
+    "test:visual": "node scripts/run-e2e.mjs tests/e2e/visual-baseline.test.ts",
     "test:e2e:packaged": "playwright test tests/e2e/packaged-startup.test.ts",
     "verify:mainline": "node scripts/verify-mainline.mjs",
     "release:verify": "node scripts/release/pipeline.mjs verify",
