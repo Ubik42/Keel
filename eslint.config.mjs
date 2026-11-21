@@ -18,6 +18,14 @@ export default tseslint.config(
       // Electron/Playwright-generated traces, reports, and runtime fixtures.
       'test-results/**',
       'node_modules/**',
+      // Local scratch output (git-ignored): converters, backups, baselines.
+      'work/**',
+      // Generated bundles and the Python runtime of the phone sync tool
+      // (git-ignored in tools/phone-photo-sync/.gitignore).
+      'tools/phone-photo-sync/runtime/**',
+      'tools/phone-photo-sync/catalog.cjs',
+      'tools/phone-photo-sync/catalog-*.js',
+      'tools/phone-photo-sync/pdf-*.js',
       // Emscripten-generated glue (acquired by scripts/build-ufbx-wasm.mjs).
       'resources/ufbx/**',
     ],
