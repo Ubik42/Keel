@@ -208,7 +208,7 @@ import {
   CONTENT_REPLACE_BATCH_MAX_ITEMS,
   CONTENT_REPLACE_STAGE_CHUNK_MAX_BYTES,
 } from '../shared/content-replace';
-import { smartCollectionQueryDefinitionSchema, extractedVideoMetadataSchema, type AssetMetadataResult, type ExtractedMetadataResult, type ExtractedVideoMetadata, type AssetSummary, type BrowseLayoutEntry, type FilterClause, type FolderBrowseEntry, type GitignorePreview, type IgnoredPath, type LinkedFolderDirectoryMutation, type LinkedFolderRule, type LinkedFolderSummary, type ManagedFolderSummary, type SearchExpressionNode, type SearchQuery, type SearchScope, type SortDefinition, type SmartCollectionQueryDefinition, type TagCooccurrenceGraph, type TagSummary, type TrashedFolderSummary } from '../shared/asset-types';
+import { smartCollectionQueryDefinitionSchema, extractedVideoMetadataSchema, type AssetMetadataResult, type ExtractedMetadataResult, type ExtractedVideoMetadata, type AssetSummary, type BrowseLayoutEntry, type FilterClause, type FolderBrowseEntry, type GitignorePreview, type IgnoredPath, type LinkedFolderDirectoryMutation, type LinkedFolderRule, type LinkedFolderSummary, type ManagedFolderSummary, type SearchExpressionNode, type SearchQuery, type SearchScope, type SortDefinition, type TagCooccurrenceGraph, type TagSummary, type TrashedFolderSummary } from '../shared/asset-types';
 import {
   parseWritableAppearance,
   sanitizeEntityAppearance,

@@ -119,7 +119,7 @@ export function parseCurrentUserSid(output: string): string {
  * POSIX `whoami` (or another icacls) can shadow the system tool.
  */
 function windowsSystemTool(name: string): string {
-  const systemRoot = process.env.SystemRoot ?? process.env.windir ?? 'C:\Windows';
+  const systemRoot = process.env.SystemRoot ?? process.env.windir ?? 'C:\\Windows';
   return path.join(systemRoot, 'System32', name);
 }
 

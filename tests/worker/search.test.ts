@@ -8,7 +8,6 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import {
   LibraryService,
-  LibraryServiceError,
   SUPPORTED_SCHEMA_VERSION,
 } from '../../src/worker/library-service';
 import { buildFts5Query, normalizeSearchText, tokenizeForFts } from '../../src/worker/search-query';
@@ -48,17 +47,6 @@ function temporaryRoot(): string {
   const root = mkdtempSync(path.join(tmpdir(), 'serpent-search-test-'));
   temporaryRoots.push(root);
   return root;
-}
-
-function expectServiceCode(operation: () => unknown, code: LibraryServiceError['code']): void {
-  let thrown: unknown;
-  try {
-    operation();
-  } catch (error) {
-    thrown = error;
-  }
-  expect(thrown).toBeInstanceOf(LibraryServiceError);
-  expect((thrown as LibraryServiceError).code).toBe(code);
 }
 
 afterEach(() => {

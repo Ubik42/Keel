@@ -1,4 +1,4 @@
-import { createHash, randomUUID } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
 import {
   lstat,
   mkdir,
@@ -24,7 +24,6 @@ import {
 import {
   currentPluginPlatformToken,
   isPluginPlatformToken,
-  parsePluginReleaseAssetFileName,
   selectPluginReleaseAsset,
   stripSemverTagPrefix,
   type PluginPlatformToken,

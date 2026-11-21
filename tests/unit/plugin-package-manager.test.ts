@@ -5,7 +5,6 @@ import {
   rmSync,
   writeFileSync,
 } from 'node:fs';
-import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
