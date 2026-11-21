@@ -1,6 +1,6 @@
 # 长期目标
 
-把本工程（原 Serpent，改名为 Ouro）重构为可长期维护的结构，并抽出共享包 `@ubik/protocol`、`@ubik/workbench`、`@ubik/library`（仓库 `D:\CS\_tools\ubik-kit`）供 Panthesia 使用。计划、阶段完成条件与进度记录全部在 [docs/进度.md](docs/进度.md)。
+把本工程（原 Serpent，改名为 Ouro）重构为可长期维护的结构，并抽出共享包 `@ubik/protocol`、`@ubik/workbench`、`@ubik/library`（仓库 `D:\CS\_tools\keel`）供 Panthesia 使用。计划、阶段完成条件与进度记录全部在 [docs/进度.md](docs/进度.md)。
 
 ## 每轮开始
 
