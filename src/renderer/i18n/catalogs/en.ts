@@ -694,6 +694,10 @@ export const en = {
     }
   },
   menu: {
+    openWith: "Open with",
+    openWithViewer: "Keel viewer",
+    openWithSystem: "System default app",
+    openWithOther: "Choose another app…",
     createImageSequence: "Create image sequence…",
     dissolveImageSequence: "Dissolve image sequence",
     dissolveImageSequencesCount: "Dissolve image sequences ({count} items)",
@@ -2364,6 +2368,7 @@ export const en = {
   },
   toast: {
     bridgeUnavailable: "Cannot connect to the Keel desktop service. Please restart the app.",
+    openWithFailed: "The file could not be opened with that program. Check its path under Settings → Open with.",
     workspaceRestoreFailed: "Could not restore the workspace.",
     thumbnailFailed: "Thumbnail generation failed. Check the source file and try again.",
     aiAnalyzeDoneFields: "AI analysis finished: wrote {fieldCount} fields and {tagCount} tags.",

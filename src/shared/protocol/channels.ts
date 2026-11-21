@@ -29,6 +29,11 @@ export const SHORTCUT_BINDINGS_IMPORT_CHANNEL = 'keel:shortcuts:import' as const
 export const STARTUP_PREFERENCES_GET_CHANNEL = 'keel:startup-preferences:get' as const;
 /** Renderer → Main: persist launch-at-login preferences. */
 export const STARTUP_PREFERENCES_SET_CHANNEL = 'keel:startup-preferences:set' as const;
+/** PF: open-with settings (programs and per-extension defaults). */
+export const OPEN_WITH_SETTINGS_GET_CHANNEL = 'keel:open-with:get' as const;
+export const OPEN_WITH_SETTINGS_SET_CHANNEL = 'keel:open-with:set' as const;
+/** PF: native picker for a program to register; returns its name and path. */
+export const OPEN_WITH_CHOOSE_PROGRAM_CHANNEL = 'keel:open-with:choose-program' as const;
 /** Main → Renderer: script/MCP/plugin user-visible toast or blocking dialog. */
 export const SHELL_NOTIFY_CHANNEL = 'keel:shell:notify' as const;
 /**

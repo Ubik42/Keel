@@ -1,3 +1,5 @@
+import { useOpenWithSettings } from "./use-open-with-settings";
+import { resolveOpenWithTarget } from "../shared/open-with";
 import { AutomaticTasksSidebar } from './AutomaticTasksSidebar';
 import { AutomaticTasksDialog } from './AutomaticTasksDialog';
 import { TAG_DRAG_TYPE } from './tag-drag-drop';
@@ -8030,6 +8032,24 @@ function AppInner() {
     setNotice,
   });
 
+  // PF: double-click and the "打开方式" menu follow the per-extension default.
+  const { settings: openWithSettings } = useOpenWithSettings();
+  const openAssetWithProgram = useCallback(async (assetId: string, programId?: string) => {
+    if (!api || !library) return;
+    const result = await api.openWith({ libraryId: library.libraryId, assetId, ...(programId === undefined ? {} : { programId }) });
+    if (!result.ok) setError(t("toast.openWithFailed"));
+  }, [api, library, setError, t]);
+  const openAssetByDefault = useCallback((asset: AssetSummary) => {
+    const target = resolveOpenWithTarget(openWithSettings, asset.displayName);
+    if (target.kind === "system" && asset.availability === "available" && !asset.deletedAt) {
+      void handleOpenExternal(asset.assetId);
+    } else if (target.kind === "program" && asset.availability === "available" && !asset.deletedAt) {
+      void openAssetWithProgram(asset.assetId, target.programId);
+    } else {
+      openAssetPreview(asset);
+    }
+  }, [handleOpenExternal, openAssetPreview, openAssetWithProgram, openWithSettings]);
+
   const browsePasteDestination = resolveBrowsePasteDestination({
     libraryOpen: Boolean(library),
     showTrash,
@@ -14435,7 +14455,7 @@ function AppInner() {
                       }}
                       onDoubleClick={() => {
                         if (renamingThisAsset) return;
-                        openAssetPreview(asset);
+                        openAssetByDefault(asset);
                       }}
                       onDragEnd={() => {
                         managedAssetDragIdsRef.current = null;
@@ -16054,6 +16074,9 @@ function AppInner() {
         onCopyToLinked={(folder, assetIds) => { void copyManagedSelectionToLinked(folder, assetIds); }}
         onClearSelection={clearAssetSelection}
         onOpenExternal={(assetId) => { void handleOpenExternal(assetId); }}
+        openWithPrograms={openWithSettings.programs}
+        onOpenWithProgram={(assetId, programId) => { void openAssetWithProgram(assetId, programId); }}
+        onOpenWithPicker={(assetId) => { void openAssetWithProgram(assetId); }}
         onViewAsset={(assetId) => {
           const asset = visibleAssets.find((item) => item.assetId === assetId);
           if (asset) openAssetPreview(asset);

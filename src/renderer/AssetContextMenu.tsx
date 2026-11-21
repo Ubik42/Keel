@@ -394,6 +394,11 @@ interface AssetContextMenuProps {
   onCopyToLinked: (folder: LinkedFolderSummary, assetIds: string[]) => void;
   onClearSelection: () => void;
   onOpenExternal: (assetId: string) => void;
+  /** PF: programs registered in the open-with settings. */
+  openWithPrograms?: readonly { programId: string; name: string }[];
+  onOpenWithProgram?: (assetId: string, programId: string) => void;
+  /** PF: the system "open with" picker. */
+  onOpenWithPicker?: (assetId: string) => void;
   onViewAsset: (assetId: string) => void;
   onSetAssetColorSpace: (assetId: string, colorSpace: string | null) => void;
   onCreateImageSequence: (assetIds: string[]) => void;
@@ -477,6 +482,9 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
     aiDisconnected,
     onClearSelection,
     onOpenExternal,
+    openWithPrograms = [],
+    onOpenWithProgram,
+    onOpenWithPicker,
     onViewAsset,
     onRevealInFolder,
     onShowInLibraryFolder,
@@ -1802,6 +1810,34 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
                       }
                       onAction={() => runAssetCommand("asset.open-external")}
                     />
+                  )}
+                  {openExternalItem && !openExternalItem.disabled && (
+                    <ContextMenuSubmenu
+                      icon={<Icon name="external-link" size={14} />}
+                      label={t("menu.openWith")}
+                    >
+                      <ContextMenuItem
+                        label={t("menu.openWithViewer")}
+                        onAction={() => onViewAsset(assetId)}
+                      />
+                      <ContextMenuItem
+                        label={t("menu.openWithSystem")}
+                        onAction={() => onOpenExternal(assetId)}
+                      />
+                      {openWithPrograms.map((program) => (
+                        <ContextMenuItem
+                          key={program.programId}
+                          label={program.name}
+                          onAction={() => onOpenWithProgram?.(assetId, program.programId)}
+                        />
+                      ))}
+                      {onOpenWithPicker && (
+                        <ContextMenuItem
+                          label={t("menu.openWithOther")}
+                          onAction={() => onOpenWithPicker(assetId)}
+                        />
+                      )}
+                    </ContextMenuSubmenu>
                   )}
                   {revealInFolderItem && (
                     <ContextMenuItem

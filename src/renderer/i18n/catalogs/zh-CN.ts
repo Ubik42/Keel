@@ -681,6 +681,10 @@ export const zhCN = {
     }
   },
   menu: {
+    openWith: "打开方式",
+    openWithViewer: "Keel 预览",
+    openWithSystem: "系统默认程序",
+    openWithOther: "选择其他应用…",
     createImageSequence: "创建序列图…",
     dissolveImageSequence: "解散序列图",
     dissolveImageSequencesCount: "解散序列图（{count} 项）",
@@ -2348,6 +2352,7 @@ export const zhCN = {
   },
   toast: {
     bridgeUnavailable: "无法连接到 Keel 桌面服务。请重新启动应用。",
+    openWithFailed: "无法用所选程序打开文件。请在设置的“打开方式”中检查程序路径。",
     workspaceRestoreFailed: "无法恢复工作区。",
     thumbnailFailed: "缩略图生成失败。请检查源文件后重试。",
     aiAnalyzeDoneFields: "AI 分析完成：写入 {fieldCount} 个字段、{tagCount} 个标签。",

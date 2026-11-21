@@ -10,6 +10,8 @@ export type MediaShellResultRuntime = {
   writeClipboardText: (text: string) => void;
   writeClipboardFilePaths: (absolutePaths: readonly string[]) => boolean;
   openWith: (absolutePath: string) => Promise<"failed" | "cancelled" | "opened">;
+  /** PF: start a program registered in the open-with settings. */
+  openWithProgram: (absolutePath: string, programId: string) => "failed" | "cancelled" | "opened";
 };
 
 /**
@@ -120,7 +122,9 @@ export async function tryHandleMediaShellWorkerResult(
     request.type === "asset.open-with.request" &&
     workerResult.type === "media.asset-path"
   ) {
-    const outcome = await runtime.openWith(workerResult.absolutePath);
+    const outcome = request.programId === undefined
+      ? await runtime.openWith(workerResult.absolutePath)
+      : runtime.openWithProgram(workerResult.absolutePath, request.programId);
     if (outcome === "failed") {
       runtime.logError("main.open-with", new Error("open-with failed"));
       return {

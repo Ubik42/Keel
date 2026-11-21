@@ -14,6 +14,7 @@ function runtime(overrides?: Partial<MediaShellResultRuntime>): MediaShellResult
     writeClipboardText: vi.fn(),
     writeClipboardFilePaths: vi.fn(() => true),
     openWith: vi.fn(async () => "opened" as const),
+    openWithProgram: vi.fn(() => "opened" as const),
     ...overrides,
   };
 }
@@ -76,4 +77,17 @@ test("asset.copy-file-path writes the Worker path to the clipboard", async () =>
     assetId: "asset-1",
   });
   expect(writeClipboardText).toHaveBeenCalledWith("C:\\libraries\\studio\\a.png");
+});
+
+test("open-with with a programId starts the registered program", async () => {
+  const openWithProgram = vi.fn(() => "opened" as const);
+  const openWith = vi.fn(async () => "opened" as const);
+  const result = await tryHandleMediaShellWorkerResult(
+    { type: "asset.open-with.request", libraryId: "lib-1", assetId: "asset-1", programId: "7f0d1c9e-0b0f-4a62-9a4a-3a8f5d2c1b01" },
+    { ok: true, type: "media.asset-path", absolutePath: "D:/lib/song.mid" } as never,
+    runtime({ openWith, openWithProgram }),
+  );
+  expect(openWithProgram).toHaveBeenCalledWith("D:/lib/song.mid", "7f0d1c9e-0b0f-4a62-9a4a-3a8f5d2c1b01");
+  expect(openWith).not.toHaveBeenCalled();
+  expect(result).toMatchObject({ ok: true, type: "asset.open-with.requested" });
 });

@@ -2383,8 +2383,8 @@ export const library: KeelLibraryApi = Object.freeze({
     return { ok: true, value: undefined };
   },
 
-  async openWith({ libraryId, assetId }: { libraryId: string; assetId: string }): Promise<LibraryApiResult<void>> {
-    const result = await request({ type: 'asset.open-with.request', libraryId, assetId });
+  async openWith({ libraryId, assetId, programId }: { libraryId: string; assetId: string; programId?: string }): Promise<LibraryApiResult<void>> {
+    const result = await request({ type: 'asset.open-with.request', libraryId, assetId, ...(programId === undefined ? {} : { programId }) });
     if (!result.ok) return failure(result);
     return { ok: true, value: undefined };
   },

@@ -1198,6 +1198,8 @@ export const rendererRequestSchema = z.discriminatedUnion('type', [
     type: z.literal('asset.open-with.request'),
     libraryId: identifierSchema,
     assetId: identifierSchema,
+    /** PF: a program from the open-with settings; omitted opens the system picker. */
+    programId: z.string().uuid().optional(),
   }),
   z.strictObject({
     type: z.literal('asset.reveal-in-folder.request'),

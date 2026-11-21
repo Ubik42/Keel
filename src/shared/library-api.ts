@@ -901,7 +901,7 @@ export interface KeelLibraryApi {
   reportPreviewError(input: { libraryId: string; assetId: string; errorCode: string; detail?: string }): Promise<LibraryApiResult<void>>;
   openExternal(input: { libraryId: string; assetId: string }): Promise<LibraryApiResult<void>>;
   /** Open asset with a user-chosen application (macOS picker / Windows Open With). */
-  openWith(input: { libraryId: string; assetId: string }): Promise<LibraryApiResult<void>>;
+  openWith(input: { libraryId: string; assetId: string; programId?: string }): Promise<LibraryApiResult<void>>;
   revealInFolder(input: { libraryId: string; assetId: string }): Promise<LibraryApiResult<void>>;
   copyFilePath(input: { libraryId: string; assetId: string }): Promise<LibraryApiResult<void>>;
   /** OS file clipboard copy for one or more assets (Finder/Explorer interoperable). */

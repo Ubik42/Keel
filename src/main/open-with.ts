@@ -137,3 +137,28 @@ async function openWithOnWindows(
   ]);
   return "opened";
 }
+
+/**
+ * PF: start a program registered in the open-with settings. The only
+ * argument is the file's absolute path; the program runs detached so it
+ * outlives Keel.
+ */
+export function openPathWithProgram(
+  targetPath: string,
+  executablePath: string,
+  spawnProcess: typeof import("node:child_process").spawn,
+): OpenWithOutcome {
+  if (!targetPath || !executablePath) return "failed";
+  try {
+    const child = spawnProcess(executablePath, [targetPath], {
+      detached: true,
+      stdio: "ignore",
+      windowsHide: false,
+    });
+    child.on("error", () => undefined);
+    child.unref();
+    return "opened";
+  } catch {
+    return "failed";
+  }
+}

@@ -2,6 +2,9 @@ import "../shared/install-legacy-env";
 import path from "node:path";
 import { tmpdir } from "node:os";
 import { copyLegacyUserData } from "./legacy-user-data";
+import { spawn } from "node:child_process";
+import { openWithSettingsFilePath, readOpenWithSettings, writeOpenWithSettings } from "./open-with-settings-store";
+import { DEFAULT_OPEN_WITH_SETTINGS } from "../shared/open-with";
 import { randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
@@ -221,6 +224,7 @@ import {
 import {
   createOpenWithDeps,
   openPathWithOtherApplication,
+  openPathWithProgram,
 } from "./open-with";
 import {
   bindWindowMaximizedEvents,
@@ -254,6 +258,9 @@ import {
   OPEN_EXTERNAL_URL_CHANNEL,
   STARTUP_PREFERENCES_GET_CHANNEL,
   STARTUP_PREFERENCES_SET_CHANNEL,
+  OPEN_WITH_CHOOSE_PROGRAM_CHANNEL,
+  OPEN_WITH_SETTINGS_GET_CHANNEL,
+  OPEN_WITH_SETTINGS_SET_CHANNEL,
   SHORTCUT_BINDINGS_EXPORT_CHANNEL,
   SHORTCUT_BINDINGS_GET_CHANNEL,
   SHORTCUT_BINDINGS_IMPORT_CHANNEL,
@@ -4003,6 +4010,11 @@ async function handleLibraryRequest(
           absolutePath,
           createOpenWithDeps(appLocale, () => mainWindow ?? null),
         ),
+      openWithProgram: (absolutePath, programId) => {
+        const program = readOpenWithSettings(openWithSettingsFilePath(app.getPath("userData")))
+          .programs.find((entry) => entry.programId === programId);
+        return program ? openPathWithProgram(absolutePath, program.executablePath, spawn) : "failed";
+      },
     });
     if (mediaShellResult) return mediaShellResult;
 
@@ -6751,6 +6763,34 @@ async function startApplication(): Promise<void> {
       }
     },
   );
+
+  // PF: open-with settings. Only the main window may read or change them.
+  ipcMain.handle(OPEN_WITH_SETTINGS_GET_CHANNEL, (event) => {
+    if (!mainWindow || event.sender !== mainWindow.webContents) return DEFAULT_OPEN_WITH_SETTINGS;
+    return readOpenWithSettings(openWithSettingsFilePath(app.getPath("userData")));
+  });
+  ipcMain.handle(OPEN_WITH_SETTINGS_SET_CHANNEL, (event, input: unknown) => {
+    const filePath = openWithSettingsFilePath(app.getPath("userData"));
+    if (!mainWindow || event.sender !== mainWindow.webContents) return readOpenWithSettings(filePath);
+    try {
+      return writeOpenWithSettings(filePath, input);
+    } catch (error) {
+      logger?.error("open-with.settings", error);
+      return readOpenWithSettings(filePath);
+    }
+  });
+  ipcMain.handle(OPEN_WITH_CHOOSE_PROGRAM_CHANNEL, async (event) => {
+    if (!mainWindow || event.sender !== mainWindow.webContents) return null;
+    const result = await dialog.showOpenDialog(mainWindow, {
+      properties: ["openFile"],
+      ...(process.platform === "win32"
+        ? { filters: [{ name: "Programs", extensions: ["exe", "bat", "cmd"] }] }
+        : {}),
+    });
+    const executablePath = result.canceled ? undefined : result.filePaths[0];
+    if (!executablePath) return null;
+    return { name: path.parse(executablePath).name, executablePath };
+  });
 
   ipcMain.handle(STARTUP_PREFERENCES_SET_CHANNEL, (event, input: unknown): StartupPreferencesSnapshot => {
     if (!mainWindow || event.sender !== mainWindow.webContents) {

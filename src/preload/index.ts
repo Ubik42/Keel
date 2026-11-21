@@ -1,3 +1,4 @@
+import { openWith } from './bridge/open-with';
 import { contextBridge } from 'electron';
 
 import { automation } from './bridge/automation';
@@ -60,6 +61,7 @@ contextBridge.exposeInMainWorld(
     shell,
     shortcuts,
     startup,
+    openWith,
     automation,
     mcp,
     plugins,
