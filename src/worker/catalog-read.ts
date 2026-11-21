@@ -535,6 +535,8 @@ export function buildCatalogAssetVisibilityPredicates(input: {
   explicitIgnoreSql: string;
   hasLinkedIgnoredAssets: boolean;
   hasSequenceFrames: boolean;
+  /** PF: hide companion files (e.g. `.xmp`) that belong to a primary asset. */
+  hasCompanions?: boolean;
 }): string[] {
   const predicates = [input.scopeKind === 'trash'
     ? 'a.deleted_at IS NOT NULL'
@@ -549,6 +551,9 @@ export function buildCatalogAssetVisibilityPredicates(input: {
     predicates.push('NOT EXISTS (SELECT 1 FROM linked_ignored_assets ignored WHERE ignored.asset_id = a.asset_id)');
   }
   predicates.push(input.showIgnored === true ? '1 = 1' : input.explicitIgnoreSql);
+  if (input.hasCompanions === true) {
+    predicates.push('NOT EXISTS (SELECT 1 FROM asset_companions companion WHERE companion.asset_id = a.asset_id)');
+  }
   if (input.hasSequenceFrames) {
     predicates.push(`NOT EXISTS (
         SELECT 1
@@ -569,6 +574,7 @@ export function countCatalogNavigationAssets(
     explicitIgnoreSql: string;
     hasLinkedIgnoredAssets: boolean;
     hasSequenceFrames: boolean;
+    hasCompanions?: boolean;
   },
 ): number {
   const predicates = buildCatalogAssetVisibilityPredicates({
@@ -578,6 +584,7 @@ export function countCatalogNavigationAssets(
     explicitIgnoreSql: input.explicitIgnoreSql,
     hasLinkedIgnoredAssets: input.hasLinkedIgnoredAssets,
     hasSequenceFrames: input.hasSequenceFrames,
+    hasCompanions: input.hasCompanions,
   });
   const row = connection.prepare(
     `SELECT COUNT(*) AS total FROM assets a WHERE ${predicates.join(' AND ')}`,

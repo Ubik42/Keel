@@ -1,3 +1,4 @@
+import { ASSET_COMPANIONS_SQL, BUILT_IN_COMPANION_EXTENSIONS, normalizeCompanionExtensions, pairCompanions, renamedCompanionName, type CompanionCandidateRow } from './companion-files';
 import { AUTOMATIC_TASKS_SQL, AUTOMATIC_TASK_LAYOUT_SQL, automaticTaskLayoutSchema, type AutomaticTaskLayout, automaticTaskConfigSchema, type AutomaticTask, type AutomaticTaskConfig } from '../shared/automatic-tasks';
 import { ensureWindowsLibraryIcon } from './windows-library-icon';
 import { randomTagAppearance } from '../shared/tag-appearance';
@@ -3871,6 +3872,7 @@ export const MIGRATIONS = [
   { version: 62, sql: TAG_APPEARANCE_SQL, checksum: createHash('sha256').update(TAG_APPEARANCE_SQL).digest('hex') },
   { version: 63, sql: AUTOMATIC_TASKS_SQL, checksum: createHash('sha256').update(AUTOMATIC_TASKS_SQL).digest('hex') },
   { version: 64, sql: AUTOMATIC_TASK_LAYOUT_SQL, checksum: createHash('sha256').update(AUTOMATIC_TASK_LAYOUT_SQL).digest('hex') },
+  { version: 65, sql: ASSET_COMPANIONS_SQL, checksum: createHash('sha256').update(ASSET_COMPANIONS_SQL).digest('hex') },
 ] as const;
 export const SUPPORTED_SCHEMA_VERSION = MIGRATIONS.at(-1)!.version;
 
@@ -16104,11 +16106,102 @@ export class LibraryService {
       explicitIgnoreSql: hasExplicitIgnores ? this.explicitIgnoreSql(connection, 'a', input.showIgnored) : '1 = 1',
       hasLinkedIgnoredAssets: this.catalogTableHasRows(connection, 'linked_ignored_assets'),
       hasSequenceFrames: this.catalogTableHasRows(connection, 'asset_sequence_frames'),
+      hasCompanions: this.ensureCompanionIndex(openLibrary),
     });
   }
 
-  private catalogTableHasRows(connection: DatabaseConnection, table: 'explicit_ignored_paths' | 'gitignore_ignored_paths' | 'linked_ignored_assets' | 'asset_sequence_frames'): boolean {
+  private catalogTableHasRows(connection: DatabaseConnection, table: 'explicit_ignored_paths' | 'gitignore_ignored_paths' | 'linked_ignored_assets' | 'asset_sequence_frames' | 'asset_companions'): boolean {
     return hasTable(connection, table) && connection.prepare(`SELECT 1 FROM ${table} LIMIT 1`).get() !== undefined;
+  }
+
+  #companionExtensions: readonly string[] = BUILT_IN_COMPANION_EXTENSIONS;
+
+  /** PF: extensions treated as companions (built-in plus plugin-declared). */
+  setCompanionExtensions(extensions: Iterable<string>): void {
+    this.#companionExtensions = normalizeCompanionExtensions([...BUILT_IN_COMPANION_EXTENSIONS, ...extensions]);
+  }
+
+  /**
+   * Bring asset_companions up to date with the live assets. Runs lazily on
+   * reads: every asset change bumps browse_change_sequence, so the stored
+   * sequence tells whether pairs can be stale. Relations of trashed
+   * companions are kept so a restore can bring them back with the primary.
+   */
+  ensureCompanionIndex(openLibrary: OpenLibrary): boolean {
+    const connection = openLibrary.connection;
+    if (!hasTable(connection, 'asset_companions') || !hasTable(connection, 'browse_change_sequence')) return false;
+    const extensions = normalizeCompanionExtensions(this.#companionExtensions);
+    const sequenceRow = connection.prepare('SELECT sequence FROM browse_change_sequence WHERE library_id = ?')
+      .get(openLibrary.summary.libraryId) as { sequence: number } | undefined;
+    const sequence = sequenceRow?.sequence ?? 0;
+    const state = connection.prepare('SELECT browse_sequence, extensions FROM asset_companion_index_state WHERE id = 1')
+      .get() as { browse_sequence: number; extensions: string } | undefined;
+    const extensionKey = extensions.join(',');
+    if (openLibrary.readOnly || (state && state.browse_sequence === sequence && state.extensions === extensionKey)) {
+      return this.catalogTableHasRows(connection, 'asset_companions');
+    }
+    const candidates = extensions.length === 0
+      ? []
+      : connection.prepare(
+        `SELECT asset_id, location_kind, linked_folder_id, relative_file_path FROM assets
+          WHERE deleted_at IS NULL AND normalized_extension IN (${extensions.map(() => '?').join(',')})`,
+      ).all(...extensions.map((extension) => `.${extension}`)) as CompanionCandidateRow[];
+    const rows: CompanionCandidateRow[] = [];
+    const seenDirectories = new Set<string>();
+    const siblingsQuery = connection.prepare(
+      `SELECT asset_id, location_kind, linked_folder_id, relative_file_path FROM assets
+        WHERE deleted_at IS NULL AND location_kind = ? AND linked_folder_id IS ?
+          AND relative_file_path LIKE ? ESCAPE '\\' AND relative_file_path NOT LIKE ? ESCAPE '\\'`,
+    );
+    for (const candidate of candidates) {
+      const directory = path.posix.dirname(candidate.relative_file_path);
+      const key = `${candidate.location_kind}|${candidate.linked_folder_id ?? ''}|${directory.toLowerCase()}`;
+      if (seenDirectories.has(key)) continue;
+      seenDirectories.add(key);
+      const prefix = directory === '.' ? '' : `${directory.replace(/[\\%_]/gu, (match) => `\\${match}`)}/`;
+      rows.push(...siblingsQuery.all(candidate.location_kind, candidate.linked_folder_id, `${prefix}%`, `${prefix}%/%`) as CompanionCandidateRow[]);
+    }
+    const pairs = pairCompanions(rows, extensions);
+    connection.transaction(() => {
+      connection.prepare(
+        `DELETE FROM asset_companions
+          WHERE asset_id IN (SELECT asset_id FROM assets WHERE deleted_at IS NULL)
+             OR asset_id NOT IN (SELECT asset_id FROM assets)`,
+      ).run();
+      const insert = connection.prepare('INSERT OR REPLACE INTO asset_companions (asset_id, primary_asset_id) VALUES (?, ?)');
+      for (const [assetId, primaryId] of pairs) insert.run(assetId, primaryId);
+      connection.prepare(
+        `INSERT INTO asset_companion_index_state (id, browse_sequence, extensions) VALUES (1, ?, ?)
+         ON CONFLICT(id) DO UPDATE SET browse_sequence = excluded.browse_sequence, extensions = excluded.extensions`,
+      ).run(sequence, extensionKey);
+    })();
+    return pairs.size > 0 || this.catalogTableHasRows(connection, 'asset_companions');
+  }
+
+  /** Companion asset ids for the given primaries, including trashed ones. */
+  companionAssetIds(openLibrary: OpenLibrary, primaryAssetIds: readonly string[]): string[] {
+    if (primaryAssetIds.length === 0 || !hasTable(openLibrary.connection, 'asset_companions')) return [];
+    this.ensureCompanionIndex(openLibrary);
+    return sqliteAllInChunks<string, { asset_id: string }>({
+      connection: openLibrary.connection,
+      values: [...primaryAssetIds],
+      buildSql: (placeholders) =>
+        `SELECT asset_id FROM asset_companions WHERE primary_asset_id IN (${placeholders}) ORDER BY asset_id`,
+    }).map((row) => row.asset_id);
+  }
+
+  /** Selection plus the companions of every selected primary, without duplicates. */
+  withCompanionAssetIds(openLibrary: OpenLibrary, assetIds: readonly string[]): string[] {
+    const companions = this.companionAssetIds(openLibrary, assetIds);
+    if (companions.length === 0) return [...assetIds];
+    const result = [...assetIds];
+    const seen = new Set(assetIds);
+    for (const id of companions) {
+      if (seen.has(id)) continue;
+      seen.add(id);
+      result.push(id);
+    }
+    return result;
   }
 
   /**
@@ -16478,6 +16571,7 @@ export class LibraryService {
       explicitIgnoreSql: this.explicitIgnoreSql(connection, 'a', showIgnored),
       hasLinkedIgnoredAssets: hasIgnoreTable,
       hasSequenceFrames,
+      hasCompanions: this.ensureCompanionIndex(openLibrary),
     });
     const params: unknown[] = [];
     if (filterWhere.length > 0) {
@@ -35290,6 +35384,7 @@ export class LibraryService {
         explicitIgnoreSql: this.explicitIgnoreSql(connection, 'a', input.showIgnored === true),
         hasLinkedIgnoredAssets: hasIgnoreTable,
         hasSequenceFrames,
+        hasCompanions: this.ensureCompanionIndex(openLibrary),
       }));
 
       if (filterWhere.length > 0) {
@@ -36487,6 +36582,8 @@ export class LibraryService {
     if (input.assetIds.length === 0 || new Set(input.assetIds).size !== input.assetIds.length) {
       throw new LibraryServiceError('INVALID_SELECTION');
     }
+    // PF: companion files (e.g. `.xmp`) move with their primary.
+    input = { ...input, assetIds: this.withCompanionAssetIds(openLibrary, input.assetIds) };
     // 目标是链接文件夹（链接根或其虚拟子目录）：把 managed 资产复制进链接
     // 外部目录并注册为链接资产，再永久删除已复制的 managed 源——对用户而言
     // 等价于「移动到链接文件夹」，链接资产与 managed 资产同为目标（Serpent-f6f779）。
@@ -38549,6 +38646,8 @@ export class LibraryService {
       }
     }
 
+    // PF: companions pair by name, so read them before the primary changes.
+    const companionIds = this.companionAssetIds(openLibrary, [row.asset_id]);
     const destinationPath = path.join(parentDirectoryPath, newFileName);
     const now = new Date().toISOString();
     let renamed = false;
@@ -38596,6 +38695,22 @@ export class LibraryService {
         throw new LibraryServiceError('ASSET_NOT_FOUND', { reason: 'SOURCE_NOT_FOUND', cause: error });
       }
       throw serviceError(error, 'LIBRARY_NOT_WRITABLE');
+    }
+
+    for (const companionId of companionIds) {
+      const companion = openLibrary.connection
+        .prepare('SELECT relative_file_path FROM assets WHERE asset_id = ? AND deleted_at IS NULL')
+        .get(companionId) as { relative_file_path: string } | undefined;
+      if (!companion) continue;
+      const companionName = path.posix.basename(companion.relative_file_path);
+      const companionNewName = renamedCompanionName(companionName, currentFileName, newFileName);
+      if (companionNewName === null || companionNewName === companionName) continue;
+      try {
+        this.renameAssetFile({ libraryId: input.libraryId, assetId: companionId, newFileName: companionNewName });
+      } catch (error) {
+        // The primary rename stands; the companion keeps its old name.
+        this.diagnose('asset.rename-file.companion', error, { libraryId: input.libraryId, assetId: companionId });
+      }
     }
 
     const [asset] = this.managedMoveSummaries(openLibrary, [row.asset_id]);
@@ -38689,11 +38804,15 @@ export class LibraryService {
     return { renamedCount: assets.length, skipped, assets };
   }
 
+  /**
+   * Selection for file lifecycle operations (trash, restore, delete): image
+   * sequence members and, since PF, companion files of every primary.
+   */
   private expandAssetIdsToSequenceMembers(
     openLibrary: OpenLibrary,
     assetIds: readonly string[],
   ): string[] {
-    const uniqueIds = [...new Set(assetIds)];
+    const uniqueIds = this.withCompanionAssetIds(openLibrary, [...new Set(assetIds)]);
     if (uniqueIds.length === 0) return [];
     const sequenceRows = sqliteAllInChunks<string, { sequence_id: string }>({
       connection: openLibrary.connection,
