@@ -197,14 +197,14 @@ describe('Automation write fencing integration', () => {
 
     const peer = newService();
     peer.openLibrary(created.libraryPath);
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(
       database.prepare('SELECT status FROM file_operations WHERE operation_id = ?')
         .get(plan.importId),
     ).toEqual({ status: 'applying' });
     database.close();
     expect(existsSync(path.join(opened.libraryPath, 'Assets', 'leased.png'))).toBe(true);
-    expect(existsSync(path.join(opened.libraryPath, '.serpent', 'operations', plan.importId))).toBe(true);
+    expect(existsSync(path.join(opened.libraryPath, '.keel', 'operations', plan.importId))).toBe(true);
 
     liveLease.release();
     crashing.closeAll();
@@ -213,7 +213,7 @@ describe('Automation write fencing integration', () => {
     const recovered = newService();
     recovered.openLibrary(created.libraryPath);
     expect(existsSync(path.join(created.libraryPath, 'Assets', 'leased.png'))).toBe(false);
-    const recoveredDb = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const recoveredDb = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(
       recoveredDb.prepare('SELECT status, error_code FROM file_operations WHERE operation_id = ?')
         .get(plan.importId),
@@ -254,7 +254,7 @@ describe('Automation write fencing integration', () => {
       conflictStrategy: 'keep-both',
     })).toThrow(LibraryServiceError);
 
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const operation = database.prepare(
       `SELECT operation_id, status FROM file_operations
         WHERE kind = 'managed-move' ORDER BY created_at DESC LIMIT 1`,
@@ -271,7 +271,7 @@ describe('Automation write fencing integration', () => {
 
     const peer = newService();
     peer.openLibrary(created.libraryPath);
-    const peerDb = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const peerDb = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(
       peerDb.prepare('SELECT status FROM file_operations WHERE operation_id = ?')
         .get(operation.operation_id),
@@ -287,7 +287,7 @@ describe('Automation write fencing integration', () => {
     recovered.openLibrary(created.libraryPath);
     expect(existsSync(path.join(created.libraryPath, 'Assets', 'Source', 'move-lease.png'))).toBe(true);
     expect(existsSync(path.join(created.libraryPath, 'Assets', 'Target', 'move-lease.png'))).toBe(false);
-    const recoveredDb = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const recoveredDb = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(
       recoveredDb.prepare('SELECT status, error_code FROM file_operations WHERE operation_id = ?')
         .get(operation.operation_id),
@@ -321,7 +321,7 @@ describe('Automation write fencing integration', () => {
     });
     expect(moved.operationId).toEqual(expect.any(String));
 
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(
       database.prepare(
         'SELECT COUNT(*) AS count FROM library_job_leases WHERE library_id = ? AND job_id = ?',
@@ -359,7 +359,7 @@ describe('Automation write fencing integration', () => {
       conflictStrategy: 'keep-both',
     })).toThrow(LibraryServiceError);
 
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const operation = database.prepare(
       `SELECT operation_id, status FROM file_operations
         WHERE kind = 'managed-copy' ORDER BY created_at DESC LIMIT 1`,
@@ -376,7 +376,7 @@ describe('Automation write fencing integration', () => {
 
     const peer = newService();
     peer.openLibrary(created.libraryPath);
-    const peerDb = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const peerDb = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(
       peerDb.prepare('SELECT status FROM file_operations WHERE operation_id = ?')
         .get(operation.operation_id),
@@ -392,7 +392,7 @@ describe('Automation write fencing integration', () => {
     recovered.openLibrary(created.libraryPath);
     expect(existsSync(path.join(created.libraryPath, 'Assets', 'Source', 'copy-lease.png'))).toBe(true);
     expect(existsSync(path.join(created.libraryPath, 'Assets', 'Target', 'copy-lease.png'))).toBe(false);
-    const recoveredDb = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const recoveredDb = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(
       recoveredDb.prepare('SELECT status, error_code FROM file_operations WHERE operation_id = ?')
         .get(operation.operation_id),
@@ -426,7 +426,7 @@ describe('Automation write fencing integration', () => {
     });
     expect(copied.operationId).toEqual(expect.any(String));
 
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(
       database.prepare(
         'SELECT COUNT(*) AS count FROM library_job_leases WHERE library_id = ? AND job_id = ?',
@@ -459,7 +459,7 @@ describe('Automation write fencing integration', () => {
       assetIds: [asset.assetId],
     })).toThrow(LibraryServiceError);
 
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const operation = database.prepare(
       `SELECT operation_id, status FROM file_operations
         WHERE kind = 'restore' ORDER BY created_at DESC LIMIT 1`,
@@ -475,7 +475,7 @@ describe('Automation write fencing integration', () => {
 
     const peer = newService();
     peer.openLibrary(created.libraryPath);
-    const peerDb = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const peerDb = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(
       peerDb.prepare('SELECT status FROM file_operations WHERE operation_id = ?')
         .get(operation.operation_id),
@@ -490,7 +490,7 @@ describe('Automation write fencing integration', () => {
     const recovered = newService();
     recovered.openLibrary(created.libraryPath);
     expect(existsSync(path.join(created.libraryPath, 'Assets', 'Album', 'restore-lease.png'))).toBe(false);
-    const recoveredDb = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const recoveredDb = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(
       recoveredDb.prepare('SELECT status, error_code FROM file_operations WHERE operation_id = ?')
         .get(operation.operation_id),
@@ -520,7 +520,7 @@ describe('Automation write fencing integration', () => {
     });
     expect(restored.operationId).toEqual(expect.any(String));
 
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(
       database.prepare(
         'SELECT COUNT(*) AS count FROM library_job_leases WHERE library_id = ? AND job_id = ?',
@@ -550,7 +550,7 @@ describe('Automation write fencing integration', () => {
     });
     expect(completion.importedCount).toBe(1);
 
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(
       database.prepare(
         'SELECT COUNT(*) AS count FROM library_job_leases WHERE library_id = ? AND job_id = ?',

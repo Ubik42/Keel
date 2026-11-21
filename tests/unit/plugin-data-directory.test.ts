@@ -44,7 +44,7 @@ describe('plugin data directories', () => {
       libraryDirectory,
     });
 
-    expect(resolved).toBe(path.join(libraryDirectory, '.serpent', PLUGIN_FILES_DIRECTORY_NAME, 'com.example.model'));
+    expect(resolved).toBe(path.join(libraryDirectory, '.keel', PLUGIN_FILES_DIRECTORY_NAME, 'com.example.model'));
     expect(existsSync(resolved)).toBe(true);
     expect(path.relative(libraryDirectory, resolved).startsWith('..')).toBe(false);
   });

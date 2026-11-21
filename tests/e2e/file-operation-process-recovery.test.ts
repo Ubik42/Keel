@@ -77,7 +77,7 @@ async function killApplication(application: ElectronApplication): Promise<void> 
 }
 
 function readLatestImportOperation(libraryPath: string): string {
-  const databasePath = path.join(libraryPath, '.serpent', 'library.db');
+  const databasePath = path.join(libraryPath, '.keel', 'library.db');
   const executablePath = resolveElectronExecutablePath();
   const script = [
     "const Database = require('better-sqlite3');",
@@ -180,7 +180,7 @@ test('recovers an interrupted import after a complete Electron process restart',
     // The recovery pass removes the placed file and marks the durable journal
     // explicitly; this checks DB state in addition to the visible card/disk.
     expect(existsSync(interruptedDestination)).toBe(false);
-    const operationsPath = path.join(libraryPath, '.serpent', 'operations');
+    const operationsPath = path.join(libraryPath, '.keel', 'operations');
     expect(existsSync(operationsPath) ? readdirSync(operationsPath).length : 0).toBe(0);
     await application.close();
     application = undefined;

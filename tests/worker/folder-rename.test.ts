@@ -50,7 +50,7 @@ function expectCode(
 }
 
 function database(libraryPath: string) {
-  return new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+  return new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
 }
 
 afterEach(() => {

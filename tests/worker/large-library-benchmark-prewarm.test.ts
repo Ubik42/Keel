@@ -29,7 +29,7 @@ describe.skipIf(!fixturePath)("prepare persistent thumbnails for Electron loadin
     if (!fixturePath) throw new Error("Missing large-library fixture path.");
     const manifestPath = path.join(
       fixturePath,
-      ".serpent",
+      ".keel",
       "large-library-fixture.json",
     );
     if (!existsSync(manifestPath)) {
@@ -67,9 +67,9 @@ describe.skipIf(!fixturePath)("prepare persistent thumbnails for Electron loadin
     // mature 10k library without spending minutes decoding duplicate fixture
     // bytes, while Electron still reads and decodes distinct artifact files.
     let database = new TestDatabase(
-      path.join(fixturePath!, ".serpent", "library.db"),
+      path.join(fixturePath!, ".keel", "library.db"),
     );
-    const artifactsDir = path.join(fixturePath!, ".serpent", "artifacts");
+    const artifactsDir = path.join(fixturePath!, ".keel", "artifacts");
     type ArtifactRow = {
       asset_id: string;
       current_revision_id: string;
@@ -125,7 +125,7 @@ describe.skipIf(!fixturePath)("prepare persistent thumbnails for Electron loadin
     service.closeAll();
     service.openLibrary(fixturePath!);
     database = new TestDatabase(
-      path.join(fixturePath!, ".serpent", "library.db"),
+      path.join(fixturePath!, ".keel", "library.db"),
     );
     const initialRows = loadRows();
     const donorKeys = new Set(

@@ -54,7 +54,7 @@ describe('ai_content schema (v7 -> v8 migration)', () => {
       selectedParentPath: root,
     });
 
-    const db = new Database(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new Database(path.join(created.libraryPath, '.keel', 'library.db'));
     const columns = db.prepare("PRAGMA table_info('ai_content')").all() as Array<{
       cid: number; name: string; type: string; notnull: number;
     }>;
@@ -75,7 +75,7 @@ describe('ai_content schema (v7 -> v8 migration)', () => {
       selectedParentPath: root,
     });
 
-    const db = new Database(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new Database(path.join(created.libraryPath, '.keel', 'library.db'));
     const indexes = db.prepare(
       "SELECT name FROM sqlite_master WHERE type = 'index' AND name LIKE 'ai_content%'",
     ).all() as Array<{ name: string }>;
@@ -91,7 +91,7 @@ describe('ai_content schema (v7 -> v8 migration)', () => {
     service.closeAll();
 
     service.openLibrary(created.libraryPath);
-    const db = new Database(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new Database(path.join(created.libraryPath, '.keel', 'library.db'));
     const migrations = db.prepare(
       'SELECT version FROM schema_migrations WHERE version = 8',
     ).all() as Array<{ version: number }>;
@@ -130,7 +130,7 @@ describe('writeAiAnalysisResult', () => {
     expect(writeResult.tagsWritten).toEqual(['CharacterDesign', 'SciFi', 'NewTag']);
 
     // Verify: 'CharacterDesign' reused the existing tag_id.
-    const db = new Database(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new Database(path.join(created.libraryPath, '.keel', 'library.db'));
     const aiTagRows = db.prepare(
       `SELECT t.tag_id, t.name FROM ai_asset_tags aat
          JOIN tags t ON t.tag_id = aat.tag_id
@@ -415,7 +415,7 @@ describe('FTS sync with AI tags', () => {
       enabledFields: { description: false, tags: true, rating: false },
     });
 
-    const db = new Database(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new Database(path.join(created.libraryPath, '.keel', 'library.db'));
     const row = db.prepare(
       'SELECT tags FROM asset_search_index WHERE asset_id = ?',
     ).get(assetId) as { tags: string } | undefined;

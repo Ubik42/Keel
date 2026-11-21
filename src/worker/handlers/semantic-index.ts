@@ -20,6 +20,7 @@ import type { LibraryService } from '../library-service';
 import { backupExistingSemanticIndexFile, removeSemanticIndexForRebuild, SemanticIndexStore, type SemanticVectorProfile } from '../semantic-index-store';
 import { digestLegacySemanticCache, parseLegacySemanticCache, type LegacySemanticCacheEntry } from '../legacy-semantic-cache';
 import { resolveFfmpegPath } from '../binary-resolver';
+import { libraryMetaDir } from '../../shared/library-meta-dir';
 
 const TARGET_PAGE_SIZE = 500;
 const MAX_CANDIDATES = 100_000;
@@ -36,7 +37,7 @@ const MAX_SEMANTIC_CLEANUP_QUEUE_BYTES = 4 * 1024 * 1024;
 
 function semanticCleanupQueueDirectory(libraryPath: string): string {
   const libraryRoot = realpathSync(libraryPath);
-  const serpentPath = path.join(libraryRoot, '.serpent');
+  const serpentPath = libraryMetaDir(libraryRoot);
   const serpent = lstatSync(serpentPath);
   if (!serpent.isDirectory() || serpent.isSymbolicLink()) throw new Error('Unsafe semantic cleanup directory.');
   const semanticPath = path.join(serpentPath, 'semantic');
@@ -133,7 +134,7 @@ export function reserveSemanticDeleteCleanup(service: LibraryService, libraryId:
   const queueDirectory = semanticCleanupQueueDirectory(library.libraryPath);
   const queuePaths = semanticCleanupQueuePaths(queueDirectory);
   if (queuePaths.length > 0) {
-    const databasePath = path.join(library.libraryPath, '.serpent', 'semantic', 'index.sqlite');
+    const databasePath = libraryMetaDir(library.libraryPath, 'semantic', 'index.sqlite');
     let store = sessions.get(libraryId)?.store;
     let owned = false;
     if (!store) {
@@ -227,7 +228,7 @@ export async function backupSemanticIndexWorkerLibrary(input: {
     await active.store.backupTo(input.destinationPath);
     return true;
   }
-  const sourcePath = path.join(input.libraryPath, '.serpent', 'semantic', 'index.sqlite');
+  const sourcePath = libraryMetaDir(input.libraryPath, 'semantic', 'index.sqlite');
   try {
     const file = lstatSync(sourcePath);
     if (!file.isFile() || file.isSymbolicLink()) throw new Error('Semantic index source is not a regular library file.');
@@ -262,7 +263,7 @@ export function reconcileSemanticPermanentDeletes(
   let store = active?.store;
   let owned = false;
   if (!store && deleted.length > 0) {
-    const databasePath = path.join(library.libraryPath, '.serpent', 'semantic', 'index.sqlite');
+    const databasePath = libraryMetaDir(library.libraryPath, 'semantic', 'index.sqlite');
     try {
       const info = lstatSync(databasePath);
       if (!info.isFile() || info.isSymbolicLink()) throw new Error('Semantic index path is not a regular file.');

@@ -125,7 +125,7 @@ describe('LibraryService export', () => {
     const database = new (require('better-sqlite3') as new (filename: string) => {
       close(): void;
       prepare(sql: string): { run(...parameters: unknown[]): unknown };
-    })(path.join(created.libraryPath, '.serpent', 'library.db'));
+    })(path.join(created.libraryPath, '.keel', 'library.db'));
     try {
       database.prepare(`INSERT INTO assets (asset_id, location_kind, managed_folder_id, linked_folder_id,
         relative_file_path, current_revision_id, availability, path_identity, created_at, updated_at)
@@ -154,7 +154,7 @@ describe('LibraryService export', () => {
     const exportPath = path.join(root, 'semantic-export');
     await service.exportLibraryToFolder({ libraryId: created.libraryId,
       destinationPath: exportPath, includeLinkedContent: false });
-    const exportedSidecar = path.join(exportPath, '.serpent', 'semantic', 'index.sqlite');
+    const exportedSidecar = path.join(exportPath, '.keel', 'semantic', 'index.sqlite');
     expect(existsSync(exportedSidecar)).toBe(true);
     const zipPath = path.join(root, 'semantic-export.zip');
     await service.exportLibraryToZip({ libraryId: created.libraryId,
@@ -242,7 +242,7 @@ describe('LibraryService export', () => {
 
     // Verify dest contains expected directories.
     expect(existsSync(path.join(destPath, 'Assets'))).toBe(true);
-    expect(existsSync(path.join(destPath, '.serpent', 'library.db'))).toBe(true);
+    expect(existsSync(path.join(destPath, '.keel', 'library.db'))).toBe(true);
 
     // Verify the exported library is valid and can be opened.
     const service2 = newService();
@@ -263,11 +263,11 @@ describe('LibraryService export', () => {
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Exclude Test', selectedParentPath: root });
 
     // Create fake preview/operations content.
-    mkdirSync(path.join(created.libraryPath, '.serpent', 'previews'), { recursive: true });
-    writeFileSync(path.join(created.libraryPath, '.serpent', 'previews', 'thumb.jpg'), 'data');
+    mkdirSync(path.join(created.libraryPath, '.keel', 'previews'), { recursive: true });
+    writeFileSync(path.join(created.libraryPath, '.keel', 'previews', 'thumb.jpg'), 'data');
 
-    mkdirSync(path.join(created.libraryPath, '.serpent', 'operations'), { recursive: true });
-    writeFileSync(path.join(created.libraryPath, '.serpent', 'operations', 'op.json'), '{}');
+    mkdirSync(path.join(created.libraryPath, '.keel', 'operations'), { recursive: true });
+    writeFileSync(path.join(created.libraryPath, '.keel', 'operations', 'op.json'), '{}');
 
     const destPath = path.join(root, 'export-dest2');
     await service.exportLibraryToFolder({
@@ -277,16 +277,16 @@ describe('LibraryService export', () => {
     });
 
     // Verify previews/operations are NOT in the export.
-    expect(existsSync(path.join(destPath, '.serpent', 'previews'))).toBe(false);
-    expect(existsSync(path.join(destPath, '.serpent', 'operations'))).toBe(false);
+    expect(existsSync(path.join(destPath, '.keel', 'previews'))).toBe(false);
+    expect(existsSync(path.join(destPath, '.keel', 'operations'))).toBe(false);
 
     // But library.db IS there.
-    expect(existsSync(path.join(destPath, '.serpent', 'library.db'))).toBe(true);
+    expect(existsSync(path.join(destPath, '.keel', 'library.db'))).toBe(true);
 
     service.closeAll();
   });
 
-  it('includes .serpent/artifacts so import keeps ready thumbnails (Serpent-pxd)', async () => {
+  it('includes .keel/artifacts so import keeps ready thumbnails (Serpent-pxd)', async () => {
     const root = temporaryRoot();
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets',
@@ -317,7 +317,7 @@ describe('LibraryService export', () => {
     }))!;
     const sourceArtifact = path.join(
       created.libraryPath,
-      '.serpent',
+      '.keel',
       'artifacts',
       `${thumb.artifactId}.webp`,
     );
@@ -331,7 +331,7 @@ describe('LibraryService export', () => {
     });
 
     expect(
-      existsSync(path.join(destPath, '.serpent', 'artifacts', `${thumb.artifactId}.webp`)),
+      existsSync(path.join(destPath, '.keel', 'artifacts', `${thumb.artifactId}.webp`)),
     ).toBe(true);
     service.closeAll();
 
@@ -339,7 +339,7 @@ describe('LibraryService export', () => {
     const reopened = service2.openLibrary(destPath);
     expect(
       existsSync(
-        path.join(reopened.libraryPath, '.serpent', 'artifacts', `${thumb.artifactId}.webp`),
+        path.join(reopened.libraryPath, '.keel', 'artifacts', `${thumb.artifactId}.webp`),
       ),
     ).toBe(true);
     const listed = service2.listAssets({ libraryId: reopened.libraryId, recursive: true });
@@ -375,7 +375,7 @@ describe('LibraryService export', () => {
     }))!;
     const artifactPath = path.join(
       created.libraryPath,
-      '.serpent',
+      '.keel',
       'artifacts',
       `${thumb.artifactId}.webp`,
     );
@@ -398,7 +398,7 @@ describe('LibraryService export', () => {
       existsSync(
         path.join(
           reopened.libraryPath,
-          '.serpent',
+          '.keel',
           'artifacts',
           `${regenerated.artifactId}.webp`,
         ),
@@ -453,7 +453,7 @@ describe('LibraryService export', () => {
       });
 
       expect(result.fileCount).toBeGreaterThan(0);
-      expect(existsSync(path.join(destPath, '.serpent', 'library.db'))).toBe(true);
+      expect(existsSync(path.join(destPath, '.keel', 'library.db'))).toBe(true);
     },
   );
 
@@ -608,7 +608,7 @@ describe('LibraryService import folder', () => {
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'No DB', selectedParentPath: root });
     service.closeAll();
-    rmSync(path.join(created.libraryPath, '.serpent', 'library.db'));
+    rmSync(path.join(created.libraryPath, '.keel', 'library.db'));
 
     expectServiceError(
       () => service.validateImportSource(created.libraryPath),
@@ -696,7 +696,7 @@ describe('LibraryService import folder', () => {
 
     // Verify copied path has Assets and DB.
     expect(existsSync(path.join(expectedPath, 'Assets'))).toBe(true);
-    expect(existsSync(path.join(expectedPath, '.serpent', 'library.db'))).toBe(true);
+    expect(existsSync(path.join(expectedPath, '.keel', 'library.db'))).toBe(true);
 
     service.closeAll();
   });
@@ -783,7 +783,7 @@ describe('LibraryService import folder', () => {
     });
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Failed Copy', selectedParentPath: root });
     service.closeAll();
-    databaseToRemove = path.join(created.libraryPath, '.serpent', 'library.db');
+    databaseToRemove = path.join(created.libraryPath, '.keel', 'library.db');
     const copyParent = path.join(root, 'copy-parent');
     mkdirSync(copyParent);
     const destinationPath = path.join(copyParent, path.basename(created.libraryPath));

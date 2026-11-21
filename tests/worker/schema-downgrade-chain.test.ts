@@ -44,13 +44,13 @@ afterEach(() => {
 });
 
 function libraryFilePath(libraryPath: string): string {
-  return path.join(libraryPath, '.serpent', 'library.db');
+  return path.join(libraryPath, '.keel', 'library.db');
 }
 
 /** Build a real vN library structure with the migrations up to N applied. */
 function buildLibraryAtVersion(root: string, targetVersion: number): string {
   const libraryPath = path.join(root, `v${targetVersion}`);
-  mkdirSync(path.join(libraryPath, '.serpent'), { recursive: true });
+  mkdirSync(path.join(libraryPath, '.keel'), { recursive: true });
   mkdirSync(path.join(libraryPath, 'Assets'), { recursive: true });
   const db = new Database(libraryFilePath(libraryPath));
   db.pragma('journal_mode = WAL');

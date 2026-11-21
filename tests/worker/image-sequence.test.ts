@@ -1083,7 +1083,7 @@ describe("image sequence persistence", () => {
       limit: 500,
     })).toBeLessThanOrEqual(1);
 
-    const db = new TestDatabase(path.join(library.libraryPath, ".serpent", "library.db"));
+    const db = new TestDatabase(path.join(library.libraryPath, ".keel", "library.db"));
     const thumbs = db.prepare(
       "SELECT asset_id, status, error_code FROM jobs WHERE kind = 'generate_thumbnail'",
     ).all() as Array<{ asset_id: string; status: string; error_code: string | null }>;

@@ -88,7 +88,7 @@ function reopenAfterMutating(
   libraryPath: string,
   mutate: (dbPath: string) => void,
 ): void {
-  mutate(path.join(libraryPath, '.serpent', 'library.db'));
+  mutate(path.join(libraryPath, '.keel', 'library.db'));
   service.closeAll();
   service.openLibrary(libraryPath);
 }

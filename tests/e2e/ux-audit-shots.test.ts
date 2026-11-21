@@ -73,7 +73,7 @@ async function shot(window: Page, name: string) {
 test("capture primary UI surfaces for the wave-3 UX audit", async () => {
   const temporaryRoot = mkdtempSync(path.join(tmpdir(), "serpent-ux-audit-"));
   mkdirSync(OUT_DIR, { recursive: true });
-  const libraryPath = path.join(temporaryRoot, "审计资源库.serpent");
+  const libraryPath = path.join(temporaryRoot, "审计资源库.keel");
 
   const sources = [
     { name: "wide-red.png", width: 640, height: 360, rgb: [0xc0, 0x39, 0x2b] as [number, number, number] },

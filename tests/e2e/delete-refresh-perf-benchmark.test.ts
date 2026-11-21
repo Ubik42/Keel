@@ -119,8 +119,8 @@ function validateIsolatedCopy(sourcePath: string, targetPath: string): string {
   if (isWithin(sourceRealPath, targetRealPath) || isWithin(targetRealPath, sourceRealPath)) {
     throw new Error("The source and writable library must be separate directories.");
   }
-  const sourceDatabase = path.join(sourceRealPath, ".serpent", "library.db");
-  const targetDatabase = path.join(targetRealPath, ".serpent", "library.db");
+  const sourceDatabase = path.join(sourceRealPath, ".keel", "library.db");
+  const targetDatabase = path.join(targetRealPath, ".keel", "library.db");
   const sourceAssets = path.join(sourceRealPath, "Assets");
   const targetAssets = path.join(targetRealPath, "Assets");
   if (!existsSync(sourceDatabase) || !existsSync(targetDatabase)

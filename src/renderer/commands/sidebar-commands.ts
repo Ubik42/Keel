@@ -172,7 +172,7 @@ export const sidebarCommandDefinitions: readonly SidebarCommandDefinition[] = [
     title: (ctx) =>
       translateForLocale(ctx.locale, 'command.folder.linkedRules'),
     group: 'organize',
-    // Serpent-c6d907: linked ignore is the same .serpentignore file as
+    // Serpent-c6d907: linked ignore is the same .keelignore file as
     // managed folders. Keep the command for automation; do not offer a
     // separate rules window in the folder menu.
     visible: () => false,

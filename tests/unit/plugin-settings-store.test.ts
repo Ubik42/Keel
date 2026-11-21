@@ -104,7 +104,7 @@ describe('PluginSettingsStore', () => {
       sources: { 'palette-size': 'library' },
       diagnostics: [],
     });
-    expect(readFileSync(path.join(copiedLibrary, '.serpent', 'plugin-lock.json'), 'utf8'))
+    expect(readFileSync(path.join(copiedLibrary, '.keel', 'plugin-lock.json'), 'utf8'))
       .not.toContain(path.basename(userA));
   });
 
@@ -285,7 +285,7 @@ describe('PluginSettingsStore', () => {
         ],
       },
     });
-    const settingsDirectory = path.join(library, '.serpent', 'plugin-settings');
+    const settingsDirectory = path.join(library, '.keel', 'plugin-settings');
     mkdirSync(settingsDirectory, { recursive: true });
     const settingsPath = path.join(settingsDirectory, `${manifest.id}.json`);
     writeFileSync(settingsPath, `${JSON.stringify({

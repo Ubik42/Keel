@@ -272,7 +272,7 @@ describe("macOS product menu mirror (Serpent-q0b1)", () => {
       "library.show-missing-linked",
       "window.background-jobs",
       "window.diagnostics",
-      "about.serpent",
+      "about.keel",
       "about.github",
       "about.open-source",
       "about.diagnostics",

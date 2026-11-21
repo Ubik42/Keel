@@ -92,7 +92,7 @@ describe('RAW metadata backfill admission (Serpent-288cd9)', () => {
     expect(reopened.getRawMetadataBackfillAdmissionState(created.libraryId)?.updatedAt)
       .toBe(persistedBeforeRepeatedCalls);
 
-    const database = new Database(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new Database(path.join(created.libraryPath, '.keel', 'library.db'));
     try {
       const now = new Date().toISOString();
       const volatileJobId = randomUUID();
@@ -181,7 +181,7 @@ describe('RAW metadata backfill admission (Serpent-288cd9)', () => {
       cursorAssetId: assets[0]!.assetId,
     });
 
-    const database = new Database(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new Database(path.join(created.libraryPath, '.keel', 'library.db'));
     try {
       const now = new Date().toISOString();
       database.prepare(
@@ -245,7 +245,7 @@ describe('RAW metadata backfill admission (Serpent-288cd9)', () => {
       displayName: 'RAW admission cap',
       selectedParentPath: temporaryRoot(),
     });
-    const database = new Database(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new Database(path.join(created.libraryPath, '.keel', 'library.db'));
     try {
       const now = new Date().toISOString();
       const insert = database.prepare(
@@ -273,7 +273,7 @@ describe('RAW metadata backfill admission (Serpent-288cd9)', () => {
       displayName: 'RAW normalized extension',
       selectedParentPath: temporaryRoot(),
     });
-    const database = new Database(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new Database(path.join(created.libraryPath, '.keel', 'library.db'));
     try {
       const now = new Date().toISOString();
       database.prepare(

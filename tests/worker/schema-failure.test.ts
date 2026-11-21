@@ -1,5 +1,5 @@
 // Serpent-verg.5 — migration failure diagnosis and retry (0031 §2.2):
-// a rolled-back migration failure is recorded to .serpent/migration-failed.json,
+// a rolled-back migration failure is recorded to .keel/migration-failed.json,
 // retried on the next open, capped at MAX_MIGRATION_ATTEMPTS, and then the
 // library opens writable at the last good schema version instead of failing
 // forever. verifyMigrationHistory failures stay LIBRARY_CORRUPT and go through
@@ -46,13 +46,13 @@ afterEach(() => {
 });
 
 function libraryFilePath(libraryPath: string): string {
-  return path.join(libraryPath, '.serpent', 'library.db');
+  return path.join(libraryPath, '.keel', 'library.db');
 }
 
 /** Build a real v23 library (the first outer-transaction migration boundary). */
 function buildV23Library(root: string): string {
   const libraryPath = path.join(root, 'v23');
-  mkdirSync(path.join(libraryPath, '.serpent'), { recursive: true });
+  mkdirSync(path.join(libraryPath, '.keel'), { recursive: true });
   mkdirSync(path.join(libraryPath, 'Assets'), { recursive: true });
   const db = new Database(libraryFilePath(libraryPath));
   db.pragma('journal_mode = WAL');
@@ -79,7 +79,7 @@ describe('migration failure record (unit)', () => {
   it('records, reads, increments and clears', () => {
     const root = temporaryRoot();
     const libraryPath = path.join(root, 'lib');
-    mkdirSync(path.join(libraryPath, '.serpent'), { recursive: true });
+    mkdirSync(path.join(libraryPath, '.keel'), { recursive: true });
 
     expect(readMigrationFailure(libraryPath)).toBeNull();
 
@@ -100,7 +100,7 @@ describe('migration failure record (unit)', () => {
   it('treats a corrupt record file as no record', () => {
     const root = temporaryRoot();
     const libraryPath = path.join(root, 'lib');
-    mkdirSync(path.join(libraryPath, '.serpent'), { recursive: true });
+    mkdirSync(path.join(libraryPath, '.keel'), { recursive: true });
     writeFileSync(migrationFailurePath(libraryPath), 'not json');
     expect(readMigrationFailure(libraryPath)).toBeNull();
   });

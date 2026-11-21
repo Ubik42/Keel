@@ -75,7 +75,7 @@ describe('folder browse entries', () => {
     const asset = imported.assets[0]!;
 
     const artifactId = 'art_cover_test';
-    const db = new TestDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
     db.prepare(
       `INSERT INTO revision_artifacts
          (artifact_id, revision_id, kind, mime_type, byte_size, file_path,
@@ -181,7 +181,7 @@ describe('folder browse entries', () => {
       assets.push(imported.assets[0]!);
     }
 
-    const db = new TestDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
     const insertArtifact = db.prepare(
       `INSERT INTO revision_artifacts
          (artifact_id, revision_id, kind, mime_type, byte_size, file_path,
@@ -263,7 +263,7 @@ describe('folder browse entries', () => {
       priority: 400,
     });
     expect(enqueued).toBe(3);
-    const db = new TestDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
     const queued = db.prepare(
       'SELECT asset_id, priority FROM jobs WHERE kind = ? AND status = ? ORDER BY asset_id',
     ).all('generate_thumbnail', 'queued') as Array<{ asset_id: string; priority: number }>;
@@ -354,7 +354,7 @@ describe('folder browse entries', () => {
     const asset = imported.assets[0]!;
 
     const artifactId = 'art_ref_cover';
-    const db = new TestDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
     db.prepare(
       `INSERT INTO revision_artifacts
          (artifact_id, revision_id, kind, mime_type, byte_size, file_path,
@@ -429,7 +429,7 @@ describe('folder browse entries', () => {
       subAssets.push(imported.assets[0]!);
     }
 
-    const db = new TestDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
     const insertArtifact = db.prepare(
       `INSERT INTO revision_artifacts
          (artifact_id, revision_id, kind, mime_type, byte_size, file_path,
@@ -497,7 +497,7 @@ describe('folder browse entries', () => {
       assetsB.push(impB.assets[0]!);
     }
 
-    const db = new TestDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
     const insertArtifact = db.prepare(
       `INSERT INTO revision_artifacts
          (artifact_id, revision_id, kind, mime_type, byte_size, file_path,

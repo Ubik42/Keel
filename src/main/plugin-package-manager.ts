@@ -66,6 +66,7 @@ import {
   type PluginResolutionResult,
   PluginPackageManagerError,
 } from './plugin-package-manager-types';
+import { libraryMetaDir } from '../shared/library-meta-dir';
 
 export {
   createGitHubPluginClient,
@@ -1120,7 +1121,7 @@ export class PluginPackageManager {
     if (libraryDirectory === undefined || libraryDirectory.trim() === '') {
       throw new PluginPackageManagerError('PLUGIN_SOURCE_READ_FAILED', 'A library plugin operation requires a library directory.');
     }
-    return path.join(libraryDirectory, '.serpent', 'plugins');
+    return libraryMetaDir(libraryDirectory, 'plugins');
   }
 
   #lockPath(scope: PluginInstallationScope, libraryDirectory?: string): string {
@@ -1128,7 +1129,7 @@ export class PluginPackageManager {
     if (libraryDirectory === undefined || libraryDirectory.trim() === '') {
       throw new PluginPackageManagerError('PLUGIN_SOURCE_READ_FAILED', 'A library plugin operation requires a library directory.');
     }
-    return path.join(libraryDirectory, PLUGIN_LIBRARY_LOCK_FILE);
+    return libraryMetaDir(libraryDirectory, PLUGIN_LIBRARY_LOCK_FILE);
   }
 
   async #readPackageLocks(scope: PluginInstallationScope, libraryDirectory?: string): Promise<PluginPackageLock[]> {

@@ -75,9 +75,9 @@ describe('import destination and content lookup acceleration', () => {
   it('applies the v59 index to a v58 library without changing prior migration history', () => {
     const root = temporaryRoot();
     const libraryPath = path.join(root, 'v58-library');
-    mkdirSync(path.join(libraryPath, '.serpent'), { recursive: true });
+    mkdirSync(path.join(libraryPath, '.keel'), { recursive: true });
     mkdirSync(path.join(libraryPath, 'Assets'));
-    const databasePath = path.join(libraryPath, '.serpent', 'library.db');
+    const databasePath = path.join(libraryPath, '.keel', 'library.db');
     const database = openConfiguredDatabase(databasePath);
     try {
       database.exec(MIGRATIONS.slice(0, 58).map((migration) => migration.sql).join('\n'));
@@ -394,7 +394,7 @@ describe('import destination and content lookup acceleration', () => {
       nameConflict: 'keep-both',
     }), 'IMPORT_APPLY_FAILED');
     expect(readFileSync(lateExternalPath, 'utf8')).toBe('late external');
-    expect(existsSync(path.join(library.libraryPath, '.serpent', 'operations', latePlan.importId)))
+    expect(existsSync(path.join(library.libraryPath, '.keel', 'operations', latePlan.importId)))
       .toBe(false);
   });
 
@@ -425,7 +425,7 @@ describe('import destination and content lookup acceleration', () => {
 
     expect(readFileSync(externalPath, 'utf8')).toBe('external bytes');
     expect(existsSync(path.dirname(externalPath))).toBe(true);
-    expect(existsSync(path.join(library.libraryPath, '.serpent', 'operations', plan.importId)))
+    expect(existsSync(path.join(library.libraryPath, '.keel', 'operations', plan.importId)))
       .toBe(false);
     expect(service.listAssets({ libraryId: library.libraryId, recursive: true })).toEqual([]);
     expect(databaseFor(service, library.libraryId).prepare(
@@ -458,7 +458,7 @@ describe('import destination and content lookup acceleration', () => {
       nameConflict: 'keep-both',
     }), 'IMPORT_APPLY_FAILED');
     expect(readFileSync(externalPath, 'utf8')).toBe('external bytes');
-    expect(existsSync(path.join(library.libraryPath, '.serpent', 'operations', plan.importId)))
+    expect(existsSync(path.join(library.libraryPath, '.keel', 'operations', plan.importId)))
       .toBe(false);
   });
 

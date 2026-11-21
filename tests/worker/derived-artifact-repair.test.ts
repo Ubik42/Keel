@@ -53,7 +53,7 @@ function insertFailedAsset(
     available?: boolean;
   },
 ): { assetId: string } {
-  const dbPath = path.join(libraryPath, '.serpent', 'library.db');
+  const dbPath = path.join(libraryPath, '.keel', 'library.db');
   const db = new Database(dbPath);
   const assetId = randomUUID();
   const revisionId = randomUUID();
@@ -103,7 +103,7 @@ function insertFailedAsset(
   if (input.kind === 'contact_sheet') {
     const posterRelativePath = 'poster.jpg';
     if (input.available !== false) {
-      writeFileSync(path.join(libraryPath, '.serpent', 'artifacts', posterRelativePath), 'poster');
+      writeFileSync(path.join(libraryPath, '.keel', 'artifacts', posterRelativePath), 'poster');
     }
     insertArtifact.run(
       randomUUID(), revisionId, 'video_poster', posterRelativePath,
@@ -112,7 +112,7 @@ function insertFailedAsset(
     const metadataRelativePath = 'metadata.json';
     if (input.available !== false) {
       writeFileSync(
-        path.join(libraryPath, '.serpent', 'artifacts', metadataRelativePath),
+        path.join(libraryPath, '.keel', 'artifacts', metadataRelativePath),
         JSON.stringify({ durationMs: 1000, width: 1920, height: 1080 }),
       );
     }
@@ -128,7 +128,7 @@ function insertFailedAsset(
     // the ready thumbnail on open — which then blocks webm_proxy enqueue.
     const thumbRelativePath = 'thumb.png';
     if (input.available !== false) {
-      writeFileSync(path.join(libraryPath, '.serpent', 'artifacts', thumbRelativePath), 'png');
+      writeFileSync(path.join(libraryPath, '.keel', 'artifacts', thumbRelativePath), 'png');
     }
     insertArtifact.run(
       randomUUID(), revisionId, 'thumbnail', thumbRelativePath,
@@ -176,7 +176,7 @@ describe('retryable failed derived artifacts (Serpent-5xbg)', () => {
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: '重试库', selectedParentPath: root });
     service.closeAll();
-    const dbPath = path.join(created.libraryPath, '.serpent', 'library.db');
+    const dbPath = path.join(created.libraryPath, '.keel', 'library.db');
     insertFailedAsset(created.libraryPath, {
       fileName: 'video.mp4',
       kind: 'webm_proxy',
@@ -196,7 +196,7 @@ describe('retryable failed derived artifacts (Serpent-5xbg)', () => {
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: '联系表重试库', selectedParentPath: root });
     service.closeAll();
-    const dbPath = path.join(created.libraryPath, '.serpent', 'library.db');
+    const dbPath = path.join(created.libraryPath, '.keel', 'library.db');
     insertFailedAsset(created.libraryPath, {
       fileName: 'video.mp4',
       kind: 'contact_sheet',
@@ -218,7 +218,7 @@ describe('retryable failed derived artifacts (Serpent-5xbg)', () => {
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: '永久失败库', selectedParentPath: root });
     service.closeAll();
-    const dbPath = path.join(created.libraryPath, '.serpent', 'library.db');
+    const dbPath = path.join(created.libraryPath, '.keel', 'library.db');
     insertFailedAsset(created.libraryPath, {
       fileName: 'broken.png',
       kind: 'thumbnail',
@@ -244,7 +244,7 @@ describe('retryable failed derived artifacts (Serpent-5xbg)', () => {
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: '节流库', selectedParentPath: root });
     service.closeAll();
-    const dbPath = path.join(created.libraryPath, '.serpent', 'library.db');
+    const dbPath = path.join(created.libraryPath, '.keel', 'library.db');
     insertFailedAsset(created.libraryPath, {
       fileName: 'fresh.mp4',
       kind: 'webm_proxy',
@@ -264,7 +264,7 @@ describe('retryable failed derived artifacts (Serpent-5xbg)', () => {
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: '源缺失库', selectedParentPath: root });
     service.closeAll();
-    const dbPath = path.join(created.libraryPath, '.serpent', 'library.db');
+    const dbPath = path.join(created.libraryPath, '.keel', 'library.db');
     insertFailedAsset(created.libraryPath, {
       fileName: 'gone.mp4',
       kind: 'webm_proxy',
@@ -285,7 +285,7 @@ describe('retryable failed derived artifacts (Serpent-5xbg)', () => {
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: '幂等库', selectedParentPath: root });
     service.closeAll();
-    const dbPath = path.join(created.libraryPath, '.serpent', 'library.db');
+    const dbPath = path.join(created.libraryPath, '.keel', 'library.db');
     insertFailedAsset(created.libraryPath, {
       fileName: 'video.mp4',
       kind: 'webm_proxy',

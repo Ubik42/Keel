@@ -32,7 +32,7 @@ const TestDatabase = require("better-sqlite3") as new (filename: string) => {
 function removeSelectedThumbnails(assetIds: readonly string[]): number {
   if (assetIds.length === 0) return 0;
   const database = new TestDatabase(
-    path.join(temporaryLibraryPath, ".serpent", "library.db"),
+    path.join(temporaryLibraryPath, ".keel", "library.db"),
   );
   const placeholders = assetIds.map(() => "?").join(",");
   const rows = database.prepare(
@@ -48,7 +48,7 @@ function removeSelectedThumbnails(assetIds: readonly string[]): number {
   const deleteArtifact = database.prepare(
     "DELETE FROM revision_artifacts WHERE artifact_id = ?",
   );
-  const artifactsDir = path.join(temporaryLibraryPath, ".serpent", "artifacts");
+  const artifactsDir = path.join(temporaryLibraryPath, ".keel", "artifacts");
   database.exec("BEGIN IMMEDIATE");
   try {
     for (const row of rows) {
@@ -70,7 +70,7 @@ describe.skipIf(!fixturePath)("10k visible-thumbnail generation benchmark", () =
     if (!fixturePath) throw new Error("Missing large-library fixture path.");
     const manifestPath = path.join(
       fixturePath,
-      ".serpent",
+      ".keel",
       "large-library-fixture.json",
     );
     if (!existsSync(manifestPath)) {

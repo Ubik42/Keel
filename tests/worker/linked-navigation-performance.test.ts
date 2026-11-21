@@ -26,7 +26,7 @@ it.skipIf(process.env.SERPENT_LINKED_NAV_BENCHMARK !== '1')('records 150k linked
     mkdirSync(sourceRoot);
     const library = service.createLibrary({ storageLayout: 'assets', displayName: 'LinkedBenchmark', selectedParentPath: root });
     const linked = service.importFolderAsLinked({ libraryId: library.libraryId, sourceRootPath: sourceRoot });
-    database = openConfiguredDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+    database = openConfiguredDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
     const connection = database;
     connection.transaction(() => {
       connection.exec(`

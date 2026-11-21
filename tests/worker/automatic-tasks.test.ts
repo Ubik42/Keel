@@ -213,7 +213,7 @@ describe("independent automatic tasks", () => {
     const asset = service.listAssets({ libraryId: id, recursive: true })[0]!;
     service.closeLibrary(id);
     // 旧版合集与智能合集只剩表结构；直接写入旧表，模拟升级前的资源库。
-    const db = new Database(path.join(library.libraryPath, ".serpent", "library.db"));
+    const db = new Database(path.join(library.libraryPath, ".keel", "library.db"));
     const now = new Date().toISOString();
     const parentId = "00000000-0000-4000-8000-0000000000a1";
     const childId = "00000000-0000-4000-8000-0000000000a2";

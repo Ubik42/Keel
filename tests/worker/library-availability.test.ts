@@ -51,11 +51,11 @@ function temporaryRoot(): string {
 }
 
 function databaseFile(libraryPath: string): string {
-  return path.join(libraryPath, '.serpent', 'library.db');
+  return path.join(libraryPath, '.keel', 'library.db');
 }
 
 function backupFile(libraryPath: string, slot: 1 | 2): string {
-  return path.join(libraryPath, '.serpent', 'backups', `library.db.${slot}`);
+  return path.join(libraryPath, '.keel', 'backups', `library.db.${slot}`);
 }
 
 function assertUsable(
@@ -76,7 +76,7 @@ function assertUsable(
 
 function buildLibraryAtVersion(root: string, targetVersion: number): string {
   const libraryPath = path.join(root, `v${targetVersion}`);
-  mkdirSync(path.join(libraryPath, '.serpent'), { recursive: true });
+  mkdirSync(path.join(libraryPath, '.keel'), { recursive: true });
   mkdirSync(path.join(libraryPath, 'Assets'), { recursive: true });
   const db = new Database(databaseFile(libraryPath));
   try {
@@ -374,6 +374,6 @@ describe('library availability baseline', () => {
     const recovered = service.openLibrary(libraryPath);
     expect(recovered.recovery?.mode).toBe('rescue');
     assertUsable(service, recovered, '损坏历史抢救可写');
-    expect(existsSync(path.join(libraryPath, '.serpent', 'migration-failed.json'))).toBe(false);
+    expect(existsSync(path.join(libraryPath, '.keel', 'migration-failed.json'))).toBe(false);
   });
 });

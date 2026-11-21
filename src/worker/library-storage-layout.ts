@@ -1,12 +1,13 @@
 import { existsSync, lstatSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import type { LibraryStorageLayout } from '../shared/library-storage-layout';
+import { libraryMetaDir } from '../shared/library-meta-dir';
 
 const FILE_NAME = 'storage-layout.json';
 
 /** Libraries without a marker retain the upstream Assets layout. */
 export function readStorageLayout(libraryPath: string): LibraryStorageLayout {
-  const metadataPath = path.join(libraryPath, '.serpent');
+  const metadataPath = libraryMetaDir(libraryPath);
   if (existsSync(metadataPath) && lstatSync(metadataPath).isSymbolicLink()) {
     throw new Error('Library metadata must be a real directory.');
   }
@@ -26,7 +27,7 @@ export function readStorageLayout(libraryPath: string): LibraryStorageLayout {
 }
 
 export function writeStorageLayout(libraryPath: string, storageLayout: LibraryStorageLayout): void {
-  writeFileSync(path.join(libraryPath, '.serpent', FILE_NAME),
+  writeFileSync(libraryMetaDir(libraryPath, FILE_NAME),
     JSON.stringify({ version: 1, storageLayout }, null, 2) + '\n', { flag: 'wx' });
 }
 

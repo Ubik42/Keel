@@ -6,6 +6,7 @@ import { performance } from 'node:perf_hooks';
 
 import Database from 'better-sqlite3';
 import { getLoadablePath as getSqliteVecLoadablePath } from 'sqlite-vec';
+import { libraryMetaDir } from '../shared/library-meta-dir';
 
 export const SEMANTIC_SCHEMA_VERSION = 3;
 const MAX_VECTOR_DIMENSIONS = 8192;
@@ -16,7 +17,7 @@ const MAX_QUERY_CANDIDATES = 100_000;
 
 function ensureSemanticDatabasePath(libraryPath: string): string {
   const libraryRoot = realpathSync(libraryPath);
-  const serpentDirectory = path.join(libraryRoot, '.serpent');
+  const serpentDirectory = libraryMetaDir(libraryRoot);
   const serpentInfo = lstatSync(serpentDirectory);
   if (!serpentInfo.isDirectory() || serpentInfo.isSymbolicLink()) {
     throw new Error('The semantic index directory is not a safe library directory.');
@@ -46,7 +47,7 @@ function ensureSemanticDatabasePath(libraryPath: string): string {
 
 function semanticDatabasePathForExistingLibrary(libraryPath: string): string {
   const root = realpathSync(libraryPath);
-  const serpentDirectory = path.join(root, '.serpent');
+  const serpentDirectory = libraryMetaDir(root);
   const serpentInfo = lstatSync(serpentDirectory);
   if (!serpentInfo.isDirectory() || serpentInfo.isSymbolicLink()) throw new Error('Unsafe library metadata directory.');
   const semanticDirectory = path.join(serpentDirectory, 'semantic');

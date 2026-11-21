@@ -35,7 +35,7 @@ function once(operation: () => unknown): number {
 
 describe.skipIf(!fixturePath)('comprehensive perf benchmark', () => {
   beforeAll(() => {
-    const manifestFile = `${fixturePath}/.serpent/large-library-fixture.json`;
+    const manifestFile = `${fixturePath}/.keel/large-library-fixture.json`;
     if (!existsSync(manifestFile)) throw new Error(`Missing manifest: ${manifestFile}`);
     manifest = JSON.parse(readFileSync(manifestFile, 'utf8'));
     service = new LibraryService({ observerFactory: () => ({ close() {} }) });

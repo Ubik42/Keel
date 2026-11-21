@@ -1,3 +1,4 @@
+import { libraryMetaDir } from '../shared/library-meta-dir';
 import { createHash, randomUUID } from 'node:crypto';
 import {
   mkdir,
@@ -65,7 +66,7 @@ type ReadLayerResult = {
 
 /**
  * Owns non-secret plugin settings outside the library database. The resource
- * layer is deliberately ordinary JSON under `.serpent/` so personal device
+ * layer is deliberately ordinary JSON under the library metadata directory so personal device
  * synchronization carries it; trust, crash state and device overrides never
  * use that path.
  */
@@ -227,7 +228,7 @@ export class PluginSettingsStore {
     input: { libraryId: string; libraryDirectory: string; manifest: PluginManifest },
   ): string {
     if (layer === 'library') {
-      return path.join(input.libraryDirectory, PLUGIN_LIBRARY_SETTINGS_DIRECTORY, `${input.manifest.id}.json`);
+      return libraryMetaDir(input.libraryDirectory, PLUGIN_LIBRARY_SETTINGS_DIRECTORY, `${input.manifest.id}.json`);
     }
     const baseDirectory = layer === 'user-default'
       ? path.join(this.userDataDirectory, 'plugin-settings', 'defaults')

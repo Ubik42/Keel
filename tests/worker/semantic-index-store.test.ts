@@ -32,7 +32,7 @@ function createStore(
 ): SemanticIndexStore {
   const root = mkdtempSync(path.join(tmpdir(), 'serpent-semantic-index-'));
   temporaryRoots.push(root);
-  mkdirSync(path.join(root, '.serpent'));
+  mkdirSync(path.join(root, '.keel'));
   const store = new SemanticIndexStore({
     libraryPath: root,
     libraryId,
@@ -116,7 +116,7 @@ describe('SemanticIndexStore', () => {
     store.markFailed(profileId, 'asset-a', 'revision-a', 'claim-one', 'preparation');
     expect(store.jobFor(profileId, 'asset-a')).toMatchObject({ status: 'failed', errorCategory: 'preparation' });
 
-    const database = new Database(path.join(root, '.serpent', 'semantic', 'index.sqlite'));
+    const database = new Database(path.join(root, '.keel', 'semantic', 'index.sqlite'));
     try {
       database.prepare('UPDATE embedding_jobs SET retry_after = ? WHERE profile_id = ? AND asset_id = ?')
         .run('2000-01-01T00:00:00.000Z', profileId, 'asset-a');
@@ -249,7 +249,7 @@ describe('SemanticIndexStore', () => {
   it('prevents reusing a copied sidecar with a different library identity', () => {
     const root = mkdtempSync(path.join(tmpdir(), 'serpent-semantic-index-identity-'));
     temporaryRoots.push(root);
-    mkdirSync(path.join(root, '.serpent'));
+    mkdirSync(path.join(root, '.keel'));
     const first = new SemanticIndexStore({ libraryPath: root, libraryId: 'library-one', storageKind: 'local' });
     stores.push(first);
     first.close();
@@ -263,7 +263,7 @@ describe('SemanticIndexStore', () => {
   it('uses conservative DELETE journaling when library storage is unknown', () => {
     const root = mkdtempSync(path.join(tmpdir(), 'serpent-semantic-index-unknown-'));
     temporaryRoots.push(root);
-    mkdirSync(path.join(root, '.serpent'));
+    mkdirSync(path.join(root, '.keel'));
     const store = new SemanticIndexStore({ libraryPath: root, libraryId: 'unknown-library', storageKind: 'unknown' });
     expect(store.journalMode).toBe('delete');
     store.close();
@@ -273,8 +273,8 @@ describe('SemanticIndexStore', () => {
     const root = mkdtempSync(path.join(tmpdir(), 'serpent-semantic-index-link-'));
     const outside = mkdtempSync(path.join(tmpdir(), 'serpent-semantic-outside-'));
     temporaryRoots.push(root, outside);
-    mkdirSync(path.join(root, '.serpent'));
-    symlinkSync(outside, path.join(root, '.serpent', 'semantic'));
+    mkdirSync(path.join(root, '.keel'));
+    symlinkSync(outside, path.join(root, '.keel', 'semantic'));
     expect(() => new SemanticIndexStore({
       libraryPath: root,
       libraryId: 'library-link',

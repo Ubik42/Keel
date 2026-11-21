@@ -115,7 +115,7 @@ test('imports files and a directory hierarchy, then reconciles external changes'
     expect(abandoned.plan.nameConflictCount).toBe(2);
     expect(abandoned.replayOk).toBe(false);
     expect(abandoned.replayErrorCode).toBeTruthy();
-    const operationsPath = path.join(libraryPath, '.serpent', 'operations');
+    const operationsPath = path.join(libraryPath, '.keel', 'operations');
     expect(existsSync(operationsPath) ? readdirSync(operationsPath, { recursive: true }) : []).toHaveLength(0);
 
     // The non-empty canvas no longer duplicates the library switcher's import

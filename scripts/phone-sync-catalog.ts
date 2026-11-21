@@ -2,17 +2,19 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { LibraryService } from '../src/worker/library-service';
+import { libraryMetaDir } from '../src/shared/library-meta-dir';
 import type { LinkedFolderRule } from '../src/shared/asset-types';
 
 const root = path.resolve(process.argv[2] ?? '');
 if (!existsSync(root) || !process.argv[2]) throw new Error('缺少资源库目录');
 const service = new LibraryService();
 try {
-  const library = existsSync(path.join(root, '.serpent', 'library.db'))
+  const library = existsSync(libraryMetaDir(root, 'library.db'))
     ? service.openLibrary(root)
     : service.createLibrary({ displayName: path.basename(root), selectedParentPath: root, useExistingFolder: true });
-  const settingsPath = path.join(root, '.serpent', 'phone-sync', 'config.json');
-  const linksPath = path.join(root, '.serpent', 'phone-sync', 'shared-links.json');
+  // openLibrary/createLibrary above already moved a legacy `.serpent` to `.keel`.
+  const settingsPath = libraryMetaDir(root, 'phone-sync', 'config.json');
+  const linksPath = libraryMetaDir(root, 'phone-sync', 'shared-links.json');
   if (existsSync(settingsPath) && existsSync(linksPath)) {
     const config = JSON.parse(readFileSync(settingsPath, 'utf8')) as { shared_roots: Record<string,string> };
     const links = JSON.parse(readFileSync(linksPath, 'utf8')) as Record<string,string[]>;

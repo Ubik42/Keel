@@ -15,6 +15,17 @@ MEDIA = {'.jpg','.jpeg','.jpe','.png','.gif','.webp','.bmp','.heic','.heif','.dn
 CACHE = {'.thumbnails','.gs','.stx','.tmfs','.convert_tmp_files','cache','code_cache','assets','templateextra'}
 
 
+META_DIRS = ('.keel', '.serpent')
+
+
+def meta_dir(root: Path) -> Path:
+    """Keel metadata directory: `.keel`, else a library not yet migrated from `.serpent`."""
+    for name in META_DIRS:
+        if (root / name).is_dir():
+            return root / name
+    return root / META_DIRS[0]
+
+
 def is_cache(path: str) -> bool:
     return any(p.lower() in CACHE or p.lower().startswith('.gs_fs') for p in path.split('/'))
 
@@ -45,12 +56,13 @@ class Archive:
     def __init__(self, root: Path, config: dict):
         self.root = root.resolve()
         self.config = config
-        self.meta = self.root / '.serpent' / 'phone-sync'
-        if not (self.root / '.serpent' / 'library.db').is_file():
-            raise ValueError('所选文件夹尚未建立 Serpent 资源库。')
-        if (self.root / '.serpent').is_symlink():
+        library_meta = meta_dir(self.root)
+        self.meta = library_meta / 'phone-sync'
+        if not (library_meta / 'library.db').is_file():
+            raise ValueError('所选文件夹尚未建立 Keel 资源库。')
+        if library_meta.is_symlink():
             raise ValueError('资源库元数据目录不能是符号链接。')
-        if self.meta.exists() and (self.meta.is_symlink() or self.meta.resolve().parent != (self.root/'.serpent').resolve()):
+        if self.meta.exists() and (self.meta.is_symlink() or self.meta.resolve().parent != library_meta.resolve()):
             raise ValueError('同步状态目录越过资源库边界。')
         self.meta.mkdir(parents=True, exist_ok=True)
         self.db = sqlite3.connect(self.meta / 'sync.sqlite')
@@ -75,11 +87,11 @@ class Archive:
 
     def location(self, path: Path):
         real = path.resolve()
-        if real.is_relative_to(self.root) and not real.is_relative_to(self.root / '.serpent'):
+        if real.is_relative_to(self.root) and not any(real.is_relative_to(self.root / name) for name in META_DIRS):
             return 'library', real.relative_to(self.root).as_posix()
         for name, folder in self.config.get('shared_roots', {}).items():
             parent = Path(folder).resolve()
-            if real.is_relative_to(parent) and not real.is_relative_to(parent / '.serpent'):
+            if real.is_relative_to(parent) and not any(real.is_relative_to(parent / name) for name in META_DIRS):
                 return name, real.relative_to(parent).as_posix()
         raise ValueError('照片路径超出资源库及已配置的共享目录')
 
@@ -128,12 +140,12 @@ class Archive:
         self.db.commit()
 
     def refresh_local_index(self):
-        """Rebind originals after users reorganize files through Serpent."""
+        """Rebind originals after users reorganize files through Keel."""
         by_path = {}
         for row in self.db.execute('SELECT * FROM objects WHERE scope="library"'):
             by_path[str(self.resolve(row)).casefold()] = row
         for directory, dirs, files in os.walk(self.root, followlinks=False):
-            dirs[:] = [name for name in dirs if name not in {'.serpent','.bf','_同步记录','_管理'} and not (Path(directory)/name).is_symlink() and not getattr(Path(directory)/name,'is_junction',lambda:False)()]
+            dirs[:] = [name for name in dirs if name not in {*META_DIRS,'.bf','_同步记录','_管理'} and not (Path(directory)/name).is_symlink() and not getattr(Path(directory)/name,'is_junction',lambda:False)()]
             for name in files:
                 path = Path(directory) / name
                 if path.suffix.lower() not in MEDIA or path.is_symlink():

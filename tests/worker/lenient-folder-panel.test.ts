@@ -72,7 +72,7 @@ function dropTablesAndReopen(
   tables: string[],
   dropArtifactColumns: string[] = [],
 ): void {
-  const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+  const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
   for (const table of tables) db.exec(`DROP TABLE ${table}`);
   if (dropArtifactColumns.length > 0) {
     const indexes = db

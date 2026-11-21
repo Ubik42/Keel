@@ -47,7 +47,7 @@ describe('Library Worker public error boundary', () => {
 
   it('exposes a lease conflict as a retryable library-busy result without filesystem details', () => {
     expect(publicErrorForWorkerFailure(
-      new LibraryWriteCoordinatorError('Another process owns /private/Library/.serpent/library.db', 'timed-out'),
+      new LibraryWriteCoordinatorError('Another process owns /private/Library/.keel/library.db', 'timed-out'),
     )).toEqual({
       code: 'LIBRARY_BUSY',
       message: PUBLIC_ERROR_MESSAGES.LIBRARY_BUSY,

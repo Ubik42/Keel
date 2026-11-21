@@ -21,8 +21,8 @@ describe.skipIf(process.platform !== 'win32')('Windows library folder icons', ()
   it('automatically decorates new libraries with a portable icon', () => {
     const { root, service } = fixture();
     const library = service.createLibrary({ displayName: '新建图库', selectedParentPath: root });
-    expect(readFileSync(path.join(library.libraryPath, '.serpent', 'library.ico'))).toEqual(readFileSync('assets/icons/app.ico'));
-    expect(readFileSync(path.join(library.libraryPath, 'desktop.ini'), 'utf16le')).toContain('IconResource=.serpent\\library.ico,0');
+    expect(readFileSync(path.join(library.libraryPath, '.keel', 'library.ico'))).toEqual(readFileSync('assets/icons/app.ico'));
+    expect(readFileSync(path.join(library.libraryPath, 'desktop.ini'), 'utf16le')).toContain('IconResource=.keel\\library.ico,0');
     service.refreshManagedAssets(library.libraryId);
     expect(service.listAssets({ libraryId: library.libraryId, recursive: true })).toEqual([]);
   });
@@ -34,7 +34,7 @@ describe.skipIf(process.platform !== 'win32')('Windows library folder icons', ()
     writeFileSync(path.join(root, 'desktop.ini'), previous);
     execFileSync('attrib.exe', ['+h', '+s', path.join(root, 'desktop.ini')], { windowsHide: true });
     const library = service.createLibrary({ displayName: '旧图库', selectedParentPath: root, useExistingFolder: true });
-    expect(readFileSync(path.join(root, '.serpent', 'desktop.ini.before-serpent'), 'utf8')).toBe(previous);
+    expect(readFileSync(path.join(root, '.keel', 'desktop.ini.before-serpent'), 'utf8')).toBe(previous);
     const ini = readFileSync(path.join(root, 'desktop.ini'), 'utf16le');
     expect(ini).toContain('FolderType=Pictures'); expect(ini).not.toContain('IconFile=');
     service.refreshManagedAssets(library.libraryId);
@@ -43,6 +43,6 @@ describe.skipIf(process.platform !== 'win32')('Windows library folder icons', ()
     const before = statSync(path.join(root, 'desktop.ini')).mtimeMs;
     service.closeAll(); service.openLibrary(root);
     expect(statSync(path.join(root, 'desktop.ini')).mtimeMs).toBe(before);
-    expect(readFileSync(path.join(root, '.serpent', 'desktop.ini.before-serpent'), 'utf8')).toBe(previous);
+    expect(readFileSync(path.join(root, '.keel', 'desktop.ini.before-serpent'), 'utf8')).toBe(previous);
   });
 });

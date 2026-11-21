@@ -33,8 +33,8 @@ describe('root library storage', () => {
     expect(existsSync(path.join(library.libraryPath, 'Assets'))).toBe(false);
     mkdirSync(path.join(library.libraryPath, '2026'));
     writeFileSync(path.join(library.libraryPath, '2026', '照片.txt'), 'original');
-    writeFileSync(path.join(library.libraryPath, '.serpent', 'cache.txt'), 'private');
-    writeFileSync(path.join(library.libraryPath, '.serpentignore'), '*.tmp');
+    writeFileSync(path.join(library.libraryPath, '.keel', 'cache.txt'), 'private');
+    writeFileSync(path.join(library.libraryPath, '.keelignore'), '*.tmp');
     service.refreshManagedAssets(library.libraryId);
     const assets = service.listAssets({ libraryId: library.libraryId, recursive: true });
     expect(assets.map((a) => a.relativeFilePath)).toEqual(['2026/照片.txt']);
@@ -59,17 +59,17 @@ describe('root library storage', () => {
     expect(readFileSync(path.join(library.libraryPath, 'sample.txt'), 'utf8')).toBe('keep these bytes');
     const folder = service.createManagedFolder({ libraryId: library.libraryId, name: '参考' });
     expect(existsSync(path.join(library.libraryPath, folder.relativePath))).toBe(true);
-    expect(() => service.createManagedFolder({ libraryId: library.libraryId, name: '.serpent' })).toThrow();
-    expect(() => normalizeRelativeAssetPath('.serpent/library.db')).toThrow();
+    expect(() => service.createManagedFolder({ libraryId: library.libraryId, name: '.keel' })).toThrow();
+    expect(() => normalizeRelativeAssetPath('.keel/library.db')).toThrow();
     expect(() => normalizeRelativeAssetPath('.SERPENT/library.db')).toThrow();
-    expect(() => normalizeRelativeAssetPath('.serpentignore')).toThrow();
+    expect(() => normalizeRelativeAssetPath('.keelignore')).toThrow();
   });
 
   it('retains Assets layout for explicit choice and upstream libraries without a marker', () => {
     const { parent, service } = fixture();
     const library = service.createLibrary({ displayName: 'Upstream', selectedParentPath: parent, storageLayout: 'assets' });
     service.closeAll();
-    rmSync(path.join(library.libraryPath, '.serpent', 'storage-layout.json'));
+    rmSync(path.join(library.libraryPath, '.keel', 'storage-layout.json'));
     writeFileSync(path.join(library.libraryPath, 'outside.txt'), 'not managed');
     writeFileSync(path.join(library.libraryPath, 'Assets', 'inside.txt'), 'managed');
     const reopened = service.openLibrary(library.libraryPath);
@@ -84,11 +84,11 @@ describe('root library storage', () => {
     mkdirSync(path.join(library.libraryPath, '2026'));
     writeFileSync(path.join(library.libraryPath, '2026', 'hidden.txt'), 'hidden');
     writeFileSync(path.join(library.libraryPath, 'visible.txt'), 'visible');
-    writeFileSync(path.join(library.libraryPath, '.serpentignore'), '/2026/');
+    writeFileSync(path.join(library.libraryPath, '.keelignore'), '/2026/');
     service.refreshManagedAssets(library.libraryId);
     expect(service.listAssets({ libraryId: library.libraryId, recursive: true }).map((a) => a.relativeFilePath)).toEqual(['visible.txt']);
     service.setIgnore({ libraryId: library.libraryId, locationKind: 'managed', relativePath: 'visible.txt', pathKind: 'asset', ignored: true });
-    expect(readFileSync(path.join(library.libraryPath, '.serpentignore'), 'utf8')).not.toContain('Assets/');
+    expect(readFileSync(path.join(library.libraryPath, '.keelignore'), 'utf8')).not.toContain('Assets/');
     expect(service.listAssets({ libraryId: library.libraryId, recursive: true })).toHaveLength(0);
   });
 
@@ -101,8 +101,8 @@ describe('root library storage', () => {
     });
     service.createLibrary({ displayName: 'Watcher', selectedParentPath: parent });
     const before = pending.length;
-    emit?.({ eventType: 'change', filename: '.serpent\\library.db-wal' });
-    emit?.({ eventType: 'change', filename: '.serpent/artifacts/cache.webp' });
+    emit?.({ eventType: 'change', filename: '.keel\\library.db-wal' });
+    emit?.({ eventType: 'change', filename: '.keel/artifacts/cache.webp' });
     expect(pending).toHaveLength(before);
     emit?.({ eventType: 'rename', filename: 'new.txt' });
     expect(pending.length).toBeGreaterThan(before);
@@ -114,7 +114,7 @@ describe('root library storage', () => {
     writeFileSync(path.join(library.libraryPath, 'photo.txt'), 'keep original');
     service.refreshManagedAssets(library.libraryId);
     service.closeAll();
-    writeFileSync(path.join(library.libraryPath, '.serpent', 'library.db'), 'damaged database');
+    writeFileSync(path.join(library.libraryPath, '.keel', 'library.db'), 'damaged database');
     const recovered = service.openLibrary(library.libraryPath);
     expect(recovered.storageLayout).toBe('root');
     service.refreshManagedAssets(recovered.libraryId);
@@ -126,7 +126,7 @@ describe('root library storage', () => {
     const { parent, service } = fixture();
     const library = service.createLibrary({ displayName: 'Future', selectedParentPath: parent });
     service.closeAll();
-    const marker = path.join(library.libraryPath, '.serpent', 'storage-layout.json');
+    const marker = path.join(library.libraryPath, '.keel', 'storage-layout.json');
     writeFileSync(marker, JSON.stringify({ version: 99, storageLayout: 'root' }));
     expect(() => service.openLibrary(library.libraryPath)).toThrow();
     expect(JSON.parse(readFileSync(marker, 'utf8')).version).toBe(99);

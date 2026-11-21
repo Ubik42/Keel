@@ -76,7 +76,7 @@ type PersistedJobGroup = {
 
 /** Read-only raw queue breakdown; the aggregate is needed to know what a backlog contains. */
 function readPersistedJobGroups(libraryPath: string): PersistedJobGroup[] {
-  const database = new DatabaseSync(path.join(libraryPath, ".serpent", "library.db"), {
+  const database = new DatabaseSync(path.join(libraryPath, ".keel", "library.db"), {
     readOnly: true,
   });
   try {
@@ -681,7 +681,7 @@ function assertDisposableFixtureForQueuePause(libraryPath: string): void {
   if (pauseQueueConfirmation !== "I_ACKNOWLEDGE_DISPOSABLE_FIXTURE") {
     throw new Error("Queue-pause profiling requires SERPENT_PROFILE_PAUSE_QUEUE_CONFIRM=I_ACKNOWLEDGE_DISPOSABLE_FIXTURE.");
   }
-  const manifestPath = path.join(libraryPath, ".serpent", "large-library-fixture.json");
+  const manifestPath = path.join(libraryPath, ".keel", "large-library-fixture.json");
   let manifest: unknown;
   try {
     manifest = JSON.parse(readFileSync(manifestPath, "utf8"));

@@ -144,7 +144,7 @@ describe('schema v9 migration', () => {
     const service = new LibraryService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'V9', selectedParentPath: root });
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(db.pragma('user_version', { simple: true })).toBe(SUPPORTED_SCHEMA_VERSION);
     expect(db.pragma('user_version', { simple: true })).toBe(SUPPORTED_SCHEMA_VERSION);
 
@@ -180,7 +180,7 @@ describe('schema v9 migration', () => {
     const service = new LibraryService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Idx', selectedParentPath: root });
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const indexes = (db.prepare("SELECT name FROM sqlite_master WHERE type = 'index' AND name = 'revision_artifacts_current'").all() as Array<{ name: string }>);
     expect(indexes).toHaveLength(1);
 
@@ -188,12 +188,12 @@ describe('schema v9 migration', () => {
     service.closeAll();
   });
 
-  it('creates .serpent/artifacts directory', () => {
+  it('creates .keel/artifacts directory', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Artifacts', selectedParentPath: root });
 
-    expect(existsSync(path.join(created.libraryPath, '.serpent', 'artifacts'))).toBe(true);
+    expect(existsSync(path.join(created.libraryPath, '.keel', 'artifacts'))).toBe(true);
 
     service.closeAll();
   });
@@ -203,7 +203,7 @@ describe('schema v9 migration', () => {
     const service = new LibraryService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'JobIdx', selectedParentPath: root });
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const indexes = (db.prepare("SELECT name FROM sqlite_master WHERE type = 'index' AND name = 'jobs_library_status_priority'").all() as Array<{ name: string }>);
     expect(indexes).toHaveLength(1);
 
@@ -216,7 +216,7 @@ describe('schema v9 migration', () => {
     const service = new LibraryService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'RecentJobIdx', selectedParentPath: root });
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const plan = db.prepare(
       `EXPLAIN QUERY PLAN
        SELECT j.job_id
@@ -440,11 +440,11 @@ describe('generateThumbnail (sharp)', () => {
     expect(result.artifactId).toBeTruthy();
 
     // Opaque sources encode as JPEG now — several times faster than WebP.
-    const artifactPath = path.join(created.libraryPath, '.serpent', 'artifacts', `${result.artifactId}.jpg`);
+    const artifactPath = path.join(created.libraryPath, '.keel', 'artifacts', `${result.artifactId}.jpg`);
     expect(existsSync(artifactPath)).toBe(true);
 
     // Verify revision_artifacts row
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const row = db.prepare('SELECT kind, status, mime_type, generator_version FROM revision_artifacts WHERE artifact_id = ?').get(result.artifactId) as { kind: string; status: string; mime_type: string; generator_version: string };
     expect(row.kind).toBe('thumbnail');
     expect(row.status).toBe('ready');
@@ -477,9 +477,9 @@ describe('generateThumbnail (sharp)', () => {
     importNoConflict(service, created.libraryId, sourcePath);
     const asset = service.listAssets({ libraryId: created.libraryId, recursive: true })[0]!;
     const result = (await service.generateThumbnail({ libraryId: created.libraryId, assetId: asset.assetId }))!;
-    const webpPath = path.join(created.libraryPath, '.serpent', 'artifacts', `${result.artifactId}.webp`);
+    const webpPath = path.join(created.libraryPath, '.keel', 'artifacts', `${result.artifactId}.webp`);
     expect(existsSync(webpPath)).toBe(true);
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const row = db.prepare('SELECT mime_type FROM revision_artifacts WHERE artifact_id = ?').get(result.artifactId) as { mime_type: string };
     db.close();
     expect(row.mime_type).toBe('image/webp');
@@ -545,7 +545,7 @@ describe('generateThumbnail (sharp)', () => {
     }))!;
     const artifactPath = path.join(
       created.libraryPath,
-      '.serpent',
+      '.keel',
       'artifacts',
       `${result.artifactId}.jpg`,
     );
@@ -584,7 +584,7 @@ describe('generateThumbnail (sharp)', () => {
     const assets = service.listAssets({ libraryId: created.libraryId, recursive: true });
     const result = (await service.generateThumbnail({ libraryId: created.libraryId, assetId: assets[0]!.assetId }))!;
     expect(result.artifactId).toBeTruthy();
-    expect(existsSync(path.join(created.libraryPath, '.serpent', 'artifacts', `${result.artifactId}.jpg`))).toBe(true);
+    expect(existsSync(path.join(created.libraryPath, '.keel', 'artifacts', `${result.artifactId}.jpg`))).toBe(true);
     expect(service.getCurrentArtifact(created.libraryId, assets[0]!.assetId, 'thumbnail'))
       .toMatchObject({
         artifactRole: 'card-thumbnail',
@@ -657,7 +657,7 @@ describe('generateThumbnail (sharp)', () => {
     ).rejects.toBeInstanceOf(LibraryServiceError);
 
     // Verify failed artifact exists
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const row = db.prepare("SELECT status, error_code FROM revision_artifacts WHERE revision_id = ? AND kind = 'thumbnail'").get(assets[0]!.currentRevisionId) as { status: string; error_code: string } | undefined;
     expect(row).toBeDefined();
     expect(row!.status).toBe('failed');
@@ -682,7 +682,7 @@ describe('generateThumbnail (sharp)', () => {
     })).rejects.toMatchObject({ reason: 'MEDIA_PROCESSING_FAILED' });
 
     // Verify failed artifacts were created
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const failedCount = db.prepare("SELECT COUNT(*) AS count FROM revision_artifacts WHERE revision_id = ? AND status = 'failed'").get(assets[0]!.currentRevisionId) as { count: number };
     expect(failedCount.count).toBeGreaterThan(0);
     db.close();
@@ -764,8 +764,8 @@ describe('getThumbnailArtifact', () => {
     writeFileSync(sourcePath, Buffer.alloc(1024, 0));
     importNoConflict(service, created.libraryId, sourcePath);
     const asset = service.listAssets({ libraryId: created.libraryId, recursive: true })[0]!;
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
-    const posterPath = path.join(created.libraryPath, '.serpent', 'artifacts', 'drag-poster.jpg');
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
+    const posterPath = path.join(created.libraryPath, '.keel', 'artifacts', 'drag-poster.jpg');
     createTestImage(posterPath);
     db.prepare(
       `INSERT INTO revision_artifacts
@@ -816,7 +816,7 @@ describe('getThumbnailArtifact', () => {
     service.refreshManagedAssets(created.libraryId);
 
     // Old artifact should be invalidated
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const oldRow = db.prepare('SELECT invalidated_at FROM revision_artifacts WHERE artifact_id = ?').get(oldArtifact!.artifactId) as { invalidated_at: string | null } | undefined;
     expect(oldRow).toBeTruthy();
     expect(oldRow!.invalidated_at).toBeTruthy();
@@ -849,7 +849,7 @@ describe('preview availability while derivatives are generated', () => {
     const derived = assets.find((asset) => asset.displayName === 'z-derived.png')!;
     expect(direct.previewKind).toBe('source');
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     db.prepare('UPDATE assets SET created_at = ? WHERE asset_id = ?')
       .run('2026-01-02T00:00:00.000Z', direct.assetId);
     db.prepare('UPDATE assets SET created_at = ? WHERE asset_id = ?')
@@ -861,7 +861,7 @@ describe('preview availability while derivatives are generated', () => {
       priority: 50,
       skipStaleRepair: true,
     })).toBe(1);
-    const verify = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const verify = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(verify.prepare(
       "SELECT asset_id FROM jobs WHERE kind = 'generate_thumbnail' AND status = 'queued'",
     ).all()).toEqual([{ asset_id: derived.assetId }]);
@@ -936,7 +936,7 @@ describe('preview availability while derivatives are generated', () => {
     importNoConflict(service, created.libraryId, sourcePath);
     const asset = service.listAssets({ libraryId: created.libraryId, recursive: true })[0]!;
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     db.prepare(
       `INSERT INTO revision_artifacts
          (artifact_id, revision_id, kind, mime_type, byte_size, file_path,
@@ -979,7 +979,7 @@ describe('preview availability while derivatives are generated', () => {
     importNoConflict(service, created.libraryId, sourcePath);
     const asset = service.listAssets({ libraryId: created.libraryId, recursive: true })[0]!;
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     db.prepare(
       `INSERT INTO revision_artifacts
          (artifact_id, revision_id, kind, mime_type, byte_size, file_path,
@@ -1027,7 +1027,7 @@ describe('preview availability while derivatives are generated', () => {
       playbackMode: 'source',
       sourceRevisionId: asset.currentRevisionId,
     });
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(
       db.prepare(
         "SELECT kind, status FROM jobs WHERE asset_id = ? AND kind = 'generate_audio_proxy'",
@@ -1103,7 +1103,7 @@ describe('enqueueThumbnailJobs', () => {
     const asset = service.listAssets({ libraryId: created.libraryId, recursive: true })[0]!;
     await service.generateThumbnail({ libraryId: created.libraryId, assetId: asset.assetId });
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     db.prepare(
       `UPDATE revision_artifacts
           SET generator_version = 'sharp@legacy'
@@ -1112,7 +1112,7 @@ describe('enqueueThumbnailJobs', () => {
     db.close();
 
     expect(service.enqueueThumbnailJobs(created.libraryId, { assetIds: [asset.assetId] })).toBe(1);
-    const check = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const check = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const rows = check.prepare(
       `SELECT invalidated_at FROM revision_artifacts
         WHERE revision_id = ? AND kind = 'thumbnail'
@@ -1144,7 +1144,7 @@ describe('enqueueThumbnailJobs', () => {
       stores: 1,
     });
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     db.prepare(
       `UPDATE revision_artifacts
           SET status = 'failed', error_code = 'CACHE_PROBE_FAILED'
@@ -1186,7 +1186,7 @@ describe('enqueueThumbnailJobs', () => {
     // Serpent-xoaz: the background fill drains most-recently-imported assets
     // first (created_at DESC). Stamp distinct import times so the fill picks
     // a deterministic pair regardless of per-import clock granularity.
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const base = Date.parse('2026-01-01T00:00:00.000Z');
     const stamp = db.prepare('UPDATE assets SET created_at = ? WHERE asset_id = ?');
     assetIds.forEach((assetId, index) => {
@@ -1204,7 +1204,7 @@ describe('enqueueThumbnailJobs', () => {
       priority: 200,
     })).toBe(1);
 
-    const db2 = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db2 = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const jobs = db2.prepare(
       "SELECT asset_id, priority FROM jobs WHERE kind = 'generate_thumbnail' ORDER BY priority DESC, created_at",
     ).all() as Array<{ asset_id: string; priority: number }>;
@@ -1229,7 +1229,7 @@ describe('enqueueThumbnailJobs', () => {
     // renderer reports its first viewport; an explicit caller (automation,
     // CLI) triggers it directly.
     const reopened = service.openLibrary(created.libraryPath);
-    const db = new TestDatabase(path.join(reopened.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(reopened.libraryPath, '.keel', 'library.db'));
     const queuedBefore = db.prepare(
       "SELECT COUNT(*) AS count FROM jobs WHERE kind = 'generate_thumbnail' AND status = 'queued'",
     ).get() as { count: number };
@@ -1262,7 +1262,7 @@ describe('enqueueThumbnailJobs', () => {
     const assets = service.listAssets({ libraryId: created.libraryId, recursive: true });
     expect(assets).toHaveLength(2);
     const oldFailure = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-    const databasePath = path.join(created.libraryPath, '.serpent', 'library.db');
+    const databasePath = path.join(created.libraryPath, '.keel', 'library.db');
     const db = new TestDatabase(databasePath);
     const insertFailed = db.prepare(
       `INSERT INTO revision_artifacts
@@ -1316,7 +1316,7 @@ describe('processThumbnailQueue', () => {
           : await createJpegBytes(480, 480));
         importNoConflict(service, created.libraryId, sourcePath);
         const asset = service.listAssets({ libraryId: created.libraryId, recursive: true })[0]!;
-        const dbPath = path.join(created.libraryPath, '.serpent', 'library.db');
+        const dbPath = path.join(created.libraryPath, '.keel', 'library.db');
         db = new TestDatabase(dbPath);
         db.prepare('DELETE FROM jobs').run();
         db.prepare(
@@ -1377,7 +1377,7 @@ describe('processThumbnailQueue', () => {
     const assets = service.listAssets({ libraryId: created.libraryId, recursive: true });
     const first = assets.find((asset) => asset.displayName === 'frame-0001.png')!;
     const second = assets.find((asset) => asset.displayName === 'frame-0002.png')!;
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const now = new Date().toISOString();
     db.prepare(
       `INSERT INTO asset_sequences
@@ -1401,7 +1401,7 @@ describe('processThumbnailQueue', () => {
 
     await service.processThumbnailQueue(created.libraryId, { maxJobs: 1 });
 
-    const verify = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const verify = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const job = verify.prepare(
       `SELECT status, error_code FROM jobs WHERE job_id = 'hidden-metadata'`,
     ).get() as { status: string; error_code: string | null };
@@ -1429,7 +1429,7 @@ describe('processThumbnailQueue', () => {
     expect(service.getCurrentArtifact(created.libraryId, derived.assetId, 'thumbnail'))
       .toMatchObject({ status: 'ready' });
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     db.prepare('DELETE FROM jobs').run();
     const now = new Date().toISOString();
     const insert = db.prepare(
@@ -1473,7 +1473,7 @@ describe('processThumbnailQueue', () => {
       previewRevisionId: sourceDirect.currentRevisionId,
     });
 
-    const verify = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const verify = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(verify.prepare(
       'SELECT job_id, status, error_code FROM jobs ORDER BY job_id',
     ).all()).toEqual([
@@ -1495,7 +1495,7 @@ describe('processThumbnailQueue', () => {
     importNoConflict(service, created.libraryId, sourcePath);
     const asset = service.listAssets({ libraryId: created.libraryId, recursive: true })[0]!;
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     db.prepare('DELETE FROM jobs').run();
     db.prepare(
       "DELETE FROM revision_artifacts WHERE revision_id = ? AND kind = 'extracted_metadata'",
@@ -1522,7 +1522,7 @@ describe('processThumbnailQueue', () => {
       assetIds: [asset.assetId],
     })).toBe(1);
 
-    const verify = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const verify = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(verify.prepare(
       'SELECT status, error_code FROM jobs WHERE kind = ? AND asset_id = ? ORDER BY created_at DESC LIMIT 1',
     ).get('generate_thumbnail', asset.assetId)).toEqual({ status: 'succeeded', error_code: null });
@@ -1576,7 +1576,7 @@ describe('processThumbnailQueue', () => {
     const invalidatedAsset = assets.find((asset) => asset.displayName === 'invalidated.mp4')!;
     expect(currentStaleAsset.currentRevisionId).not.toBe(staleRevisionId);
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     db.prepare('DELETE FROM jobs').run();
     const now = new Date().toISOString();
     const insertJob = db.prepare(
@@ -1591,7 +1591,7 @@ describe('processThumbnailQueue', () => {
           generator_version, status, generated_at, invalidated_at)
        VALUES (?, ?, 'video_poster', 'image/jpeg', 1024, ?, ?, ?, ?, ?)`,
     );
-    const artifactDirectory = path.join(created.libraryPath, '.serpent', 'artifacts');
+    const artifactDirectory = path.join(created.libraryPath, '.keel', 'artifacts');
     mkdirSync(artifactDirectory, { recursive: true });
     writeFileSync(
       path.join(artifactDirectory, 'test-video-poster.jpg'),
@@ -1647,7 +1647,7 @@ describe('processThumbnailQueue', () => {
       assetIds: [readyAsset.assetId, currentStaleAsset.assetId, invalidatedAsset.assetId],
     })).toBe(2);
 
-    const verify = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const verify = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(verify.prepare(
       'SELECT job_id, status, error_code FROM jobs ORDER BY job_id',
     ).all()).toEqual([
@@ -1673,7 +1673,7 @@ describe('processThumbnailQueue', () => {
     }
     const assets = service.listAssets({ libraryId: created.libraryId, recursive: true })
       .toSorted((left, right) => left.displayName.localeCompare(right.displayName));
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     db.prepare('DELETE FROM jobs').run();
     const now = new Date().toISOString();
     const insertArtifact = db.prepare(
@@ -1736,7 +1736,7 @@ describe('processThumbnailQueue', () => {
       jobKinds: ['generate_thumbnail'],
     })).toBe(2);
 
-    const verify = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const verify = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(verify.prepare(
       `SELECT status, error_code, COUNT(*) AS count
          FROM jobs
@@ -1756,7 +1756,7 @@ describe('processThumbnailQueue', () => {
       jobKinds: ['generate_thumbnail'],
       assetIds: scopedAssetIds,
     })).toBe(0);
-    const afterScopedPrune = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const afterScopedPrune = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(afterScopedPrune.prepare(
       `SELECT status, error_code, COUNT(*) AS count
          FROM jobs
@@ -1793,7 +1793,7 @@ describe('processThumbnailQueue', () => {
     );
     expect(existsSync(artifactPath)).toBe(true);
 
-    const beforeClose = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const beforeClose = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     beforeClose.prepare('DELETE FROM jobs WHERE asset_id = ?').run(asset.assetId);
     const now = new Date().toISOString();
     beforeClose.prepare(
@@ -1822,7 +1822,7 @@ describe('processThumbnailQueue', () => {
       assetIds: [asset.assetId],
     })).toBe(0);
 
-    const afterPrune = new TestDatabase(path.join(reopened.libraryPath, '.serpent', 'library.db'));
+    const afterPrune = new TestDatabase(path.join(reopened.libraryPath, '.keel', 'library.db'));
     expect(afterPrune.prepare(
       'SELECT status, error_code FROM jobs WHERE job_id = ?',
     ).get('startup-missing-preview')).toEqual({ status: 'cancelled', error_code: 'ARTIFACT_READY' });
@@ -1843,7 +1843,7 @@ describe('processThumbnailQueue', () => {
 
     expect(notifiedAssetIds).toEqual([asset.assetId]);
     expect(requeued).toBe(1);
-    const afterReconciliation = new TestDatabase(path.join(reopened.libraryPath, '.serpent', 'library.db'));
+    const afterReconciliation = new TestDatabase(path.join(reopened.libraryPath, '.keel', 'library.db'));
     expect(afterReconciliation.prepare(
       "SELECT COUNT(*) AS count FROM jobs WHERE asset_id = ? AND kind = 'generate_thumbnail' AND status = 'queued'",
     ).get(asset.assetId)).toEqual({ count: 1 });
@@ -1885,10 +1885,10 @@ describe('processThumbnailQueue', () => {
     writeFileSync(sourcePath, Buffer.alloc(1024, 0));
     importNoConflict(service, created.libraryId, sourcePath);
     const asset = service.listAssets({ libraryId: created.libraryId, recursive: true })[0]!;
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     db.prepare('DELETE FROM jobs').run();
     const now = new Date().toISOString();
-    const artifactsDirectory = path.join(created.libraryPath, '.serpent', 'artifacts');
+    const artifactsDirectory = path.join(created.libraryPath, '.keel', 'artifacts');
     mkdirSync(artifactsDirectory, { recursive: true });
     writeFileSync(path.join(artifactsDirectory, 'missing-video-poster.jpg'), await createJpegBytes(64, 48));
     db.prepare(
@@ -1916,7 +1916,7 @@ describe('processThumbnailQueue', () => {
       jobKinds: ['generate_thumbnail'],
       assetIds: [asset.assetId],
     })).toBe(0);
-    const afterPrune = new TestDatabase(path.join(reopened.libraryPath, '.serpent', 'library.db'));
+    const afterPrune = new TestDatabase(path.join(reopened.libraryPath, '.keel', 'library.db'));
     expect(afterPrune.prepare(
       'SELECT status, error_code FROM jobs WHERE job_id = ?',
     ).get('missing-video-poster-job')).toEqual({ status: 'cancelled', error_code: 'ARTIFACT_READY' });
@@ -1937,7 +1937,7 @@ describe('processThumbnailQueue', () => {
     });
     expect(notifiedAssetIds).toEqual([asset.assetId]);
     expect(enqueued).toBe(1);
-    const afterReconciliation = new TestDatabase(path.join(reopened.libraryPath, '.serpent', 'library.db'));
+    const afterReconciliation = new TestDatabase(path.join(reopened.libraryPath, '.keel', 'library.db'));
     expect(afterReconciliation.prepare(
       "SELECT COUNT(*) AS count FROM jobs WHERE asset_id = ? AND kind = 'generate_thumbnail' AND status = 'queued'",
     ).get(asset.assetId)).toEqual({ count: 1 });
@@ -1955,7 +1955,7 @@ describe('processThumbnailQueue', () => {
       createTestImage(sourcePath);
       importNoConflict(service, created.libraryId, sourcePath);
     }
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const assets = db.prepare(
       `SELECT asset_id, current_revision_id
          FROM assets
@@ -2001,7 +2001,7 @@ describe('processThumbnailQueue', () => {
     expect(notifiedAssetIds).toHaveLength(assetCount);
     expect(new Set(notifiedAssetIds).size).toBe(assetCount);
     expect(requeued).toBe(assetCount);
-    const verify = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const verify = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(verify.prepare(
       "SELECT COUNT(*) AS count FROM jobs WHERE kind = 'generate_thumbnail' AND status = 'queued'",
     ).get()).toEqual({ count: assetCount });
@@ -2023,7 +2023,7 @@ describe('processThumbnailQueue', () => {
     const busyModel = assets.find((asset) => asset.displayName === 'busy-model.glb')!;
     const missingAsset = assets.find((asset) => asset.displayName === 'concurrent-missing.png')!;
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     db.prepare('DELETE FROM jobs').run();
     const now = new Date().toISOString();
     db.prepare(
@@ -2082,7 +2082,7 @@ describe('processThumbnailQueue', () => {
     });
     expect(notifiedAssetIds).toEqual([missingAsset.assetId]);
 
-    const whileBusy = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const whileBusy = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(whileBusy.prepare(
       'SELECT job_id, status FROM jobs ORDER BY job_id',
     ).all()).toEqual([
@@ -2093,7 +2093,7 @@ describe('processThumbnailQueue', () => {
 
     releaseRenderer();
     await ordinaryWave;
-    const afterOrdinaryWave = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const afterOrdinaryWave = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(afterOrdinaryWave.prepare(
       'SELECT job_id, status FROM jobs ORDER BY job_id',
     ).all()).toEqual([
@@ -2107,7 +2107,7 @@ describe('processThumbnailQueue', () => {
       jobKinds: ['generate_thumbnail'],
       assetIds: [missingAsset.assetId],
     })).toBe(1);
-    const afterExactWave = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const afterExactWave = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(afterExactWave.prepare(
       'SELECT job_id, status FROM jobs WHERE job_id IN (?, ?) ORDER BY job_id',
     ).all('concurrent-busy-model', 'concurrent-missing-preview')).toEqual([
@@ -2132,7 +2132,7 @@ describe('processThumbnailQueue', () => {
     expect(processed).toBeGreaterThanOrEqual(2);
 
     // Verify job is succeeded
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const job = db.prepare("SELECT status FROM jobs WHERE kind = 'generate_thumbnail' LIMIT 1").get() as { status: string } | undefined;
     expect(job).toBeTruthy();
     expect(job!.status).toBe('succeeded');
@@ -2155,7 +2155,7 @@ describe('processThumbnailQueue', () => {
     const first = assets.find((asset) => asset.displayName === 'first.png')!;
     const second = assets.find((asset) => asset.displayName === 'second.png')!;
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     db.prepare('DELETE FROM jobs').run();
     db.prepare(
       `INSERT INTO jobs
@@ -2178,7 +2178,7 @@ describe('processThumbnailQueue', () => {
       assetIds: [first.assetId],
     })).toBe(1);
 
-    const verify = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const verify = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(verify.prepare(
       'SELECT status, error_code FROM jobs WHERE job_id = ?',
     ).get('stale-thumbnail-job')).toEqual({ status: 'cancelled', error_code: 'STALE_REVISION' });
@@ -2202,7 +2202,7 @@ describe('processThumbnailQueue', () => {
       assetIds: [audio.assetId],
     });
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(db.prepare(
       "SELECT COUNT(*) AS count FROM jobs WHERE asset_id = ? AND kind = 'extract_palette'",
     ).get(audio.assetId)).toEqual({ count: 0 });
@@ -2285,7 +2285,7 @@ describe('processThumbnailQueue', () => {
       status: 'cancelled',
     });
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     db.prepare(
       "UPDATE jobs SET status = 'failed', attempt_count = 2, error_code = 'TEST_FAILURE' WHERE job_id = ?",
     ).run(jobId);
@@ -2331,7 +2331,7 @@ describe('processThumbnailQueue', () => {
     importNoConflict(service, created.libraryId, png);
     service.enqueueThumbnailJobs(created.libraryId);
     const jobId = mediaJobOfKind(service, created.libraryId, 'generate_thumbnail')!.jobId;
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     db.prepare("UPDATE jobs SET status = 'running', attempt_count = 2 WHERE job_id = ?").run(jobId);
     db.close();
     service.closeAll();
@@ -2359,7 +2359,7 @@ describe('processThumbnailQueue', () => {
       assetId: asset.assetId,
       kind: 'webm_proxy',
     });
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(db.prepare('SELECT error_code FROM jobs WHERE job_id = ?').get(jobId))
       .toEqual({ error_code: 'EXPLICIT_PROXY_FALLBACK' });
     db.prepare("UPDATE jobs SET status = 'running' WHERE job_id = ?").run(jobId);
@@ -2368,7 +2368,7 @@ describe('processThumbnailQueue', () => {
 
     const reopened = new LibraryService();
     reopened.openLibrary(created.libraryPath);
-    const recoveredDb = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const recoveredDb = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(recoveredDb.prepare(
       'SELECT status, error_code FROM jobs WHERE job_id = ?',
     ).get(jobId)).toEqual({ status: 'queued', error_code: 'EXPLICIT_PROXY_FALLBACK' });
@@ -2411,7 +2411,7 @@ describe('processThumbnailQueue', () => {
     await processing;
 
     expect(service.listMediaJobs(created.libraryId).jobs.find((job) => job.jobId === jobId)!.status).toBe('cancelled');
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     // Header-probed extracted_metadata is intentionally persisted before the
     // decoder is cancelled; the cancellation contract is that no thumbnail
     // artifact from the interrupted job remains.
@@ -2595,7 +2595,7 @@ describe('getArtifactAbsolutePath', () => {
     const result = (await service.generateThumbnail({ libraryId: created.libraryId, assetId: assets[0]!.assetId }))!;
 
     const absPath = service.getArtifactAbsolutePath(created.libraryId, result.artifactId);
-    expect(absPath).toContain('.serpent');
+    expect(absPath).toContain('.keel');
     expect(absPath).toContain('artifacts');
     expect(() => service.getArtifactAbsolutePath(
       created.libraryId,
@@ -2803,14 +2803,14 @@ describe('generateThumbnail (animated GIF still page)', () => {
     // Serpent-thumb-perf: GIF stills encode as webp when the palette reports
     // alpha, jpeg otherwise — assert through the stored file path instead of
     // hardcoding an extension.
-    const dbPathForCheck = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const dbPathForCheck = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const storedPath = (dbPathForCheck.prepare(
       'SELECT file_path FROM revision_artifacts WHERE artifact_id = ?',
     ).get(result.artifactId) as { file_path: string }).file_path;
     dbPathForCheck.close();
     const artifactPath = path.join(
       created.libraryPath,
-      '.serpent',
+      '.keel',
       'artifacts',
       ...storedPath.split('/'),
     );
@@ -2827,7 +2827,7 @@ describe('generateThumbnail (animated GIF still page)', () => {
     }
     expect(sum / pixels).toBeGreaterThan(40);
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const row = db.prepare(
       'SELECT generator_version FROM revision_artifacts WHERE artifact_id = ?',
     ).get(result.artifactId) as { generator_version: string };
@@ -2871,7 +2871,7 @@ describe('animated GIF native playback (Serpent-43d32f)', () => {
   function openJobs(
     created: { libraryPath: string },
   ): (sql: string, ...params: unknown[]) => unknown[] {
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     return (sql: string, ...params: unknown[]): unknown[] => {
       const rows = db.prepare(sql).all(...params);
       db.close();
@@ -2914,7 +2914,7 @@ describe('animated GIF native playback (Serpent-43d32f)', () => {
     const service = new LibraryService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'GIF Retire', selectedParentPath: root });
     importNoConflict(service, created.libraryId, gifPath);
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const gifAsset = db.prepare(
       "SELECT asset_id, current_revision_id FROM assets WHERE lower(relative_file_path) LIKE '%.gif'",
     ).get() as { asset_id: string; current_revision_id: string };
@@ -2933,7 +2933,7 @@ describe('animated GIF native playback (Serpent-43d32f)', () => {
     // Serpent-4bdd26: the retirement moved into the background reconciliation
     // (its GIF scan costs ~180ms on SMB); drive it explicitly.
     await reopened.runOpenBackgroundReconciliation(reopenedLibrary.libraryId);
-    const verifyDb = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const verifyDb = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const legacyJob = verifyDb.prepare(
       "SELECT status, error_code FROM jobs WHERE job_id = 'legacy-gif-proxy'",
     ).get() as { status: string; error_code: string | null };
@@ -2977,7 +2977,7 @@ describe('visible-wave priority boost (Serpent-azf6)', () => {
 
     // Queue the thumbnail at the mutation-wave priority first.
     service.enqueueThumbnailJobs(created.libraryId, { assetIds: [asset.assetId], priority: 300 });
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const before = db.prepare(
       'SELECT priority FROM jobs WHERE asset_id = ? AND kind = ? AND status = ?',
     ).get(asset.assetId, 'generate_thumbnail', 'queued') as { priority: number } | undefined;
@@ -3004,7 +3004,7 @@ describe('visible-wave priority boost (Serpent-azf6)', () => {
 
     service.enqueueThumbnailJobs(created.libraryId, { assetIds: [asset.assetId], priority: 350 });
     service.enqueueThumbnailJobs(created.libraryId, { assetIds: [asset.assetId], priority: 300 });
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const priority = db.prepare(
       'SELECT priority FROM jobs WHERE asset_id = ? AND kind = ? AND status = ?',
     ).get(asset.assetId, 'generate_thumbnail', 'queued') as { priority: number };
@@ -3030,7 +3030,7 @@ describe('cover-wave priority (Serpent-d0nv)', () => {
       limit: 100,
       priority: 400,
     });
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const queued = db.prepare(
       'SELECT priority FROM jobs WHERE asset_id = ? AND kind = ? AND status = ?',
     ).get(asset.assetId, 'generate_thumbnail', 'queued') as { priority: number } | undefined;
@@ -3105,7 +3105,7 @@ describe('visible page window covers the whole browse page (Serpent-x9xu)', () =
       retryFailed: true,
     });
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const jobs = db.prepare(
       "SELECT asset_id, priority FROM jobs WHERE kind = 'generate_thumbnail' AND status = 'queued' ORDER BY priority DESC, created_at",
     ).all() as Array<{ asset_id: string; priority: number }>;
@@ -3171,7 +3171,7 @@ describe('visible-window header probe (Serpent-visible-window)', () => {
     // the JPEG's metadata first to simulate an asset whose dimensions were
     // never probed (e.g. beyond the import cap, or imported before the probe
     // existed).
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const revision = db.prepare(
       'SELECT current_revision_id FROM assets WHERE asset_id = ?',
     ).get(jpegAsset.assetId) as { current_revision_id: string };
@@ -3271,10 +3271,10 @@ describe('visible-window header probe (Serpent-visible-window)', () => {
     const result = (await service.generateThumbnail({ libraryId: created.libraryId, assetId: asset.assetId }))!;
     expect(result.artifactId).toBeTruthy();
 
-    const artifactPath = path.join(created.libraryPath, '.serpent', 'artifacts', `${result.artifactId}.jpg`);
+    const artifactPath = path.join(created.libraryPath, '.keel', 'artifacts', `${result.artifactId}.jpg`);
     expect(existsSync(artifactPath)).toBe(true);
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const row = db.prepare('SELECT kind, status, mime_type, generator_version FROM revision_artifacts WHERE artifact_id = ?').get(result.artifactId) as { kind: string; status: string; mime_type: string; generator_version: string };
     expect(row.kind).toBe('thumbnail');
     expect(row.status).toBe('ready');
@@ -3310,10 +3310,10 @@ describe('visible-window header probe (Serpent-visible-window)', () => {
     const result = (await service.generateThumbnail({ libraryId: created.libraryId, assetId: asset.assetId }))!;
     expect(result.artifactId).toBeTruthy();
 
-    const artifactPath = path.join(created.libraryPath, '.serpent', 'artifacts', `${result.artifactId}.jpg`);
+    const artifactPath = path.join(created.libraryPath, '.keel', 'artifacts', `${result.artifactId}.jpg`);
     expect(existsSync(artifactPath)).toBe(true);
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const row = db.prepare('SELECT kind, status, mime_type, generator_version FROM revision_artifacts WHERE artifact_id = ?').get(result.artifactId) as { kind: string; status: string; mime_type: string; generator_version: string };
     expect(row.kind).toBe('thumbnail');
     expect(row.status).toBe('ready');
@@ -3346,7 +3346,7 @@ describe('visible-window header probe (Serpent-visible-window)', () => {
 
     service.enqueueThumbnailJobs(created.libraryId);
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const queuedFor = (assetId: string): number => {
       const row = db
         .prepare(

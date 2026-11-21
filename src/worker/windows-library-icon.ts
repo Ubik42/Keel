@@ -2,6 +2,7 @@ import { closeSync, copyFileSync, existsSync, ftruncateSync, lstatSync, openSync
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 import type * as Koffi from 'koffi';
+import { libraryMetaDir } from '../shared/library-meta-dir';
 
 function decodeIni(bytes: Buffer): string {
   return bytes[0] === 0xff && bytes[1] === 0xfe
@@ -12,7 +13,7 @@ function decodeIni(bytes: Buffer): string {
 /** Give writable Windows libraries a portable Explorer icon. Source media is untouched. */
 export function ensureWindowsLibraryIcon(libraryPath: string): boolean {
   if (process.platform !== 'win32') return false;
-  const metadataPath = path.join(libraryPath, '.serpent');
+  const metadataPath = libraryMetaDir(libraryPath);
   const desktopPath = path.join(libraryPath, 'desktop.ini');
   const iconPath = path.join(metadataPath, 'library.ico');
   if (!existsSync(metadataPath) || lstatSync(metadataPath).isSymbolicLink()) return false;
@@ -28,7 +29,7 @@ export function ensureWindowsLibraryIcon(libraryPath: string): boolean {
   if (!existsSync(iconPath) || !readFileSync(iconPath).equals(icon)) writeFileSync(iconPath, icon);
   const previous = existsSync(desktopPath) ? readFileSync(desktopPath) : Buffer.alloc(0);
   const original = decodeIni(previous);
-  const desiredIcon = 'IconResource=.serpent\\library.ico,0';
+  const desiredIcon = `IconResource=${path.basename(metadataPath)}\\library.ico,0`;
   const lines = original.split(/\r?\n/);
   const output: string[] = [];
   let inShell = false;
@@ -44,6 +45,7 @@ export function ensureWindowsLibraryIcon(libraryPath: string): boolean {
   if (!foundShell) output.unshift('[.ShellClassInfo]', desiredIcon);
   const text = output.join('\r\n').replace(/(?:\r\n)*$/, '\r\n');
   if (text !== original) {
+    // Name kept from before the rename so an existing backup is never replaced.
     const backupPath = path.join(metadataPath, 'desktop.ini.before-serpent');
     if (previous.length && !existsSync(backupPath)) copyFileSync(desktopPath, backupPath);
     const bytes = Buffer.concat([Buffer.from([0xff, 0xfe]), Buffer.from(text, 'utf16le')]);

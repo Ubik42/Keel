@@ -26,6 +26,8 @@ export function toRendererResult(
         supportedSchemaVersion: result.library.supportedSchemaVersion,
         // Serpent-verg.5: read-only because the migration is stuck.
         migrationStuck: result.library.migrationStuck,
+        metaDirMigration: result.library.metaDirMigration,
+        metaDirMigrationReason: result.library.metaDirMigrationReason,
         // Keep the recovery report path inside Main/Worker. Renderer receives
         // only a boolean affordance so the filesystem boundary stays intact.
         recovery: result.library.recovery

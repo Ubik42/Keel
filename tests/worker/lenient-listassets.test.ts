@@ -65,7 +65,7 @@ function libraryWithOneAsset(root: string, displayName: string): {
     assetId: asset.assetId,
     currentRevisionId: asset.currentRevisionId,
     libraryPath: library.libraryPath,
-    dbPath: path.join(library.libraryPath, '.serpent', 'library.db'),
+    dbPath: path.join(library.libraryPath, '.keel', 'library.db'),
   };
 }
 
@@ -79,7 +79,7 @@ function reopenAfterDroppingColumns(
   libraryPath: string,
   drops: Array<[string, string[]]>,
 ): void {
-  dropColumns(path.join(libraryPath, '.serpent', 'library.db'), drops);
+  dropColumns(path.join(libraryPath, '.keel', 'library.db'), drops);
   service.closeAll();
   service.openLibrary(libraryPath);
 }

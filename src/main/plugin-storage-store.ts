@@ -1,3 +1,4 @@
+import { libraryMetaDir } from '../shared/library-meta-dir';
 import { randomUUID } from 'node:crypto';
 import {
   mkdir,
@@ -56,7 +57,7 @@ export class PluginStorageStoreError extends Error {
 }
 
 /**
- * Namespaced KV storage for plugins. Library scope lives under `.serpent/` so it
+ * Namespaced KV storage for plugins. Library scope lives under the library metadata directory so it
  * can sync with the library; user scope stays in userData and never syncs.
  * Secrets must not use this store.
  */
@@ -255,7 +256,7 @@ export class PluginStorageStore {
     input: { libraryId: string; libraryDirectory: string },
   ): string {
     if (scope === 'library') {
-      return path.join(input.libraryDirectory, PLUGIN_LIBRARY_DATA_DIRECTORY, `${pluginId}.json`);
+      return libraryMetaDir(input.libraryDirectory, PLUGIN_LIBRARY_DATA_DIRECTORY, `${pluginId}.json`);
     }
     return path.join(this.userDataDirectory, 'plugin-storage', pluginId, 'user.json');
   }

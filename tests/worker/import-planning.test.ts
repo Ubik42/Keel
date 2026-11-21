@@ -150,7 +150,7 @@ describe('pending import plans', () => {
       nameConflictCount: 0,
     });
     expect(plan.sourceStates).toHaveLength(1);
-    expect(existsSync(path.join(library.libraryPath, '.serpent', 'operations'))).toBe(false);
+    expect(existsSync(path.join(library.libraryPath, '.keel', 'operations'))).toBe(false);
 
     expectServiceCode(
       () => service.prepareOrExecuteImport({
@@ -180,7 +180,7 @@ describe('pending import plans', () => {
       }),
       'VERSION_CONFLICT',
     );
-    expect(existsSync(path.join(library.libraryPath, '.serpent', 'operations'))).toBe(false);
+    expect(existsSync(path.join(library.libraryPath, '.keel', 'operations'))).toBe(false);
     service.closeAll();
   });
 
@@ -250,9 +250,9 @@ describe('pending import plans', () => {
     expect(JSON.stringify(plan)).not.toContain(source);
     expect(service.listAssets({ libraryId: library.libraryId, recursive: true })).toEqual([]);
     expect(readdirSync(path.join(library.libraryPath, 'Assets'))).toEqual([]);
-    expect(existsSync(path.join(library.libraryPath, '.serpent', 'operations', plan.importId, 'stage'))).toBe(true);
+    expect(existsSync(path.join(library.libraryPath, '.keel', 'operations', plan.importId, 'stage'))).toBe(true);
     service.closeAll();
-    expect(existsSync(path.join(library.libraryPath, '.serpent', 'operations'))).toBe(false);
+    expect(existsSync(path.join(library.libraryPath, '.keel', 'operations'))).toBe(false);
   });
 
   it('omits operating-system metadata and common dependency/cache trees', () => {
@@ -811,7 +811,7 @@ describe('pending import plans', () => {
     } catch (error) {
       expect(error).toMatchObject({ reason: 'SYMBOLIC_LINK_NOT_ALLOWED' });
     }
-    expect(existsSync(path.join(library.libraryPath, '.serpent', 'operations'))).toBe(false);
+    expect(existsSync(path.join(library.libraryPath, '.keel', 'operations'))).toBe(false);
     service.closeAll();
   });
 
@@ -878,7 +878,7 @@ describe('pending import plans', () => {
       code: 'INVALID_IMPORT_SOURCE',
       reason: 'SYMBOLIC_LINK_NOT_ALLOWED',
     });
-    expect(existsSync(path.join(library.libraryPath, '.serpent', 'operations'))).toBe(false);
+    expect(existsSync(path.join(library.libraryPath, '.keel', 'operations'))).toBe(false);
     service.closeAll();
   });
 
@@ -908,7 +908,7 @@ describe('pending import plans', () => {
       code: 'INVALID_IMPORT_SOURCE',
       reason: 'SOURCE_CHANGED',
     });
-    expect(existsSync(path.join(library.libraryPath, '.serpent', 'operations'))).toBe(false);
+    expect(existsSync(path.join(library.libraryPath, '.keel', 'operations'))).toBe(false);
     service.closeAll();
   });
 
@@ -935,7 +935,7 @@ describe('pending import plans', () => {
     expect(readFileSync(path.join(library.libraryPath, 'Assets', 'snapshot.png'), 'utf8')).toBe(
       'snapshot',
     );
-    expect(existsSync(path.join(library.libraryPath, '.serpent', 'operations'))).toBe(false);
+    expect(existsSync(path.join(library.libraryPath, '.keel', 'operations'))).toBe(false);
     service.closeAll();
   });
 
@@ -988,7 +988,7 @@ describe('pending import plans', () => {
     });
 
     expect(service.abandonImport(first.importId)).toBe(first.importId);
-    expect(existsSync(path.join(library.libraryPath, '.serpent', 'operations'))).toBe(false);
+    expect(existsSync(path.join(library.libraryPath, '.keel', 'operations'))).toBe(false);
     expectServiceCode(() => service.abandonImport(first.importId), 'IMPORT_NOT_FOUND');
     expectServiceCode(() => service.abandonImport('forged-token'), 'IMPORT_NOT_FOUND');
 
@@ -1212,7 +1212,7 @@ describe('pending import plans', () => {
     setup.closeAll();
 
     const operationId = randomUUID();
-    const operationPath = path.join(library.libraryPath, '.serpent', 'operations', operationId);
+    const operationPath = path.join(library.libraryPath, '.keel', 'operations', operationId);
     mkdirSync(path.join(operationPath, 'stage'), { recursive: true });
     mkdirSync(path.join(operationPath, 'backup'), { recursive: true });
     const destinationRelativePath = 'already-applied.png';
@@ -1221,7 +1221,7 @@ describe('pending import plans', () => {
     const assetId = randomUUID();
     const revisionId = randomUUID();
     const now = new Date().toISOString();
-    const database = openConfiguredDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const database = openConfiguredDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
     database.prepare(
       `INSERT INTO assets
          (asset_id, location_kind, managed_folder_id, relative_file_path,
@@ -1265,7 +1265,7 @@ describe('pending import plans', () => {
         expect.objectContaining({ assetId, relativeFilePath: destinationRelativePath }),
       ]),
     );
-    const recoveredDatabase = openConfiguredDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const recoveredDatabase = openConfiguredDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
     expect(recoveredDatabase.prepare(
       'SELECT status, error_code FROM file_operations WHERE operation_id = ?',
     ).get(operationId)).toEqual({ status: 'committed', error_code: 'PROCESS_INTERRUPTED_RECOVERED' });
@@ -1281,14 +1281,14 @@ describe('pending import plans', () => {
     setup.closeAll();
 
     const operationId = randomUUID();
-    const operationPath = path.join(library.libraryPath, '.serpent', 'operations', operationId);
+    const operationPath = path.join(library.libraryPath, '.keel', 'operations', operationId);
     mkdirSync(path.join(operationPath, 'stage'), { recursive: true });
     mkdirSync(path.join(operationPath, 'backup'), { recursive: true });
     const destinationRelativePath = 'orphan-unregistered.png';
     const destinationPath = path.join(library.libraryPath, 'Assets', destinationRelativePath);
     writeFileSync(destinationPath, 'orphan bytes');
     const now = new Date().toISOString();
-    const database = openConfiguredDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const database = openConfiguredDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
     database.prepare(
       `INSERT INTO file_operations
          (operation_id, kind, status, manifest_json, error_code, created_at, updated_at)
@@ -1308,7 +1308,7 @@ describe('pending import plans', () => {
     const recovered = new LibraryService();
     recovered.openLibrary(library.libraryPath);
     expect(existsSync(destinationPath)).toBe(false);
-    const recoveredDatabase = openConfiguredDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const recoveredDatabase = openConfiguredDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
     expect(recoveredDatabase.prepare(
       'SELECT status, error_code FROM file_operations WHERE operation_id = ?',
     ).get(operationId)).toEqual({ status: 'rolled_back', error_code: 'PROCESS_INTERRUPTED' });
@@ -1348,7 +1348,7 @@ describe('pending import plans', () => {
 
     expect(readFileSync(path.join(library.libraryPath, 'Assets', 'same.png'), 'utf8')).toBe('old');
     expect(service.listAssets({ libraryId: library.libraryId, recursive: true })).toEqual([initialAsset]);
-    expect(existsSync(path.join(library.libraryPath, '.serpent', 'operations'))).toBe(false);
+    expect(existsSync(path.join(library.libraryPath, '.keel', 'operations'))).toBe(false);
     expectServiceCode(
       () => service.resolveImport({ importId: plan.importId, suspectedDuplicate: 'skip', nameConflict: 'skip' }),
       'IMPORT_NOT_FOUND',
@@ -1371,7 +1371,7 @@ describe('pending import plans', () => {
     });
     expect(completion).toMatchObject({ importedCount: 1, skippedCount: 0, replacedCount: 0 });
     expect(readFileSync(path.join(library.libraryPath, 'Assets', 'committed.png'), 'utf8')).toBe('committed bytes');
-    const operationPath = path.join(library.libraryPath, '.serpent', 'operations', plan.importId);
+    const operationPath = path.join(library.libraryPath, '.keel', 'operations', plan.importId);
     expect(existsSync(operationPath)).toBe(true);
     service.closeAll();
 
@@ -1431,7 +1431,7 @@ describe('pending import plans', () => {
     );
     expect(service.listAssets({ libraryId: library.libraryId, recursive: true })).toEqual([]);
     expect(readdirSync(path.join(library.libraryPath, 'Assets'))).toEqual([]);
-    expect(existsSync(path.join(library.libraryPath, '.serpent', 'operations'))).toBe(false);
+    expect(existsSync(path.join(library.libraryPath, '.keel', 'operations'))).toBe(false);
     service.closeAll();
   });
 
@@ -1460,14 +1460,14 @@ describe('pending import plans', () => {
         () => crashing.resolveImport({ importId: plan.importId, suspectedDuplicate: 'merge', nameConflict: 'replace' }),
         'IMPORT_APPLY_FAILED',
       );
-      expect(existsSync(path.join(opened.libraryPath, '.serpent', 'operations', plan.importId))).toBe(true);
+      expect(existsSync(path.join(opened.libraryPath, '.keel', 'operations', plan.importId))).toBe(true);
       crashing.closeAll();
 
       const recoveredService = new LibraryService();
       const recoveredLibrary = recoveredService.openLibrary(created.libraryPath);
       expect(readFileSync(path.join(recoveredLibrary.libraryPath, 'Assets', 'same.png'), 'utf8')).toBe('old');
       expect(recoveredService.listAssets({ libraryId: recoveredLibrary.libraryId, recursive: true })).toEqual([initialAsset]);
-      expect(existsSync(path.join(recoveredLibrary.libraryPath, '.serpent', 'operations'))).toBe(false);
+      expect(existsSync(path.join(recoveredLibrary.libraryPath, '.keel', 'operations'))).toBe(false);
       recoveredService.closeAll();
     },
   );

@@ -1060,6 +1060,18 @@ function AppInner() {
     dismissToast,
     handleToastTransitionEnd,
   } = useToastNotifications();
+  // P1: tell the user once per library when `.keel` could not become `.keel`.
+  const metaDirNoticeLibraryIdRef = useRef<string | null>(null);
+  useEffect(() => {
+    const migration = library?.metaDirMigration;
+    if (!library || !migration || metaDirNoticeLibraryIdRef.current === library.libraryId) return;
+    metaDirNoticeLibraryIdRef.current = library.libraryId;
+    if (migration === "failed") {
+      setWarning(t("library.metaDirMigrationFailed", { reason: library.metaDirMigrationReason ?? "?" }));
+    } else {
+      setNotice(t("library.metaDirMigrationBoth"));
+    }
+  }, [library, setNotice, setWarning, t]);
   const workerRecoveryStateRef = useRef<'ready' | 'recovering' | 'failed'>('ready');
   const [workerRecoveryState, setWorkerRecoveryState] = useState<'ready' | 'recovering' | 'failed'>('ready');
   const topVisibleToastId = renderedToastStack.find(

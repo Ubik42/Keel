@@ -89,7 +89,7 @@ if (existsSync(applocalDll)) {
 // Runtime proof: the .node we just built must create an FTS5 table under the
 // Electron ABI (system Node has a different NODE_MODULE_VERSION and would
 // refuse to load it, which is expected and unrelated).
-const probePath = path.join(betterSqlite3Root, '.serpent-fts5-probe.cjs');
+const probePath = path.join(betterSqlite3Root, '.keel-fts5-probe.cjs');
 writeFileSync(
   probePath,
   [

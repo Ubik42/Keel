@@ -5,7 +5,7 @@ export type GitIgnorePathKind = "asset" | "folder";
 
 /**
  * Managed assets live below Assets/; linked trees are matched from their
- * own root. One .serpentignore file serves both, so a basename rule such as
+ * own root. One .keelignore file serves both, so a basename rule such as
  * ".*" with a trailing slash hides the same folder names in every tree.
  */
 export type GitIgnoreRootKind = "managed" | "linked";
@@ -23,7 +23,7 @@ export type GitIgnoreMatcher = {
 };
 
 /**
- * Compile the contents of a .serpentignore file using the same glob grammar
+ * Compile the contents of a .keelignore file using the same glob grammar
  * as .gitignore.  Invalid individual lines are ignored, matching Git's
  * tolerant treatment of an unusable pattern without discarding the rest of
  * the user's configuration.
@@ -60,7 +60,7 @@ function assetsQualifiedPattern(line: string): string | undefined {
 
   const negative = line.startsWith('!') && !line.startsWith('\\!');
   const body = negative ? line.slice(1) : line;
-  // A leading slash is rooted at the .serpentignore file's library root;
+  // A leading slash is rooted at the .keelignore file's library root;
   // `Assets/` is already the explicit library-root spelling.
   if (body.startsWith('/') || body.startsWith('Assets/')) return undefined;
   if (!body.includes('/')) return undefined;

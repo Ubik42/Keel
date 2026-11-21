@@ -99,7 +99,7 @@ describe('getPreviewArtifact lenient read (Serpent-verg.2)', () => {
       root,
       'PreviewNoArtifacts',
     );
-    dropTable(path.join(libraryPath, '.serpent', 'library.db'), 'revision_artifacts');
+    dropTable(path.join(libraryPath, '.keel', 'library.db'), 'revision_artifacts');
     service.closeAll();
     service.openLibrary(libraryPath);
 
@@ -115,7 +115,7 @@ describe('getPreviewArtifact lenient read (Serpent-verg.2)', () => {
       root,
       'PreviewNoStatus',
     );
-    dropColumns(path.join(libraryPath, '.serpent', 'library.db'), 'revision_artifacts', [
+    dropColumns(path.join(libraryPath, '.keel', 'library.db'), 'revision_artifacts', [
       'status',
       'error_code',
     ]);

@@ -176,7 +176,7 @@ test('native asset drag with copy/link source reaches trash and survives restart
     await expect(card).toHaveCount(0);
     expect(existsSync(startedAssetPath!)).toBe(false);
     expect(
-      existsSync(path.join(libraryPath, '.serpent', 'trash', assetId!, ASSET_NAME)),
+      existsSync(path.join(libraryPath, '.keel', 'trash', assetId!, ASSET_NAME)),
     ).toBe(true);
 
     await target.click();

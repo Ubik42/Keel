@@ -83,7 +83,7 @@ function mutateAndReopen(
   libraryPath: string,
   mutation: (db: TestDatabaseConnection) => void,
 ): void {
-  const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+  const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
   // SQLite refuses DROP/RENAME of a column referenced by an index (including
   // partial-index WHERE expressions), so remove user indexes on the table
   // before the mutation.

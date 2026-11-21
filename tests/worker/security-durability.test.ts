@@ -50,7 +50,7 @@ describe('database and path hardening', () => {
     service.closeAll();
     const sentinel = path.join(root, 'sentinel.txt');
     writeFileSync(sentinel, 'keep');
-    const database = openConfiguredDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const database = openConfiguredDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
     const now = new Date().toISOString();
     database.prepare(
       `INSERT INTO file_operations
@@ -72,11 +72,11 @@ describe('database and path hardening', () => {
 
     const operationId = '33333333-3333-4333-8333-333333333333';
     const assetId = '44444444-4444-4444-8444-444444444444';
-    const operationPath = path.join(library.libraryPath, '.serpent', 'operations', operationId);
+    const operationPath = path.join(library.libraryPath, '.keel', 'operations', operationId);
     mkdirSync(path.join(operationPath, 'backup'), { recursive: true });
     const sentinel = path.join(library.libraryPath, 'sentinel.txt');
     writeFileSync(sentinel, 'keep');
-    const database = openConfiguredDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const database = openConfiguredDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
     const now = new Date().toISOString();
     database.prepare(
       `INSERT INTO file_operations
@@ -107,7 +107,7 @@ describe('database and path hardening', () => {
     const service = new LibraryService();
     const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Pragmas', selectedParentPath: root });
     service.closeAll();
-    const database = openConfiguredDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const database = openConfiguredDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
     expect(database.pragma('journal_mode', { simple: true })).toBe('wal');
     expect(database.pragma('synchronous', { simple: true })).toBe(2);
     expect(database.pragma('foreign_keys', { simple: true })).toBe(1);
@@ -160,7 +160,7 @@ describe('database and path hardening', () => {
     const victim = path.join(root, 'victim');
     mkdirSync(victim);
     writeFileSync(path.join(victim, 'do-not-delete.txt'), 'keep');
-    symlinkSync(victim, path.join(library.libraryPath, '.serpent', 'operations'));
+    symlinkSync(victim, path.join(library.libraryPath, '.keel', 'operations'));
 
     expectCode(() => new LibraryService().openLibrary(library.libraryPath), 'LIBRARY_CORRUPT');
     expect(readFileSync(path.join(victim, 'do-not-delete.txt'), 'utf8')).toBe('keep');
@@ -171,18 +171,18 @@ describe('database and path hardening', () => {
     const service = new LibraryService();
     const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Metadata Links', selectedParentPath: root });
     service.closeAll();
-    const database = path.join(library.libraryPath, '.serpent', 'library.db');
+    const database = path.join(library.libraryPath, '.keel', 'library.db');
     const databaseBackup = path.join(root, 'library-backup.db');
     copyFileSync(database, databaseBackup);
     rmSync(database);
     symlinkSync(databaseBackup, database);
     expectCode(() => new LibraryService().openLibrary(library.libraryPath), 'NOT_A_LIBRARY');
 
-    rmSync(path.join(library.libraryPath, '.serpent'), { recursive: true });
+    rmSync(path.join(library.libraryPath, '.keel'), { recursive: true });
     const metadataVictim = path.join(root, 'metadata-victim');
     mkdirSync(metadataVictim);
     copyFileSync(databaseBackup, path.join(metadataVictim, 'library.db'));
-    symlinkSync(metadataVictim, path.join(library.libraryPath, '.serpent'));
+    symlinkSync(metadataVictim, path.join(library.libraryPath, '.keel'));
     expectCode(() => new LibraryService().openLibrary(library.libraryPath), 'NOT_A_LIBRARY');
   });
 
@@ -207,10 +207,10 @@ describe('database and path hardening', () => {
       () => failing.resolveImport({ importId: plan.importId, suspectedDuplicate: 'merge', nameConflict: 'replace' }),
       'IMPORT_APPLY_FAILED',
     );
-    const operationPath = path.join(opened.libraryPath, '.serpent', 'operations', plan.importId);
+    const operationPath = path.join(opened.libraryPath, '.keel', 'operations', plan.importId);
     expect(existsSync(path.join(operationPath, 'backup', '0'))).toBe(true);
     failing.closeAll();
-    const database = openConfiguredDatabase(path.join(opened.libraryPath, '.serpent', 'library.db'));
+    const database = openConfiguredDatabase(path.join(opened.libraryPath, '.keel', 'library.db'));
     expect(database.prepare('SELECT status FROM file_operations WHERE operation_id = ?').get(plan.importId)).toEqual({ status: 'failed' });
     database.close();
     expect(existsSync(operationPath)).toBe(true);
@@ -245,7 +245,7 @@ describe('database and path hardening', () => {
       'IMPORT_APPLY_FAILED',
     );
     crashing.closeAll();
-    const operationPath = path.join(opened.libraryPath, '.serpent', 'operations', plan.importId);
+    const operationPath = path.join(opened.libraryPath, '.keel', 'operations', plan.importId);
     expectCode(
       () => new LibraryService({ failAt: 'recovery-restore' }).openLibrary(opened.libraryPath),
       'LIBRARY_CORRUPT',

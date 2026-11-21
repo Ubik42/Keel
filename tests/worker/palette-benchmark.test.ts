@@ -218,14 +218,14 @@ function requeuePaletteJobs(
   libraryPath: string,
   limit: number,
 ): number {
-  const database = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+  const database = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
   try {
     const rows = database.prepare(
       "SELECT file_path FROM revision_artifacts WHERE kind = 'extracted_palette'",
     ).all() as Array<{ file_path: string }>;
     for (const row of rows) {
       try {
-        rmSync(path.join(libraryPath, '.serpent', 'artifacts', row.file_path), { force: true });
+        rmSync(path.join(libraryPath, '.keel', 'artifacts', row.file_path), { force: true });
       } catch {
         // The whole library is disposable scratch space.
       }

@@ -45,7 +45,7 @@ it.each(['tga', 'bmp', 'exr'])('decodes linked %s thumbnails and viewer images u
     const artifact = service.getCurrentArtifact(library.libraryId, asset.assetId, kind);
     expect(artifact?.status).toBe('ready');
     expect(artifact?.generatorVersion).toContain(OIIO_LITERAL_PATHS_MARK);
-    const decoded = await sharp(path.join(library.libraryPath, '.serpent', 'artifacts', artifact!.filePath))
+    const decoded = await sharp(path.join(library.libraryPath, '.keel', 'artifacts', artifact!.filePath))
       .raw().toBuffer({ resolveWithObject: true });
     expect(decoded.info.width).toBeGreaterThan(0);
     expect(decoded.info.height).toBeGreaterThan(0);
@@ -62,7 +62,7 @@ it('recovers old # failures once and keeps new-version input failures terminal',
   const asset = service.listAssets({ libraryId: library.libraryId, recursive: true })[0]!;
   await expect(service.generateThumbnail({ libraryId: library.libraryId, assetId: asset.assetId })).rejects.toThrow();
   const Database = require('better-sqlite3');
-  const database = new Database(path.join(library.libraryPath, '.serpent', 'library.db'));
+  const database = new Database(path.join(library.libraryPath, '.keel', 'library.db'));
   try {
     database.prepare('DELETE FROM jobs').run();
     database.prepare("UPDATE revision_artifacts SET generator_version = 'oiio@legacy', error_code = 'OIIO_COLOR_TRANSFORM_FAILED' WHERE kind = 'thumbnail'").run();

@@ -191,7 +191,7 @@ test("library switcher, breadcrumbs, and workspace history", async () => {
       await window.keyboard.press("Escape");
       await expect(window.getByRole("dialog")).toHaveCount(0);
     } else {
-      await clickNativeApplicationMenuItem(application, "about.serpent");
+      await clickNativeApplicationMenuItem(application, "about.keel");
       const aboutDialog = window.getByRole("dialog", { name: "Serpent" });
       await expect(aboutDialog).toBeVisible();
       const refreshButton = aboutDialog.getByRole("button", { name: "检查更新" });

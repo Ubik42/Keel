@@ -31,14 +31,14 @@ export const PUBLIC_ERROR_MESSAGES = {
   IMPORT_APPLY_FAILED:
     'Import stopped before every file was copied and registered. Nothing was silently overwritten. Check disk space and that the source files are still readable, then retry; already-imported items do not need to be selected again.',
   TAG_HIERARCHY_CYCLE: 'A tag cannot be placed inside itself or one of its descendants.',
-  LIBRARY_METADATA_EXISTS: 'The selected folder already contains .serpent metadata. Open the existing library or choose another folder.',
+  LIBRARY_METADATA_EXISTS: 'The selected folder already contains Keel library data (.keel or .serpent). Open the existing library or choose another folder.',
   LIBRARY_ALREADY_EXISTS: 'A file or folder with this library name already exists. Choose another name or another parent folder.',
   LIBRARY_ALREADY_OPEN:
     'The selected library and the currently open library have the same library ID. They may be different paths to the same library. Open it as a different library?',
   LIBRARY_NOT_FOUND:
     'Serpent cannot find that library folder. It may have been moved, renamed, or the disk may be disconnected. Reconnect the drive or choose the library again from Open Library.',
   NOT_A_LIBRARY:
-    'The selected folder is not a Serpent library (it has no .serpent database).',
+    'The selected folder is not a Keel library (it has no .keel database).',
   LIBRARY_CORRUPT:
     'Serpent could not read this library’s database (integrity check or migration history failed). Reopen the library so Serpent can restore from a backup. Copy the whole library folder to a local disk first if you want a safety copy.',
   LIBRARY_ENGINE_UNAVAILABLE:
@@ -65,7 +65,7 @@ export const PUBLIC_ERROR_MESSAGES = {
     'Serpent could not make a safety backup, so nothing was deleted. Check free disk space and library permissions, then try again.',
   LIBRARY_BUSY: 'This library is being updated by another Serpent window or a brief database lock. Wait a few seconds and retry; do not open the same library from two computers at once.',
   LIBRARY_CLEANUP_FAILED:
-    'Creating the library failed, and leftover temporary files could not be removed automatically. Delete any `.serpent-create-*.partial` folder next to the chosen location, then retry with a writable folder.',
+    'Creating the library failed, and leftover temporary files could not be removed automatically. Delete any `.keel-create-*.partial` folder next to the chosen location, then retry with a writable folder.',
   LIBRARY_NOT_OPEN: 'That library is not open in this window. Open it again, then retry the action.',
   ASSET_NOT_FOUND: 'The requested asset could not be found.',
   // Serpent-50c466: trash / restore / delete state conflicts had no code of

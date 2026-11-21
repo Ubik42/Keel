@@ -12,8 +12,8 @@ describe('shared originals allowlist', () => {
     const service=new LibraryService({ onDiagnostic: (event) => diagnostics.push(event.scope) });
     try {
       const external=path.join(parent,'originals');mkdirSync(external);
-      mkdirSync(path.join(external,'.serpent'));writeFileSync(path.join(external,'.serpent','library.db'),'metadata');
-      writeFileSync(path.join(external,'.serpentignore'),'private');
+      mkdirSync(path.join(external,'.keel'));writeFileSync(path.join(external,'.keel','library.db'),'metadata');
+      writeFileSync(path.join(external,'.keelignore'),'private');
       writeFileSync(path.join(external,'one.jpg'),'one');writeFileSync(path.join(external,'other.jpg'),'other');
       const library=service.createLibrary({displayName:'phone',selectedParentPath:parent});
       const linked=service.importFolderAsLinked({libraryId:library.libraryId,sourceRootPath:external,initialRules:[

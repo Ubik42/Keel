@@ -47,7 +47,7 @@ function ffmpegAvailable(): boolean {
 function openLibraryDb<T>(libraryPath: string, fn: (db: TestDbHandle) => T): T {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const Database = require('better-sqlite3') as new (filename: string) => TestDbHandle;
-  const db = new Database(path.join(libraryPath, '.serpent', 'library.db'));
+  const db = new Database(path.join(libraryPath, '.keel', 'library.db'));
   try {
     return fn(db);
   } finally {
@@ -93,7 +93,7 @@ describe('contact sheet self-heal for conversion-registered videos', () => {
         "SELECT file_path FROM revision_artifacts WHERE kind='extracted_metadata' AND status='ready' AND invalidated_at IS NULL AND revision_id = ?",
       ).get(asset.currentRevisionId) as { file_path?: string } | undefined;
       expect(metadataRow?.file_path, 'first wave should register video metadata').toBeTruthy();
-      return path.join(created.libraryPath, '.serpent', 'artifacts', metadataRow!.file_path!);
+      return path.join(created.libraryPath, '.keel', 'artifacts', metadataRow!.file_path!);
     });
     writeFileSync(metadataAbs, JSON.stringify({ width: 320, height: 240 }), 'utf-8');
     expect(service.getCurrentArtifact(created.libraryId, asset.assetId, 'contact_sheet')?.status ?? 'missing').toBe('missing');
@@ -111,7 +111,7 @@ describe('contact sheet self-heal for conversion-registered videos', () => {
       ).get(asset.currentRevisionId) as { file_path?: string; duration_ms?: number });
     expect(healedRow.duration_ms ?? 0).toBeGreaterThan(0);
     const healed = JSON.parse(readFileSync(
-      path.join(created.libraryPath, '.serpent', 'artifacts', healedRow.file_path!),
+      path.join(created.libraryPath, '.keel', 'artifacts', healedRow.file_path!),
       'utf-8',
     )) as { durationMs?: number };
     expect(healed.durationMs ?? 0).toBeGreaterThan(0);
@@ -152,7 +152,7 @@ describe('contact sheet self-heal for conversion-registered videos', () => {
       ).get(asset.currentRevisionId) as { file_path?: string } | undefined;
       expect(metadataRow?.file_path).toBeTruthy();
       writeFileSync(
-        path.join(created.libraryPath, '.serpent', 'artifacts', metadataRow!.file_path!),
+        path.join(created.libraryPath, '.keel', 'artifacts', metadataRow!.file_path!),
         JSON.stringify({ width: 320, height: 240 }),
         'utf-8',
       );

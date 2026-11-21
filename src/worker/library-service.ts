@@ -279,6 +279,7 @@ import {
 } from './sync/sync-metadata';
 import { parseManifest } from './sync/manifest';
 import { deriveSyncCardStatus, isLocalSyncPending } from '../shared/sync-card-status';
+import { LIBRARY_IGNORE_FILE_NAMES, LIBRARY_META_DIR_NAMES, isLibraryIgnoreFileName, isLibraryMetaDirName, libraryIgnoreFile, libraryMetaDir, migrateLibraryMetaDir, type LibraryMetaDirMigration } from '../shared/library-meta-dir';
 
 // sharp is an optional N-API dependency (no rebuild needed for Electron).
 // The Worker loads it lazily so it can still start if sharp is missing.
@@ -1153,7 +1154,7 @@ const DEFAULT_LINKED_FOLDER_RULES: ReadonlyArray<Omit<LinkedFolderRule, 'ruleId'
 ];
 
 const DEFAULT_IGNORED_ASSET_DIRECTORIES = new Set([
-  '.serpent',
+  ...LIBRARY_META_DIR_NAMES,
   '.bf',
   '.git',
   '.hg',
@@ -1162,16 +1163,14 @@ const DEFAULT_IGNORED_ASSET_DIRECTORIES = new Set([
   'node_modules',
 ]);
 const DEFAULT_IGNORED_ASSET_FILES = new Set([
-  '.serpent',
-  '.serpentignore',
-  '.serpentignore.json',
+  ...LIBRARY_META_DIR_NAMES,
+  ...LIBRARY_IGNORE_FILE_NAMES,
   '.ds_store',
   'desktop.ini',
   'thumbs.db',
 ]);
 const ALWAYS_IGNORED_ASSET_FILES = new Set([
-  '.serpentignore',
-  '.serpentignore.json',
+  ...LIBRARY_IGNORE_FILE_NAMES,
   '.ds_store',
   'desktop.ini',
   'thumbs.db',
@@ -1180,7 +1179,7 @@ const ALWAYS_IGNORED_ASSET_FILES = new Set([
 function isDefaultIgnoredAssetEntry(name: string, kind: 'directory' | 'file'): boolean {
   const normalized = name.toLocaleLowerCase('en-US');
   if (kind === 'directory') return DEFAULT_IGNORED_ASSET_DIRECTORIES.has(normalized);
-  if (normalized.startsWith('.serpent-text-edit-') && normalized.endsWith('.tmp')) {
+  if ((normalized.startsWith('.keel-text-edit-') || normalized.startsWith('.serpent-text-edit-')) && normalized.endsWith('.tmp')) {
     return true;
   }
   return DEFAULT_IGNORED_ASSET_FILES.has(normalized) || normalized.startsWith('._');
@@ -3511,7 +3510,7 @@ const EXTENSION_IGNORES_SCHEMA_CHECKSUM = createHash('sha256')
   .update(EXTENSION_IGNORES_SCHEMA_SQL)
   .digest('hex');
 
-// Migration v26: the editable library-level .serpentignore is materialized into
+// Migration v26: the editable library-level .keelignore is materialized into
 // the database so every browse/search/count query can apply the same rules
 // without making SQLite call back into the filesystem. The text file remains
 // the source of truth; this table is rebuilt whenever its contents change.
@@ -3906,7 +3905,7 @@ interface OpenLibrary {
   readOnly: boolean;
   /** Managed path identities whose on-disk file must not be auto-reconciled after relink recovery preserved them. */
   preservedRelinkPathIdentities: Set<string>;
-  /** Last .serpentignore contents materialized into gitignore_ignored_paths. */
+  /** Last .keelignore contents materialized into gitignore_ignored_paths. */
   gitignoreText: string;
   /** Parsed rules used while discovering files that are not in SQLite yet. */
   gitignoreMatcher: GitIgnoreMatcher;
@@ -5837,29 +5836,23 @@ function unsupportedSourceEntry(reason: PublicErrorReason, cause?: unknown): Lib
 }
 
 function databasePath(libraryPath: string): string {
-  return path.join(libraryPath, '.serpent', 'library.db');
+  return libraryMetaDir(libraryPath, 'library.db');
 }
 
 function databaseBackupPath(libraryPath: string, slot: 1 | 2): string {
-  return path.join(
-    libraryPath,
-    '.serpent',
-    DATABASE_BACKUP_DIRECTORY,
+  return libraryMetaDir(libraryPath, DATABASE_BACKUP_DIRECTORY,
     `library.db.${slot}`,
   );
 }
 
 function databaseBackupTemporaryPath(libraryPath: string): string {
-  return path.join(
-    libraryPath,
-    '.serpent',
-    DATABASE_BACKUP_DIRECTORY,
+  return libraryMetaDir(libraryPath, DATABASE_BACKUP_DIRECTORY,
     `.library.db.${randomUUID()}.tmp`,
   );
 }
 
 function gitignorePath(libraryPath: string): string {
-  return path.join(libraryPath, '.serpentignore');
+  return libraryIgnoreFile(libraryPath);
 }
 
 function legacyGitignorePath(libraryPath: string): string {
@@ -5983,7 +5976,7 @@ export function openConfiguredDatabase(
 
 function createDirectoryLayout(libraryPath: string, layout: LibraryStorageLayout): void {
   if (layout === 'assets') mkdirSync(path.join(libraryPath, 'Assets'));
-  const serpentPath = path.join(libraryPath, '.serpent');
+  const serpentPath = libraryMetaDir(libraryPath);
   mkdirSync(serpentPath);
   for (const directoryName of REGENERABLE_DIRECTORIES) {
     mkdirSync(path.join(serpentPath, directoryName));
@@ -6861,7 +6854,7 @@ function migrateDatabaseUnserialized(connection: DatabaseConnection, allowFresh:
         }
       }
       // Serpent-verg.5 (0031 §2.2): a rolled-back migration failure is
-      // retryable and diagnosed via .serpent/migration-failed.json; the
+      // retryable and diagnosed via .keel/migration-failed.json; the
       // open path records it. verifyMigrationHistory failures above/below
       // keep LIBRARY_CORRUPT (damaged history is never retried).
       throw new LibraryServiceError('LIBRARY_MIGRATION_FAILED', { cause: error });
@@ -8102,7 +8095,7 @@ export class LibraryService {
         (event) => {
           const filename = event?.filename?.toString().replaceAll('\\', '/');
           const firstSegment = filename?.split('/')[0]?.toLowerCase();
-          if (firstSegment === '.serpent' || firstSegment === '.serpentignore') return;
+          if (firstSegment !== undefined && (isLibraryMetaDirName(firstSegment) || isLibraryIgnoreFileName(firstSegment))) return;
           this.scheduleAssetRefresh(libraryId);
         },
         (error) => this.diagnose('asset-watcher.error', error, { libraryId, assetsPath }),
@@ -8515,7 +8508,7 @@ export class LibraryService {
   }
 
   private assertSafeOperationsRoot(libraryPath: string): string {
-    const serpentPath = path.join(libraryPath, '.serpent');
+    const serpentPath = libraryMetaDir(libraryPath);
     if (!realDirectoryExists(serpentPath)) throw new LibraryServiceError('LIBRARY_CORRUPT');
     const operationsPath = path.join(serpentPath, 'operations');
     let operationsEntry;
@@ -9920,7 +9913,7 @@ export class LibraryService {
   }
 
   /**
-   * True when materializing .serpentignore would delete or insert a row.
+   * True when materializing .keelignore would delete or insert a row.
    * Reads only: a no-op write transaction drops the network metadata snapshot
    * and advances browse_change_sequence.
    */
@@ -9991,7 +9984,7 @@ export class LibraryService {
     const transaction = openLibrary.connection.transaction(() => {
       // Managed ignore state is file-backed. Older versions also mirrored
       // managed rules into explicit_ignored_paths; clear those stale rows
-      // before materializing the current .serpentignore contents so removing
+      // before materializing the current .keelignore contents so removing
       // a rule immediately restores the affected assets.
       openLibrary.connection
         .prepare("DELETE FROM explicit_ignored_paths WHERE location_kind = 'managed'")
@@ -10039,7 +10032,7 @@ export class LibraryService {
   }
 
   /**
-   * Serpent-c6d907: `.serpentignore` is the single ignore file. Linked assets
+   * Serpent-c6d907: `.keelignore` is the single ignore file. Linked assets
    * that match it are folded into `linked_ignored_assets` so browse/search SQL
    * hides them the same way linked-folder default rules already do. Default
    * `.git` / `node_modules` rules stay in `linked_folder_rules` and still win
@@ -14765,8 +14758,8 @@ export class LibraryService {
     // A probe is intentionally not required to exist; missing final probe
     // components stop validation after all real parent components are checked.
     const probe = normalizedPath === ''
-      ? '.serpent-folder-probe'
-      : `${normalizedPath}/.serpent-folder-probe`;
+      ? '.keel-folder-probe'
+      : `${normalizedPath}/.keel-folder-probe`;
     this.linkedAssetPath(openLibrary, linked.folder_id, probe);
     const absolutePath = normalizedPath === ''
       ? linked.absolute_root_path
@@ -23648,10 +23641,10 @@ export class LibraryService {
   }
 
   /**
-   * Return the .serpent/artifacts directory for an open library.
+   * Return the .keel/artifacts directory for an open library.
    */
   private artifactsDir(openLibrary: OpenLibrary): string {
-    return path.join(openLibrary.summary.libraryPath, '.serpent', 'artifacts');
+    return libraryMetaDir(openLibrary.summary.libraryPath, 'artifacts');
   }
 
   /**
@@ -31228,7 +31221,7 @@ export class LibraryService {
   }
 
   /**
-   * Invalidate ready artifacts whose files are missing under `.serpent/artifacts`.
+   * Invalidate ready artifacts whose files are missing under `.keel/artifacts`.
    * Used after import/open when an older export omitted the artifacts tree while
    * the DB still recorded status=ready (Serpent-pxd).
    */
@@ -35704,7 +35697,7 @@ export class LibraryService {
   }
 
   private trashPath(openLibrary: OpenLibrary, assetId: string, filename: string): string {
-    return path.join(openLibrary.summary.libraryPath, '.serpent', 'trash', assetId, filename);
+    return libraryMetaDir(openLibrary.summary.libraryPath, 'trash', assetId, filename);
   }
 
   private assertNotInManagedSpace(
@@ -35786,10 +35779,7 @@ export class LibraryService {
       });
     }
 
-    const operationPath = path.join(
-      openLibrary.summary.libraryPath,
-      '.serpent',
-      'operations',
+    const operationPath = libraryMetaDir(openLibrary.summary.libraryPath, 'operations',
       `relink-${randomUUID()}`,
     );
     const stagedPath = path.join(operationPath, 'replacement');
@@ -36209,7 +36199,7 @@ export class LibraryService {
 
     // A writer won the verification->rename race. Restore the moved file when
     // possible. If the original path was claimed again, retain the entire
-    // operation under .serpent/recovered so neither file is overwritten.
+    // operation under .keel/recovered so neither file is overwritten.
     if (!existsSync(destinationPath)) {
       try {
         renameSync(candidatePath, destinationPath);
@@ -37532,7 +37522,7 @@ export class LibraryService {
 
     const absolutePath = this.resolveAssetPath(input.libraryId, input.assetId);
     const dir = path.dirname(absolutePath);
-    const tmpPath = path.join(dir, `.serpent-text-edit-${randomUUID()}.tmp`);
+    const tmpPath = path.join(dir, `.keel-text-edit-${randomUUID()}.tmp`);
     const payload = Buffer.from(input.content, 'utf8');
     this.noteClientFilesystemMutation();
     try {
@@ -37714,7 +37704,7 @@ export class LibraryService {
     if (!UUID.test(stagingToken)) {
       throw new LibraryServiceError('INVALID_ASSET_METADATA');
     }
-    const stagingRoot = path.join(openLibrary.summary.libraryPath, '.serpent', 'content-staging');
+    const stagingRoot = libraryMetaDir(openLibrary.summary.libraryPath, 'content-staging');
     mkdirSync(stagingRoot, { recursive: true });
     const stagedPath = path.join(stagingRoot, `${stagingToken}.bin`);
     const metadataPath = path.join(stagingRoot, `${stagingToken}.json`);
@@ -37873,7 +37863,7 @@ export class LibraryService {
 
     const absolutePath = this.resolveAssetPath(input.libraryId, input.assetId);
     const dir = path.dirname(absolutePath);
-    const tmpPath = path.join(dir, `.serpent-content-replace-${randomUUID()}.tmp`);
+    const tmpPath = path.join(dir, `.keel-content-replace-${randomUUID()}.tmp`);
     this.noteClientFilesystemMutation();
     try {
       writeFileSync(tmpPath, payload);
@@ -38101,7 +38091,7 @@ export class LibraryService {
         } else {
           const stagingToken = item.stagingToken!;
           if (!UUID.test(stagingToken)) throw new LibraryServiceError('INVALID_ASSET_METADATA');
-          const stagingRoot = path.join(openLibrary.summary.libraryPath, '.serpent', 'content-staging');
+          const stagingRoot = libraryMetaDir(openLibrary.summary.libraryPath, 'content-staging');
           const stagedPath = path.join(stagingRoot, `${stagingToken}.bin`);
           const metadataPath = path.join(stagingRoot, `${stagingToken}.json`);
           let metadata: unknown;
@@ -38191,7 +38181,7 @@ export class LibraryService {
           }
           const temporaryPath = path.join(
             path.dirname(destinationPath),
-            `.serpent-content-replace-batch-${operationId}-${file.assetId}.tmp`,
+            `.keel-content-replace-batch-${operationId}-${file.assetId}.tmp`,
           );
           copyFileSync(path.join(stagePath, file.stageName), temporaryPath);
           const descriptor = openSync(temporaryPath, 'r+');
@@ -38298,7 +38288,7 @@ export class LibraryService {
     }
 
     this.removeOperation(operationPath);
-    const stagingRoot = path.join(openLibrary.summary.libraryPath, '.serpent', 'content-staging');
+    const stagingRoot = libraryMetaDir(openLibrary.summary.libraryPath, 'content-staging');
     for (const item of input.items) {
       if (item.stagingToken === undefined) continue;
       rmSync(path.join(stagingRoot, `${item.stagingToken}.bin`), { force: true });
@@ -38845,7 +38835,7 @@ export class LibraryService {
           continue;
         }
 
-        const trashDir = path.join(openLibrary.summary.libraryPath, '.serpent', 'trash', row.asset_id);
+        const trashDir = libraryMetaDir(openLibrary.summary.libraryPath, 'trash', row.asset_id);
         mkdirSync(trashDir, { recursive: true });
         const trashFilePath = path.join(trashDir, filename);
         renameSync(sourcePath, trashFilePath);
@@ -38946,7 +38936,7 @@ export class LibraryService {
       // Rollback filesystem: move trashed files back
       for (const entry of [...movedEntries].reverse()) {
         try {
-          const trashDir = path.join(openLibrary.summary.libraryPath, '.serpent', 'trash', entry.assetId);
+          const trashDir = libraryMetaDir(openLibrary.summary.libraryPath, 'trash', entry.assetId);
           const trashFilePath = path.join(trashDir, entry.trashName);
           if (existsSync(trashFilePath)) {
             mkdirSync(path.dirname(entry.originalPath), { recursive: true });
@@ -40039,7 +40029,7 @@ export class LibraryService {
 
     for (const row of rows) {
       // Remove trash directory
-      const trashDir = path.join(openLibrary.summary.libraryPath, '.serpent', 'trash', row.asset_id);
+      const trashDir = libraryMetaDir(openLibrary.summary.libraryPath, 'trash', row.asset_id);
       let skipReason: PublicErrorReason | undefined;
       try {
         (this.options.removeTrashPath ?? ((trashPath: string) => {
@@ -42060,7 +42050,7 @@ export class LibraryService {
       ignored_at: string;
       display_name: string;
     }>;
-    // Managed rules are stored in .serpentignore. The materialized table is
+    // Managed rules are stored in .keelignore. The materialized table is
     // used by browse/search hot paths, but can lag behind a newly discovered
     // file; evaluate the current matcher here so Settings always shows the
     // actual files and folders currently affected by the rules.
@@ -42322,7 +42312,7 @@ export class LibraryService {
       if (!row) throw new LibraryServiceError('FOLDER_NOT_FOUND');
     }
     if (input.locationKind === 'managed' || !(input.pathKind === 'folder' && relativePath === '')) {
-      // File-backed ignore: one .serpentignore for managed and linked trees.
+      // File-backed ignore: one .keelignore for managed and linked trees.
       // An empty linked-root path still uses explicit_ignored_paths because
       // there is no relative path to write into the ignore file.
       const rule = this.ignoreGitignoreRule(input.locationKind, relativePath, input.pathKind, openLibrary.summary.storageLayout);
@@ -42445,7 +42435,7 @@ export class LibraryService {
         throw new LibraryServiceError('INVALID_IMPORT_SOURCE', { cause: error });
       }
       for (const child of children) {
-        if (child.isDirectory() && ['.serpent', '.bf'].includes(child.name.toLowerCase())) continue;
+        if (child.isDirectory() && (isLibraryMetaDirName(child.name) || child.name.toLowerCase() === '.bf')) continue;
         if (child.isFile() && isDefaultIgnoredAssetEntry(child.name, 'file')) continue;
         const childRelative =
           relativeDirectory === ''
@@ -43251,10 +43241,7 @@ export class LibraryService {
         });
     const { directories, entries } = enumerated;
     const importId = randomUUID();
-    const operationPath = path.join(
-      openLibrary.summary.libraryPath,
-      '.serpent',
-      'operations',
+    const operationPath = libraryMetaDir(openLibrary.summary.libraryPath, 'operations',
       importId,
     );
     const stagePath = path.join(operationPath, 'stage');
@@ -46293,7 +46280,7 @@ export class LibraryService {
             );
           } else if (child.isDirectory()) {
             if (
-              !['.serpent', '.bf'].includes(child.name.toLowerCase())
+              !(isLibraryMetaDirName(child.name) || child.name.toLowerCase() === '.bf')
               &&
               !(input.locationKind === 'managed' && isDefaultIgnoredAssetEntry(child.name, 'directory'))
               && !input.isDirectoryIgnored?.(relativePath)
@@ -47331,7 +47318,7 @@ export class LibraryService {
     }
     if (existsSync(finalPath)) throw new LibraryServiceError('LIBRARY_ALREADY_EXISTS');
 
-    const partialPath = path.join(parentPath, `.serpent-create-${randomUUID()}.partial`);
+    const partialPath = path.join(parentPath, `.keel-create-${randomUUID()}.partial`);
     let connection: DatabaseConnection | undefined;
     let renamed = false;
 
@@ -47395,15 +47382,15 @@ export class LibraryService {
       const stat = lstatSync(selectedPath);
       if (!stat.isDirectory() || stat.isSymbolicLink()) throw new LibraryServiceError('INVALID_LIBRARY_PATH');
       libraryPath = realpathSync(selectedPath);
-      if (libraryPath.split(path.sep).some((segment) => segment.toLowerCase() === '.serpent')) {
+      if (libraryPath.split(path.sep).some((segment) => isLibraryMetaDirName(segment))) {
         throw new LibraryServiceError('INVALID_LIBRARY_PATH');
       }
       accessSync(libraryPath, constants.R_OK | constants.W_OK);
     } catch (error) {
       throw serviceError(error, 'INVALID_LIBRARY_PATH');
     }
-    const metadataPath = path.join(libraryPath, '.serpent');
-    if (readdirSync(libraryPath).some((name) => name.toLowerCase() === '.serpent')) {
+    const metadataPath = libraryMetaDir(libraryPath);
+    if (readdirSync(libraryPath).some((name) => isLibraryMetaDirName(name))) {
       throw new LibraryServiceError('LIBRARY_METADATA_EXISTS');
     }
     let connection: DatabaseConnection | undefined;
@@ -47557,6 +47544,30 @@ export class LibraryService {
       // The primary open path below owns the public validation error.
     }
 
+    // P1: rename `.keel` to `.keel` before any database handle exists. A
+    // library already open in this Worker keeps its current directory.
+    let metaDirMigration: LibraryMetaDirMigration | undefined;
+    if (canonicalPath !== undefined && !this.openIdByPath.has(canonicalPath)) {
+      metaDirMigration = migrateLibraryMetaDir(canonicalPath, `schema-${SUPPORTED_SCHEMA_VERSION}`);
+      if (metaDirMigration.status === 'failed' || metaDirMigration.status === 'both') {
+        this.diagnose('library.meta-dir-migration', new Error(metaDirMigration.reason), {
+          libraryPath: canonicalPath,
+          status: metaDirMigration.status,
+        });
+      }
+    }
+    const withMigrationNotice = (summary: InternalLibrarySummary): InternalLibrarySummary => {
+      if (metaDirMigration?.status !== 'failed' && metaDirMigration?.status !== 'both') return summary;
+      const notice = {
+        metaDirMigration: metaDirMigration.status,
+        ...(metaDirMigration.status === 'failed' ? { metaDirMigrationReason: metaDirMigration.reason } : {}),
+      };
+      const openLibrary = this.openById.get(summary.libraryId);
+      if (!openLibrary) return { ...summary, ...notice };
+      openLibrary.summary = { ...openLibrary.summary, ...notice };
+      return openLibrary.summary;
+    };
+
     // A network mount can disappear between sessions. If the selected path or
     // its primary DB is unavailable, prefer the last verified local snapshot
     // over returning a misleading generic NOT_A_LIBRARY error. The helper only
@@ -47570,7 +47581,7 @@ export class LibraryService {
     }
 
     try {
-      return this.openLibraryPrimary(selectedLibraryPath, options);
+      return withMigrationNotice(this.openLibraryPrimary(selectedLibraryPath, options));
     } catch (error) {
       if (
         normalizedPath !== undefined
@@ -47630,7 +47641,7 @@ export class LibraryService {
   }
 
   private canAttemptDatabaseRecovery(libraryPath: string): boolean {
-    const serpentPath = path.join(libraryPath, '.serpent');
+    const serpentPath = libraryMetaDir(libraryPath);
     const primaryPath = databasePath(libraryPath);
     // A symlink in the metadata boundary is a path-integrity violation, not
     // ordinary SQLite damage. Never rename or rescue through it; preserve the
@@ -47640,7 +47651,7 @@ export class LibraryService {
         return false;
       }
     } catch {
-      // Missing metadata is recoverable when Assets and .serpent are present;
+      // Missing metadata is recoverable when Assets and the metadata directory are present;
       // the ladder will decide whether a backup or Assets rescue is possible.
     }
     return realDirectoryExists(managedStoragePath(libraryPath)) &&
@@ -47713,7 +47724,7 @@ export class LibraryService {
   }
 
   private restoreDatabaseBackup(libraryPath: string, backupPath: string): void {
-    const serpentPath = path.join(libraryPath, '.serpent');
+    const serpentPath = libraryMetaDir(libraryPath);
     const quarantinePath = path.join(
       serpentPath,
       'corrupt-backup',
@@ -47746,7 +47757,7 @@ export class LibraryService {
     libraryPath: string,
     primaryFailure: unknown,
   ): { reportPath?: string; recoveredAssetCount: number } {
-    const serpentPath = path.join(libraryPath, '.serpent');
+    const serpentPath = libraryMetaDir(libraryPath);
     const primaryPath = databasePath(libraryPath);
     const quarantineDirectory = path.join(serpentPath, 'corrupt-backup');
     const quarantinePath = path.join(
@@ -47832,10 +47843,7 @@ export class LibraryService {
     const attachedPath = openLibrary.summary.recovery?.reportPath;
     if (attachedPath && realFileExists(attachedPath)) return attachedPath;
 
-    const reportDirectory = path.join(
-      openLibrary.summary.libraryPath,
-      '.serpent',
-      'corrupt-backup',
+    const reportDirectory = libraryMetaDir(openLibrary.summary.libraryPath, 'corrupt-backup',
     );
     const candidates = (() => {
       try {
@@ -47936,7 +47944,7 @@ export class LibraryService {
     );
     backfillDominantSaturation(
       input.connection,
-      path.join(input.canonicalPath, '.serpent', 'artifacts'),
+      libraryMetaDir(input.canonicalPath, 'artifacts'),
     );
 
     const networkReadThrough = input.networkStorage
@@ -48221,7 +48229,7 @@ export class LibraryService {
         throw new LibraryServiceError('NOT_A_LIBRARY');
       }
     }
-    const serpentPath = path.join(canonicalPath, '.serpent');
+    const serpentPath = libraryMetaDir(canonicalPath);
     if (!realDirectoryExists(serpentPath) || !realFileExists(databasePath(canonicalPath))) {
       throw new LibraryServiceError('NOT_A_LIBRARY');
     }
@@ -48410,7 +48418,7 @@ export class LibraryService {
         throw new LibraryServiceError('NOT_A_LIBRARY');
       }
     }
-    const serpentPath = path.join(canonicalPath, '.serpent');
+    const serpentPath = libraryMetaDir(canonicalPath);
     const filename = databasePath(canonicalPath);
     if (!realDirectoryExists(serpentPath) || !realFileExists(filename)) {
       throw new LibraryServiceError('NOT_A_LIBRARY');
@@ -49318,7 +49326,7 @@ export class LibraryService {
       await transferCheckpoint();
       if (cancelState.cancelled) throw new LibraryServiceError('CANCELLED');
 
-      const tempDbPath = path.join(canonicalDest, `.serpent-export-${exportId}.db`);
+      const tempDbPath = path.join(canonicalDest, `.keel-export-${exportId}.db`);
       // Online Backup yields between page batches, allowing the live library to
       // continue serving reads and writes while SQLite maintains a consistent
       // snapshot for the exported database.
@@ -49326,7 +49334,7 @@ export class LibraryService {
 
       let semanticBackupPath: string | null = null;
       if (this.options.backupSemanticIndex) {
-        semanticBackupPath = path.join(canonicalDest, '.serpent', 'semantic', 'index.sqlite');
+        semanticBackupPath = libraryMetaDir(canonicalDest, 'semantic', 'index.sqlite');
         mkdirSync(path.dirname(semanticBackupPath), { recursive: true });
         const copied = await this.options.backupSemanticIndex({
           libraryId: input.libraryId,
@@ -49335,7 +49343,7 @@ export class LibraryService {
           destinationPath: semanticBackupPath,
         });
         if (!copied) {
-          rmSync(path.join(canonicalDest, '.serpent'), { recursive: true, force: true });
+          rmSync(libraryMetaDir(canonicalDest), { recursive: true, force: true });
           semanticBackupPath = null;
         }
       }
@@ -49357,7 +49365,7 @@ export class LibraryService {
       let excludedPreviewCount = 0;
       if (semanticBackupPath) {
         const semanticStat = statSync(semanticBackupPath);
-        entries.push({ sourcePath: semanticBackupPath, relativePath: '.serpent/semantic/index.sqlite',
+        entries.push({ sourcePath: semanticBackupPath, relativePath: '.keel/semantic/index.sqlite',
           byteSize: semanticStat.size });
       }
 
@@ -49380,9 +49388,9 @@ export class LibraryService {
           if (child.isDirectory()) {
             // Exclude generated sidecar trees; the semantic DB is added from
             // a verified SQLite backup snapshot above, never copied live.
-            if (childRel === '.serpent/previews' || childRel === '.serpent/operations'
-              || childRel === '.serpent/semantic') {
-              if (childRel === '.serpent/previews') {
+            if (childRel === '.keel/previews' || childRel === '.keel/operations'
+              || childRel === '.keel/semantic') {
+              if (childRel === '.keel/previews') {
                 // Count preview files for excludedPreviewCount.
                 try {
                   excludedPreviewCount = countFilesRecursive(childPath);
@@ -49442,7 +49450,7 @@ export class LibraryService {
       // Preserve the selected storage layout in folder and ZIP exports.
       if (openLibrary.summary.storageLayout === 'root') {
         for (const child of readdirSync(libPath, { withFileTypes: true })) {
-          if (child.name.toLowerCase() === '.serpent' || ['.serpentignore', '.serpentignore.json'].includes(child.name.toLowerCase())) continue;
+          if (isLibraryMetaDirName(child.name) || isLibraryIgnoreFileName(child.name)) continue;
           if (child.isSymbolicLink()) continue;
           const sourcePath = path.join(libPath, child.name);
           if (child.isDirectory()) await walkDir(sourcePath, child.name);
@@ -49451,9 +49459,9 @@ export class LibraryService {
       } else {
         await walkDir(this.assetsPath(openLibrary), 'Assets');
       }
-      const layoutMarker = path.join(libPath, '.serpent', 'storage-layout.json');
+      const layoutMarker = libraryMetaDir(libPath, 'storage-layout.json');
       if (existsSync(layoutMarker)) {
-        entries.push({ sourcePath: layoutMarker, relativePath: '.serpent/storage-layout.json', byteSize: statSync(layoutMarker).size });
+        entries.push({ sourcePath: layoutMarker, relativePath: '.keel/storage-layout.json', byteSize: statSync(layoutMarker).size });
       }
 
       // Keep the library-scoped ignore source of truth with folder exports.
@@ -49463,31 +49471,31 @@ export class LibraryService {
         entries.push({ sourcePath: gitignoreFile, relativePath: path.basename(gitignoreFile), byteSize: ignoreStat.size });
       }
 
-      // Walk .serpent/revisions/.
-      const revisionsDir = path.join(libPath, '.serpent', 'revisions');
+      // Walk .keel/revisions/.
+      const revisionsDir = libraryMetaDir(libPath, 'revisions');
       if (directoryExists(revisionsDir)) {
-        await walkDir(revisionsDir, '.serpent/revisions');
+        await walkDir(revisionsDir, '.keel/revisions');
       }
 
-      // Walk .serpent/trash/.
-      const trashDir = path.join(libPath, '.serpent', 'trash');
+      // Walk .keel/trash/.
+      const trashDir = libraryMetaDir(libPath, 'trash');
       if (directoryExists(trashDir)) {
-        await walkDir(trashDir, '.serpent/trash');
+        await walkDir(trashDir, '.keel/trash');
       }
 
       // Serpent-pxd: include ready thumbnails/proxies so import does not show
-      // broken images while DB still says status=ready. Legacy `.serpent/previews`
+      // broken images while DB still says status=ready. Legacy `.keel/previews`
       // remains excluded (regenerable / unused by current protocol).
-      const artifactsDir = path.join(libPath, '.serpent', 'artifacts');
+      const artifactsDir = libraryMetaDir(libPath, 'artifacts');
       if (directoryExists(artifactsDir)) {
-        await walkDir(artifactsDir, '.serpent/artifacts');
+        await walkDir(artifactsDir, '.keel/artifacts');
       }
 
-      // Include .serpent/library.db (snapshot).
+      // Include .keel/library.db (snapshot).
       const snapStat = statSync(tempDbPath);
       entries.push({
         sourcePath: tempDbPath,
-        relativePath: '.serpent/library.db',
+        relativePath: '.keel/library.db',
         byteSize: snapStat.size,
       });
 
@@ -49698,8 +49706,8 @@ export class LibraryService {
         throw new LibraryServiceError('NOT_A_LIBRARY');
       }
 
-      // Validate .serpent/library.db exists (real file, not symlink).
-      const dbPath = path.join(input.sourceFolderPath, '.serpent', 'library.db');
+      // Validate .keel/library.db exists (real file, not symlink).
+      const dbPath = libraryMetaDir(input.sourceFolderPath, 'library.db');
       if (!realFileExists(dbPath)) {
         throw new LibraryServiceError('NOT_A_LIBRARY');
       }
@@ -49948,7 +49956,7 @@ export class LibraryService {
     this.acquireExportTransfer(input.libraryId, exportId, cancelState);
     const startedAt = Date.now();
 
-    const tempDir = path.join(path.dirname(input.destinationPath), `.serpent-zip-export-${exportId}`);
+    const tempDir = path.join(path.dirname(input.destinationPath), `.keel-zip-export-${exportId}`);
     let tempDbPath: string | undefined;
     let tempDirOwned = false;
     let destinationOwned = false;
@@ -49998,7 +50006,7 @@ export class LibraryService {
 
       let semanticBackupPath: string | null = null;
       if (this.options.backupSemanticIndex) {
-        semanticBackupPath = path.join(tempDir, '.serpent', 'semantic', 'index.sqlite');
+        semanticBackupPath = libraryMetaDir(tempDir, 'semantic', 'index.sqlite');
         mkdirSync(path.dirname(semanticBackupPath), { recursive: true });
         const copied = await this.options.backupSemanticIndex({
           libraryId: input.libraryId,
@@ -50007,7 +50015,7 @@ export class LibraryService {
           destinationPath: semanticBackupPath,
         });
         if (!copied) {
-          rmSync(path.join(tempDir, '.serpent'), { recursive: true, force: true });
+          rmSync(libraryMetaDir(tempDir), { recursive: true, force: true });
           semanticBackupPath = null;
         }
       }
@@ -50029,7 +50037,7 @@ export class LibraryService {
       let excludedPreviewCount = 0;
       if (semanticBackupPath) {
         const semanticStat = statSync(semanticBackupPath);
-        entries.push({ sourcePath: semanticBackupPath, relativePath: '.serpent/semantic/index.sqlite',
+        entries.push({ sourcePath: semanticBackupPath, relativePath: '.keel/semantic/index.sqlite',
           byteSize: semanticStat.size });
       }
 
@@ -50050,9 +50058,9 @@ export class LibraryService {
           if (child.isSymbolicLink()) continue;
 
           if (child.isDirectory()) {
-            if (childRel === '.serpent/previews' || childRel === '.serpent/operations'
-              || childRel === '.serpent/semantic') {
-              if (childRel === '.serpent/previews') {
+            if (childRel === '.keel/previews' || childRel === '.keel/operations'
+              || childRel === '.keel/semantic') {
+              if (childRel === '.keel/previews') {
                 try {
                   excludedPreviewCount += countFilesRecursive(childPath);
                 } catch {
@@ -50089,7 +50097,7 @@ export class LibraryService {
       // Preserve the selected storage layout in folder and ZIP exports.
       if (openLibrary.summary.storageLayout === 'root') {
         for (const child of readdirSync(libPath, { withFileTypes: true })) {
-          if (child.name.toLowerCase() === '.serpent' || ['.serpentignore', '.serpentignore.json'].includes(child.name.toLowerCase())) continue;
+          if (isLibraryMetaDirName(child.name) || isLibraryIgnoreFileName(child.name)) continue;
           if (child.isSymbolicLink()) continue;
           const sourcePath = path.join(libPath, child.name);
           if (child.isDirectory()) await walkDir(sourcePath, child.name);
@@ -50098,9 +50106,9 @@ export class LibraryService {
       } else {
         await walkDir(this.assetsPath(openLibrary), 'Assets');
       }
-      const layoutMarker = path.join(libPath, '.serpent', 'storage-layout.json');
+      const layoutMarker = libraryMetaDir(libPath, 'storage-layout.json');
       if (existsSync(layoutMarker)) {
-        entries.push({ sourcePath: layoutMarker, relativePath: '.serpent/storage-layout.json', byteSize: statSync(layoutMarker).size });
+        entries.push({ sourcePath: layoutMarker, relativePath: '.keel/storage-layout.json', byteSize: statSync(layoutMarker).size });
       }
 
       const gitignoreFile = existingIgnoreConfigPath(libPath);
@@ -50109,29 +50117,29 @@ export class LibraryService {
         entries.push({ sourcePath: gitignoreFile, relativePath: path.basename(gitignoreFile), byteSize: ignoreStat.size });
       }
 
-      // Walk .serpent/revisions/.
-      const revisionsDir = path.join(libPath, '.serpent', 'revisions');
+      // Walk .keel/revisions/.
+      const revisionsDir = libraryMetaDir(libPath, 'revisions');
       if (directoryExists(revisionsDir)) {
-        await walkDir(revisionsDir, '.serpent/revisions');
+        await walkDir(revisionsDir, '.keel/revisions');
       }
 
-      // Walk .serpent/trash/.
-      const trashDir = path.join(libPath, '.serpent', 'trash');
+      // Walk .keel/trash/.
+      const trashDir = libraryMetaDir(libPath, 'trash');
       if (directoryExists(trashDir)) {
-        await walkDir(trashDir, '.serpent/trash');
+        await walkDir(trashDir, '.keel/trash');
       }
 
       // Serpent-pxd: same artifacts contract as folder export.
-      const artifactsDir = path.join(libPath, '.serpent', 'artifacts');
+      const artifactsDir = libraryMetaDir(libPath, 'artifacts');
       if (directoryExists(artifactsDir)) {
-        await walkDir(artifactsDir, '.serpent/artifacts');
+        await walkDir(artifactsDir, '.keel/artifacts');
       }
 
-      // Add .serpent/library.db (snapshot).
+      // Add .keel/library.db (snapshot).
       const snapStat = statSync(tempDbPath);
       entries.push({
         sourcePath: tempDbPath,
-        relativePath: '.serpent/library.db',
+        relativePath: '.keel/library.db',
         byteSize: snapStat.size,
       });
 
@@ -50444,9 +50452,9 @@ export class LibraryService {
               (entry) => !entry.isDirectory && entry.name.startsWith('Assets/'),
             );
             const hasDatabase = manifest.entries.some(
-              (entry) => !entry.isDirectory && entry.name === '.serpent/library.db',
+              (entry) => !entry.isDirectory && LIBRARY_META_DIR_NAMES.some((dir) => entry.name === `${dir}/library.db`),
             );
-            if (!hasDatabase || (!hasAssetFiles && !manifest.entries.some((entry) => entry.name === '.serpent/storage-layout.json'))) {
+            if (!hasDatabase || (!hasAssetFiles && !manifest.entries.some((entry) => LIBRARY_META_DIR_NAMES.some((dir) => entry.name === `${dir}/storage-layout.json`)))) {
               manifestValidationError = new LibraryServiceError('NOT_A_LIBRARY', {
                 reason: 'NOT_A_LIBRARY',
               });
@@ -50565,8 +50573,8 @@ export class LibraryService {
       throw new LibraryServiceError('NOT_A_LIBRARY');
     }
 
-    // Validate .serpent/library.db exists (real file, not symlink).
-    const dbPath = path.join(sourceFolderPath, '.serpent', 'library.db');
+    // Validate .keel/library.db exists (real file, not symlink).
+    const dbPath = libraryMetaDir(sourceFolderPath, 'library.db');
     if (!realFileExists(dbPath)) {
       throw new LibraryServiceError('NOT_A_LIBRARY');
     }
@@ -50731,7 +50739,7 @@ export class LibraryService {
 
   /**
    * Serpent-9i8: close the open library, then permanently delete its root
-   * directory (Assets / .serpent / managed content). Linked-folder *source*
+   * directory (Assets / metadata directory / managed content). Linked-folder *source*
    * trees live outside the library root and are not touched.
    *
    * Serpent-dfgg: Windows cannot rm a tree while Chromium/ffmpeg/fs.watch still
@@ -50753,7 +50761,7 @@ export class LibraryService {
       }
     }
     if (
-      !realDirectoryExists(path.join(libraryPath, '.serpent')) ||
+      !realDirectoryExists(libraryMetaDir(libraryPath)) ||
       !realFileExists(databasePath(libraryPath))
     ) {
       throw new LibraryServiceError('NOT_A_LIBRARY');

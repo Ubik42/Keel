@@ -47,7 +47,7 @@ test('turns an existing folder into a library and automatically indexes its orig
       const result = await api.listAssets({ libraryId, recursive: true });
       return result.ok ? result.value.map((asset) => asset.relativeFilePath) : [];
     }, library.libraryId), { timeout: 20_000 }).toEqual(['2026/原始照片.txt']);
-    expect(existsSync(path.join(folder, '.serpent', 'library.db'))).toBe(true);
+    expect(existsSync(path.join(folder, '.keel', 'library.db'))).toBe(true);
     expect(existsSync(path.join(folder, '日常记录'))).toBe(false);
     expect(existsSync(path.join(folder, 'Assets'))).toBe(false);
     expect(readFileSync(source, 'utf8')).toBe('original file');

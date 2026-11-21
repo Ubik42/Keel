@@ -135,7 +135,7 @@ describe('open reconciliation performance', () => {
       displayName: 'Artifact orphan cleanup',
       selectedParentPath: root,
     });
-    const artifactsRoot = path.join(created.libraryPath, '.serpent', 'artifacts');
+    const artifactsRoot = path.join(created.libraryPath, '.keel', 'artifacts');
     mkdirSync(artifactsRoot, { recursive: true });
     const orphanPath = path.join(artifactsRoot, 'crashed-replacement.jpg');
     writeFileSync(orphanPath, 'orphan');

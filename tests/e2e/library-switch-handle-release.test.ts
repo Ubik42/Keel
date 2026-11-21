@@ -60,7 +60,7 @@ function probeReleased(libraryPath: string): {
   dbRename: string;
   dirDelete: string;
 } {
-  const dbPath = path.join(libraryPath, ".serpent", "library.db");
+  const dbPath = path.join(libraryPath, ".keel", "library.db");
   const renamed = `${dbPath}.lockprobe`;
   const result: { dbRename: string; dirDelete: string } = {
     dbRename: "not-attempted",
@@ -98,13 +98,13 @@ test("switching libraries releases the previous library.db and folder", async ()
 
     await createLibrary(window, "Release A", false);
     const libraryA = path.join(temporaryRoot, "Release A");
-    expect(existsSync(path.join(libraryA, ".serpent", "library.db"))).toBe(true);
+    expect(existsSync(path.join(libraryA, ".keel", "library.db"))).toBe(true);
 
     // Switching to another library runs the same close-previous pipeline as the
     // recent-libraries entry.
     await createLibrary(window, "Release B", true);
     expect(
-      existsSync(path.join(temporaryRoot, "Release B", ".serpent", "library.db")),
+      existsSync(path.join(temporaryRoot, "Release B", ".keel", "library.db")),
     ).toBe(true);
     await window.waitForTimeout(3000);
 

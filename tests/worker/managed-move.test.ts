@@ -131,7 +131,7 @@ describe('managed asset move and one-shot undo', () => {
       recovered.openLibrary(library.libraryPath);
       expect(existsSync(path.join(library.libraryPath, 'Assets', 'Source', 'crash.png'))).toBe(true);
       expect(existsSync(path.join(library.libraryPath, 'Assets', 'Target', 'crash.png'))).toBe(true);
-      const database = new TestDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+      const database = new TestDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
       expect(database.prepare("SELECT status FROM file_operations WHERE kind = 'managed-move' ORDER BY created_at DESC LIMIT 1").get()).toEqual({ status: 'rolled_back' });
       database.close();
       recovered.closeAll();
@@ -177,7 +177,7 @@ describe('managed asset move and one-shot undo', () => {
     writeFileSync(staleSource, 'stale');
     const stale = importFile(service, library.libraryId, staleSource, sourceFolder.folderId).assets[0]!;
     service.closeAll();
-    const database = new TestDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
     database
       .prepare('UPDATE assets SET relative_file_path = ?, path_identity = ?, availability = ? WHERE asset_id = ?')
       .run('Source/asset.png', 'source/asset.png', 'missing', stale.assetId);
@@ -247,7 +247,7 @@ describe('managed asset move and one-shot undo', () => {
     recovered.openLibrary(library.libraryPath);
     expect(existsSync(path.join(library.libraryPath, 'Assets', 'Target', 'asset.png'))).toBe(true);
     expect(existsSync(path.join(library.libraryPath, 'Assets', 'Source', 'asset.png'))).toBe(false);
-    const database = new TestDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
     expect(database.prepare("SELECT status FROM file_operations WHERE kind = 'managed-move' ORDER BY created_at DESC LIMIT 1").get()).toEqual({ status: 'committed' });
     database.close();
     recovered.closeAll();

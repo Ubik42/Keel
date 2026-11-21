@@ -411,7 +411,7 @@ describe('imported thumbnail normalization', () => {
           prepare(source: string): { run(...parameters: unknown[]): unknown };
           close(): void;
         };
-      })(path.join(library.libraryPath, '.serpent', 'library.db'));
+      })(path.join(library.libraryPath, '.keel', 'library.db'));
       database.prepare(
         `UPDATE revision_artifacts
             SET generator_version = 'eagle-thumbnail@1'
@@ -880,7 +880,7 @@ describe('imported thumbnail normalization', () => {
     });
     try {
       const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Target', selectedParentPath: root });
-      databasePath = path.join(library.libraryPath, '.serpent', 'library.db');
+      databasePath = path.join(library.libraryPath, '.keel', 'library.db');
       await service.importEagleLibrary({
         libraryId: library.libraryId,
         sourceRootPath: writeEagleLibrary(root, thumbnail),
@@ -1023,7 +1023,7 @@ describe('imported thumbnail normalization', () => {
           prepare(source: string): { run(...parameters: unknown[]): unknown };
           close(): void;
         };
-      })(path.join(library.libraryPath, '.serpent', 'library.db'));
+      })(path.join(library.libraryPath, '.keel', 'library.db'));
       database.prepare(
         `UPDATE revision_artifacts
             SET invalidated_at = ?
@@ -1181,7 +1181,7 @@ describe('imported thumbnail normalization', () => {
     });
     try {
       const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Target', selectedParentPath: root });
-      databasePath = path.join(library.libraryPath, '.serpent', 'library.db');
+      databasePath = path.join(library.libraryPath, '.keel', 'library.db');
       await service.importEagleLibrary({
         libraryId: library.libraryId,
         sourceRootPath: writeEagleLibrary(root, thumbnail),
@@ -1255,7 +1255,7 @@ describe('imported thumbnail normalization', () => {
           prepare(source: string): { run(...parameters: unknown[]): unknown };
           close(): void;
         };
-      })(path.join(libraryPath, '.serpent', 'library.db'));
+      })(path.join(libraryPath, '.keel', 'library.db'));
       database.prepare(
         `UPDATE jobs
             SET status = 'running', error_code = ?

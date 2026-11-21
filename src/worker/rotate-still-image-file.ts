@@ -37,11 +37,11 @@ export async function rotateStillImageFile(
   const extension = path.extname(absolutePath);
   const tempPath = path.join(
     directory,
-    `.serpent-rotate-${process.pid}-${Date.now()}${extension}`,
+    `.keel-rotate-${process.pid}-${Date.now()}${extension}`,
   );
   const backupPath = path.join(
     directory,
-    `.serpent-rotate-bak-${process.pid}-${Date.now()}${extension}`,
+    `.keel-rotate-bak-${process.pid}-${Date.now()}${extension}`,
   );
   const angle = direction === "clockwise" ? 90 : -90;
   try {
@@ -69,7 +69,7 @@ export async function rotateStillImageFile(
     try {
       commit();
     } catch (error) {
-      const displaced = `${absolutePath}.serpent-rotate-undo`;
+      const displaced = `${absolutePath}.keel-rotate-undo`;
       try {
         renameSync(absolutePath, displaced);
         renameSync(backupPath, absolutePath);

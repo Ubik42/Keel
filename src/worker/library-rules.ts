@@ -1,3 +1,4 @@
+import { isLibraryIgnoreFileName, isLibraryMetaDirName } from '../shared/library-meta-dir';
 import path from 'node:path';
 
 const WINDOWS_DEVICE_NAME = /^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i;
@@ -45,7 +46,7 @@ export function normalizeLibraryName(input: string): string {
 
 export function normalizeFolderName(input: string): string {
   const name = normalizePortableName(input, 'INVALID_FOLDER_NAME');
-  if (name.toLowerCase() === '.serpent') throw new LibraryInputError('INVALID_FOLDER_NAME', 'Reserved metadata directory.');
+  if (isLibraryMetaDirName(name)) throw new LibraryInputError('INVALID_FOLDER_NAME', 'Reserved metadata directory.');
   return name;
 }
 
@@ -177,8 +178,8 @@ export function normalizeRelativeAssetPath(input: string): string {
     normalized === '..' ||
     normalized.startsWith('../') ||
     normalized.startsWith('/') ||
-    normalized.split('/').some((segment) => segment.toLowerCase() === '.serpent') ||
-    ['.serpentignore', '.serpentignore.json'].includes(normalized.toLowerCase())
+    normalized.split('/').some((segment) => isLibraryMetaDirName(segment)) ||
+    isLibraryIgnoreFileName(normalized)
   ) {
     throw new LibraryInputError('INVALID_LIBRARY_PATH', 'Invalid relative asset path.');
   }

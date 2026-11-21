@@ -137,7 +137,7 @@ describe('resolveFolderPath (REQ-MENU-006)', () => {
 
     // The renderer disables these actions from the recorded status; the worker
     // is the defensive boundary for the same state.
-    const database = new TestDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
     try {
       database
         .prepare("UPDATE linked_folders SET status = 'offline' WHERE folder_id = ?")

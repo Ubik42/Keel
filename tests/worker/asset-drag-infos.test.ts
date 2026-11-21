@@ -118,8 +118,8 @@ describe('resolveAssetDragInfos (Serpent-v4jf batched drag priming)', () => {
     importNoConflict(service, created.libraryId, sourcePath);
     const asset = service.listAssets({ libraryId: created.libraryId, recursive: true })[0]!;
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
-    const posterPath = path.join(created.libraryPath, '.serpent', 'artifacts', 'drag-poster.jpg');
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
+    const posterPath = path.join(created.libraryPath, '.keel', 'artifacts', 'drag-poster.jpg');
     createTestImage(posterPath);
     db.prepare(
       `INSERT INTO revision_artifacts

@@ -38,7 +38,7 @@ function newService(
 }
 
 function database(libraryPath: string) {
-  return new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+  return new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
 }
 
 afterEach(() => {
@@ -161,7 +161,7 @@ describe('trashManagedFolder (clarification #7 / Serpent-ekj)', () => {
       libraryId: library.libraryId,
       folderId: folder.folderId,
     })).toThrow();
-    expect(existsSync(path.join(library.libraryPath, '.serpent', 'operations'))).toBe(true);
+    expect(existsSync(path.join(library.libraryPath, '.keel', 'operations'))).toBe(true);
     crashing.closeAll();
 
     const recovered = newService();

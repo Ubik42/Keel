@@ -71,7 +71,7 @@ function benchmark(operation: () => unknown): number {
 }
 
 function seedAssets(libraryPath: string, folderId: string): void {
-  const databasePath = path.join(libraryPath, '.serpent', 'library.db');
+  const databasePath = path.join(libraryPath, '.keel', 'library.db');
   const database = new TestDatabase(databasePath);
   const now = '2026-07-13T00:00:00.000Z';
 
@@ -276,7 +276,7 @@ describe('100k asset search performance gate', () => {
 
   it('keeps reads available while a separate WAL writer transaction is active', () => {
     const writer = new TestDatabase(
-      path.join(fixture.libraryPath, '.serpent', 'library.db'),
+      path.join(fixture.libraryPath, '.keel', 'library.db'),
     );
     let transactionActive = false;
     try {

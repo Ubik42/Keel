@@ -68,7 +68,7 @@ function insertAsset(
   const fileName = originalFilename ?? `${assetId}.png`;
   writeFileSync(path.join(assetsPath, fileName), 'test content');
 
-  const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+  const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
   const now = new Date().toISOString();
   try {
     db.prepare(
@@ -120,7 +120,7 @@ function createLibraryWithAssets(count: number): {
  * so this test exercises the exact search index queried by the Worker.
  */
 function insertSearchIndex(libraryPath: string, assetId: string, filename: string): void {
-  const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+  const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
   try {
     db.prepare(
       `INSERT INTO asset_search_index

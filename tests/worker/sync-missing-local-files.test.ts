@@ -56,7 +56,7 @@ function copyLibraryIdentityWithoutAssets(sourceLibraryPath: string): string {
   const destination = path.join(destinationParent, path.basename(sourceLibraryPath));
   mkdirSync(destination);
   mkdirSync(path.join(destination, 'Assets'));
-  cpSync(path.join(sourceLibraryPath, '.serpent'), path.join(destination, '.serpent'), { recursive: true });
+  cpSync(path.join(sourceLibraryPath, '.keel'), path.join(destination, '.keel'), { recursive: true });
   return destination;
 }
 

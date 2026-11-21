@@ -186,7 +186,7 @@ function removeWriteCoordinationSchema(database: TestDatabaseConnection): void {
 }
 
 function downgradeLibraryToV1(libraryPath: string, createMigrationBlocker = false): void {
-  const database = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+  const database = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
   removeWriteCoordinationSchema(database);
   database.exec(`
     DROP INDEX IF EXISTS revisions_size_fingerprint_idx;
@@ -227,7 +227,7 @@ function downgradeLibraryToV1(libraryPath: string, createMigrationBlocker = fals
 }
 
 function downgradeLibraryToV2(libraryPath: string): void {
-  const database = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+  const database = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
   removeWriteCoordinationSchema(database);
   database.exec(`
     DROP INDEX IF EXISTS revisions_size_fingerprint_idx;
@@ -342,15 +342,15 @@ describe('LibraryService lifecycle', () => {
     expect(created.libraryPath).toBe(realpathSync(path.join(root, '概念设计')));
     expect(created.libraryId).toMatch(/^[0-9a-f-]{36}$/u);
     expect(statSync(path.join(created.libraryPath, 'Assets')).isDirectory()).toBe(true);
-    expect(statSync(path.join(created.libraryPath, '.serpent', 'library.db')).isFile()).toBe(
+    expect(statSync(path.join(created.libraryPath, '.keel', 'library.db')).isFile()).toBe(
       true,
     );
-    expect(statSync(path.join(created.libraryPath, '.serpent', 'previews')).isDirectory()).toBe(
+    expect(statSync(path.join(created.libraryPath, '.keel', 'previews')).isDirectory()).toBe(
       true,
     );
     expect(service.listLibraries()).toEqual([created]);
 
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(database.pragma('user_version')).toEqual([{ user_version: SUPPORTED_SCHEMA_VERSION }]);
     const queueIndexes = database.prepare(
       "SELECT name FROM sqlite_master WHERE type = 'index' AND name IN (?, ?)",
@@ -375,7 +375,7 @@ describe('LibraryService lifecycle', () => {
     service.createTag({ libraryId: created.libraryId, name: 'sequence-tag' });
     expect(service.getChangeSequence(created.libraryId)).toBe(1);
 
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     database.exec(`
       BEGIN;
       UPDATE tags SET name = name WHERE library_id = '${created.libraryId}';
@@ -404,7 +404,7 @@ describe('LibraryService lifecycle', () => {
     const root = temporaryRoot();
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Bounded writer', selectedParentPath: root });
-    const databasePath = path.join(created.libraryPath, '.serpent', 'library.db');
+    const databasePath = path.join(created.libraryPath, '.keel', 'library.db');
 
     const result = await service.runBoundedWrite(created.libraryId, () => {
       const contender = new TestDatabase(databasePath);
@@ -460,7 +460,7 @@ describe('LibraryService lifecycle', () => {
     const root = temporaryRoot();
     const creatingService = newService();
     const created = creatingService.createLibrary({ storageLayout: 'assets', displayName: 'Mutex writer', selectedParentPath: root });
-    const databaseFilename = path.join(created.libraryPath, '.serpent', 'library.db');
+    const databaseFilename = path.join(created.libraryPath, '.keel', 'library.db');
     let contender: TestDatabaseConnection | undefined;
     const service = newService({
       sqliteBusyTimeoutMsForTests: 0,
@@ -496,7 +496,7 @@ describe('LibraryService lifecycle', () => {
     const created = creatingService.createLibrary({ storageLayout: 'assets', displayName: 'Migration writer', selectedParentPath: root });
     creatingService.closeAll();
 
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     removeWriteCoordinationSchema(database);
     database.exec(`
       DROP INDEX IF EXISTS revisions_size_fingerprint_idx;
@@ -510,7 +510,7 @@ describe('LibraryService lifecycle', () => {
     expect(first.openLibrary(created.libraryPath)).toMatchObject({ libraryId: created.libraryId });
     expect(second.openLibrary(created.libraryPath)).toMatchObject({ libraryId: created.libraryId });
 
-    const verification = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const verification = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(verification.pragma('user_version')).toEqual([{ user_version: SUPPORTED_SCHEMA_VERSION }]);
     expect(
       verification.prepare('SELECT sequence FROM library_change_sequence WHERE library_id = ?')
@@ -528,7 +528,7 @@ describe('LibraryService lifecycle', () => {
     });
     creatingService.closeAll();
 
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     removeLinkedDirectoryIndexFixture(database);
     database.exec(`
       DROP INDEX IF EXISTS revisions_size_fingerprint_idx;
@@ -557,7 +557,7 @@ describe('LibraryService lifecycle', () => {
       libraryId: created.libraryId,
     });
 
-    const verification = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const verification = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(verification.pragma('user_version')).toEqual([{ user_version: SUPPORTED_SCHEMA_VERSION }]);
     expect(verification.prepare(
       `SELECT name FROM sqlite_master
@@ -578,7 +578,7 @@ describe('LibraryService lifecycle', () => {
     });
     creatingService.closeAll();
 
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     removeWriteCoordinationSchema(database);
     database.exec(`
       DROP INDEX IF EXISTS revisions_size_fingerprint_idx;
@@ -615,7 +615,7 @@ describe('LibraryService lifecycle', () => {
       expect(firstResult.libraryId).toBe(created.libraryId);
       expect(secondResult.libraryId).toBe(created.libraryId);
 
-      const verification = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+      const verification = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
       expect(verification.pragma('user_version')).toEqual([{ user_version: SUPPORTED_SCHEMA_VERSION }]);
       expect(verification.pragma('quick_check(1)')).toEqual([{ quick_check: 'ok' }]);
       expect(
@@ -689,7 +689,7 @@ describe('LibraryService lifecycle', () => {
     });
     service.closeAll();
 
-    const databasePath = path.join(created.libraryPath, '.serpent', 'library.db');
+    const databasePath = path.join(created.libraryPath, '.keel', 'library.db');
     const database = new TestDatabase(databasePath);
     removeWriteCoordinationSchema(database);
     database.exec(`
@@ -880,15 +880,15 @@ describe('LibraryService lifecycle', () => {
       selectedParentPath: root,
     });
     service.closeLibrary(created.libraryId);
-    rmSync(path.join(created.libraryPath, '.serpent', 'previews'), { recursive: true });
-    rmSync(path.join(created.libraryPath, '.serpent', 'trash'), { recursive: true });
+    rmSync(path.join(created.libraryPath, '.keel', 'previews'), { recursive: true });
+    rmSync(path.join(created.libraryPath, '.keel', 'trash'), { recursive: true });
 
     service.openLibrary(created.libraryPath);
 
-    expect(statSync(path.join(created.libraryPath, '.serpent', 'previews')).isDirectory()).toBe(
+    expect(statSync(path.join(created.libraryPath, '.keel', 'previews')).isDirectory()).toBe(
       true,
     );
-    expect(statSync(path.join(created.libraryPath, '.serpent', 'trash')).isDirectory()).toBe(
+    expect(statSync(path.join(created.libraryPath, '.keel', 'trash')).isDirectory()).toBe(
       true,
     );
     service.closeAll();
@@ -923,7 +923,7 @@ describe('LibraryService lifecycle', () => {
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'No Database', selectedParentPath: root });
     service.closeAll();
-    rmSync(path.join(created.libraryPath, '.serpent', 'library.db'));
+    rmSync(path.join(created.libraryPath, '.keel', 'library.db'));
 
     const summary = service.openLibrary(created.libraryPath);
     expect(summary.recovery?.mode).toBe('rescue');
@@ -945,7 +945,7 @@ describe('LibraryService lifecycle', () => {
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Future', selectedParentPath: root });
     service.closeAll();
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     database.pragma('user_version = 999');
     database.close();
 
@@ -967,7 +967,7 @@ describe('LibraryService lifecycle', () => {
 
     service.openLibrary(created.libraryPath);
 
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(database.pragma('user_version')).toEqual([{ user_version: SUPPORTED_SCHEMA_VERSION }]);
     expect(
       database
@@ -995,7 +995,7 @@ describe('LibraryService lifecycle', () => {
     const reopened = service.openLibrary(created.libraryPath);
     expect(service.listAssets({ libraryId: reopened.libraryId, recursive: true })[0])
       .toMatchObject({ relativeFilePath: 'Café.PNG' });
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(database.pragma('user_version')).toEqual([{ user_version: SUPPORTED_SCHEMA_VERSION }]);
     expect(database.prepare('SELECT path_identity FROM assets').all()).toEqual([
       { path_identity: 'café.png' },
@@ -1016,7 +1016,7 @@ describe('LibraryService lifecycle', () => {
     // rather than LIBRARY_CORRUPT — the version still does not advance.
     expectServiceError(() => service.openLibrary(created.libraryPath), 'LIBRARY_MIGRATION_FAILED');
 
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(database.pragma('user_version')).toEqual([{ user_version: 1 }]);
     expect(database.prepare('SELECT version FROM schema_migrations ORDER BY version').all()).toEqual([
       { version: 1 },
@@ -1031,7 +1031,7 @@ describe('LibraryService lifecycle', () => {
     service.closeAll();
     downgradeLibraryToV2(created.libraryPath);
 
-    const before = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const before = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     before.pragma('foreign_keys = OFF');
     before.prepare(
       `INSERT INTO revisions
@@ -1044,7 +1044,7 @@ describe('LibraryService lifecycle', () => {
     // Serpent-verg.5: a rolled-back table-rebuild failure is retryable.
     expectServiceError(() => service.openLibrary(created.libraryPath), 'LIBRARY_MIGRATION_FAILED');
 
-    const after = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const after = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(after.pragma('user_version')).toEqual([{ user_version: 3 }]);
     expect(after.prepare('SELECT version FROM schema_migrations ORDER BY version').all()).toEqual([
       { version: 1 },
@@ -1060,12 +1060,12 @@ describe('LibraryService lifecycle', () => {
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Corrupt', selectedParentPath: root });
     service.closeAll();
-    writeFileSync(path.join(created.libraryPath, '.serpent', 'library.db'), 'not a sqlite database');
+    writeFileSync(path.join(created.libraryPath, '.keel', 'library.db'), 'not a sqlite database');
 
     const recovered = service.openLibrary(created.libraryPath);
     expect(recovered.recovery).toMatchObject({ mode: 'rescue' });
     expect(service.listLibraries()).toEqual([recovered]);
-    expect(readdirSync(path.join(created.libraryPath, '.serpent', 'corrupt-backup')))
+    expect(readdirSync(path.join(created.libraryPath, '.keel', 'corrupt-backup')))
       .toEqual(expect.arrayContaining([expect.stringMatching(/^library\.db\.primary-/u)]));
   });
 
@@ -1074,9 +1074,9 @@ describe('LibraryService lifecycle', () => {
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Read First', selectedParentPath: root });
     service.closeAll();
-    const previewsPath = path.join(created.libraryPath, '.serpent', 'previews');
+    const previewsPath = path.join(created.libraryPath, '.keel', 'previews');
     rmSync(previewsPath, { recursive: true });
-    writeFileSync(path.join(created.libraryPath, '.serpent', 'library.db'), 'not sqlite');
+    writeFileSync(path.join(created.libraryPath, '.keel', 'library.db'), 'not sqlite');
 
     const recovered = service.openLibrary(created.libraryPath);
     expect(recovered.recovery).toMatchObject({ mode: 'rescue' });
@@ -1088,7 +1088,7 @@ describe('LibraryService lifecycle', () => {
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Tampered', selectedParentPath: root });
     service.closeAll();
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     database.prepare('UPDATE schema_migrations SET checksum = ? WHERE version = 1').run('bad');
     database.close();
 

@@ -274,7 +274,7 @@ describe('asset metadata and content revisions', () => {
       dataBase64: Buffer.alloc(CONTENT_REPLACE_STAGE_CHUNK_MAX_BYTES + 1).toString('base64'),
       complete: false,
     })).toThrow();
-    expect(existsSync(path.join(library.libraryPath, '.serpent', 'content-staging', `${stagingToken}.bin`))).toBe(false);
+    expect(existsSync(path.join(library.libraryPath, '.keel', 'content-staging', `${stagingToken}.bin`))).toBe(false);
   });
 
   it('preflights every expected revision before writing any batch target', () => {
@@ -503,7 +503,7 @@ describe('asset metadata and content revisions', () => {
     expect(readFileSync(path.join(library.libraryPath, 'Assets', 'second.png'))).toEqual(
       Buffer.from('second-original'),
     );
-    const operationsPath = path.join(library.libraryPath, '.serpent', 'operations');
+    const operationsPath = path.join(library.libraryPath, '.keel', 'operations');
     const operationDirectories = readdirSync(operationsPath);
     expect(operationDirectories).toHaveLength(1);
     expect(existsSync(path.join(operationsPath, operationDirectories[0]!, 'backup'))).toBe(true);

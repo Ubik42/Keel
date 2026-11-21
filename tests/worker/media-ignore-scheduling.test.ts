@@ -28,7 +28,7 @@ interface TestDbHandle {
 function openLibraryDb<T>(libraryPath: string, fn: (db: TestDbHandle) => T): T {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const Database = require('better-sqlite3') as new (filename: string) => TestDbHandle;
-  const db = new Database(path.join(libraryPath, '.serpent', 'library.db'));
+  const db = new Database(path.join(libraryPath, '.keel', 'library.db'));
   try {
     return fn(db);
   } finally {

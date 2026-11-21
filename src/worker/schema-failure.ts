@@ -4,7 +4,7 @@
  * A failed migration rolls back (per-migration transaction) leaving the
  * library intact at its previous version, but blindly retrying forever would
  * spin the open path on a library that can never migrate. This module keeps
- * a `.serpent/migration-failed.json` record per library: the open path reads
+ * a `.keel/migration-failed.json` record per library: the open path reads
  * it before migrating, retries with a 3-attempt cap, and after the cap opens
  * the library writable at the last good schema version instead of throwing.
  *
@@ -13,6 +13,7 @@
  */
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
+import { libraryMetaDir } from '../shared/library-meta-dir';
 
 export const MAX_MIGRATION_ATTEMPTS = 3;
 
@@ -33,7 +34,7 @@ export interface MigrationFailureRecord {
 }
 
 export function migrationFailurePath(libraryPath: string): string {
-  return path.join(libraryPath, '.serpent', 'migration-failed.json');
+  return libraryMetaDir(libraryPath, 'migration-failed.json');
 }
 
 /** Read the failure record; missing/corrupt files count as no record. */

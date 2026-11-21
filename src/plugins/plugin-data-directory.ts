@@ -2,8 +2,9 @@ import { mkdirSync } from 'node:fs';
 import path from 'node:path';
 
 import { pluginIdSchema } from './plugin-manifest';
+import { libraryMetaDir } from '../shared/library-meta-dir';
 
-/** Basename under userData or `<library>/.serpent/` for plugin file roots. */
+/** Basename under userData or the library metadata directory for plugin file roots. */
 export const PLUGIN_FILES_DIRECTORY_NAME = 'plugin-files';
 
 export function resolvePluginDataDirectory(input: {
@@ -20,10 +21,7 @@ export function resolvePluginDataDirectory(input: {
     if (input.libraryDirectory === null || input.libraryDirectory.trim() === '') {
       throw new Error('An open library is required for library-scoped plugin data.');
     }
-    directory = path.join(
-      input.libraryDirectory,
-      '.serpent',
-      PLUGIN_FILES_DIRECTORY_NAME,
+    directory = libraryMetaDir(input.libraryDirectory, PLUGIN_FILES_DIRECTORY_NAME,
       pluginId,
     );
   }

@@ -85,7 +85,7 @@ function reopenAfterMutating(
   drops: Array<[string, string[]]>,
   dropTables: string[] = [],
 ): void {
-  mutateSchema(path.join(libraryPath, '.serpent', 'library.db'), drops, dropTables);
+  mutateSchema(path.join(libraryPath, '.keel', 'library.db'), drops, dropTables);
   service.closeAll();
   service.openLibrary(libraryPath);
 }

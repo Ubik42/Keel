@@ -52,7 +52,7 @@ afterEach(() => {
 });
 
 function libraryFilePath(libraryPath: string): string {
-  return path.join(libraryPath, '.serpent', 'library.db');
+  return path.join(libraryPath, '.keel', 'library.db');
 }
 
 function schemaVersionOf(dbPath: string): number {
@@ -69,7 +69,7 @@ function schemaVersionOf(dbPath: string): number {
 function buildLibraryAtVersion(root: string, targetVersion: number): string {
   const libraryPath = path.join(root, `v${targetVersion}`);
   mkdirSync(libraryPath, { recursive: true });
-  mkdirSync(path.join(libraryPath, '.serpent'), { recursive: true });
+  mkdirSync(path.join(libraryPath, '.keel'), { recursive: true });
   mkdirSync(path.join(libraryPath, 'Assets'), { recursive: true });
   const db = new Database(libraryFilePath(libraryPath));
   db.pragma('journal_mode = WAL');

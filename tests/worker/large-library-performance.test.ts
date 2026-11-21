@@ -134,7 +134,7 @@ function openBaselineService(): void {
 
 describe.skipIf(!fixturePath)('20k asset large-library performance baseline', () => {
   beforeAll(() => {
-    const manifestFile = `${fixturePath}/.serpent/large-library-fixture.json`;
+    const manifestFile = `${fixturePath}/.keel/large-library-fixture.json`;
     if (!existsSync(manifestFile)) throw new Error(`Missing fixture manifest: ${manifestFile}`);
     manifest = JSON.parse(readFileSync(manifestFile, 'utf8')) as LargeLibraryFixtureManifest;
     openBaselineService();

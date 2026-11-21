@@ -214,7 +214,7 @@ async function runBenchmark() {
         selectedParentPath: parent,
       });
       creator.closeAll();
-      const databasePath = path.join(library.libraryPath, '.serpent', 'library.db');
+      const databasePath = path.join(library.libraryPath, '.keel', 'library.db');
       const database = new Database(databasePath);
       database.pragma('foreign_keys = ON');
       const insertAsset = database.prepare(
@@ -269,7 +269,7 @@ async function runBenchmark() {
         if (fs.existsSync(file)) fs.rmSync(file, { force: true });
       }
       fs.copyFileSync(fixture.databaseSnapshot, fixture.databasePath);
-      const operationsPath = path.join(fixture.library.libraryPath, '.serpent', 'operations');
+      const operationsPath = path.join(fixture.library.libraryPath, '.keel', 'operations');
       if (fs.existsSync(operationsPath)) fs.rmSync(operationsPath, { recursive: true, force: true });
       fs.mkdirSync(operationsPath, { recursive: true });
       for (const sourcePath of sourcePathsByScenario.get(scenario.id)) {

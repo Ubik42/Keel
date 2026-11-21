@@ -192,7 +192,7 @@ describe('thumbnail queue DB-write batching (Serpent-xoaz)', () => {
     // At most one flush per worker; the old code issued one UPDATE per job.
     expect(successUpdates.length).toBeLessThanOrEqual(workerMediaDecodeConcurrency());
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const summary = db.prepare(
       `SELECT status, COUNT(*) AS count FROM jobs
         WHERE kind = 'generate_thumbnail' GROUP BY status`,
@@ -334,7 +334,7 @@ describe('thumbnail fill order (Serpent-xoaz)', () => {
 
     // Stamp distinct import times on the assets (base + i seconds) so the
     // fill order is fully deterministic; path order is the opposite of this.
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const assets = db.prepare(
       'SELECT asset_id, relative_file_path FROM assets ORDER BY relative_file_path',
     ).all() as Array<{ asset_id: string; relative_file_path: string }>;
@@ -348,7 +348,7 @@ describe('thumbnail fill order (Serpent-xoaz)', () => {
 
     // A 3-job fill wave must pick the three most recently imported assets.
     expect(service.enqueueThumbnailJobs(created.libraryId, { limit: 3 })).toBe(3);
-    const db2 = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db2 = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const queued = db2.prepare(
       "SELECT a.relative_file_path FROM jobs j JOIN assets a ON a.asset_id = j.asset_id WHERE j.kind = 'generate_thumbnail' AND j.status = 'queued' ORDER BY j.priority DESC, j.created_at",
     ).all() as Array<{ relative_file_path: string }>;
@@ -368,7 +368,7 @@ describe('thumbnail fill order (Serpent-xoaz)', () => {
     createDistinctPngs(sourceDir, 6);
     importFolderNoConflict(service, created.libraryId, sourceDir);
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const assets = db.prepare(
       'SELECT asset_id FROM assets ORDER BY relative_file_path',
     ).all() as Array<{ asset_id: string }>;
@@ -385,7 +385,7 @@ describe('thumbnail fill order (Serpent-xoaz)', () => {
     // Caller requests the path-first three in their list order.
     const requested = assets.slice(0, 3).map((asset) => asset.asset_id);
     expect(service.enqueueThumbnailJobs(created.libraryId, { assetIds: requested, priority: 350 })).toBe(3);
-    const db2 = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db2 = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const jobs = db2.prepare(
       "SELECT asset_id FROM jobs WHERE kind = 'generate_thumbnail' AND status = 'queued' ORDER BY rowid",
     ).all() as Array<{ asset_id: string }>;
@@ -425,7 +425,7 @@ describe('visible thumbnail admission (Serpent-d6)', () => {
       limit: selected.length,
     })).toBe(3);
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const modelJob = db.prepare(
       `SELECT COUNT(*) AS count FROM jobs
         WHERE asset_id = ? AND kind = 'generate_thumbnail'`,
@@ -471,7 +471,7 @@ describe('visible thumbnail admission (Serpent-d6)', () => {
 
     // Make the video the FIFO winner under the old priority/created_at order;
     // the interactive image-first term must still claim the image.
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const stamp = db.prepare(
       "UPDATE jobs SET created_at = ? WHERE asset_id = ? AND kind = 'generate_thumbnail'",
     );

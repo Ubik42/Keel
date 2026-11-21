@@ -45,7 +45,7 @@ describe.skipIf(!outputPath)('large-library fixture generator', () => {
     expect(manifest.searchTokenAssetCount).toBeGreaterThan(0);
     expect(existsSync(manifest.libraryPath)).toBe(true);
     expect(JSON.parse(readFileSync(
-      `${manifest.libraryPath}/.serpent/large-library-fixture.json`,
+      `${manifest.libraryPath}/.keel/large-library-fixture.json`,
       'utf8',
     ))).toMatchObject({ libraryId: manifest.libraryId, assetCount });
   }, 900_000);

@@ -53,7 +53,7 @@ perfDescribe('semantic SQLite retrieval performance (explicit opt-in)', () => {
       mkdirSync(directory, { recursive: true });
       return directory;
     });
-    const connection = new Database(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const connection = new Database(path.join(library.libraryPath, '.keel', 'library.db'));
     const insertAsset = connection.prepare(`INSERT INTO assets
       (asset_id, location_kind, managed_folder_id, linked_folder_id, relative_file_path,
        current_revision_id, availability, path_identity, created_at, updated_at)

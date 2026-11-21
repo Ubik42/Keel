@@ -938,7 +938,7 @@ describe('AI job queue management', () => {
 
     // Manually insert a job with desired status
     const db = new Database(
-      path.join(created.libraryPath, '.serpent', 'library.db'),
+      path.join(created.libraryPath, '.keel', 'library.db'),
     );
     const jobId = randomUUID();
     const now = new Date().toISOString();
@@ -1046,7 +1046,7 @@ describe('AI job queue management', () => {
     const historicalJobId = randomUUID();
     const status = service.getAiJobStatus(libraryId);
     const db = new Database(
-      path.join(service.listLibraries()[0]!.libraryPath, '.serpent', 'library.db'),
+      path.join(service.listLibraries()[0]!.libraryPath, '.keel', 'library.db'),
     );
     const libraryRow = db.prepare('SELECT library_id FROM library LIMIT 1').get() as {
       library_id: string;
@@ -1190,7 +1190,7 @@ describe('AI job queue management', () => {
 
     // Simulate an ungraceful Worker exit: persist a running row without
     // passing through closeLibrary's deliberate cancellation path.
-    const db = new Database(path.join(libraryPath, '.serpent', 'library.db'));
+    const db = new Database(path.join(libraryPath, '.keel', 'library.db'));
     db.prepare("UPDATE jobs SET status = 'running' WHERE job_id = ?").run(jobId);
     db.close();
 

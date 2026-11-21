@@ -15,10 +15,10 @@ import {
   type PluginManifest,
 } from './plugin-manifest';
 
-export const PLUGIN_LIBRARY_DIRECTORY = '.serpent/plugins';
-export const PLUGIN_LIBRARY_LOCK_FILE = '.serpent/plugin-lock.json';
-export const PLUGIN_LIBRARY_SETTINGS_DIRECTORY = '.serpent/plugin-settings';
-export const PLUGIN_LIBRARY_DATA_DIRECTORY = '.serpent/plugin-data';
+/** Names inside the library metadata directory (see libraryMetaDir). */
+export const PLUGIN_LIBRARY_LOCK_FILE = 'plugin-lock.json';
+export const PLUGIN_LIBRARY_SETTINGS_DIRECTORY = 'plugin-settings';
+export const PLUGIN_LIBRARY_DATA_DIRECTORY = 'plugin-data';
 export const PLUGIN_LOCK_VERSION = 1 as const;
 
 const nonBlankIdSchema = z.string().min(1).max(255).refine((value) => value.trim().length > 0, {
@@ -322,10 +322,6 @@ export function verifyPluginPackageLock(snapshot: unknown, lock: unknown): { ok:
     return failure('PLUGIN_PACKAGE_INTEGRITY_MISMATCH', 'The package no longer matches its verified lock.');
   }
   return { ok: true };
-}
-
-export function getLibraryPluginPackageDirectory(pluginId: string): string {
-  return `${PLUGIN_LIBRARY_DIRECTORY}/${pluginIdSchema.parse(pluginId)}`;
 }
 
 export function getUserPluginPackageDirectory(pluginId: string): string {

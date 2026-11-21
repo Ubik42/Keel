@@ -73,7 +73,7 @@ function countLiveAssetsViaElectron(libraryPath: string): number {
     const { createRequire } = require("node:module");
     const repoRequire = createRequire(${JSON.stringify(path.resolve("package.json"))});
     const Database = repoRequire("better-sqlite3");
-    const db = new Database(${JSON.stringify(path.join(libraryPath, ".serpent", "library.db"))}, { readonly: true, fileMustExist: true });
+    const db = new Database(${JSON.stringify(path.join(libraryPath, ".keel", "library.db"))}, { readonly: true, fileMustExist: true });
     const row = db.prepare("SELECT COUNT(*) AS n FROM assets WHERE deleted_at IS NULL").get();
     db.close();
     process.stdout.write(String(row.n));
@@ -105,7 +105,7 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
   // Reading these from the source fixture hid drift in reused artifact/job
   // state and made the benchmark report the wrong population.
   const measuredLibraryPath = reuseLibraryPath || fixturePath;
-  const manifestPath = path.join(measuredLibraryPath, ".serpent", "large-library-fixture.json");
+  const manifestPath = path.join(measuredLibraryPath, ".keel", "large-library-fixture.json");
   let fixtureVersion: number | string;
   if (existsSync(manifestPath)) {
     const manifest = JSON.parse(readFileSync(manifestPath, "utf8")) as {

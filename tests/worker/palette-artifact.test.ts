@@ -165,7 +165,7 @@ describe('local extracted palette artifact', () => {
     const rebuilt = service.getCurrentArtifact(library.libraryId, assetId, 'extracted_palette');
     expect(rebuilt?.artifactId).not.toBe(original.artifactId);
 
-    const db = new TestDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
     expect(db.prepare('SELECT invalidated_at FROM revision_artifacts WHERE artifact_id = ?')
       .get(original.artifactId)).toMatchObject({ invalidated_at: expect.any(String) });
     db.close();
@@ -179,12 +179,12 @@ describe('local extracted palette artifact', () => {
     const source = path.join(root, 'clip.mp4');
     writeFileSync(source, Buffer.from('not decoded by this test'));
     const assetId = importAsset(service, library.libraryId, source);
-    const db = new TestDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
     const revision = db.prepare('SELECT current_revision_id FROM assets WHERE asset_id = ?')
       .get(assetId) as { current_revision_id: string };
     const posterId = 'poster-for-palette';
     const posterPath = `${posterId}.png`;
-    const artifactsDir = path.join(library.libraryPath, '.serpent', 'artifacts');
+    const artifactsDir = path.join(library.libraryPath, '.keel', 'artifacts');
     mkdirSync(artifactsDir, { recursive: true });
     writeFileSync(path.join(artifactsDir, posterPath), VALID_1X1_PNG);
     db.prepare(
@@ -250,12 +250,12 @@ describe('local extracted palette artifact', () => {
     const source = path.join(root, 'sound.mp3');
     writeFileSync(source, Buffer.from('not decoded by this test'));
     const assetId = importAsset(service, library.libraryId, source);
-    const db = new TestDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
     const revision = db.prepare('SELECT current_revision_id FROM assets WHERE asset_id = ?')
       .get(assetId) as { current_revision_id: string };
     const posterId = 'audio-waveform-for-palette';
     const posterPath = `${posterId}.png`;
-    const artifactsDir = path.join(library.libraryPath, '.serpent', 'artifacts');
+    const artifactsDir = path.join(library.libraryPath, '.keel', 'artifacts');
     mkdirSync(artifactsDir, { recursive: true });
     writeFileSync(path.join(artifactsDir, posterPath), VALID_1X1_PNG);
     db.prepare(
@@ -280,12 +280,12 @@ describe('local extracted palette artifact', () => {
     const source = path.join(root, `visual.${extension}`);
     writeFileSync(source, Buffer.from(`visual ${extension} fixture`));
     const assetId = importAsset(service, library.libraryId, source);
-    const db = new TestDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
     const revision = db.prepare('SELECT current_revision_id FROM assets WHERE asset_id = ?')
       .get(assetId) as { current_revision_id: string };
     const thumbnailId = `thumbnail-for-${extension}`;
     const thumbnailPath = `${thumbnailId}.png`;
-    const artifactsDir = path.join(library.libraryPath, '.serpent', 'artifacts');
+    const artifactsDir = path.join(library.libraryPath, '.keel', 'artifacts');
     mkdirSync(artifactsDir, { recursive: true });
     writeFileSync(path.join(artifactsDir, thumbnailPath), VALID_1X1_PNG);
     db.prepare(
@@ -313,7 +313,7 @@ describe('local extracted palette artifact', () => {
     service.enqueueThumbnailJobs(library.libraryId);
     const job = service.listMediaJobs(library.libraryId).jobs.find((candidate) =>
       candidate.kind === 'extract_palette')!;
-    const db = new TestDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
     db.prepare("UPDATE jobs SET status = 'running', attempt_count = 2 WHERE job_id = ?").run(job.jobId);
     db.close();
     service.closeAll();
@@ -380,7 +380,7 @@ describe('local extracted palette artifact', () => {
     expect(service.getCurrentArtifact(library.libraryId, assetId, 'extracted_palette'))
       .toMatchObject({ status: 'ready' });
 
-    const db = new TestDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
     db.prepare("UPDATE revision_artifacts SET invalidated_at = ? WHERE kind = 'extracted_palette' AND invalidated_at IS NULL")
       .run(new Date().toISOString());
     db.close();

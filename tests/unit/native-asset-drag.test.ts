@@ -26,7 +26,7 @@ describe('native asset drag', () => {
     cache.replace('library-1', [{
       assetId: 'asset-1',
       absolutePath: '/library/assets/asset-1.jpg',
-      thumbnailAbsolutePath: '/library/.serpent/artifacts/asset-1.webp',
+      thumbnailAbsolutePath: '/library/.keel/artifacts/asset-1.webp',
     }]);
     const thumbnail = image('thumbnail');
     const fallback = image('fallback');
@@ -43,7 +43,7 @@ describe('native asset drag', () => {
     })).toBe(true);
 
     expect(createFromPath).toHaveBeenCalledWith(
-      '/library/.serpent/artifacts/asset-1.webp',
+      '/library/.keel/artifacts/asset-1.webp',
     );
     expect(thumbnail.resize).toHaveBeenCalledWith({ width: 96, height: 72 });
     expect(startDrag).toHaveBeenCalledWith({
@@ -75,7 +75,7 @@ describe('native asset drag', () => {
     cache.replace('library-1', [{
       assetId: 'asset-1',
       absolutePath: '/library/assets/asset-1.avif',
-      thumbnailAbsolutePath: '/library/.serpent/artifacts/asset-1.webp',
+      thumbnailAbsolutePath: '/library/.keel/artifacts/asset-1.webp',
     }]);
     const emptyThumbnail: NativeDragImage = {
       isEmpty: () => true,
@@ -113,7 +113,7 @@ describe('native asset drag', () => {
     cache.replace('library-1', [{
       assetId: 'asset-1',
       absolutePath: '/library/assets/asset-1.avif',
-      thumbnailAbsolutePath: '/library/.serpent/artifacts/asset-1.webp',
+      thumbnailAbsolutePath: '/library/.keel/artifacts/asset-1.webp',
     }]);
     const empty: NativeDragImage = {
       isEmpty: () => true,
@@ -141,7 +141,7 @@ describe('native asset drag', () => {
     cache.replace('library-1', [{
       assetId: 'asset-1',
       absolutePath: '/library/assets/MetaHorizonLink.ico',
-      thumbnailAbsolutePath: '/library/.serpent/artifacts/meta.webp',
+      thumbnailAbsolutePath: '/library/.keel/artifacts/meta.webp',
     }]);
     const square = image('square', { width: 256, height: 256 });
     const startDrag = vi.fn();

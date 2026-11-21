@@ -160,7 +160,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
     });
     expect(result).toBeNull();
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const artifacts = db.prepare('SELECT COUNT(*) AS n FROM revision_artifacts').get() as { n: number };
     const jobs = db.prepare('SELECT COUNT(*) AS n FROM jobs').get() as { n: number };
     expect(artifacts.n).toBe(0);
@@ -195,7 +195,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
     // Both the PNG and the model qualify now.
     expect(enqueued).toBe(2);
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const modelJobs = db.prepare(
       `SELECT COUNT(*) AS n
          FROM jobs j
@@ -247,7 +247,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
       });
 
       // The artifact is the standard thumbnail kind, PNG, tagged offscreen-webgl-1.
-      const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+      const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
       const artifact = db.prepare(
         `SELECT kind, mime_type, byte_size, width, height, status, generator_version
            FROM revision_artifacts WHERE revision_id = ?`,
@@ -322,7 +322,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
       expect(listed.thumbnailStatus).toBe('failed');
       expect(service.enqueueThumbnailJobs(created.libraryId, { assetIds: [asset.assetId] })).toBe(0);
 
-      const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+      const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
       const job = db.prepare('SELECT status, error_code FROM jobs WHERE asset_id = ?').get(asset.assetId) as {
         status: string;
         error_code: string | null;
@@ -346,7 +346,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
       const processed = await service.processThumbnailQueue(created.libraryId, { maxJobs: 1 });
       expect(processed).toBe(1);
 
-      const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+      const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
       const artifactCount = db.prepare('SELECT COUNT(*) AS n FROM revision_artifacts').get() as { n: number };
       expect(artifactCount.n).toBe(0);
       db.close();
@@ -418,7 +418,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
       releaseRenderer({ status: 'ok', pngBytes: PNG_BYTES, width: 512, height: 512 });
       await processing;
 
-      const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+      const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
       // The late frame must not leave any artifact behind (the queue deletes
       // late artifacts on cancellation).
       const artifactCount = db.prepare(

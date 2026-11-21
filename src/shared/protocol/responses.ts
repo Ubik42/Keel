@@ -123,6 +123,9 @@ export const internalLibrarySummarySchema = z.strictObject({
   // True when a migration failed repeatedly and this build skipped further
   // retries, opening writable at the last good schema version instead.
   migrationStuck: z.boolean().optional(),
+  /** `.keel` → `.keel`: rename failed (opened from the legacy directory) or both exist. */
+  metaDirMigration: z.enum(['failed', 'both']).optional(),
+  metaDirMigrationReason: z.string().max(64).optional(),
   /** Set when the open path recovered or rebuilt a damaged database. */
   recovery: internalLibraryRecoverySchema.optional(),
 });
@@ -141,6 +144,8 @@ export const rendererLibrarySummarySchema = z.strictObject({
   // True when a migration failed repeatedly and this build skipped further
   // retries, opening writable at the last good schema version instead.
   migrationStuck: z.boolean().optional(),
+  metaDirMigration: z.enum(['failed', 'both']).optional(),
+  metaDirMigrationReason: z.string().max(64).optional(),
   /** Set when the open path recovered or rebuilt a damaged database. */
   recovery: rendererLibraryRecoverySchema.optional(),
 });
@@ -1839,7 +1844,7 @@ const workerSuccessResultSchema = z.discriminatedUnion('type', [
     // error code so the Renderer can route to the FBXLoader fallback.
     status: z.enum(['ready', 'failed']),
     glbArtifactId: nonBlankString.optional(),
-    // Path of the GLB artifact relative to `.serpent/artifacts`.
+    // Path of the GLB artifact relative to `.keel/artifacts`.
     glbRelativePath: nonBlankString.optional(),
     errorCode: fbxConvertErrorCodeSchema.optional(),
     reason: nonBlankString.optional(),

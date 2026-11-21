@@ -87,7 +87,7 @@ function createLibraryWithAssetAndTags(initialDescription?: string, description?
   writeFileSync(path.join(assetsPath, assetFileName), 'test content');
 
   // Use the service API to set metadata (which syncs FTS content).
-  const db = new TestDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+  const db = new TestDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
   const assetId = randomUUID();
   const revisionId = randomUUID();
   const now = new Date().toISOString();
@@ -145,7 +145,7 @@ function createSecondAsset(
   const assetsPath = path.join(libraryPath, 'Assets', managedFolder.relativePath);
   writeFileSync(path.join(assetsPath, assetFileName), 'test content 2');
 
-  const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+  const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
   const revisionId = randomUUID();
   const now = new Date().toISOString();
   try {
@@ -187,7 +187,7 @@ describe('schema v5->v6 migration', () => {
     const { service, libraryPath } = createLibraryWithAssetAndTags();
     service.closeAll();
 
-    const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
     try {
       expect(db.pragma('user_version')).toEqual([{ user_version: SUPPORTED_SCHEMA_VERSION }]);
 
@@ -384,7 +384,7 @@ describe('FTS trigger consistency', () => {
 
     // Directly test that the trigger uses 'delete' command by checking
     // token counts don't leak on an update done through the sync path.
-    const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
     try {
       // Verify the initial asset description is indexed.
       const beforeCount = db.prepare(
@@ -428,7 +428,7 @@ describe('FTS trigger consistency', () => {
     service.closeAll();
 
     // Directly delete the asset in the DB (which cascades to asset_search_index).
-    const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
     try {
       db.prepare('DELETE FROM assets WHERE asset_id = ?').run(assetId);
 
@@ -483,7 +483,7 @@ describe('CJK tokenization', () => {
     const managedFolder = service.createManagedFolder({ libraryId, name: 'CJKAssets' });
 
     // Insert an asset directly with a Chinese description into search index.
-    const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
     const assetId = randomUUID();
     const now = new Date().toISOString();
     try {
@@ -533,7 +533,7 @@ describe('CJK tokenization', () => {
 describe('contextual substring search', () => {
   it('paginates internal ids-only pages without changing whole-scope idsOnly behavior', () => {
     const { service, libraryId, libraryPath, assetId } = createLibraryWithAssetAndTags();
-    const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
     const now = new Date().toISOString();
     let folderId: string;
     let directory: string;
@@ -576,7 +576,7 @@ describe('contextual substring search', () => {
 
   it('finds a one-character query inside both filename and tag text', () => {
     const { service, libraryId, libraryPath, assetId } = createLibraryWithAssetAndTags();
-    const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
     try {
       db.prepare(
         `UPDATE asset_search_index
@@ -597,7 +597,7 @@ describe('contextual substring search', () => {
 
   it('applies canonical field clauses and OR groups without broadening a match', () => {
     const { service, libraryId, libraryPath, assetId } = createLibraryWithAssetAndTags();
-    const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
     try {
       db.prepare(
         `UPDATE asset_search_index
@@ -645,7 +645,7 @@ describe('contextual substring search', () => {
   it('ranks a filename exact match before an arbitrary tag contains match', () => {
     const { service, libraryId, libraryPath, assetId } = createLibraryWithAssetAndTags();
     const secondAssetId = createSecondAsset(service, libraryId, libraryPath, 'nothing');
-    const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
     try {
       db.prepare(
         `UPDATE asset_search_index SET filename = ?, tags = ? WHERE asset_id = ?`,
@@ -682,7 +682,7 @@ describe('bm25 weighting', () => {
     const managedFolder = service.createManagedFolder({ libraryId, name: 'bm25f' });
 
     // Insert assets + FTS content directly.
-    const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
     const now = new Date().toISOString();
 
     // Asset 1: "dragon" in filename (weight 10).
@@ -901,7 +901,7 @@ describe('search filters', () => {
     const now = new Date().toISOString();
     writeFileSync(path.join(libraryPath, 'Assets', rootFileName), 'root asset');
 
-    const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
     try {
       db.prepare(
         `INSERT INTO assets (asset_id, location_kind, managed_folder_id, linked_folder_id,
@@ -955,7 +955,7 @@ describe('search filters', () => {
     const childRelativePath = `${child.relativePath}/${childName}`;
     const now = new Date().toISOString();
     writeFileSync(path.join(libraryPath, 'Assets', childRelativePath), 'nested asset');
-    const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
     try {
       db.prepare(
         `INSERT INTO assets (asset_id, location_kind, managed_folder_id, linked_folder_id,
@@ -1017,7 +1017,7 @@ describe('search filters', () => {
       const relativePath = `${folder.relativePath}/${fileName}`;
       const now = new Date().toISOString();
       writeFileSync(path.join(libraryPath, 'Assets', relativePath), 'needle asset');
-      const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+      const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
       try {
         db.prepare(
           `INSERT INTO assets (asset_id, location_kind, managed_folder_id, linked_folder_id,
@@ -1083,7 +1083,7 @@ describe('search filters', () => {
     const mf = service.createManagedFolder({ libraryId: library.libraryId, name: 'f' });
     service.closeAll();
 
-    const db = new TestDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
     const now = new Date().toISOString();
     const makeAsset = (fileName: string): string => {
       const id = randomUUID();
@@ -1431,7 +1431,7 @@ describe('search filters', () => {
 
   it('selects the same preferred thumbnail for semantic revisions and catalog summaries', () => {
     const { service, libraryId, assetId, libraryPath } = createLibraryWithAssetAndTags();
-    const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
     const revision = db.prepare('SELECT current_revision_id FROM assets WHERE asset_id = ?')
       .get(assetId) as { current_revision_id: string };
     const insert = db.prepare(`
@@ -1462,7 +1462,7 @@ describe('search filters', () => {
     const { service, libraryId, assetId, libraryPath } = createLibraryWithAssetAndTags();
     const portraitId = createSecondAsset(service, libraryId, libraryPath, 'Portrait');
     const unknownId = createSecondAsset(service, libraryId, libraryPath, 'Unknown');
-    const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
     const revisions = db.prepare(
       'SELECT asset_id, current_revision_id FROM assets WHERE asset_id IN (?, ?)',
     ).all(assetId, portraitId) as Array<{ asset_id: string; current_revision_id: string }>;
@@ -1535,7 +1535,7 @@ describe('search filters', () => {
       'Model',
       `model-${randomUUID()}.fbx`,
     );
-    const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
     const revisions = db.prepare(
       'SELECT asset_id, current_revision_id FROM assets WHERE asset_id IN (?, ?, ?)',
     ).all(assetId, portraitId, modelId) as Array<{ asset_id: string; current_revision_id: string }>;
@@ -1695,7 +1695,7 @@ describe('sort', () => {
   it('sorts by long_edge ascending with nulls last', () => {
     const { service, libraryId, assetId, libraryPath } = createLibraryWithAssetAndTags();
     const assetId2 = createSecondAsset(service, libraryId, libraryPath, 'Small');
-    const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
     const revisions = db.prepare(
       'SELECT asset_id, current_revision_id FROM assets WHERE asset_id IN (?, ?)',
     ).all(assetId, assetId2) as Array<{ asset_id: string; current_revision_id: string }>;
@@ -1732,7 +1732,7 @@ describe('sort', () => {
   it('sorts by extracted video duration with nulls last and projects durationMs', () => {
     const { service, libraryId, assetId, libraryPath } = createLibraryWithAssetAndTags();
     const assetId2 = createSecondAsset(service, libraryId, libraryPath, 'Short');
-    const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
     const revisions = db.prepare(
       'SELECT asset_id, current_revision_id FROM assets WHERE asset_id IN (?, ?)',
     ).all(assetId, assetId2) as Array<{ asset_id: string; current_revision_id: string }>;
@@ -1767,7 +1767,7 @@ describe('sort', () => {
     const { service, libraryId, assetId, libraryPath } = createLibraryWithAssetAndTags();
     const sameHueAssetId = createSecondAsset(service, libraryId, libraryPath, 'Same red');
     const unknownAssetId = createSecondAsset(service, libraryId, libraryPath, 'No palette');
-    const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
     const revisions = db.prepare(
       'SELECT asset_id, current_revision_id FROM assets WHERE asset_id IN (?, ?)',
     ).all(assetId, sameHueAssetId) as Array<{ asset_id: string; current_revision_id: string }>;
@@ -1848,7 +1848,7 @@ describe('pagination', () => {
 
     // Force an identical primary sort value so the test exercises the stable
     // asset_id suffix rather than relying on clock resolution.
-    const database = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
     try {
       database.prepare('UPDATE assets SET deleted_at = ? WHERE asset_id IN (?, ?)')
         .run('2026-07-13T00:00:00.000Z', assetId, secondAssetId);
@@ -1931,7 +1931,7 @@ describe('pagination', () => {
   it('returns a compact real-asset geometry index when layoutOnly is true (Serpent-sa65)', () => {
     const { service, libraryId, libraryPath, assetId } = createLibraryWithAssetAndTags();
     const secondAssetId = createSecondAsset(service, libraryId, libraryPath, 'Second');
-    const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
     const revisions = db.prepare(
       'SELECT asset_id, current_revision_id FROM assets ORDER BY asset_id',
     ).all() as Array<{ asset_id: string; current_revision_id: string }>;

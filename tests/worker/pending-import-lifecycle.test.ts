@@ -80,7 +80,7 @@ describe('pending import lifecycle', () => {
       sourceKind: 'files',
       sourcePaths: [source],
     });
-    const operationPath = path.join(library.libraryPath, '.serpent', 'operations', plan.importId);
+    const operationPath = path.join(library.libraryPath, '.keel', 'operations', plan.importId);
 
     clock.advance(15 * 60 * 1_000);
     expect(existsSync(operationPath)).toBe(true);
@@ -105,7 +105,7 @@ describe('pending import lifecycle', () => {
     const library = service.createLibrary({ storageLayout: 'assets', displayName: 'TTL', selectedParentPath: root });
     writeFileSync(path.join(library.libraryPath, 'Assets', 'same.png'), 'old');
     const plan = service.prepareImport({ libraryId: library.libraryId, sourceKind: 'files', sourcePaths: [source] });
-    const operationPath = path.join(library.libraryPath, '.serpent', 'operations', plan.importId);
+    const operationPath = path.join(library.libraryPath, '.keel', 'operations', plan.importId);
     expect(existsSync(operationPath)).toBe(true);
 
     clock.advance(999);
@@ -185,7 +185,7 @@ describe('pending import lifecycle', () => {
     service.closeAll();
 
     expect(clock.cancelled).toHaveLength(0);
-    expect(existsSync(path.join(library.libraryPath, '.serpent', 'operations', plan.importId))).toBe(false);
+    expect(existsSync(path.join(library.libraryPath, '.keel', 'operations', plan.importId))).toBe(false);
   });
 
   it('recovers an audited preparing operation after a crash during staging', () => {
@@ -200,11 +200,11 @@ describe('pending import lifecycle', () => {
       () => crashing.prepareImport({ libraryId: library.libraryId, sourceKind: 'files', sourcePaths: [first, second] }),
       'INVALID_IMPORT_SOURCE',
     );
-    const operationsPath = path.join(library.libraryPath, '.serpent', 'operations');
+    const operationsPath = path.join(library.libraryPath, '.keel', 'operations');
     const [operationId] = readdirSync(operationsPath);
     expect(operationId).toBeTruthy();
     crashing.closeAll();
-    const database = openConfiguredDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const database = openConfiguredDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
     expect(database.prepare('SELECT status FROM file_operations WHERE operation_id = ?').get(operationId)).toEqual({ status: 'preparing' });
     database.close();
 
@@ -248,7 +248,7 @@ describe('pending import lifecycle', () => {
       sourceKind: 'files',
       sourcePaths: [source],
     });
-    const operationPath = path.join(library.libraryPath, '.serpent', 'operations', plan.importId);
+    const operationPath = path.join(library.libraryPath, '.keel', 'operations', plan.importId);
     rmSync(path.join(operationPath, 'stage', '0'));
     const concurrentDestination = path.join(library.libraryPath, 'Assets', 'prepared.png');
     writeFileSync(concurrentDestination, 'created by another process');

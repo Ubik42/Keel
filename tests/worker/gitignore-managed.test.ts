@@ -35,7 +35,7 @@ afterEach(() => {
 });
 
 describe('managed ignore configuration', () => {
-  it('writes every managed ignore action to .serpentignore and survives reopening', () => {
+  it('writes every managed ignore action to .keelignore and survives reopening', () => {
     const root = temporaryRoot();
     const service = newService();
     const library = service.createLibrary({ storageLayout: 'assets',
@@ -73,7 +73,7 @@ describe('managed ignore configuration', () => {
       ignored: true,
     });
 
-    const ignorePath = path.join(library.libraryPath, '.serpentignore');
+    const ignorePath = path.join(library.libraryPath, '.keelignore');
     expect(existsSync(ignorePath)).toBe(true);
     const ignoreText = readFileSync(ignorePath, 'utf8');
     expect(ignoreText).toBe(
@@ -159,7 +159,7 @@ describe('managed ignore configuration', () => {
     const asset = importNoConflict(service, library.libraryId, source).assets[0]!;
     service.closeAll();
 
-    const databasePath = path.join(library.libraryPath, '.serpent', 'library.db');
+    const databasePath = path.join(library.libraryPath, '.keel', 'library.db');
     const database = openConfiguredDatabase(databasePath);
     try {
       database.prepare(
@@ -176,14 +176,14 @@ describe('managed ignore configuration', () => {
     // Opening defers the full ignore materialization until the first library
     // read so large libraries can render their identity promptly.
     reopened.listIgnoredPaths(library.libraryId);
-    expect(readFileSync(path.join(library.libraryPath, '.serpentignore'), 'utf8'))
+    expect(readFileSync(path.join(library.libraryPath, '.keelignore'), 'utf8'))
       .toContain(`Assets/${asset.relativeFilePath}`);
     expect(reopened.listAssets({ libraryId: library.libraryId, recursive: true })).toEqual([]);
   });
 });
 
 describe('linked ignore configuration', () => {
-  it('applies .*/ to linked trees and writes linked ignores into .serpentignore', () => {
+  it('applies .*/ to linked trees and writes linked ignores into .keelignore', () => {
     const root = temporaryRoot();
     const sourceRoot = path.join(root, 'source');
     mkdirSync(sourceRoot);
@@ -223,7 +223,7 @@ describe('linked ignore configuration', () => {
       pathKind: 'folder',
       ignored: true,
     });
-    expect(readFileSync(path.join(library.libraryPath, '.serpentignore'), 'utf8'))
+    expect(readFileSync(path.join(library.libraryPath, '.keelignore'), 'utf8'))
       .toBe('.*/\nnotes/\n');
     expect(service.listLinkedFolders(library.libraryId)
       .map((folder) => folder.relativePath)).toEqual(['']);
@@ -294,7 +294,7 @@ describe('linked ignore configuration', () => {
       ignored: true,
     });
 
-    expect(readFileSync(path.join(library.libraryPath, '.serpentignore'), 'utf8'))
+    expect(readFileSync(path.join(library.libraryPath, '.keelignore'), 'utf8'))
       .toBe('.111/\n');
     expect(service.getLibraryNavigationSummary({ libraryId: library.libraryId })
       .linkedFolders.map((folder) => folder.relativePath)
@@ -338,7 +338,7 @@ describe('managed nested dot-folder ignore', () => {
       pathKind: 'folder',
       ignored: true,
     });
-    expect(readFileSync(path.join(library.libraryPath, '.serpentignore'), 'utf8'))
+    expect(readFileSync(path.join(library.libraryPath, '.keelignore'), 'utf8'))
       .toBe('Assets/1Test/.111/\n');
     expect(service.getLibraryNavigationSummary({ libraryId: library.libraryId })
       .folders.map((folder) => folder.relativePath)

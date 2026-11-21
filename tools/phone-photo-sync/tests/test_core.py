@@ -9,8 +9,8 @@ class SyncTests(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory()
         self.root=Path(self.tmp.name)/'library'
-        (self.root/'.serpent').mkdir(parents=True)
-        (self.root/'.serpent/library.db').touch()
+        (self.root/'.keel').mkdir(parents=True)
+        (self.root/'.keel/library.db').touch()
         self.config={'device_folder':'phone','shared_roots':{}}
         self.archive=Archive(self.root,self.config)
         self.payload={}

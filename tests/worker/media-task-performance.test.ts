@@ -103,7 +103,7 @@ function cloneFixture(sourcePath: string, destinationPath: string): void {
 }
 
 function databasePath(libraryPath: string): string {
-  return path.join(libraryPath, '.serpent', 'library.db');
+  return path.join(libraryPath, '.keel', 'library.db');
 }
 
 function loadSupportedAssets(libraryPath: string): BenchAsset[] {
@@ -302,7 +302,7 @@ function removeVisualArtifacts(libraryPath: string, assets: readonly BenchAsset[
     artifact_id: string;
     file_path: string;
   }>;
-  const artifactsRoot = path.resolve(path.join(libraryPath, '.serpent', 'artifacts'));
+  const artifactsRoot = path.resolve(path.join(libraryPath, '.keel', 'artifacts'));
   const deleteArtifact = database.prepare('DELETE FROM revision_artifacts WHERE artifact_id = ?');
   const cancelJob = database.prepare(
     `UPDATE jobs
@@ -335,7 +335,7 @@ function removeVisualArtifacts(libraryPath: string, assets: readonly BenchAsset[
 describe.skipIf(!enabled || !fixturePath)('native media task performance benchmark', () => {
   beforeAll(() => {
     if (!fixturePath) throw new Error('Set SERPENT_MEDIA_TASK_PERF_PATH to a 20k fixture.');
-    const manifestFile = path.join(fixturePath, '.serpent', 'large-library-fixture.json');
+    const manifestFile = path.join(fixturePath, '.keel', 'large-library-fixture.json');
     if (!existsSync(manifestFile)) throw new Error(`Missing fixture manifest: ${manifestFile}`);
     manifest = JSON.parse(readFileSync(manifestFile, 'utf8')) as LargeLibraryFixtureManifest;
     if (reuseLibraryPath) {

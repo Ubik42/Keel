@@ -50,7 +50,7 @@ function temporaryRoot(): string {
 
 /** Bump a current library to a fake newer schema (structure untouched). */
 function markLibraryAsNewerVersion(libraryPath: string): void {
-  const db = new Database(path.join(libraryPath, '.serpent', 'library.db'));
+  const db = new Database(path.join(libraryPath, '.keel', 'library.db'));
   const newerVersion = SUPPORTED_SCHEMA_VERSION + 1;
   db.pragma(`user_version = ${newerVersion}`);
   db.prepare(
@@ -135,7 +135,7 @@ describe('writable open for newer-schema libraries', () => {
 
     const summary = service.openLibrary(created.libraryPath);
     expect(summary.readOnly).toBeFalsy();
-    const db = new Database(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new Database(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(() =>
       db
         .prepare('INSERT INTO library (library_id, display_name, created_at) VALUES (?, ?, ?)')

@@ -1580,7 +1580,7 @@ describe('preview response protocol', () => {
       type: 'asset.metadata.got',
       metadata: { paletteSource: 'automatic', effectivePalette: ['#FF0000', '#0000FF'] },
     });
-    expect(JSON.stringify(result)).not.toContain('.serpent');
+    expect(JSON.stringify(result)).not.toContain('.keel');
   });
 
   it('carries only the asset id for reveal-in-folder and copy-file-path results', () => {
@@ -1910,13 +1910,13 @@ describe('worker request protocol', () => {
         entries: [{
           assetId: 'asset-1',
           absolutePath: '/private/library/asset-1.png',
-          thumbnailAbsolutePath: '/private/library/.serpent/artifacts/thumb.webp',
+          thumbnailAbsolutePath: '/private/library/.keel/artifacts/thumb.webp',
         }],
       },
     }).result).toMatchObject({
       type: 'media.asset-drag-infos',
       entries: [{
-        thumbnailAbsolutePath: '/private/library/.serpent/artifacts/thumb.webp',
+        thumbnailAbsolutePath: '/private/library/.keel/artifacts/thumb.webp',
       }],
     });
 
@@ -1926,7 +1926,7 @@ describe('worker request protocol', () => {
       entries: [{
         assetId: 'asset-1',
         absolutePath: '/private/library/asset-1.png',
-        thumbnailAbsolutePath: '/private/library/.serpent/artifacts/thumb.webp',
+        thumbnailAbsolutePath: '/private/library/.keel/artifacts/thumb.webp',
       }],
     })).toThrow();
   });

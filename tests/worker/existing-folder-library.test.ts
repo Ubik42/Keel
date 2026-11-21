@@ -28,7 +28,7 @@ describe('initialize an existing folder as a library', () => {
     const file = path.join(folder, '2026', 'photo.txt');
     writeFileSync(file, 'keep original data');
     const before = statSync(file);
-    writeFileSync(path.join(folder, '.serpentignore'), '*.tmp');
+    writeFileSync(path.join(folder, '.keelignore'), '*.tmp');
     writeFileSync(path.join(folder, 'skip.tmp'), 'ignore this');
     const created = service.createLibrary({ displayName: '日常记录', selectedParentPath: folder, useExistingFolder: true });
     expect(created.libraryPath).toBe(folder);
@@ -36,14 +36,14 @@ describe('initialize an existing folder as a library', () => {
     expect(created.storageLayout).toBe('root');
     expect(existsSync(path.join(folder, '日常记录'))).toBe(false);
     expect(existsSync(path.join(folder, 'Assets'))).toBe(false);
-    expect(existsSync(path.join(folder, '.serpent', 'library.db'))).toBe(true);
+    expect(existsSync(path.join(folder, '.keel', 'library.db'))).toBe(true);
     await service.runOpenBackgroundReconciliation(created.libraryId);
     expect(service.listAssets({ libraryId: created.libraryId, recursive: true }).map((asset) => asset.relativeFilePath)).toEqual(['2026/photo.txt']);
     const asset = service.listAssets({ libraryId: created.libraryId, recursive: true })[0]!;
     expect(service.resolveAssetPath(created.libraryId, asset.assetId)).toBe(file);
     expect(readFileSync(file, 'utf8')).toBe('keep original data');
     expect(statSync(file).mtimeMs).toBe(before.mtimeMs);
-    expect(readFileSync(path.join(folder, '.serpentignore'), 'utf8')).toBe('*.tmp');
+    expect(readFileSync(path.join(folder, '.keelignore'), 'utf8')).toBe('*.tmp');
     service.closeAll();
     expect(service.openLibrary(folder).libraryId).toBe(created.libraryId);
   });
@@ -51,19 +51,19 @@ describe('initialize an existing folder as a library', () => {
   it('supports an empty existing folder without a nested library directory', () => {
     const { folder, service } = fixture();
     service.createLibrary({ displayName: 'Empty', selectedParentPath: folder, useExistingFolder: true });
-    expect(readdirSync(folder).sort()).toEqual(process.platform === 'win32' ? ['.serpent', 'desktop.ini'] : ['.serpent']);
+    expect(readdirSync(folder).sort()).toEqual(process.platform === 'win32' ? ['.keel', 'desktop.ini'] : ['.keel']);
   });
 
   it('refuses existing metadata and leaves every pre-existing file intact', () => {
     const { folder, service } = fixture();
-    mkdirSync(path.join(folder, '.serpent'));
-    const original = path.join(folder, '.serpent', 'library.db');
+    mkdirSync(path.join(folder, '.keel'));
+    const original = path.join(folder, '.keel', 'library.db');
     writeFileSync(original, 'user-owned metadata');
     writeFileSync(path.join(folder, 'original.txt'), 'original');
     expect(() => service.createLibrary({ displayName: 'No overwrite', selectedParentPath: folder, useExistingFolder: true })).toThrowError('LIBRARY_METADATA_EXISTS');
     expect(readFileSync(original, 'utf8')).toBe('user-owned metadata');
     expect(readFileSync(path.join(folder, 'original.txt'), 'utf8')).toBe('original');
-    expect(readdirSync(path.join(folder, '.serpent'))).toEqual(['library.db']);
+    expect(readdirSync(path.join(folder, '.keel'))).toEqual(['library.db']);
   });
 
   it('rejects repeated initialization while the existing library stays usable', () => {
@@ -76,11 +76,11 @@ describe('initialize an existing folder as a library', () => {
   it('rolls back only its newly created metadata when database initialization fails', () => {
     const { folder, service } = fixture({ sqliteBusyTimeoutMsForTests: -1 });
     writeFileSync(path.join(folder, 'original.txt'), 'keep original');
-    writeFileSync(path.join(folder, '.serpentignore'), '*.tmp');
+    writeFileSync(path.join(folder, '.keelignore'), '*.tmp');
     expect(() => service.createLibrary({ displayName: 'Failure', selectedParentPath: folder, useExistingFolder: true })).toThrow();
-    expect(readdirSync(folder).sort()).toEqual(['.serpentignore', 'original.txt']);
+    expect(readdirSync(folder).sort()).toEqual(['.keelignore', 'original.txt']);
     expect(readFileSync(path.join(folder, 'original.txt'), 'utf8')).toBe('keep original');
-    expect(readFileSync(path.join(folder, '.serpentignore'), 'utf8')).toBe('*.tmp');
+    expect(readFileSync(path.join(folder, '.keelignore'), 'utf8')).toBe('*.tmp');
   });
 
   it('rejects Assets mode for an existing folder before writing metadata', () => {
@@ -105,6 +105,6 @@ describe('initialize an existing folder as a library', () => {
     const link = path.join(parent, 'folder-link');
     symlinkSync(folder, link, process.platform === 'win32' ? 'junction' : 'dir');
     expect(() => service.createLibrary({ displayName: 'Linked', selectedParentPath: link, useExistingFolder: true })).toThrowError('INVALID_LIBRARY_PATH');
-    expect(existsSync(path.join(folder, '.serpent'))).toBe(false);
+    expect(existsSync(path.join(folder, '.keel'))).toBe(false);
   });
 });

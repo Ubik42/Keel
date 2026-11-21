@@ -83,7 +83,7 @@ function createLibraryWithAsset(
   mkdirSync(assetsPath, { recursive: true });
   writeFileSync(path.join(assetsPath, assetFileName), 'test content');
 
-  const db = new TestDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+  const db = new TestDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
   const assetId = randomUUID();
   const revisionId = randomUUID();
   const now = new Date().toISOString();
@@ -122,7 +122,7 @@ function createSecondAsset(
   managedFolderRelativePath: string,
   managedFolderId: string,
 ): string {
-  const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+  const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
   const assetId = randomUUID();
   const revisionId = randomUUID();
   const now = new Date().toISOString();
@@ -189,7 +189,7 @@ describe('tags', () => {
     const { service, libraryId, libraryPath } = createLibraryWithAsset();
     const older = service.createTag({ libraryId, name: 'Older' });
     const newer = service.createTag({ libraryId, name: 'Newer' });
-    const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
     try {
       db.prepare('UPDATE tags SET created_at = ? WHERE tag_id = ?').run(
         '2026-07-15T00:00:00.000Z',
@@ -381,7 +381,7 @@ describe('tag assignment', () => {
   it('counts distinct assets across human and AI tag relationships', () => {
     const { service, libraryId, libraryPath, assetId } = createLibraryWithAsset();
     const tag = service.createTag({ libraryId, name: 'Shared source' });
-    const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
     try {
       db.prepare(
         `INSERT INTO ai_asset_tags
@@ -507,7 +507,7 @@ describe('tag assignment', () => {
   it('removeTags also clears AI-authored tag links (Serpent-h2i2)', () => {
     const { service, libraryId, libraryPath, assetId } = createLibraryWithAsset();
     const tag = service.createTag({ libraryId, name: 'AiOnly' });
-    const db = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
     try {
       db.prepare(
         `INSERT INTO ai_asset_tags
@@ -525,7 +525,7 @@ describe('tag assignment', () => {
     });
     expect(result.removedCount).toBe(1);
 
-    const after = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+    const after = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
     try {
       const count = (
         after

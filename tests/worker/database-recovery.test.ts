@@ -37,11 +37,11 @@ function temporaryRoot(): string {
 }
 
 function databasePath(libraryPath: string): string {
-  return path.join(libraryPath, '.serpent', 'library.db');
+  return path.join(libraryPath, '.keel', 'library.db');
 }
 
 function backupPath(libraryPath: string, slot: 1 | 2): string {
-  return path.join(libraryPath, '.serpent', 'backups', `library.db.${slot}`);
+  return path.join(libraryPath, '.keel', 'backups', `library.db.${slot}`);
 }
 
 function newService(): LibraryService {
@@ -75,7 +75,7 @@ describe('database damage recovery (Serpent-dw9a)', () => {
     expect(await service.createDatabaseBackup(library.libraryId)).toBe(true);
     expect(await service.createDatabaseBackup(library.libraryId)).toBe(true);
 
-    const backupDirectory = path.join(library.libraryPath, '.serpent', 'backups');
+    const backupDirectory = path.join(library.libraryPath, '.keel', 'backups');
     expect(readdirSync(backupDirectory).sort()).toEqual([
       'library.db.1',
       'library.db.2',
@@ -104,7 +104,7 @@ describe('database damage recovery (Serpent-dw9a)', () => {
     });
     const sourcePath = path.join(library.libraryPath, 'Assets', 'keep.txt');
     writeFileSync(sourcePath, 'keep this file');
-    const backupDirectory = path.join(library.libraryPath, '.serpent', 'backups');
+    const backupDirectory = path.join(library.libraryPath, '.keel', 'backups');
     rmSync(backupDirectory, { recursive: true, force: true });
     writeFileSync(backupDirectory, 'occupied by a file');
 
@@ -132,7 +132,7 @@ describe('database damage recovery (Serpent-dw9a)', () => {
     const summary = reopened.openLibrary(library.libraryPath);
     expect(summary.recovery).toEqual({ mode: 'backup-1' });
     expect(summary.readOnly).toBeFalsy();
-    expect(readdirSync(path.join(library.libraryPath, '.serpent', 'corrupt-backup'))
+    expect(readdirSync(path.join(library.libraryPath, '.keel', 'corrupt-backup'))
       .some((name) => name.startsWith('library.db.primary-'))).toBe(true);
   });
 

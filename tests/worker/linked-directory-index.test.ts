@@ -28,7 +28,7 @@ function setup(options: ConstructorParameters<typeof LibraryService>[0] = {}) {
 }
 
 function indexFor(libraryPath: string) {
-  const database = openConfiguredDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+  const database = openConfiguredDatabase(path.join(libraryPath, '.keel', 'library.db'));
   databases.push(database);
   return { index: new LinkedDirectoryIndex(() => database), database };
 }

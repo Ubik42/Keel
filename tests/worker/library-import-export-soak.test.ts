@@ -120,7 +120,7 @@ function seedAssetsAndFiles(libraryPath: string, folderName: string, folderId: s
     mkdirSync(path.join(assetsPath, batchDir(b)), { recursive: true });
   }
 
-  const dbPath = path.join(libraryPath, '.serpent', 'library.db');
+  const dbPath = path.join(libraryPath, '.keel', 'library.db');
   const db = new TestDatabase(dbPath);
 
   // Disable foreign-key enforcement during bulk inserts for performance
@@ -257,7 +257,7 @@ function seedAssetsAndFiles(libraryPath: string, folderName: string, folderId: s
 
   // Trash the first 10 assets using the real library-service API after
   // the library is reopened.  Direct SQL SET deleted_at is avoided; this
-  // exercises the API path including file move to .serpent/trash, the
+  // exercises the API path including file move to .keel/trash, the
   // operation manifest, and the trashed_from_relative_path column.
   // NOTE: This step runs in beforeAll after seedAssetsAndFiles and
   // service.openLibrary, so it is not inside the DB seed function.
@@ -338,7 +338,7 @@ beforeAll(() => {
   }
 
   // Trash the first 10 assets using the real LibraryService API (not direct
-  // SQL).  This exercises the full trash path: file move to .serpent/trash,
+  // SQL).  This exercises the full trash path: file move to .keel/trash,
   // trashed_from_relative_path recording, operation manifest.  The API also
   // changes relative_file_path to __trash__/{assetId}/{filename} — update
   // the fixture's relativePaths map accordingly.
@@ -358,13 +358,13 @@ beforeAll(() => {
     assetIds: trashIds,
   });
 
-  // Verify .serpent/trash directory exists after trash API call.
-  const trashDir = path.join(library.libraryPath, '.serpent', 'trash');
-  expect(existsSync(trashDir), '.serpent/trash must exist after API trash').toBe(true);
+  // Verify .keel/trash directory exists after trash API call.
+  const trashDir = path.join(library.libraryPath, '.keel', 'trash');
+  expect(existsSync(trashDir), '.keel/trash must exist after API trash').toBe(true);
   const trashContents = readdirSync(trashDir);
   expect(
     trashContents.length,
-    '.serpent/trash must contain at least 1 trashed file',
+    '.keel/trash must contain at least 1 trashed file',
   ).toBeGreaterThan(0);
 
   fixture = {
@@ -508,18 +508,18 @@ function verifyRoundTripIntegrity(
     const libs = importedService.listLibraries();
     const importedPath = libs[0]!.libraryPath;
 
-    // 7a0. Physical .serpent/trash directory verification.
-    const trashDir = path.join(importedPath, '.serpent', 'trash');
+    // 7a0. Physical .keel/trash directory verification.
+    const trashDir = path.join(importedPath, '.keel', 'trash');
     expect(
       existsSync(trashDir),
-      `[${label}] .serpent/trash must exist after round-trip`,
+      `[${label}] .keel/trash must exist after round-trip`,
     ).toBe(true);
     const trashFiles = readdirSync(trashDir);
     expect(
       trashFiles.length,
-      `[${label}] .serpent/trash must contain trashed files`,
+      `[${label}] .keel/trash must contain trashed files`,
     ).toBeGreaterThan(0);
-    const dbPath = path.join(importedPath, '.serpent', 'library.db');
+    const dbPath = path.join(importedPath, '.keel', 'library.db');
     const db = new TestDatabase(dbPath);
 
     // 7a. Revision count: each asset (including trashed) should reference exactly one current revision.

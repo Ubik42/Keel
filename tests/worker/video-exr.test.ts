@@ -274,7 +274,7 @@ function createMockSpawn(config: MockSpawnConfig): SpawnFunction {
 function assertDb(
   libraryPath: string,
 ): TestDatabaseConnection {
-  return new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+  return new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
 }
 
 // ── Tests ──────────────────────────────────────────────────────────
@@ -614,7 +614,7 @@ describe('video (ffprobe + ffmpeg)', () => {
       .get() as { file_path: string };
     const jsonPath = path.join(
       created.libraryPath,
-      '.serpent',
+      '.keel',
       'artifacts',
       metaArtifact.file_path,
     );
@@ -1394,7 +1394,7 @@ describe('video (ffprobe + ffmpeg)', () => {
       .toMatchObject({ status: 'succeeded', errorCode: null });
     const artifact = service.getCurrentArtifact(created.libraryId, asset.assetId, 'webm_proxy');
     expect(artifact).toMatchObject({ status: 'ready' });
-    expect(existsSync(path.join(created.libraryPath, '.serpent', 'artifacts', artifact!.filePath)))
+    expect(existsSync(path.join(created.libraryPath, '.keel', 'artifacts', artifact!.filePath)))
       .toBe(true);
     expect(diagnostics).not.toContainEqual(expect.objectContaining({
       scope: 'media-job.failed',
@@ -2340,7 +2340,7 @@ describe('EXR/TGA (oiiotool)', () => {
     });
     const metadataPath = path.join(
       created.libraryPath,
-      '.serpent',
+      '.keel',
       'artifacts',
       metadataRow!.file_path,
     );
@@ -2441,7 +2441,7 @@ describe('EXR/TGA (oiiotool)', () => {
     ).get() as { file_path: string; width: number; height: number };
     expect(metadataRow).toMatchObject({ width: 1, height: 1 });
     expect(JSON.parse(require('node:fs').readFileSync(
-      path.join(created.libraryPath, '.serpent', 'artifacts', metadataRow.file_path),
+      path.join(created.libraryPath, '.keel', 'artifacts', metadataRow.file_path),
       'utf-8',
     ))).toMatchObject({
       width: 1,
@@ -2531,7 +2531,7 @@ describe('EXR/TGA (oiiotool)', () => {
     });
     const artifactPath = path.join(
       created.libraryPath,
-      '.serpent',
+      '.keel',
       'artifacts',
       artifact!.filePath,
     );
@@ -2633,7 +2633,7 @@ describe('EXR/TGA (oiiotool)', () => {
 
     const headerArtifactId = randomUUID();
     const headerArtifactFile = `${headerArtifactId}.json`;
-    const artifactsPath = path.join(created.libraryPath, '.serpent', 'artifacts');
+    const artifactsPath = path.join(created.libraryPath, '.keel', 'artifacts');
     mkdirSync(artifactsPath, { recursive: true });
     writeFileSync(
       path.join(artifactsPath, headerArtifactFile),

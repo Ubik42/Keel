@@ -198,10 +198,10 @@ describe('Plugin settings sections IPC', () => {
       sections: [{ id: 'palette-size', value: 16 }],
     });
 
-    const settingsPath = path.join(library, '.serpent', 'plugin-settings', `${libraryPackage.pluginId}.json`);
+    const settingsPath = path.join(library, '.keel', 'plugin-settings', `${libraryPackage.pluginId}.json`);
     expect(readFileSync(settingsPath, 'utf8')).toContain('"palette-size": 16');
 
-    const storagePath = path.join(library, '.serpent', 'plugin-data', `${libraryPackage.pluginId}.json`);
+    const storagePath = path.join(library, '.keel', 'plugin-data', `${libraryPackage.pluginId}.json`);
     expect(readFileSync(storagePath, 'utf8')).toContain('"settings.palette-size": 16');
   });
 });

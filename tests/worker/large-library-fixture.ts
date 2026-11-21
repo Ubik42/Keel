@@ -104,7 +104,7 @@ export interface EnsureLargeLibraryFixtureOptions {
 }
 
 function manifestPath(libraryPath: string): string {
-  return path.join(libraryPath, '.serpent', 'large-library-fixture.json');
+  return path.join(libraryPath, '.keel', 'large-library-fixture.json');
 }
 
 function assertSafeOutputPath(outputPath: string): string {
@@ -143,7 +143,7 @@ async function prepareImagePool(
 ): Promise<Map<string, string>> {
   const images = planned.filter((item) => item.kind === 'image' && item.geometry);
   if (images.length === 0) return new Map();
-  const poolDir = path.join(libraryPath, '.serpent', 'image-pool');
+  const poolDir = path.join(libraryPath, '.keel', 'image-pool');
   mkdirSync(poolDir, { recursive: true });
   const unique = new Map<string, PlannedAsset>();
   for (const item of images) {
@@ -173,7 +173,7 @@ async function prepareImagePool(
 function prepareVideoPool(libraryPath: string, planned: PlannedAsset[]): string[] {
   const videos = planned.filter((item) => item.kind === 'video');
   if (videos.length === 0) return [];
-  const poolDir = path.join(libraryPath, '.serpent', 'video-pool');
+  const poolDir = path.join(libraryPath, '.keel', 'video-pool');
   mkdirSync(poolDir, { recursive: true });
   const poolSize = Math.min(VIDEO_POOL_SIZE, videos.length);
   const poolPaths: string[] = [];
@@ -219,7 +219,7 @@ async function seedDatabase(
   counts: LargeLibraryMixCounts,
   writeFiles: boolean,
 ): Promise<{ searchTokenAssetCount: number; sampleAssetId: string }> {
-  const database = new Database(path.join(libraryPath, '.serpent', 'library.db'));
+  const database = new Database(path.join(libraryPath, '.keel', 'library.db'));
   const now = '2026-08-16T00:00:00.000Z';
   const insertAsset = database.prepare(
     `INSERT INTO assets (
@@ -273,7 +273,7 @@ async function seedDatabase(
 
   const imagePool = writeFiles ? await prepareImagePool(libraryPath, planned) : new Map<string, string>();
   const videoPool = writeFiles ? prepareVideoPool(libraryPath, planned) : [];
-  const artifactsDir = path.join(libraryPath, '.serpent', 'artifacts');
+  const artifactsDir = path.join(libraryPath, '.keel', 'artifacts');
   if (writeFiles) mkdirSync(artifactsDir, { recursive: true });
   const byteSizes = new Map<string, number>();
   const modifiedAts = new Map<string, string>();

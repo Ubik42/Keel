@@ -167,7 +167,7 @@ describe('remote library metadata cache', () => {
     second.closeLibrary(reopened.libraryId);
 
     const verification = openConfiguredDatabase(
-      path.join(library.libraryPath, '.serpent', 'library.db'),
+      path.join(library.libraryPath, '.keel', 'library.db'),
       5_000,
       { readonly: true },
     );
@@ -241,7 +241,7 @@ describe('remote library metadata cache', () => {
     expect(events.some((event) => event.type === 'refreshed')).toBe(true);
 
     const external = openConfiguredDatabase(
-      path.join(library.libraryPath, '.serpent', 'library.db'),
+      path.join(library.libraryPath, '.keel', 'library.db'),
       5_000,
       { storageKind: 'network' },
     );
@@ -338,7 +338,7 @@ describe('remote library metadata cache', () => {
     );
     const opened = racing.openLibrary(library.libraryPath);
     external = openConfiguredDatabase(
-      path.join(library.libraryPath, '.serpent', 'library.db'),
+      path.join(library.libraryPath, '.keel', 'library.db'),
       5_000,
       { storageKind: 'network' },
     );
@@ -368,7 +368,7 @@ describe('remote library metadata cache', () => {
     });
     writeFileSync(path.join(library.libraryPath, 'Assets', 'ignored.txt'), 'ignored');
     service.refreshManagedAssets(library.libraryId);
-    const databaseFile = path.join(library.libraryPath, '.serpent', 'library.db');
+    const databaseFile = path.join(library.libraryPath, '.keel', 'library.db');
     const readCursor = (): number => {
       const connection = openConfiguredDatabase(databaseFile, 5_000, { readonly: true });
       try {

@@ -54,7 +54,7 @@ describe('folder rename atomicity',()=>{
    const folder=service.createManagedFolder({libraryId:library.libraryId,name:'Before'});
    const source=path.join(parent,'photo.txt');writeFileSync(source,'original');
    const imported=importNoConflict(service,library.libraryId,source,folder.folderId).assets[0]!;
-   const db=new Database(path.join(library.libraryPath,'.serpent','library.db'));
+   const db=new Database(path.join(library.libraryPath,'.keel','library.db'));
    try{db.exec("CREATE TRIGGER reject_folder_rename BEFORE UPDATE ON managed_folders BEGIN SELECT RAISE(ABORT, 'test rollback'); END");}finally{db.close();}
    expect(()=>service.renameManagedFolder({libraryId:library.libraryId,folderId:folder.folderId,newName:'After'})).toThrow();
    const assetsRoot=storageLayout==='root'?library.libraryPath:path.join(library.libraryPath,'Assets');

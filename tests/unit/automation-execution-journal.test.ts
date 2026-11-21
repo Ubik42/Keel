@@ -456,12 +456,12 @@ describe('AutomationExecutionJournal', () => {
 
     expect(() => journal.create({
       source: 'mcp',
-      libraryId: '/Users/artist/Private Library.serpent',
+      libraryId: '/Users/artist/Private Library.keel',
       sessionId: mcpSessionTwo,
       declaredCapabilities: ['asset.read'],
     })).toThrow();
-    expect(readFileSync(filename, 'utf8')).not.toContain('/Users/artist/Private Library.serpent');
-    expect(JSON.stringify(entries)).not.toContain('/Users/artist/Private Library.serpent');
+    expect(readFileSync(filename, 'utf8')).not.toContain('/Users/artist/Private Library.keel');
+    expect(JSON.stringify(entries)).not.toContain('/Users/artist/Private Library.keel');
   });
 
   it('keeps a bounded number of active executions so the history store cannot be exhausted', () => {

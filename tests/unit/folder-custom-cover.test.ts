@@ -38,7 +38,7 @@ describe("folder custom cover files", () => {
     expect(relative.startsWith("folder-covers/")).toBe(true);
     expect(relative.includes("\\")).toBe(false);
     const stored = folderCoverAbsolutePath(libraryPath, relative);
-    expect(stored.startsWith(path.resolve(libraryPath, ".serpent"))).toBe(true);
+    expect(stored.startsWith(path.resolve(libraryPath, ".keel"))).toBe(true);
     expect(() => folderCoverAbsolutePath(libraryPath, path.join("..", "outside.png"))).toThrow();
 
     removeFolderCoverFile(libraryPath, relative);
@@ -46,16 +46,16 @@ describe("folder custom cover files", () => {
     rmSync(root, { recursive: true, force: true });
   });
 
-  it("rejects paths outside .serpent/folder-covers and never deletes them", () => {
+  it("rejects paths outside .keel/folder-covers and never deletes them", () => {
     const root = mkdtempSync(path.join(tmpdir(), "serpent-cover-jail-"));
     const libraryPath = path.join(root, "library");
-    mkdirSync(path.join(libraryPath, ".serpent"), { recursive: true });
-    const database = path.join(libraryPath, ".serpent", "library.db");
+    mkdirSync(path.join(libraryPath, ".keel"), { recursive: true });
+    const database = path.join(libraryPath, ".keel", "library.db");
     writeFileSync(database, "KEEP");
     const outside = path.join(libraryPath, "outside.png");
     writeFileSync(outside, PNG);
     const allowed = folderCoverAbsolutePath(libraryPath, "folder-covers/abc.png");
-    expect(allowed.startsWith(path.resolve(libraryPath, ".serpent", "folder-covers") + path.sep)).toBe(true);
+    expect(allowed.startsWith(path.resolve(libraryPath, ".keel", "folder-covers") + path.sep)).toBe(true);
 
     const rejected = [
       "",
@@ -137,8 +137,8 @@ describe("folder custom cover files", () => {
   it("lists unreferenced cover files and leaves the catalog database alone", () => {
     const root = mkdtempSync(path.join(tmpdir(), "serpent-cover-stale-"));
     const libraryPath = path.join(root, "library");
-    mkdirSync(path.join(libraryPath, ".serpent"), { recursive: true });
-    writeFileSync(path.join(libraryPath, ".serpent", "library.db"), "KEEP");
+    mkdirSync(path.join(libraryPath, ".keel"), { recursive: true });
+    writeFileSync(path.join(libraryPath, ".keel", "library.db"), "KEEP");
     const source = path.join(root, "kept.png");
     writeFileSync(source, PNG);
     const referenced = installFolderCoverFile({
@@ -154,7 +154,7 @@ describe("folder custom cover files", () => {
     expect(listStaleFolderCoverFiles(libraryPath, new Set([referenced]), 0)).toEqual([
       "folder-covers/orphan.png",
     ]);
-    expect(readFileSync(path.join(libraryPath, ".serpent", "library.db"), "utf8")).toBe("KEEP");
+    expect(readFileSync(path.join(libraryPath, ".keel", "library.db"), "utf8")).toBe("KEEP");
     rmSync(root, { recursive: true, force: true });
   });
 });

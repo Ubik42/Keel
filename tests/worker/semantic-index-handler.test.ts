@@ -48,11 +48,11 @@ describe('semantic SQLite Worker handler', () => {
     const videoBytes = Buffer.from('synthetic mp4 payload');
     const previewBytes = Buffer.from([0xff, 0xd8, 0xff, 0xd9]);
     const previewRelativePath = 'clip-poster.jpg';
-    const previewPath = path.join(library.libraryPath, '.serpent', 'artifacts', previewRelativePath);
+    const previewPath = path.join(library.libraryPath, '.keel', 'artifacts', previewRelativePath);
     mkdirSync(path.dirname(previewPath), { recursive: true });
     writeFileSync(previewPath, previewBytes);
     const now = new Date().toISOString();
-    const db = new Database(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const db = new Database(path.join(library.libraryPath, '.keel', 'library.db'));
     try {
       db.prepare(`INSERT INTO assets (asset_id, location_kind, managed_folder_id, linked_folder_id,
         relative_file_path, current_revision_id, availability, path_identity, created_at, updated_at)
@@ -126,7 +126,7 @@ describe('semantic SQLite Worker handler', () => {
       assetId, sourceRevision, kind: 'image', maxInputBytes: 1024 })).rejects.toThrow();
 
     await call({ type: 'semantic.index.close', libraryId: library.libraryId, sessionGeneration });
-    const cleanupDb = new Database(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const cleanupDb = new Database(path.join(library.libraryPath, '.keel', 'library.db'));
     cleanupDb.prepare('DELETE FROM revision_artifacts WHERE artifact_id = ?').run(artifactId);
     cleanupDb.close();
     const videoSessionGeneration = randomUUID();
@@ -181,7 +181,7 @@ describe('semantic SQLite Worker handler', () => {
     expect(candidates).toHaveLength(assetIds.length);
 
     reserveSemanticDeleteCleanup(service, library.libraryId, candidates);
-    const queueDirectory = path.join(library.libraryPath, '.serpent', 'semantic');
+    const queueDirectory = path.join(library.libraryPath, '.keel', 'semantic');
     const queueFiles = readdirSync(queueDirectory)
       .filter((name) => /^permanent-delete-pending(?:-[a-f0-9-]{36})?\.json$/u.test(name));
     expect(queueFiles).toHaveLength(2);
@@ -209,7 +209,7 @@ describe('semantic SQLite Worker handler', () => {
     const assetId = randomUUID();
     const revisionId = randomUUID();
     const now = new Date().toISOString();
-    const db = new Database(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const db = new Database(path.join(library.libraryPath, '.keel', 'library.db'));
     try {
       db.prepare(`INSERT INTO assets (asset_id, location_kind, managed_folder_id, linked_folder_id,
         relative_file_path, current_revision_id, availability, path_identity, created_at, updated_at)
@@ -239,16 +239,16 @@ describe('semantic SQLite Worker handler', () => {
     const service = new LibraryService();
     services.push(service);
     const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Rebuild fixture', selectedParentPath: root });
-    const sidecar = path.join(library.libraryPath, '.serpent', 'semantic', 'index.sqlite');
-    const core = path.join(library.libraryPath, '.serpent', 'library.db');
+    const sidecar = path.join(library.libraryPath, '.keel', 'semantic', 'index.sqlite');
+    const core = path.join(library.libraryPath, '.keel', 'library.db');
     const prior = new SemanticIndexStore({ libraryPath: library.libraryPath, libraryId: library.libraryId,
       storageKind: 'local' });
     prior.ensureProfile({ profileKey: 'rebuild-profile', dimensions: 2, modelRevision: 'v1', modality: 'image' });
     prior.close();
-    const cleanupQueue = path.join(library.libraryPath, '.serpent', 'semantic', 'permanent-delete-pending.json');
+    const cleanupQueue = path.join(library.libraryPath, '.keel', 'semantic', 'permanent-delete-pending.json');
     writeFileSync(cleanupQueue, '{ malformed queue');
     for (let index = 0; index < 64; index += 1) {
-      writeFileSync(path.join(library.libraryPath, '.serpent', 'semantic',
+      writeFileSync(path.join(library.libraryPath, '.keel', 'semantic',
         `permanent-delete-pending-${randomUUID()}.json`), '{}');
     }
 
@@ -317,7 +317,7 @@ describe('semantic SQLite Worker handler', () => {
     const assetId = randomUUID();
     const revisionId = randomUUID();
     const now = new Date().toISOString();
-    const db = new Database(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const db = new Database(path.join(library.libraryPath, '.keel', 'library.db'));
     try {
       db.prepare(`INSERT INTO assets (asset_id, location_kind, managed_folder_id, linked_folder_id,
         relative_file_path, current_revision_id, availability, path_identity, created_at, updated_at)
@@ -408,7 +408,7 @@ describe('semantic SQLite Worker handler', () => {
     const assetId = randomUUID();
     const revisionId = randomUUID();
     const now = new Date().toISOString();
-    const db = new Database(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const db = new Database(path.join(library.libraryPath, '.keel', 'library.db'));
     try {
       db.prepare(`INSERT INTO assets (asset_id, location_kind, managed_folder_id, linked_folder_id,
         relative_file_path, current_revision_id, availability, path_identity, created_at, updated_at)
@@ -513,7 +513,7 @@ describe('semantic SQLite Worker handler', () => {
       const profileId = trashStore.ensureProfile({ profileKey, dimensions: 3,
         modelRevision: 'fixture-model-v1', modality: 'text' });
       trashStore.upsertBatch(profileId, [{ assetId, sourceRevision, vector: [1, 0, 0] }]);
-      const updateTrash = new Database(path.join(library.libraryPath, '.serpent', 'library.db'));
+      const updateTrash = new Database(path.join(library.libraryPath, '.keel', 'library.db'));
       updateTrash.prepare("UPDATE assets SET deleted_at = ? WHERE asset_id = ?").run(now, assetId);
       updateTrash.close();
       reconcileSemanticPermanentDeletes(service, library.libraryId, [assetId]);
@@ -521,10 +521,10 @@ describe('semantic SQLite Worker handler', () => {
     } finally {
       trashStore.close();
     }
-    const deleteCatalogAsset = new Database(path.join(library.libraryPath, '.serpent', 'library.db'));
+    const deleteCatalogAsset = new Database(path.join(library.libraryPath, '.keel', 'library.db'));
     deleteCatalogAsset.prepare('DELETE FROM assets WHERE asset_id = ?').run(assetId);
     deleteCatalogAsset.close();
-    const cleanupQueueDirectory = path.join(library.libraryPath, '.serpent', 'semantic');
+    const cleanupQueueDirectory = path.join(library.libraryPath, '.keel', 'semantic');
     const failedRemoval = vi.spyOn(SemanticIndexStore.prototype, 'removeAsset').mockImplementation(() => {
       throw new Error('synthetic sidecar write failure');
     });

@@ -236,14 +236,14 @@ describe('saveAssetFromUrl', () => {
     })).rejects.toMatchObject({ code: 'IMPORT_APPLY_FAILED' });
 
     expect(readFileSync(path.join(library.libraryPath, 'Assets', 'photo.png'))).toBeDefined();
-    expect(readdirSync(path.join(library.libraryPath, '.serpent', 'operations'))).toHaveLength(1);
+    expect(readdirSync(path.join(library.libraryPath, '.keel', 'operations'))).toHaveLength(1);
     service.closeAll();
 
     const recovered = new LibraryService();
     const reopened = recovered.openLibrary(library.libraryPath);
     expect(recovered.listAssets({ libraryId: reopened.libraryId, recursive: true })).toEqual([]);
     expect(readdirSync(path.join(reopened.libraryPath, 'Assets'))).toEqual([]);
-    expect(existsSync(path.join(reopened.libraryPath, '.serpent', 'operations'))).toBe(false);
+    expect(existsSync(path.join(reopened.libraryPath, '.keel', 'operations'))).toBe(false);
     recovered.closeAll();
   });
 

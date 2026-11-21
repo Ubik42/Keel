@@ -13,7 +13,7 @@ export type FbxConvertCommandResult =
   | {
       status: 'ready';
       glbArtifactId: string;
-      /** Path of the artifact relative to `.serpent/artifacts`. */
+      /** Path of the artifact relative to `.keel/artifacts`. */
       glbRelativePath: string;
       stats?: FbxConversionStats;
       missingTextures: string[];
@@ -37,7 +37,7 @@ const inFlight = new Map<string, InFlightConversion>();
 /**
  * Handle the `model.convert-fbx` worker command.
  *
- * Cache: the GLB lives in `.serpent/artifacts` as a `model_glb` artifact keyed
+ * Cache: the GLB lives in `.keel/artifacts` as a `model_glb` artifact keyed
  * by revision (a new source revision invalidates it) plus the converter
  * `generator_version` (a converter upgrade reconverts). Single-flight: a
  * concurrent request for the same asset awaits the same conversion.

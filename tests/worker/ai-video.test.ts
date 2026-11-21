@@ -116,7 +116,7 @@ describe('getCurrentArtifact', () => {
 
     // Manually insert a ready contact_sheet artifact for the current revision.
     const db = new Database(
-      path.join(created.libraryPath, '.serpent', 'library.db'),
+      path.join(created.libraryPath, '.keel', 'library.db'),
     );
     const asset = db
       .prepare('SELECT current_revision_id FROM assets WHERE asset_id = ?')
@@ -124,7 +124,7 @@ describe('getCurrentArtifact', () => {
     expect(asset?.current_revision_id).toBeTruthy();
 
     const artifactId = randomUUID();
-    const artifactsDir = path.join(created.libraryPath, '.serpent', 'artifacts');
+    const artifactsDir = path.join(created.libraryPath, '.keel', 'artifacts');
     mkdirSync(artifactsDir, { recursive: true });
     const artifactFile = path.join(artifactsDir, `${artifactId}.jpg`);
     writeFileSync(artifactFile, VALID_1X1_JPEG);
@@ -175,7 +175,7 @@ describe('getCurrentArtifact', () => {
     const assetId = importResult.assets[0]!.assetId;
 
     const db = new Database(
-      path.join(created.libraryPath, '.serpent', 'library.db'),
+      path.join(created.libraryPath, '.keel', 'library.db'),
     );
     const asset = db
       .prepare('SELECT current_revision_id FROM assets WHERE asset_id = ?')
@@ -326,15 +326,15 @@ describe('video AI analysis — full flow with ready artifacts', () => {
 
     // Get the current revision id.
     const db = new Database(
-      path.join(created.libraryPath, '.serpent', 'library.db'),
+      path.join(created.libraryPath, '.keel', 'library.db'),
     );
     const asset = db
       .prepare('SELECT current_revision_id FROM assets WHERE asset_id = ?')
       .get(assetId) as { current_revision_id: string | null };
     const revisionId = asset.current_revision_id!;
 
-    // Create artifact files in the .serpent/artifacts directory.
-    const artifactsDir = path.join(created.libraryPath, '.serpent', 'artifacts');
+    // Create artifact files in the .keel/artifacts directory.
+    const artifactsDir = path.join(created.libraryPath, '.keel', 'artifacts');
     mkdirSync(artifactsDir, { recursive: true });
 
     // Poster artifact.
@@ -495,7 +495,7 @@ describe('video AI analysis — full flow with ready artifacts', () => {
     const assetId = importResult.assets[0]!.assetId;
 
     const db = new Database(
-      path.join(created.libraryPath, '.serpent', 'library.db'),
+      path.join(created.libraryPath, '.keel', 'library.db'),
     );
     const asset = db
       .prepare('SELECT current_revision_id FROM assets WHERE asset_id = ?')
@@ -578,7 +578,7 @@ describe('video AI analysis — CONTACT_SHEET_REQUIRED', () => {
     const assetId = importResult.assets[0]!.assetId;
 
     const db = new Database(
-      path.join(created.libraryPath, '.serpent', 'library.db'),
+      path.join(created.libraryPath, '.keel', 'library.db'),
     );
     const asset = db
       .prepare('SELECT current_revision_id FROM assets WHERE asset_id = ?')

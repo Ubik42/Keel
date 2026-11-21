@@ -86,7 +86,7 @@ describe('media job status summary cache (Serpent-e97c00)', () => {
     // Read once so a summary entry exists and the stale window is armed.
     expect(counts(service, created.libraryId, true).queued).toBe(0);
 
-    const database = new Database(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new Database(path.join(created.libraryPath, '.keel', 'library.db'));
     try {
       const now = new Date().toISOString();
       database.prepare(
@@ -119,7 +119,7 @@ describe('media job status summary cache (Serpent-e97c00)', () => {
       displayName: 'Media summary table lookup',
       selectedParentPath: root,
     });
-    const database = new Database(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new Database(path.join(created.libraryPath, '.keel', 'library.db'));
     try {
       const now = new Date().toISOString();
       database.prepare(
@@ -148,7 +148,7 @@ describe('media job status summary cache (Serpent-e97c00)', () => {
       displayName: 'Media job cursor pages',
       selectedParentPath: root,
     });
-    const database = new Database(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new Database(path.join(created.libraryPath, '.keel', 'library.db'));
     try {
       for (const [index, stamp] of [
         ['job-c', '2026-09-16T12:00:03.000Z'],

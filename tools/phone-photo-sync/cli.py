@@ -7,7 +7,7 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-from core import Archive, MEDIA, is_cache
+from core import Archive, MEDIA, is_cache, meta_dir
 
 
 def scan(phone, config, errors):
@@ -44,14 +44,14 @@ def scan(phone, config, errors):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='将手机新增照片更新到固定 Serpent 资源库')
+    parser = argparse.ArgumentParser(description='将手机新增照片更新到固定 Keel 资源库')
     parser.add_argument('--library', required=True, type=Path)
     parser.add_argument('--dry-run', action='store_true', help='检查变化，不复制照片')
     parser.add_argument('--verify', action='store_true', help='重新读取手机文件并核验内容')
     parser.add_argument('--skip-catalog', action='store_true', help=argparse.SUPPRESS)
     args = parser.parse_args()
     root = args.library.resolve()
-    settings = root / '.serpent' / 'phone-sync' / 'config.json'
+    settings = meta_dir(root) / 'phone-sync' / 'config.json'
     config = json.loads(settings.read_text(encoding='utf-8-sig'))
     print('手机照片更新 — ' + str(root), flush=True)
     print('请连接并解锁手机，在 USB 用途里选择“文件传输”。', flush=True)

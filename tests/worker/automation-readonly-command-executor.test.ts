@@ -68,7 +68,7 @@ describe('Automation read-only Worker dispatch', () => {
       displayName: 'Automation read only',
       selectedParentPath: root,
     });
-    const databasePath = path.join(library.libraryPath, '.serpent', 'library.db');
+    const databasePath = path.join(library.libraryPath, '.keel', 'library.db');
     const before = digest(databasePath);
 
     const result = await executeAutomationReadOnlyWorkerCommand(service, {
@@ -89,7 +89,7 @@ describe('Automation read-only Worker dispatch', () => {
       displayName: 'Automation plan',
       selectedParentPath: root,
     });
-    const databasePath = path.join(library.libraryPath, '.serpent', 'library.db');
+    const databasePath = path.join(library.libraryPath, '.keel', 'library.db');
     const before = digest(databasePath);
 
     const result = await dispatchAutomationReadOnlyRequest(service, {
@@ -194,7 +194,7 @@ describe('Automation read-only Worker dispatch', () => {
       enabledFields: { description: true, tags: true, rating: true },
     });
 
-    const databasePath = path.join(library.libraryPath, '.serpent', 'library.db');
+    const databasePath = path.join(library.libraryPath, '.keel', 'library.db');
     const before = digest(databasePath);
     const result = await executeAutomationReadOnlyWorkerCommand(service, {
       type: 'ai.content.get',

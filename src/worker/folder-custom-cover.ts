@@ -1,3 +1,4 @@
+import { libraryMetaDir } from "../shared/library-meta-dir";
 import { createHash, randomBytes } from "node:crypto";
 import {
   copyFileSync,
@@ -65,7 +66,7 @@ function uniqueFolderCoverRelativeName(folderKey: string, extension: string): st
 
 /**
  * Resolve a stored cover name to a file strictly inside
- * `.serpent/folder-covers/`. `.`, empty, `library.db`, and any path that
+ * `.keel/folder-covers/`. `.`, empty, `library.db`, and any path that
  * lands outside that directory are rejected so a bad row cannot delete the
  * catalog or another library file.
  */
@@ -73,8 +74,8 @@ export function folderCoverAbsolutePath(libraryPath: string, relativeName: strin
   if (typeof relativeName !== "string" || relativeName.trim() === "" || relativeName === "." || relativeName === "..") {
     throw new Error("Folder cover path escaped the library.");
   }
-  const coversDir = path.resolve(libraryPath, ".serpent", COVER_DIRECTORY);
-  const root = path.resolve(libraryPath, ".serpent");
+  const coversDir = path.resolve(libraryMetaDir(libraryPath), COVER_DIRECTORY);
+  const root = path.resolve(libraryMetaDir(libraryPath));
   const absolute = path.resolve(root, relativeName);
   const prefix = coversDir + path.sep;
   if (!absolute.startsWith(prefix) || path.basename(absolute).toLowerCase() === "library.db") {
@@ -110,7 +111,7 @@ function resolvedCoverPath(libraryPath: string, relativeName: string): string | 
 }
 
 /**
- * Copy the chosen image into `.serpent/folder-covers/` without removing or
+ * Copy the chosen image into `.keel/folder-covers/` without removing or
  * overwriting the previous cover. The caller commits the database row, then
  * deletes the previous file.
  */
@@ -198,7 +199,7 @@ export function listStaleFolderCoverFiles(
   referencedRelativeNames: ReadonlySet<string>,
   minAgeMs = 60_000,
 ): string[] {
-  const coversDir = path.resolve(libraryPath, ".serpent", COVER_DIRECTORY);
+  const coversDir = path.resolve(libraryMetaDir(libraryPath), COVER_DIRECTORY);
   let names: string[];
   try {
     names = readdirSync(coversDir);

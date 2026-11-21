@@ -14,7 +14,7 @@ describe('network storage detection', () => {
       '//nas/shared on /Volumes/Working/Project (smbfs, nodev, nosuid)',
     ].join('\n');
 
-    expect(classifyLibraryStorage('/Volumes/Working/Project/.serpent/library.db', {
+    expect(classifyLibraryStorage('/Volumes/Working/Project/.keel/library.db', {
       platform: 'darwin',
       mountOutput,
     })).toBe('network');
@@ -22,14 +22,14 @@ describe('network storage detection', () => {
       platform: 'darwin',
       mountOutput,
     })).toBe(true);
-    expect(classifyLibraryStorage('/Users/test/library/.serpent/library.db', {
+    expect(classifyLibraryStorage('/Users/test/library/.keel/library.db', {
       platform: 'darwin',
       mountOutput,
     })).toBe('local');
   });
 
   it('unescapes mount points containing spaces', () => {
-    expect(classifyLibraryStorage('/Volumes/NAS Work/Library/.serpent/library.db', {
+    expect(classifyLibraryStorage('/Volumes/NAS Work/Library/.keel/library.db', {
       platform: 'darwin',
       mountOutput: '//nas/shared on /Volumes/NAS\\040Work (smbfs, nodev)',
     })).toBe('network');
@@ -41,11 +41,11 @@ describe('network storage detection', () => {
       'nas.example:/assets on /mnt/assets type nfs4 (rw,relatime,vers=4.2)',
     ].join('\n');
 
-    expect(classifyLibraryStorage('/mnt/assets/Library/.serpent/library.db', {
+    expect(classifyLibraryStorage('/mnt/assets/Library/.keel/library.db', {
       platform: 'linux',
       mountOutput,
     })).toBe('network');
-    expect(classifyLibraryStorage('/var/lib/serpent/library/.serpent/library.db', {
+    expect(classifyLibraryStorage('/var/lib/serpent/library/.keel/library.db', {
       platform: 'linux',
       mountOutput,
     })).toBe('local');
@@ -54,17 +54,17 @@ describe('network storage detection', () => {
   it('recognizes Windows UNC and extended UNC paths', () => {
     expect(isWindowsNetworkPath('\\\\server\\share\\Library')).toBe(true);
     expect(isWindowsNetworkPath('\\\\?\\UNC\\server\\share\\Library')).toBe(true);
-    expect(classifyLibraryStorage('\\\\server\\share\\Library\\.serpent\\library.db', {
+    expect(classifyLibraryStorage('\\\\server\\share\\Library\\.keel\\library.db', {
       platform: 'win32',
     })).toBe('network');
   });
 
   it('recognizes mapped Windows network drives through GetDriveTypeW', () => {
-    expect(classifyLibraryStorage('Z:\\Library\\.serpent\\library.db', {
+    expect(classifyLibraryStorage('Z:\\Library\\.keel\\library.db', {
       platform: 'win32',
       getDriveType: (rootPath) => rootPath === 'Z:\\' ? 4 : 3,
     })).toBe('network');
-    expect(classifyLibraryStorage('C:\\Library\\.serpent\\library.db', {
+    expect(classifyLibraryStorage('C:\\Library\\.keel\\library.db', {
       platform: 'win32',
       getDriveType: (rootPath) => rootPath === 'C:\\' ? 3 : 4,
     })).toBe('local');

@@ -409,7 +409,7 @@ async function runBenchmark() {
         selectedParentPath: parent,
       });
       creator.closeAll();
-      const databasePath = path.join(library.libraryPath, '.serpent', 'library.db');
+      const databasePath = path.join(library.libraryPath, '.keel', 'library.db');
       const database = new Database(databasePath);
       database.pragma('foreign_keys = ON');
       const insertAsset = database.prepare(
@@ -448,7 +448,7 @@ async function runBenchmark() {
       }
       const physicalCount = fs.readdirSync(assetsPath).length;
       if (physicalCount !== scenario.existing) throw new Error(`On-disk seed count mismatch for ${scenario.id}.`);
-      const serpentPath = path.join(library.libraryPath, '.serpent');
+      const serpentPath = path.join(library.libraryPath, '.keel');
       const serpentSnapshotPath = path.join(stateSnapshots, scenario.id);
       assertOwnedPathNoSymlink(serpentPath, runDir);
       assertNoSymlinkTree(serpentPath);
@@ -647,7 +647,7 @@ async function runBenchmark() {
         workload: 'isolated closed library with SQL-seeded assets and on-disk entries; open via LibraryService; measure actual prepareImport and resolveImport separately',
         executionBoundary: 'baseline bundles the complete src tree from the fixed baseline commit; working bundles a full snapshot of current src. Both production LibraryService CJS bundles run under Electron RUN_AS_NODE in one process; UtilityProcess IPC, GUI, cold library-open, and thumbnail jobs are outside the measured phases',
         payload: 'synthetic closed-library workload, not the official large-library performance fixture: existing assets are deterministic one-byte placeholders; incoming sources are deterministic valid 1x1 PNGs; no thumbnails or library-open time included',
-        fixtureReset: 'each scenario clears the fixture-owned .serpent directory contents, restores the complete closed tree captured after seeding, and verifies exact path/type/file-content equality; this removes any post-snapshot operation manifests, artifacts, migration backups, or library metadata. Only known imported files are removed from the fixture-owned Assets directory. Recursive removals are constrained to the generated run directory and rejected if any path segment or descendant is a symlink/junction',
+        fixtureReset: 'each scenario clears the fixture-owned .keel directory contents, restores the complete closed tree captured after seeding, and verifies exact path/type/file-content equality; this removes any post-snapshot operation manifests, artifacts, migration backups, or library metadata. Only known imported files are removed from the fixture-owned Assets directory. Recursive removals are constrained to the generated run directory and rejected if any path segment or descendant is a symlink/junction',
         ordering: 'serial paired rounds alternating baseline→working then working→baseline; each version receives at least 5 seconds of unmeasured complete-import warmup per scenario, excluded from summaries',
         scenarios: scenarios.map(({ id, existing, incoming, pairedRounds }) => ({ id, shape: 'flat', existing, incoming, pairedRounds })),
       },

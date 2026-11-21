@@ -221,12 +221,12 @@ describe('LibraryService ZIP export', () => {
     // Check expected entries.
     // archiver v8 may not create explicit directory entries; Assets/-prefixed files suffice.
     expect(entryNames.some((n) => n.startsWith('Assets/') && !n.endsWith('/'))).toBe(true);
-    expect(entryNames).toContain('.serpent/library.db');
+    expect(entryNames).toContain('.keel/library.db');
     expect(entryNames.some((n) => n.startsWith('Assets/') && !n.endsWith('/'))).toBe(true);
 
     // Verify no previews or operations.
-    expect(entryNames.some((n) => n.startsWith('.serpent/previews/'))).toBe(false);
-    expect(entryNames.some((n) => n.startsWith('.serpent/operations/'))).toBe(false);
+    expect(entryNames.some((n) => n.startsWith('.keel/previews/'))).toBe(false);
+    expect(entryNames.some((n) => n.startsWith('.keel/operations/'))).toBe(false);
 
     service.closeAll();
   });
@@ -260,17 +260,17 @@ describe('LibraryService ZIP export', () => {
     service.closeAll();
   });
 
-  it('excludes .serpent/previews/ and .serpent/operations/ from ZIP export', async () => {
+  it('excludes .keel/previews/ and .keel/operations/ from ZIP export', async () => {
     const root = temporaryRoot();
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Exclude ZIP Test', selectedParentPath: root });
 
     // Create fake preview/operations content.
-    mkdirSync(path.join(created.libraryPath, '.serpent', 'previews'), { recursive: true });
-    writeFileSync(path.join(created.libraryPath, '.serpent', 'previews', 'thumb.jpg'), 'data');
+    mkdirSync(path.join(created.libraryPath, '.keel', 'previews'), { recursive: true });
+    writeFileSync(path.join(created.libraryPath, '.keel', 'previews', 'thumb.jpg'), 'data');
 
-    mkdirSync(path.join(created.libraryPath, '.serpent', 'operations'), { recursive: true });
-    writeFileSync(path.join(created.libraryPath, '.serpent', 'operations', 'op.json'), '{}');
+    mkdirSync(path.join(created.libraryPath, '.keel', 'operations'), { recursive: true });
+    writeFileSync(path.join(created.libraryPath, '.keel', 'operations', 'op.json'), '{}');
 
     const destZipPath = path.join(root, 'exclude-zip.zip');
     await service.exportLibraryToZip({
@@ -285,14 +285,14 @@ describe('LibraryService ZIP export', () => {
     const zip = new AdmZip(destZipPath);
     const entryNames = zip.getEntries().map((e) => e.entryName);
 
-    expect(entryNames.some((n) => n.startsWith('.serpent/previews/'))).toBe(false);
-    expect(entryNames.some((n) => n.startsWith('.serpent/operations/'))).toBe(false);
-    expect(entryNames).toContain('.serpent/library.db');
+    expect(entryNames.some((n) => n.startsWith('.keel/previews/'))).toBe(false);
+    expect(entryNames.some((n) => n.startsWith('.keel/operations/'))).toBe(false);
+    expect(entryNames).toContain('.keel/library.db');
 
     service.closeAll();
   });
 
-  it('includes .serpent/artifacts in ZIP export (Serpent-pxd)', async () => {
+  it('includes .keel/artifacts in ZIP export (Serpent-pxd)', async () => {
     const root = temporaryRoot();
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets',
@@ -320,7 +320,7 @@ describe('LibraryService ZIP export', () => {
     }))!;
     // Leftover temp name must not be packaged.
     writeFileSync(
-      path.join(created.libraryPath, '.serpent', 'artifacts', `${thumb.artifactId}.wave-tmp.png`),
+      path.join(created.libraryPath, '.keel', 'artifacts', `${thumb.artifactId}.wave-tmp.png`),
       'temp',
     );
 
@@ -335,7 +335,7 @@ describe('LibraryService ZIP export', () => {
       getEntries(): Array<{ entryName: string }>;
     };
     const entryNames = new AdmZip(destZipPath).getEntries().map((e) => e.entryName);
-    expect(entryNames).toContain(`.serpent/artifacts/${thumb.artifactId}.webp`);
+    expect(entryNames).toContain(`.keel/artifacts/${thumb.artifactId}.webp`);
     expect(entryNames.some((n) => n.includes('.wave-tmp.'))).toBe(false);
 
     service.closeAll();
@@ -616,7 +616,7 @@ describe('LibraryService ZIP import', () => {
 
     // Verify extracted library is valid.
     expect(existsSync(path.join(result.libraryPath, 'Assets'))).toBe(true);
-    expect(existsSync(path.join(result.libraryPath, '.serpent', 'library.db'))).toBe(true);
+    expect(existsSync(path.join(result.libraryPath, '.keel', 'library.db'))).toBe(true);
 
     // Check assets.
     const assets = service.listAssets({ libraryId: result.libraryId, recursive: true });
@@ -629,7 +629,7 @@ describe('LibraryService ZIP import', () => {
       prepare(sql: string): { get(...params: unknown[]): unknown };
       close(): void;
     };
-    const importedDb = new Database(path.join(result.libraryPath, '.serpent', 'library.db'), { readonly: true });
+    const importedDb = new Database(path.join(result.libraryPath, '.keel', 'library.db'), { readonly: true });
     const revision = importedDb.prepare(
       `SELECT r.modified_at
          FROM assets a
@@ -684,7 +684,7 @@ describe('LibraryService ZIP import', () => {
     service.closeAll();
   });
 
-  it('rejects ZIP without .serpent/library.db', async () => {
+  it('rejects ZIP without .keel/library.db', async () => {
     const root = temporaryRoot();
     const service = newService();
 
@@ -698,7 +698,7 @@ describe('LibraryService ZIP import', () => {
     });
     service.closeAll();
 
-    // Remove the .serpent/library.db entry from the ZIP.
+    // Remove the .keel/library.db entry from the ZIP.
     // We rebuild the ZIP without it using adm-zip.
     const AdmZip = require('adm-zip') as new (path: string) => {
       getEntries(): Array<{ entryName: string; isDirectory: boolean; getData(): Buffer }>;
@@ -708,9 +708,9 @@ describe('LibraryService ZIP import', () => {
     };
     const zip = new AdmZip(destZipPath);
     const entries = zip.getEntries();
-    const dbEntry = entries.find((e) => e.entryName === '.serpent/library.db' && !e.isDirectory);
+    const dbEntry = entries.find((e) => e.entryName === '.keel/library.db' && !e.isDirectory);
     if (dbEntry) {
-      zip.deleteFile('.serpent/library.db');
+      zip.deleteFile('.keel/library.db');
     }
     zip.writeZip(); // overwrite with modified ZIP
 
@@ -744,7 +744,7 @@ describe('LibraryService ZIP import', () => {
     const archive = new archiverModule.ZipArchive({ zlib: { level: 6 } });
     archive.pipe(output);
     archive.file(tempFilePath, { name: 'Assets/evil.txt' });
-    archive.file(tempFilePath, { name: '.serpent/library.db' });
+    archive.file(tempFilePath, { name: '.keel/library.db' });
     // Add a path-escape entry.
     archive.file(tempFilePath, { name: '../escape.txt' });
 
@@ -780,7 +780,7 @@ describe('LibraryService ZIP import', () => {
     const zipPath = path.join(root, 'unsafe.zip');
     const zip = new AdmZip();
     zip.addFile('Assets/valid.txt', Buffer.from('asset'));
-    zip.addFile('.serpent/library.db', Buffer.from('db'));
+    zip.addFile('.keel/library.db', Buffer.from('db'));
     const placeholderName = 'q'.repeat(Buffer.byteLength(unsafeName));
     zip.addFile(placeholderName, Buffer.from('escape'));
     zip.writeZip(zipPath);
@@ -804,7 +804,7 @@ describe('LibraryService ZIP import', () => {
     const zipPath = path.join(root, 'symlink.zip');
     const zip = new AdmZip();
     zip.addFile('Assets/valid.txt', Buffer.from('asset'));
-    zip.addFile('.serpent/library.db', Buffer.from('db'));
+    zip.addFile('.keel/library.db', Buffer.from('db'));
     const link = zip.addFile('Assets/nested/link', Buffer.from('../../outside'));
     link.attr = (0o120777 << 16) >>> 0;
     zip.writeZip(zipPath);
@@ -828,7 +828,7 @@ describe('LibraryService ZIP import', () => {
     const zipPath = path.join(root, 'compression-bomb.zip');
     const zip = new AdmZip();
     zip.addFile('Assets/bomb.bin', Buffer.alloc(2 * 1024 * 1024));
-    zip.addFile('.serpent/library.db', Buffer.from('db'));
+    zip.addFile('.keel/library.db', Buffer.from('db'));
     zip.writeZip(zipPath);
     const destinationParentPath = path.join(root, 'destination');
     mkdirSync(destinationParentPath);

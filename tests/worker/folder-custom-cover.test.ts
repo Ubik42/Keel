@@ -192,7 +192,7 @@ describe("folder custom covers", () => {
     expect(restored?.customCoverAssetId).toBe(asset.assetId);
 
     reopened.closeAll();
-    const database = new TestDatabase(path.join(library.libraryPath, ".serpent", "library.db"));
+    const database = new TestDatabase(path.join(library.libraryPath, ".keel", "library.db"));
     database.prepare(`UPDATE assets SET deleted_at = ? WHERE asset_id = ?`).run(
       new Date().toISOString(),
       asset.assetId,

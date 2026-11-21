@@ -172,7 +172,7 @@ describe('relinkAsset recovery on reopen', () => {
     expect(readFileSync(managedPath, 'utf8')).toBe('replacement bytes');
 
     // Operation dir exists with valid manifest
-    const opsDir = path.join(created.libraryPath, '.serpent', 'operations');
+    const opsDir = path.join(created.libraryPath, '.keel', 'operations');
     const relinkChildren = readdirSync(opsDir).filter((c) => c.startsWith('relink-'));
     expect(relinkChildren).toHaveLength(1);
     const manifestPath = path.join(opsDir, relinkChildren[0]!, 'manifest.json');
@@ -195,7 +195,7 @@ describe('relinkAsset recovery on reopen', () => {
     expect(placedMarker.placedIdentity.ctimeNs).toEqual(expect.any(String));
 
     // DB still shows missing (transaction never started)
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const avail = db.prepare(
       'SELECT availability FROM assets WHERE asset_id = ?',
     ).get(assetId) as { availability: string };
@@ -272,7 +272,7 @@ describe('relinkAsset recovery on reopen', () => {
       'LIBRARY_NOT_WRITABLE',
     );
     expect(readFileSync(fixture.managedPath, 'utf8')).toBe('replacement bytes');
-    const operationsPath = path.join(fixture.libraryPath, '.serpent', 'operations');
+    const operationsPath = path.join(fixture.libraryPath, '.keel', 'operations');
     const operationName = readdirSync(operationsPath).find((name) => name.startsWith('relink-'))!;
     expect(existsSync(path.join(operationsPath, operationName, 'manifest.json'))).toBe(true);
     expect(existsSync(path.join(operationsPath, operationName, 'placed.json'))).toBe(false);
@@ -343,7 +343,7 @@ describe('relinkAsset recovery on reopen', () => {
       }),
       'LIBRARY_NOT_WRITABLE',
     );
-    const operationsPath = path.join(fixture.libraryPath, '.serpent', 'operations');
+    const operationsPath = path.join(fixture.libraryPath, '.keel', 'operations');
     const operationName = readdirSync(operationsPath).find((name) => name.startsWith('relink-'))!;
     writeFileSync(path.join(operationsPath, operationName, 'placed.json'), '{incomplete');
     crashing.closeAll();
@@ -360,7 +360,7 @@ describe('relinkAsset recovery on reopen', () => {
   it.each([1, 2] as const)('treats legacy v%s ownership as unknown and preserves the destination', (version) => {
     const fixture = missingManagedAssetFixture(`Relink legacy v${version}`);
     writeFileSync(fixture.managedPath, 'external writer bytes');
-    const operationsPath = path.join(fixture.libraryPath, '.serpent', 'operations');
+    const operationsPath = path.join(fixture.libraryPath, '.keel', 'operations');
     const operationPath = path.join(operationsPath, `relink-${randomUUID()}`);
     mkdirSync(operationPath, { recursive: true });
     const current = statSync(fixture.managedPath, { bigint: true });
@@ -448,7 +448,7 @@ describe('relinkBatchApply recovery on reopen', () => {
     const placedPath = placedPaths[0]!;
 
     // Operation dir exists with valid manifest
-    const opsDir = path.join(created.libraryPath, '.serpent', 'operations');
+    const opsDir = path.join(created.libraryPath, '.keel', 'operations');
     const relinkChildren = readdirSync(opsDir).filter((c) => c.startsWith('relink-'));
     expect(relinkChildren).toHaveLength(1);
     const manifest = JSON.parse(
@@ -480,7 +480,7 @@ describe('relinkBatchApply recovery on reopen', () => {
     }
 
     // DB: all 3 assets still missing (transaction rolled back)
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const missingCount = (
       db.prepare("SELECT COUNT(*) AS count FROM assets WHERE availability = 'missing' AND deleted_at IS NULL")
         .get() as { count: number }
@@ -564,7 +564,7 @@ describe('relinkBatchApply recovery on reopen', () => {
     expect(readFileSync(managedPath, 'utf8')).toBe('replacement bytes');
 
     // v3 manifest + immutable completion marker carry durable ownership.
-    const opsDir = path.join(created.libraryPath, '.serpent', 'operations');
+    const opsDir = path.join(created.libraryPath, '.keel', 'operations');
     const relinkChildren = readdirSync(opsDir).filter((c) => c.startsWith('relink-'));
     expect(relinkChildren).toHaveLength(1);
     const manifestPath = path.join(opsDir, relinkChildren[0]!, 'manifest.json');

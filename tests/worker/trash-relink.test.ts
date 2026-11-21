@@ -140,7 +140,7 @@ describe('schema v8->v9 migration', () => {
       selectedParentPath: root,
     });
 
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(database.pragma('user_version')).toEqual([{ user_version: SUPPORTED_SCHEMA_VERSION }]);
 
     const columns = database.prepare("PRAGMA table_info('assets')").all() as Array<{
@@ -181,7 +181,7 @@ describe('schema v8->v9 migration', () => {
     void importNoConflict(service, created.libraryId, sourceFile);
     service.closeAll();
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     removeWriteCoordinationSchema(db);
     // Downgrade from v10 to v8 by removing v9+v10 migration metadata + objects.
     db.exec(`
@@ -199,7 +199,7 @@ describe('schema v8->v9 migration', () => {
 
     service.openLibrary(created.libraryPath);
 
-    const db2 = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db2 = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(db2.pragma('user_version')).toEqual([{ user_version: SUPPORTED_SCHEMA_VERSION }]);
     const migrationRows = db2.prepare('SELECT version FROM schema_migrations ORDER BY version').all() as Array<{ version: number }>;
     expect(migrationRows.map((r) => r.version)).toContain(9);
@@ -213,7 +213,7 @@ describe('schema v8->v9 migration', () => {
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Idemp V9', selectedParentPath: root });
     service.closeAll();
     service.openLibrary(created.libraryPath);
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(db.pragma('user_version')).toEqual([{ user_version: SUPPORTED_SCHEMA_VERSION }]);
     service.closeAll();
     service.openLibrary(created.libraryPath);
@@ -235,7 +235,7 @@ describe('downgrade helpers still work with v9', () => {
     void importNoConflict(service, created.libraryId, path.join(root, 'test.png'));
     service.closeAll();
 
-    const dbPath = path.join(created.libraryPath, '.serpent', 'library.db');
+    const dbPath = path.join(created.libraryPath, '.keel', 'library.db');
     const database = new TestDatabase(dbPath);
     removeWriteCoordinationSchema(database);
     database.exec(`
@@ -330,7 +330,7 @@ describe('trashAssets (soft delete)', () => {
     });
   });
 
-  it('moves managed asset to .serpent/trash/ and sets deleted_at', () => {
+  it('moves managed asset to .keel/trash/ and sets deleted_at', () => {
     const root = temporaryRoot();
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Trash Test', selectedParentPath: root });
@@ -346,7 +346,7 @@ describe('trashAssets (soft delete)', () => {
     expect(operationId).toMatch(/^[0-9a-f-]{36}$/u);
 
     expect(existsSync(path.join(created.libraryPath, 'Assets', 'photo.jpg'))).toBe(false);
-    expect(existsSync(path.join(created.libraryPath, '.serpent', 'trash', assetId, 'photo.jpg'))).toBe(true);
+    expect(existsSync(path.join(created.libraryPath, '.keel', 'trash', assetId, 'photo.jpg'))).toBe(true);
 
     const trash = service.listTrash(created.libraryId);
     expect(trash).toHaveLength(1);
@@ -409,7 +409,7 @@ describe('trashAssets (soft delete)', () => {
 
     const { trashedCount } = service.trashAssets({ libraryId: created.libraryId, assetIds: [assetId] });
     expect(trashedCount).toBe(1);
-    expect(existsSync(path.join(created.libraryPath, '.serpent', 'trash', assetId, 'gone.jpg'))).toBe(false);
+    expect(existsSync(path.join(created.libraryPath, '.keel', 'trash', assetId, 'gone.jpg'))).toBe(false);
 
     const trash = service.listTrash(created.libraryId);
     expect(trash).toHaveLength(1);
@@ -538,7 +538,7 @@ describe('trash preview artifacts (BUG-TRASH-001)', () => {
     service.trashAssets({ libraryId: created.libraryId, assetIds: [assetId] });
 
     // Trashing moves only the source file; the artifact row and file stay ready.
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const artifactRow = db.prepare(
       "SELECT status, invalidated_at FROM revision_artifacts WHERE artifact_id = ?",
     ).get(artifactId) as { status: string; invalidated_at: string | null };
@@ -638,7 +638,7 @@ describe('trash preview artifacts (BUG-TRASH-001)', () => {
 
     // The security boundary of artifact serving is the asset row itself: once
     // the row is gone the artifact must not resolve, even though the derived
-    // file may still sit in .serpent/artifacts awaiting regeneration sweeps.
+    // file may still sit in .keel/artifacts awaiting regeneration sweeps.
     expectServiceError(
       () => service.getArtifactAbsolutePath(created.libraryId, artifactId, 'preview'),
       'ASSET_NOT_FOUND',
@@ -821,7 +821,7 @@ describe('restoreAssets', () => {
     expect(restored.restoredCount).toBe(0);
     expect(service.listTrash(created.libraryId).map((asset) => asset.assetId)).toContain(first.assetId);
     expect(readFileSync(path.join(created.libraryPath, 'Assets', 'clash.png'), 'utf8')).toBe('replacement');
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect(database.prepare("SELECT status FROM file_operations WHERE kind = 'restore' ORDER BY created_at DESC LIMIT 1").get()).toEqual({ status: 'committed' });
     database.close();
     service.closeAll();
@@ -882,7 +882,7 @@ describe('restoreAssets', () => {
     expect(readFileSync(path.join(reopened.libraryPath, 'Assets', 'clash.png'), 'utf8')).toBe('untracked-active-content');
     expect(existsSync(path.join(reopened.libraryPath, 'Assets', 'clash (2).png'))).toBe(false);
     expect(recovered.listTrash(reopened.libraryId).map((asset) => asset.assetId)).toContain(trashed.assetId);
-    const database = new TestDatabase(path.join(reopened.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(reopened.libraryPath, '.keel', 'library.db'));
     expect(database.prepare("SELECT status FROM file_operations WHERE kind = 'restore' ORDER BY created_at DESC LIMIT 1").get()).toEqual({ status: 'rolled_back' });
     database.close();
     recovered.closeAll();
@@ -986,7 +986,7 @@ describe('restoreAssets', () => {
 
     service.trashAssets({ libraryId: created.libraryId, assetIds: [assetId] });
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     db.prepare('DELETE FROM managed_folders WHERE folder_id = ?').run(folder.folderId);
     db.close();
 
@@ -1038,7 +1038,7 @@ describe('restoreAssets', () => {
     writeFileSync(path.join(root, 'orphan.png'), 'data');
     const orphan = importNoConflict(service, created.libraryId, path.join(root, 'orphan.png'), folder.folderId).assets[0]!;
     service.trashAssets({ libraryId: created.libraryId, assetIds: [orphan.assetId] });
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     db.prepare('DELETE FROM managed_folders WHERE folder_id = ?').run(folder.folderId);
     db.close();
 
@@ -1207,7 +1207,7 @@ describe('restoreAssets', () => {
       () => service.restoreAssets({ libraryId: created.libraryId, assetIds: [asset.assetId, asset.assetId] }),
       'INVALID_SELECTION',
     );
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect((database.prepare("SELECT COUNT(*) AS count FROM file_operations WHERE kind = 'restore'").get() as { count: number }).count).toBe(0);
     database.close();
     service.closeAll();
@@ -1231,10 +1231,10 @@ describe('deleteAssetsPermanent', () => {
     expect(deletedCount).toBe(1);
     expect(skippedCount).toBe(0);
 
-    expect(existsSync(path.join(created.libraryPath, '.serpent', 'trash', assetId))).toBe(false);
+    expect(existsSync(path.join(created.libraryPath, '.keel', 'trash', assetId))).toBe(false);
     expect(service.listTrash(created.libraryId)).toEqual([]);
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const revCount = db.prepare('SELECT COUNT(*) AS count FROM revisions WHERE asset_id = ?').get(assetId) as { count: number };
     expect(revCount.count).toBe(0);
     db.close();
@@ -1252,7 +1252,7 @@ describe('deleteAssetsPermanent', () => {
     const assetId = r.assets[0]!.assetId;
 
     service.trashAssets({ libraryId: created.libraryId, assetIds: [assetId] });
-    rmSync(path.join(created.libraryPath, '.serpent', 'trash', assetId), { recursive: true });
+    rmSync(path.join(created.libraryPath, '.keel', 'trash', assetId), { recursive: true });
 
     const { deletedCount, skippedCount } = service.deleteAssetsPermanent({ libraryId: created.libraryId, assetIds: [assetId] });
     expect(deletedCount).toBe(1);
@@ -1285,7 +1285,7 @@ describe('deleteAssetsPermanent', () => {
     writeFileSync(path.join(root, 'active.jpg'), 'active');
     const active = importNoConflict(service, created.libraryId, path.join(root, 'active.jpg')).assets[0]!;
     service.trashAssets({ libraryId: created.libraryId, assetIds: [trashed.assetId] });
-    const trashPath = path.join(created.libraryPath, '.serpent', 'trash', trashed.assetId);
+    const trashPath = path.join(created.libraryPath, '.keel', 'trash', trashed.assetId);
 
     expectServiceError(
       () => service.deleteAssetsPermanent({
@@ -1426,7 +1426,7 @@ describe('purgeExpiredTrash', () => {
 
     service.trashAssets({ libraryId: created.libraryId, assetIds: [assetId] });
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const pastDate = new Date(Date.now() - 31 * 24 * 60 * 60 * 1000).toISOString();
     db.prepare('UPDATE assets SET deleted_at = ? WHERE asset_id = ?').run(pastDate, assetId);
     db.close();
@@ -1434,7 +1434,7 @@ describe('purgeExpiredTrash', () => {
     const { purgedCount } = service.purgeExpiredTrash(created.libraryId);
     expect(purgedCount).toBe(1);
     expect(service.listTrash(created.libraryId)).toEqual([]);
-    expect(existsSync(path.join(created.libraryPath, '.serpent', 'trash', assetId))).toBe(false);
+    expect(existsSync(path.join(created.libraryPath, '.keel', 'trash', assetId))).toBe(false);
     service.closeAll();
   });
 
@@ -1482,7 +1482,7 @@ describe('purgeExpiredTrash', () => {
     const deletable = importNoConflict(service, created.libraryId, path.join(root, 'old-delete.jpg')).assets[0]!;
     service.trashAssets({ libraryId: created.libraryId, assetIds: [busy.assetId, deletable.assetId] });
     busyAssetId = busy.assetId;
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     database.prepare('UPDATE assets SET deleted_at = ? WHERE asset_id IN (?, ?)').run(
       new Date(Date.now() - 31 * 24 * 60 * 60 * 1000).toISOString(),
       busy.assetId,
@@ -1673,7 +1673,7 @@ describe('deleteLinkedAssets', () => {
     service.importFolderAsLinked({ libraryId: created.libraryId, sourceRootPath: linkedRoot });
     const assets = service.listAssets({ libraryId: created.libraryId, recursive: true });
 
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     database.exec(`
       CREATE TRIGGER reject_linked_asset_delete
       BEFORE DELETE ON assets
@@ -1708,7 +1708,7 @@ describe('deleteLinkedAssets', () => {
     ]));
     service.closeAll();
 
-    const recoveryDatabase = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const recoveryDatabase = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     recoveryDatabase.exec('DROP TRIGGER reject_linked_asset_delete;');
     recoveryDatabase.close();
 
@@ -1717,7 +1717,7 @@ describe('deleteLinkedAssets', () => {
     expect(recoveredService.listAssets({ libraryId: created.libraryId, recursive: true })).toEqual([]);
     recoveredService.closeAll();
 
-    const auditedDatabase = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const auditedDatabase = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const operation = auditedDatabase.prepare(
       "SELECT status, error_code FROM file_operations WHERE kind = 'delete-linked-source'",
     ).get() as { status: string; error_code: string | null };
@@ -1788,7 +1788,7 @@ describe('deleteLinkedAssets', () => {
     const [asset] = service.listAssets({ libraryId: created.libraryId, recursive: true });
     service.closeAll();
 
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const operationId = randomUUID();
     const now = new Date().toISOString();
     database.prepare(
@@ -1811,7 +1811,7 @@ describe('deleteLinkedAssets', () => {
       .toEqual([expect.objectContaining({ assetId: asset!.assetId, locationKind: 'linked' })]);
     recoveredService.closeAll();
 
-    let auditedDatabase = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    let auditedDatabase = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     let operation = auditedDatabase.prepare(
       'SELECT status, error_code FROM file_operations WHERE operation_id = ?',
     ).get(operationId) as { status: string; error_code: string | null };
@@ -1828,7 +1828,7 @@ describe('deleteLinkedAssets', () => {
       .toEqual([expect.objectContaining({ assetId: asset!.assetId })]);
     secondRecovery.closeAll();
 
-    auditedDatabase = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    auditedDatabase = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     operation = auditedDatabase.prepare(
       'SELECT status, error_code FROM file_operations WHERE operation_id = ?',
     ).get(operationId) as { status: string; error_code: string | null };
@@ -1852,7 +1852,7 @@ describe('deleteLinkedAssets', () => {
       const [asset] = service.listAssets({ libraryId: created.libraryId, recursive: true });
       service.closeAll();
 
-      const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+      const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
       const operationId = randomUUID();
       const now = new Date().toISOString();
       database.prepare(
@@ -1876,7 +1876,7 @@ describe('deleteLinkedAssets', () => {
         .toEqual([expect.objectContaining({ assetId: asset!.assetId })]);
       recoveredService.closeAll();
 
-      const auditedDatabase = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+      const auditedDatabase = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
       const operation = auditedDatabase.prepare(
         'SELECT status, error_code FROM file_operations WHERE operation_id = ?',
       ).get(operationId) as { status: string; error_code: string | null };
@@ -1959,7 +1959,7 @@ describe('relinkAsset (single missing asset)', () => {
       expect.objectContaining({ changedCount: 1, nativeDragPathsChanged: true }),
     ]);
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const revisions = db.prepare("SELECT origin FROM revisions WHERE asset_id = ? ORDER BY accepted_at DESC").all(assetId) as Array<{ origin: string }>;
     expect(revisions[0]!.origin).toBe('relink');
     db.close();
@@ -2503,7 +2503,7 @@ describe('relinkBatchApply', () => {
     const tags = service.listTags(created.libraryId);
     expect(tags.find((t) => t.name === 'keep-tag')!.assetCount).toBeGreaterThan(0);
     expect(service.getAiContent(created.libraryId, assetId).some((content) => content.fieldName === 'description')).toBe(true);
-    const keepDb = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const keepDb = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect((keepDb.prepare('SELECT COUNT(*) AS count FROM ai_asset_tags WHERE asset_id = ?').get(assetId) as { count: number }).count).toBe(1);
     keepDb.close();
     service.closeAll();
@@ -2548,7 +2548,7 @@ describe('relinkBatchApply', () => {
 
     expect(service.listTags(created.libraryId).find((t) => t.name === 'clear-tag')!.assetCount).toBe(0);
     expect(service.getAiContent(created.libraryId, assetId)).toHaveLength(0);
-    const clearDb = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const clearDb = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     expect((clearDb.prepare('SELECT COUNT(*) AS count FROM ai_asset_tags WHERE asset_id = ?').get(assetId) as { count: number }).count).toBe(0);
     clearDb.close();
     service.closeAll();
@@ -2576,7 +2576,7 @@ describe('relinkBatchApply', () => {
 
     service.relinkBatchApply({ libraryId: created.libraryId, newRootPath: newRoot, keepMetadata: true });
 
-    const db = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     const relinkRows = db.prepare("SELECT operation_id, kind FROM file_operations WHERE kind = 'relink-batch'").all() as Array<{ operation_id: string; kind: string }>;
     expect(relinkRows).toHaveLength(1);
     expect(relinkRows[0]!.kind).toBe('relink-batch');

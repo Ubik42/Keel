@@ -41,7 +41,7 @@ function linkedSourceIdentity(libraryPath: string, assetId: string): {
   source_device: string | null;
   source_inode: string | null;
 } | undefined {
-  const database = new Database(path.join(libraryPath, '.serpent', 'library.db'));
+  const database = new Database(path.join(libraryPath, '.keel', 'library.db'));
   try {
     return database.prepare(
       'SELECT source_device, source_inode FROM assets WHERE asset_id = ?',

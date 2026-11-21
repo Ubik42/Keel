@@ -70,7 +70,7 @@ function skipList(buckets: Map<MenuSkipReasonCode, number>): FolderBatchSkip[] {
  * - 托管文件夹：四种动作都支持；
  * - 链接文件夹根：除「移入回收站」外都支持（2026-09-15 用户决定：链接条目没有
  *   回收站语义，只有强制删除 / 外观 / 忽略）；
- * - 链接文件夹子目录：忽略写入同一份 `.serpentignore`；磁盘删除走子树；外观/
+ * - 链接文件夹子目录：忽略写入同一份 `.keelignore`；磁盘删除走子树；外观/
  *   回收站仍跳过（`linked`）；
  * - 找不到的 id（资源库根、已删除、跨库残留）：跳过（`unresolved`）。
  */

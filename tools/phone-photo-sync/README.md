@@ -12,7 +12,7 @@
 
 照片来源包含 DCIM、Pictures、Movies、Download、Android/media 及配置中明确保存图片的目录。缩略图、应用缓存和游戏素材按用途排除。更新程序只读手机，提供照片归档功能。
 
-状态、配置、失败日志与暂存区位于库内 `.serpent/phone-sync`，每次成功文件单独落库，中断后可继续。WPD 对象 ID 只用于本次连接；持久状态使用相对路径，设备用序列号绑定。传输通过 MTA 和全局互斥锁串行运行。
+状态、配置、失败日志与暂存区位于库内 `.keel/phone-sync`（未迁移的旧库仍为 `.serpent/phone-sync`），每次成功文件单独落库，中断后可继续。WPD 对象 ID 只用于本次连接；持久状态使用相对路径，设备用序列号绑定。传输通过 MTA 和全局互斥锁串行运行。
 
 电脑重新整理或移动库内照片后，下一次更新会重新绑定内容索引。已存在其他库的少量共享照片通过 Serpent 链接文件夹引用。共享链接使用 `**` 排除全部，再按文件路径逐项包含。
 
@@ -41,4 +41,4 @@ node scripts/run-phone-catalog.mjs --build
 python -m unittest discover -s tools/phone-photo-sync/tests -v
 ```
 
-库根目录只放照片分类与 `_管理`。更新快捷方式、使用说明和 `同步记录/一加 Ace 5` 集中在 `_管理`，并由 `.serpentignore` 排除。配置 device_folder 为空时直接更新根目录，设备名仅用于管理记录。
+库根目录只放照片分类与 `_管理`。更新快捷方式、使用说明和 `同步记录/一加 Ace 5` 集中在 `_管理`，并由 `.keelignore` 排除。配置 device_folder 为空时直接更新根目录，设备名仅用于管理记录。

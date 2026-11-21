@@ -57,7 +57,7 @@ describe('Linked folders schema migration', () => {
 
     service.openLibrary(created.libraryPath);
 
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     try {
     expect(database.pragma('user_version')).toEqual([{ user_version: SUPPORTED_SCHEMA_VERSION }]);
 
@@ -107,7 +107,7 @@ describe('Linked folder import', () => {
       'sub/c.png',
     ]);
 
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     try {
       const linkedRows = database
         .prepare(
@@ -459,7 +459,7 @@ describe('Linked folder import', () => {
     const assets = service.listAssets({ libraryId: created.libraryId, recursive: true });
     expect(assets.every((asset) => asset.availability === 'missing')).toBe(true);
 
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     try {
       const folder = database
         .prepare('SELECT status FROM linked_folders WHERE folder_id = ?')
@@ -506,7 +506,7 @@ describe('Linked folder import', () => {
     service.importFolderAsLinked({ libraryId: created.libraryId, sourceRootPath: sourceRoot });
     service.closeAll();
 
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     database.prepare('UPDATE linked_folders SET source_device_hint = ?').run('foreign-device');
     database.close();
 
@@ -529,7 +529,7 @@ describe('Linked folder import', () => {
     service.importFolderAsLinked({ libraryId: created.libraryId, sourceRootPath: sourceRoot });
     service.closeAll();
 
-    const database = new TestDatabase(path.join(created.libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
     database.prepare('UPDATE linked_folders SET source_device_hint = NULL').run();
     database.close();
 

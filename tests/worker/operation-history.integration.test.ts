@@ -50,7 +50,7 @@ function createLibraryWithAsset(): {
   mkdirSync(assetDirectory, { recursive: true });
   writeFileSync(path.join(assetDirectory, filename), 'history test');
 
-  const database = new TestDatabase(path.join(library.libraryPath, '.serpent', 'library.db'));
+  const database = new TestDatabase(path.join(library.libraryPath, '.keel', 'library.db'));
   const now = new Date().toISOString();
   try {
     database.prepare(
@@ -144,7 +144,7 @@ describe('durable operation history', () => {
     });
 
     expect(service.getChangeSequence(libraryId)).toBe(before);
-    const database = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
     try {
       expect(database.prepare('SELECT COUNT(*) AS count FROM operation_history').get())
         .toEqual({ count: 0 });
@@ -396,7 +396,7 @@ describe('durable operation history', () => {
     expect(result.removedFolderCount).toBe(3);
     expect(result.trashedAssetCount).toBe(2);
 
-    const database = new TestDatabase(path.join(libraryPath, '.serpent', 'library.db'));
+    const database = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
     try {
       const stepCount = database.prepare(
         'SELECT COUNT(*) AS count FROM operation_history_steps WHERE history_entry_id = ?',
