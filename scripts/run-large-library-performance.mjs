@@ -17,7 +17,7 @@ const child = spawn(process.execPath, [
 ], {
   env: {
     ...process.env,
-    SERPENT_LARGE_LIBRARY_PERF_PATH: path.resolve(fixturePath),
+    KEEL_LARGE_LIBRARY_PERF_PATH: path.resolve(fixturePath),
   },
   stdio: 'inherit',
 });

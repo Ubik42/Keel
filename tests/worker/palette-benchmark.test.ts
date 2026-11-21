@@ -28,10 +28,10 @@ import { referenceExtractRepresentativePalette } from '../helpers/palette-extrac
  *   npm run test:perf:palette -- <image-directory>
  *
  * Knobs:
- *   SERPENT_PALETTE_BENCH_LIMIT        images to measure (default 200, max 1000)
- *   SERPENT_PALETTE_BENCH_TMP          temp root for the disposable library
- *   SERPENT_PALETTE_BENCH_FULL_DECODE  '1' also times a full-size decode
- *   SERPENT_PALETTE_BENCH_JSON         write machine-readable results here
+ *   KEEL_PALETTE_BENCH_LIMIT        images to measure (default 200, max 1000)
+ *   KEEL_PALETTE_BENCH_TMP          temp root for the disposable library
+ *   KEEL_PALETTE_BENCH_FULL_DECODE  '1' also times a full-size decode
+ *   KEEL_PALETTE_BENCH_JSON         write machine-readable results here
  *
  * The benchmark reports two stages:
  *   stageA  production decode (64x64 preview) + `extractRepresentativePalette`
@@ -40,16 +40,16 @@ import { referenceExtractRepresentativePalette } from '../helpers/palette-extrac
  *           the palette jobs the worker itself enqueues, plus a comparison of
  *           decoding the finished thumbnail against decoding the original.
  */
-const benchDirectory = process.env.SERPENT_PALETTE_BENCH_DIR;
-const enabled = process.env.SERPENT_PALETTE_BENCH === '1' && Boolean(benchDirectory);
+const benchDirectory = process.env.KEEL_PALETTE_BENCH_DIR;
+const enabled = process.env.KEEL_PALETTE_BENCH === '1' && Boolean(benchDirectory);
 const requestedImageCount = Math.max(
   1,
-  Math.min(1000, Math.trunc(Number(process.env.SERPENT_PALETTE_BENCH_LIMIT ?? 200))),
+  Math.min(1000, Math.trunc(Number(process.env.KEEL_PALETTE_BENCH_LIMIT ?? 200))),
 );
-const benchTempRoot = process.env.SERPENT_PALETTE_BENCH_TMP ?? tmpdir();
-const fullDecodeEnabled = process.env.SERPENT_PALETTE_BENCH_FULL_DECODE === '1';
-const pumpEnabled = process.env.SERPENT_PALETTE_BENCH_PUMP !== '0';
-const resultPath = process.env.SERPENT_PALETTE_BENCH_JSON;
+const benchTempRoot = process.env.KEEL_PALETTE_BENCH_TMP ?? tmpdir();
+const fullDecodeEnabled = process.env.KEEL_PALETTE_BENCH_FULL_DECODE === '1';
+const pumpEnabled = process.env.KEEL_PALETTE_BENCH_PUMP !== '0';
+const resultPath = process.env.KEEL_PALETTE_BENCH_JSON;
 const PREVIEW_EDGE = 64;
 const FULL_DECODE_SAMPLE_LIMIT = 20;
 const FULL_DECODE_MAX_BYTE_SIZE = 40 * 1024 * 1024;
@@ -260,7 +260,7 @@ afterAll(async () => {
 describe.skipIf(!enabled || !benchDirectory)('palette extraction benchmark (manual, not CI)', () => {
   it('measures decode and extraction cost against real images', async () => {
     if (!benchDirectory || !existsSync(benchDirectory)) {
-      throw new Error('SERPENT_PALETTE_BENCH_DIR must point at an existing image directory.');
+      throw new Error('KEEL_PALETTE_BENCH_DIR must point at an existing image directory.');
     }
     const sharp = (await import('sharp')).default as unknown as SharpLike;
     const files = collectImageFiles(benchDirectory, requestedImageCount);

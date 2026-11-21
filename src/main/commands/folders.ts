@@ -35,7 +35,7 @@ export async function executeFolderMainCommand(
       const sourcePath = await selectOpenFile(
         host,
         "chooseFolderCover",
-        process.env.SERPENT_E2E_FOLDER_COVER_FILE,
+        process.env.KEEL_E2E_FOLDER_COVER_FILE,
         [{
           name: copy.filterName ?? copy.title,
           extensions: ["png", "jpg", "jpeg", "webp", "gif", "bmp", "tif", "tiff"],

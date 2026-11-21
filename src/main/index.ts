@@ -1,3 +1,4 @@
+import "../shared/install-legacy-env";
 import path from "node:path";
 import { tmpdir } from "node:os";
 import { randomUUID } from "node:crypto";
@@ -534,27 +535,27 @@ import {
 // Headless E2E hosts may expose no hardware WebGL implementation. Opt those
 // tests into Chromium's explicitly acknowledged software path; production
 // keeps the platform's normal GPU selection and never silently downgrades it.
-// SERPENT_SOFTWARE_GL=1 is the same explicit opt-in for users on GPU-less
+// KEEL_SOFTWARE_GL=1 is the same explicit opt-in for users on GPU-less
 // hosts (Linux VMs / remote desktops without a usable GL driver), so the 3D
 // viewer and model thumbnails can render via SwiftShader. Off by default.
 if (
-  (process.env.SERPENT_E2E === "1" &&
-    process.env.SERPENT_E2E_ENABLE_SWIFTSHADER === "1") ||
-  process.env.SERPENT_SOFTWARE_GL === "1"
+  (process.env.KEEL_E2E === "1" &&
+    process.env.KEEL_E2E_ENABLE_SWIFTSHADER === "1") ||
+  process.env.KEEL_SOFTWARE_GL === "1"
 ) {
   app.commandLine.appendSwitch("enable-unsafe-swiftshader");
   app.commandLine.appendSwitch("use-angle", "swiftshader");
 }
 
 // A local fork may keep a stable profile separate from the installed release.
-const forkUserDataPath = process.env.SERPENT_USER_DATA_PATH;
+const forkUserDataPath = process.env.KEEL_USER_DATA_PATH;
 if (forkUserDataPath && path.isAbsolute(forkUserDataPath)) {
   mkdirSync(forkUserDataPath, { recursive: true });
   app.setPath("userData", forkUserDataPath);
 }
 
-if (process.env.SERPENT_E2E === "1") {
-  const explicitUserDataPath = process.env.SERPENT_E2E_USER_DATA_PATH;
+if (process.env.KEEL_E2E === "1") {
+  const explicitUserDataPath = process.env.KEEL_E2E_USER_DATA_PATH;
   app.setPath(
     "userData",
     explicitUserDataPath && path.isAbsolute(explicitUserDataPath)
@@ -567,8 +568,8 @@ if (process.env.SERPENT_E2E === "1") {
 // do not collide. Prefer `npm run start:multi`. Do not open the same library
 // for writes from two GUIs — SQLite write coordination is CLI/desktop lease
 // territory (ADR-0021), not dual-GUI.
-const allowMultiInstance = process.env.SERPENT_ALLOW_MULTI_INSTANCE === "1";
-if (allowMultiInstance && process.env.SERPENT_E2E !== "1") {
+const allowMultiInstance = process.env.KEEL_ALLOW_MULTI_INSTANCE === "1";
+if (allowMultiInstance && process.env.KEEL_E2E !== "1") {
   app.setPath(
     "userData",
     path.join(app.getPath("userData"), "dev-instances", `pid-${process.pid}`),
@@ -582,8 +583,8 @@ protocol.registerSchemesAsPrivileged(serpentProtocolSchemes());
 // E2E（本地/CI）：虚拟化 runner 的 GPU 不可靠，白屏会让所有交互测试
 // 超时（CI mac 上 69 个 E2E 全挂）。禁用硬件加速换取稳定渲染。
 if (
-  process.env.SERPENT_E2E === "1" &&
-  process.env.SERPENT_E2E_ENABLE_SWIFTSHADER !== "1"
+  process.env.KEEL_E2E === "1" &&
+  process.env.KEEL_E2E_ENABLE_SWIFTSHADER !== "1"
 ) {
   app.disableHardwareAcceleration();
 }
@@ -830,14 +831,14 @@ function clearNativeAssetDragCache(libraryId: string): void {
  */
 let previewCache: PreviewCache | undefined;
 function initializePreviewCache(): void {
-  if (process.env.SERPENT_PREVIEW_CACHE_DISABLED === "1") return;
+  if (process.env.KEEL_PREVIEW_CACHE_DISABLED === "1") return;
   // E2E suites manipulate artifact files and rows directly; a mirror would
   // serve phantom bytes. Probes that verify the cache opt in explicitly.
-  if (process.env.SERPENT_E2E === "1" && process.env.SERPENT_PREVIEW_CACHE_FORCE !== "1") {
+  if (process.env.KEEL_E2E === "1" && process.env.KEEL_PREVIEW_CACHE_FORCE !== "1") {
     return;
   }
-  const budgetBytes = Number(process.env.SERPENT_PREVIEW_CACHE_BUDGET_BYTES ?? "");
-  const cacheLogEnabled = process.env.SERPENT_PREVIEW_CACHE_LOG === "1";
+  const budgetBytes = Number(process.env.KEEL_PREVIEW_CACHE_BUDGET_BYTES ?? "");
+  const cacheLogEnabled = process.env.KEEL_PREVIEW_CACHE_LOG === "1";
   previewCache = new PreviewCache({
     rootDir: path.join(app.getPath("userData"), "preview-cache"),
     budgetBytes: Number.isFinite(budgetBytes) && budgetBytes > 0 ? budgetBytes : 2 * 1024 * 1024 * 1024,
@@ -854,7 +855,7 @@ let applicationQuitting = false;
 let applicationShutdownPromise: Promise<void> | null = null;
 let startupComplete = false;
 let logger: AppLogger | undefined;
-const VIEWER_TIMING_LOG = process.env.SERPENT_VIEWER_TIMING_LOG === "1";
+const VIEWER_TIMING_LOG = process.env.KEEL_VIEWER_TIMING_LOG === "1";
 let appLogPath: string | undefined;
 let automationExecutionJournal: AutomationExecutionJournal | undefined;
 let embeddedMcpServer: EmbeddedMcpServer | undefined;
@@ -1805,8 +1806,8 @@ async function exportShortcutBindingsFile(): Promise<ShortcutFileExportResult> {
   const copy = resolveNativeDialogCopy(appLocale, "exportShortcuts");
   try {
     const e2ePath =
-      process.env.SERPENT_E2E === "1"
-        ? process.env.SERPENT_E2E_SHORTCUTS_EXPORT_PATH
+      process.env.KEEL_E2E === "1"
+        ? process.env.KEEL_E2E_SHORTCUTS_EXPORT_PATH
         : undefined;
     let filePath = e2ePath;
     if (!filePath) {
@@ -1842,8 +1843,8 @@ async function importShortcutBindingsFile(): Promise<ShortcutFileImportResult> {
   const copy = resolveNativeDialogCopy(appLocale, "importShortcuts");
   try {
     const e2ePath =
-      process.env.SERPENT_E2E === "1"
-        ? process.env.SERPENT_E2E_SHORTCUTS_IMPORT_PATH
+      process.env.KEEL_E2E === "1"
+        ? process.env.KEEL_E2E_SHORTCUTS_IMPORT_PATH
         : undefined;
     let selected = e2ePath;
     if (!selected) {
@@ -1993,7 +1994,7 @@ function readStartupPreferencesSnapshot(): StartupPreferencesSnapshot {
   return createStartupPreferencesSnapshot({
     platform: process.platform,
     packaged: app.isPackaged,
-    e2e: process.env.SERPENT_E2E === "1",
+    e2e: process.env.KEEL_E2E === "1",
     preferences,
     getLoginItemState: getOSLoginItemState,
     onReadError: (error) => logger?.error("startup.login-item", error),
@@ -2012,7 +2013,7 @@ function storeStartupPreferences(input: unknown): StartupPreferencesSnapshot {
   const snapshot = applyStartupLoginItem({
     platform: process.platform,
     packaged: app.isPackaged,
-    e2e: process.env.SERPENT_E2E === "1",
+    e2e: process.env.KEEL_E2E === "1",
     preferences,
     setLoginItemSettings: (settings) => {
       app.setLoginItemSettings({
@@ -2050,7 +2051,7 @@ function focusSerpentWindow(windowId?: number): boolean {
 }
 
 /**
- * Isolated-session placement for `SERPENT_E2E_ISOLATED=1`: real E2E must keep
+ * Isolated-session placement for `KEEL_E2E_ISOLATED=1`: real E2E must keep
  * real `show()`/focus semantics (an earlier `showInactive` attempt broke
  * keyboard/focus tests and was reverted — see
  * docs/internal/development/2026-07-19-e2e-isolated-session-development-log.md), so
@@ -2062,7 +2063,7 @@ function focusSerpentWindow(windowId?: number): boolean {
 function resolveE2eIsolatedPlacement(
   defaultSize: { width: number; height: number },
 ): { x: number; y: number; width: number; height: number } | undefined {
-  if (process.env.SERPENT_E2E_ISOLATED !== "1") return undefined;
+  if (process.env.KEEL_E2E_ISOLATED !== "1") return undefined;
 
   const displays = screen.getAllDisplays().map((display) => ({
     id: display.id,
@@ -2086,7 +2087,7 @@ function resolveE2eIsolatedPlacement(
 
   logger?.info(
     "e2e.isolated-window",
-    "SERPENT_E2E_ISOLATED=1 was set but no secondary display was detected; " +
+    "KEEL_E2E_ISOLATED=1 was set but no secondary display was detected; " +
       "falling back to the primary display. The E2E window will steal " +
       "foreground focus on this machine (documented limitation of Serpent-a1b).",
     { displayCount: displays.length },
@@ -2163,7 +2164,7 @@ async function createMainWindow(): Promise<void> {
       contextIsolation: true,
       nodeIntegration: false,
       // The opt-in performance harness needs frames while remaining hidden.
-      ...(process.env.SERPENT_E2E === "1" && process.env.SERPENT_E2E_PERF_OFFSCREEN === "1"
+      ...(process.env.KEEL_E2E === "1" && process.env.KEEL_E2E_PERF_OFFSCREEN === "1"
         ? { offscreen: true, backgroundThrottling: false }
         : {}),
     },
@@ -2180,12 +2181,12 @@ async function createMainWindow(): Promise<void> {
     // E2E can keep its renderer fully loaded and automatable without putting
     // a test window over the user's desktop session. An update handoff stays
     // hidden so a second launch cannot flash a window.
-    const e2eShowInactive = process.env.SERPENT_E2E === "1"
-      && process.env.SERPENT_E2E_SHOW_INACTIVE === "1";
+    const e2eShowInactive = process.env.KEEL_E2E === "1"
+      && process.env.KEEL_E2E_SHOW_INACTIVE === "1";
     if (shouldShowMainWindowOnReady({
       applicationQuitting,
-      e2eHideWindow: process.env.SERPENT_E2E === "1"
-        && process.env.SERPENT_E2E_HIDE_WINDOW === "1"
+      e2eHideWindow: process.env.KEEL_E2E === "1"
+        && process.env.KEEL_E2E_HIDE_WINDOW === "1"
         && !e2eShowInactive,
     })) {
       if (window.isVisible()) return;
@@ -3077,7 +3078,7 @@ function createNativeDialogHost(): NativeDialogHost {
   return {
     getLocale: () => appLocale,
     getMainWindow: () => mainWindow ?? null,
-    isE2e: () => !app.isPackaged && process.env.SERPENT_E2E === "1",
+    isE2e: () => !app.isPackaged && process.env.KEEL_E2E === "1",
   };
 }
 
@@ -3085,7 +3086,7 @@ async function selectAutomationScriptToOpen(): Promise<string | undefined> {
   return selectOpenFile(
     createNativeDialogHost(),
     'openAutomationScript',
-    process.env.SERPENT_E2E_OPEN_AUTOMATION_SCRIPT,
+    process.env.KEEL_E2E_OPEN_AUTOMATION_SCRIPT,
     [{ name: 'Serpent scripts', extensions: ['serpent.js', 'serpent.ts'] }],
   );
 }
@@ -3094,7 +3095,7 @@ async function selectAutomationScriptToSave(): Promise<string | undefined> {
   return selectSavePath(
     createNativeDialogHost(),
     'saveAutomationScript',
-    process.env.SERPENT_E2E_SAVE_AUTOMATION_SCRIPT,
+    process.env.KEEL_E2E_SAVE_AUTOMATION_SCRIPT,
     {
       defaultPath: 'Untitled.serpent.ts',
       filters: [{ name: 'Serpent scripts', extensions: ['serpent.js', 'serpent.ts'] }],
@@ -3120,7 +3121,7 @@ async function selectPluginPackageForInstall(
   return selectPluginPackage(
     createNativeDialogHost(),
     sourceKind,
-    process.env.SERPENT_E2E_PLUGIN_PACKAGE,
+    process.env.KEEL_E2E_PLUGIN_PACKAGE,
   );
 }
 
@@ -3241,7 +3242,7 @@ async function commandFor(
         materializeSelectedExternalLibrary,
         rememberExternalSource,
         fallbackDirectoryForLibraryId,
-        isUnpackagedE2e: () => !app.isPackaged && process.env.SERPENT_E2E === "1",
+        isUnpackagedE2e: () => !app.isPackaged && process.env.KEEL_E2E === "1",
       });
     }
     case "linked-folder.list.request":
@@ -3459,11 +3460,11 @@ function assertNever(value: never): never {
  * A switch that stops printing Renderer stage markers, never reaches the
  * Worker and logs no error is otherwise unattributable: Main's own dispatch
  * point has to say whether the request was even handled. Opt-in per measurement
- * (SERPENT_E2E_LIBRARY_TRACE=1) so ordinary E2E runs do not gain log volume.
+ * (KEEL_E2E_LIBRARY_TRACE=1) so ordinary E2E runs do not gain log volume.
  */
 function libraryRequestTraceEnabled(): boolean {
-  return process.env.SERPENT_E2E === "1"
-    && process.env.SERPENT_E2E_LIBRARY_TRACE === "1";
+  return process.env.KEEL_E2E === "1"
+    && process.env.KEEL_E2E_LIBRARY_TRACE === "1";
 }
 
 async function handleLibraryRequest(
@@ -3493,7 +3494,7 @@ async function handleLibraryRequest(
     workerReturnedAt?: number;
   } | undefined;
   const navigationTraceEnabled =
-    process.env.SERPENT_NAVIGATION_TRACE === "1" || libraryRequestTraceEnabled();
+    process.env.KEEL_NAVIGATION_TRACE === "1" || libraryRequestTraceEnabled();
   const logNavigationStage = (
     stage: string,
     fields: Record<string, unknown> = {},
@@ -3696,7 +3697,7 @@ async function handleLibraryRequest(
       command = openRecent.command;
     } else {
       const ingestion = await tryBuildIngestionCommand(request, {
-        isUnpackagedE2e: () => !app.isPackaged && process.env.SERPENT_E2E === "1",
+        isUnpackagedE2e: () => !app.isPackaged && process.env.KEEL_E2E === "1",
         e2eEnv: (name) => process.env[name],
         workerAvailable: () => workerClient?.available ?? false,
         requestWorker: (workerCommand) => {
@@ -3754,7 +3755,7 @@ async function handleLibraryRequest(
     }
     if (!command || openCancellation?.cancelled) return cancelled();
     const sequenceProbe = await maybeProbeImportSequences(request, command, {
-      isUnpackagedE2e: () => !app.isPackaged && process.env.SERPENT_E2E === "1",
+      isUnpackagedE2e: () => !app.isPackaged && process.env.KEEL_E2E === "1",
       workerAvailable: () => workerClient?.available ?? false,
       requestWorker: (workerCommand) => {
         if (!workerClient) throw new Error("Library Worker is unavailable.");
@@ -3787,7 +3788,7 @@ async function handleLibraryRequest(
     if (lifecycle.clearPendingBillfish) pendingBillfishOpenSourcePath = undefined;
 
     await maybeDelayE2eTrash(command, {
-      isUnpackagedE2e: () => !app.isPackaged && process.env.SERPENT_E2E === "1",
+      isUnpackagedE2e: () => !app.isPackaged && process.env.KEEL_E2E === "1",
       env: (name) => process.env[name],
       delay: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
     });
@@ -4100,8 +4101,8 @@ async function confirmDesktopAutomationWrite(): Promise<boolean> {
   // this deterministic test seam to an unpackaged, isolated E2E process; it
   // can never be enabled by a shipped build or normal `npm start` session.
   if (!app.isPackaged
-    && process.env.SERPENT_E2E === '1'
-    && process.env.SERPENT_E2E_AUTOMATION_CONFIRM === '1') {
+    && process.env.KEEL_E2E === '1'
+    && process.env.KEEL_E2E_AUTOMATION_CONFIRM === '1') {
     return true;
   }
   const response = await dialog.showMessageBox(mainWindow, {
@@ -4134,14 +4135,14 @@ async function confirmDesktopAutomationFilePlan(
   // See confirmDesktopAutomationWrite: this is an isolated, unpackaged E2E
   // seam only. Production builds always display the fresh plan confirmation.
   if (!app.isPackaged
-    && process.env.SERPENT_E2E === '1'
-    && process.env.SERPENT_E2E_AUTOMATION_CANCEL_ONCE === '1') {
+    && process.env.KEEL_E2E === '1'
+    && process.env.KEEL_E2E_AUTOMATION_CANCEL_ONCE === '1') {
     e2eAutomationFilePlanConfirmationCount += 1;
     if (e2eAutomationFilePlanConfirmationCount === 1) return false;
   }
   if (!app.isPackaged
-    && process.env.SERPENT_E2E === '1'
-    && process.env.SERPENT_E2E_AUTOMATION_CONFIRM === '1') {
+    && process.env.KEEL_E2E === '1'
+    && process.env.KEEL_E2E_AUTOMATION_CONFIRM === '1') {
     return true;
   }
   const action = plan.operation === 'trash'
@@ -4522,8 +4523,8 @@ async function startApplication(): Promise<void> {
   }
   // Isolated E2E runs must not write the log into the real user profile
   // (~/Library/Logs/Serpent); pin it under the temp userData instead.
-  if (process.env.SERPENT_E2E === "1" && process.env.SERPENT_E2E_USER_DATA_PATH) {
-    app.setAppLogsPath(path.join(process.env.SERPENT_E2E_USER_DATA_PATH, "logs"));
+  if (process.env.KEEL_E2E === "1" && process.env.KEEL_E2E_USER_DATA_PATH) {
+    app.setAppLogsPath(path.join(process.env.KEEL_E2E_USER_DATA_PATH, "logs"));
   } else {
     app.setAppLogsPath();
   }
@@ -4585,12 +4586,12 @@ async function startApplication(): Promise<void> {
     logger,
     {
       ...process.env,
-      SERPENT_LIBRARY_METADATA_CACHE_PATH: path.join(
+      KEEL_LIBRARY_METADATA_CACHE_PATH: path.join(
         app.getPath('userData'),
         'library-metadata-cache',
       ),
-      SERPENT_SEMANTIC_LEGACY_CACHE_ROOT: app.getPath('userData'),
-      SERPENT_MAIN_PROCESS_SESSION_ID: mainProcessSessionId,
+      KEEL_SEMANTIC_LEGACY_CACHE_ROOT: app.getPath('userData'),
+      KEEL_MAIN_PROCESS_SESSION_ID: mainProcessSessionId,
     },
   );
   await workerClient.start();
@@ -6443,10 +6444,10 @@ async function startApplication(): Promise<void> {
     }
   });
 
-  // 主进程事件循环滞后监控（SERPENT_LAG_LOG=1）：Main 也是单线程。若 Main 被
+  // 主进程事件循环滞后监控（KEEL_LAG_LOG=1）：Main 也是单线程。若 Main 被
   // 同步工作堵住，Renderer 的 IPC 会迟迟不返回，表现就是「切换资源库卡住」，
   // 而 Worker 日志里看不到任何异常。
-  if (process.env.SERPENT_LAG_LOG === "1") {
+  if (process.env.KEEL_LAG_LOG === "1") {
     let lagWindowStart = Date.now();
     const lagTimer = setInterval(() => {
       const now = Date.now();
@@ -7048,7 +7049,7 @@ async function startApplication(): Promise<void> {
       applyStartupLoginItem({
         platform: process.platform,
         packaged: app.isPackaged,
-        e2e: process.env.SERPENT_E2E === "1",
+        e2e: process.env.KEEL_E2E === "1",
         preferences: startupPreferences,
         setLoginItemSettings: (settings) => {
           app.setLoginItemSettings({

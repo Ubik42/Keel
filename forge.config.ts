@@ -70,8 +70,8 @@ const config: ForgeConfig = {
       }
       for (const outputPath of packageResult.outputPaths) {
         runNodeGate('scripts/verify-package.mjs', [], {
-          SERPENT_PACKAGE_ROOT: outputPath,
-          SERPENT_PACKAGE_PLATFORM: `${packageResult.platform}-${packageResult.arch}`,
+          KEEL_PACKAGE_ROOT: outputPath,
+          KEEL_PACKAGE_PLATFORM: `${packageResult.platform}-${packageResult.arch}`,
         });
       }
     },
@@ -82,8 +82,8 @@ const config: ForgeConfig = {
       const mediaPlatform = nativeMediaPlatform(process.platform, process.arch);
       runNodeGate('scripts/media-binaries.mjs', ['ensure', '--platform', mediaPlatform]);
       runNodeGate('scripts/verify-package.mjs', [], {
-        SERPENT_PACKAGE_ROOT: path.join(projectRoot, 'out', `Serpent-${mediaPlatform}`),
-        SERPENT_PACKAGE_PLATFORM: mediaPlatform,
+        KEEL_PACKAGE_ROOT: path.join(projectRoot, 'out', `Serpent-${mediaPlatform}`),
+        KEEL_PACKAGE_PLATFORM: mediaPlatform,
       });
     },
   },

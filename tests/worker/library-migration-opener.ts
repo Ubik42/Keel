@@ -2,9 +2,9 @@ import { existsSync } from 'node:fs';
 
 import { LibraryService } from '../../src/worker/library-service';
 
-const libraryPath = process.env.SERPENT_MIGRATION_LIBRARY_PATH;
-const childId = process.env.SERPENT_MIGRATION_CHILD_ID;
-const releasePath = process.env.SERPENT_MIGRATION_RELEASE_PATH;
+const libraryPath = process.env.KEEL_MIGRATION_LIBRARY_PATH;
+const childId = process.env.KEEL_MIGRATION_CHILD_ID;
+const releasePath = process.env.KEEL_MIGRATION_RELEASE_PATH;
 
 if (!libraryPath || !childId || !releasePath) {
   throw new Error('Migration opener test environment is incomplete.');

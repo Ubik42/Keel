@@ -11,8 +11,8 @@ import type { PluginHostCommandId } from '../shared/automation-script-api';
 import { automationScriptHostFailureFromError } from '../shared/automation-host-command-error';
 import { pluginTargetLibraryIdSchema } from '../plugins/plugin-commands';
 import {
-  SERPENT_GUEST_COMMANDS,
-  SERPENT_SCRIPT_GUEST_COMMANDS,
+  KEEL_GUEST_COMMANDS,
+  KEEL_SCRIPT_GUEST_COMMANDS,
 } from './serpent-guest-api';
 import { projectPluginStorageResult } from './plugin-storage-result';
 import type { PluginDomainEvent } from '../plugins/plugin-domain-events';
@@ -333,7 +333,7 @@ export function transpileQuickJsSandboxPrototypeSource(source: string, fileName 
   return transpiled.outputText;
 }
 
-const PENDING_PROMISE_LIMIT_MARKER = '__SERPENT_PENDING_PROMISE_LIMIT__';
+const PENDING_PROMISE_LIMIT_MARKER = '__KEEL_PENDING_PROMISE_LIMIT__';
 
 function hasAsyncModifier(node: ts.Node): boolean {
   return ts.canHaveModifiers(node) &&
@@ -1372,8 +1372,8 @@ export async function runQuickJsSandboxPrototype(
       const mediaJobs = context.newObject();
       const aiJobs = context.newObject();
       const guestCommands = host.waitUntilDeactivate === undefined
-        ? SERPENT_SCRIPT_GUEST_COMMANDS
-        : SERPENT_GUEST_COMMANDS;
+        ? KEEL_SCRIPT_GUEST_COMMANDS
+        : KEEL_GUEST_COMMANDS;
       const createGuestCommandApi = (targetLibraryId?: string): QuickJSHandle => {
         const api = context.newObject();
         const namespaces = new Map<string, QuickJSHandle>();

@@ -23,20 +23,20 @@ import {
 /** Log gates that turn the Worker/Main diagnostics into a measurable span set. */
 export function benchmarkLogEnv(logDirectory: string): Record<string, string> {
   return {
-    SERPENT_WORKER_CMD_LOG: "1",
-    SERPENT_LAG_LOG: "1",
-    SERPENT_MEDIA_QUEUE_LOG: "1",
-    SERPENT_REFRESH_STAGE_LOG: "1",
-    SERPENT_OPEN_STAGE_LOG: "1",
-    SERPENT_CLOSE_TRACE: "1",
-    SERPENT_VIEWER_TIMING_LOG: "1",
-    // The preview cache is disabled under SERPENT_E2E unless forced. Default
+    KEEL_WORKER_CMD_LOG: "1",
+    KEEL_LAG_LOG: "1",
+    KEEL_MEDIA_QUEUE_LOG: "1",
+    KEEL_REFRESH_STAGE_LOG: "1",
+    KEEL_OPEN_STAGE_LOG: "1",
+    KEEL_CLOSE_TRACE: "1",
+    KEEL_VIEWER_TIMING_LOG: "1",
+    // The preview cache is disabled under KEEL_E2E unless forced. Default
     // benchmark runs exercise the production cache path, while an explicit
-    // SERPENT_PREVIEW_CACHE_FORCE=0 lets cold-origin reads be profiled too.
-    SERPENT_PREVIEW_CACHE_FORCE: process.env.SERPENT_PREVIEW_CACHE_FORCE ?? "1",
-    SERPENT_PREVIEW_CACHE_LOG: "1",
-    SERPENT_E2E_LIBRARY_TRACE: "1",
-    SERPENT_LAG_LOG_DIR: logDirectory,
+    // KEEL_PREVIEW_CACHE_FORCE=0 lets cold-origin reads be profiled too.
+    KEEL_PREVIEW_CACHE_FORCE: process.env.KEEL_PREVIEW_CACHE_FORCE ?? "1",
+    KEEL_PREVIEW_CACHE_LOG: "1",
+    KEEL_E2E_LIBRARY_TRACE: "1",
+    KEEL_LAG_LOG_DIR: logDirectory,
   };
 }
 
@@ -76,19 +76,19 @@ export async function launchBenchmarkApp(options: {
   extraEnv?: Record<string, string>;
 }): Promise<BenchmarkApp> {
   mkdirSync(options.userDataPath, { recursive: true });
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath: resolveElectronExecutablePath(),
     env: electronLaunchEnv({
-      SERPENT_E2E: "1",
-      SERPENT_E2E_PERF_OFFSCREEN: "1",
-      SERPENT_E2E_RESTORE_RECENT: "1",
-      SERPENT_E2E_USER_DATA_PATH: options.userDataPath,
+      KEEL_E2E: "1",
+      KEEL_E2E_PERF_OFFSCREEN: "1",
+      KEEL_E2E_RESTORE_RECENT: "1",
+      KEEL_E2E_USER_DATA_PATH: options.userDataPath,
       ...(options.openLibraryPath === undefined
         ? {}
-        : { SERPENT_E2E_OPEN_LIBRARY_PATH: options.openLibraryPath }),
+        : { KEEL_E2E_OPEN_LIBRARY_PATH: options.openLibraryPath }),
       ...benchmarkLogEnv(path.join(options.userDataPath, "logs")),
       ...(options.extraEnv ?? {}),
     }),

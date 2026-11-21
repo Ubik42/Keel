@@ -8,7 +8,7 @@ import type * as Koffi from "koffi";
  * without one the transparent pixels show up black, so we probe for a
  * compositor and fall back to an opaque, square-cornered window.
  *
- * Override with SERPENT_LINUX_ROUNDED_CORNERS=1 (force on) / 0 (force off).
+ * Override with KEEL_LINUX_ROUNDED_CORNERS=1 (force on) / 0 (force off).
  */
 
 export const LINUX_WINDOW_CORNER_RADIUS_PX = 8;
@@ -68,7 +68,7 @@ export function shouldUseLinuxRoundedCorners(
   probeCompositor: () => boolean = isX11CompositorRunning,
 ): boolean {
   if (platform !== "linux") return false;
-  const override = env.SERPENT_LINUX_ROUNDED_CORNERS;
+  const override = env.KEEL_LINUX_ROUNDED_CORNERS;
   if (override === "0") return false;
   if (override === "1") return true;
   // Wayland compositors always composite (and Electron under XWayland still

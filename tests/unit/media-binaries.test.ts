@@ -257,7 +257,7 @@ describe.skipIf(process.platform === 'win32')('media binary release gate', () =>
 
       const result = spawnSync(process.execPath, [packageVerifier], {
         encoding: 'utf8',
-        env: { ...process.env, SERPENT_PACKAGE_ROOT: packageRoot, SERPENT_PACKAGE_PLATFORM: 'darwin-arm64' },
+        env: { ...process.env, KEEL_PACKAGE_ROOT: packageRoot, KEEL_PACKAGE_PLATFORM: 'darwin-arm64' },
       });
       expect(result.status, result.stderr).toBe(0);
       expect(result.stdout).toContain('Verified packaged runtime files');
@@ -273,7 +273,7 @@ describe.skipIf(process.platform === 'win32')('media binary release gate', () =>
       );
       const substituted = spawnSync(process.execPath, [packageVerifier], {
         encoding: 'utf8',
-        env: { ...process.env, SERPENT_PACKAGE_ROOT: packageRoot, SERPENT_PACKAGE_PLATFORM: 'darwin-arm64' },
+        env: { ...process.env, KEEL_PACKAGE_ROOT: packageRoot, KEEL_PACKAGE_PLATFORM: 'darwin-arm64' },
       });
       expect(substituted.status).not.toBe(0);
       expect(substituted.stderr).toContain('receipt archiveSha256');

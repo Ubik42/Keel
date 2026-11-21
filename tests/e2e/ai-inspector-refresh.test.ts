@@ -167,19 +167,19 @@ test("Inspector refreshes immediately after AI analysis completes", async () => 
     .toFile(imagePath);
 
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath: resolveElectronExecutablePath(),
     env: electronLaunchEnv({
-      SERPENT_E2E: "1",
-      SERPENT_E2E_HIDE_WINDOW: "1",
-      SERPENT_E2E_SHOW_INACTIVE: "1",
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-      SERPENT_E2E_USER_DATA_PATH: userDataPath,
-      SERPENT_E2E_IMPORT_FILES: imagePath,
+      KEEL_E2E: "1",
+      KEEL_E2E_HIDE_WINDOW: "1",
+      KEEL_E2E_SHOW_INACTIVE: "1",
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+      KEEL_E2E_USER_DATA_PATH: userDataPath,
+      KEEL_E2E_IMPORT_FILES: imagePath,
     }),
   });
 
@@ -309,19 +309,19 @@ test("Inspector refreshes after a BATCH AI analysis completes", async () => {
   }).png().toFile(secondImage);
 
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath: resolveElectronExecutablePath(),
     env: electronLaunchEnv({
-      SERPENT_E2E: "1",
-      SERPENT_E2E_HIDE_WINDOW: "1",
-      SERPENT_E2E_SHOW_INACTIVE: "1",
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-      SERPENT_E2E_USER_DATA_PATH: userDataPath,
-      SERPENT_E2E_IMPORT_FILES: [firstImage, secondImage].join(path.delimiter),
+      KEEL_E2E: "1",
+      KEEL_E2E_HIDE_WINDOW: "1",
+      KEEL_E2E_SHOW_INACTIVE: "1",
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+      KEEL_E2E_USER_DATA_PATH: userDataPath,
+      KEEL_E2E_IMPORT_FILES: [firstImage, secondImage].join(path.delimiter),
     }),
   });
 

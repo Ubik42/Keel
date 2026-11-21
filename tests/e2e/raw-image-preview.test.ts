@@ -13,14 +13,14 @@ import { resolveElectronExecutablePath } from "./electron-test-helpers";
 
 test.describe.configure({ timeout: 180_000 });
 
-const configuredRawFixture = process.env.SERPENT_REAL_RAW_TEST_FILE;
+const configuredRawFixture = process.env.KEEL_REAL_RAW_TEST_FILE;
 const canRun = Boolean(
   configuredRawFixture && existsSync(configuredRawFixture),
 );
 
 test.skip(
   !canRun,
-  "Set SERPENT_REAL_RAW_TEST_FILE to a real camera RAW file to run this evidence test.",
+  "Set KEEL_REAL_RAW_TEST_FILE to a real camera RAW file to run this evidence test.",
 );
 
 test("imports a real RAW file, renders its metadata, and opens its preview", async () => {
@@ -35,18 +35,18 @@ test("imports a real RAW file, renders its metadata, and opens its preview", asy
 
   const executablePath = resolveElectronExecutablePath();
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath,
     env: {
       ...process.env,
-      SERPENT_E2E: "1",
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
-      SERPENT_E2E_IMPORT_FILES: sourcePath,
+      KEEL_E2E: "1",
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
+      KEEL_E2E_IMPORT_FILES: sourcePath,
     },
   });
 

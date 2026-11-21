@@ -221,20 +221,20 @@ test("switches AI profiles for analysis and restores the active profile after re
       },
     }).png().toFile(imagePath);
 
-    const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
     const launch = (includeImport: boolean) => electron.launch({
       args: [applicationDirectory],
       cwd: applicationDirectory,
       executablePath: resolveElectronExecutablePath(),
       env: electronLaunchEnv({
-        SERPENT_E2E: "1",
-        SERPENT_E2E_HIDE_WINDOW: "1",
-        SERPENT_E2E_SHOW_INACTIVE: "1",
-        SERPENT_E2E_RESTORE_RECENT: "1",
-        SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-        SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-        SERPENT_E2E_USER_DATA_PATH: userDataPath,
-        SERPENT_E2E_IMPORT_FILES: includeImport ? imagePath : "",
+        KEEL_E2E: "1",
+        KEEL_E2E_HIDE_WINDOW: "1",
+        KEEL_E2E_SHOW_INACTIVE: "1",
+        KEEL_E2E_RESTORE_RECENT: "1",
+        KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+        KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+        KEEL_E2E_USER_DATA_PATH: userDataPath,
+        KEEL_E2E_IMPORT_FILES: includeImport ? imagePath : "",
       }),
     });
 

@@ -12,7 +12,7 @@
  * `resources/oiio`) that `npm run package` acquires via `media:ensure`. Build it
  * on the oldest glibc you want to support (scripts/appimage-docker.sh builds in
  * Ubuntu 22.04, glibc 2.35, matching the host architecture). ffmpeg may still be
- * overridden with `SERPENT_FFMPEG_PATH` / system PATH; oiiotool resolves the
+ * overridden with `KEEL_FFMPEG_PATH` / system PATH; oiiotool resolves the
  * bundled binary first.
  */
 import { spawnSync } from 'node:child_process';
@@ -65,7 +65,7 @@ writeFileSync(
   `#!/bin/sh
 HERE="$(dirname "$(readlink -f "$0")")"
 EXTRA=""
-if [ -z "$SERPENT_FORCE_SANDBOX" ] && ! unshare -Ur true >/dev/null 2>&1; then
+if [ -z "$KEEL_FORCE_SANDBOX" ] && ! unshare -Ur true >/dev/null 2>&1; then
   EXTRA="--no-sandbox"
 fi
 exec "$HERE/usr/lib/serpent/${exe}" $EXTRA "$@"

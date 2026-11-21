@@ -16,17 +16,17 @@ test("uses the in-app dialog for library disk deletion", async () => {
   const libraryName = "critical-confirmation-library";
   const libraryPath = path.join(temporaryRoot, libraryName);
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath: resolveElectronExecutablePath(),
     env: {
       ...process.env,
-      SERPENT_E2E: "1",
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
+      KEEL_E2E: "1",
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
     },
   });
 
@@ -116,17 +116,17 @@ test("cancelling a folder disk delete reports an info notice instead of an error
   const libraryName = "critical-cancel-library";
   const libraryPath = path.join(temporaryRoot, libraryName);
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath: resolveElectronExecutablePath(),
     env: {
       ...process.env,
-      SERPENT_E2E: "1",
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
+      KEEL_E2E: "1",
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
     },
   });
 

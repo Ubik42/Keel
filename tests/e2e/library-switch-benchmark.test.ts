@@ -21,19 +21,19 @@ import { readFileSync } from "node:fs";
  * measured at all, which is how "switching libraries stalls" survived a
  * green benchmark.
  *
- * Requires SERPENT_E2E_SWITCH_LIBRARIES="<pathA>|<pathB>" (pipe separated) and
+ * Requires KEEL_E2E_SWITCH_LIBRARIES="<pathA>|<pathB>" (pipe separated) and
  * skips without it. Library paths are never defaulted or committed: this is a
  * real journey that drives a real library's media queue and writes its database,
  * so it must be an explicit operator choice (privacy + workspace-cleanliness
  * rules in CLAUDE.md).
  */
-const configured = (process.env.SERPENT_E2E_SWITCH_LIBRARIES ?? "")
+const configured = (process.env.KEEL_E2E_SWITCH_LIBRARIES ?? "")
   .split("|")
   .map((value) => value.trim())
   .filter((value) => value.length > 0);
 const libraryPaths = configured.length >= 2 ? configured : [];
-const reportPath = process.env.SERPENT_E2E_SWITCH_REPORT;
-const wheelMs = Number(process.env.SERPENT_E2E_SWITCH_WHEEL_MS ?? 8_000);
+const reportPath = process.env.KEEL_E2E_SWITCH_REPORT;
+const wheelMs = Number(process.env.KEEL_E2E_SWITCH_WHEEL_MS ?? 8_000);
 
 test.describe.configure({ timeout: 420_000 });
 
@@ -220,7 +220,7 @@ function aggregateLogCommands(
 }
 
 test("measures wheel scrolling and a real library switch", async () => {
-  test.skip(libraryPaths.length < 2, "Set SERPENT_E2E_SWITCH_LIBRARIES=<pathA>|<pathB>.");
+  test.skip(libraryPaths.length < 2, "Set KEEL_E2E_SWITCH_LIBRARIES=<pathA>|<pathB>.");
 
   const temporaryRoot = mkdtempSync(path.join(tmpdir(), "serpent-switch-bench-"));
   const userDataPath = path.join(temporaryRoot, "user-data");
@@ -244,18 +244,18 @@ test("measures wheel scrolling and a real library switch", async () => {
     }),
   );
 
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath: resolveElectronExecutablePath(),
     env: electronLaunchEnv({
-      SERPENT_E2E: "1",
-      SERPENT_E2E_RESTORE_RECENT: "1",
-      SERPENT_E2E_USER_DATA_PATH: userDataPath,
+      KEEL_E2E: "1",
+      KEEL_E2E_RESTORE_RECENT: "1",
+      KEEL_E2E_USER_DATA_PATH: userDataPath,
       // Main-side request trace: without it a switch that never reaches the
       // Worker cannot be told apart from one Main never handled.
-      SERPENT_E2E_LIBRARY_TRACE: "1",
+      KEEL_E2E_LIBRARY_TRACE: "1",
     }),
   });
 
@@ -296,7 +296,7 @@ test("measures wheel scrolling and a real library switch", async () => {
     // background reconciliation; if the Worker is single-threaded inside a long
     // synchronous pass, a switch issued during it queues behind the pass and
     // looks like a hang. Configurable so that hypothesis can be measured.
-    const settleMs = Number(process.env.SERPENT_E2E_SWITCH_SETTLE_MS ?? 0);
+    const settleMs = Number(process.env.KEEL_E2E_SWITCH_SETTLE_MS ?? 0);
     if (settleMs > 0) {
       try {
         await window.waitForTimeout(settleMs);
@@ -310,7 +310,7 @@ test("measures wheel scrolling and a real library switch", async () => {
     // Discriminating experiment: if the Worker is saturated by this library's own
     // media-job churn, a `library.open` queues behind it and the switch hangs.
     // Pausing media first should then make the same switch succeed.
-    pausedMedia = process.env.SERPENT_E2E_SWITCH_PAUSE_MEDIA === "1";
+    pausedMedia = process.env.KEEL_E2E_SWITCH_PAUSE_MEDIA === "1";
     if (pausedMedia) {
       const pauseResult = await window.evaluate(async () => {
         const bridge = (globalThis as unknown as {
@@ -436,7 +436,7 @@ test("measures wheel scrolling and a real library switch", async () => {
         .filter((entry): entry is Record<string, unknown> =>
           typeof entry?.message === "string" && entry.message.includes("LOADDIAG"))
         .slice(-12),
-      // SERPENT_WORKER_CMD_LOG=1 emits one `worker.cmd` line per command with
+      // KEEL_WORKER_CMD_LOG=1 emits one `worker.cmd` line per command with
       // `queueMs` (waiting to be dispatched) and `runMs` (execution). Every
       // field lives under `context`; reading them from the top level silently
       // compares `undefined`, which is how a 16-second holder stayed invisible.
@@ -531,7 +531,7 @@ test("measures wheel scrolling and a real library switch", async () => {
         .filter((line) => line.includes("eventLoop.lag"))
         .map((line) => line.slice(0, 300))
         .slice(-40),
-      // Reconciliation stage timings (SERPENT_REFRESH_STAGE_LOG=1): inside the
+      // Reconciliation stage timings (KEEL_REFRESH_STAGE_LOG=1): inside the
       // open path, a single stage is what holds the Worker event loop, and the
       // lag line alone cannot say which.
       stageLog: logText.split("\n")

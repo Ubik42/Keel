@@ -164,7 +164,7 @@ export async function executeAssetMutationMainCommand(
       const newAbsolutePath = await selectOpenFile(
         runtime.createNativeDialogHost(),
         "locateMissingAsset",
-        process.env.SERPENT_E2E_RELINK_FILE,
+        process.env.KEEL_E2E_RELINK_FILE,
       );
       return newAbsolutePath
         ? {
@@ -186,7 +186,7 @@ export async function executeAssetMutationMainCommand(
       const newRootPath = await selectOpenDirectory(
         runtime.createNativeDialogHost(),
         "selectRelinkRoot",
-        process.env.SERPENT_E2E_RELINK_ROOT,
+        process.env.KEEL_E2E_RELINK_ROOT,
       );
       if (newRootPath) {
         return {

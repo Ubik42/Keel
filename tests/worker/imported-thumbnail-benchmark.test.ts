@@ -15,8 +15,8 @@ import {
   IMPORTED_THUMBNAIL_PRESERVED_GENERATOR,
 } from '../../src/worker/imported-thumbnail-policy';
 
-const enabled = process.env.SERPENT_IMPORTED_THUMBNAIL_BENCH === '1';
-const stressEnabled = enabled && process.env.SERPENT_IMPORTED_THUMBNAIL_BENCH_STRESS === '1';
+const enabled = process.env.KEEL_IMPORTED_THUMBNAIL_BENCH === '1';
+const stressEnabled = enabled && process.env.KEEL_IMPORTED_THUMBNAIL_BENCH_STRESS === '1';
 
 function readBenchmarkInteger(
   name: string,
@@ -35,13 +35,13 @@ function readBenchmarkInteger(
 }
 
 const itemCount = readBenchmarkInteger(
-  'SERPENT_IMPORTED_THUMBNAIL_BENCH_ASSETS',
+  'KEEL_IMPORTED_THUMBNAIL_BENCH_ASSETS',
   24,
   8,
   64,
 );
 const roundCount = readBenchmarkInteger(
-  'SERPENT_IMPORTED_THUMBNAIL_BENCH_ROUNDS',
+  'KEEL_IMPORTED_THUMBNAIL_BENCH_ROUNDS',
   3,
   1,
   5,
@@ -392,9 +392,9 @@ describe.skipIf(!enabled)('imported thumbnail normalization benchmark (manual)',
       stress: stressEnabled,
     };
     console.info(`IMPORTED_THUMBNAIL_PERF_JSON ${JSON.stringify(result)}`);
-    const resultPath = process.env.SERPENT_IMPORTED_THUMBNAIL_BENCH_RESULT_PATH;
+    const resultPath = process.env.KEEL_IMPORTED_THUMBNAIL_BENCH_RESULT_PATH;
     if (resultPath) writeFileSync(resultPath, `${JSON.stringify(result)}\n`, 'utf8');
-    if (process.env.SERPENT_IMPORTED_THUMBNAIL_BENCH_GATE === '1') {
+    if (process.env.KEEL_IMPORTED_THUMBNAIL_BENCH_GATE === '1') {
       expect(p95ImportMs).toBeLessThan(1_000);
       expect(p95NormalizationMs / itemCount).toBeLessThan(50);
       expect(p95NormalizationJobMs).toBeLessThan(stressEnabled ? 500 : 250);

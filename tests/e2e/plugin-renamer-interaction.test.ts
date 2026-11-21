@@ -8,8 +8,8 @@ import { chooseStandardOption, electronLaunchEnv, openAppSettingsDialog, openPlu
 // package explicitly; never install into the developer's real userData/library.
 test('renamer first input and repeated parameter changes retain state', async () => {
   test.setTimeout(180_000);
-  const source = process.env.SERPENT_E2E_RENAMER_PACKAGE;
-  test.skip(!source, 'Set SERPENT_E2E_RENAMER_PACKAGE to an unpacked official Renamer package.');
+  const source = process.env.KEEL_E2E_RENAMER_PACKAGE;
+  test.skip(!source, 'Set KEEL_E2E_RENAMER_PACKAGE to an unpacked official Renamer package.');
   const temporaryRoot = mkdtempSync(path.join(tmpdir(), 'serpent-renamer-interaction-'));
   const packageDirectory = path.join(temporaryRoot, 'package');
   for (const entry of ['serpent-plugin.json', 'README.md', 'LICENSE', 'entry', 'src']) {
@@ -20,14 +20,14 @@ test('renamer first input and repeated parameter changes retain state', async ()
     writeFileSync(file, `Unique test asset ${index}`);
     return file;
   });
-  const appDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const appDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const app = await electron.launch({
     args: [appDirectory], cwd: appDirectory, executablePath: resolveElectronExecutablePath(),
-    env: electronLaunchEnv({ SERPENT_E2E: '1',
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_IMPORT_FILES: imports.join(path.delimiter),
-      SERPENT_E2E_PLUGIN_PACKAGE: packageDirectory,
+    env: electronLaunchEnv({ KEEL_E2E: '1',
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_IMPORT_FILES: imports.join(path.delimiter),
+      KEEL_E2E_PLUGIN_PACKAGE: packageDirectory,
     }),
   });
   try {
@@ -47,7 +47,7 @@ test('renamer first input and repeated parameter changes retain state', async ()
     await install.getByRole('button', { name: '安装文件夹' }).click();
     await expect(settings.getByRole('checkbox', { name: '启用插件' })).toBeEnabled({ timeout: 30_000 });
     page.once('dialog', (dialog) => {
-      if (process.env.SERPENT_E2E_NATIVE_CONFIRM !== '1') void dialog.accept();
+      if (process.env.KEEL_E2E_NATIVE_CONFIRM !== '1') void dialog.accept();
     });
     await settings.locator('label.plugin-settings-enable-toggle').click();
     await expect(settings.getByRole('checkbox', { name: '启用插件' })).toBeChecked();

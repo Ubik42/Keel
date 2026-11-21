@@ -12,15 +12,15 @@ test('keeps the unbound Console out of the no-library create dialog', async () =
   const temporaryRoot = mkdtempSync(path.join(tmpdir(), 'serpent-automation-console-e2e-'));
   const profilePath = path.join(temporaryRoot, 'user-data');
   const executablePath = resolveElectronExecutablePath();
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath,
     env: {
       ...process.env,
-      SERPENT_E2E: '1',
-      SERPENT_E2E_USER_DATA_PATH: profilePath,
+      KEEL_E2E: '1',
+      KEEL_E2E_USER_DATA_PATH: profilePath,
     },
   });
 
@@ -41,16 +41,16 @@ test('keeps the background task entry in the opened-library tools menu', async (
   const profilePath = path.join(temporaryRoot, 'user-data');
   const libraryName = '自动化工具菜单验收';
   const executablePath = resolveElectronExecutablePath();
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath,
     env: {
       ...process.env,
-      SERPENT_E2E: '1',
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_USER_DATA_PATH: profilePath,
+      KEEL_E2E: '1',
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_USER_DATA_PATH: profilePath,
     },
   });
 

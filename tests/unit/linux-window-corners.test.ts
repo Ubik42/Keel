@@ -20,8 +20,8 @@ describe("linux rounded window corners", () => {
   });
 
   it("honours the env override and native Wayland", () => {
-    expect(shouldUseLinuxRoundedCorners("linux", { SERPENT_LINUX_ROUNDED_CORNERS: "0" }, () => true)).toBe(false);
-    expect(shouldUseLinuxRoundedCorners("linux", { SERPENT_LINUX_ROUNDED_CORNERS: "1" }, () => false)).toBe(true);
+    expect(shouldUseLinuxRoundedCorners("linux", { KEEL_LINUX_ROUNDED_CORNERS: "0" }, () => true)).toBe(false);
+    expect(shouldUseLinuxRoundedCorners("linux", { KEEL_LINUX_ROUNDED_CORNERS: "1" }, () => false)).toBe(true);
     expect(
       shouldUseLinuxRoundedCorners("linux", { XDG_SESSION_TYPE: "wayland", WAYLAND_DISPLAY: "wayland-0" }, () => false),
     ).toBe(true);

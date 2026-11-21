@@ -23,11 +23,11 @@ const child = spawn(process.execPath, [
 ], {
   env: {
     ...process.env,
-    SERPENT_LARGE_LIBRARY_OUTPUT: path.resolve(output),
-    SERPENT_LARGE_LIBRARY_ASSETS: assets,
-    SERPENT_LARGE_LIBRARY_SEED: seed,
-    SERPENT_LARGE_LIBRARY_RESET: reset,
-    SERPENT_LARGE_LIBRARY_ASSET_PROFILE: assetProfile,
+    KEEL_LARGE_LIBRARY_OUTPUT: path.resolve(output),
+    KEEL_LARGE_LIBRARY_ASSETS: assets,
+    KEEL_LARGE_LIBRARY_SEED: seed,
+    KEEL_LARGE_LIBRARY_RESET: reset,
+    KEEL_LARGE_LIBRARY_ASSET_PROFILE: assetProfile,
   },
   stdio: 'inherit',
 });

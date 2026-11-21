@@ -56,7 +56,7 @@ function stop() {
   if (shutdown) return shutdown;
   stopping = true;
   if (process.platform === 'win32') {
-    terminateWindowsJob(0, 'SERPENT_EMBEDDING_STOP\n');
+    terminateWindowsJob(0, 'KEEL_EMBEDDING_STOP\n');
     shutdown = new Promise(() => {});
     return shutdown;
   }
@@ -87,7 +87,7 @@ function finish(code) {
     if (stopping) return;
     // The runtime exited independently. Reap remaining job descendants and
     // report that cleanup was requested before terminating this owner too.
-    terminateWindowsJob(0, 'SERPENT_EMBEDDING_REAP\n');
+    terminateWindowsJob(0, 'KEEL_EMBEDDING_REAP\n');
     return;
   }
   const requestedStop = stopping;
@@ -97,7 +97,7 @@ function finish(code) {
 function requestStop() {
   stopping = true;
   if (process.platform === 'win32') {
-    try { terminateWindowsJob(0, 'SERPENT_EMBEDDING_STOP\n'); } catch { process.exit(2); }
+    try { terminateWindowsJob(0, 'KEEL_EMBEDDING_STOP\n'); } catch { process.exit(2); }
     return;
   }
   finish(0);
@@ -163,8 +163,8 @@ export function trackOwnedEmbeddingRuntimeOwner(
   ownerStates.set(owner, state);
   owner.stdout?.on('data', (chunk: Buffer | string) => {
     state.output += chunk.toString();
-    if (state.output.includes('SERPENT_EMBEDDING_STOP\n')
-      || state.output.includes('SERPENT_EMBEDDING_REAP\n')) state.acknowledged = true;
+    if (state.output.includes('KEEL_EMBEDDING_STOP\n')
+      || state.output.includes('KEEL_EMBEDDING_REAP\n')) state.acknowledged = true;
     if (state.output.length > 1024) state.output = state.output.slice(-256);
   });
   owner.once('exit', (code, signal) => {

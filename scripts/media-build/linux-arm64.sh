@@ -14,7 +14,7 @@ export CXX="${CXX:-g++}"
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
 LOCK="$ROOT/resources/media-binaries/source-lock.json"
 MANIFEST_ROOT="$ROOT/resources/media-binaries/vcpkg"
-WORK=${SERPENT_MEDIA_BUILD_DIR:-"$ROOT/.media-build/linux-arm64"}
+WORK=${KEEL_MEDIA_BUILD_DIR:-"$ROOT/.media-build/linux-arm64"}
 VCPKG_ROOT="$WORK/vcpkg"
 OVERLAY_ROOT="$WORK/overlay-ports"
 INSTALLED_ROOT="$WORK/vcpkg-installed"

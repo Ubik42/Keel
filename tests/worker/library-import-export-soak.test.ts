@@ -22,7 +22,7 @@ function appendPerfLog(line: string): void {
 // modern SSD; the same 100k files would exceed the 120s test timeout.
 // Chosen size: 20_000 assets — large enough to detect pathological slowdown
 // or data loss without timing out CI.
-const ASSET_COUNT = Number(process.env.SERPENT_SOAK_ASSET_COUNT ?? 20_000);
+const ASSET_COUNT = Number(process.env.KEEL_SOAK_ASSET_COUNT ?? 20_000);
 const BATCH_SIZE = 1000;
 const BATCH_COUNT = Math.floor(ASSET_COUNT / BATCH_SIZE);
 const FILE_EXTENSIONS = ['png', 'jpg', 'psd', 'blend', 'tga'];

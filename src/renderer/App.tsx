@@ -133,7 +133,7 @@ import { MainMenu } from "./MainMenu";
 import {
   buildMainMenuSections,
   collectMainMenuCommandStates,
-  SERPENT_VERSION,
+  KEEL_VERSION,
   type MainMenuItem,
 } from "./main-menu-items";
 import { CanvasToolbarControls } from "./CanvasToolbarControls";
@@ -15687,7 +15687,7 @@ function AppInner() {
       />
       <AboutDialog
         open={aboutOpen}
-        version={SERPENT_VERSION}
+        version={KEEL_VERSION}
         onClose={() => setAboutOpen(false)}
         onOpenGitHub={() => {
           const bridge = (window as RendererWindow).serpent?.shell;

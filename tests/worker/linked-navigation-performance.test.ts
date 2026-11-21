@@ -8,7 +8,7 @@ import { LibraryService, openConfiguredDatabase } from '../../src/worker/library
 import { LinkedDirectoryIndex } from '../../src/worker/linked-directory-index';
 
 /** Metadata-scale benchmark; real media decoding is verified separately. */
-it.skipIf(process.env.SERPENT_LINKED_NAV_BENCHMARK !== '1')('records 150k linked-asset navigation and event-loop latency', async () => {
+it.skipIf(process.env.KEEL_LINKED_NAV_BENCHMARK !== '1')('records 150k linked-asset navigation and event-loop latency', async () => {
   const workspace = process.cwd();
   const disk = statfsSync(workspace);
   if (disk.bavail * disk.bsize < 2 * 1024 ** 3) throw new Error('Insufficient space for metadata benchmark.');

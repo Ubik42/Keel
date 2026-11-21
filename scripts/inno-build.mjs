@@ -7,7 +7,7 @@
  *
  * 前置：
  *   - 已执行 npm run package（Inno 从 out/Serpent-win32-x64 打包）
- *   - Inno Setup 工具：SERPENT_INNO_TOOLS 指向含 ISCC.exe 的目录，否则
+ *   - Inno Setup 工具：KEEL_INNO_TOOLS 指向含 ISCC.exe 的目录，否则
  *     默认 %LOCALAPPDATA%\SerpentTools\inno\tools（NuGet Tools.InnoSetup
  *     解压即用，见 CLAUDE.md）
  *
@@ -35,8 +35,8 @@ function packageVersion() {
   return '0.1.0';
 }
 
-const defaultIscc = process.env.SERPENT_INNO_TOOLS
-  ? path.resolve(process.env.SERPENT_INNO_TOOLS, 'ISCC.exe')
+const defaultIscc = process.env.KEEL_INNO_TOOLS
+  ? path.resolve(process.env.KEEL_INNO_TOOLS, 'ISCC.exe')
   : path.join(process.env.LOCALAPPDATA || '', 'SerpentTools', 'inno', 'tools', 'ISCC.exe');
 
 const defaultOut = path.join(repoRoot, 'out', 'make', 'inno');
@@ -52,7 +52,7 @@ function main() {
     : defaultOut;
 
   if (!existsSync(defaultIscc)) {
-    fail(`ISCC.exe not found at ${defaultIscc} (set SERPENT_INNO_TOOLS or install per CLAUDE.md)`);
+    fail(`ISCC.exe not found at ${defaultIscc} (set KEEL_INNO_TOOLS or install per CLAUDE.md)`);
   }
   const packageDir = path.join(repoRoot, 'out', 'Serpent-win32-x64');
   if (!existsSync(packageDir)) {

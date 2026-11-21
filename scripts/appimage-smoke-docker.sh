@@ -20,7 +20,7 @@ docker run --rm -v "$APP":/app/Serpent.AppImage:ro -v "$OUT":/out "$IMAGE" bash 
   # Run as a regular desktop user, not root (Chromium refuses root without --no-sandbox).
   useradd -m tester
   cp /app/Serpent.AppImage /home/tester/S.AppImage && chown tester /home/tester/S.AppImage
-  su tester -c 'cd ~ && SERPENT_SOFTWARE_GL=1 DISPLAY=:5 dbus-launch --exit-with-session ./S.AppImage --appimage-extract-and-run' > /out/appimage-$TAG.log 2>&1 &
+  su tester -c 'cd ~ && KEEL_SOFTWARE_GL=1 DISPLAY=:5 dbus-launch --exit-with-session ./S.AppImage --appimage-extract-and-run' > /out/appimage-$TAG.log 2>&1 &
   sleep 45
   import -window root /out/appimage-$TAG.png
   pgrep -fa 'usr/lib/serpent/Serpent' | grep -v type= | head -2 || echo 'NOT RUNNING'

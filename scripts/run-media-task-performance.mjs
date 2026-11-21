@@ -1,7 +1,7 @@
 import { spawn } from 'node:child_process';
 import path from 'node:path';
 
-const fixturePath = process.argv[2] ?? process.env.SERPENT_MEDIA_TASK_PERF_PATH;
+const fixturePath = process.argv[2] ?? process.env.KEEL_MEDIA_TASK_PERF_PATH;
 if (!fixturePath) {
   console.error('Usage: npm run test:perf:media-tasks -- <fixture-path>');
   process.exit(2);
@@ -17,8 +17,8 @@ const child = spawn(process.execPath, [
 ], {
   env: {
     ...process.env,
-    SERPENT_MEDIA_TASK_PERF: '1',
-    SERPENT_MEDIA_TASK_PERF_PATH: path.resolve(fixturePath),
+    KEEL_MEDIA_TASK_PERF: '1',
+    KEEL_MEDIA_TASK_PERF_PATH: path.resolve(fixturePath),
   },
   stdio: 'inherit',
 });

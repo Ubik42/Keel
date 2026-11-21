@@ -147,9 +147,9 @@ export function registerWindowControls(options: {
         return { ok: false, code: "maximized" };
       }
       // Prefer renderer setBounds (pointer capture). Native _NET_WM_MOVERESIZE
-      // is attempted only when SERPENT_LINUX_NATIVE_RESIZE=1 — Electron's
+      // is attempted only when KEEL_LINUX_NATIVE_RESIZE=1 — Electron's
       // button grab frequently prevents the WM from taking over.
-      if (process.env.SERPENT_LINUX_NATIVE_RESIZE === "1") {
+      if (process.env.KEEL_LINUX_NATIVE_RESIZE === "1") {
         const point = screen.getCursorScreenPoint();
         const native = beginLinuxWindowEdgeResize(window, parsed.edge, point);
         if (native) return { ok: true, mode: "native" };

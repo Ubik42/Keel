@@ -14,17 +14,17 @@ import { startup } from './bridge/startup';
 import { getE2eRequestCount } from './transport';
 import type { RendererRequest } from '../shared/protocol/requests';
 
-const e2eEnabled = process.env.SERPENT_E2E === '1';
+const e2eEnabled = process.env.KEEL_E2E === '1';
 
 if (e2eEnabled) {
   // Preload globalThis is the isolated world. contextIsolation keeps that
   // assignment invisible to the renderer, so a non-zh-CN host follows the OS
   // language and Chinese E2E selectors time out. Copy the pin into the main
   // world before the page resolves system locale.
-  const e2eLocale = process.env.SERPENT_E2E_LOCALE === 'en' ? 'en' : 'zh-CN';
+  const e2eLocale = process.env.KEEL_E2E_LOCALE === 'en' ? 'en' : 'zh-CN';
   contextBridge.executeInMainWorld({
     func: (locale: string) => {
-      (globalThis as { __SERPENT_E2E_LOCALE__?: string }).__SERPENT_E2E_LOCALE__ =
+      (globalThis as { __KEEL_E2E_LOCALE__?: string }).__KEEL_E2E_LOCALE__ =
         locale;
     },
     args: [e2eLocale],
@@ -32,7 +32,7 @@ if (e2eEnabled) {
 }
 
 const e2eDiagnostics = Object.freeze({
-  useNativeAssetDrag: process.env.SERPENT_E2E_NATIVE_ASSET_DRAG === '1',
+  useNativeAssetDrag: process.env.KEEL_E2E_NATIVE_ASSET_DRAG === '1',
   getRequestCount(type: RendererRequest['type']): number {
     return getE2eRequestCount(type);
   },

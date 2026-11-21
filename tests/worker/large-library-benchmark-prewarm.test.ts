@@ -8,7 +8,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { LibraryService } from "../../src/worker/library-service";
 import type { LargeLibraryFixtureManifest } from "./large-library-fixture";
 
-const fixturePath = process.env.SERPENT_LARGE_LIBRARY_PREWARM_PATH;
+const fixturePath = process.env.KEEL_LARGE_LIBRARY_PREWARM_PATH;
 const jumpFractions = [
   0.11, 0.83, 0.37, 0.69, 0.22, 0.77, 0.46, 0.61, 0.15, 0.54,
 ];

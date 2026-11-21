@@ -19,11 +19,11 @@ import {
 } from "./electron-test-helpers";
 import { readSessionLog } from "./perf-bench-helpers";
 
-const fixturePath = process.env.SERPENT_LARGE_LIBRARY_E2E_PATH;
+const fixturePath = process.env.KEEL_LARGE_LIBRARY_E2E_PATH;
 const defaultJumpFractions = [
   0.11, 0.83, 0.37, 0.69, 0.22, 0.77, 0.46, 0.61, 0.15, 0.54,
 ];
-const jumpFractions = (process.env.SERPENT_LARGE_LIBRARY_E2E_JUMPS ?? "")
+const jumpFractions = (process.env.KEEL_LARGE_LIBRARY_E2E_JUMPS ?? "")
   .split(",")
   .map((value) => value.trim())
   .filter((value) => value.length > 0)
@@ -35,33 +35,33 @@ const targetMs = 500;
 // needs a progressive-loading gate that measures the first real visual wave
 // separately; selecting it is explicit so a passing first wave can never be
 // mistaken for strict all-image completion.
-const gateMode = process.env.SERPENT_LARGE_LIBRARY_E2E_GATE === "first-wave"
+const gateMode = process.env.KEEL_LARGE_LIBRARY_E2E_GATE === "first-wave"
   ? "first-wave"
   : "all-images";
 const observationTimeoutMs = Number(
-  process.env.SERPENT_LARGE_LIBRARY_E2E_OBSERVATION_MS ?? 5_000,
+  process.env.KEEL_LARGE_LIBRARY_E2E_OBSERVATION_MS ?? 5_000,
 );
 // sa65 gate is a 10k-asset library; real libraries can be smaller. Operators
 // measuring a smaller library can lower the bar explicitly.
-const minAssets = Number(process.env.SERPENT_LARGE_LIBRARY_E2E_MIN_ASSETS ?? 10_000);
+const minAssets = Number(process.env.KEEL_LARGE_LIBRARY_E2E_MIN_ASSETS ?? 10_000);
 // Real libraries (converted Eagle/Billfish, hand-built) live outside tmpdir and
 // can be tens of GB; let the operator choose the clone volume.
-const cloneRoot = process.env.SERPENT_LARGE_LIBRARY_E2E_CLONE_ROOT ?? tmpdir();
+const cloneRoot = process.env.KEEL_LARGE_LIBRARY_E2E_CLONE_ROOT ?? tmpdir();
 // Operator-managed library copy: skips the per-run clone (and its deletion) so
 // repeated baseline/optimization runs measure the same warm on-disk state.
-const reuseLibraryPath = process.env.SERPENT_LARGE_LIBRARY_E2E_REUSE_LIBRARY ?? "";
+const reuseLibraryPath = process.env.KEEL_LARGE_LIBRARY_E2E_REUSE_LIBRARY ?? "";
 // Full benchmark JSON (per-jump samples and stage breakdowns) is written here
 // when requested; the console prints only a concise failure summary.
-const resultPath = process.env.SERPENT_LARGE_LIBRARY_E2E_RESULT_PATH ?? "";
+const resultPath = process.env.KEEL_LARGE_LIBRARY_E2E_RESULT_PATH ?? "";
 // When set, sample the renderer main thread during every jump (CDP Profiler)
 // and write one .cpuprofile per jump for function-level hotspot attribution.
-const profileDir = process.env.SERPENT_LARGE_LIBRARY_E2E_PROFILE_DIR ?? "";
+const profileDir = process.env.KEEL_LARGE_LIBRARY_E2E_PROFILE_DIR ?? "";
 // CDP Network events can expose serpent:// requests that Chromium omits from
 // PerformanceResourceTiming. Opt in for diagnostic runs only.
-const networkTraceEnabled = process.env.SERPENT_LARGE_LIBRARY_E2E_NETWORK_TRACE === "1";
+const networkTraceEnabled = process.env.KEEL_LARGE_LIBRARY_E2E_NETWORK_TRACE === "1";
 // When set, record a devtools.timeline trace covering all jumps and write it
 // as one JSON file (event-level timeline: layout/style/paint/function calls).
-const traceDir = process.env.SERPENT_LARGE_LIBRARY_E2E_TRACE_DIR ?? "";
+const traceDir = process.env.KEEL_LARGE_LIBRARY_E2E_TRACE_DIR ?? "";
 
 /**
  * Count live assets without loading better-sqlite3 into the Playwright runner:
@@ -96,7 +96,7 @@ function countLiveAssetsViaElectron(libraryPath: string): number {
 
 test.describe.configure({ timeout: 1_200_000 });
 
-test.skip(!fixturePath, "Set SERPENT_LARGE_LIBRARY_E2E_PATH to a generated 10k+ fixture.");
+test.skip(!fixturePath, "Set KEEL_LARGE_LIBRARY_E2E_PATH to a generated 10k+ fixture.");
 
 test("fourth-stop random scrollbar jumps measure progressive visible decode", async () => {
   if (!fixturePath) throw new Error("Missing large-library fixture path.");
@@ -128,7 +128,7 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
   // Diagnostics can persist the isolated app log outside the disposable
   // benchmark root. The default remains per-run isolation and is always
   // cleaned with the rest of the temporary root.
-  const userDataPath = process.env.SERPENT_LARGE_LIBRARY_E2E_USER_DATA_PATH
+  const userDataPath = process.env.KEEL_LARGE_LIBRARY_E2E_USER_DATA_PATH
     || path.join(temporaryRoot, "user-data");
   if (!reuseLibraryPath) {
     if (process.platform === "win32") {
@@ -151,15 +151,15 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
     }
   }
 
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath: resolveElectronExecutablePath(),
     env: electronLaunchEnv({
-      SERPENT_E2E: "1",
-      SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-      SERPENT_E2E_USER_DATA_PATH: userDataPath,
+      KEEL_E2E: "1",
+      KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+      KEEL_E2E_USER_DATA_PATH: userDataPath,
     }),
   });
 
@@ -186,7 +186,7 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
     await expect(window.locator(".asset-grid")).toHaveClass(/is-masonry/);
     // Smaller real libraries (post-ignore visible sets) have proportionally
     // shorter canvases; the sa65 10k-asset default stays the operator default.
-    const minScrollHeight = Number(process.env.SERPENT_LARGE_LIBRARY_E2E_MIN_SCROLL_HEIGHT ?? 100_000);
+    const minScrollHeight = Number(process.env.KEEL_LARGE_LIBRARY_E2E_MIN_SCROLL_HEIGHT ?? 100_000);
     await expect.poll(
       () => canvas.evaluate((element) => element.scrollHeight),
       { timeout: 30_000 },
@@ -782,7 +782,7 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
     }
 
     const elapsed = samples.map((sample) => sample.elapsedMs).sort((a, b) => a - b);
-    const workerCommandSpans = process.env.SERPENT_WORKER_CMD_LOG === "1"
+    const workerCommandSpans = process.env.KEEL_WORKER_CMD_LOG === "1"
       ? readSessionLog(userDataPath)
         .split(/\r?\n/)
         .flatMap((line) => {
@@ -798,7 +798,7 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
           }
         })
       : [];
-    const workerLagEvents = process.env.SERPENT_LAG_LOG === "1"
+    const workerLagEvents = process.env.KEEL_LAG_LOG === "1"
       ? readSessionLog(userDataPath)
         .split(/\r?\n/)
         .flatMap((line) => {
@@ -819,7 +819,7 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
           }
         })
       : [];
-    const reconciliationStages = process.env.SERPENT_REFRESH_STAGE_LOG === "1"
+    const reconciliationStages = process.env.KEEL_REFRESH_STAGE_LOG === "1"
       ? readSessionLog(userDataPath)
         .split(/\r?\n/)
         .flatMap((line) => {
@@ -843,7 +843,7 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
           }
         })
       : [];
-    const mediaQueueStages = process.env.SERPENT_MEDIA_QUEUE_LOG === "1"
+    const mediaQueueStages = process.env.KEEL_MEDIA_QUEUE_LOG === "1"
       ? readSessionLog(userDataPath)
         .split(/\r?\n/)
         .flatMap((line) => {
@@ -919,7 +919,7 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
       ).length,
       observationTimeoutMs,
       ...(networkTraceEnabled ? { networkByJump } : {}),
-      ...(process.env.SERPENT_WORKER_CMD_LOG === "1" ? {
+      ...(process.env.KEEL_WORKER_CMD_LOG === "1" ? {
         pathWorkerByJump,
         pageWorkerByJump,
         workerCommandsNearJumps: samples.map((sample) => ({
@@ -931,7 +931,7 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
           ).slice(0, 500),
         })),
       } : {}),
-      ...(process.env.SERPENT_LAG_LOG === "1" ? {
+      ...(process.env.KEEL_LAG_LOG === "1" ? {
         workerLagByJump: samples.map((sample) => ({
           fraction: sample.fraction,
           events: workerLagEvents.filter((event) =>
@@ -940,7 +940,7 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
           ),
         })),
       } : {}),
-      ...(process.env.SERPENT_REFRESH_STAGE_LOG === "1" ? {
+      ...(process.env.KEEL_REFRESH_STAGE_LOG === "1" ? {
         reconciliationStagesNearJumps: samples.map((sample) => ({
           fraction: sample.fraction,
           stages: reconciliationStages.filter((stage) =>
@@ -949,7 +949,7 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
           ),
         })),
       } : {}),
-      ...(process.env.SERPENT_MEDIA_QUEUE_LOG === "1" ? {
+      ...(process.env.KEEL_MEDIA_QUEUE_LOG === "1" ? {
         mediaQueueStagesNearJumps: samples.map((sample) => ({
           fraction: sample.fraction,
           stages: mediaQueueStages.filter((stage) =>
@@ -973,7 +973,7 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
       p95Ms: result.p95Ms,
       maxMs: result.maxMs,
       firstVisualWaveP95Ms: result.firstVisualWaveP95Ms,
-      ...((networkTraceEnabled || process.env.SERPENT_WORKER_CMD_LOG === "1") ? {
+      ...((networkTraceEnabled || process.env.KEEL_WORKER_CMD_LOG === "1") ? {
         diagnosticStages: result.samples.map((sample) => {
           const network = networkByJump.find((jump) => jump.fraction === sample.fraction)?.stages ?? [];
           return {
@@ -1003,7 +1003,7 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
         pageTimeline: sample.pageTimeline,
         longTaskCount: sample.longTaskCount,
         longTaskMaxMs: sample.longTaskMaxMs,
-        ...(process.env.SERPENT_WORKER_CMD_LOG === "1"
+        ...(process.env.KEEL_WORKER_CMD_LOG === "1"
           ? {
               pathWorker: pathWorkerByJump.find((jump) => jump.fraction === sample.fraction),
               pageWorker: pageWorkerByJump.find((jump) => jump.fraction === sample.fraction),

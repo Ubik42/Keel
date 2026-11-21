@@ -4,7 +4,7 @@ import { z } from 'zod';
  * Theme preference persistence (REQ-THEME-001 / clarification #11).
  *
  * Default preference is `system` (follow OS appearance). Effective theme is
- * resolved to `light` or `dark`. E2E injects `__SERPENT_E2E_THEME__` via
+ * resolved to `light` or `dark`. E2E injects `__KEEL_E2E_THEME__` via
  * preload so visual baselines stay stable when preference is still `system`.
  */
 
@@ -92,8 +92,8 @@ export function readSystemTheme(
   ) ?? (() => ({ matches: false })),
 ): ResolvedTheme {
   const e2eTheme = (
-    globalThis as { __SERPENT_E2E_THEME__?: string }
-  ).__SERPENT_E2E_THEME__;
+    globalThis as { __KEEL_E2E_THEME__?: string }
+  ).__KEEL_E2E_THEME__;
   if (e2eTheme === 'light' || e2eTheme === 'dark') {
     return e2eTheme;
   }

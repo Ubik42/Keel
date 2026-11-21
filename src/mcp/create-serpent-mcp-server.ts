@@ -46,7 +46,7 @@ export type SerpentMcpServerOptions = {
  * MCP clients receive this during initialize, so an Agent does not have to
  * infer Serpent's targeting and confirmation rules from tool names alone.
  */
-export const SERPENT_MCP_INSTRUCTIONS = [
+export const KEEL_MCP_INSTRUCTIONS = [
   'After initialize, call tools/list to discover the available Serpent tools.',
   'Call serpent_library_list_open or serpent_library_list_recent to obtain a libraryId.',
   'Every library-scoped tool call must include that explicit libraryId; desktop focus is never an implicit target.',
@@ -78,7 +78,7 @@ export function createSerpentMcpServer(options: SerpentMcpServerOptions): Server
     },
     {
       capabilities: { tools: { listChanged: true }, logging: {} },
-      instructions: SERPENT_MCP_INSTRUCTIONS,
+      instructions: KEEL_MCP_INSTRUCTIONS,
     },
   );
 

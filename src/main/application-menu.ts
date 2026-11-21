@@ -183,7 +183,7 @@ export function installApplicationMenu(options?: {
     return;
   }
   const showDevTools =
-    options?.showDevTools ?? (!app.isPackaged || process.env.SERPENT_E2E === "1");
+    options?.showDevTools ?? (!app.isPackaged || process.env.KEEL_E2E === "1");
   const template = buildApplicationMenuTemplate({
     platform,
     showDevTools,

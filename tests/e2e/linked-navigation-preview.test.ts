@@ -48,15 +48,15 @@ test('decodes direct JPG and # TGA previews with 4k linked directories, and reta
     await sharp({ create: { width: 480, height: 480, channels: 3, background: { r: 42, g: 108, b: 174 } } })
       .jpeg().toFile(path.join(sourceRoot, 'direct.jpg'));
     execFileSync(resolveOiiotoolPath(), ['--wildcardoff', '--pattern', 'checker', '32x16', '3', '-o', path.join(sourceRoot, 'derived.tga')]);
-    const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
     const launch = () => electron.launch({
       args: [applicationDirectory], cwd: applicationDirectory, executablePath: resolveElectronExecutablePath(),
       env: electronLaunchEnv({
-        SERPENT_E2E: '1', SERPENT_E2E_HIDE_WINDOW: '1',
-        SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
-        SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-        SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-        SERPENT_E2E_LINKED_SOURCE: sourceRoot,
+        KEEL_E2E: '1', KEEL_E2E_HIDE_WINDOW: '1',
+        KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
+        KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+        KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+        KEEL_E2E_LINKED_SOURCE: sourceRoot,
       }),
     });
     application = await launch();

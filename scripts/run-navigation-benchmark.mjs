@@ -10,13 +10,13 @@ import path from 'node:path';
  *
  * Paths are passed on the command line so the repository never stores a local
  * path, library name or asset name. The report is written outside the repo
- * (override with SERPENT_NAV_BENCH_OUT).
+ * (override with KEEL_NAV_BENCH_OUT).
  *
- * Destructive operations stay opt-in: set SERPENT_NAV_BENCH_WRITE_LIBRARY to a
- * disposable copy and SERPENT_NAV_BENCH_WRITE_CONFIRM=1 to include them.
+ * Destructive operations stay opt-in: set KEEL_NAV_BENCH_WRITE_LIBRARY to a
+ * disposable copy and KEEL_NAV_BENCH_WRITE_CONFIRM=1 to include them.
  */
-const library = process.argv[2] ?? process.env.SERPENT_NAV_BENCH_LIBRARY;
-const secondLibrary = process.argv[3] ?? process.env.SERPENT_NAV_BENCH_LIBRARY_B;
+const library = process.argv[2] ?? process.env.KEEL_NAV_BENCH_LIBRARY;
+const secondLibrary = process.argv[3] ?? process.env.KEEL_NAV_BENCH_LIBRARY_B;
 
 if (!library) {
   console.error('Usage: npm run test:perf:navigation -- <library> [second-library]');
@@ -32,7 +32,7 @@ for (const [label, candidate] of [['library', library], ['second-library', secon
   }
 }
 
-const reportPath = process.env.SERPENT_NAV_BENCH_OUT
+const reportPath = process.env.KEEL_NAV_BENCH_OUT
   ?? path.join(tmpdir(), `serpent-nav-bench-${Date.now()}.json`);
 
 const child = spawn(process.execPath, [
@@ -41,9 +41,9 @@ const child = spawn(process.execPath, [
 ], {
   env: {
     ...process.env,
-    SERPENT_NAV_BENCH_LIBRARY: path.resolve(library),
-    ...(secondLibrary ? { SERPENT_NAV_BENCH_LIBRARY_B: path.resolve(secondLibrary) } : {}),
-    SERPENT_NAV_BENCH_OUT: reportPath,
+    KEEL_NAV_BENCH_LIBRARY: path.resolve(library),
+    ...(secondLibrary ? { KEEL_NAV_BENCH_LIBRARY_B: path.resolve(secondLibrary) } : {}),
+    KEEL_NAV_BENCH_OUT: reportPath,
   },
   stdio: 'inherit',
 });

@@ -10,11 +10,11 @@ test('sidebar searches stay in headings, tags edit in place, and image trash wor
   const root = mkdtempSync(path.join(tmpdir(), 'serpent-inline-sidebar-'));
   const source = path.join(root, 'fixture.png');
   writeFileSync(source, Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==', 'base64'));
-  const appDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const appDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const app = await electron.launch({
     executablePath: resolveElectronExecutablePath(),
-    args: process.env.SERPENT_E2E_ELECTRON_EXECUTABLE ? [] : [appDirectory], cwd: appDirectory,
-    env: { ...process.env, SERPENT_E2E: '1', SERPENT_E2E_USER_DATA_PATH: path.join(root, 'profile'), SERPENT_E2E_CREATE_PARENT_PATH: root, SERPENT_E2E_IMPORT_FILES: source },
+    args: process.env.KEEL_E2E_ELECTRON_EXECUTABLE ? [] : [appDirectory], cwd: appDirectory,
+    env: { ...process.env, KEEL_E2E: '1', KEEL_E2E_USER_DATA_PATH: path.join(root, 'profile'), KEEL_E2E_CREATE_PARENT_PATH: root, KEEL_E2E_IMPORT_FILES: source },
   });
   try {
     await app.evaluate(({ dialog }, selected) => { dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [selected] }); }, root);

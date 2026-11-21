@@ -98,7 +98,7 @@ test("uses coherent Windows UI fonts and readable caption sizes", async (
   writeFileSync(sourcePath, Buffer.from("PNG-typography"));
   const libraryName = "设计资源库";
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   let application: ElectronApplication | undefined;
 
   try {
@@ -108,11 +108,11 @@ test("uses coherent Windows UI fonts and readable caption sizes", async (
       executablePath: resolveElectronExecutablePath(),
       env: {
         ...process.env,
-        SERPENT_E2E: "1",
-        SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
-        SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
+        KEEL_E2E: "1",
+        KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
+        KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
         // 导入 1 资产让 Inspector 有内容（micro-label 等字段只随资产渲染）
-        SERPENT_E2E_IMPORT_FILES: sourcePath,
+        KEEL_E2E_IMPORT_FILES: sourcePath,
       },
     });
     const window = await application.firstWindow();
@@ -132,7 +132,7 @@ test("uses coherent Windows UI fonts and readable caption sizes", async (
     const typography = await readTypography(window);
 
     expect(typography.platform).toBe("windows");
-    // E2E 主题解析走系统偏好（preload 的 __SERPENT_E2E_THEME__ 注入在隔离
+    // E2E 主题解析走系统偏好（preload 的 __KEEL_E2E_THEME__ 注入在隔离
     // world，主 world 读不到）——按系统断言，而非写死 dark。
     const expectedTheme = await window.evaluate(() =>
       globalThis.matchMedia("(prefers-color-scheme: light)").matches

@@ -962,7 +962,7 @@ export type PluginCompatibilityResult =
   | { ok: true }
   | {
     ok: false;
-    code: 'PLUGIN_SERPENT_VERSION_UNSUPPORTED' | 'PLUGIN_API_VERSION_UNSUPPORTED' | 'PLUGIN_PLATFORM_UNSUPPORTED';
+    code: 'PLUGIN_KEEL_VERSION_UNSUPPORTED' | 'PLUGIN_API_VERSION_UNSUPPORTED' | 'PLUGIN_PLATFORM_UNSUPPORTED';
     message: string;
   };
 
@@ -973,7 +973,7 @@ export function validatePluginManifestCompatibility(
   if (!satisfiesSemverRange(target.serpentVersion, manifest.engines.serpent)) {
     return {
       ok: false,
-      code: 'PLUGIN_SERPENT_VERSION_UNSUPPORTED',
+      code: 'PLUGIN_KEEL_VERSION_UNSUPPORTED',
       message: 'This plugin version does not support the current Serpent version.',
     };
   }

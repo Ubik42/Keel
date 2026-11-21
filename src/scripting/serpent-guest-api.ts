@@ -433,8 +433,8 @@ const guestCommandDefinitions: readonly SerpentGuestCommandDefinition[] = [
   ...pluginOnlyGuestCommandDefinitions,
 ];
 
-export const SERPENT_GUEST_COMMANDS = guestCommandDefinitions;
-export const SERPENT_SCRIPT_GUEST_COMMANDS = scriptGuestCommandDefinitions;
+export const KEEL_GUEST_COMMANDS = guestCommandDefinitions;
+export const KEEL_SCRIPT_GUEST_COMMANDS = scriptGuestCommandDefinitions;
 
 function guestMethodsForPrefix(prefix: string): string[] {
   return guestCommandDefinitions
@@ -442,17 +442,17 @@ function guestMethodsForPrefix(prefix: string): string[] {
     .map(({ path }) => path.slice(prefix.length + 1));
 }
 
-export const SERPENT_GUEST_ASSET_METHODS = guestMethodsForPrefix('assets');
-export const SERPENT_GUEST_LIBRARY_METHODS = guestMethodsForPrefix('library');
-export const SERPENT_GUEST_FOLDER_METHODS = guestMethodsForPrefix('folders');
-export const SERPENT_GUEST_TAG_METHODS = guestMethodsForPrefix('tags');
-export const SERPENT_GUEST_LINKED_FOLDER_METHODS = guestMethodsForPrefix('linkedFolders');
-export const SERPENT_GUEST_FILE_METHODS = guestMethodsForPrefix('files');
-export const SERPENT_GUEST_TRASH_METHODS = guestMethodsForPrefix('trash');
-export const SERPENT_GUEST_PALETTE_METHODS = guestMethodsForPrefix('palettes');
-export const SERPENT_GUEST_MEDIA_METHODS = guestMethodsForPrefix('media');
+export const KEEL_GUEST_ASSET_METHODS = guestMethodsForPrefix('assets');
+export const KEEL_GUEST_LIBRARY_METHODS = guestMethodsForPrefix('library');
+export const KEEL_GUEST_FOLDER_METHODS = guestMethodsForPrefix('folders');
+export const KEEL_GUEST_TAG_METHODS = guestMethodsForPrefix('tags');
+export const KEEL_GUEST_LINKED_FOLDER_METHODS = guestMethodsForPrefix('linkedFolders');
+export const KEEL_GUEST_FILE_METHODS = guestMethodsForPrefix('files');
+export const KEEL_GUEST_TRASH_METHODS = guestMethodsForPrefix('trash');
+export const KEEL_GUEST_PALETTE_METHODS = guestMethodsForPrefix('palettes');
+export const KEEL_GUEST_MEDIA_METHODS = guestMethodsForPrefix('media');
 
-export const SERPENT_GUEST_NAMESPACES = [
+export const KEEL_GUEST_NAMESPACES = [
   'assets',
   'library',
   'folders',

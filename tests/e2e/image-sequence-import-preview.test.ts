@@ -59,21 +59,21 @@ test("the image sequence confirm panel shows a statement title and a live frame 
   );
 
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath: resolveElectronExecutablePath(),
     env: {
       ...process.env,
-      SERPENT_E2E: "1",
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
+      KEEL_E2E: "1",
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
       // 保留确认面板（E2E 默认会自动展开序列，见 Main 的 e2eAutoExpand）。
-      SERPENT_E2E_SEQUENCE_PROMPT: "1",
+      KEEL_E2E_SEQUENCE_PROMPT: "1",
       // 四张连续帧一起交给导入：关闭自动成组后，Worker 会给出待确认的序列。
-      SERPENT_E2E_IMPORT_FILES: framePaths.join(path.delimiter),
+      KEEL_E2E_IMPORT_FILES: framePaths.join(path.delimiter),
     },
   });
 

@@ -13,7 +13,7 @@ const child = spawn(process.execPath, [
 ], {
   env: {
     ...process.env,
-    SERPENT_LARGE_LIBRARY_E2E_PATH: path.resolve(fixturePath),
+    KEEL_LARGE_LIBRARY_E2E_PATH: path.resolve(fixturePath),
   },
   stdio: 'inherit',
 });

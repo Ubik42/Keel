@@ -212,7 +212,7 @@ test("E2E trash delay stays gated to unpackaged E2E", async () => {
     { type: "asset.trash", libraryId: "lib-1", assetIds: ["asset-1"] },
     {
       isUnpackagedE2e: () => true,
-      env: (name) => (name === "SERPENT_E2E_TRASH_DELAY_MS" ? "25" : undefined),
+      env: (name) => (name === "KEEL_E2E_TRASH_DELAY_MS" ? "25" : undefined),
       delay,
     },
   );

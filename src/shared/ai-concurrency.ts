@@ -31,7 +31,7 @@ export function normalizeAiAnalysisConcurrency(raw: unknown): number {
 }
 
 export function resolveAiAnalysisConcurrency(
-  raw: string | undefined = process.env.SERPENT_AI_CONCURRENCY,
+  raw: string | undefined = process.env.KEEL_AI_CONCURRENCY,
 ): number {
   return normalizeAiAnalysisConcurrency(raw);
 }

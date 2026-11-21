@@ -95,11 +95,11 @@ test("capture primary UI surfaces for the wave-3 UX audit", async () => {
     executablePath: resolveElectronExecutablePath(),
     env: {
       ...process.env,
-      SERPENT_E2E: "1",
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
-      SERPENT_E2E_IMPORT_FILES: sourcePaths.join(path.delimiter),
+      KEEL_E2E: "1",
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
+      KEEL_E2E_IMPORT_FILES: sourcePaths.join(path.delimiter),
     },
   });
 

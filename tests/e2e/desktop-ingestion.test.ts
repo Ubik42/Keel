@@ -60,18 +60,18 @@ test('pastes a Main-owned clipboard image into the current folder', async () => 
   ));
   const libraryName = '桌面导入验收';
   const libraryPath = path.join(temporaryRoot, libraryName);
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath: resolveElectronExecutablePath(),
     env: {
       ...process.env,
-      SERPENT_E2E: '1',
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_CLIPBOARD_IMAGE_PATH: clipboardSource,
-      SERPENT_E2E_CLIPBOARD_NOW: '2026-07-13T12:34:56.000Z',
+      KEEL_E2E: '1',
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_CLIPBOARD_IMAGE_PATH: clipboardSource,
+      KEEL_E2E_CLIPBOARD_NOW: '2026-07-13T12:34:56.000Z',
     },
   });
 
@@ -123,18 +123,18 @@ test('pastes a clipboard image through the File menu into the library (Serpent-a
     'base64',
   ));
   const libraryName = '菜单粘贴验收';
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath: resolveElectronExecutablePath(),
     env: {
       ...process.env,
-      SERPENT_E2E: '1',
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_CLIPBOARD_IMAGE_PATH: clipboardSource,
-      SERPENT_E2E_CLIPBOARD_NOW: '2026-09-05T08:00:00.000Z',
+      KEEL_E2E: '1',
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_CLIPBOARD_IMAGE_PATH: clipboardSource,
+      KEEL_E2E_CLIPBOARD_NOW: '2026-09-05T08:00:00.000Z',
     },
   });
 
@@ -172,18 +172,18 @@ test('creates an asset when an image is pasted via Ctrl+V with no clipboardData 
     'base64',
   ));
   const libraryName = 'CtrlV粘贴验收';
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath: resolveElectronExecutablePath(),
     env: {
       ...process.env,
-      SERPENT_E2E: '1',
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_CLIPBOARD_IMAGE_PATH: clipboardSource,
-      SERPENT_E2E_CLIPBOARD_NOW: '2026-09-05T09:00:00.000Z',
+      KEEL_E2E: '1',
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_CLIPBOARD_IMAGE_PATH: clipboardSource,
+      KEEL_E2E_CLIPBOARD_NOW: '2026-09-05T09:00:00.000Z',
     },
   });
 
@@ -226,18 +226,18 @@ test('creates an asset when an image is pasted via Cmd+V on macOS (Serpent-a3de5
     'base64',
   ));
   const libraryName = 'CmdV粘贴验收';
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath: resolveElectronExecutablePath(),
     env: {
       ...process.env,
-      SERPENT_E2E: '1',
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_CLIPBOARD_IMAGE_PATH: clipboardSource,
-      SERPENT_E2E_CLIPBOARD_NOW: '2026-09-05T10:00:00.000Z',
+      KEEL_E2E: '1',
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_CLIPBOARD_IMAGE_PATH: clipboardSource,
+      KEEL_E2E_CLIPBOARD_NOW: '2026-09-05T10:00:00.000Z',
     },
   });
 
@@ -268,17 +268,17 @@ test('returns specific safe desktop-ingestion errors and records their diagnosti
   const temporaryRoot = mkdtempSync(path.join(tmpdir(), 'serpent-desktop-errors-e2e-'));
   const invalidClipboardSource = path.join(temporaryRoot, 'not-an-image.bin');
   writeFileSync(invalidClipboardSource, 'not an image');
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath: resolveElectronExecutablePath(),
     env: {
       ...process.env,
-      SERPENT_E2E: '1',
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_CLIPBOARD_IMAGE_PATH: invalidClipboardSource,
+      KEEL_E2E: '1',
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_CLIPBOARD_IMAGE_PATH: invalidClipboardSource,
     },
   });
 

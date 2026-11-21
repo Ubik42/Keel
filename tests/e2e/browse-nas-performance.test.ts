@@ -19,13 +19,13 @@ import {
  * 「scroll to ~15% and every card reloads」 report needs both renderer churn and
  * Main-process origin reads in one report.
  *
- * Requires SERPENT_E2E_NAS_LIBRARY_PATH and is skipped without it, so neither
+ * Requires KEEL_E2E_NAS_LIBRARY_PATH and is skipped without it, so neither
  * the curated `npm run test:e2e` file list nor a bare `playwright test` over
  * `tests/e2e` (playwright.config testDir) can open a real user library by
  * accident. A real journey is only ever started by setting that variable.
  */
-const libraryPath = process.env.SERPENT_E2E_NAS_LIBRARY_PATH;
-const reportPath = process.env.SERPENT_NAS_PROBE_OUT;
+const libraryPath = process.env.KEEL_E2E_NAS_LIBRARY_PATH;
+const reportPath = process.env.KEEL_NAS_PROBE_OUT;
 
 test.describe.configure({ timeout: 420_000 });
 
@@ -335,30 +335,30 @@ function openIndexTransition(samples: PhaseSample[]): {
 test("measures canvas stability while scrolling a real library", async () => {
   test.skip(
     !libraryPath,
-    "Set SERPENT_E2E_NAS_LIBRARY_PATH to a real library to run this measurement.",
+    "Set KEEL_E2E_NAS_LIBRARY_PATH to a real library to run this measurement.",
   );
 
   const temporaryRoot = mkdtempSync(path.join(tmpdir(), "serpent-nas-probe-"));
   const userDataPath = path.join(temporaryRoot, "user-data");
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
 
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath: resolveElectronExecutablePath(),
     env: electronLaunchEnv({
-      SERPENT_E2E: "1",
-      SERPENT_E2E_USER_DATA_PATH: userDataPath,
-      SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath as string,
-      // Main disables the preview mirror whenever SERPENT_E2E=1 (E2E suites
+      KEEL_E2E: "1",
+      KEEL_E2E_USER_DATA_PATH: userDataPath,
+      KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath as string,
+      // Main disables the preview mirror whenever KEEL_E2E=1 (E2E suites
       // mutate artifact rows directly). A measurement of a real library must
       // run with production caching, otherwise every preview remount is
-      // reported as an origin read. Set SERPENT_PREVIEW_CACHE_FORCE=0 to
+      // reported as an origin read. Set KEEL_PREVIEW_CACHE_FORCE=0 to
       // deliberately measure the uncached path.
-      SERPENT_PREVIEW_CACHE_FORCE: process.env.SERPENT_PREVIEW_CACHE_FORCE ?? "1",
-      SERPENT_PREVIEW_CACHE_LOG: "1",
-      SERPENT_PREVIEW_CACHE_BUDGET_BYTES:
-        process.env.SERPENT_PREVIEW_CACHE_BUDGET_BYTES ?? String(2 * 1024 * 1024 * 1024),
+      KEEL_PREVIEW_CACHE_FORCE: process.env.KEEL_PREVIEW_CACHE_FORCE ?? "1",
+      KEEL_PREVIEW_CACHE_LOG: "1",
+      KEEL_PREVIEW_CACHE_BUDGET_BYTES:
+        process.env.KEEL_PREVIEW_CACHE_BUDGET_BYTES ?? String(2 * 1024 * 1024 * 1024),
     }),
   });
 
@@ -445,7 +445,7 @@ test("measures canvas stability while scrolling a real library", async () => {
 
     const report = {
       libraryPathSet: true,
-      previewCacheForced: process.env.SERPENT_PREVIEW_CACHE_FORCE ?? "1",
+      previewCacheForced: process.env.KEEL_PREVIEW_CACHE_FORCE ?? "1",
       firstCardMs,
       total: {
         slotCreated: final.slotCreated,

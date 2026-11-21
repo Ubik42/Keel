@@ -29,21 +29,21 @@ describe('recent libraries store (main)', () => {
   let originalRestoreRecent: string | undefined;
 
   beforeEach(() => {
-    originalE2E = process.env.SERPENT_E2E;
-    originalRestoreRecent = process.env.SERPENT_E2E_RESTORE_RECENT;
-    delete process.env.SERPENT_E2E;
-    delete process.env.SERPENT_E2E_RESTORE_RECENT;
+    originalE2E = process.env.KEEL_E2E;
+    originalRestoreRecent = process.env.KEEL_E2E_RESTORE_RECENT;
+    delete process.env.KEEL_E2E;
+    delete process.env.KEEL_E2E_RESTORE_RECENT;
     storeDirectory = mkdtempSync(path.join(tmpdir(), 'serpent-recent-store-'));
     storePath = path.join(storeDirectory, 'recent-library.json');
   });
 
   afterEach(() => {
-    if (originalE2E === undefined) delete process.env.SERPENT_E2E;
-    else process.env.SERPENT_E2E = originalE2E;
+    if (originalE2E === undefined) delete process.env.KEEL_E2E;
+    else process.env.KEEL_E2E = originalE2E;
     if (originalRestoreRecent === undefined) {
-      delete process.env.SERPENT_E2E_RESTORE_RECENT;
+      delete process.env.KEEL_E2E_RESTORE_RECENT;
     } else {
-      process.env.SERPENT_E2E_RESTORE_RECENT = originalRestoreRecent;
+      process.env.KEEL_E2E_RESTORE_RECENT = originalRestoreRecent;
     }
     rmSync(storeDirectory, { force: true, recursive: true });
   });
@@ -173,7 +173,7 @@ describe('recent libraries store (main)', () => {
   });
 
   it('does not persist or read anything when E2E gating disables persistence', () => {
-    process.env.SERPENT_E2E = '1';
+    process.env.KEEL_E2E = '1';
     expect(recentLibraryPersistenceEnabled()).toBe(false);
 
     rememberRecentLibrary(storePath, { path: '/libraries/a', name: 'A' });
@@ -181,7 +181,7 @@ describe('recent libraries store (main)', () => {
     expect(readRecentLibraryEntries(storePath)).toEqual([]);
     expect(readActiveLibraryPath(storePath)).toBeNull();
 
-    process.env.SERPENT_E2E_RESTORE_RECENT = '1';
+    process.env.KEEL_E2E_RESTORE_RECENT = '1';
     expect(recentLibraryPersistenceEnabled()).toBe(true);
     rememberRecentLibrary(storePath, { path: '/libraries/a', name: 'A' });
     expect(readRecentLibraryEntries(storePath)).toHaveLength(1);
@@ -192,10 +192,10 @@ describe('recent libraries store (main)', () => {
     // Serpent-85a9b0：生产默认自动打开上次的资源库。
     expect(recentLibraryAutoOpenEnabled()).toBe(true);
 
-    process.env.SERPENT_E2E = '1';
+    process.env.KEEL_E2E = '1';
     expect(recentLibraryAutoOpenEnabled()).toBe(false);
 
-    process.env.SERPENT_E2E_RESTORE_RECENT = '1';
+    process.env.KEEL_E2E_RESTORE_RECENT = '1';
     expect(recentLibraryAutoOpenEnabled()).toBe(true);
   });
 

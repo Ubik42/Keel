@@ -29,14 +29,14 @@ async function launchApplication(
     executablePath: resolveElectronExecutablePath(),
     env: {
       ...process.env,
-      SERPENT_E2E: '1',
-      SERPENT_E2E_SHOW_INACTIVE: '1',
-      SERPENT_E2E_NATIVE_ASSET_DRAG: '1',
-      SERPENT_E2E_RESTORE_RECENT: '1',
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-      SERPENT_E2E_IMPORT_FILES: path.join(temporaryRoot, ASSET_NAME),
+      KEEL_E2E: '1',
+      KEEL_E2E_SHOW_INACTIVE: '1',
+      KEEL_E2E_NATIVE_ASSET_DRAG: '1',
+      KEEL_E2E_RESTORE_RECENT: '1',
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+      KEEL_E2E_IMPORT_FILES: path.join(temporaryRoot, ASSET_NAME),
     },
   });
 }
@@ -100,7 +100,7 @@ test('native asset drag with copy/link source reaches trash and survives restart
   const sourcePath = path.join(temporaryRoot, ASSET_NAME);
   const libraryName = 'Native drag regression';
   const libraryPath = path.join(temporaryRoot, libraryName);
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   await sharp({
     create: {
       width: 3072,
@@ -209,7 +209,7 @@ test('a renamed source cannot start a native drag until Main refreshes its valid
   const renamedName = 'native-trash-probe-renamed.png';
   const libraryName = 'Native drag path refresh';
   const libraryPath = path.join(temporaryRoot, libraryName);
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   await sharp({
     create: { width: 64, height: 64, channels: 3, background: '#4382bc' },
   }).png().toFile(path.join(temporaryRoot, ASSET_NAME));

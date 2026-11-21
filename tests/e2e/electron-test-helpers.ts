@@ -31,7 +31,7 @@ export function resolveSessionLogPath(logsPath: string): string {
 }
 
 export function resolveElectronExecutablePath(): string {
-  const override = process.env.SERPENT_E2E_ELECTRON_EXECUTABLE;
+  const override = process.env.KEEL_E2E_ELECTRON_EXECUTABLE;
   if (override) return override;
 
   const executablePath: unknown = require('electron');

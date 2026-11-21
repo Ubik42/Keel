@@ -1,6 +1,6 @@
 /**
- * Opt-in real WebDAV check. Set SERPENT_REAL_SYNC_CONFIG_PATH to an existing
- * sync-servers.json and SERPENT_REAL_SYNC_URL to the exact configured URL.
+ * Opt-in real WebDAV check. Set KEEL_REAL_SYNC_CONFIG_PATH to an existing
+ * sync-servers.json and KEEL_REAL_SYNC_URL to the exact configured URL.
  * The encrypted server record is copied into isolated E2E userData. This test
  * creates and then removes only its uniquely named remote library directory.
  */
@@ -13,8 +13,8 @@ import { _electron as electron, expect, test, type ElectronApplication } from "@
 
 import { electronLaunchEnv, resolveElectronExecutablePath } from "./electron-test-helpers";
 
-const configPath = process.env.SERPENT_REAL_SYNC_CONFIG_PATH;
-const targetUrl = process.env.SERPENT_REAL_SYNC_URL;
+const configPath = process.env.KEEL_REAL_SYNC_CONFIG_PATH;
+const targetUrl = process.env.KEEL_REAL_SYNC_URL;
 const fixtureBytes = 64 * 1024 * 1024;
 
 test.describe.configure({ timeout: 180_000 });
@@ -56,13 +56,13 @@ test("saving auto sync during transfer on the configured WebDAV server", async (
       cwd: process.cwd(),
       executablePath: resolveElectronExecutablePath(),
       env: electronLaunchEnv({
-        SERPENT_E2E: "1",
-        SERPENT_E2E_HIDE_WINDOW: "1",
-        SERPENT_E2E_SHOW_INACTIVE: "1",
-        SERPENT_E2E_USER_DATA_PATH: userData,
-        SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-        SERPENT_E2E_OPEN_LIBRARY_PATH: path.join(temporaryRoot, remoteName),
-        SERPENT_E2E_IMPORT_FILES: source,
+        KEEL_E2E: "1",
+        KEEL_E2E_HIDE_WINDOW: "1",
+        KEEL_E2E_SHOW_INACTIVE: "1",
+        KEEL_E2E_USER_DATA_PATH: userData,
+        KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+        KEEL_E2E_OPEN_LIBRARY_PATH: path.join(temporaryRoot, remoteName),
+        KEEL_E2E_IMPORT_FILES: source,
       }),
     });
     const password = await application.evaluate(({ safeStorage }, encrypted) =>

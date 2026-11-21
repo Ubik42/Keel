@@ -52,8 +52,8 @@ type ErrorSink = ((error: unknown) => void) | undefined;
 
 export function recentLibraryPersistenceEnabled(): boolean {
   return (
-    process.env.SERPENT_E2E !== '1' ||
-    process.env.SERPENT_E2E_RESTORE_RECENT === '1'
+    process.env.KEEL_E2E !== '1' ||
+    process.env.KEEL_E2E_RESTORE_RECENT === '1'
   );
 }
 
@@ -61,11 +61,11 @@ export function recentLibraryPersistenceEnabled(): boolean {
  * 自动打开上次使用的资源库（Serpent-85a9b0）：生产环境默认开启；打开失败
  * （丢失/断开/不兼容）走优雅回退（只记日志、停留 idle，用户仍可从切换器
  * 选择其他库），不会阻塞启动表面。E2E 隔离重启测试仍需
- * SERPENT_E2E_RESTORE_RECENT=1 显式开启。
+ * KEEL_E2E_RESTORE_RECENT=1 显式开启。
  */
 export function recentLibraryAutoOpenEnabled(): boolean {
-  if (process.env.SERPENT_E2E === '1') {
-    return process.env.SERPENT_E2E_RESTORE_RECENT === '1';
+  if (process.env.KEEL_E2E === '1') {
+    return process.env.KEEL_E2E_RESTORE_RECENT === '1';
   }
   return true;
 }

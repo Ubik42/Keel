@@ -38,7 +38,7 @@ export async function executeLibraryTransferMainCommand(
           ? await selectSavePath(
               host,
               "exportZip",
-              process.env.SERPENT_E2E_EXPORT_DEST_ZIP,
+              process.env.KEEL_E2E_EXPORT_DEST_ZIP,
               {
                 defaultPath: defaultExportPath,
                 filters: [{ name: "ZIP", extensions: ["zip"] }],
@@ -47,7 +47,7 @@ export async function executeLibraryTransferMainCommand(
           : await selectSavePath(
               host,
               "exportFolder",
-              process.env.SERPENT_E2E_EXPORT_DEST,
+              process.env.KEEL_E2E_EXPORT_DEST,
               { defaultPath: defaultExportPath },
             );
       return destinationPath
@@ -66,7 +66,7 @@ export async function executeLibraryTransferMainCommand(
       const sourceFolderPath = await selectOpenDirectory(
         runtime.createNativeDialogHost(),
         "importLibraryFolder",
-        process.env.SERPENT_E2E_IMPORT_SOURCE,
+        process.env.KEEL_E2E_IMPORT_SOURCE,
       );
       if (!sourceFolderPath) return undefined;
       // Store source path for later use in copy/in-place decision.
@@ -79,14 +79,14 @@ export async function executeLibraryTransferMainCommand(
       const sourceZipPath = await selectOpenFile(
         host,
         "importZip",
-        process.env.SERPENT_E2E_IMPORT_SOURCE_ZIP,
+        process.env.KEEL_E2E_IMPORT_SOURCE_ZIP,
         [{ name: "ZIP", extensions: ["zip"] }],
       );
       if (!sourceZipPath) return undefined;
       const destinationParentPath = await selectOpenDirectory(
         host,
         "importZipDestination",
-        process.env.SERPENT_E2E_IMPORT_COPY_PARENT,
+        process.env.KEEL_E2E_IMPORT_COPY_PARENT,
         { createDirectory: true },
       );
       if (!destinationParentPath) return undefined;
@@ -111,7 +111,7 @@ export async function executeLibraryTransferMainCommand(
       const copyToParentPath = await selectOpenDirectory(
         runtime.createNativeDialogHost(),
         "importCopyDestination",
-        process.env.SERPENT_E2E_IMPORT_COPY_PARENT,
+        process.env.KEEL_E2E_IMPORT_COPY_PARENT,
         { createDirectory: true },
       );
       runtime.pendingImportSources.delete(importId);

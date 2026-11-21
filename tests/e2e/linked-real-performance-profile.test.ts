@@ -15,8 +15,8 @@ import { openLinkedFolderImportMenu, resolveElectronExecutablePath, waitForLibra
 import { installRendererProbe, readRendererProbe, resetRendererCounters, waitForVisibleDecoded } from "./perf-bench-helpers";
 
 /** Opt-in diagnostic: the source tree is only read; the catalog lives in an owned temporary directory. */
-const sourcePath = process.env.SERPENT_LINK_PROFILE_SOURCE;
-const tempParentPath = process.env.SERPENT_LINK_PROFILE_TEMP_PARENT;
+const sourcePath = process.env.KEEL_LINK_PROFILE_SOURCE;
+const tempParentPath = process.env.KEEL_LINK_PROFILE_TEMP_PARENT;
 
 test.describe.configure({ timeout: 600_000 });
 test.skip(!sourcePath || !tempParentPath, "Set a real linked source and a separate temporary parent directory.");
@@ -194,20 +194,20 @@ test("profile first linked-folder browse with real external images", async () =>
   const libraryPath = path.join(temporaryRoot, libraryName);
   let application: ElectronApplication | undefined;
   try {
-    const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
     application = await electron.launch({
       args: [applicationDirectory],
       cwd: applicationDirectory,
       executablePath: resolveElectronExecutablePath(),
       env: {
         ...process.env,
-        SERPENT_E2E: "1",
-        SERPENT_E2E_HIDE_WINDOW: "1",
-        SERPENT_E2E_PERF_OFFSCREEN: "1",
-        SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
-        SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-        SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-        SERPENT_E2E_LINKED_SOURCE: source,
+        KEEL_E2E: "1",
+        KEEL_E2E_HIDE_WINDOW: "1",
+        KEEL_E2E_PERF_OFFSCREEN: "1",
+        KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
+        KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+        KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+        KEEL_E2E_LINKED_SOURCE: source,
       },
     });
     const window = await application.firstWindow();

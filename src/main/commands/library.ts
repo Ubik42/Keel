@@ -70,7 +70,7 @@ export async function executeLibraryMainCommand(
       const selectedSourcePath = await selectOpenLibrarySource(
         runtime.createNativeDialogHost(),
         "openEagleLibrary",
-        process.env.SERPENT_E2E_OPEN_EAGLE_LIBRARY,
+        process.env.KEEL_E2E_OPEN_EAGLE_LIBRARY,
         ["zip", "eaglepack", "rar", "7z", "tar", "gz", "tgz", "bz2", "tbz", "tbz2", "xz", "txz"],
       );
       if (!selectedSourcePath) return undefined;
@@ -92,7 +92,7 @@ export async function executeLibraryMainCommand(
       const selectedSourcePath = await selectOpenFile(
         runtime.createNativeDialogHost(),
         "openBillfishLibrary",
-        process.env.SERPENT_E2E_OPEN_BILLFISH_LIBRARY,
+        process.env.KEEL_E2E_OPEN_BILLFISH_LIBRARY,
         [{ name: "Billfish Pack", extensions: ["billfishpack"] }],
       );
       if (!selectedSourcePath) return undefined;
@@ -127,7 +127,7 @@ export async function executeLibraryMainCommand(
       const selectedParentPath = await selectOpenDirectory(
         runtime.createNativeDialogHost(),
         "openEagleLibraryDestination",
-        process.env.SERPENT_E2E_OPEN_EAGLE_PARENT,
+        process.env.KEEL_E2E_OPEN_EAGLE_PARENT,
         { createDirectory: true },
       );
       return selectedParentPath
@@ -145,7 +145,7 @@ export async function executeLibraryMainCommand(
       const selectedParentPath = await selectOpenDirectory(
         runtime.createNativeDialogHost(),
         "openEagleLibraryDestination",
-        process.env.SERPENT_E2E_OPEN_BILLFISH_PARENT,
+        process.env.KEEL_E2E_OPEN_BILLFISH_PARENT,
         { createDirectory: true },
       );
       return selectedParentPath

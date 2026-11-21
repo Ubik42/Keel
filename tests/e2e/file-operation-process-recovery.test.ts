@@ -81,7 +81,7 @@ function readLatestImportOperation(libraryPath: string): string {
   const executablePath = resolveElectronExecutablePath();
   const script = [
     "const Database = require('better-sqlite3');",
-    "const db = new Database(process.env.SERPENT_E2E_DB_PATH, { readonly: true });",
+    "const db = new Database(process.env.KEEL_E2E_DB_PATH, { readonly: true });",
     "const row = db.prepare(\"SELECT status || '|' || COALESCE(error_code, '') AS value FROM file_operations WHERE kind = 'import' ORDER BY updated_at DESC LIMIT 1\").get();",
     "process.stdout.write(row?.value ?? '');",
     'db.close();',
@@ -91,7 +91,7 @@ function readLatestImportOperation(libraryPath: string): string {
     env: {
       ...process.env,
       ELECTRON_RUN_AS_NODE: '1',
-      SERPENT_E2E_DB_PATH: databasePath,
+      KEEL_E2E_DB_PATH: databasePath,
     },
     encoding: 'utf8',
   }).trim();
@@ -109,23 +109,23 @@ test('recovers an interrupted import after a complete Electron process restart',
   writeFileSync(interruptedSource, VALID_PNG_ALT);
 
   const executablePath = resolveElectronExecutablePath();
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const launch = (extra: NodeJS.ProcessEnv = {}) => electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath,
     env: electronLaunchEnv({
-      SERPENT_E2E: '1',
-      SERPENT_E2E_RESTORE_RECENT: '1',
-      SERPENT_E2E_USER_DATA_PATH: profilePath,
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E: '1',
+      KEEL_E2E_RESTORE_RECENT: '1',
+      KEEL_E2E_USER_DATA_PATH: profilePath,
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
       ...extra,
     }),
   });
 
   let application: ElectronApplication | undefined;
   try {
-    application = await launch({ SERPENT_E2E_IMPORT_FILES: stableSource });
+    application = await launch({ KEEL_E2E_IMPORT_FILES: stableSource });
     const firstWindow = await application.firstWindow();
     await firstWindow.getByRole('button', { name: '创建资源库' }).click();
     await firstWindow.getByRole('textbox', { name: '名称' }).fill(libraryName);
@@ -136,8 +136,8 @@ test('recovers an interrupted import after a complete Electron process restart',
     application = undefined;
 
     application = await launch({
-      SERPENT_E2E_IMPORT_FILES: interruptedSource,
-      SERPENT_E2E_LIBRARY_TERMINATE_AT: 'crash-after-place',
+      KEEL_E2E_IMPORT_FILES: interruptedSource,
+      KEEL_E2E_LIBRARY_TERMINATE_AT: 'crash-after-place',
     });
     const interruptedWindow = await application.firstWindow();
     await expect(

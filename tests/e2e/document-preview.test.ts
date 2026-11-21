@@ -73,18 +73,18 @@ test("opens a multi-page PDF with one rendered wrap per page, no placeholder lef
   writeFileSync(illustratorSourcePath, buildMultiPagePdf(1));
 
   const executablePath = resolveElectronExecutablePath();
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath,
     env: {
       ...process.env,
-      SERPENT_E2E: "1",
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
-      SERPENT_E2E_IMPORT_FILES: [pdfSourcePath, illustratorSourcePath].join(path.delimiter),
+      KEEL_E2E: "1",
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
+      KEEL_E2E_IMPORT_FILES: [pdfSourcePath, illustratorSourcePath].join(path.delimiter),
     },
   });
 
@@ -190,18 +190,18 @@ test("zooms the PDF viewer via toolbar and Ctrl+wheel, pans by drag (Serpent P2 
   writeFileSync(pdfSourcePath, buildMultiPagePdf(3));
 
   const executablePath = resolveElectronExecutablePath();
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath,
     env: {
       ...process.env,
-      SERPENT_E2E: "1",
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
-      SERPENT_E2E_IMPORT_FILES: pdfSourcePath,
+      KEEL_E2E: "1",
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
+      KEEL_E2E_IMPORT_FILES: pdfSourcePath,
     },
   });
 
@@ -338,18 +338,18 @@ test("opens a PDF asset in the scrollable page viewer (Serpent-8ca259)", async (
   writeFileSync(pdfSourcePath, MINIMAL_PDF);
 
   const executablePath = resolveElectronExecutablePath();
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath,
     env: {
       ...process.env,
-      SERPENT_E2E: "1",
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
-      SERPENT_E2E_IMPORT_FILES: pdfSourcePath,
+      KEEL_E2E: "1",
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
+      KEEL_E2E_IMPORT_FILES: pdfSourcePath,
     },
   });
 
@@ -400,18 +400,18 @@ test("opens an HTML asset in the embedded browser viewer (Serpent-8ca259)", asyn
   );
 
   const executablePath = resolveElectronExecutablePath();
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath,
     env: {
       ...process.env,
-      SERPENT_E2E: "1",
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
-      SERPENT_E2E_IMPORT_FILES: htmlSourcePath,
+      KEEL_E2E: "1",
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
+      KEEL_E2E_IMPORT_FILES: htmlSourcePath,
     },
   });
 

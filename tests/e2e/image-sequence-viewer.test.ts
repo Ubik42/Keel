@@ -74,7 +74,7 @@ test("auto-detects, manually rebuilds, persists, plays, rotates and mirrors an i
   );
 
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const launch = () =>
     electron.launch({
       args: [applicationDirectory],
@@ -82,13 +82,13 @@ test("auto-detects, manually rebuilds, persists, plays, rotates and mirrors an i
       executablePath: resolveElectronExecutablePath(),
       env: {
         ...process.env,
-        SERPENT_E2E: "1",
-        SERPENT_E2E_RESTORE_RECENT: "1",
-        SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-        SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-        SERPENT_E2E_USER_DATA_PATH: profilePath,
+        KEEL_E2E: "1",
+        KEEL_E2E_RESTORE_RECENT: "1",
+        KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+        KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+        KEEL_E2E_USER_DATA_PATH: profilePath,
         // Selecting one member must discover and import its consecutive siblings.
-        SERPENT_E2E_IMPORT_FILES: framePaths[1]!,
+        KEEL_E2E_IMPORT_FILES: framePaths[1]!,
       },
     });
 

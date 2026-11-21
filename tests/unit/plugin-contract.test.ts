@@ -287,7 +287,7 @@ describe('Plugin v1 manifest contract', () => {
       platform: 'darwin',
       arch: 'arm64',
       nodeAbi: 140,
-    })).toMatchObject({ ok: false, code: 'PLUGIN_SERPENT_VERSION_UNSUPPORTED' });
+    })).toMatchObject({ ok: false, code: 'PLUGIN_KEEL_VERSION_UNSUPPORTED' });
   });
 
   it('requires declared extensions for preview, thumbnail, and metadata providers', () => {

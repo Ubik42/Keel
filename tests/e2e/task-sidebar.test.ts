@@ -9,16 +9,16 @@ import { removePathWithSyncRetry } from "../../src/worker/windows-fs-retry";
 test("sidebar tasks support switches, persistent drag ordering and groups", async () => {
   test.setTimeout(90000);
   const root = mkdtempSync(path.join(tmpdir(), "serpent-task-list-"));
-  const directory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const directory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const app = await electron.launch({
     executablePath: resolveElectronExecutablePath(),
-    args: process.env.SERPENT_E2E_ELECTRON_EXECUTABLE ? [] : [directory],
+    args: process.env.KEEL_E2E_ELECTRON_EXECUTABLE ? [] : [directory],
     cwd: directory,
     env: {
       ...process.env,
-      SERPENT_E2E: "1",
-      SERPENT_E2E_USER_DATA_PATH: path.join(root, "profile"),
-      SERPENT_E2E_CREATE_PARENT_PATH: root,
+      KEEL_E2E: "1",
+      KEEL_E2E_USER_DATA_PATH: path.join(root, "profile"),
+      KEEL_E2E_CREATE_PARENT_PATH: root,
     },
   });
   try {

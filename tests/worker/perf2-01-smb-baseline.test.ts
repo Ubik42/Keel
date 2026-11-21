@@ -10,7 +10,7 @@ import { summarizeTimingSamples } from "../../src/shared/performance-contract";
 import { LibraryService } from "../../src/worker/library-service";
 
 const FIXTURE_PREFIX = "serpent-p201-";
-const smbRoot = process.env.SERPENT_PERF_SMB_ROOT?.trim();
+const smbRoot = process.env.KEEL_PERF_SMB_ROOT?.trim();
 const describeSmb = smbRoot ? describe : describe.skip;
 
 const temporaryRoots: string[] = [];

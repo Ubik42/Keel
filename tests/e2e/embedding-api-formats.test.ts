@@ -16,17 +16,17 @@ async function openEmbeddingServices(window: Page) {
 
 test("saves the chosen embedding API format and restores it after a full restart", async () => {
   const temporaryRoot = mkdtempSync(path.join(tmpdir(), "serpent-api-formats-"));
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const launch = () => electron.launch({
     timeout: 30_000,
     args: [applicationDirectory], cwd: applicationDirectory,
     executablePath: resolveElectronExecutablePath(),
     env: {
       ...process.env,
-      SERPENT_E2E: "1", SERPENT_E2E_HIDE_WINDOW: "1",
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, "profile"),
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_OPEN_LIBRARY_PATH: path.join(temporaryRoot, "API fixture"),
+      KEEL_E2E: "1", KEEL_E2E_HIDE_WINDOW: "1",
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "profile"),
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_OPEN_LIBRARY_PATH: path.join(temporaryRoot, "API fixture"),
     },
   });
   let application: Awaited<ReturnType<typeof launch>> | undefined;

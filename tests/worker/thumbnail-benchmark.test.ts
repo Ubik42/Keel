@@ -82,7 +82,7 @@ afterEach(() => {
   }
 });
 
-describe.skipIf(process.env.SERPENT_THUMB_BENCH !== '1')('thumbnail generation benchmark (manual, not CI)', () => {
+describe.skipIf(process.env.KEEL_THUMB_BENCH !== '1')('thumbnail generation benchmark (manual, not CI)', () => {
   it('times processThumbnailQueue for a mixed large-image library', async () => {
     const root = mkdtempSync(path.join(tmpdir(), 'serpent-thumb-bench-'));
     temporaryRoots.push(root);

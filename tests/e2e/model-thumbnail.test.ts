@@ -85,8 +85,8 @@ async function assertDecodedModelThumbnail(input: {
   } = input;
   const libraryPath = path.join(temporaryRoot, libraryName);
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
-  const showWindowInactive = process.env.SERPENT_E2E_SHOW_INACTIVE === "1";
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
+  const showWindowInactive = process.env.KEEL_E2E_SHOW_INACTIVE === "1";
   let application: Awaited<ReturnType<typeof electron.launch>> | undefined;
   try {
     application = await electron.launch({
@@ -95,16 +95,16 @@ async function assertDecodedModelThumbnail(input: {
       executablePath: resolveElectronExecutablePath(),
       env: {
         ...process.env,
-        SERPENT_E2E: "1",
-        SERPENT_E2E_HIDE_WINDOW: showWindowInactive ? "0" : "1",
-        SERPENT_E2E_SHOW_INACTIVE: showWindowInactive ? "1" : "0",
-        SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-        SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-        SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
+        KEEL_E2E: "1",
+        KEEL_E2E_HIDE_WINDOW: showWindowInactive ? "0" : "1",
+        KEEL_E2E_SHOW_INACTIVE: showWindowInactive ? "1" : "0",
+        KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+        KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+        KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
         // CI/agent hosts may disable hardware WebGL. This opt-in keeps the
         // thumbnail contract testable through Chromium's software renderer.
-        SERPENT_E2E_ENABLE_SWIFTSHADER: "1",
-        SERPENT_E2E_IMPORT_FILES: modelFiles.join(path.delimiter),
+        KEEL_E2E_ENABLE_SWIFTSHADER: "1",
+        KEEL_E2E_IMPORT_FILES: modelFiles.join(path.delimiter),
       },
     });
     const window = await application.firstWindow();
@@ -168,7 +168,7 @@ async function assertDecodedModelThumbnail(input: {
       )
       .toBe(true);
     const computerUseHoldMs = Number(
-      process.env.SERPENT_E2E_COMPUTER_USE_HOLD_MS ?? 0,
+      process.env.KEEL_E2E_COMPUTER_USE_HOLD_MS ?? 0,
     );
     if (Number.isFinite(computerUseHoldMs) && computerUseHoldMs > 0) {
       await window.waitForTimeout(Math.min(computerUseHoldMs, 60_000));

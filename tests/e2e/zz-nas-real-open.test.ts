@@ -8,16 +8,16 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 
 // 真实 NAS 冒烟测试：只在显式设置
-// SERPENT_NAS_REAL_E2E=1 和 SERPENT_NAS_REAL_LIBRARY_PATH 时运行。
+// KEEL_NAS_REAL_E2E=1 和 KEEL_NAS_REAL_LIBRARY_PATH 时运行。
 // 不保留任何默认的生产库路径，验证脚本应指向隔离的探针副本，
 // 避免测试意外读取或写入用户数据。
-const REAL_LIBRARY = process.env.SERPENT_NAS_REAL_LIBRARY_PATH
+const REAL_LIBRARY = process.env.KEEL_NAS_REAL_LIBRARY_PATH
   ?.trim();
-const NAS_REAL_ENABLED = process.env.SERPENT_NAS_REAL_E2E === "1" && Boolean(REAL_LIBRARY);
+const NAS_REAL_ENABLED = process.env.KEEL_NAS_REAL_E2E === "1" && Boolean(REAL_LIBRARY);
 
 test.skip(
   !NAS_REAL_ENABLED,
-  "real-NAS smoke test: set SERPENT_NAS_REAL_E2E=1 and SERPENT_NAS_REAL_LIBRARY_PATH to an isolated fixture",
+  "real-NAS smoke test: set KEEL_NAS_REAL_E2E=1 and KEEL_NAS_REAL_LIBRARY_PATH to an isolated fixture",
 );
 
 test("real NAS library end-to-end open and browse", async () => {
@@ -29,12 +29,12 @@ test("real NAS library end-to-end open and browse", async () => {
     cwd: applicationDirectory,
     executablePath: resolveElectronExecutablePath(),
     env: electronLaunchEnv({
-      SERPENT_E2E: "1",
-      SERPENT_E2E_OPEN_LIBRARY_PATH: REAL_LIBRARY,
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
-      SERPENT_WORKER_CMD_LOG: "1",
-      SERPENT_OPEN_STAGE_LOG: "1",
-      SERPENT_REFRESH_STAGE_LOG: "1",
+      KEEL_E2E: "1",
+      KEEL_E2E_OPEN_LIBRARY_PATH: REAL_LIBRARY,
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
+      KEEL_WORKER_CMD_LOG: "1",
+      KEEL_OPEN_STAGE_LOG: "1",
+      KEEL_REFRESH_STAGE_LOG: "1",
     }),
   });
   try {
@@ -56,9 +56,9 @@ test("real NAS library end-to-end open and browse", async () => {
     });
     console.log(`NAS_REAL totalText=${total}`);
     // 滚动跳转到中部测缩略图解码。仅当运行环境能访问链接源时才有意义
-    // （SERPENT_NAS_REAL_EXPECT_SOURCES=1，且探针库的源文件可访问）；
+    // （KEEL_NAS_REAL_EXPECT_SOURCES=1，且探针库的源文件可访问）；
     // 源不可达的探针环境里缩略图注定 SOURCE_NOT_FOUND，不该据此判失败。
-    if (process.env.SERPENT_NAS_REAL_EXPECT_SOURCES === "1") {
+    if (process.env.KEEL_NAS_REAL_EXPECT_SOURCES === "1") {
       const canvasEl = window.locator(".workspace-canvas");
       const scrollHeight = await canvasEl.evaluate((el) => el.scrollHeight);
       console.log(`NAS_REAL scrollHeight=${scrollHeight}`);

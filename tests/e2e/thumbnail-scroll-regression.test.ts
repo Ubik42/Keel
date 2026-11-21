@@ -41,10 +41,10 @@ const buildFfmpegPath = path.join(
   "darwin-arm64",
   "ffmpeg",
 );
-const ffmpegCommand = process.env.SERPENT_REAL_FFMPEG_PATH ??
-  process.env.SERPENT_FFMPEG_PATH ??
+const ffmpegCommand = process.env.KEEL_REAL_FFMPEG_PATH ??
+  process.env.KEEL_FFMPEG_PATH ??
   (existsSync(installedFfmpegPath) ? installedFfmpegPath : buildFfmpegPath);
-const ffprobeCommand = process.env.SERPENT_REAL_FFPROBE_PATH ??
+const ffprobeCommand = process.env.KEEL_REAL_FFPROBE_PATH ??
   path.join(path.dirname(ffmpegCommand), "ffprobe");
 const hasFfmpeg = (() => {
   try {
@@ -242,17 +242,17 @@ test("keeps visible masonry cards complete during rapid scroll at the tuned thum
   }
 
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath: resolveElectronExecutablePath(),
     env: {
       ...process.env,
-      SERPENT_E2E: "1",
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_IMPORT_FILES: sourcePaths.join(path.delimiter),
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, "profile"),
+      KEEL_E2E: "1",
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_IMPORT_FILES: sourcePaths.join(path.delimiter),
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "profile"),
     },
   });
 
@@ -357,19 +357,19 @@ test.describe("video poster scrolling", () => {
     }
 
     const applicationDirectory =
-      process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+      process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
     const application = await electron.launch({
       args: [applicationDirectory],
       cwd: applicationDirectory,
       executablePath: resolveElectronExecutablePath(),
       env: {
         ...process.env,
-        SERPENT_E2E: "1",
-        SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-        SERPENT_E2E_IMPORT_FILES: sourcePaths.join(path.delimiter),
-        SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, "profile"),
-        SERPENT_FFMPEG_PATH: ffmpegCommand,
-        SERPENT_FFPROBE_PATH: ffprobeCommand,
+        KEEL_E2E: "1",
+        KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+        KEEL_E2E_IMPORT_FILES: sourcePaths.join(path.delimiter),
+        KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "profile"),
+        KEEL_FFMPEG_PATH: ffmpegCommand,
+        KEEL_FFPROBE_PATH: ffprobeCommand,
       },
     });
 

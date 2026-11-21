@@ -1,3 +1,4 @@
+import '../shared/install-legacy-env';
 import { randomUUID } from 'node:crypto';
 import {
   parseWorkerRequest,
@@ -235,8 +236,8 @@ if (!parentPort) {
 Object.defineProperty(process, 'type', { value: undefined, configurable: true });
 
 const e2eTerminateProcessAt = (() => {
-  if (process.env.SERPENT_E2E !== '1') return undefined;
-  const configured = process.env.SERPENT_E2E_LIBRARY_TERMINATE_AT;
+  if (process.env.KEEL_E2E !== '1') return undefined;
+  const configured = process.env.KEEL_E2E_LIBRARY_TERMINATE_AT;
   if (configured !== 'crash-after-place') return undefined;
   return configured as ImportFailurePoint;
 })();
@@ -1419,11 +1420,11 @@ function scheduleReconciledMissingPrimaryQueue(
 }
 
 // Serpent-onch/9e1d8d: per-command timing log, off by default.
-const WORKER_CMD_LOG = process.env.SERPENT_WORKER_CMD_LOG === '1';
+const WORKER_CMD_LOG = process.env.KEEL_WORKER_CMD_LOG === '1';
 
 // Serpent-288cd9: RAW metadata 回填的「扫完即停」游标。置 0 即回到「只按 2 秒节流重扫」
 // 的旧行为，用于同树 A/B 归因（生产不设即启用）。
-const RAW_METADATA_EXHAUSTION_ENABLED = process.env.SERPENT_RAW_METADATA_EXHAUSTION !== '0';
+const RAW_METADATA_EXHAUSTION_ENABLED = process.env.KEEL_RAW_METADATA_EXHAUSTION !== '0';
 
 /**
  * Commands the user is actively waiting on across a library transition. They
@@ -1439,7 +1440,7 @@ function isLibraryTransitionCommand(commandType: string): boolean {
     || commandType === 'library.delete-from-disk';
 }
 
-// 事件循环滞后监控（SERPENT_LAG_LOG=1）：被同步工作堵住的 Worker 会推迟接收
+// 事件循环滞后监控（KEEL_LAG_LOG=1）：被同步工作堵住的 Worker 会推迟接收
 // 消息，此时 `queueMs` 与 `runMs` 都无法区分「在干活」和「根本没被调度」。
 // 每秒测量计时器漂移，只在真正卡顿时输出，并带上当时正在运行的活动名。
 let currentWorkerActivity = 'idle';
@@ -1455,7 +1456,7 @@ async function traceActivity<T>(label: string, work: () => Promise<T>): Promise<
   }
 }
 
-if (process.env.SERPENT_LAG_LOG === '1') {
+if (process.env.KEEL_LAG_LOG === '1') {
   let lagWindowStart = Date.now();
   const lagTimer = setInterval(() => {
     const now = Date.now();
@@ -3164,7 +3165,7 @@ const handleLibraryWorkerMessage = async (event: { data: unknown }): Promise<voi
   const requestId = requestIdFrom(input);
   if (!requestId) return;
 
-  // Serpent-onch/9e1d8d: SERPENT_WORKER_CMD_LOG=1 emits one JSON line per
+  // Serpent-onch/9e1d8d: KEEL_WORKER_CMD_LOG=1 emits one JSON line per
   // command with event-loop wait (message → dispatch) and service time, so
   // browse-latency attribution can see what the single Worker thread was
   // doing while the renderer waited.

@@ -10,8 +10,8 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { LibraryService } from "../../src/worker/library-service";
 import type { LargeLibraryFixtureManifest } from "./large-library-fixture";
 
-const fixturePath = process.env.SERPENT_LARGE_LIBRARY_PERF_PATH;
-const configuredOffset = Number(process.env.SERPENT_LARGE_LIBRARY_PERF_OFFSET ?? 1_100);
+const fixturePath = process.env.KEEL_LARGE_LIBRARY_PERF_PATH;
+const configuredOffset = Number(process.env.KEEL_LARGE_LIBRARY_PERF_OFFSET ?? 1_100);
 const benchmarkOffset = Number.isFinite(configuredOffset)
   ? Math.max(0, Math.trunc(configuredOffset))
   : 1_100;

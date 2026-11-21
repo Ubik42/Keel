@@ -8,10 +8,10 @@ import { removePathWithSyncRetry } from '../../src/worker/windows-fs-retry';
 
 test('hides text by default and reveals it when the format filter is cleared', async () => {
   const root = mkdtempSync(path.join(tmpdir(), 'serpent-text-filter-'));
-  const directory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const directory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const app = await electron.launch({ executablePath: resolveElectronExecutablePath(),
-    args: process.env.SERPENT_E2E_ELECTRON_EXECUTABLE ? [] : [directory], cwd: directory,
-    env: { ...process.env, SERPENT_E2E: '1', SERPENT_E2E_USER_DATA_PATH: path.join(root, 'profile'), SERPENT_E2E_CREATE_PARENT_PATH: root } });
+    args: process.env.KEEL_E2E_ELECTRON_EXECUTABLE ? [] : [directory], cwd: directory,
+    env: { ...process.env, KEEL_E2E: '1', KEEL_E2E_USER_DATA_PATH: path.join(root, 'profile'), KEEL_E2E_CREATE_PARENT_PATH: root } });
   try {
     await app.evaluate(({ dialog }, selected) => { dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [selected] }); }, root);
     const window = await app.firstWindow();

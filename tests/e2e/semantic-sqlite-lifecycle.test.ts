@@ -115,7 +115,7 @@ test('persists Worker-owned vectors through full app restart and reuses them for
   if (!address || typeof address === 'string') throw new Error('Embedding fixture server did not bind.');
   const endpoint = `http://127.0.0.1:${address.port}/v1`;
 
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const launch = () => electron.launch({
     timeout: 30_000,
     args: [applicationDirectory],
@@ -123,12 +123,12 @@ test('persists Worker-owned vectors through full app restart and reuses them for
     executablePath: resolveElectronExecutablePath(),
     env: {
       ...process.env,
-      SERPENT_E2E: '1',
-      SERPENT_E2E_HIDE_WINDOW: '1',
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_OPEN_LIBRARY_PATH: path.join(temporaryRoot, 'Semantic fixture'),
-      SERPENT_E2E_IMPORT_FILES: [corpusPath, otherPath, failedPath, imagePath].join(path.delimiter),
+      KEEL_E2E: '1',
+      KEEL_E2E_HIDE_WINDOW: '1',
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_OPEN_LIBRARY_PATH: path.join(temporaryRoot, 'Semantic fixture'),
+      KEEL_E2E_IMPORT_FILES: [corpusPath, otherPath, failedPath, imagePath].join(path.delimiter),
     },
   });
   let application: Awaited<ReturnType<typeof launch>> | undefined;

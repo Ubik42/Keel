@@ -135,8 +135,8 @@ function phaseMediaBuildLocally() {
     process.exit(result.status ?? 1);
   }
 
-  pipelineEnv.SERPENT_MEDIA_SKIP_PROVENANCE = '1';
-  process.env.SERPENT_MEDIA_SKIP_PROVENANCE = '1';
+  pipelineEnv.KEEL_MEDIA_SKIP_PROVENANCE = '1';
+  process.env.KEEL_MEDIA_SKIP_PROVENANCE = '1';
   runReleaseScript('media:verify');
 }
 
@@ -166,7 +166,7 @@ function phasePackage() {
 function phaseE2E() {
   const executable = resolvePackagedExecutable();
   runReleaseScript('test:e2e:packaged', {
-    SERPENT_E2E_PACKAGED_EXECUTABLE: executable,
+    KEEL_E2E_PACKAGED_EXECUTABLE: executable,
   });
 }
 

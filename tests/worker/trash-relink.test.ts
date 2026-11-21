@@ -1888,7 +1888,7 @@ describe('deleteLinkedAssets', () => {
     },
   );
 
-  (process.env.SERPENT_TEST_REAL_SYSTEM_TRASH === '1' ? it : it.skip)(
+  (process.env.KEEL_TEST_REAL_SYSTEM_TRASH === '1' ? it : it.skip)(
     'permanently deletes a real linked source file from disk',
     async () => {
       const root = temporaryRoot();

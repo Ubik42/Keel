@@ -78,9 +78,9 @@ function startMigrationOpener(
       ...process.env,
       ELECTRON_RUN_AS_NODE: '1',
       NODE_PATH: path.join(process.cwd(), 'node_modules'),
-      SERPENT_MIGRATION_CHILD_ID: childId,
-      SERPENT_MIGRATION_LIBRARY_PATH: libraryPath,
-      SERPENT_MIGRATION_RELEASE_PATH: releasePath,
+      KEEL_MIGRATION_CHILD_ID: childId,
+      KEEL_MIGRATION_LIBRARY_PATH: libraryPath,
+      KEEL_MIGRATION_RELEASE_PATH: releasePath,
     },
     stdio: ['ignore', 'pipe', 'pipe'],
   });

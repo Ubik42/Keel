@@ -33,40 +33,40 @@ import { LARGE_LIBRARY_FIXTURE_VERSION } from "../worker/large-library-mix";
  *
  * and attaches real profilers while the journey runs:
  *   - renderer: CDP `Profiler` (V8 CPU profile) + frame/long-task samples
- *   - Library Worker: V8 inspector (`SERPENT_WORKER_INSPECT`) CPU profile, so
+ *   - Library Worker: V8 inspector (`KEEL_WORKER_INSPECT`) CPU profile, so
  *     the hotspot answer covers the process that owns SQLite and the files.
  *
  * Usage (paths only via env, nothing stored in the repo):
- *   SERPENT_PROFILE_LIBRARY=<library> SERPENT_PROFILE_OUT=<dir> \
+ *   KEEL_PROFILE_LIBRARY=<library> KEEL_PROFILE_OUT=<dir> \
  *   node scripts/run-e2e.mjs tests/e2e/navigation-profile.test.ts
  */
-const library = process.env.SERPENT_PROFILE_LIBRARY;
-const outDir = process.env.SERPENT_PROFILE_OUT;
-const workerInspectPort = Number(process.env.SERPENT_WORKER_INSPECT ?? 9333);
-const wheelMs = Number(process.env.SERPENT_PROFILE_WHEEL_MS ?? 8_000);
-const navTarget = process.env.SERPENT_PROFILE_NAV_TARGET;
-const contended = process.env.SERPENT_PROFILE_CONTENDED === "1";
-const switches = Number(process.env.SERPENT_PROFILE_SWITCHES ?? 4);
-const includeJumps = process.env.SERPENT_PROFILE_INCLUDE_JUMPS !== "0";
-const percentJump = process.env.SERPENT_PROFILE_PERCENT_JUMP === "1";
-const idleMs = Number(process.env.SERPENT_PROFILE_IDLE_MS ?? 0);
-const pauseQueueBeforeNavigation = process.env.SERPENT_PROFILE_PAUSE_QUEUE_BEFORE_NAV === "1";
-const pauseQueueConfirmation = process.env.SERPENT_PROFILE_PAUSE_QUEUE_CONFIRM;
-const minimumPauseQueueSize = Math.max(1, Number(process.env.SERPENT_PROFILE_PAUSE_QUEUE_MIN ?? 2_000));
-const minimumQueueSize = Math.max(0, Number(process.env.SERPENT_PROFILE_QUEUE_MIN ?? 0));
-const minScopeAssets = Math.max(1, Number(process.env.SERPENT_PROFILE_MIN_SCOPE_ASSETS ?? 32));
-const minVisibleImages = Math.max(1, Number(process.env.SERPENT_PROFILE_MIN_VISIBLE_IMAGES ?? 6));
-const repeatSwitchesForWarmCache = process.env.SERPENT_PROFILE_REPEAT_SWITCHES !== "0";
+const library = process.env.KEEL_PROFILE_LIBRARY;
+const outDir = process.env.KEEL_PROFILE_OUT;
+const workerInspectPort = Number(process.env.KEEL_WORKER_INSPECT ?? 9333);
+const wheelMs = Number(process.env.KEEL_PROFILE_WHEEL_MS ?? 8_000);
+const navTarget = process.env.KEEL_PROFILE_NAV_TARGET;
+const contended = process.env.KEEL_PROFILE_CONTENDED === "1";
+const switches = Number(process.env.KEEL_PROFILE_SWITCHES ?? 4);
+const includeJumps = process.env.KEEL_PROFILE_INCLUDE_JUMPS !== "0";
+const percentJump = process.env.KEEL_PROFILE_PERCENT_JUMP === "1";
+const idleMs = Number(process.env.KEEL_PROFILE_IDLE_MS ?? 0);
+const pauseQueueBeforeNavigation = process.env.KEEL_PROFILE_PAUSE_QUEUE_BEFORE_NAV === "1";
+const pauseQueueConfirmation = process.env.KEEL_PROFILE_PAUSE_QUEUE_CONFIRM;
+const minimumPauseQueueSize = Math.max(1, Number(process.env.KEEL_PROFILE_PAUSE_QUEUE_MIN ?? 2_000));
+const minimumQueueSize = Math.max(0, Number(process.env.KEEL_PROFILE_QUEUE_MIN ?? 0));
+const minScopeAssets = Math.max(1, Number(process.env.KEEL_PROFILE_MIN_SCOPE_ASSETS ?? 32));
+const minVisibleImages = Math.max(1, Number(process.env.KEEL_PROFILE_MIN_VISIBLE_IMAGES ?? 6));
+const repeatSwitchesForWarmCache = process.env.KEEL_PROFILE_REPEAT_SWITCHES !== "0";
 /**
  * Serpent-e97c00: how many task-status reads to issue through the real bridge
  * after the navigation journey. The task panel polls at about 1 Hz, so a series
  * of reads is the only way to A/B a summary cache without opening the panel.
  */
-const statusSamples = Math.max(0, Number(process.env.SERPENT_PROFILE_STATUS_SAMPLES ?? 0));
-const statusSampleIntervalMs = Math.max(0, Number(process.env.SERPENT_PROFILE_STATUS_INTERVAL_MS ?? 200));
-const traceWheel = process.env.SERPENT_PROFILE_TRACE_WHEEL === "1";
-const styleAblation = process.env.SERPENT_PROFILE_STYLE_ABLATION ?? "";
-const suppressWheelInput = process.env.SERPENT_PROFILE_SUPPRESS_WHEEL_INPUT === "1";
+const statusSamples = Math.max(0, Number(process.env.KEEL_PROFILE_STATUS_SAMPLES ?? 0));
+const statusSampleIntervalMs = Math.max(0, Number(process.env.KEEL_PROFILE_STATUS_INTERVAL_MS ?? 200));
+const traceWheel = process.env.KEEL_PROFILE_TRACE_WHEEL === "1";
+const styleAblation = process.env.KEEL_PROFILE_STYLE_ABLATION ?? "";
+const suppressWheelInput = process.env.KEEL_PROFILE_SUPPRESS_WHEEL_INPUT === "1";
 type PersistedJobGroup = {
   kind: string;
   status: string;
@@ -133,7 +133,7 @@ function diffPersistedJobGroups(
 }
 
 test.describe.configure({ timeout: 1_800_000 });
-test.skip(!library || !outDir, "Set SERPENT_PROFILE_LIBRARY and SERPENT_PROFILE_OUT.");
+test.skip(!library || !outDir, "Set KEEL_PROFILE_LIBRARY and KEEL_PROFILE_OUT.");
 
 /** Self time per function from a V8 .cpuprofile. */
 function topFunctions(profile: {
@@ -679,7 +679,7 @@ async function readMediaQueueSnapshot(window: Page): Promise<{
  */
 function assertDisposableFixtureForQueuePause(libraryPath: string): void {
   if (pauseQueueConfirmation !== "I_ACKNOWLEDGE_DISPOSABLE_FIXTURE") {
-    throw new Error("Queue-pause profiling requires SERPENT_PROFILE_PAUSE_QUEUE_CONFIRM=I_ACKNOWLEDGE_DISPOSABLE_FIXTURE.");
+    throw new Error("Queue-pause profiling requires KEEL_PROFILE_PAUSE_QUEUE_CONFIRM=I_ACKNOWLEDGE_DISPOSABLE_FIXTURE.");
   }
   const manifestPath = path.join(libraryPath, ".keel", "large-library-fixture.json");
   let manifest: unknown;
@@ -765,19 +765,19 @@ test("profile navigation hotspots on a real library", async () => {
   const userDataPath = path.join(temporaryRoot, "user-data");
   seedRecentLibraries(userDataPath, [libraryPath], libraryPath);
 
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath: resolveElectronExecutablePath(),
     env: electronLaunchEnv({
-      SERPENT_E2E: "1",
-      SERPENT_E2E_HIDE_WINDOW: "1",
-      SERPENT_E2E_PERF_OFFSCREEN: "1",
-      SERPENT_E2E_RESTORE_RECENT: "1",
-      SERPENT_E2E_USER_DATA_PATH: userDataPath,
-      SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-      SERPENT_WORKER_INSPECT: String(workerInspectPort),
+      KEEL_E2E: "1",
+      KEEL_E2E_HIDE_WINDOW: "1",
+      KEEL_E2E_PERF_OFFSCREEN: "1",
+      KEEL_E2E_RESTORE_RECENT: "1",
+      KEEL_E2E_USER_DATA_PATH: userDataPath,
+      KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+      KEEL_WORKER_INSPECT: String(workerInspectPort),
       ...benchmarkLogEnv(path.join(userDataPath, "logs")),
     }),
   });
@@ -1131,7 +1131,7 @@ test("profile navigation hotspots on a real library", async () => {
         scrollHeight: canvas?.scrollHeight ?? 0,
       };
     });
-    if (process.env.SERPENT_PROFILE_SCREENSHOT === "1") {
+    if (process.env.KEEL_PROFILE_SCREENSHOT === "1") {
       mkdirSync(outDir!, { recursive: true });
       await window.screenshot({ path: path.join(outDir!, "wheel.png") });
     }
@@ -1278,7 +1278,7 @@ test("profile navigation hotspots on a real library", async () => {
       suite: "navigation-profile",
       wheelMs,
       switches,
-      previewCacheForced: (process.env.SERPENT_PREVIEW_CACHE_FORCE ?? "1") === "1",
+      previewCacheForced: (process.env.KEEL_PREVIEW_CACHE_FORCE ?? "1") === "1",
       includeJumps,
       idleMs,
       minimumQueueSize,

@@ -18,16 +18,16 @@ test('activates the fixed trusted Host probe and writes library storage', async 
   cpSync(FIXTURE_ROOT, packageDirectory, { recursive: true });
 
   const executablePath = resolveElectronExecutablePath();
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath,
     env: electronLaunchEnv({
-      SERPENT_E2E: '1',
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_PLUGIN_PACKAGE: packageDirectory,
+      KEEL_E2E: '1',
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_PLUGIN_PACKAGE: packageDirectory,
     }),
   });
 

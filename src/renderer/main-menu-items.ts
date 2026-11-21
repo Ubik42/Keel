@@ -10,7 +10,7 @@ import type { CommandPlatform } from "./commands/command-types";
 import type { ApplicationMenuCommand } from "../shared/application-menu";
 import { formatRuntimeShortcut } from "./shortcut-runtime";
 
-export const SERPENT_VERSION = packageJson.version;
+export const KEEL_VERSION = packageJson.version;
 
 export type MainMenuSectionId =
   | "file"

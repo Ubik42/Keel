@@ -85,7 +85,7 @@ export async function executeSyncMainCommand(
       const selectedParentPath = await selectOpenDirectory(
         host,
         "openSyncLibraryDestination",
-        process.env.SERPENT_E2E_OPEN_SYNC_LIBRARY_PARENT,
+        process.env.KEEL_E2E_OPEN_SYNC_LIBRARY_PARENT,
         { createDirectory: true },
       );
       if (!selectedParentPath) return undefined;

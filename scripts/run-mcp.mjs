@@ -23,10 +23,10 @@ function usage() {
 
 const args = process.argv.slice(2);
 let headless = false;
-let libraryPath = process.env.SERPENT_MCP_LIBRARY_PATH ?? '';
-let writeAccess = process.env.SERPENT_MCP_WRITE_ACCESS === '1';
-let userData = process.env.SERPENT_MCP_USER_DATA_PATH ?? '';
-let allowUnbound = process.env.SERPENT_MCP_ALLOW_UNBOUND === '1';
+let libraryPath = process.env.KEEL_MCP_LIBRARY_PATH ?? '';
+let writeAccess = process.env.KEEL_MCP_WRITE_ACCESS === '1';
+let userData = process.env.KEEL_MCP_USER_DATA_PATH ?? '';
+let allowUnbound = process.env.KEEL_MCP_ALLOW_UNBOUND === '1';
 
 for (let index = 0; index < args.length; index += 1) {
   const arg = args[index];
@@ -51,18 +51,18 @@ for (let index = 0; index < args.length; index += 1) {
 }
 
 if (libraryPath && !path.isAbsolute(libraryPath)) {
-  process.stderr.write('SERPENT_MCP_LIBRARY_PATH / --library must be an absolute path.\n');
+  process.stderr.write('KEEL_MCP_LIBRARY_PATH / --library must be an absolute path.\n');
   usage();
 }
 
 const env = { ...process.env };
 const commandArgs = [];
 if (headless) {
-  env.SERPENT_MCP = '1';
-  env.SERPENT_MCP_WRITE_ACCESS = writeAccess ? '1' : '0';
-  if (libraryPath) env.SERPENT_MCP_LIBRARY_PATH = libraryPath;
-  if (allowUnbound) env.SERPENT_MCP_ALLOW_UNBOUND = '1';
-  if (userData) env.SERPENT_MCP_USER_DATA_PATH = path.resolve(userData);
+  env.KEEL_MCP = '1';
+  env.KEEL_MCP_WRITE_ACCESS = writeAccess ? '1' : '0';
+  if (libraryPath) env.KEEL_MCP_LIBRARY_PATH = libraryPath;
+  if (allowUnbound) env.KEEL_MCP_ALLOW_UNBOUND = '1';
+  if (userData) env.KEEL_MCP_USER_DATA_PATH = path.resolve(userData);
 } else {
   commandArgs.push(
     process.execPath,

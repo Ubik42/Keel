@@ -11,7 +11,7 @@ import {
   LARGE_LIBRARY_SEARCH_TOKEN,
 } from './large-library-fixture';
 
-const fixturePath = process.env.SERPENT_LARGE_LIBRARY_PERF_PATH;
+const fixturePath = process.env.KEEL_LARGE_LIBRARY_PERF_PATH;
 let manifest: LargeLibraryFixtureManifest;
 let service: LibraryService;
 let initialLiveAssetCount = 0;

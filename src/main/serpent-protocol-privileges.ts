@@ -7,10 +7,10 @@
  * the body were a single download, and seek/scrub against `createArtifactResponse`
  * frequently surfaces MEDIA_ERR_NETWORK / decode failures (Serpent-jh2).
  */
-export const SERPENT_PROTOCOL_SCHEME = "serpent" as const;
-export const SERPENT_PLUGIN_PROTOCOL_SCHEME = "serpent-plugin" as const;
+export const KEEL_PROTOCOL_SCHEME = "serpent" as const;
+export const KEEL_PLUGIN_PROTOCOL_SCHEME = "serpent-plugin" as const;
 
-export const SERPENT_PROTOCOL_PRIVILEGES = {
+export const KEEL_PROTOCOL_PRIVILEGES = {
   standard: true,
   secure: true,
   supportFetchAPI: true,
@@ -21,11 +21,11 @@ export const SERPENT_PROTOCOL_PRIVILEGES = {
 export function serpentProtocolSchemes() {
   return [
     {
-      scheme: SERPENT_PROTOCOL_SCHEME,
-      privileges: { ...SERPENT_PROTOCOL_PRIVILEGES },
+      scheme: KEEL_PROTOCOL_SCHEME,
+      privileges: { ...KEEL_PROTOCOL_PRIVILEGES },
     },
     {
-      scheme: SERPENT_PLUGIN_PROTOCOL_SCHEME,
+      scheme: KEEL_PLUGIN_PROTOCOL_SCHEME,
       privileges: {
         standard: true,
         secure: true,

@@ -26,7 +26,7 @@ test("saving auto sync while a manual WebDAV transfer is blocked returns before 
     },
   });
   const temporaryRoot = mkdtempSync(path.join(tmpdir(), "serpent-sync-save-e2e-"));
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   let application: ElectronApplication | undefined;
   try {
     application = await electron.launch({
@@ -34,12 +34,12 @@ test("saving auto sync while a manual WebDAV transfer is blocked returns before 
       cwd: applicationDirectory,
       executablePath: resolveElectronExecutablePath(),
       env: electronLaunchEnv({
-        SERPENT_E2E: "1",
-        SERPENT_E2E_HIDE_WINDOW: "1",
-        SERPENT_E2E_SHOW_INACTIVE: "1",
-        SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
-        SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-        SERPENT_E2E_OPEN_LIBRARY_PATH: path.join(temporaryRoot, "Fixture"),
+        KEEL_E2E: "1",
+        KEEL_E2E_HIDE_WINDOW: "1",
+        KEEL_E2E_SHOW_INACTIVE: "1",
+        KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
+        KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+        KEEL_E2E_OPEN_LIBRARY_PATH: path.join(temporaryRoot, "Fixture"),
       }),
     });
     const window = await application.firstWindow();

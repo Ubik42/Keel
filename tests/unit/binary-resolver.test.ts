@@ -37,8 +37,8 @@ function makeExecutable(filePath: string): void {
 }
 
 afterEach(() => {
-  delete process.env['SERPENT_FFMPEG_PATH'];
-  delete process.env['SERPENT_OIIO_PATH'];
+  delete process.env['KEEL_FFMPEG_PATH'];
+  delete process.env['KEEL_OIIO_PATH'];
   if (originalResourcesPath) {
     Object.defineProperty(process, 'resourcesPath', originalResourcesPath);
   } else {
@@ -49,12 +49,12 @@ afterEach(() => {
 
 describe('media binary resolver', () => {
   it('prefers explicit environment overrides', () => {
-    process.env['SERPENT_FFMPEG_PATH'] = path.join('/custom', platformName('ffmpeg'));
-    process.env['SERPENT_OIIO_PATH'] = path.join('/custom', platformName('oiiotool'));
+    process.env['KEEL_FFMPEG_PATH'] = path.join('/custom', platformName('ffmpeg'));
+    process.env['KEEL_OIIO_PATH'] = path.join('/custom', platformName('oiiotool'));
 
-    expect(resolveFfmpegPath()).toBe(process.env['SERPENT_FFMPEG_PATH']);
+    expect(resolveFfmpegPath()).toBe(process.env['KEEL_FFMPEG_PATH']);
     expect(resolveFfprobePath()).toBe(path.join('/custom', platformName('ffprobe')));
-    expect(resolveOiiotoolPath()).toBe(process.env['SERPENT_OIIO_PATH']);
+    expect(resolveOiiotoolPath()).toBe(process.env['KEEL_OIIO_PATH']);
   });
 
   it('uses bundled binaries only when they exist and are executable', () => {

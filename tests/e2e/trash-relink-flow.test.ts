@@ -16,18 +16,18 @@ test('cancels a batch relink preview and later applies a fresh preview', async (
   mkdirSync(replacementRoot);
   writeFileSync(path.join(replacementRoot, 'missing.txt'), 'replacement');
 
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath: resolveElectronExecutablePath(),
     env: {
       ...process.env,
-      SERPENT_E2E: '1',
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_IMPORT_FILES: sourcePath,
-      SERPENT_E2E_RELINK_ROOT: replacementRoot,
+      KEEL_E2E: '1',
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_IMPORT_FILES: sourcePath,
+      KEEL_E2E_RELINK_ROOT: replacementRoot,
     },
   });
 

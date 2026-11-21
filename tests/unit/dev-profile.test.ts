@@ -13,16 +13,16 @@ describe("resolveDevUserDataPath", () => {
     });
   });
 
-  it("keeps an explicit absolute SERPENT_USER_DATA_PATH", () => {
+  it("keeps an explicit absolute KEEL_USER_DATA_PATH", () => {
     const explicit = path.resolve("/elsewhere/profile");
     expect(
-      resolveDevUserDataPath(root, { SERPENT_USER_DATA_PATH: explicit }),
+      resolveDevUserDataPath(root, { KEEL_USER_DATA_PATH: explicit }),
     ).toEqual({ path: explicit, source: "env" });
   });
 
-  it("ignores a relative SERPENT_USER_DATA_PATH", () => {
+  it("ignores a relative KEEL_USER_DATA_PATH", () => {
     expect(
-      resolveDevUserDataPath(root, { SERPENT_USER_DATA_PATH: "relative" })
+      resolveDevUserDataPath(root, { KEEL_USER_DATA_PATH: "relative" })
         .source,
     ).toBe("default");
   });

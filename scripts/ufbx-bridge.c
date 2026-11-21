@@ -40,10 +40,10 @@
 
 #include "ufbx.h"
 
-#define SERPENT_MAX_OUTPUT_BYTES (1u << 30) /* 1 GiB hard cap, defense in depth */
-#define SERPENT_ERROR_BUF_SIZE 4096
-#define SERPENT_MAX_PARTS 1024
-#define SERPENT_MAX_TEXTURES 256
+#define KEEL_MAX_OUTPUT_BYTES (1u << 30) /* 1 GiB hard cap, defense in depth */
+#define KEEL_ERROR_BUF_SIZE 4096
+#define KEEL_MAX_PARTS 1024
+#define KEEL_MAX_TEXTURES 256
 
 typedef struct {
 	uint8_t *data;
@@ -65,9 +65,9 @@ typedef struct {
 } serpent_opts;
 
 static serpent_result g_result;
-static char g_error[SERPENT_ERROR_BUF_SIZE];
+static char g_error[KEEL_ERROR_BUF_SIZE];
 static int g_error_used;
-static int g_texture_emitted[SERPENT_MAX_TEXTURES];
+static int g_texture_emitted[KEEL_MAX_TEXTURES];
 static const ufbx_texture *g_missing_emitted[64];
 
 /* Forward declarations (defined at the bottom; serpent_parse uses them). */
@@ -86,7 +86,7 @@ static void buf_reserve(serpent_buf *buf, size_t extra)
 	if (buf->size + extra <= buf->cap) return;
 	size_t cap = buf->cap ? buf->cap : 4096;
 	while (cap < buf->size + extra) cap *= 2;
-	if (cap > SERPENT_MAX_OUTPUT_BYTES) cap = SERPENT_MAX_OUTPUT_BYTES;
+	if (cap > KEEL_MAX_OUTPUT_BYTES) cap = KEEL_MAX_OUTPUT_BYTES;
 	if (cap < buf->size + extra) return; /* clamp; caller's append will be dropped */
 	uint8_t *data = (uint8_t *)realloc(buf->data, cap);
 	if (!data) {
@@ -180,7 +180,7 @@ static void blob_append(serpent_buf *bin, const void *data, size_t size)
 static void parse_opts(const char *json, serpent_opts *opts)
 {
 	memset(opts, 0, sizeof(*opts));
-	opts->max_output_bytes = SERPENT_MAX_OUTPUT_BYTES;
+	opts->max_output_bytes = KEEL_MAX_OUTPUT_BYTES;
 	if (!json) return;
 
 	const char *p = json;
@@ -568,10 +568,10 @@ int serpent_parse(const uint8_t *fbx_data, size_t fbx_size, const char *opts_jso
 		SLOT(pos_off, corner_count * 3 * sizeof(float));
 		if (has_normal) SLOT(normal_off, corner_count * 3 * sizeof(float));
 		if (has_uv) SLOT(uv_off, corner_count * 2 * sizeof(float));
-		size_t part_off[SERPENT_MAX_PARTS];
-		size_t part_tri[SERPENT_MAX_PARTS];
+		size_t part_off[KEEL_MAX_PARTS];
+		size_t part_tri[KEEL_MAX_PARTS];
 		size_t num_parts = mesh->material_parts.data ? mesh->material_parts.count : 0;
-		if (num_parts > SERPENT_MAX_PARTS) num_parts = SERPENT_MAX_PARTS;
+		if (num_parts > KEEL_MAX_PARTS) num_parts = KEEL_MAX_PARTS;
 		for (size_t p = 0; p < num_parts; p++) {
 			part_tri[p] = part_triangle_count(mesh, &mesh->material_parts.data[p]);
 			SLOT(part_off[p], part_tri[p] * 3 * sizeof(uint32_t));
@@ -777,7 +777,7 @@ int serpent_parse(const uint8_t *fbx_data, size_t fbx_size, const char *opts_jso
 				if (g_texture_emitted[k] == scene_ix) { already = true; break; }
 			}
 			if (already) continue;
-			if (tex_ix >= SERPENT_MAX_TEXTURES) break;
+			if (tex_ix >= KEEL_MAX_TEXTURES) break;
 			g_texture_emitted[tex_ix] = scene_ix;
 			if (tex_ix > 0) jappend(j, ",");
 			emit_texture(j, bin, tex, scene_ix, &missing_count);

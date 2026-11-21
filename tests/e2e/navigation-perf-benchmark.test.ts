@@ -27,31 +27,31 @@ import {
  * Serpent-217028: end-to-end navigation benchmark on a real library.
  *
  * It is an operator tool, not a pass/fail gate: it never runs without
- * `SERPENT_NAV_BENCH_LIBRARY`, and it never stores a library path, library name
+ * `KEEL_NAV_BENCH_LIBRARY`, and it never stores a library path, library name
  * or asset name — every path arrives through the environment.
  *
  * Journeys:
  *   read-only (always)   open, folder switch, random jumps,
  *                        continuous wheel scroll, viewer open, library switch
  *   destructive (opt-in) folder create, asset trash, folder
- *                        delete — only with SERPENT_NAV_BENCH_WRITE_LIBRARY and
- *                        an explicit SERPENT_NAV_BENCH_WRITE_CONFIRM=1, so a
+ *                        delete — only with KEEL_NAV_BENCH_WRITE_LIBRARY and
+ *                        an explicit KEEL_NAV_BENCH_WRITE_CONFIRM=1, so a
  *                        real library can never be mutated by accident.
  *
  * Run it through `npm run test:perf:navigation -- <library> [second-library]`.
  */
-const readLibrary = process.env.SERPENT_NAV_BENCH_LIBRARY;
-const secondLibrary = process.env.SERPENT_NAV_BENCH_LIBRARY_B;
-const writeLibrary = process.env.SERPENT_NAV_BENCH_WRITE_LIBRARY;
-const writeConfirmed = process.env.SERPENT_NAV_BENCH_WRITE_CONFIRM === "1";
-const reportPath = process.env.SERPENT_NAV_BENCH_OUT;
-const iterations = Math.max(1, Math.min(40, Number(process.env.SERPENT_NAV_BENCH_ITERATIONS ?? 6)));
-const wheelMs = Math.max(1_000, Number(process.env.SERPENT_NAV_BENCH_WHEEL_MS ?? 6_000));
-const settleMs = Math.max(0, Number(process.env.SERPENT_NAV_BENCH_SETTLE_MS ?? 25_000));
-const decodeBudgetMs = Number(process.env.SERPENT_NAV_BENCH_DECODE_BUDGET_MS ?? 20_000);
+const readLibrary = process.env.KEEL_NAV_BENCH_LIBRARY;
+const secondLibrary = process.env.KEEL_NAV_BENCH_LIBRARY_B;
+const writeLibrary = process.env.KEEL_NAV_BENCH_WRITE_LIBRARY;
+const writeConfirmed = process.env.KEEL_NAV_BENCH_WRITE_CONFIRM === "1";
+const reportPath = process.env.KEEL_NAV_BENCH_OUT;
+const iterations = Math.max(1, Math.min(40, Number(process.env.KEEL_NAV_BENCH_ITERATIONS ?? 6)));
+const wheelMs = Math.max(1_000, Number(process.env.KEEL_NAV_BENCH_WHEEL_MS ?? 6_000));
+const settleMs = Math.max(0, Number(process.env.KEEL_NAV_BENCH_SETTLE_MS ?? 25_000));
+const decodeBudgetMs = Number(process.env.KEEL_NAV_BENCH_DECODE_BUDGET_MS ?? 20_000);
 
 test.describe.configure({ timeout: 2_400_000 });
-test.skip(!readLibrary, "Set SERPENT_NAV_BENCH_LIBRARY to a real library path.");
+test.skip(!readLibrary, "Set KEEL_NAV_BENCH_LIBRARY to a real library path.");
 
 type OpSample = {
   op: string;
@@ -252,7 +252,7 @@ test("navigation benchmark on a real library", async () => {
   // A fixed profile path makes cold/warm replay possible: run once with a fresh
   // directory, then again on the same directory to compare a cold open against
   // a warm preview cache.
-  const fixedUserData = process.env.SERPENT_NAV_BENCH_USER_DATA;
+  const fixedUserData = process.env.KEEL_NAV_BENCH_USER_DATA;
   const temporaryRoot = fixedUserData ?? mkdtempSync(path.join(tmpdir(), "serpent-nav-bench-"));
   const userDataPath = fixedUserData ?? path.join(temporaryRoot, "user-data");
   const seeded = [readPath, secondLibrary, writeLibraryConfirmed()]

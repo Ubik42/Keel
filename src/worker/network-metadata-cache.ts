@@ -182,13 +182,13 @@ const CACHE_LOCK_WAIT_MS = 10_000;
 const CACHE_LOCK_RETRY_MS = 25;
 
 function configuredCacheDirectory(): string {
-  const configured = process.env.SERPENT_LIBRARY_METADATA_CACHE_PATH;
+  const configured = process.env.KEEL_LIBRARY_METADATA_CACHE_PATH;
   if (configured) return path.resolve(configured);
 
   // E2E runs intentionally redirect the whole application profile. Keeping
   // the fallback below makes direct Worker/service tests deterministic while
   // production Main passes app.getPath('userData') explicitly.
-  const e2eUserData = process.env.SERPENT_E2E_USER_DATA_PATH;
+  const e2eUserData = process.env.KEEL_E2E_USER_DATA_PATH;
   if (e2eUserData) return path.join(path.resolve(e2eUserData), 'library-metadata-cache');
 
   if (process.platform === 'darwin') {

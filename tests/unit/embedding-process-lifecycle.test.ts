@@ -68,7 +68,7 @@ async function waitForExit(pid: number, timeoutMs = 6000): Promise<void> {
 }
 
 it('keeps an early Windows stop acknowledgement until owner exit is checked', async () => {
-  const owner = spawn(process.execPath, ['-e', `process.stdout.write('SERPENT_EMBEDDING_STOP\\n', () => setTimeout(() => process.exit(0), 10))`], {
+  const owner = spawn(process.execPath, ['-e', `process.stdout.write('KEEL_EMBEDDING_STOP\\n', () => setTimeout(() => process.exit(0), 10))`], {
     env: { ...process.env, ELECTRON_RUN_AS_NODE: '1' },
     stdio: ['pipe', 'pipe', 'ignore'],
   });
@@ -102,7 +102,7 @@ async function launchElectronFixture(input: {
   const main = await buildFixtureMain(input.root, `
     import { app } from 'electron';
     import { startLlamaEmbeddingSession } from ${JSON.stringify(path.join(process.cwd(), 'src/main/embedding-llama-session.ts'))};
-    app.setPath('userData', process.env.SERPENT_E2E_USER_DATA_PATH);
+    app.setPath('userData', process.env.KEEL_E2E_USER_DATA_PATH);
     app.whenReady().then(async () => {
       if (process.platform === 'darwin') app.dock.hide();
       const session = await startLlamaEmbeddingSession({ executable: ${JSON.stringify(input.runtime)},
@@ -124,7 +124,7 @@ async function launchElectronFixture(input: {
   const electronExecutable = typeof electronModule === 'string'
     ? electronModule
     : path.resolve(electronPackageDirectory, 'dist', electronRelativePath);
-  const env: NodeJS.ProcessEnv = { ...process.env, SERPENT_E2E_USER_DATA_PATH: path.join(input.root, 'user-data') };
+  const env: NodeJS.ProcessEnv = { ...process.env, KEEL_E2E_USER_DATA_PATH: path.join(input.root, 'user-data') };
   delete env.ELECTRON_RUN_AS_NODE;
   return spawn(electronExecutable, [input.root], { cwd: input.root, env, stdio: ['ignore', 'pipe', 'pipe'] });
 }
@@ -307,7 +307,7 @@ it.skipIf(process.platform === 'win32')('closing one runtime does not affect ano
   }
 }, 30000);
 
-it.skipIf(process.platform === 'win32' || process.env.SERPENT_EMBEDDING_TEST_ELECTRON !== '1')(
+it.skipIf(process.platform === 'win32' || process.env.KEEL_EMBEDDING_TEST_ELECTRON !== '1')(
   'reaps semantic runtime after real Electron Main closes normally or is killed', async () => {
     for (const closeNormally of [true, false]) {
       const root = await mkdtemp(path.join(tmpdir(), 'serpent-electron-embedding-lifetime-'));

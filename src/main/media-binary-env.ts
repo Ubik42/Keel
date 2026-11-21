@@ -61,17 +61,17 @@ export function mediaBinaryWorkerEnv(
   // intentional: launch-time test and development overrides must reach the
   // Worker unchanged so a missing component reports FFMPEG_REQUIRED instead
   // of silently recovering from bundled/PATH binaries.
-  if (env.SERPENT_FFMPEG_PATH === undefined) {
+  if (env.KEEL_FFMPEG_PATH === undefined) {
     const ffmpeg = firstRunnable(resourceCandidates("ffmpeg", "ffmpeg"));
-    if (ffmpeg) env.SERPENT_FFMPEG_PATH = ffmpeg;
+    if (ffmpeg) env.KEEL_FFMPEG_PATH = ffmpeg;
   }
-  if (env.SERPENT_OIIO_PATH === undefined) {
+  if (env.KEEL_OIIO_PATH === undefined) {
     const oiiotool = firstRunnable(resourceCandidates("oiio", "oiiotool"));
-    if (oiiotool) env.SERPENT_OIIO_PATH = oiiotool;
+    if (oiiotool) env.KEEL_OIIO_PATH = oiiotool;
   }
   // Ensure worker can still find sibling tools next to an env override.
-  if (env.SERPENT_FFMPEG_PATH && existsSync(env.SERPENT_FFMPEG_PATH)) {
-    const dir = path.dirname(env.SERPENT_FFMPEG_PATH);
+  if (env.KEEL_FFMPEG_PATH && existsSync(env.KEEL_FFMPEG_PATH)) {
+    const dir = path.dirname(env.KEEL_FFMPEG_PATH);
     const pathKey = process.platform === "win32" ? "Path" : "PATH";
     const current = env[pathKey] ?? env.PATH ?? "";
     if (!current.split(path.delimiter).includes(dir)) {
@@ -90,7 +90,7 @@ export function resolveHostMediaBinaries(): {
   ffmpegPath: string;
   ffprobePath: string;
 } | undefined {
-  let ffmpeg = process.env.SERPENT_FFMPEG_PATH;
+  let ffmpeg = process.env.KEEL_FFMPEG_PATH;
   if (!ffmpeg || !isRunnable(ffmpeg)) {
     ffmpeg = firstRunnable(resourceCandidates("ffmpeg", "ffmpeg"));
   }

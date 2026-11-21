@@ -219,20 +219,20 @@ test("visual baseline of the main surfaces", async () => {
     return file;
   });
 
-  const appDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const appDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const app = await electron.launch({
     executablePath: resolveElectronExecutablePath(),
     args: [
-      ...(process.env.SERPENT_E2E_ELECTRON_EXECUTABLE ? [] : [appDirectory]),
+      ...(process.env.KEEL_E2E_ELECTRON_EXECUTABLE ? [] : [appDirectory]),
       "--force-device-scale-factor=1",
     ],
     cwd: appDirectory,
     env: electronLaunchEnv({
-      SERPENT_E2E: "1",
-      SERPENT_E2E_THEME: "dark",
-      SERPENT_E2E_USER_DATA_PATH: path.join(root, "profile"),
-      SERPENT_E2E_CREATE_PARENT_PATH: root,
-      SERPENT_E2E_IMPORT_FILES: sourcePaths.join(path.delimiter),
+      KEEL_E2E: "1",
+      KEEL_E2E_THEME: "dark",
+      KEEL_E2E_USER_DATA_PATH: path.join(root, "profile"),
+      KEEL_E2E_CREATE_PARENT_PATH: root,
+      KEEL_E2E_IMPORT_FILES: sourcePaths.join(path.delimiter),
       TZ: "UTC",
     }),
   });

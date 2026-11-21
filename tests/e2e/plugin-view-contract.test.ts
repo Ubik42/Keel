@@ -34,16 +34,16 @@ test('plugin view contract: mount, theme-without-reload, reload, unmount, librar
   cpSync(fixture, packageDirectory, { recursive: true });
 
   const executablePath = resolveElectronExecutablePath();
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath,
     env: electronLaunchEnv({
-      SERPENT_E2E: '1',
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_PLUGIN_PACKAGE: packageDirectory,
+      KEEL_E2E: '1',
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_PLUGIN_PACKAGE: packageDirectory,
     }),
   });
   // Collect main-process stderr so an install failure leaves a trail.
@@ -56,8 +56,8 @@ test('plugin view contract: mount, theme-without-reload, reload, unmount, librar
   const mainDiag = await application.evaluate(({ app }) => ({
     userData: app.getPath('userData'),
     logs: app.getPath('logs'),
-    e2e: process.env.SERPENT_E2E,
-    e2eUserData: process.env.SERPENT_E2E_USER_DATA_PATH,
+    e2e: process.env.KEEL_E2E,
+    e2eUserData: process.env.KEEL_E2E_USER_DATA_PATH,
   })).catch(() => null);
   console.log('MAIN-DIAG', JSON.stringify(mainDiag));
 

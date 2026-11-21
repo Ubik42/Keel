@@ -1,6 +1,6 @@
 /**
  * Runs the real Electron E2E suite (`scripts/run-e2e.mjs`) with
- * `SERPENT_E2E_ISOLATED=1`, so `src/main/index.ts` places the main window on
+ * `KEEL_E2E_ISOLATED=1`, so `src/main/index.ts` places the main window on
  * a non-primary display (fully within its bounds) instead of the primary
  * display, when a non-primary display is available. The window still uses a
  * normal `show()` — never `showInactive` — so real focus/keyboard E2E
@@ -64,7 +64,7 @@ if (useXvfbRun) {
 const child = spawn(command, args, {
   cwd: projectRoot,
   stdio: 'inherit',
-  env: { ...process.env, SERPENT_E2E_ISOLATED: '1' },
+  env: { ...process.env, KEEL_E2E_ISOLATED: '1' },
 });
 
 const exitCode = await new Promise((resolve, reject) => {

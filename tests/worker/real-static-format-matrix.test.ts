@@ -8,8 +8,8 @@ import { afterAll, describe, expect, it } from 'vitest';
 import { LibraryService } from '../../src/worker/library-service';
 import { importNoConflict } from './import-no-conflict';
 
-const oiiotoolPath = process.env['SERPENT_REAL_OIIO_PATH'];
-const psdFixturePath = process.env['SERPENT_REAL_PSD_PATH'];
+const oiiotoolPath = process.env['KEEL_REAL_OIIO_PATH'];
+const psdFixturePath = process.env['KEEL_REAL_PSD_PATH'];
 const canRun = Boolean(oiiotoolPath && existsSync(oiiotoolPath));
 const temporaryRoots: string[] = [];
 
@@ -71,7 +71,7 @@ describe.runIf(canRun)('real OIIO static-format matrix', () => {
   it('creates a decoded thumbnail for BMP, TIFF, TGA, EXR, ICO, and SVG', async () => {
     const root = temporaryRoot();
     const sourcePaths = buildFixtures(path.join(root, 'sources'));
-    process.env['SERPENT_OIIO_PATH'] = oiiotoolPath;
+    process.env['KEEL_OIIO_PATH'] = oiiotoolPath;
     const service = new LibraryService();
     try {
       const library = service.createLibrary({ storageLayout: 'assets', displayName: 'RealStaticFormats', selectedParentPath: root });
@@ -154,7 +154,7 @@ describe.runIf(canRun)('real OIIO static-format matrix', () => {
       const sourcePath = path.join(root, 'sources', 'source.psd');
       mkdirSync(path.dirname(sourcePath), { recursive: true });
       copyFileSync(psdFixturePath!, sourcePath);
-      process.env['SERPENT_OIIO_PATH'] = oiiotoolPath;
+      process.env['KEEL_OIIO_PATH'] = oiiotoolPath;
       const service = new LibraryService();
       const library = service.createLibrary({ storageLayout: 'assets', displayName: 'RealPsdFormat', selectedParentPath: root });
       importNoConflict(service, library.libraryId, sourcePath);

@@ -5,12 +5,12 @@ import path from 'node:path';
  * Binary path resolution for FFmpeg/ffprobe and OIIO oiiotool.
  *
  * Resolution order:
- *   1. Environment variable (SERPENT_FFMPEG_PATH / SERPENT_OIIO_PATH)
+ *   1. Environment variable (KEEL_FFMPEG_PATH / KEEL_OIIO_PATH)
  *   2. Bundled path under process.resourcesPath (packaged app)
  *   3. Dev unpackaged: `<cwd>/resources/<tool>/<platform>/`
  *   4. System PATH (bare command name)
  *
- * Main also injects absolute SERPENT_*_PATH when forking the Library Worker
+ * Main also injects absolute KEEL_*_PATH when forking the Library Worker
  * (`media-binary-env.ts`) because Electron GUI / UtilityProcess PATH often
  * omits user-installed binaries while Chromium hover preview still works.
  */
@@ -108,10 +108,10 @@ export function resolveBundledFontPath(): string | undefined {
 /**
  * Resolve the FFmpeg binary path.
  *
- * Priority: SERPENT_FFMPEG_PATH env > bundled/dev resources > 'ffmpeg' (PATH).
+ * Priority: KEEL_FFMPEG_PATH env > bundled/dev resources > 'ffmpeg' (PATH).
  */
 export function resolveFfmpegPath(): string {
-  const envPath = process.env['SERPENT_FFMPEG_PATH'];
+  const envPath = process.env['KEEL_FFMPEG_PATH'];
   if (envPath) return envPath;
 
   const bundled = resolveBundledBinary('ffmpeg', 'ffmpeg');
@@ -123,11 +123,11 @@ export function resolveFfmpegPath(): string {
 /**
  * Resolve the ffprobe binary path.
  *
- * If SERPENT_FFMPEG_PATH is set, ffprobe is resolved in the same directory.
+ * If KEEL_FFMPEG_PATH is set, ffprobe is resolved in the same directory.
  * Otherwise: bundled/dev resources > 'ffprobe' (PATH).
  */
 export function resolveFfprobePath(): string {
-  const envFfmpeg = process.env['SERPENT_FFMPEG_PATH'];
+  const envFfmpeg = process.env['KEEL_FFMPEG_PATH'];
   if (envFfmpeg) {
     return path.join(path.dirname(envFfmpeg), platformBinaryName('ffprobe'));
   }
@@ -141,10 +141,10 @@ export function resolveFfprobePath(): string {
 /**
  * Resolve the oiiotool binary path.
  *
- * Priority: SERPENT_OIIO_PATH env > bundled/dev resources > 'oiiotool' (PATH).
+ * Priority: KEEL_OIIO_PATH env > bundled/dev resources > 'oiiotool' (PATH).
  */
 export function resolveOiiotoolPath(): string {
-  const envPath = process.env['SERPENT_OIIO_PATH'];
+  const envPath = process.env['KEEL_OIIO_PATH'];
   if (envPath) return envPath;
 
   const bundled = resolveBundledBinary('oiiotool', 'oiio');

@@ -8,13 +8,13 @@ import { afterAll, describe, expect, it } from 'vitest';
 import { LibraryService } from '../../src/worker/library-service';
 import { importNoConflict } from './import-no-conflict';
 
-const ffmpegPath = process.env['SERPENT_REAL_FFMPEG_PATH'];
-const ffprobePath = process.env['SERPENT_REAL_FFPROBE_PATH'];
+const ffmpegPath = process.env['KEEL_REAL_FFMPEG_PATH'];
+const ffprobePath = process.env['KEEL_REAL_FFPROBE_PATH'];
 // The product FFmpeg intentionally excludes avdevice/lavfi because it only
 // needs to read user media and write owned proxies. Fixture generation may use
 // an explicitly supplied developer FFmpeg with lavfi enabled; it is never
 // treated as product-runtime evidence.
-const fixtureFfmpegPath = process.env['SERPENT_REAL_FIXTURE_FFMPEG_PATH'] ?? ffmpegPath;
+const fixtureFfmpegPath = process.env['KEEL_REAL_FIXTURE_FFMPEG_PATH'] ?? ffmpegPath;
 const canRun = Boolean(
   ffmpegPath
   && ffprobePath
@@ -103,8 +103,8 @@ describe.runIf(canRun)('real common audio/video format matrix', () => {
     const root = temporaryRoot();
     const sourceRoot = path.join(root, 'sources');
     const sourcePaths = buildFixtures(sourceRoot);
-    process.env['SERPENT_FFMPEG_PATH'] = ffmpegPath;
-    process.env['SERPENT_FFPROBE_PATH'] = ffprobePath;
+    process.env['KEEL_FFMPEG_PATH'] = ffmpegPath;
+    process.env['KEEL_FFPROBE_PATH'] = ffprobePath;
     const service = new LibraryService();
     try {
       const library = service.createLibrary({ storageLayout: 'assets', displayName: 'RealCommonFormats', selectedParentPath: root });

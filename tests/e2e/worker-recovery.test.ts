@@ -21,7 +21,7 @@ test('restarts an exited Library Worker and restores browsing and search', async
     'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
     'base64',
   ));
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   let application: Awaited<ReturnType<typeof electron.launch>> | undefined;
   try {
     application = await electron.launch({
@@ -30,11 +30,11 @@ test('restarts an exited Library Worker and restores browsing and search', async
       executablePath: resolveElectronExecutablePath(),
       env: {
         ...process.env,
-        SERPENT_E2E: '1',
-        SERPENT_E2E_HIDE_WINDOW: '1',
-        SERPENT_E2E_USER_DATA_PATH: path.join(root, 'user-data'),
-        SERPENT_E2E_CREATE_PARENT_PATH: root,
-        SERPENT_E2E_IMPORT_FILES: source,
+        KEEL_E2E: '1',
+        KEEL_E2E_HIDE_WINDOW: '1',
+        KEEL_E2E_USER_DATA_PATH: path.join(root, 'user-data'),
+        KEEL_E2E_CREATE_PARENT_PATH: root,
+        KEEL_E2E_IMPORT_FILES: source,
       },
     });
     const window = await application.firstWindow();

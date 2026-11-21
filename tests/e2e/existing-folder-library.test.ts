@@ -13,13 +13,13 @@ test('turns an existing folder into a library and automatically indexes its orig
   const source = path.join(folder, '2026', '原始照片.txt');
   writeFileSync(source, 'original file');
   const sourceMtime = statSync(source).mtimeMs;
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     executablePath: resolveElectronExecutablePath(),
-    args: process.env.SERPENT_E2E_ELECTRON_EXECUTABLE ? [] : [applicationDirectory],
+    args: process.env.KEEL_E2E_ELECTRON_EXECUTABLE ? [] : [applicationDirectory],
     cwd: applicationDirectory,
-    env: { ...process.env, SERPENT_E2E: '1', SERPENT_E2E_USER_DATA_PATH: path.join(parent, 'profile'),
-      SERPENT_E2E_CREATE_PARENT_PATH: folder },
+    env: { ...process.env, KEEL_E2E: '1', KEEL_E2E_USER_DATA_PATH: path.join(parent, 'profile'),
+      KEEL_E2E_CREATE_PARENT_PATH: folder },
   });
   try {
     await application.evaluate(({ dialog }, selectedFolder) => {

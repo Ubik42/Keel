@@ -26,20 +26,20 @@ if (!apiVersionMatch) {
 }
 const apiVersion = Number(apiVersionMatch[1]);
 
-const targetPlatform = process.env.SERPENT_PACKAGE_PLATFORM
-  ?? path.basename(process.env.SERPENT_PACKAGE_ROOT ?? path.resolve('out', `Serpent-${process.platform}-${process.arch}`))
+const targetPlatform = process.env.KEEL_PACKAGE_PLATFORM
+  ?? path.basename(process.env.KEEL_PACKAGE_ROOT ?? path.resolve('out', `Serpent-${process.platform}-${process.arch}`))
     .replace(/^Serpent-/u, '');
 const targetSeparator = targetPlatform.lastIndexOf('-');
 const packagePlatform = targetPlatform.slice(0, targetSeparator);
 const packageArch = targetPlatform.slice(targetSeparator + 1);
 if (targetSeparator <= 0 || !packageArch) {
-  throw new Error('Set SERPENT_PACKAGE_PLATFORM or use a Serpent-<platform>-<arch> package directory.');
+  throw new Error('Set KEEL_PACKAGE_PLATFORM or use a Serpent-<platform>-<arch> package directory.');
 }
 if (packagePlatform !== process.platform || packageArch !== process.arch) {
   throw new Error(`Package verification requires a matching host; target is ${packagePlatform}-${packageArch}, host is ${process.platform}-${process.arch}.`);
 }
 const platformDirectory = `Serpent-${packagePlatform}-${packageArch}`;
-const packageRoot = process.env.SERPENT_PACKAGE_ROOT ?? path.resolve('out', platformDirectory);
+const packageRoot = process.env.KEEL_PACKAGE_ROOT ?? path.resolve('out', platformDirectory);
 const resourcesPath =
   packagePlatform === 'darwin'
     ? path.join(packageRoot, 'Serpent.app', 'Contents', 'Resources')
@@ -169,9 +169,9 @@ if (!mainSource.includes(`AUTOMATION_API_VERSION`) || !mainSource.includes(Strin
 const mediaResourcesPath = path.join(resourcesPath, 'resources');
 const mediaPlatform = currentPlatformKey();
 verifyBundle({ root: mediaResourcesPath, platform: mediaPlatform });
-if (process.env.SERPENT_MEDIA_SKIP_PROVENANCE === '1') {
+if (process.env.KEEL_MEDIA_SKIP_PROVENANCE === '1') {
   console.warn(
-    'Skipping packaged release provenance check (SERPENT_MEDIA_SKIP_PROVENANCE=1). ' +
+    'Skipping packaged release provenance check (KEEL_MEDIA_SKIP_PROVENANCE=1). ' +
       'This is only valid for local build trials, not production release.',
   );
 } else {

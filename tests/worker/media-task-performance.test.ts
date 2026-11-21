@@ -27,21 +27,21 @@ import type { LargeLibraryFixtureManifest } from './large-library-fixture';
  * native decode wave repeatedly. The query benchmark and Electron scroll
  * benchmark cannot expose decoder RSS or FFmpeg child pressure.
  */
-const fixturePath = process.env.SERPENT_MEDIA_TASK_PERF_PATH;
-const enabled = process.env.SERPENT_MEDIA_TASK_PERF === '1';
+const fixturePath = process.env.KEEL_MEDIA_TASK_PERF_PATH;
+const enabled = process.env.KEEL_MEDIA_TASK_PERF === '1';
 const requestedAssetCount = Math.max(
   20,
-  Math.min(200, Math.trunc(Number(process.env.SERPENT_MEDIA_TASK_PERF_ASSETS ?? 100))),
+  Math.min(200, Math.trunc(Number(process.env.KEEL_MEDIA_TASK_PERF_ASSETS ?? 100))),
 );
 const roundCount = Math.max(
   1,
-  Math.min(5, Math.trunc(Number(process.env.SERPENT_MEDIA_TASK_PERF_ROUNDS ?? 3))),
+  Math.min(5, Math.trunc(Number(process.env.KEEL_MEDIA_TASK_PERF_ROUNDS ?? 3))),
 );
 const maxRssDeltaMb = Math.max(
   128,
-  Number(process.env.SERPENT_MEDIA_TASK_PERF_MAX_RSS_DELTA_MB ?? 768),
+  Number(process.env.KEEL_MEDIA_TASK_PERF_MAX_RSS_DELTA_MB ?? 768),
 );
-const reuseLibraryPath = process.env.SERPENT_MEDIA_TASK_PERF_REUSE_LIBRARY;
+const reuseLibraryPath = process.env.KEEL_MEDIA_TASK_PERF_REUSE_LIBRARY;
 
 type Database = new (filename: string, options?: { readonly?: boolean }) => {
   close(): void;
@@ -334,7 +334,7 @@ function removeVisualArtifacts(libraryPath: string, assets: readonly BenchAsset[
 
 describe.skipIf(!enabled || !fixturePath)('native media task performance benchmark', () => {
   beforeAll(() => {
-    if (!fixturePath) throw new Error('Set SERPENT_MEDIA_TASK_PERF_PATH to a 20k fixture.');
+    if (!fixturePath) throw new Error('Set KEEL_MEDIA_TASK_PERF_PATH to a 20k fixture.');
     const manifestFile = path.join(fixturePath, '.keel', 'large-library-fixture.json');
     if (!existsSync(manifestFile)) throw new Error(`Missing fixture manifest: ${manifestFile}`);
     manifest = JSON.parse(readFileSync(manifestFile, 'utf8')) as LargeLibraryFixtureManifest;
@@ -457,7 +457,7 @@ describe.skipIf(!enabled || !fixturePath)('native media task performance benchma
       rounds,
       maxRssDeltaMb,
     };
-    const resultPath = process.env.SERPENT_MEDIA_TASK_PERF_RESULT_PATH;
+    const resultPath = process.env.KEEL_MEDIA_TASK_PERF_RESULT_PATH;
     if (resultPath) writeFileSync(resultPath, `${JSON.stringify(result)}\n`, 'utf8');
     console.info(`MEDIA_TASK_PERF_JSON ${JSON.stringify(result)}`);
   }, 1_800_000);

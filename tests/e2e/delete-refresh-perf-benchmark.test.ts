@@ -24,14 +24,14 @@ import { chooseStandardOption } from "./electron-test-helpers";
  * create/delete refresh. It only opens a separately copied library and never
  * removes that copy. The only mutations are restored in `finally`.
  */
-const sourceLibrary = process.env.SERPENT_DELETE_PERF_SOURCE_LIBRARY;
-const writeLibrary = process.env.SERPENT_DELETE_PERF_WRITE_LIBRARY;
-const reportPath = process.env.SERPENT_DELETE_PERF_OUT;
+const sourceLibrary = process.env.KEEL_DELETE_PERF_SOURCE_LIBRARY;
+const writeLibrary = process.env.KEEL_DELETE_PERF_WRITE_LIBRARY;
+const reportPath = process.env.KEEL_DELETE_PERF_OUT;
 const confirmation = "I_CONFIRM_ISOLATED_COPY_WRITES";
-const decodeBudgetMs = Number(process.env.SERPENT_DELETE_PERF_DECODE_BUDGET_MS ?? 15_000);
-const confirmationEnv = process.env.SERPENT_DELETE_PERF_CONFIRM;
-const recoveryAssetId = process.env.SERPENT_DELETE_PERF_RECOVER_ASSET_ID;
-const recoveryFolderId = process.env.SERPENT_DELETE_PERF_RECOVER_FOLDER_ID;
+const decodeBudgetMs = Number(process.env.KEEL_DELETE_PERF_DECODE_BUDGET_MS ?? 15_000);
+const confirmationEnv = process.env.KEEL_DELETE_PERF_CONFIRM;
+const recoveryAssetId = process.env.KEEL_DELETE_PERF_RECOVER_ASSET_ID;
+const recoveryFolderId = process.env.KEEL_DELETE_PERF_RECOVER_FOLDER_ID;
 
 test.describe.configure({ timeout: 240_000 });
 test.skip(!sourceLibrary || !writeLibrary, "Set source and isolated write library paths for this diagnostic.");
@@ -106,7 +106,7 @@ function isWithin(parent: string, candidate: string): boolean {
  */
 function validateIsolatedCopy(sourcePath: string, targetPath: string): string {
   if (confirmationEnv !== confirmation) {
-    throw new Error("Set SERPENT_DELETE_PERF_CONFIRM to the documented confirmation value.");
+    throw new Error("Set KEEL_DELETE_PERF_CONFIRM to the documented confirmation value.");
   }
   if (!existsSync(sourcePath) || !existsSync(targetPath)) {
     throw new Error("Both configured library directories must already exist.");
@@ -749,10 +749,10 @@ test("measures visible asset deletion geometry and folder refresh on an isolated
     throw new Error("Set only one of the asset or folder recovery IDs at a time.");
   }
   if (recoveryAssetId && !/^[\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12}$/iu.test(recoveryAssetId)) {
-    throw new Error("SERPENT_DELETE_PERF_RECOVER_ASSET_ID must be a UUID.");
+    throw new Error("KEEL_DELETE_PERF_RECOVER_ASSET_ID must be a UUID.");
   }
   if (recoveryFolderId && !/^[\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12}$/iu.test(recoveryFolderId)) {
-    throw new Error("SERPENT_DELETE_PERF_RECOVER_FOLDER_ID must be a UUID.");
+    throw new Error("KEEL_DELETE_PERF_RECOVER_FOLDER_ID must be a UUID.");
   }
   const libraryPath = validateIsolatedCopy(sourceLibrary, writeLibrary);
   const temporaryRoot = mkdtempSync(path.join(tmpdir(), "serpent-delete-refresh-perf-"));

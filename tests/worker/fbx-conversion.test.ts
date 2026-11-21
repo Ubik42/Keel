@@ -585,10 +585,10 @@ describe('fbx converter — typed failures', () => {
   });
 
   it('reports FBX_WASM_UNAVAILABLE when the ufbx module is missing', async () => {
-    const previousDir = process.env['SERPENT_UFBX_DIR'];
+    const previousDir = process.env['KEEL_UFBX_DIR'];
     try {
       resetSerpentUfbxModuleForTest();
-      process.env['SERPENT_UFBX_DIR'] = path.join(temporaryRoot(), 'no-ufbx');
+      process.env['KEEL_UFBX_DIR'] = path.join(temporaryRoot(), 'no-ufbx');
       const result = await convertFbxBuffer(readFileSync(CUBE_FBX), {
         sourcePath: path.join(temporaryRoot(), 'cube.fbx'),
       });
@@ -596,8 +596,8 @@ describe('fbx converter — typed failures', () => {
       if (result.ok) return;
       expect(result.failure.errorCode).toBe('FBX_WASM_UNAVAILABLE');
     } finally {
-      if (previousDir === undefined) delete process.env['SERPENT_UFBX_DIR'];
-      else process.env['SERPENT_UFBX_DIR'] = previousDir;
+      if (previousDir === undefined) delete process.env['KEEL_UFBX_DIR'];
+      else process.env['KEEL_UFBX_DIR'] = previousDir;
       resetSerpentUfbxModuleForTest();
     }
   });

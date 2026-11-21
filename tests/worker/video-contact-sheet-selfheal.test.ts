@@ -10,7 +10,7 @@ import { LibraryService } from '../../src/worker/library-service';
 const roots: string[] = [];
 const services: LibraryService[] = [];
 afterEach(() => {
-  delete process.env['SERPENT_FFMPEG_PATH'];
+  delete process.env['KEEL_FFMPEG_PATH'];
   for (const s of services.splice(0)) s.closeAll();
   for (const r of roots.splice(0)) {
     try {
@@ -35,7 +35,7 @@ interface TestDbHandle {
 }
 
 function ffmpegAvailable(): boolean {
-  const ffmpeg = process.env['SERPENT_FFMPEG_PATH'] ?? 'ffmpeg';
+  const ffmpeg = process.env['KEEL_FFMPEG_PATH'] ?? 'ffmpeg';
   try {
     execFileSync(ffmpeg, ['-version'], { stdio: 'ignore' });
     return true;
@@ -67,7 +67,7 @@ function openLibraryDb<T>(libraryPath: string, fn: (db: TestDbHandle) => T): T {
 describe('contact sheet self-heal for conversion-registered videos', () => {
   it('probes missing duration on demand and generates the contact sheet', async () => {
     if (!ffmpegAvailable()) return;
-    const ffmpeg = process.env['SERPENT_FFMPEG_PATH'] ?? 'ffmpeg';
+    const ffmpeg = process.env['KEEL_FFMPEG_PATH'] ?? 'ffmpeg';
     const root = mkdtempSync(path.join(tmpdir(), 'serpent-cs-selfheal-'));
     roots.push(root);
     const videoPath = path.join(root, 'clip.mp4');
@@ -124,7 +124,7 @@ describe('contact sheet self-heal for conversion-registered videos', () => {
 
   it('writes a terminal failed artifact when ffprobe fails after registration', async () => {
     if (!ffmpegAvailable()) return;
-    const ffmpeg = process.env['SERPENT_FFMPEG_PATH'] ?? 'ffmpeg';
+    const ffmpeg = process.env['KEEL_FFMPEG_PATH'] ?? 'ffmpeg';
     const root = mkdtempSync(path.join(tmpdir(), 'serpent-cs-doomed-'));
     roots.push(root);
     const videoPath = path.join(root, 'later-corrupt.mp4');
@@ -182,7 +182,7 @@ describe('contact sheet self-heal for conversion-registered videos', () => {
   });
 
   it('enqueues AI analysis for sheet-less videos and lazily self-heals duration (hermetic)', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = mkdtempSync(path.join(tmpdir(), 'serpent-cs-hermetic-'));
     roots.push(root);
     const cannedProbe = JSON.stringify({

@@ -7,9 +7,9 @@ import path from 'node:path';
 import { _electron as electron, expect, test } from '@playwright/test';
 
 test('the packaged application starts and completes a real Worker import', async () => {
-  const executablePath = process.env.SERPENT_E2E_PACKAGED_EXECUTABLE;
+  const executablePath = process.env.KEEL_E2E_PACKAGED_EXECUTABLE;
   if (!executablePath) {
-    throw new Error('Set SERPENT_E2E_PACKAGED_EXECUTABLE after packaging.');
+    throw new Error('Set KEEL_E2E_PACKAGED_EXECUTABLE after packaging.');
   }
 
   const temporaryRoot = mkdtempSync(path.join(tmpdir(), 'serpent-packaged-test-'));
@@ -23,9 +23,9 @@ test('the packaged application starts and completes a real Worker import', async
     args: [],
     env: {
       ...process.env,
-      SERPENT_E2E: '1',
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E: '1',
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
     },
   });
 
@@ -76,9 +76,9 @@ test('the packaged application starts and completes a real Worker import', async
 });
 
 test('the packaged application FTS5 search finds and filters imported assets', async () => {
-  const executablePath = process.env.SERPENT_E2E_PACKAGED_EXECUTABLE;
+  const executablePath = process.env.KEEL_E2E_PACKAGED_EXECUTABLE;
   if (!executablePath) {
-    throw new Error('Set SERPENT_E2E_PACKAGED_EXECUTABLE after packaging.');
+    throw new Error('Set KEEL_E2E_PACKAGED_EXECUTABLE after packaging.');
   }
 
   const VALID_PNG = Buffer.from(
@@ -97,9 +97,9 @@ test('the packaged application FTS5 search finds and filters imported assets', a
     args: [],
     env: {
       ...process.env,
-      SERPENT_E2E: '1',
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E: '1',
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
     },
   });
 
@@ -159,9 +159,9 @@ test('the packaged application FTS5 search finds and filters imported assets', a
 
 test('the packaged Windows close button hides the window and keeps the tray process alive', async () => {
   test.skip(process.platform !== 'win32', 'This lifecycle rule is Windows-specific.');
-  const executablePath = process.env.SERPENT_E2E_PACKAGED_EXECUTABLE;
+  const executablePath = process.env.KEEL_E2E_PACKAGED_EXECUTABLE;
   if (!executablePath) {
-    throw new Error('Set SERPENT_E2E_PACKAGED_EXECUTABLE after packaging.');
+    throw new Error('Set KEEL_E2E_PACKAGED_EXECUTABLE after packaging.');
   }
 
   const temporaryRoot = mkdtempSync(path.join(tmpdir(), 'serpent-packaged-close-'));
@@ -170,9 +170,9 @@ test('the packaged Windows close button hides the window and keeps the tray proc
     args: [],
     env: {
       ...process.env,
-      SERPENT_E2E: '1',
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E: '1',
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
     },
   });
   const childProcess = application.process();

@@ -21,7 +21,7 @@ class FakeChild extends EventEmitter {
   stderr = new EventEmitter();
   kill = vi.fn(() => true);
   stdin = { write: vi.fn(), on: vi.fn(), end: vi.fn(() => {
-    this.stdout.emit("data", "SERPENT_EMBEDDING_STOP\n");
+    this.stdout.emit("data", "KEEL_EMBEDDING_STOP\n");
     this.exitCode = 0;
     this.emit("exit", 0, null);
   }) };

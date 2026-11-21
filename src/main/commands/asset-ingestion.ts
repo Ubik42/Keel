@@ -64,7 +64,7 @@ export async function executeAssetIngestionMainCommand(
       const selectedSourcePath = await selectOpenLibrarySource(
         runtime.createNativeDialogHost(),
         "importEagleLibrary",
-        process.env.SERPENT_E2E_IMPORT_EAGLE_LIBRARY,
+        process.env.KEEL_E2E_IMPORT_EAGLE_LIBRARY,
         ["zip", "eaglepack", "rar", "7z", "tar", "gz", "tgz", "bz2", "tbz", "tbz2", "xz", "txz"],
       );
       if (!selectedSourcePath) return undefined;
@@ -86,7 +86,7 @@ export async function executeAssetIngestionMainCommand(
       const selectedSourcePath = await selectOpenFile(
         runtime.createNativeDialogHost(),
         "importBillfishLibrary",
-        process.env.SERPENT_E2E_IMPORT_BILLFISH_LIBRARY,
+        process.env.KEEL_E2E_IMPORT_BILLFISH_LIBRARY,
         [{ name: "Billfish Pack", extensions: ["billfishpack"] }],
       );
       if (!selectedSourcePath) return undefined;
@@ -148,7 +148,7 @@ export async function executeAssetIngestionMainCommand(
       const sourceRootPath = await selectOpenDirectory(
         runtime.createNativeDialogHost(),
         "linkFolder",
-        process.env.SERPENT_E2E_LINKED_SOURCE,
+        process.env.KEEL_E2E_LINKED_SOURCE,
       );
       return sourceRootPath
         ? {

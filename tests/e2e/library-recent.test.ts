@@ -75,7 +75,7 @@ test("lists other recent libraries in the switcher and opens one directly", asyn
   const secondName = "资源库乙";
   const executablePath = resolveElectronExecutablePath();
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const launch = (createParentPath: string) =>
     electron.launch({
       args: [applicationDirectory],
@@ -83,19 +83,19 @@ test("lists other recent libraries in the switcher and opens one directly", asyn
       executablePath,
       env: {
         ...process.env,
-        SERPENT_E2E: "1",
+        KEEL_E2E: "1",
         // The wait overlay only appears once an open exceeds
         // LIBRARY_LOADING_DISPLAY_DELAY_MS (3000 ms), so this seam must stay
         // comfortably above it. 3200 ms used to work only because the old open
         // path added seconds of queueing on top; 2026-09-13 的切库抢占修复把
         // 切换收到 1 秒级后，那条断言只剩 ~200 ms 窗口，稳定失败。延时改为
         // 6000 ms，让「打开较慢 → 显示等待遮罩」这一被测行为重新有充裕余量。
-        SERPENT_E2E_LIBRARY_OPEN_DELAY_MS: "6000",
-        // Recent-library persistence is gated off under SERPENT_E2E unless this
+        KEEL_E2E_LIBRARY_OPEN_DELAY_MS: "6000",
+        // Recent-library persistence is gated off under KEEL_E2E unless this
         // flag is set; the switcher section depends on the persisted store.
-        SERPENT_E2E_RESTORE_RECENT: "1",
-        SERPENT_E2E_USER_DATA_PATH: profilePath,
-        SERPENT_E2E_CREATE_PARENT_PATH: createParentPath,
+        KEEL_E2E_RESTORE_RECENT: "1",
+        KEEL_E2E_USER_DATA_PATH: profilePath,
+        KEEL_E2E_CREATE_PARENT_PATH: createParentPath,
       },
     });
 
@@ -194,7 +194,7 @@ test("keeps decoded previews isolated when switching between libraries", async (
   const secondName = "切换预览乙";
   const executablePath = resolveElectronExecutablePath();
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const launch = (
     createParentPath: string,
     libraryPath: string,
@@ -206,12 +206,12 @@ test("keeps decoded previews isolated when switching between libraries", async (
       executablePath,
       env: {
         ...process.env,
-        SERPENT_E2E: "1",
-        SERPENT_E2E_RESTORE_RECENT: "1",
-        SERPENT_E2E_USER_DATA_PATH: profilePath,
-        SERPENT_E2E_CREATE_PARENT_PATH: createParentPath,
-        SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-        SERPENT_E2E_IMPORT_FILES: importPath,
+        KEEL_E2E: "1",
+        KEEL_E2E_RESTORE_RECENT: "1",
+        KEEL_E2E_USER_DATA_PATH: profilePath,
+        KEEL_E2E_CREATE_PARENT_PATH: createParentPath,
+        KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+        KEEL_E2E_IMPORT_FILES: importPath,
       },
     });
 
@@ -324,7 +324,7 @@ test("does not retain the previous library navigation while switching", async ()
   const secondFolderName = "仅乙文件夹";
   const executablePath = resolveElectronExecutablePath();
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const launch = (createParentPath: string) =>
     electron.launch({
       args: [applicationDirectory],
@@ -332,11 +332,11 @@ test("does not retain the previous library navigation while switching", async ()
       executablePath,
       env: {
         ...process.env,
-        SERPENT_E2E: "1",
-        SERPENT_E2E_CLOSE_DELAY_MS: "2000",
-        SERPENT_E2E_RESTORE_RECENT: "1",
-        SERPENT_E2E_USER_DATA_PATH: profilePath,
-        SERPENT_E2E_CREATE_PARENT_PATH: createParentPath,
+        KEEL_E2E: "1",
+        KEEL_E2E_CLOSE_DELAY_MS: "2000",
+        KEEL_E2E_RESTORE_RECENT: "1",
+        KEEL_E2E_USER_DATA_PATH: profilePath,
+        KEEL_E2E_CREATE_PARENT_PATH: createParentPath,
       },
     });
 

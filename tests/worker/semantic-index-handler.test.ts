@@ -333,7 +333,7 @@ describe('semantic SQLite Worker handler', () => {
       db.close();
     }
 
-    vi.stubEnv('SERPENT_SEMANTIC_LEGACY_CACHE_ROOT', root);
+    vi.stubEnv('KEEL_SEMANTIC_LEGACY_CACHE_ROOT', root);
     const cacheDirectory = path.join(root, 'embedding-http-index', library.libraryId);
     mkdirSync(cacheDirectory, { recursive: true });
     const cachePath = path.join(cacheDirectory, 'fixture-service.json');
@@ -441,7 +441,7 @@ describe('semantic SQLite Worker handler', () => {
 
     let sessionGeneration = randomUUID();
     const profileKey = 'semantic-handler-test';
-    vi.stubEnv('SERPENT_SEMANTIC_LEGACY_CACHE_ROOT', root);
+    vi.stubEnv('KEEL_SEMANTIC_LEGACY_CACHE_ROOT', root);
     const legacyDirectory = path.join(root, 'embedding-test-index', library.libraryId);
     mkdirSync(legacyDirectory, { recursive: true });
     const legacyCachePath = path.join(legacyDirectory, 'model-test.json');

@@ -77,7 +77,7 @@ export async function tryBuildIngestionCommand(
         runtime.isUnpackagedE2e() &&
         // Serpent-866c20：序列帧确认面板（含导入前预览）只能在确认流程里跑，
         // 需要一条 E2E 保持真实交互，而不是被 E2E 自动展开吞掉。
-        runtime.e2eEnv("SERPENT_E2E_SEQUENCE_PROMPT") !== "1";
+        runtime.e2eEnv("KEEL_E2E_SEQUENCE_PROMPT") !== "1";
       const disableSequenceCreate =
         request.detectImageSequences === false ||
         request.autoDetectImageSequences === false;
@@ -241,7 +241,7 @@ export async function tryBuildIngestionCommand(
     case "asset.import-clipboard.request": {
       let image;
       try {
-        const e2eClipboardImagePath = runtime.e2eEnv("SERPENT_E2E_CLIPBOARD_IMAGE_PATH");
+        const e2eClipboardImagePath = runtime.e2eEnv("KEEL_E2E_CLIPBOARD_IMAGE_PATH");
         if (runtime.isUnpackagedE2e() && e2eClipboardImagePath) {
           image = runtime.createImageFromBuffer(
             runtime.readFileBuffer(e2eClipboardImagePath),
@@ -260,7 +260,7 @@ export async function tryBuildIngestionCommand(
           }
           image = extracted.image;
         }
-        const injectedNow = runtime.e2eEnv("SERPENT_E2E_CLIPBOARD_NOW");
+        const injectedNow = runtime.e2eEnv("KEEL_E2E_CLIPBOARD_NOW");
         const staged = stageClipboardImage(
           image,
           runtime.tempPath(),
@@ -302,7 +302,7 @@ export async function tryBuildIngestionCommand(
     }
     case "folder.paste.request": {
       try {
-        const injectedPathsRaw = runtime.e2eEnv("SERPENT_E2E_CLIPBOARD_FILE_PATHS");
+        const injectedPathsRaw = runtime.e2eEnv("KEEL_E2E_CLIPBOARD_FILE_PATHS");
         const injectedPaths =
           runtime.isUnpackagedE2e() && injectedPathsRaw
             ? injectedPathsRaw.split("\n").filter(Boolean)

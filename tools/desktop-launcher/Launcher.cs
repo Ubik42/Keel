@@ -33,8 +33,7 @@ internal static class SerpentDesktopLauncher {
             start.UseShellExecute = false;
             start.CreateNoWindow = true;
             start.WorkingDirectory = root;
-            start.EnvironmentVariables["SERPENT_USER_DATA_PATH"] = Path.Combine(root, ".local-profile");
-            start.EnvironmentVariables["SERPENT_DISTRIBUTION"] = "development";
+            start.EnvironmentVariables["KEEL_USER_DATA_PATH"] = Path.Combine(root, ".local-profile");
             using (var process = Process.Start(start)) { }
             return 0;
         } catch (Exception error) {

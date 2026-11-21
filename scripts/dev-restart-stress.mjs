@@ -20,7 +20,7 @@ import { killStaleSerpentDevProcesses } from "./kill-stale-dev.mjs";
 
 const projectRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const rounds = Number(process.argv[2] || 5);
-const port = Number(process.env.SERPENT_VITE_PORT || 5173);
+const port = Number(process.env.KEEL_VITE_PORT || 5173);
 const electronLog = path.join(homedir(), "Library/Logs/Electron/serpent.log");
 const electronApp =
   process.platform === "win32"
@@ -74,7 +74,7 @@ async function waitForMountVerified(fromOffset, deadlineMs = 90_000) {
 function startNpmStart() {
   return spawn("npm", ["start"], {
     cwd: projectRoot,
-    env: { ...process.env, SERPENT_VITE_PORT: String(port) },
+    env: { ...process.env, KEEL_VITE_PORT: String(port) },
     stdio: "ignore",
   });
 }

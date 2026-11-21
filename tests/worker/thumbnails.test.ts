@@ -2740,7 +2740,7 @@ describe('resolveAssetPath', () => {
 describe('generateThumbnail (animated GIF still page)', () => {
   it('avoids pure-black intro frames for multi-page GIFs', async () => {
     const { execFileSync } = await import('node:child_process');
-    const ffmpeg = process.env['SERPENT_FFMPEG_PATH'] ?? 'ffmpeg';
+    const ffmpeg = process.env['KEEL_FFMPEG_PATH'] ?? 'ffmpeg';
     try {
       execFileSync(ffmpeg, ['-version'], { stdio: 'ignore' });
     } catch {
@@ -2840,7 +2840,7 @@ describe('generateThumbnail (animated GIF still page)', () => {
 describe('animated GIF native playback (Serpent-43d32f)', () => {
   async function buildGif(root: string, frames: number): Promise<string> {
     const { execFileSync } = await import('node:child_process');
-    const ffmpeg = process.env['SERPENT_FFMPEG_PATH'] ?? 'ffmpeg';
+    const ffmpeg = process.env['KEEL_FFMPEG_PATH'] ?? 'ffmpeg';
     try {
       execFileSync(ffmpeg, ['-version'], { stdio: 'ignore' });
     } catch {

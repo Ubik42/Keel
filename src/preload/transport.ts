@@ -12,7 +12,7 @@ import {
   type RendererResult,
 } from '../shared/protocol/responses';
 
-const e2eEnabled = process.env.SERPENT_E2E === '1';
+const e2eEnabled = process.env.KEEL_E2E === '1';
 const requestCounts = new Map<RendererRequest['type'], number>();
 
 export async function request(command: RendererRequest): Promise<RendererResult> {

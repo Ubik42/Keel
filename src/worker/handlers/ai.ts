@@ -61,7 +61,7 @@ export type AiRuntime = {
   runWithoutAdmission: <T>(requestId: string, work: () => Promise<T> | T) => Promise<T>;
 };
 
-const WORKER_CMD_LOG = process.env.SERPENT_WORKER_CMD_LOG === '1';
+const WORKER_CMD_LOG = process.env.KEEL_WORKER_CMD_LOG === '1';
 const MODEL_FILE_EXTENSIONS = new Set(['.fbx', '.obj', '.glb', '.gltf', '.stl']);
 
 function isModelFileFormat(filePath: string): boolean {

@@ -4,7 +4,7 @@ const npmCli = process.env.npm_execpath;
 if (!npmCli) throw new Error('verify:mainline must be launched through npm.');
 
 const gateEnvironment = process.platform === 'darwin' && process.arch === 'arm64'
-  ? { ...process.env, SERPENT_REQUIRE_REAL_MEDIA: '1' }
+  ? { ...process.env, KEEL_REQUIRE_REAL_MEDIA: '1' }
   : process.env;
 
 const gates = [

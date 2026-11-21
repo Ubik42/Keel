@@ -19,7 +19,7 @@ function environment(): Record<string, string> {
 test("persists custom shortcut overrides through preload and Main", async () => {
   const executablePath = resolveElectronExecutablePath();
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const temporaryRoot = mkdtempSync(path.join(tmpdir(), "serpent-shortcuts-e2e-"));
   const profilePath = path.join(temporaryRoot, "profile");
   mkdirSync(profilePath);
@@ -28,11 +28,11 @@ test("persists custom shortcut overrides through preload and Main", async () => 
   const platform = process.platform === "darwin" ? "mac" : "windows";
   const env = {
     ...environment(),
-    SERPENT_E2E: "1",
-    SERPENT_E2E_HIDE_WINDOW: "1",
-    SERPENT_E2E_USER_DATA_PATH: profilePath,
-    SERPENT_E2E_SHORTCUTS_EXPORT_PATH: exportPath,
-    SERPENT_E2E_SHORTCUTS_IMPORT_PATH: importPath,
+    KEEL_E2E: "1",
+    KEEL_E2E_HIDE_WINDOW: "1",
+    KEEL_E2E_USER_DATA_PATH: profilePath,
+    KEEL_E2E_SHORTCUTS_EXPORT_PATH: exportPath,
+    KEEL_E2E_SHORTCUTS_IMPORT_PATH: importPath,
   };
 
   let application = await electron.launch({

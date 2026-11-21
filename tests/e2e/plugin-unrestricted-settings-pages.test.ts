@@ -175,19 +175,19 @@ test('lists menus.asset and settings.pages after enable, and after recent-librar
   }).png().toFile(secondSourcePath);
 
   const executablePath = resolveElectronExecutablePath();
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
 
   const launch = async (): Promise<ElectronApplication> => electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath,
     env: electronLaunchEnv({
-      SERPENT_E2E: '1',
-      SERPENT_E2E_RESTORE_RECENT: '1',
-      SERPENT_E2E_USER_DATA_PATH: userDataPath,
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_IMPORT_FILES: [sourcePath, secondSourcePath].join(path.delimiter),
-      SERPENT_E2E_PLUGIN_PACKAGE: packageDirectory,
+      KEEL_E2E: '1',
+      KEEL_E2E_RESTORE_RECENT: '1',
+      KEEL_E2E_USER_DATA_PATH: userDataPath,
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_IMPORT_FILES: [sourcePath, secondSourcePath].join(path.delimiter),
+      KEEL_E2E_PLUGIN_PACKAGE: packageDirectory,
     }),
   });
 

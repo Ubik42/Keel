@@ -1,5 +1,5 @@
 /**
- * Pure geometry for `SERPENT_E2E_ISOLATED=1`: picks a non-primary display and
+ * Pure geometry for `KEEL_E2E_ISOLATED=1`: picks a non-primary display and
  * a window rectangle fully contained within it, so the real Electron E2E
  * suite can `show()` its window normally (preserving real focus/keyboard
  * semantics) without covering the user's primary display.

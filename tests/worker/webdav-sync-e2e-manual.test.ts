@@ -5,7 +5,7 @@
  * 禁止写入或删除用户已有同步文件夹。
  *
  * 凭据从环境变量读取，不写进本文件：
- *   SERPENT_WEBDAV_PROBE_URL / USER / PASS
+ *   KEEL_WEBDAV_PROBE_URL / USER / PASS
  */
 import { mkdtempSync, rmSync, writeFileSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -27,7 +27,7 @@ import {
   sanitizeSyncDirectoryName,
 } from '../../src/shared/sync-paths';
 
-const probeUrl = process.env.SERPENT_WEBDAV_PROBE_URL;
+const probeUrl = process.env.KEEL_WEBDAV_PROBE_URL;
 const TEMP_REMOTE_PREFIX = 'serpent-e2e-';
 const roots: string[] = [];
 
@@ -35,8 +35,8 @@ function rootConfig(directoryName: string): SyncRootConfig {
   return {
     id: 'manual-e2e',
     baseUrl: probeUrl!,
-    username: process.env.SERPENT_WEBDAV_PROBE_USER,
-    password: process.env.SERPENT_WEBDAV_PROBE_PASS,
+    username: process.env.KEEL_WEBDAV_PROBE_USER,
+    password: process.env.KEEL_WEBDAV_PROBE_PASS,
     allowInsecureTls: true,
     directoryName,
   };
@@ -45,8 +45,8 @@ function rootConfig(directoryName: string): SyncRootConfig {
 function driver(): WebDAVDriver {
   return new WebDAVDriver({
     baseUrl: probeUrl!,
-    username: process.env.SERPENT_WEBDAV_PROBE_USER,
-    password: process.env.SERPENT_WEBDAV_PROBE_PASS,
+    username: process.env.KEEL_WEBDAV_PROBE_USER,
+    password: process.env.KEEL_WEBDAV_PROBE_PASS,
     allowInsecureTls: true,
   });
 }

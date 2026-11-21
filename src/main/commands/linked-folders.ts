@@ -19,7 +19,7 @@ export async function executeLinkedFolderMainCommand(
       const newRootPath = await selectOpenDirectory(
         runtime.createNativeDialogHost(),
         "relinkFolder",
-        process.env.SERPENT_E2E_LINKED_NEW_ROOT,
+        process.env.KEEL_E2E_LINKED_NEW_ROOT,
       );
       return newRootPath
         ? {

@@ -5,13 +5,13 @@ import react from "@vitejs/plugin-react";
 import { defineConfig, type Plugin } from "vite";
 
 /**
- * Pin the renderer dev server to SERPENT_VITE_PORT (set by scripts/dev-start.mjs)
+ * Pin the renderer dev server to KEEL_VITE_PORT (set by scripts/dev-start.mjs)
  * with strictPort so Vite never silently moves to 5174+ while Main still loads
  * a stale MAIN_WINDOW_VITE_DEV_SERVER_URL (black screen / Forge#3198).
  * Host must stay `localhost` to match Forge's injected dev-server URL and the
  * renderer CSP connect-src allowlist for Vite 8's WebSocket module runner.
  */
-const port = Number(process.env.SERPENT_VITE_PORT || 5173);
+const port = Number(process.env.KEEL_VITE_PORT || 5173);
 
 const rendererDir = path.dirname(fileURLToPath(import.meta.url));
 const harmonyWindowsCss = path.resolve(

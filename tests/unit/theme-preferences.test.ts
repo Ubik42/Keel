@@ -59,22 +59,22 @@ describe('resolveEffectiveTheme', () => {
 });
 
 describe('readSystemTheme E2E override', () => {
-  it('honors __SERPENT_E2E_THEME__ when present', () => {
-    const previous = (globalThis as { __SERPENT_E2E_THEME__?: string })
-      .__SERPENT_E2E_THEME__;
+  it('honors __KEEL_E2E_THEME__ when present', () => {
+    const previous = (globalThis as { __KEEL_E2E_THEME__?: string })
+      .__KEEL_E2E_THEME__;
     try {
-      (globalThis as { __SERPENT_E2E_THEME__?: string }).__SERPENT_E2E_THEME__ =
+      (globalThis as { __KEEL_E2E_THEME__?: string }).__KEEL_E2E_THEME__ =
         'light';
       expect(readSystemTheme(() => ({ matches: false }))).toBe('light');
-      (globalThis as { __SERPENT_E2E_THEME__?: string }).__SERPENT_E2E_THEME__ =
+      (globalThis as { __KEEL_E2E_THEME__?: string }).__KEEL_E2E_THEME__ =
         'dark';
       expect(readSystemTheme(() => ({ matches: true }))).toBe('dark');
     } finally {
       if (previous === undefined) {
-        delete (globalThis as { __SERPENT_E2E_THEME__?: string })
-          .__SERPENT_E2E_THEME__;
+        delete (globalThis as { __KEEL_E2E_THEME__?: string })
+          .__KEEL_E2E_THEME__;
       } else {
-        (globalThis as { __SERPENT_E2E_THEME__?: string }).__SERPENT_E2E_THEME__ =
+        (globalThis as { __KEEL_E2E_THEME__?: string }).__KEEL_E2E_THEME__ =
           previous;
       }
     }

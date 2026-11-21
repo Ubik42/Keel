@@ -63,17 +63,17 @@ async function setupLibrary(assetCount: number) {
   });
 
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath: resolveElectronExecutablePath(),
     env: {
       ...process.env,
-      SERPENT_E2E: "1",
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_IMPORT_FILES: sourcePaths.join(path.delimiter),
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, "profile"),
+      KEEL_E2E: "1",
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_IMPORT_FILES: sourcePaths.join(path.delimiter),
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "profile"),
     },
   });
 

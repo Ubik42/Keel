@@ -43,16 +43,16 @@ test('Desktop embedded MCP exposes and reconnects over authenticated HTTP', asyn
   // Electron's app.getPath('userData') is redirected by the E2E harness; keep
   // the settings beside the profile rather than touching the developer's
   // real MCP token/configuration files.
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const executablePath = resolveElectronExecutablePath();
   const application = await electron.launch({
     executablePath,
     args: [applicationDirectory],
     cwd: applicationDirectory,
     env: electronLaunchEnv({
-      SERPENT_E2E: '1',
-      SERPENT_E2E_HIDE_WINDOW: '1',
-      SERPENT_E2E_USER_DATA_PATH: temporaryRoot,
+      KEEL_E2E: '1',
+      KEEL_E2E_HIDE_WINDOW: '1',
+      KEEL_E2E_USER_DATA_PATH: temporaryRoot,
     }),
   });
   const window = await application.firstWindow();
@@ -158,15 +158,15 @@ test('Desktop MCP startup repairs an unreadable existing pepper without rotating
     expect(restricted.error).toBeUndefined();
     expect(restricted.status).toBe(0);
 
-    const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
     application = await electron.launch({
       executablePath: resolveElectronExecutablePath(),
       args: [applicationDirectory],
       cwd: applicationDirectory,
       env: electronLaunchEnv({
-        SERPENT_E2E: '1',
-        SERPENT_E2E_HIDE_WINDOW: '1',
-        SERPENT_E2E_USER_DATA_PATH: temporaryRoot,
+        KEEL_E2E: '1',
+        KEEL_E2E_HIDE_WINDOW: '1',
+        KEEL_E2E_USER_DATA_PATH: temporaryRoot,
       }),
     });
     const window = await application.firstWindow();
@@ -214,7 +214,7 @@ test('Desktop MCP settings reports an invalid key file separately from an unauth
   const pepperPath = path.join(temporaryRoot, 'mcp-client-credential-pepper');
   const originalPepper = Buffer.alloc(31, 0x23);
   writeFileSync(pepperPath, originalPepper);
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   let application: Awaited<ReturnType<typeof electron.launch>> | undefined;
 
   try {
@@ -223,9 +223,9 @@ test('Desktop MCP settings reports an invalid key file separately from an unauth
       args: [applicationDirectory],
       cwd: applicationDirectory,
       env: electronLaunchEnv({
-        SERPENT_E2E: '1',
-        SERPENT_E2E_HIDE_WINDOW: '1',
-        SERPENT_E2E_USER_DATA_PATH: temporaryRoot,
+        KEEL_E2E: '1',
+        KEEL_E2E_HIDE_WINDOW: '1',
+        KEEL_E2E_USER_DATA_PATH: temporaryRoot,
       }),
     });
     const window = await application.firstWindow();

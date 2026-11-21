@@ -9,7 +9,7 @@ import {
   saveIntentFromContextMenu,
   saveMediaViaBrowser,
   sniffContentType,
-  SERPENT_PORTS,
+  KEEL_PORTS,
   type SaveIntent,
 } from '../../extension/save-client';
 import type { ExtensionSaveBehavior } from '../../extension/preferences';
@@ -267,7 +267,7 @@ describe('browser extension save client', () => {
         fetchFn,
       ),
     ).resolves.toEqual({ kind: 'unreachable' });
-    expect(fetchFn).toHaveBeenCalledTimes(SERPENT_PORTS.length);
+    expect(fetchFn).toHaveBeenCalledTimes(KEEL_PORTS.length);
   });
 
   it('uses browser fetch then upload as the preferred save path', async () => {
@@ -323,7 +323,7 @@ describe('browser extension save client', () => {
     });
 
     await expect(probeSerpentConnection(fetchFn)).resolves.toEqual({ kind: 'offline' });
-    expect(fetchFn).toHaveBeenCalledTimes(SERPENT_PORTS.length);
+    expect(fetchFn).toHaveBeenCalledTimes(KEEL_PORTS.length);
   });
 
   it('aligns URL filenames with the response Content-Type before upload', () => {

@@ -8,7 +8,7 @@ import { isImportCompletion, isImportConflictPlan } from '../../src/shared/impor
 import { LibraryService } from '../../src/worker/library-service';
 
 const temporaryRoots: string[] = [];
-const LARGE_BATCH_COUNT = Number.parseInt(process.env.SERPENT_LARGE_BATCH_COUNT ?? '50000', 10);
+const LARGE_BATCH_COUNT = Number.parseInt(process.env.KEEL_LARGE_BATCH_COUNT ?? '50000', 10);
 
 function temporaryRoot(): string {
   const root = mkdtempSync(path.join(tmpdir(), 'serpent-large-batch-'));

@@ -17,7 +17,7 @@ function environment(): Record<string, string> {
   );
 }
 
-// Each process-lifecycle test gets its own fresh SERPENT_E2E_USER_DATA_PATH profile so
+// Each process-lifecycle test gets its own fresh KEEL_E2E_USER_DATA_PATH profile so
 // the single-instance / window-lifecycle behavior is exercised in isolation from the
 // developer's default userData (whose recent-library.json may point at a deleted path
 // and, in non-e2e mode, cause the app to hang on auto-restore instead of showing the
@@ -58,9 +58,9 @@ async function closeApplicationForTest(
 
 test('a second instance restores the existing window', async () => {
   const executablePath = resolveElectronExecutablePath();
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const { temporaryRoot, profilePath } = createIsolatedProfile();
-  const env = { ...environment(), SERPENT_E2E: '1', SERPENT_E2E_USER_DATA_PATH: profilePath };
+  const env = { ...environment(), KEEL_E2E: '1', KEEL_E2E_USER_DATA_PATH: profilePath };
   const application = await electron.launch({
     executablePath,
     args: [applicationDirectory],
@@ -108,9 +108,9 @@ test('a second instance restores the existing window', async () => {
 test('closing the last macOS window keeps the application process alive', async () => {
   test.skip(process.platform !== 'darwin', 'This lifecycle rule is macOS-specific.');
   const executablePath = resolveElectronExecutablePath();
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const { temporaryRoot, profilePath } = createIsolatedProfile();
-  const env = { ...environment(), SERPENT_E2E: '1', SERPENT_E2E_USER_DATA_PATH: profilePath };
+  const env = { ...environment(), KEEL_E2E: '1', KEEL_E2E_USER_DATA_PATH: profilePath };
   const application = await electron.launch({
     executablePath,
     args: [applicationDirectory],
@@ -136,9 +136,9 @@ test('closing the last macOS window keeps the application process alive', async 
 test('Windows custom close hides the window and keeps the tray process alive', async () => {
   test.skip(process.platform !== 'win32', 'This lifecycle rule is Windows-specific.');
   const executablePath = resolveElectronExecutablePath();
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const { temporaryRoot, profilePath } = createIsolatedProfile();
-  const env = { ...environment(), SERPENT_E2E: '1', SERPENT_E2E_USER_DATA_PATH: profilePath };
+  const env = { ...environment(), KEEL_E2E: '1', KEEL_E2E_USER_DATA_PATH: profilePath };
   const application = await electron.launch({
     executablePath,
     args: [applicationDirectory],

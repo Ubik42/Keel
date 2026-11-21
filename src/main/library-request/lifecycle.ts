@@ -504,14 +504,14 @@ export type E2eTrashDelayRuntime = {
 /**
  * Deterministic E2E seam for optimistic asset deletion. The renderer must
  * remove the card before this real IPC/Worker request resolves; production
- * never delays requests because this branch is gated by SERPENT_E2E.
+ * never delays requests because this branch is gated by KEEL_E2E.
  */
 export async function maybeDelayE2eTrash(
   command: WorkerCommand,
   runtime: E2eTrashDelayRuntime,
 ): Promise<void> {
   if (!runtime.isUnpackagedE2e() || command.type !== "asset.trash") return;
-  const delayMs = Number.parseInt(runtime.env("SERPENT_E2E_TRASH_DELAY_MS") ?? "", 10);
+  const delayMs = Number.parseInt(runtime.env("KEEL_E2E_TRASH_DELAY_MS") ?? "", 10);
   if (Number.isInteger(delayMs) && delayMs > 0 && delayMs <= 10_000) {
     await runtime.delay(delayMs);
   }

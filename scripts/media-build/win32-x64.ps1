@@ -11,12 +11,12 @@ $Lock = Get-Content (Join-Path $Root 'resources/media-binaries/source-lock.json'
 $ManifestRoot = Join-Path $Root 'resources/media-binaries/vcpkg'
 # vcpkg performs frequent atomic directory renames while extracting tools and
 # building ports. Keep that generated tree outside an actively indexed source
-# checkout on Windows; `SERPENT_MEDIA_BUILD_DIR` remains available for CI.
+# checkout on Windows; `KEEL_MEDIA_BUILD_DIR` remains available for CI.
 # 注意：不得使用 `%LOCALAPPDATA%\Serpent` 下的子目录——Squirrel 安装目录
 # 恰为 `%LOCALAPPDATA%\<包名>`（serpent，不区分大小写），撞名会让 Squirrel
 # 全量安装时尝试删除 vcpkg 构建树而失败（PathTooLongException）。
 $DefaultWork = Join-Path $env:LOCALAPPDATA 'SerpentMediaBuild\win32-x64'
-$Work = if ($env:SERPENT_MEDIA_BUILD_DIR) { $env:SERPENT_MEDIA_BUILD_DIR } else { $DefaultWork }
+$Work = if ($env:KEEL_MEDIA_BUILD_DIR) { $env:KEEL_MEDIA_BUILD_DIR } else { $DefaultWork }
 $VcpkgRoot = Join-Path $Work 'vcpkg'
 $OverlayRoot = Join-Path $Work 'overlay-ports'
 $InstalledRoot = Join-Path $Work 'vcpkg-installed'

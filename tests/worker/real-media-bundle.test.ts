@@ -13,15 +13,15 @@ function installedOrBuild(relativePath: string): string {
   const installed = path.join(projectRoot, 'resources', relativePath);
   return existsSync(installed) ? installed : path.join(bundleRoot, relativePath);
 }
-const ffmpegPath = process.env['SERPENT_REAL_FFMPEG_PATH']
+const ffmpegPath = process.env['KEEL_REAL_FFMPEG_PATH']
   ?? installedOrBuild('ffmpeg/darwin-arm64/ffmpeg');
-const ffprobePath = process.env['SERPENT_REAL_FFPROBE_PATH']
+const ffprobePath = process.env['KEEL_REAL_FFPROBE_PATH']
   ?? installedOrBuild('ffmpeg/darwin-arm64/ffprobe');
-const oiiotoolPath = process.env['SERPENT_REAL_OIIO_PATH']
+const oiiotoolPath = process.env['KEEL_REAL_OIIO_PATH']
   ?? installedOrBuild('oiio/darwin-arm64/oiiotool');
 const hasRealBundle = process.platform === 'darwin' && process.arch === 'arm64'
   && [ffmpegPath, ffprobePath, oiiotoolPath].every(existsSync);
-const requireRealMedia = process.env['SERPENT_REQUIRE_REAL_MEDIA'] === '1';
+const requireRealMedia = process.env['KEEL_REQUIRE_REAL_MEDIA'] === '1';
 const temporaryRoots: string[] = [];
 
 function assertRealMediaBundleAvailable(): void {
@@ -29,7 +29,7 @@ function assertRealMediaBundleAvailable(): void {
   const missing = [ffmpegPath, ffprobePath, oiiotoolPath]
     .filter((binaryPath) => !existsSync(binaryPath));
   throw new Error(
-    'SERPENT_REQUIRE_REAL_MEDIA=1 requires the darwin-arm64 LGPL media bundle. '
+    'KEEL_REQUIRE_REAL_MEDIA=1 requires the darwin-arm64 LGPL media bundle. '
       + `platform=${process.platform}/${process.arch}; missing=${missing.join(', ') || 'unsupported platform'}`,
   );
 }
@@ -113,9 +113,9 @@ function buildFixtureSet(root: string): string[] {
 }
 
 afterAll(() => {
-  delete process.env['SERPENT_FFMPEG_PATH'];
-  delete process.env['SERPENT_FFPROBE_PATH'];
-  delete process.env['SERPENT_OIIO_PATH'];
+  delete process.env['KEEL_FFMPEG_PATH'];
+  delete process.env['KEEL_FFPROBE_PATH'];
+  delete process.env['KEEL_OIIO_PATH'];
   for (const root of temporaryRoots.splice(0)) {
     rmSync(root, { force: true, recursive: true });
   }
@@ -129,9 +129,9 @@ describe.runIf(hasRealBundle || requireRealMedia)('installed media bundle real-f
     const sourceRoot = path.join(root, 'sources');
     mkdirSync(sourceRoot);
     const sourcePaths = buildFixtureSet(sourceRoot);
-    process.env['SERPENT_FFMPEG_PATH'] = ffmpegPath;
-    process.env['SERPENT_FFPROBE_PATH'] = ffprobePath;
-    process.env['SERPENT_OIIO_PATH'] = oiiotoolPath;
+    process.env['KEEL_FFMPEG_PATH'] = ffmpegPath;
+    process.env['KEEL_FFPROBE_PATH'] = ffprobePath;
+    process.env['KEEL_OIIO_PATH'] = oiiotoolPath;
 
     const diagnostics: Array<{ scope: string; error: unknown; context?: Record<string, unknown> }> = [];
     const service = new LibraryService({

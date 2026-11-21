@@ -17,19 +17,19 @@ test('runs a planned batch file rename through the Desktop Console without expos
   writeFileSync(source, 'matching asset');
 
   const executablePath = resolveElectronExecutablePath();
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath,
     env: {
       ...process.env,
-      SERPENT_E2E: '1',
-      SERPENT_E2E_AUTOMATION_CONFIRM: '1',
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_OPEN_LIBRARY_PATH: path.join(temporaryRoot, libraryName),
-      SERPENT_E2E_IMPORT_FILES: source,
+      KEEL_E2E: '1',
+      KEEL_E2E_AUTOMATION_CONFIRM: '1',
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_OPEN_LIBRARY_PATH: path.join(temporaryRoot, libraryName),
+      KEEL_E2E_IMPORT_FILES: source,
     },
   });
 
@@ -79,18 +79,18 @@ test('moves an asset through the Desktop Console plan and updates its folder loc
   writeFileSync(source, 'automation move fixture');
 
   const executablePath = resolveElectronExecutablePath();
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath,
     env: {
       ...process.env,
-      SERPENT_E2E: '1',
-      SERPENT_E2E_AUTOMATION_CONFIRM: '1',
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_IMPORT_FILES: source,
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
+      KEEL_E2E: '1',
+      KEEL_E2E_AUTOMATION_CONFIRM: '1',
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_IMPORT_FILES: source,
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
     },
   });
 
@@ -142,18 +142,18 @@ test('undoes a scripted asset move from the Desktop Console', async () => {
   writeFileSync(source, 'automation undo fixture');
 
   const executablePath = resolveElectronExecutablePath();
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath,
     env: {
       ...process.env,
-      SERPENT_E2E: '1',
-      SERPENT_E2E_AUTOMATION_CONFIRM: '1',
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_IMPORT_FILES: source,
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
+      KEEL_E2E: '1',
+      KEEL_E2E_AUTOMATION_CONFIRM: '1',
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_IMPORT_FILES: source,
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
     },
   });
 

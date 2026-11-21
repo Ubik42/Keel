@@ -1,8 +1,8 @@
 import type { ExtensionFolderOption } from './folder-menu';
 
-export const SERPENT_PORTS = [19876, 19877, 19878] as const;
+export const KEEL_PORTS = [19876, 19877, 19878] as const;
 
-const SERPENT_HOST = 'http://127.0.0.1';
+const KEEL_HOST = 'http://127.0.0.1';
 /** Keep in sync with Main MAX_EXTENSION_UPLOAD_BYTES. */
 export const MAX_BROWSER_FETCH_BYTES = 500 * 1024 * 1024;
 
@@ -123,9 +123,9 @@ async function requestSerpent(
   init: RequestInit,
   fetchFn: FetchFunction,
 ): Promise<FetchResponse | null> {
-  for (const port of SERPENT_PORTS) {
+  for (const port of KEEL_PORTS) {
     try {
-      return await fetchFn(`${SERPENT_HOST}:${port}${path}`, init);
+      return await fetchFn(`${KEEL_HOST}:${port}${path}`, init);
     } catch {
       // Serpent may have selected the next fallback port.
     }

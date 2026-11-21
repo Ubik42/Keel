@@ -30,7 +30,7 @@ const MAX_VIDEO_INPUT_BYTES = 64 * 1024 * 1024;
 const AUDIO_WINDOW_SECONDS = 120;
 const AUDIO_MAX_WINDOWS = 16;
 const AUDIO_TEMP_PREFIX = 'serpent-semantic-audio-';
-const WORKER_PROCESS_MARKER = process.env.SERPENT_MAIN_PROCESS_SESSION_ID ?? randomUUID();
+const WORKER_PROCESS_MARKER = process.env.KEEL_MAIN_PROCESS_SESSION_ID ?? randomUUID();
 const MAX_SEMANTIC_CLEANUP_IDS = 100_000;
 const MAX_SEMANTIC_CLEANUP_QUEUE_FILES = 64;
 const MAX_SEMANTIC_CLEANUP_QUEUE_BYTES = 4 * 1024 * 1024;
@@ -429,7 +429,7 @@ function sourceForAsset(asset: {
 }
 
 function legacyCacheFile(cacheKind: 'local' | 'http', libraryId: string, cacheId: string): string | null {
-  const root = process.env.SERPENT_SEMANTIC_LEGACY_CACHE_ROOT;
+  const root = process.env.KEEL_SEMANTIC_LEGACY_CACHE_ROOT;
   if (!root || !/^[a-zA-Z0-9_-]{1,255}$/u.test(libraryId) || !/^[a-zA-Z0-9._-]{1,255}$/u.test(cacheId)) return null;
   const resolvedRoot = realpathSync(root);
   const directory = path.join(resolvedRoot, cacheKind === 'local' ? 'embedding-test-index' : 'embedding-http-index');

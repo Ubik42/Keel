@@ -6,7 +6,7 @@ import type { AppLocale } from './types';
  * Locale preference persistence (REQ-I18N-001).
  *
  * Default preference is `system` (follow OS language). Effective locale is
- * resolved to `zh-CN` or `en`. E2E copies `__SERPENT_E2E_LOCALE__` into the
+ * resolved to `zh-CN` or `en`. E2E copies `__KEEL_E2E_LOCALE__` into the
  * renderer main world from preload so Chinese selectors stay stable when
  * preference is still `system` on a non-Chinese host.
  */
@@ -67,8 +67,8 @@ export function readSystemLocale(
     : ['en'],
 ): AppLocale {
   const e2eLocale = (
-    globalThis as { __SERPENT_E2E_LOCALE__?: string }
-  ).__SERPENT_E2E_LOCALE__;
+    globalThis as { __KEEL_E2E_LOCALE__?: string }
+  ).__KEEL_E2E_LOCALE__;
   if (e2eLocale === 'zh-CN' || e2eLocale === 'en') {
     return e2eLocale;
   }

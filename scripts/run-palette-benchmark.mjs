@@ -9,7 +9,7 @@ import path from 'node:path';
  *
  *   npm run test:perf:palette -- <image-directory>
  */
-const sourceDirectory = process.argv[2] ?? process.env.SERPENT_PALETTE_BENCH_DIR;
+const sourceDirectory = process.argv[2] ?? process.env.KEEL_PALETTE_BENCH_DIR;
 if (!sourceDirectory) {
   console.error('Usage: npm run test:perf:palette -- <image-directory>');
   process.exit(2);
@@ -30,8 +30,8 @@ const child = spawn(process.execPath, [
 ], {
   env: {
     ...process.env,
-    SERPENT_PALETTE_BENCH: '1',
-    SERPENT_PALETTE_BENCH_DIR: resolvedSource,
+    KEEL_PALETTE_BENCH: '1',
+    KEEL_PALETTE_BENCH_DIR: resolvedSource,
   },
   stdio: 'inherit',
 });

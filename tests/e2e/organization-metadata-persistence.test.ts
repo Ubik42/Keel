@@ -24,7 +24,7 @@ test("persists organization and metadata across restart and surfaces optimistic-
 
   const executablePath = resolveElectronExecutablePath();
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const launch = () =>
     electron.launch({
       args: [applicationDirectory],
@@ -32,12 +32,12 @@ test("persists organization and metadata across restart and surfaces optimistic-
       executablePath,
       env: {
         ...process.env,
-        SERPENT_E2E: "1",
-        SERPENT_E2E_RESTORE_RECENT: "1",
-        SERPENT_E2E_USER_DATA_PATH: profilePath,
-        SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-        SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-        SERPENT_E2E_IMPORT_FILES: sourcePath,
+        KEEL_E2E: "1",
+        KEEL_E2E_RESTORE_RECENT: "1",
+        KEEL_E2E_USER_DATA_PATH: profilePath,
+        KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+        KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+        KEEL_E2E_IMPORT_FILES: sourcePath,
       },
     });
 
@@ -362,20 +362,20 @@ test("switches Inspector assets without connection flashes or mixed metadata", a
   writeFileSync(betaSourcePath, "beta");
 
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath: resolveElectronExecutablePath(),
     env: {
       ...process.env,
-      SERPENT_E2E: "1",
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_IMPORT_FILES: [alphaSourcePath, betaSourcePath].join(
+      KEEL_E2E: "1",
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_IMPORT_FILES: [alphaSourcePath, betaSourcePath].join(
         path.delimiter,
       ),
-      SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
+      KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
     },
   });
 
@@ -583,7 +583,7 @@ test("assigns Inspector tag suggestions directly and hides tags after their fina
 
   const executablePath = resolveElectronExecutablePath();
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const launch = () =>
     electron.launch({
       args: [applicationDirectory],
@@ -591,14 +591,14 @@ test("assigns Inspector tag suggestions directly and hides tags after their fina
       executablePath,
       env: {
         ...process.env,
-        SERPENT_E2E: "1",
-        SERPENT_E2E_RESTORE_RECENT: "1",
-        SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-        SERPENT_E2E_IMPORT_FILES: [alphaSourcePath, betaSourcePath].join(
+        KEEL_E2E: "1",
+        KEEL_E2E_RESTORE_RECENT: "1",
+        KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+        KEEL_E2E_IMPORT_FILES: [alphaSourcePath, betaSourcePath].join(
           path.delimiter,
         ),
-        SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-        SERPENT_E2E_USER_DATA_PATH: profilePath,
+        KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+        KEEL_E2E_USER_DATA_PATH: profilePath,
       },
     });
 

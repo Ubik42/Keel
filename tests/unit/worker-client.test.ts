@@ -24,10 +24,10 @@ import {
 } from '../../src/main/worker-client';
 
 it('restores the known library before admitting requests after a Worker exit', async () => {
-  const previousFfmpegPath = process.env.SERPENT_FFMPEG_PATH;
-  const previousOiioPath = process.env.SERPENT_OIIO_PATH;
-  process.env.SERPENT_FFMPEG_PATH = process.execPath;
-  process.env.SERPENT_OIIO_PATH = process.execPath;
+  const previousFfmpegPath = process.env.KEEL_FFMPEG_PATH;
+  const previousOiioPath = process.env.KEEL_OIIO_PATH;
+  process.env.KEEL_FFMPEG_PATH = process.execPath;
+  process.env.KEEL_OIIO_PATH = process.execPath;
   utilityProcessFork.mockReset();
   const first = new FakeUtilityProcess();
   const second = new FakeUtilityProcess();
@@ -92,19 +92,19 @@ it('restores the known library before admitting requests after a Worker exit', a
     first.emit('message', { type: 'worker.shutdown.ack' });
     second.emit('message', { type: 'worker.shutdown.ack' });
     await stop;
-    if (previousFfmpegPath === undefined) delete process.env.SERPENT_FFMPEG_PATH;
-    else process.env.SERPENT_FFMPEG_PATH = previousFfmpegPath;
-    if (previousOiioPath === undefined) delete process.env.SERPENT_OIIO_PATH;
-    else process.env.SERPENT_OIIO_PATH = previousOiioPath;
+    if (previousFfmpegPath === undefined) delete process.env.KEEL_FFMPEG_PATH;
+    else process.env.KEEL_FFMPEG_PATH = previousFfmpegPath;
+    if (previousOiioPath === undefined) delete process.env.KEEL_OIIO_PATH;
+    else process.env.KEEL_OIIO_PATH = previousOiioPath;
   }
 });
 
 it('stops restarting after repeated unexpected Worker exits', async () => {
   utilityProcessFork.mockReset();
-  const previousFfmpegPath = process.env.SERPENT_FFMPEG_PATH;
-  const previousOiioPath = process.env.SERPENT_OIIO_PATH;
-  process.env.SERPENT_FFMPEG_PATH = process.execPath;
-  process.env.SERPENT_OIIO_PATH = process.execPath;
+  const previousFfmpegPath = process.env.KEEL_FFMPEG_PATH;
+  const previousOiioPath = process.env.KEEL_OIIO_PATH;
+  process.env.KEEL_FFMPEG_PATH = process.execPath;
+  process.env.KEEL_OIIO_PATH = process.execPath;
   const children = [new FakeUtilityProcess(), new FakeUtilityProcess(), new FakeUtilityProcess()];
   for (const child of children) utilityProcessFork.mockReturnValueOnce(child);
   const logger = { worker: vi.fn(), error: vi.fn(), info: vi.fn() } as unknown as AppLogger;
@@ -130,19 +130,19 @@ it('stops restarting after repeated unexpected Worker exits', async () => {
     });
   } finally {
     await client.shutdown();
-    if (previousFfmpegPath === undefined) delete process.env.SERPENT_FFMPEG_PATH;
-    else process.env.SERPENT_FFMPEG_PATH = previousFfmpegPath;
-    if (previousOiioPath === undefined) delete process.env.SERPENT_OIIO_PATH;
-    else process.env.SERPENT_OIIO_PATH = previousOiioPath;
+    if (previousFfmpegPath === undefined) delete process.env.KEEL_FFMPEG_PATH;
+    else process.env.KEEL_FFMPEG_PATH = previousFfmpegPath;
+    if (previousOiioPath === undefined) delete process.env.KEEL_OIIO_PATH;
+    else process.env.KEEL_OIIO_PATH = previousOiioPath;
   }
 });
 
 it('reports a library that cannot be reopened without discarding a healthy Worker', async () => {
   utilityProcessFork.mockReset();
-  const previousFfmpegPath = process.env.SERPENT_FFMPEG_PATH;
-  const previousOiioPath = process.env.SERPENT_OIIO_PATH;
-  process.env.SERPENT_FFMPEG_PATH = process.execPath;
-  process.env.SERPENT_OIIO_PATH = process.execPath;
+  const previousFfmpegPath = process.env.KEEL_FFMPEG_PATH;
+  const previousOiioPath = process.env.KEEL_OIIO_PATH;
+  process.env.KEEL_FFMPEG_PATH = process.execPath;
+  process.env.KEEL_OIIO_PATH = process.execPath;
   const first = new FakeUtilityProcess();
   const second = new FakeUtilityProcess();
   utilityProcessFork.mockReturnValueOnce(first).mockReturnValueOnce(second);
@@ -179,10 +179,10 @@ it('reports a library that cannot be reopened without discarding a healthy Worke
     expect(client.available).toBe(true);
   } finally {
     await client.shutdown();
-    if (previousFfmpegPath === undefined) delete process.env.SERPENT_FFMPEG_PATH;
-    else process.env.SERPENT_FFMPEG_PATH = previousFfmpegPath;
-    if (previousOiioPath === undefined) delete process.env.SERPENT_OIIO_PATH;
-    else process.env.SERPENT_OIIO_PATH = previousOiioPath;
+    if (previousFfmpegPath === undefined) delete process.env.KEEL_FFMPEG_PATH;
+    else process.env.KEEL_FFMPEG_PATH = previousFfmpegPath;
+    if (previousOiioPath === undefined) delete process.env.KEEL_OIIO_PATH;
+    else process.env.KEEL_OIIO_PATH = previousOiioPath;
   }
 });
 
@@ -262,10 +262,10 @@ describe('requestTimeoutForCommand', () => {
 
   it('lets an unbounded Eagle conversion finish after the old 30-minute deadline (Serpent-4s8b)', async () => {
     vi.useFakeTimers();
-    const previousFfmpegPath = process.env.SERPENT_FFMPEG_PATH;
-    const previousOiioPath = process.env.SERPENT_OIIO_PATH;
-    process.env.SERPENT_FFMPEG_PATH = '/usr/bin/true';
-    process.env.SERPENT_OIIO_PATH = '/usr/bin/true';
+    const previousFfmpegPath = process.env.KEEL_FFMPEG_PATH;
+    const previousOiioPath = process.env.KEEL_OIIO_PATH;
+    process.env.KEEL_FFMPEG_PATH = '/usr/bin/true';
+    process.env.KEEL_OIIO_PATH = '/usr/bin/true';
     try {
       const child = new FakeUtilityProcess();
       utilityProcessFork.mockReturnValueOnce(child);
@@ -300,20 +300,20 @@ describe('requestTimeoutForCommand', () => {
       await expect(pending).resolves.toMatchObject({ ok: true, type: 'library.closed' });
     } finally {
       vi.useRealTimers();
-      if (previousFfmpegPath === undefined) delete process.env.SERPENT_FFMPEG_PATH;
-      else process.env.SERPENT_FFMPEG_PATH = previousFfmpegPath;
-      if (previousOiioPath === undefined) delete process.env.SERPENT_OIIO_PATH;
-      else process.env.SERPENT_OIIO_PATH = previousOiioPath;
+      if (previousFfmpegPath === undefined) delete process.env.KEEL_FFMPEG_PATH;
+      else process.env.KEEL_FFMPEG_PATH = previousFfmpegPath;
+      if (previousOiioPath === undefined) delete process.env.KEEL_OIIO_PATH;
+      else process.env.KEEL_OIIO_PATH = previousOiioPath;
     }
   });
 
   it('rejects a timed-out request with a typed timeout error carrying the command', async () => {
     vi.useFakeTimers();
     utilityProcessFork.mockClear();
-    const previousFfmpegPath = process.env.SERPENT_FFMPEG_PATH;
-    const previousOiioPath = process.env.SERPENT_OIIO_PATH;
-    process.env.SERPENT_FFMPEG_PATH = '/usr/bin/true';
-    process.env.SERPENT_OIIO_PATH = '/usr/bin/true';
+    const previousFfmpegPath = process.env.KEEL_FFMPEG_PATH;
+    const previousOiioPath = process.env.KEEL_OIIO_PATH;
+    process.env.KEEL_FFMPEG_PATH = '/usr/bin/true';
+    process.env.KEEL_OIIO_PATH = '/usr/bin/true';
     try {
       const child = new FakeUtilityProcess();
       utilityProcessFork.mockReturnValueOnce(child);
@@ -348,10 +348,10 @@ describe('requestTimeoutForCommand', () => {
       await shutdown;
     } finally {
       vi.useRealTimers();
-      if (previousFfmpegPath === undefined) delete process.env.SERPENT_FFMPEG_PATH;
-      else process.env.SERPENT_FFMPEG_PATH = previousFfmpegPath;
-      if (previousOiioPath === undefined) delete process.env.SERPENT_OIIO_PATH;
-      else process.env.SERPENT_OIIO_PATH = previousOiioPath;
+      if (previousFfmpegPath === undefined) delete process.env.KEEL_FFMPEG_PATH;
+      else process.env.KEEL_FFMPEG_PATH = previousFfmpegPath;
+      if (previousOiioPath === undefined) delete process.env.KEEL_OIIO_PATH;
+      else process.env.KEEL_OIIO_PATH = previousOiioPath;
     }
   });
 
@@ -396,10 +396,10 @@ describe('requestTimeoutForCommand', () => {
     } as unknown as AppLogger;
     const client = new LibraryWorkerClient('/tmp/library-worker.js', logger);
 
-    const previousFfmpegPath = process.env.SERPENT_FFMPEG_PATH;
-    const previousOiioPath = process.env.SERPENT_OIIO_PATH;
-    process.env.SERPENT_FFMPEG_PATH = '/usr/bin/true';
-    process.env.SERPENT_OIIO_PATH = '/usr/bin/true';
+    const previousFfmpegPath = process.env.KEEL_FFMPEG_PATH;
+    const previousOiioPath = process.env.KEEL_OIIO_PATH;
+    process.env.KEEL_FFMPEG_PATH = '/usr/bin/true';
+    process.env.KEEL_OIIO_PATH = '/usr/bin/true';
     const start = client.start();
     child.emit('message', { type: 'worker.ready' });
     await start;
@@ -439,10 +439,10 @@ describe('requestTimeoutForCommand', () => {
     const shutdown = client.shutdown();
     child.emit('message', { type: 'worker.shutdown.ack' });
     await shutdown;
-    if (previousFfmpegPath === undefined) delete process.env.SERPENT_FFMPEG_PATH;
-    else process.env.SERPENT_FFMPEG_PATH = previousFfmpegPath;
-    if (previousOiioPath === undefined) delete process.env.SERPENT_OIIO_PATH;
-    else process.env.SERPENT_OIIO_PATH = previousOiioPath;
+    if (previousFfmpegPath === undefined) delete process.env.KEEL_FFMPEG_PATH;
+    else process.env.KEEL_FFMPEG_PATH = previousFfmpegPath;
+    if (previousOiioPath === undefined) delete process.env.KEEL_OIIO_PATH;
+    else process.env.KEEL_OIIO_PATH = previousOiioPath;
   });
 
   it('forwards model render cancellation to Main without treating it as a Worker response', async () => {
@@ -454,10 +454,10 @@ describe('requestTimeoutForCommand', () => {
       info: vi.fn(),
     } as unknown as AppLogger;
     const client = new LibraryWorkerClient('/tmp/library-worker.js', logger);
-    const previousFfmpegPath = process.env.SERPENT_FFMPEG_PATH;
-    const previousOiioPath = process.env.SERPENT_OIIO_PATH;
-    process.env.SERPENT_FFMPEG_PATH = '/usr/bin/true';
-    process.env.SERPENT_OIIO_PATH = '/usr/bin/true';
+    const previousFfmpegPath = process.env.KEEL_FFMPEG_PATH;
+    const previousOiioPath = process.env.KEEL_OIIO_PATH;
+    process.env.KEEL_FFMPEG_PATH = '/usr/bin/true';
+    process.env.KEEL_OIIO_PATH = '/usr/bin/true';
     try {
       const start = client.start();
       child.emit('message', { type: 'worker.ready' });
@@ -486,10 +486,10 @@ describe('requestTimeoutForCommand', () => {
       child.emit('message', { type: 'worker.shutdown.ack' });
       await shutdown;
     } finally {
-      if (previousFfmpegPath === undefined) delete process.env.SERPENT_FFMPEG_PATH;
-      else process.env.SERPENT_FFMPEG_PATH = previousFfmpegPath;
-      if (previousOiioPath === undefined) delete process.env.SERPENT_OIIO_PATH;
-      else process.env.SERPENT_OIIO_PATH = previousOiioPath;
+      if (previousFfmpegPath === undefined) delete process.env.KEEL_FFMPEG_PATH;
+      else process.env.KEEL_FFMPEG_PATH = previousFfmpegPath;
+      if (previousOiioPath === undefined) delete process.env.KEEL_OIIO_PATH;
+      else process.env.KEEL_OIIO_PATH = previousOiioPath;
     }
   });
 
@@ -502,11 +502,11 @@ describe('requestTimeoutForCommand', () => {
       info: vi.fn(),
     } as unknown as AppLogger;
     const client = new LibraryWorkerClient('/tmp/library-worker.js', logger);
-    const previousFfmpegPath = process.env.SERPENT_FFMPEG_PATH;
-    const previousOiioPath = process.env.SERPENT_OIIO_PATH;
+    const previousFfmpegPath = process.env.KEEL_FFMPEG_PATH;
+    const previousOiioPath = process.env.KEEL_OIIO_PATH;
     const missingFfmpegPath = '/tmp/serpent-missing-ffmpeg';
-    process.env.SERPENT_FFMPEG_PATH = missingFfmpegPath;
-    process.env.SERPENT_OIIO_PATH = '/tmp/serpent-oiiotool';
+    process.env.KEEL_FFMPEG_PATH = missingFfmpegPath;
+    process.env.KEEL_OIIO_PATH = '/tmp/serpent-oiiotool';
 
     try {
       const start = client.start();
@@ -517,32 +517,32 @@ describe('requestTimeoutForCommand', () => {
         '/tmp/library-worker.js',
         [],
         expect.objectContaining({
-          env: expect.objectContaining({ SERPENT_FFMPEG_PATH: missingFfmpegPath }),
+          env: expect.objectContaining({ KEEL_FFMPEG_PATH: missingFfmpegPath }),
         }),
       );
 
       const forkOptions = utilityProcessFork.mock.calls.at(-1)?.[2] as {
         env?: NodeJS.ProcessEnv;
       } | undefined;
-      expect(forkOptions?.env?.SERPENT_FFMPEG_PATH).toBe(missingFfmpegPath);
+      expect(forkOptions?.env?.KEEL_FFMPEG_PATH).toBe(missingFfmpegPath);
 
       const shutdown = client.shutdown();
       child.emit('message', { type: 'worker.shutdown.ack' });
       await shutdown;
     } finally {
-      if (previousFfmpegPath === undefined) delete process.env.SERPENT_FFMPEG_PATH;
-      else process.env.SERPENT_FFMPEG_PATH = previousFfmpegPath;
-      if (previousOiioPath === undefined) delete process.env.SERPENT_OIIO_PATH;
-      else process.env.SERPENT_OIIO_PATH = previousOiioPath;
+      if (previousFfmpegPath === undefined) delete process.env.KEEL_FFMPEG_PATH;
+      else process.env.KEEL_FFMPEG_PATH = previousFfmpegPath;
+      if (previousOiioPath === undefined) delete process.env.KEEL_OIIO_PATH;
+      else process.env.KEEL_OIIO_PATH = previousOiioPath;
     }
   });
 
   it('retries the worker spawn once when the first child exits before ready', async () => {
     utilityProcessFork.mockClear();
-    const previousFfmpegPath = process.env.SERPENT_FFMPEG_PATH;
-    const previousOiioPath = process.env.SERPENT_OIIO_PATH;
-    process.env.SERPENT_FFMPEG_PATH = '/usr/bin/true';
-    process.env.SERPENT_OIIO_PATH = '/usr/bin/true';
+    const previousFfmpegPath = process.env.KEEL_FFMPEG_PATH;
+    const previousOiioPath = process.env.KEEL_OIIO_PATH;
+    process.env.KEEL_FFMPEG_PATH = '/usr/bin/true';
+    process.env.KEEL_OIIO_PATH = '/usr/bin/true';
     try {
       const first = new FakeUtilityProcess();
       const second = new FakeUtilityProcess();
@@ -573,20 +573,20 @@ describe('requestTimeoutForCommand', () => {
         expect.any(String),
       );
     } finally {
-      if (previousFfmpegPath === undefined) delete process.env.SERPENT_FFMPEG_PATH;
-      else process.env.SERPENT_FFMPEG_PATH = previousFfmpegPath;
-      if (previousOiioPath === undefined) delete process.env.SERPENT_OIIO_PATH;
-      else process.env.SERPENT_OIIO_PATH = previousOiioPath;
+      if (previousFfmpegPath === undefined) delete process.env.KEEL_FFMPEG_PATH;
+      else process.env.KEEL_FFMPEG_PATH = previousFfmpegPath;
+      if (previousOiioPath === undefined) delete process.env.KEEL_OIIO_PATH;
+      else process.env.KEEL_OIIO_PATH = previousOiioPath;
     }
   });
 
   it('retries the worker spawn once when the ready handshake times out', async () => {
     vi.useFakeTimers();
     utilityProcessFork.mockClear();
-    const previousFfmpegPath = process.env.SERPENT_FFMPEG_PATH;
-    const previousOiioPath = process.env.SERPENT_OIIO_PATH;
-    process.env.SERPENT_FFMPEG_PATH = '/usr/bin/true';
-    process.env.SERPENT_OIIO_PATH = '/usr/bin/true';
+    const previousFfmpegPath = process.env.KEEL_FFMPEG_PATH;
+    const previousOiioPath = process.env.KEEL_OIIO_PATH;
+    process.env.KEEL_FFMPEG_PATH = '/usr/bin/true';
+    process.env.KEEL_OIIO_PATH = '/usr/bin/true';
     try {
       const first = new FakeUtilityProcess();
       const second = new FakeUtilityProcess();
@@ -618,20 +618,20 @@ describe('requestTimeoutForCommand', () => {
       );
     } finally {
       vi.useRealTimers();
-      if (previousFfmpegPath === undefined) delete process.env.SERPENT_FFMPEG_PATH;
-      else process.env.SERPENT_FFMPEG_PATH = previousFfmpegPath;
-      if (previousOiioPath === undefined) delete process.env.SERPENT_OIIO_PATH;
-      else process.env.SERPENT_OIIO_PATH = previousOiioPath;
+      if (previousFfmpegPath === undefined) delete process.env.KEEL_FFMPEG_PATH;
+      else process.env.KEEL_FFMPEG_PATH = previousFfmpegPath;
+      if (previousOiioPath === undefined) delete process.env.KEEL_OIIO_PATH;
+      else process.env.KEEL_OIIO_PATH = previousOiioPath;
     }
   });
 
   it('fails startup when both spawn attempts time out', async () => {
     vi.useFakeTimers();
     utilityProcessFork.mockClear();
-    const previousFfmpegPath = process.env.SERPENT_FFMPEG_PATH;
-    const previousOiioPath = process.env.SERPENT_OIIO_PATH;
-    process.env.SERPENT_FFMPEG_PATH = '/usr/bin/true';
-    process.env.SERPENT_OIIO_PATH = '/usr/bin/true';
+    const previousFfmpegPath = process.env.KEEL_FFMPEG_PATH;
+    const previousOiioPath = process.env.KEEL_OIIO_PATH;
+    process.env.KEEL_FFMPEG_PATH = '/usr/bin/true';
+    process.env.KEEL_OIIO_PATH = '/usr/bin/true';
     try {
       const first = new FakeUtilityProcess();
       const second = new FakeUtilityProcess();
@@ -659,10 +659,10 @@ describe('requestTimeoutForCommand', () => {
       );
     } finally {
       vi.useRealTimers();
-      if (previousFfmpegPath === undefined) delete process.env.SERPENT_FFMPEG_PATH;
-      else process.env.SERPENT_FFMPEG_PATH = previousFfmpegPath;
-      if (previousOiioPath === undefined) delete process.env.SERPENT_OIIO_PATH;
-      else process.env.SERPENT_OIIO_PATH = previousOiioPath;
+      if (previousFfmpegPath === undefined) delete process.env.KEEL_FFMPEG_PATH;
+      else process.env.KEEL_FFMPEG_PATH = previousFfmpegPath;
+      if (previousOiioPath === undefined) delete process.env.KEEL_OIIO_PATH;
+      else process.env.KEEL_OIIO_PATH = previousOiioPath;
     }
   });
 });

@@ -26,9 +26,9 @@ export async function executeLibraryLifecycleWorkerCommand(
       // Deterministic renderer E2E seam for the library safety overlay. This
       // is never enabled in production and keeps the opening stage observable
       // long enough to assert that partial navigation stays covered.
-      if (process.env.SERPENT_E2E === '1') {
+      if (process.env.KEEL_E2E === '1') {
         const delayMs = Number.parseInt(
-          process.env.SERPENT_E2E_LIBRARY_OPEN_DELAY_MS ?? '',
+          process.env.KEEL_E2E_LIBRARY_OPEN_DELAY_MS ?? '',
           10,
         );
         if (Number.isInteger(delayMs) && delayMs > 0 && delayMs <= 10_000) {
@@ -42,9 +42,9 @@ export async function executeLibraryLifecycleWorkerCommand(
     }
     case 'library.close':
       hooks.stopAutomaticWork(request.command.libraryId);
-      if (process.env.SERPENT_E2E === '1') {
+      if (process.env.KEEL_E2E === '1') {
         const delayMs = Number.parseInt(
-          process.env.SERPENT_E2E_CLOSE_DELAY_MS ?? '',
+          process.env.KEEL_E2E_CLOSE_DELAY_MS ?? '',
           10,
         );
         if (Number.isInteger(delayMs) && delayMs > 0 && delayMs <= 10_000) {

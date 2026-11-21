@@ -6,14 +6,14 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import { createPluginTrustedHostHandler } from '../../src/scripting/plugin-trusted-host';
 import {
-  SERPENT_GUEST_ASSET_METHODS,
-  SERPENT_GUEST_FILE_METHODS,
-  SERPENT_GUEST_FOLDER_METHODS,
-  SERPENT_GUEST_LIBRARY_METHODS,
-  SERPENT_GUEST_LINKED_FOLDER_METHODS,
-  SERPENT_GUEST_PALETTE_METHODS,
-  SERPENT_GUEST_TAG_METHODS,
-  SERPENT_GUEST_TRASH_METHODS,
+  KEEL_GUEST_ASSET_METHODS,
+  KEEL_GUEST_FILE_METHODS,
+  KEEL_GUEST_FOLDER_METHODS,
+  KEEL_GUEST_LIBRARY_METHODS,
+  KEEL_GUEST_LINKED_FOLDER_METHODS,
+  KEEL_GUEST_PALETTE_METHODS,
+  KEEL_GUEST_TAG_METHODS,
+  KEEL_GUEST_TRASH_METHODS,
 } from '../../src/scripting/serpent-guest-api';
 import type { PluginTrustedChildMessage } from '../../src/shared/plugin-trusted-runtime-protocol';
 import { pluginTrustedParentMessageSchema } from '../../src/shared/plugin-trusted-runtime-protocol';
@@ -98,14 +98,14 @@ describe('Plugin Trusted Host handler', () => {
     expect(consoleMessage?.type).toBe('plugin-trusted.console');
     if (consoleMessage?.type !== 'plugin-trusted.console') throw new Error('missing Guest API probe output');
     expect(JSON.parse(consoleMessage.message)).toEqual({
-      assets: [...SERPENT_GUEST_ASSET_METHODS].sort(),
-      library: [...SERPENT_GUEST_LIBRARY_METHODS].sort(),
-      folders: [...SERPENT_GUEST_FOLDER_METHODS].sort(),
-      tags: [...SERPENT_GUEST_TAG_METHODS].sort(),
-      linkedFolders: [...SERPENT_GUEST_LINKED_FOLDER_METHODS].sort(),
-      files: [...SERPENT_GUEST_FILE_METHODS].sort(),
-      trash: [...SERPENT_GUEST_TRASH_METHODS].sort(),
-      palettes: [...SERPENT_GUEST_PALETTE_METHODS].sort(),
+      assets: [...KEEL_GUEST_ASSET_METHODS].sort(),
+      library: [...KEEL_GUEST_LIBRARY_METHODS].sort(),
+      folders: [...KEEL_GUEST_FOLDER_METHODS].sort(),
+      tags: [...KEEL_GUEST_TAG_METHODS].sort(),
+      linkedFolders: [...KEEL_GUEST_LINKED_FOLDER_METHODS].sort(),
+      files: [...KEEL_GUEST_FILE_METHODS].sort(),
+      trash: [...KEEL_GUEST_TRASH_METHODS].sort(),
+      palettes: [...KEEL_GUEST_PALETTE_METHODS].sort(),
     });
     expect(posted.some((message) => message.type === 'plugin-trusted.console' && message.message === 'signal-aborted:false')).toBe(true);
 

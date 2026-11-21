@@ -149,8 +149,8 @@ afterEach(() => {
     }
   }
   // Clean up process.env side effects
-  delete process.env['SERPENT_FFMPEG_PATH'];
-  delete process.env['SERPENT_OIIO_PATH'];
+  delete process.env['KEEL_FFMPEG_PATH'];
+  delete process.env['KEEL_OIIO_PATH'];
   mediaResourceGuard.reset();
 });
 
@@ -281,7 +281,7 @@ function assertDb(
 
 describe('video (ffprobe + ffmpeg)', () => {
   it('shares one full ffprobe between concurrent poster and metadata jobs for the same revision', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     let ffprobeCalls = 0;
     const baseSpawn = createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON });
@@ -337,7 +337,7 @@ describe('video (ffprobe + ffmpeg)', () => {
   });
 
   it('replaces an abandoned probe without letting its finalizer discard the new probe', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const baseSpawn = createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON });
     let fullProbeCalls = 0;
@@ -429,7 +429,7 @@ describe('video (ffprobe + ffmpeg)', () => {
   });
 
   it('reuses persisted video metadata for a later poster job only on the matching revision', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     let ffprobeCalls = 0;
     const baseSpawn = createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON });
@@ -522,7 +522,7 @@ describe('video (ffprobe + ffmpeg)', () => {
   });
 
   it('keeps AI contact-sheet preparation independent from poster work (Serpent-140fe2)', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const service = new LibraryService({
       spawnFn: createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON }),
@@ -562,7 +562,7 @@ describe('video (ffprobe + ffmpeg)', () => {
   });
 
   it('generates extracted_metadata artifact from ffprobe JSON', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const service = new LibraryService({
       spawnFn: createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON }),
@@ -659,7 +659,7 @@ describe('video (ffprobe + ffmpeg)', () => {
   });
 
   it('publishes source dimensions when extract_metadata finishes (Serpent-9c9f97)', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const derived: Array<{
       assetId: string;
@@ -702,7 +702,7 @@ describe('video (ffprobe + ffmpeg)', () => {
   });
 
   it('returns missing extracted metadata safely before probe', () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const service = new LibraryService({
       spawnFn: createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON }),
@@ -734,7 +734,7 @@ describe('video (ffprobe + ffmpeg)', () => {
   });
 
   it('generates video_poster artifact via ffmpeg', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const capturedSpawnArgs: Array<{ command: string; args: string[] }> = [];
     const service = new LibraryService({
@@ -808,7 +808,7 @@ describe('video (ffprobe + ffmpeg)', () => {
   });
 
   it('backs off and requeues a native FFmpeg memory failure without hot retry', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     let posterAttempts = 0;
     const diagnostics: LibraryServiceDiagnostic[] = [];
@@ -856,7 +856,7 @@ describe('video (ffprobe + ffmpeg)', () => {
   });
 
   it('generates a font-independent contact_sheet with fps/scale/tile args', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const capturedSpawnArgs: Array<{ command: string; args: string[] }> = [];
     const service = new LibraryService({
@@ -929,7 +929,7 @@ describe('video (ffprobe + ffmpeg)', () => {
   });
 
   it('generates an H.264/MP4 webm_proxy artifact when FFmpeg exposes H.264', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const capturedSpawnArgs: Array<{ command: string; args: string[] }> = [];
     const service = new LibraryService({
@@ -1030,7 +1030,7 @@ describe('video (ffprobe + ffmpeg)', () => {
   });
 
   it('does not treat a listed hardware encoder as usable until a 1-frame probe succeeds', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const capturedSpawnArgs: Array<{ command: string; args: string[] }> = [];
     const diagnostics: LibraryServiceDiagnostic[] = [];
@@ -1107,7 +1107,7 @@ describe('video (ffprobe + ffmpeg)', () => {
   });
 
   it('fails video proxy generation without attempting VP9 when FFmpeg has no H.264 encoder', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const capturedSpawnArgs: Array<{ command: string; args: string[] }> = [];
     const service = new LibraryService({
@@ -1152,7 +1152,7 @@ describe('video (ffprobe + ffmpeg)', () => {
   });
 
   it('does not switch to VP9 when the selected H.264 proxy encode fails at runtime', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const capturedSpawnArgs: Array<{ command: string; args: string[] }> = [];
     const service = new LibraryService({
@@ -1213,7 +1213,7 @@ describe('video (ffprobe + ffmpeg)', () => {
     // requires the viewer to present the original source for Chromium-playable
     // containers; the proxy is for hover and for non-direct containers
     // (MOV/AVI/WMV/MKV).
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const service = new LibraryService({
       spawnFn: async (command, args) => {
@@ -1343,7 +1343,7 @@ describe('video (ffprobe + ffmpeg)', () => {
   });
 
   it('stores a generated H.264 proxy without an output-size gate', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const diagnostics: LibraryServiceDiagnostic[] = [];
     const service = new LibraryService({
@@ -1405,7 +1405,7 @@ describe('video (ffprobe + ffmpeg)', () => {
 
   it('writes failed artifact when ffmpeg binary is missing (ENOENT)', async () => {
     // Set env to a path that doesn't exist; our spawnFn will throw ENOENT
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg-missing';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg-missing';
     const root = temporaryRoot();
     const service = new LibraryService({
       spawnFn: createMockSpawn({
@@ -1460,7 +1460,7 @@ describe('video (ffprobe + ffmpeg)', () => {
   });
 
   it('automatically requeues a component failure after the media environment is repaired', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const failedService = new LibraryService({
       spawnFn: createMockSpawn({
@@ -1528,7 +1528,7 @@ describe('video (ffprobe + ffmpeg)', () => {
   });
 
   it('automatically requeues an OIIO component failure after repair', async () => {
-    process.env['SERPENT_OIIO_PATH'] = '/fake/oiiotool';
+    process.env['KEEL_OIIO_PATH'] = '/fake/oiiotool';
     const root = temporaryRoot();
     const failedService = new LibraryService({
       spawnFn: createMockSpawn({
@@ -1588,7 +1588,7 @@ describe('video (ffprobe + ffmpeg)', () => {
   });
 
   it('automatically requeues a failed audio proxy after FFmpeg is repaired', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const failedService = new LibraryService({
       spawnFn: createMockSpawn({ enoentCommand: '/fake/ffmpeg' }),
@@ -1626,7 +1626,7 @@ describe('video (ffprobe + ffmpeg)', () => {
   });
 
   it('throttles repeated probes while a required component remains unavailable', () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const service = new LibraryService();
     const created = service.createLibrary({ storageLayout: 'assets',
@@ -1717,7 +1717,7 @@ describe('video (ffprobe + ffmpeg)', () => {
   });
 
   it('invalidates the prior current artifacts before a successful retry', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const service = new LibraryService({ spawnFn: createMockSpawn({}) });
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'VideoRetry', selectedParentPath: root });
@@ -1752,7 +1752,7 @@ describe('video (ffprobe + ffmpeg)', () => {
   });
 
   it('rejects a failed poster retry and leaves one current failed artifact', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     let failPoster = false;
     let assetChangeEvents = 0;
@@ -1827,7 +1827,7 @@ describe('media execution cancellation and global decoder limits', () => {
   });
 
   it('aborts an in-flight FFmpeg job and discards every late failure artifact', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     let started!: () => void;
     const spawnStarted = new Promise<void>((resolve) => { started = resolve; });
@@ -1871,7 +1871,7 @@ describe('media execution cancellation and global decoder limits', () => {
     { tier: 'below 4 GiB', availableBytes: MEDIA_FFMPEG_MEMORY_THRESHOLD_BYTES - 1, limit: 1 },
     { tier: 'at 4 GiB', availableBytes: MEDIA_FFMPEG_MEMORY_THRESHOLD_BYTES, limit: 2 },
   ])('caps FFmpeg across concurrent libraries: $tier → $limit slots', async ({ availableBytes, limit }) => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     let active = 0;
     let maximum = 0;
@@ -1921,7 +1921,7 @@ describe('media execution cancellation and global decoder limits', () => {
   });
 
   it('stops admitting queued FFmpeg work after system memory drops below 4 GiB', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     let availableBytes = MEDIA_FFMPEG_MEMORY_THRESHOLD_BYTES;
     let active = 0;
@@ -1991,7 +1991,7 @@ describe('media execution cancellation and global decoder limits', () => {
   });
 
   it('limits OpenImageIO to one subprocess across concurrent libraries', async () => {
-    process.env['SERPENT_OIIO_PATH'] = '/fake/oiiotool';
+    process.env['KEEL_OIIO_PATH'] = '/fake/oiiotool';
     const root = temporaryRoot();
     let active = 0;
     let maximum = 0;
@@ -2046,7 +2046,7 @@ describe('subprocess diagnostics', () => {
 
 describe('EXR/TGA (oiiotool)', () => {
   it('generates PNG thumbnail artifact for EXR via oiiotool', async () => {
-    process.env['SERPENT_OIIO_PATH'] = '/fake/oiiotool';
+    process.env['KEEL_OIIO_PATH'] = '/fake/oiiotool';
     const root = temporaryRoot();
     const capturedSpawnArgs: Array<{ command: string; args: string[] }> = [];
     const service = new LibraryService({
@@ -2125,7 +2125,7 @@ describe('EXR/TGA (oiiotool)', () => {
   });
 
   it('lists EXR parts and regenerates the selected part for the viewer', async () => {
-    process.env['SERPENT_OIIO_PATH'] = '/fake/oiiotool';
+    process.env['KEEL_OIIO_PATH'] = '/fake/oiiotool';
     const root = temporaryRoot();
     const invocations: string[][] = [];
     const service = new LibraryService({
@@ -2182,7 +2182,7 @@ describe('EXR/TGA (oiiotool)', () => {
   });
 
   it('routes every OIIO-backed image and RAW format through a derived PNG', async () => {
-    process.env['SERPENT_OIIO_PATH'] = '/fake/oiiotool';
+    process.env['KEEL_OIIO_PATH'] = '/fake/oiiotool';
     const root = temporaryRoot();
     const invocations: string[][] = [];
     const service = new LibraryService({
@@ -2229,7 +2229,7 @@ describe('EXR/TGA (oiiotool)', () => {
   });
 
   it('uses the OCIO display-transform path for TGA assets', async () => {
-    process.env['SERPENT_OIIO_PATH'] = '/fake/oiiotool';
+    process.env['KEEL_OIIO_PATH'] = '/fake/oiiotool';
     const root = temporaryRoot();
     const capturedSpawnArgs: string[][] = [];
     const service = new LibraryService({
@@ -2268,7 +2268,7 @@ describe('EXR/TGA (oiiotool)', () => {
   });
 
   it('uses the RAW default sRGB route and persists normalized camera metadata', async () => {
-    process.env['SERPENT_OIIO_PATH'] = '/fake/oiiotool';
+    process.env['KEEL_OIIO_PATH'] = '/fake/oiiotool';
     const root = temporaryRoot();
     const invocations: string[][] = [];
     const service = new LibraryService({
@@ -2484,7 +2484,7 @@ describe('EXR/TGA (oiiotool)', () => {
   });
 
   it('uses a bounded embedded RAW JPEG for the card and reserves OIIO for the viewer', async () => {
-    process.env['SERPENT_OIIO_PATH'] = '/fake/oiiotool';
+    process.env['KEEL_OIIO_PATH'] = '/fake/oiiotool';
     const root = temporaryRoot();
     const invocations: string[][] = [];
     const service = new LibraryService({
@@ -2866,7 +2866,7 @@ describe('EXR/TGA (oiiotool)', () => {
   });
 
   it('keeps a RAW thumbnail successful when EXIF metadata is unavailable', async () => {
-    process.env['SERPENT_OIIO_PATH'] = '/fake/oiiotool';
+    process.env['KEEL_OIIO_PATH'] = '/fake/oiiotool';
     const root = temporaryRoot();
     const service = new LibraryService({
       rawImageMetadataParser: {
@@ -2904,7 +2904,7 @@ describe('EXR/TGA (oiiotool)', () => {
   });
 
   it('uses one full-size viewer image for concurrent RAW opens', async () => {
-    process.env['SERPENT_OIIO_PATH'] = '/fake/oiiotool';
+    process.env['KEEL_OIIO_PATH'] = '/fake/oiiotool';
     const root = temporaryRoot();
     const invocations: string[][] = [];
     const service = new LibraryService({
@@ -2948,7 +2948,7 @@ describe('EXR/TGA (oiiotool)', () => {
   });
 
   it('retries a stale failed RAW viewer artifact after the decoder is repaired', async () => {
-    process.env['SERPENT_OIIO_PATH'] = '/fake/oiiotool';
+    process.env['KEEL_OIIO_PATH'] = '/fake/oiiotool';
     const root = temporaryRoot();
     const invocations: string[][] = [];
     const service = new LibraryService({
@@ -2999,7 +2999,7 @@ describe('EXR/TGA (oiiotool)', () => {
   });
 
   it('requeues stale RAW OIIO failures on the next retryable browse wave', async () => {
-    process.env['SERPENT_OIIO_PATH'] = '/fake/oiiotool';
+    process.env['KEEL_OIIO_PATH'] = '/fake/oiiotool';
     const root = temporaryRoot();
     const failingService = new LibraryService({
       spawnFn: async () => ({
@@ -3079,7 +3079,7 @@ describe('EXR/TGA (oiiotool)', () => {
   });
 
   it('routes TIFF thumbnails directly through OIIO', async () => {
-    process.env['SERPENT_OIIO_PATH'] = '/fake/oiiotool';
+    process.env['KEEL_OIIO_PATH'] = '/fake/oiiotool';
     const root = temporaryRoot();
     const invocations: Array<{ command: string; args: string[] }> = [];
     const diagnostics: LibraryServiceDiagnostic[] = [];
@@ -3130,7 +3130,7 @@ describe('EXR/TGA (oiiotool)', () => {
   });
 
   it('uses the format-owned OIIO path for ordinary TIFF thumbnails', async () => {
-    process.env['SERPENT_OIIO_PATH'] = '/fake/oiiotool';
+    process.env['KEEL_OIIO_PATH'] = '/fake/oiiotool';
     const root = temporaryRoot();
     const invocations: string[][] = [];
     const sharp = require('sharp') as (input: {
@@ -3184,7 +3184,7 @@ describe('EXR/TGA (oiiotool)', () => {
   });
 
   it('lets OIIO process a large TGA without a size or wall-clock rejection', async () => {
-    process.env['SERPENT_OIIO_PATH'] = '/fake/oiiotool';
+    process.env['KEEL_OIIO_PATH'] = '/fake/oiiotool';
     const root = temporaryRoot();
     const invocations: Array<{ command: string; args: string[]; timeoutMs?: number }> = [];
     const service = new LibraryService({
@@ -3220,7 +3220,7 @@ describe('EXR/TGA (oiiotool)', () => {
   });
 
   it('keeps a legacy OIIO thumbnail current without a size-based decoder switch', async () => {
-    process.env['SERPENT_OIIO_PATH'] = '/fake/oiiotool';
+    process.env['KEEL_OIIO_PATH'] = '/fake/oiiotool';
     const root = temporaryRoot();
     const service = new LibraryService({
       spawnFn: async (_command, args) => {
@@ -3287,7 +3287,7 @@ describe('EXR/TGA (oiiotool)', () => {
   });
 
   it('uses a full-resolution OIIO viewer artifact for non-native images', async () => {
-    process.env['SERPENT_OIIO_PATH'] = '/fake/oiiotool';
+    process.env['KEEL_OIIO_PATH'] = '/fake/oiiotool';
     const root = temporaryRoot();
     const service = new LibraryService({
       spawnFn: async (_command, args) => {
@@ -3320,7 +3320,7 @@ describe('EXR/TGA (oiiotool)', () => {
   });
 
   it('records a safe transform error code and a full diagnostic', async () => {
-    process.env['SERPENT_OIIO_PATH'] = '/fake/oiiotool';
+    process.env['KEEL_OIIO_PATH'] = '/fake/oiiotool';
     const root = temporaryRoot();
     const diagnostics: LibraryServiceDiagnostic[] = [];
     const service = new LibraryService({
@@ -3363,7 +3363,7 @@ describe('EXR/TGA (oiiotool)', () => {
   });
 
   it('writes failed artifact when oiiotool binary is missing (ENOENT)', async () => {
-    process.env['SERPENT_OIIO_PATH'] = '/fake/oiiotool-missing';
+    process.env['KEEL_OIIO_PATH'] = '/fake/oiiotool-missing';
     const root = temporaryRoot();
     const diagnostics: LibraryServiceDiagnostic[] = [];
     const service = new LibraryService({
@@ -3458,7 +3458,7 @@ describe('generateThumbnail dispatch by media type', () => {
   });
 
   it('dispatches video assets to ffmpeg (mocked)', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const service = new LibraryService({
       spawnFn: createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON }),
@@ -3528,7 +3528,7 @@ describe('generateThumbnail dispatch by media type', () => {
   });
 
   it('dispatches EXR assets to oiiotool (mocked)', async () => {
-    process.env['SERPENT_OIIO_PATH'] = '/fake/oiiotool';
+    process.env['KEEL_OIIO_PATH'] = '/fake/oiiotool';
     const root = temporaryRoot();
     const service = new LibraryService({
       spawnFn: createMockSpawn({ oiiotoolExitCode: 0 }),
@@ -3600,7 +3600,7 @@ describe('generateThumbnail dispatch by media type', () => {
 
 describe('enqueueThumbnailJobs handles all media types', () => {
   it('enqueues jobs for video assets', () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const service = new LibraryService({
       spawnFn: createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON }),
@@ -3621,7 +3621,7 @@ describe('enqueueThumbnailJobs handles all media types', () => {
   });
 
   it('does not re-enqueue video assets with ready video_poster', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const service = new LibraryService({
       spawnFn: createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON }),
@@ -3648,7 +3648,7 @@ describe('enqueueThumbnailJobs handles all media types', () => {
   });
 
   it('enqueues jobs for EXR assets', () => {
-    process.env['SERPENT_OIIO_PATH'] = '/fake/oiiotool';
+    process.env['KEEL_OIIO_PATH'] = '/fake/oiiotool';
     const root = temporaryRoot();
     const service = new LibraryService({
       spawnFn: createMockSpawn({ oiiotoolExitCode: 0 }),
@@ -3669,7 +3669,7 @@ describe('enqueueThumbnailJobs handles all media types', () => {
   });
 
   it('enqueues jobs for audio assets (Serpent-13v)', () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const service = new LibraryService({
       spawnFn: createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON }),
@@ -3690,7 +3690,7 @@ describe('enqueueThumbnailJobs handles all media types', () => {
   });
 
   it('enqueues audio when only the viewer strip exists (Serpent-051)', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const service = new LibraryService({
       spawnFn: createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON }),
@@ -3759,7 +3759,7 @@ describe('enqueueThumbnailJobs handles all media types', () => {
 
 describe('audio waveform thumbnail (Serpent-13v)', () => {
   it('dispatches audio assets to ffmpeg waveform + opaque cover', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const service = new LibraryService({
       spawnFn: createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON }),
@@ -3820,7 +3820,7 @@ describe('audio waveform thumbnail (Serpent-13v)', () => {
   });
 
   it('uses attached album art as the grid thumbnail (Serpent-690060)', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const sharp = require('sharp') as (input: unknown) => {
       png(): { toBuffer(): Promise<Buffer> };
     };
@@ -3932,7 +3932,7 @@ describe('audio waveform thumbnail (Serpent-13v)', () => {
   });
 
   it('rebuilds a cover thumbnail as a waveform when cover preference is off', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const sharp = require('sharp') as (input: unknown) => {
       png(): { toBuffer(): Promise<Buffer> };
     };
@@ -4033,7 +4033,7 @@ describe('audio waveform thumbnail (Serpent-13v)', () => {
   });
 
   it('does not generate an Opus/Ogg playback proxy for WAV until explicitly requested', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const capturedSpawnArgs: Array<{ command: string; args: string[] }> = [];
     const service = new LibraryService({
@@ -4138,7 +4138,7 @@ describe('independent video derivative jobs', () => {
   });
 
   it('publishes the poster before a slow proxy job resolves', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     let finishProxy!: () => void;
     const proxyGate = new Promise<SpawnResult>((resolve) => {
@@ -4210,7 +4210,7 @@ describe('independent video derivative jobs', () => {
   });
 
   it('cancels a derivative job whose queued revision is no longer current', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const service = new LibraryService({ spawnFn: createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON }) });
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'StaleDerivative', selectedParentPath: root });
@@ -4249,7 +4249,7 @@ describe('independent video derivative jobs', () => {
   });
 
   it('recovers interrupted derivative jobs when reopening a library', async () => {
-    process.env['SERPENT_FFMPEG_PATH'] = '/fake/ffmpeg';
+    process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const service = new LibraryService({ spawnFn: createMockSpawn({ ffprobeStdout: CANNED_FFPROBE_JSON }) });
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'RecoverDerivative', selectedParentPath: root });

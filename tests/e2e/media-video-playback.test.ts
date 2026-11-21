@@ -26,16 +26,16 @@ const buildFfmpegPath = path.join(
   "darwin-arm64",
   "ffmpeg",
 );
-const ffmpegPath = process.env.SERPENT_REAL_FFMPEG_PATH ??
-  process.env.SERPENT_FFMPEG_PATH ??
+const ffmpegPath = process.env.KEEL_REAL_FFMPEG_PATH ??
+  process.env.KEEL_FFMPEG_PATH ??
   (existsSync(installedFfmpegPath) ? installedFfmpegPath : buildFfmpegPath);
-const ffprobePath = process.env.SERPENT_REAL_FFPROBE_PATH ??
+const ffprobePath = process.env.KEEL_REAL_FFPROBE_PATH ??
   path.join(path.dirname(ffmpegPath), "ffprobe");
 const hasRealBundle = process.platform === "darwin" &&
   process.arch === "arm64" &&
   existsSync(ffmpegPath) &&
   existsSync(ffprobePath);
-const requireRealMedia = process.env.SERPENT_REQUIRE_REAL_MEDIA === "1";
+const requireRealMedia = process.env.KEEL_REQUIRE_REAL_MEDIA === "1";
 
 function assertRealMediaBundleAvailable(): void {
   if (hasRealBundle) return;
@@ -43,7 +43,7 @@ function assertRealMediaBundleAvailable(): void {
     !existsSync(binaryPath)
   );
   throw new Error(
-    "SERPENT_REQUIRE_REAL_MEDIA=1 requires the darwin-arm64 LGPL FFmpeg bundle. " +
+    "KEEL_REQUIRE_REAL_MEDIA=1 requires the darwin-arm64 LGPL FFmpeg bundle. " +
       `platform=${process.platform}/${process.arch}; missing=${
         missing.join(", ") || "unsupported platform"
       }`,
@@ -305,7 +305,7 @@ test("plays a direct MP4 and a generated WebM fallback through the asset viewer"
   );
   const libraryName = "视频播放成功验收";
   const libraryPath = path.join(temporaryRoot, libraryName);
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   let application: Awaited<ReturnType<typeof electron.launch>> | undefined;
 
   try {
@@ -316,12 +316,12 @@ test("plays a direct MP4 and a generated WebM fallback through the asset viewer"
       executablePath: resolveElectronExecutablePath(),
       env: {
         ...process.env,
-        SERPENT_E2E: "1",
-        SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-        SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-        SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
-        SERPENT_E2E_IMPORT_FILES: [directPath, proxyPath, flvPath].join(path.delimiter),
-        SERPENT_FFMPEG_PATH: ffmpegPath,
+        KEEL_E2E: "1",
+        KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+        KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+        KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
+        KEEL_E2E_IMPORT_FILES: [directPath, proxyPath, flvPath].join(path.delimiter),
+        KEEL_FFMPEG_PATH: ffmpegPath,
       },
     });
     const window = await application.firstWindow();

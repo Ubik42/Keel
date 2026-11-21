@@ -30,18 +30,18 @@ function launchApp(
   extraEnv: Record<string, string> = {},
 ) {
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   return electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath: resolveElectronExecutablePath(),
     env: {
       ...process.env,
-      SERPENT_E2E: "1",
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
-      SERPENT_E2E_IMPORT_FILES: importFiles,
+      KEEL_E2E: "1",
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
+      KEEL_E2E_IMPORT_FILES: importFiles,
       ...extraEnv,
     },
   });
@@ -451,9 +451,9 @@ test("keeps navigation inside explicit tabs and exposes contextual tab actions",
     await folderRow(window, "并发目标").click();
     await expect(tabs).toHaveCount(2);
     await expect(tabs.nth(1)).toHaveAccessibleName("并发目标");
-    if (process.env.SERPENT_E2E_TABS_SCREENSHOT_PATH) {
+    if (process.env.KEEL_E2E_TABS_SCREENSHOT_PATH) {
       await window.screenshot({
-        path: process.env.SERPENT_E2E_TABS_SCREENSHOT_PATH,
+        path: process.env.KEEL_E2E_TABS_SCREENSHOT_PATH,
       });
     }
 
@@ -571,11 +571,11 @@ test("restores the saved tab strip after a relaunch", async () => {
   const sourceAsset = path.join(temporaryRoot, "restore fixture.txt");
   writeFileSync(sourceAsset, "restore fixture", "utf8");
 
-  // The first launch has to record the recent library too: under SERPENT_E2E the
+  // The first launch has to record the recent library too: under KEEL_E2E the
   // recent-library file is only written when the restore flag is on, and the
   // relaunch below depends on it to reopen the library by itself.
   const application = await launchApp(temporaryRoot, libraryPath, sourceAsset, {
-    SERPENT_E2E_RESTORE_RECENT: "1",
+    KEEL_E2E_RESTORE_RECENT: "1",
   });
   try {
     const window = await application.firstWindow();
@@ -619,7 +619,7 @@ test("restores the saved tab strip after a relaunch", async () => {
   }
 
   const relaunched = await launchApp(temporaryRoot, libraryPath, "", {
-    SERPENT_E2E_RESTORE_RECENT: "1",
+    KEEL_E2E_RESTORE_RECENT: "1",
   });
   try {
     const window = await relaunched.firstWindow();

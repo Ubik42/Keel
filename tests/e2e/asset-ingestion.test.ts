@@ -59,19 +59,19 @@ test('imports files and a directory hierarchy, then reconciles external changes'
   writeFileSync(nestedSource, Buffer.from('pose-v1'));
 
   const executablePath = resolveElectronExecutablePath();
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath,
     env: {
       ...process.env,
-      SERPENT_E2E: '1',
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-      SERPENT_E2E_IMPORT_FILES: [imageSource, notesSource].join(path.delimiter),
-      SERPENT_E2E_IMPORT_FOLDER: sourceDirectory,
+      KEEL_E2E: '1',
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+      KEEL_E2E_IMPORT_FILES: [imageSource, notesSource].join(path.delimiter),
+      KEEL_E2E_IMPORT_FOLDER: sourceDirectory,
     },
   });
 
@@ -213,18 +213,18 @@ test('imports into the library root after leaving a folder scope', async () => {
   const libraryPath = path.join(temporaryRoot, libraryName);
   writeFileSync(sourcePath, 'root import');
 
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath: resolveElectronExecutablePath(),
     env: {
       ...process.env,
-      SERPENT_E2E: '1',
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-      SERPENT_E2E_IMPORT_FILES: sourcePath,
+      KEEL_E2E: '1',
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+      KEEL_E2E_IMPORT_FILES: sourcePath,
     },
   });
 
@@ -268,17 +268,17 @@ test('shows a specific safe import reason and persists the complete Worker error
   symlinkSync(outsideFile, path.join(sourceDirectory, 'linked.png'));
 
   const executablePath = resolveElectronExecutablePath();
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath,
     env: {
       ...process.env,
-      SERPENT_E2E: '1',
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_IMPORT_FOLDER: sourceDirectory,
+      KEEL_E2E: '1',
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_IMPORT_FOLDER: sourceDirectory,
     },
   });
 
@@ -311,17 +311,17 @@ test('maps a real filesystem permission failure and logs its complete cause chai
   writeFileSync(path.join(sourceDirectory, 'hidden.png'), 'hidden');
 
   const executablePath = resolveElectronExecutablePath();
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath,
     env: {
       ...process.env,
-      SERPENT_E2E: '1',
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_IMPORT_FOLDER: sourceDirectory,
+      KEEL_E2E: '1',
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_IMPORT_FOLDER: sourceDirectory,
     },
   });
 
@@ -644,23 +644,23 @@ test('keeps same-name imported PNGs and decoded previews across a full restart',
   writeFileSync(secondSource, secondPng);
 
   const executablePath = resolveElectronExecutablePath();
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const launch = (restoreRecent: boolean) => electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath,
     env: electronLaunchEnv({
-      SERPENT_E2E: '1',
-      SERPENT_E2E_HIDE_WINDOW: '1',
+      KEEL_E2E: '1',
+      KEEL_E2E_HIDE_WINDOW: '1',
       // Enables recent-library persistence as well as restore; set it before first library creation.
-      SERPENT_E2E_RESTORE_RECENT: '1',
-      SERPENT_E2E_USER_DATA_PATH: profilePath,
+      KEEL_E2E_RESTORE_RECENT: '1',
+      KEEL_E2E_USER_DATA_PATH: profilePath,
       ...(restoreRecent
         ? {}
         : {
-            SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-            SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-            SERPENT_E2E_IMPORT_FILES: [firstSource, secondSource].join(path.delimiter),
+            KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+            KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+            KEEL_E2E_IMPORT_FILES: [firstSource, secondSource].join(path.delimiter),
           }),
     }),
   });
@@ -731,8 +731,8 @@ test('keeps same-name imported PNGs and decoded previews across a full restart',
       expect(readFileSync(path.join(libraryPath, 'Assets', asset.relativeFilePath)).length).toBeGreaterThan(0);
     }
     await expectImportedImagesDecoded();
-    if (process.env.SERPENT_IMPORT_QA_SCREENSHOT_PATH) {
-      await window.screenshot({ path: process.env.SERPENT_IMPORT_QA_SCREENSHOT_PATH });
+    if (process.env.KEEL_IMPORT_QA_SCREENSHOT_PATH) {
+      await window.screenshot({ path: process.env.KEEL_IMPORT_QA_SCREENSHOT_PATH });
     }
   } finally {
     if (application && application.process().exitCode === null) await application.close();

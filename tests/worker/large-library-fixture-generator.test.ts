@@ -10,11 +10,11 @@ import {
 } from './large-library-fixture';
 import { imageOnlyCountsFor, mixCountsFor } from './large-library-mix';
 
-const outputPath = process.env.SERPENT_LARGE_LIBRARY_OUTPUT;
-const assetCount = Number(process.env.SERPENT_LARGE_LIBRARY_ASSETS ?? LARGE_LIBRARY_ASSET_COUNT);
-const seed = Number(process.env.SERPENT_LARGE_LIBRARY_SEED ?? 20260816);
-const reset = process.env.SERPENT_LARGE_LIBRARY_RESET === '1';
-const assetProfile = process.env.SERPENT_LARGE_LIBRARY_ASSET_PROFILE === 'images-only'
+const outputPath = process.env.KEEL_LARGE_LIBRARY_OUTPUT;
+const assetCount = Number(process.env.KEEL_LARGE_LIBRARY_ASSETS ?? LARGE_LIBRARY_ASSET_COUNT);
+const seed = Number(process.env.KEEL_LARGE_LIBRARY_SEED ?? 20260816);
+const reset = process.env.KEEL_LARGE_LIBRARY_RESET === '1';
+const assetProfile = process.env.KEEL_LARGE_LIBRARY_ASSET_PROFILE === 'images-only'
   ? 'images-only'
   : 'mixed';
 

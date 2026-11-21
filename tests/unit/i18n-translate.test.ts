@@ -85,18 +85,18 @@ describe('locale preferences', () => {
   });
 
   it('prefers the E2E locale pin over navigator languages', () => {
-    const host = globalThis as { __SERPENT_E2E_LOCALE__?: string };
-    const previous = host.__SERPENT_E2E_LOCALE__;
+    const host = globalThis as { __KEEL_E2E_LOCALE__?: string };
+    const previous = host.__KEEL_E2E_LOCALE__;
     try {
-      host.__SERPENT_E2E_LOCALE__ = 'zh-CN';
+      host.__KEEL_E2E_LOCALE__ = 'zh-CN';
       expect(readSystemLocale(['en-US', 'en'])).toBe('zh-CN');
-      host.__SERPENT_E2E_LOCALE__ = 'en';
+      host.__KEEL_E2E_LOCALE__ = 'en';
       expect(readSystemLocale(['zh-CN', 'zh'])).toBe('en');
     } finally {
       if (previous === undefined) {
-        delete host.__SERPENT_E2E_LOCALE__;
+        delete host.__KEEL_E2E_LOCALE__;
       } else {
-        host.__SERPENT_E2E_LOCALE__ = previous;
+        host.__KEEL_E2E_LOCALE__ = previous;
       }
     }
   });

@@ -14,7 +14,7 @@ import { LibraryService } from '../../src/worker/library-service';
 import { closeSemanticIndexWorkerLibrary, executeSemanticIndexWorkerCommand } from '../../src/worker/handlers/semantic-index';
 import { SemanticIndexStore } from '../../src/worker/semantic-index-store';
 
-const enabled = process.env.SERPENT_RUN_SEMANTIC_PERF === '1';
+const enabled = process.env.KEEL_RUN_SEMANTIC_PERF === '1';
 const temporaryRoots: string[] = [];
 const services: LibraryService[] = [];
 const perfDescribe = enabled ? describe : describe.skip;

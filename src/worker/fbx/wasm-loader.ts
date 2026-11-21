@@ -8,7 +8,7 @@ import path from 'node:path';
  * resources/ufbx/ (gitignored, media:acquire convention).
  *
  * Resolution order:
- *   1. SERPENT_UFBX_DIR environment variable
+ *   1. KEEL_UFBX_DIR environment variable
  *   2. Packaged: <process.resourcesPath>/resources/ufbx
  *   3. Dev/tests: <cwd>/resources/ufbx
  *
@@ -38,10 +38,10 @@ interface EmscriptenModuleExports {
 }
 
 export function resolveUfbxDir(): string | null {
-  // SERPENT_UFBX_DIR is authoritative when set (mirrors the SERPENT_FFMPEG_PATH
+  // KEEL_UFBX_DIR is authoritative when set (mirrors the KEEL_FFMPEG_PATH
   // convention in binary-resolver.ts): a broken override must fail loudly
   // instead of silently falling back to a bundled module.
-  const envDir = process.env['SERPENT_UFBX_DIR'];
+  const envDir = process.env['KEEL_UFBX_DIR'];
   if (envDir) {
     try {
       const stat = statSync(path.join(envDir, 'ufbx.wasm'));

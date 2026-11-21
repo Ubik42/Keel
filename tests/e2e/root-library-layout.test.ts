@@ -8,13 +8,13 @@ import { removePathWithSyncRetry } from '../../src/worker/windows-fs-retry';
 
 test('creates root storage by default and offers the compatible Assets layout', async () => {
   const parent = mkdtempSync(path.join(tmpdir(), 'serpent-root-ui-'));
-  const applicationDirectory = process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     executablePath: resolveElectronExecutablePath(),
-    args: process.env.SERPENT_E2E_ELECTRON_EXECUTABLE ? [] : [applicationDirectory],
+    args: process.env.KEEL_E2E_ELECTRON_EXECUTABLE ? [] : [applicationDirectory],
     cwd: applicationDirectory,
-    env: { ...process.env, SERPENT_E2E: '1', SERPENT_E2E_USER_DATA_PATH: path.join(parent, 'profile'),
-      SERPENT_E2E_CREATE_PARENT_PATH: parent },
+    env: { ...process.env, KEEL_E2E: '1', KEEL_E2E_USER_DATA_PATH: path.join(parent, 'profile'),
+      KEEL_E2E_CREATE_PARENT_PATH: parent },
   });
   try {
     await application.evaluate(({ dialog }, selectedParent) => {

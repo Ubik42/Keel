@@ -53,7 +53,7 @@ resources/
 7. Forge's own `prePackage` hook runs the equivalent of `media:ensure`: when the
    promoted bundle or receipt is absent or invalid, it reacquires the pinned
    Serpent-Build release and verifies it before packaging. Set
-   `SERPENT_MEDIA_AUTO_ACQUIRE=0` to keep an offline build fail-closed. Forge
+   `KEEL_MEDIA_AUTO_ACQUIRE=0` to keep an offline build fail-closed. Forge
    copies `resources/` outside ASAR. Its `postPackage` hook repeats hash,
    provenance, executable, version, license and FFmpeg configuration checks
    against every packaged output.
@@ -89,7 +89,7 @@ Chocolatey, `ffmpeg-static`, or an unverified binary download.
   `serpent-media-linux-x64.zip`. That zip is promoted when `bundle-lock.json`
   marks `linux-x64` as `ready` (it is ready now). If the entry is not `ready`,
   `media:ensure` stays fail-closed. A local trial can build the tree and run
-  `SERPENT_MEDIA_SKIP_PROVENANCE=1 npm run media:ensure`.
+  `KEEL_MEDIA_SKIP_PROVENANCE=1 npm run media:ensure`.
 - Linux arm64: build natively with `scripts/media-build/linux-arm64.sh` (static
   triplet `serpent-arm64-linux-static`) on aarch64. The asset name is
   `serpent-media-linux-arm64.zip`. `bundle-lock.json` currently marks

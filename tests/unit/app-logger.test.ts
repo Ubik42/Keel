@@ -62,7 +62,7 @@ test('does not persist authorization credentials or an environment object from s
       new Error('Authorization: Bearer runtime-secret-token'),
       {
         authorization: 'Basic local-secret-value',
-        environment: { SERPENT_API_KEY: 'environment-secret-value' },
+        environment: { KEEL_API_KEY: 'environment-secret-value' },
       },
     );
 

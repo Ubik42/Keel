@@ -145,8 +145,8 @@ export async function selectImportSources(
   if (host.isE2e()) {
     const value =
       sourceKind === "files"
-        ? e2eEnv.SERPENT_E2E_IMPORT_FILES
-        : e2eEnv.SERPENT_E2E_IMPORT_FOLDER;
+        ? e2eEnv.KEEL_E2E_IMPORT_FILES
+        : e2eEnv.KEEL_E2E_IMPORT_FOLDER;
     return value ? value.split(path.delimiter).filter(Boolean) : undefined;
   }
 
@@ -172,8 +172,8 @@ export async function selectLibraryDirectory(
 ): Promise<string | undefined> {
   if (host.isE2e()) {
     return dialogId === "createLibrary"
-      ? e2eEnv.SERPENT_E2E_CREATE_PARENT_PATH
-      : e2eEnv.SERPENT_E2E_OPEN_LIBRARY_PATH;
+      ? e2eEnv.KEEL_E2E_CREATE_PARENT_PATH
+      : e2eEnv.KEEL_E2E_OPEN_LIBRARY_PATH;
   }
 
   const options = openOptionsFor(host.getLocale(), dialogId, [

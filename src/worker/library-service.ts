@@ -479,7 +479,7 @@ type VideoProxyProfile = {
   mimeType: 'video/mp4' | 'video/webm';
   args: string[];
 };
-const SERPENT_OCIO_CONFIG = 'ocio://studio-config-v4.0.0_aces-v2.0_ocio-v2.5';
+const KEEL_OCIO_CONFIG = 'ocio://studio-config-v4.0.0_aces-v2.0_ocio-v2.5';
 
 /**
  * Escape a local path before embedding it in an FFmpeg filtergraph option.
@@ -4873,12 +4873,12 @@ function runSharpDecoder<T>(
     () => sharpNativeDecoderSemaphore.run(signal, () => laneSemaphore.run(signal, task)),
   );
 }
-const MEDIA_QUEUE_LOG = process.env.SERPENT_MEDIA_QUEUE_LOG === '1';
+const MEDIA_QUEUE_LOG = process.env.KEEL_MEDIA_QUEUE_LOG === '1';
 // Serpent-e97c00：摘要命中/重算必须可观测，否则「面板关闭时不再全表扫描」无法作为
 // 验收证据。与其它命令级诊断共用同一个开关（benchmark 已默认打开）。
-const JOB_SUMMARY_LOG = process.env.SERPENT_WORKER_CMD_LOG === '1';
+const JOB_SUMMARY_LOG = process.env.KEEL_WORKER_CMD_LOG === '1';
 // 诊断用开关：置 0 即回到「每次读取都重算」的旧行为，用于同树 A/B 归因（生产不设即启用缓存）。
-const JOB_SUMMARY_CACHE_ENABLED = process.env.SERPENT_JOB_SUMMARY_CACHE !== '0';
+const JOB_SUMMARY_CACHE_ENABLED = process.env.KEEL_JOB_SUMMARY_CACHE !== '0';
 
 function logMediaJobSummaryEvent(context: Record<string, unknown>): void {
   if (!JOB_SUMMARY_LOG) return;
@@ -7286,9 +7286,9 @@ export class LibraryService {
     task: OpenReconciliationTask,
     diagnosticScope = 'open.refresh-managed-assets',
   ): Promise<void> {
-    // 分阶段计时（SERPENT_REFRESH_STAGE_LOG=1）：打开路径里整段对账会堵住 Worker
+    // 分阶段计时（KEEL_REFRESH_STAGE_LOG=1）：打开路径里整段对账会堵住 Worker
     // 事件循环数秒（SMB 库实测 7.3 s），必须能区分是「枚举」「指纹」还是「应用批次」。
-    const stageLog = process.env.SERPENT_REFRESH_STAGE_LOG === '1';
+    const stageLog = process.env.KEEL_REFRESH_STAGE_LOG === '1';
     let stageMarkAt = performance.now();
     const markRefreshStage = (stage: string, details?: Record<string, unknown>): void => {
       if (!stageLog) return;
@@ -8064,7 +8064,7 @@ export class LibraryService {
     const configured = this.options.failAt;
     if (configured !== point && (!Array.isArray(configured) || !configured.includes(point))) return;
     if (this.options.terminateProcessAt === point) {
-      // The option is only wired from SERPENT_E2E in the UtilityProcess. A
+      // The option is only wired from KEEL_E2E in the UtilityProcess. A
       // synchronous exit is intentional here: the preceding failpoint is
       // placed after the durable manifest and filesystem placement, so the
       // next process must exercise the real recovery path instead of the
@@ -16285,7 +16285,7 @@ export class LibraryService {
       openLibrary.navigationSummaryCache = { key, value: summary };
     }
     const timing = metrics.result();
-    if (timing.durationMs >= 250 || process.env.SERPENT_REFRESH_STAGE_LOG === '1') {
+    if (timing.durationMs >= 250 || process.env.KEEL_REFRESH_STAGE_LOG === '1') {
       this.diagnose('navigation.summary', null, { libraryId: input.libraryId, ...timing });
     }
     return summary;
@@ -29071,7 +29071,7 @@ export class LibraryService {
             '-o', artifactAbsPath,
           ]
         : [
-            '--colorconfig', SERPENT_OCIO_CONFIG,
+            '--colorconfig', KEEL_OCIO_CONFIG,
             '--subimage', String(subimage),
             assetPath,
             ...(inputColorSpace ? ['--iscolorspace', inputColorSpace] : []),
@@ -29144,7 +29144,7 @@ export class LibraryService {
         assetId: input.assetId,
         extension: path.extname(assetPath).toLowerCase(),
         errorCode,
-        ocioConfig: SERPENT_OCIO_CONFIG,
+        ocioConfig: KEEL_OCIO_CONFIG,
       });
 
       openLibrary.connection
@@ -31460,7 +31460,7 @@ export class LibraryService {
     }
     // Stage metrics for the reconciliation perf ticket: enumeration, probes,
     // candidates excluded by reference and actual removals are separate numbers.
-    if (process.env.SERPENT_REFRESH_STAGE_LOG === '1') {
+    if (process.env.KEEL_REFRESH_STAGE_LOG === '1') {
       console.error(JSON.stringify({
         scope: 'open.reconciliation.stage',
         libraryId: openLibrary.summary.libraryId,
@@ -32005,7 +32005,7 @@ export class LibraryService {
       ...(options?.admissionYield === undefined ? {} : { admissionYield: options.admissionYield }),
     });
     const generation = task.generation;
-    const stageLog = process.env.SERPENT_REFRESH_STAGE_LOG === '1';
+    const stageLog = process.env.KEEL_REFRESH_STAGE_LOG === '1';
     const startedAt = performance.now();
     let stageMark = startedAt;
     const markStage = (stage: string): void => {
@@ -46436,7 +46436,7 @@ export class LibraryService {
         onDirectory: (relativePath) => directories.push(relativePath),
       });
       await directoryIndex.publish(folder.folder_id, directories, directoryVersion, () => this.yieldReconciliation(task));
-      if (process.env.SERPENT_REFRESH_STAGE_LOG === '1') {
+      if (process.env.KEEL_REFRESH_STAGE_LOG === '1') {
         this.options.onDiagnostic?.({
           scope: 'open.refresh-managed-assets.source-scan',
           error: null,
@@ -46477,7 +46477,7 @@ export class LibraryService {
           task,
         })
       : [];
-    if (scopedLinkedFolderIds === undefined && process.env.SERPENT_REFRESH_STAGE_LOG === '1') {
+    if (scopedLinkedFolderIds === undefined && process.env.KEEL_REFRESH_STAGE_LOG === '1') {
       this.options.onDiagnostic?.({
         scope: 'open.refresh-managed-assets.source-scan',
         error: null,
@@ -46585,9 +46585,9 @@ export class LibraryService {
       ? options?.discovery ?? this.collectManagedAssetDiscovery(openLibrary)
       : undefined;
     if (discovery) this.reconcileMovedLinkedAssets(openLibrary, discovery);
-    // Serpent-onch 风格分阶段计时：SERPENT_REFRESH_STAGE_LOG=1 时输出各阶段耗时，
+    // Serpent-onch 风格分阶段计时：KEEL_REFRESH_STAGE_LOG=1 时输出各阶段耗时，
     // 用于大库全量对账的归因（Serpent-4bdd26）。生产默认关闭。
-    const stageLog = process.env.SERPENT_REFRESH_STAGE_LOG === '1';
+    const stageLog = process.env.KEEL_REFRESH_STAGE_LOG === '1';
     const stageStartedAt = stageLog ? performance.now() : 0;
     let stageMark = stageStartedAt;
     const markStage = (label: string): void => {
@@ -48053,7 +48053,7 @@ export class LibraryService {
       catch (error) { this.diagnose('library.folder-icon', error, { libraryPath: input.canonicalPath }); }
     }
     if (!input.startServices) return summary;
-    const adoptStageLog = process.env.SERPENT_OPEN_STAGE_LOG === '1';
+    const adoptStageLog = process.env.KEEL_OPEN_STAGE_LOG === '1';
     let adoptMark = adoptStageLog ? performance.now() : 0;
     const markAdoptStage = (label: string): void => {
       if (!adoptStageLog) return;
@@ -48186,9 +48186,9 @@ export class LibraryService {
     selectedLibraryPath: string,
     options?: { replaceExisting?: boolean },
   ): InternalLibrarySummary {
-    // Serpent-4bdd26：开库阶段计时（SERPENT_OPEN_STAGE_LOG=1），用于大库打开
+    // Serpent-4bdd26：开库阶段计时（KEEL_OPEN_STAGE_LOG=1），用于大库打开
     // 的归因。生产默认关闭。
-    const openStageLog = process.env.SERPENT_OPEN_STAGE_LOG === '1';
+    const openStageLog = process.env.KEEL_OPEN_STAGE_LOG === '1';
     let stageMark = openStageLog ? performance.now() : 0;
     const markStage = (label: string): void => {
       if (!openStageLog) return;
@@ -50627,7 +50627,7 @@ export class LibraryService {
       // overlay for minutes with no log output at all. A close that cannot
       // explain itself is undebuggable, so keep the phase timings behind an
       // explicit switch instead of logging on every close.
-      if (process.env.SERPENT_CLOSE_TRACE !== '1') return;
+      if (process.env.KEEL_CLOSE_TRACE !== '1') return;
       process.stderr.write(
         `[library.close.phase] ${JSON.stringify({
           libraryId,

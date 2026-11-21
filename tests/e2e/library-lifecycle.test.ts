@@ -25,23 +25,23 @@ test("creates, closes, and reopens a library through the sandboxed UI", async ()
   const libraryPath = path.join(temporaryRoot, libraryName);
   const executablePath = resolveElectronExecutablePath();
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath,
     env: {
       ...process.env,
-      SERPENT_E2E: "1",
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
+      KEEL_E2E: "1",
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
     },
   });
 
   try {
     const window = await application.firstWindow();
-    if (process.env.SERPENT_E2E_HIDE_WINDOW === "1") {
+    if (process.env.KEEL_E2E_HIDE_WINDOW === "1") {
       const anyWindowVisible = await application.evaluate(({ BrowserWindow }) =>
         BrowserWindow.getAllWindows().some((candidate) => candidate.isVisible()),
       );
@@ -150,7 +150,7 @@ test("creates, closes, and reopens a library through the sandboxed UI", async ()
     await expect(
       window.getByText(libraryName, { exact: true }).first(),
     ).toBeVisible();
-    if (process.env.SERPENT_E2E_HIDE_WINDOW !== "1") {
+    if (process.env.KEEL_E2E_HIDE_WINDOW !== "1") {
       const screenshotPath = testInfo.outputPath("library-ready.png");
       await window.screenshot({ path: screenshotPath });
       await testInfo.attach("library-ready", {
@@ -181,7 +181,7 @@ test("restores the recent library and focuses the last browsed asset after a ful
   });
   const executablePath = resolveElectronExecutablePath();
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const launch = (importFilePath = sourcePaths.slice(0, 2).join(path.delimiter)) =>
     electron.launch({
       args: [applicationDirectory],
@@ -189,12 +189,12 @@ test("restores the recent library and focuses the last browsed asset after a ful
       executablePath,
       env: {
         ...process.env,
-        SERPENT_E2E: "1",
-        SERPENT_E2E_RESTORE_RECENT: "1",
-        SERPENT_E2E_USER_DATA_PATH: profilePath,
-        SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-        SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-        SERPENT_E2E_IMPORT_FILES: importFilePath,
+        KEEL_E2E: "1",
+        KEEL_E2E_RESTORE_RECENT: "1",
+        KEEL_E2E_USER_DATA_PATH: profilePath,
+        KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+        KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+        KEEL_E2E_IMPORT_FILES: importFilePath,
       },
     });
 
@@ -304,16 +304,16 @@ test("falls back to the start screen when the recent library no longer exists", 
 
   const executablePath = resolveElectronExecutablePath();
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath,
     env: {
       ...process.env,
-      SERPENT_E2E: "1",
-      SERPENT_E2E_RESTORE_RECENT: "1",
-      SERPENT_E2E_USER_DATA_PATH: profilePath,
+      KEEL_E2E: "1",
+      KEEL_E2E_RESTORE_RECENT: "1",
+      KEEL_E2E_USER_DATA_PATH: profilePath,
     },
   });
 

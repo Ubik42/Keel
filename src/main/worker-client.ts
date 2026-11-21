@@ -69,7 +69,7 @@ const PROVIDER_REQUEST_TIMEOUT_MS = 15_000;
 const FILE_OPERATION_TIMEOUT_MS = 5 * 60_000;
 const AI_QUEUE_TIMEOUT_MS = 10 * 60_000;
 const SHUTDOWN_TIMEOUT_MS = 2_000;
-const WORKER_CMD_LOG = process.env.SERPENT_WORKER_CMD_LOG === '1';
+const WORKER_CMD_LOG = process.env.KEEL_WORKER_CMD_LOG === '1';
 
 /**
  * Local resource commands are allowed to finish at their own pace. Their
@@ -277,10 +277,10 @@ export class LibraryWorkerClient {
   }
 
   async #startAttempt(attempt: number): Promise<void> {
-    // Profiling hook: `SERPENT_WORKER_INSPECT=<port>` starts the Library Worker
+    // Profiling hook: `KEEL_WORKER_INSPECT=<port>` starts the Library Worker
     // with a V8 inspector so an operator benchmark can attach a CPU profiler to
     // the process that owns SQLite and the filesystem. Never set in production.
-    const inspectPort = process.env.SERPENT_WORKER_INSPECT;
+    const inspectPort = process.env.KEEL_WORKER_INSPECT;
     const child = utilityProcess.fork(this.#modulePath, [], {
       serviceName: 'Serpent Library Worker',
       stdio: 'pipe',

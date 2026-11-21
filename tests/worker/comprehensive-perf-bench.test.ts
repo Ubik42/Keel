@@ -8,11 +8,11 @@ import {
   type LargeLibraryFixtureManifest,
 } from './large-library-fixture';
 
-const fixturePath = process.env.SERPENT_PERF_BENCH_PATH;
+const fixturePath = process.env.KEEL_PERF_BENCH_PATH;
 // This benchmark historically deleted seven assets from the fixture while
 // measuring mutation latency. Keep performance fixtures read-only by default;
 // mutation metrics require an explicit disposable-clone opt-in.
-const allowFixtureMutation = process.env.SERPENT_PERF_BENCH_ALLOW_MUTATION === '1';
+const allowFixtureMutation = process.env.KEEL_PERF_BENCH_ALLOW_MUTATION === '1';
 let manifest: LargeLibraryFixtureManifest;
 let service: LibraryService;
 
@@ -165,7 +165,7 @@ describe.skipIf(!fixturePath)('comprehensive perf benchmark', () => {
         .toFixed(1));
 
     } else {
-      results.mutationMetrics = 'skipped (set SERPENT_PERF_BENCH_ALLOW_MUTATION=1 on a disposable clone)';
+      results.mutationMetrics = 'skipped (set KEEL_PERF_BENCH_ALLOW_MUTATION=1 on a disposable clone)';
     }
 
     // ── 13. 导入准备+放弃（goal 指标：添加文件；不落盘，保持 fixture 干净）──

@@ -5,9 +5,9 @@
  * 1. Picks a free loopback port and pins Vite to it with strictPort so the
  *    renderer URL injected into Main always matches the real server
  *    (avoids black screen when 5173 is occupied — Serpent-i6xg / Forge#3198).
- * 2. Uses <repo>/.local-profile as userData unless SERPENT_USER_DATA_PATH is
+ * 2. Uses <repo>/.local-profile as userData unless KEEL_USER_DATA_PATH is
  *    set, so the dev build never touches the installed release's profile.
- * 3. Optionally enables multi-instance via SERPENT_ALLOW_MULTI_INSTANCE=1
+ * 3. Optionally enables multi-instance via KEEL_ALLOW_MULTI_INSTANCE=1
  *    (separate userData; do not open the same library for writes in two GUIs).
  */
 import { spawn } from "node:child_process";
@@ -29,18 +29,18 @@ await new Promise((resolve) => setTimeout(resolve, 400));
 
 if (
   process.argv.includes("--multi") ||
-  process.env.SERPENT_ALLOW_MULTI_INSTANCE === "1"
+  process.env.KEEL_ALLOW_MULTI_INSTANCE === "1"
 ) {
-  process.env.SERPENT_ALLOW_MULTI_INSTANCE = "1";
+  process.env.KEEL_ALLOW_MULTI_INSTANCE = "1";
 }
 
 const devProfile = resolveDevUserDataPath(projectRoot, process.env);
-process.env.SERPENT_USER_DATA_PATH = devProfile.path;
+process.env.KEEL_USER_DATA_PATH = devProfile.path;
 console.log(
-  `[serpent:dev] userData → ${devProfile.path}${devProfile.source === "env" ? " (SERPENT_USER_DATA_PATH)" : ""}`,
+  `[serpent:dev] userData → ${devProfile.path}${devProfile.source === "env" ? " (KEEL_USER_DATA_PATH)" : ""}`,
 );
 
-const preferredPort =Number(process.env.SERPENT_VITE_PORT || 5173);
+const preferredPort =Number(process.env.KEEL_VITE_PORT || 5173);
 
 const port = await findFreeTcpPort(
   Number.isFinite(preferredPort) && preferredPort > 0 ? preferredPort : 5173,
@@ -54,7 +54,7 @@ if (port !== preferredPort) {
   console.log(`[serpent:dev] Vite renderer on http://localhost:${port}`);
 }
 
-if (process.env.SERPENT_ALLOW_MULTI_INSTANCE === "1") {
+if (process.env.KEEL_ALLOW_MULTI_INSTANCE === "1") {
   console.log(
     "[serpent:dev] multi-instance enabled (isolated userData). Avoid writing the same library from two GUIs.",
   );
@@ -77,7 +77,7 @@ const child = spawn(forgeBin, ["start", ...forgeArgs], {
   cwd: projectRoot,
   env: {
     ...process.env,
-    SERPENT_VITE_PORT: String(port),
+    KEEL_VITE_PORT: String(port),
   },
   stdio: "inherit",
   shell: process.platform === "win32",

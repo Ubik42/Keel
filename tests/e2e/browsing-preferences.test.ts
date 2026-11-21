@@ -105,7 +105,7 @@ test("restores canvas preferences after a full restart", async () => {
 
   const executablePath = resolveElectronExecutablePath();
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const launch = () =>
     electron.launch({
       args: [applicationDirectory],
@@ -113,12 +113,12 @@ test("restores canvas preferences after a full restart", async () => {
       executablePath,
       env: {
         ...process.env,
-        SERPENT_E2E: "1",
-        SERPENT_E2E_RESTORE_RECENT: "1",
-        SERPENT_E2E_USER_DATA_PATH: profilePath,
-        SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-        SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-        SERPENT_E2E_IMPORT_FILES: sourcePath,
+        KEEL_E2E: "1",
+        KEEL_E2E_RESTORE_RECENT: "1",
+        KEEL_E2E_USER_DATA_PATH: profilePath,
+        KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+        KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+        KEEL_E2E_IMPORT_FILES: sourcePath,
       },
     });
 
@@ -263,7 +263,7 @@ test("uses a middle ellipsis for long filenames in cards and Inspector", async (
 
   const executablePath = resolveElectronExecutablePath();
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   let application: ElectronApplication | undefined;
   try {
     application = await electron.launch({
@@ -272,11 +272,11 @@ test("uses a middle ellipsis for long filenames in cards and Inspector", async (
       executablePath,
       env: {
         ...process.env,
-        SERPENT_E2E: "1",
-        SERPENT_E2E_USER_DATA_PATH: profilePath,
-        SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-        SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-        SERPENT_E2E_IMPORT_FILES: sourcePath,
+        KEEL_E2E: "1",
+        KEEL_E2E_USER_DATA_PATH: profilePath,
+        KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+        KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+        KEEL_E2E_IMPORT_FILES: sourcePath,
       },
     });
     const window = await application.firstWindow();
@@ -348,18 +348,18 @@ test("lays out a sparse masonry folder from left to right", async () => {
 
   const executablePath = resolveElectronExecutablePath();
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath,
     env: {
       ...process.env,
-      SERPENT_E2E: "1",
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
-      SERPENT_E2E_IMPORT_FILES: sourcePaths.join(path.delimiter),
+      KEEL_E2E: "1",
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
+      KEEL_E2E_IMPORT_FILES: sourcePaths.join(path.delimiter),
     },
   });
 
@@ -433,18 +433,18 @@ test("maintains consistent preferences, accessible names, zoom behavior, and avo
 
   const executablePath = resolveElectronExecutablePath();
   const applicationDirectory =
-    process.env.SERPENT_E2E_APP_DIRECTORY ?? process.cwd();
+    process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const application = await electron.launch({
     args: [applicationDirectory],
     cwd: applicationDirectory,
     executablePath,
     env: {
       ...process.env,
-      SERPENT_E2E: "1",
-      SERPENT_E2E_CREATE_PARENT_PATH: temporaryRoot,
-      SERPENT_E2E_OPEN_LIBRARY_PATH: libraryPath,
-      SERPENT_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
-      SERPENT_E2E_IMPORT_FILES: sourcePaths.join(path.delimiter),
+      KEEL_E2E: "1",
+      KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
+      KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
+      KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
+      KEEL_E2E_IMPORT_FILES: sourcePaths.join(path.delimiter),
     },
   });
 

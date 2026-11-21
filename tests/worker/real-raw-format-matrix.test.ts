@@ -14,8 +14,8 @@ import { afterAll, describe, expect, it } from 'vitest';
 import { LibraryService } from '../../src/worker/library-service';
 import { importNoConflict } from './import-no-conflict';
 
-const oiiotoolPath = process.env['SERPENT_REAL_OIIO_PATH'];
-const rawFixtureDirectory = process.env['SERPENT_REAL_RAW_FIXTURE_DIR'];
+const oiiotoolPath = process.env['KEEL_REAL_OIIO_PATH'];
+const rawFixtureDirectory = process.env['KEEL_REAL_RAW_FIXTURE_DIR'];
 const canRun = Boolean(
   oiiotoolPath
   && rawFixtureDirectory
@@ -38,7 +38,7 @@ function rawFixturePaths(): string[] {
       .map((entry) => [path.extname(entry.name).slice(1).toLowerCase(), entry.name]),
   );
   const missing = expectedExtensions.filter((extension) => !available.has(extension));
-  expect(missing, 'SERPENT_REAL_RAW_FIXTURE_DIR must contain one real file for every MVP RAW extension')
+  expect(missing, 'KEEL_REAL_RAW_FIXTURE_DIR must contain one real file for every MVP RAW extension')
     .toEqual([]);
   return expectedExtensions.map((extension) => path.join(rawFixtureDirectory!, available.get(extension)!));
 }
@@ -71,7 +71,7 @@ describe.runIf(canRun)('real LibRaw format matrix', () => {
       copyFileSync(fixturePath, destination);
       return destination;
     });
-    process.env['SERPENT_OIIO_PATH'] = oiiotoolPath;
+    process.env['KEEL_OIIO_PATH'] = oiiotoolPath;
     const service = new LibraryService();
     const library = service.createLibrary({ storageLayout: 'assets', displayName: 'RealRawFormats', selectedParentPath: root });
     for (const sourcePath of sourcePaths) {

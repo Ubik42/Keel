@@ -7,7 +7,7 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 NODE_VERSION="$(cat "$ROOT/.nvmrc")"
-IMAGE="${SERPENT_APPIMAGE_IMAGE:-ubuntu:22.04}"
+IMAGE="${KEEL_APPIMAGE_IMAGE:-ubuntu:22.04}"
 case "$(uname -m)" in
   x86_64) NODE_ARCH=x64 ;;
   aarch64|arm64) NODE_ARCH=arm64 ;;
