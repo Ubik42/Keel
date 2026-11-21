@@ -137,6 +137,34 @@ describe('.serpent to .keel metadata migration', () => {
     expect(readFileSync(path.join(legacy.libraryPath, '.keel', 'migration.json'), 'utf8')).toBe(record);
   });
 
+  it('keeps a nested library and its metadata out of the outer library scan', () => {
+    const { parent, service } = fixture();
+    const outer = legacyLibrary(service, parent, 'root');
+    writeFileSync(path.join(outer.libraryPath, 'outer.txt'), 'outer');
+    const innerRoot = path.join(outer.libraryPath, '片');
+    mkdirSync(innerRoot);
+    const inner = service.createLibrary({ displayName: '片', selectedParentPath: innerRoot, useExistingFolder: true });
+    writeFileSync(path.join(inner.libraryPath, 'inner.txt'), 'inner');
+    service.closeAll();
+    renameSync(path.join(inner.libraryPath, '.keel'), path.join(inner.libraryPath, '.serpent'));
+
+    const reopenedOuter = service.openLibrary(outer.libraryPath);
+    service.refreshManagedAssets(reopenedOuter.libraryId);
+    const outerPaths = service.listAssets({ libraryId: reopenedOuter.libraryId, recursive: true }).map((asset) => asset.relativeFilePath);
+    expect(outerPaths.some((relativePath) => /\/\.(serpent|keel)\//u.test(`/${relativePath}`))).toBe(false);
+    expect(existsSync(path.join(outer.libraryPath, '.keel', 'library.db'))).toBe(true);
+    // The outer open must not rename the inner library's directory.
+    expect(existsSync(path.join(inner.libraryPath, '.serpent', 'library.db'))).toBe(true);
+
+    const reopenedInner = service.openLibrary(inner.libraryPath);
+    expect(existsSync(path.join(inner.libraryPath, '.keel', 'library.db'))).toBe(true);
+    service.refreshManagedAssets(reopenedInner.libraryId);
+    expect(service.listAssets({ libraryId: reopenedInner.libraryId, recursive: true }).map((asset) => asset.relativeFilePath)).toEqual(['inner.txt']);
+    service.refreshManagedAssets(reopenedOuter.libraryId);
+    const afterInner = service.listAssets({ libraryId: reopenedOuter.libraryId, recursive: true }).map((asset) => asset.relativeFilePath);
+    expect(afterInner.some((relativePath) => /\/\.(serpent|keel)\//u.test(`/${relativePath}`))).toBe(false);
+  });
+
   it('restores trashed assets and exports after the migration', async () => {
     const { parent, service } = fixture();
     let trashedId = '';
