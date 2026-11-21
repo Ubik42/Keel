@@ -11,6 +11,13 @@ declare module "*free-port.mjs" {
   ): Promise<number>;
 }
 
+declare module "*dev-profile.mjs" {
+  export function resolveDevUserDataPath(
+    projectRoot: string,
+    env: Record<string, string | undefined>,
+  ): { path: string; source: "env" | "default" };
+}
+
 declare module "*ticket.mjs" {
   export function issuesPath(root: string): string;
   export function readIssues(filePath: string): Array<Record<string, unknown>>;

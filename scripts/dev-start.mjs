@@ -5,7 +5,9 @@
  * 1. Picks a free loopback port and pins Vite to it with strictPort so the
  *    renderer URL injected into Main always matches the real server
  *    (avoids black screen when 5173 is occupied — Serpent-i6xg / Forge#3198).
- * 2. Optionally enables multi-instance via SERPENT_ALLOW_MULTI_INSTANCE=1
+ * 2. Uses <repo>/.local-profile as userData unless SERPENT_USER_DATA_PATH is
+ *    set, so the dev build never touches the installed release's profile.
+ * 3. Optionally enables multi-instance via SERPENT_ALLOW_MULTI_INSTANCE=1
  *    (separate userData; do not open the same library for writes in two GUIs).
  */
 import { spawn } from "node:child_process";
@@ -13,6 +15,7 @@ import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 
+import { resolveDevUserDataPath } from "./dev-profile.mjs";
 import { findFreeTcpPort } from "./free-port.mjs";
 import { killStaleSerpentDevProcesses } from "./kill-stale-dev.mjs";
 
@@ -31,7 +34,13 @@ if (
   process.env.SERPENT_ALLOW_MULTI_INSTANCE = "1";
 }
 
-const preferredPort = Number(process.env.SERPENT_VITE_PORT || 5173);
+const devProfile = resolveDevUserDataPath(projectRoot, process.env);
+process.env.SERPENT_USER_DATA_PATH = devProfile.path;
+console.log(
+  `[serpent:dev] userData → ${devProfile.path}${devProfile.source === "env" ? " (SERPENT_USER_DATA_PATH)" : ""}`,
+);
+
+const preferredPort =Number(process.env.SERPENT_VITE_PORT || 5173);
 
 const port = await findFreeTcpPort(
   Number.isFinite(preferredPort) && preferredPort > 0 ? preferredPort : 5173,
