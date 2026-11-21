@@ -1,6 +1,7 @@
 import "../shared/install-legacy-env";
 import path from "node:path";
 import { tmpdir } from "node:os";
+import { copyLegacyUserData } from "./legacy-user-data";
 import { randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
@@ -552,6 +553,15 @@ const forkUserDataPath = process.env.KEEL_USER_DATA_PATH;
 if (forkUserDataPath && path.isAbsolute(forkUserDataPath)) {
   mkdirSync(forkUserDataPath, { recursive: true });
   app.setPath("userData", forkUserDataPath);
+} else if (process.env.KEEL_E2E !== "1") {
+  // P1: carry the default profile over from <appData>/Serpent once.
+  const legacyUserData = copyLegacyUserData({
+    appDataPath: app.getPath("appData"),
+    userDataPath: app.getPath("userData"),
+  });
+  if (legacyUserData.status === "failed") {
+    console.error("legacy-user-data.copy-failed", legacyUserData.reason);
+  }
 }
 
 if (process.env.KEEL_E2E === "1") {
@@ -4519,7 +4529,7 @@ async function startApplication(): Promise<void> {
   // the shortcuts created by the installer (WiX/Squirrel both set one). Without
   // this, the taskbar shows the default Electron icon and pinning breaks.
   if (process.platform === "win32") {
-    app.setAppUserModelId("com.serpent.app");
+    app.setAppUserModelId("com.keel.app");
   }
   // Isolated E2E runs must not write the log into the real user profile
   // (~/Library/Logs/Serpent); pin it under the temp userData instead.

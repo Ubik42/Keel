@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
-internal static class SerpentDesktopLauncher {
+internal static class KeelDesktopLauncher {
     private static string Quote(string value) {
         var result = new StringBuilder("\"");
         int slashes = 0;
@@ -22,8 +22,8 @@ internal static class SerpentDesktopLauncher {
     private static int Main(string[] args) {
         try {
             string root = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            string executable = Path.Combine(root, "out", "Serpent-win32-x64", "Serpent.exe");
-            if (!File.Exists(executable)) throw new FileNotFoundException("请先在工程目录中打包 Serpent。", executable);
+            string executable = Path.Combine(root, "out", "Keel-win32-x64", "Keel.exe");
+            if (!File.Exists(executable)) throw new FileNotFoundException("请先在工程目录中打包 Keel。", executable);
             var arguments = new StringBuilder();
             foreach (string argument in args) {
                 if (arguments.Length > 0) arguments.Append(' ');
@@ -37,7 +37,7 @@ internal static class SerpentDesktopLauncher {
             using (var process = Process.Start(start)) { }
             return 0;
         } catch (Exception error) {
-            MessageBox.Show(error.Message, "Serpent 启动失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(error.Message, "Keel 启动失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return 1;
         }
     }

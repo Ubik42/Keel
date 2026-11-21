@@ -2,11 +2,11 @@
 /**
  * Serpent Windows 安装器（Inno Setup）构建脚本。
  *
- * 流程：ISCC.exe 编译 assets/inno/serpentsetup.iss → out/make/inno/SerpentSetup.exe，
+ * 流程：ISCC.exe 编译 assets/inno/keelsetup.iss → out/make/inno/KeelSetup.exe，
  * 并校验产物（存在 + 非空）。
  *
  * 前置：
- *   - 已执行 npm run package（Inno 从 out/Serpent-win32-x64 打包）
+ *   - 已执行 npm run package（Inno 从 out/Keel-win32-x64 打包）
  *   - Inno Setup 工具：KEEL_INNO_TOOLS 指向含 ISCC.exe 的目录，否则
  *     默认 %LOCALAPPDATA%\SerpentTools\inno\tools（NuGet Tools.InnoSetup
  *     解压即用，见 CLAUDE.md）
@@ -54,7 +54,7 @@ function main() {
   if (!existsSync(defaultIscc)) {
     fail(`ISCC.exe not found at ${defaultIscc} (set KEEL_INNO_TOOLS or install per CLAUDE.md)`);
   }
-  const packageDir = path.join(repoRoot, 'out', 'Serpent-win32-x64');
+  const packageDir = path.join(repoRoot, 'out', 'Keel-win32-x64');
   if (!existsSync(packageDir)) {
     fail(`Packaged app not found: ${packageDir} (run npm run package first)`);
   }
@@ -65,7 +65,7 @@ function main() {
     defaultIscc,
     [
       `/DAppVersion=${version}`,
-      path.join(repoRoot, 'assets', 'inno', 'serpentsetup.iss'),
+      path.join(repoRoot, 'assets', 'inno', 'keelsetup.iss'),
     ],
     {
       cwd: repoRoot,
@@ -77,7 +77,7 @@ function main() {
     fail(`ISCC exited with ${String(result.status)} (${result.error?.message ?? 'see output above'})`);
   }
 
-  const setupExe = path.join(outDir, 'SerpentSetup.exe');
+  const setupExe = path.join(outDir, 'KeelSetup.exe');
   if (!existsSync(setupExe) || statSync(setupExe).size < 100 * 1024 * 1024) {
     fail(`Installer not produced or suspiciously small: ${setupExe}`);
   }

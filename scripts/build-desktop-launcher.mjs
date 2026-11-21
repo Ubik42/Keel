@@ -9,10 +9,10 @@ if (process.platform === 'win32') {
   const result = spawnSync(compiler, [
     '/nologo', '/target:winexe', '/codepage:65001', '/reference:System.Windows.Forms.dll',
     `/win32icon:${path.join(root, 'assets', 'icons', 'app.ico')}`,
-    `/out:${path.join(root, 'Start-Serpent.exe')}`,
+    `/out:${path.join(root, 'Start-Keel.exe')}`,
     path.join(root, 'tools', 'desktop-launcher', 'Launcher.cs'),
   ], { cwd: root, stdio: 'inherit', windowsHide: true });
   if (result.error) throw result.error;
-  if (result.status !== 0) throw new Error('Serpent desktop launcher compilation failed.');
-  process.stdout.write('Built console-free Start-Serpent.exe\n');
+  if (result.status !== 0) throw new Error('Keel desktop launcher compilation failed.');
+  process.stdout.write('Built console-free Start-Keel.exe\n');
 }

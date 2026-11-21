@@ -44,7 +44,7 @@ export function runNpmScript(scriptName, extraEnv = {}, pipelineEnv = {}) {
 }
 
 export function packageDirectoryName() {
-  return `Serpent-${process.platform}-${process.arch}`;
+  return `Keel-${process.platform}-${process.arch}`;
 }
 
 export function defaultPackageRoot() {
@@ -53,7 +53,7 @@ export function defaultPackageRoot() {
 
 export function resolvePackagedExecutable(packageRoot = defaultPackageRoot()) {
   if (process.platform === 'darwin') {
-    const executable = path.join(packageRoot, 'Serpent.app', 'Contents', 'MacOS', 'Serpent');
+    const executable = path.join(packageRoot, 'Keel.app', 'Contents', 'MacOS', 'Keel');
     if (!existsSync(executable)) {
       throw new Error(`Packaged executable not found: ${executable}`);
     }
@@ -61,7 +61,7 @@ export function resolvePackagedExecutable(packageRoot = defaultPackageRoot()) {
   }
 
   if (process.platform === 'win32') {
-    const executable = path.join(packageRoot, 'Serpent.exe');
+    const executable = path.join(packageRoot, 'Keel.exe');
     if (!existsSync(executable)) {
       throw new Error(`Packaged executable not found: ${executable}`);
     }
@@ -69,7 +69,7 @@ export function resolvePackagedExecutable(packageRoot = defaultPackageRoot()) {
   }
 
   if (process.platform === 'linux') {
-    const executable = path.join(packageRoot, 'Serpent');
+    const executable = path.join(packageRoot, 'Keel');
     if (!existsSync(executable)) {
       throw new Error(`Packaged executable not found: ${executable}`);
     }
@@ -114,7 +114,7 @@ export function writeChecksumManifest(files, outputPath, version = currentVersio
 
   writeFileSync(
     outputPath,
-    `# Serpent v${version} (${currentPlatformKey()})\n${lines.join('\n')}\n`,
+    `# Keel v${version} (${currentPlatformKey()})\n${lines.join('\n')}\n`,
     'utf8',
   );
   console.log(`Wrote checksum manifest: ${outputPath}`);

@@ -82,7 +82,7 @@ const config: ForgeConfig = {
       const mediaPlatform = nativeMediaPlatform(process.platform, process.arch);
       runNodeGate('scripts/media-binaries.mjs', ['ensure', '--platform', mediaPlatform]);
       runNodeGate('scripts/verify-package.mjs', [], {
-        KEEL_PACKAGE_ROOT: path.join(projectRoot, 'out', `Serpent-${mediaPlatform}`),
+        KEEL_PACKAGE_ROOT: path.join(projectRoot, 'out', `Keel-${mediaPlatform}`),
         KEEL_PACKAGE_PLATFORM: mediaPlatform,
       });
     },

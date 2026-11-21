@@ -11,7 +11,7 @@ node_modules/
 **/.vite/
 dist/
 out/
-/Start-Serpent.exe
+/Start-Keel.exe
 coverage/
 playwright-report/
 test-results/

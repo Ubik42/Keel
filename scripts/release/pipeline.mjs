@@ -182,8 +182,8 @@ function dockerAvailable() {
 /**
  * AppImage maker writes Serpent-<ver>-x86_64.AppImage or
  * Serpent-<ver>-aarch64.AppImage. Release uploads use the same naming contract
- * as macOS/Windows: Serpent-linux-x86-64-<ver>.AppImage or
- * Serpent-linux-arm64-<ver>.AppImage.
+ * as macOS/Windows: Keel-linux-x86-64-<ver>.AppImage or
+ * Keel-linux-arm64-<ver>.AppImage.
  */
 function finalizeLinuxAppImageArtifact() {
   const version = currentVersion();
@@ -191,7 +191,7 @@ function finalizeLinuxAppImageArtifact() {
   const releaseArch = process.arch === 'arm64' ? 'arm64' : 'x86-64';
   const appimageDir = path.join(repoRoot, 'out', 'make', 'appimage');
   const produced = path.join(appimageDir, `Serpent-${version}-${archLabel}.AppImage`);
-  const canonical = path.join(appimageDir, `Serpent-linux-${releaseArch}-${version}.AppImage`);
+  const canonical = path.join(appimageDir, `Keel-linux-${releaseArch}-${version}.AppImage`);
   if (!existsSync(produced)) {
     console.error(`[release:make] Expected AppImage at ${produced}`);
     process.exit(1);
