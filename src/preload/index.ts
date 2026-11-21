@@ -1,6 +1,5 @@
 import { contextBridge } from 'electron';
 
-import { appUpdate } from './bridge/app-update';
 import { automation } from './bridge/automation';
 import {
   armE2eBrowseSessionDelay,
@@ -62,7 +61,6 @@ contextBridge.exposeInMainWorld(
     shell,
     shortcuts,
     startup,
-    appUpdate,
     automation,
     mcp,
     plugins,

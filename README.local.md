@@ -59,7 +59,7 @@ npm run rebuild:native
 npm run package
 ```
 
-日常调试可使用 `npm start`；需要独立配置时设置 `SERPENT_USER_DATA_PATH` 为绝对路径，并设置 `SERPENT_DISTRIBUTION=development`。
+日常调试可使用 `npm start`；需要独立配置时设置 `SERPENT_USER_DATA_PATH` 为绝对路径。
 
 ## 验证
 

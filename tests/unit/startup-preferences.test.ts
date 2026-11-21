@@ -128,33 +128,11 @@ describe('startup preferences', () => {
     });
   });
 
-  it('does not present a window during update handoff or quit', () => {
-    expect(shouldShowMainWindowOnReady({
-      updateHandoff: false,
-      applicationQuitting: false,
-      e2eHideWindow: false,
-    })).toBe(true);
-    expect(shouldShowMainWindowOnReady({
-      updateHandoff: true,
-      applicationQuitting: false,
-      e2eHideWindow: false,
-    })).toBe(false);
-    expect(shouldShowMainWindowOnReady({
-      updateHandoff: false,
-      applicationQuitting: true,
-      e2eHideWindow: false,
-    })).toBe(false);
-    expect(shouldHandleSecondaryLaunch({
-      updateHandoff: false,
-      applicationQuitting: false,
-    })).toBe(true);
-    expect(shouldHandleSecondaryLaunch({
-      updateHandoff: true,
-      applicationQuitting: false,
-    })).toBe(false);
-    expect(shouldHandleSecondaryLaunch({
-      updateHandoff: false,
-      applicationQuitting: true,
-    })).toBe(false);
+  it('does not present a window while quitting', () => {
+    expect(shouldShowMainWindowOnReady({ applicationQuitting: false, e2eHideWindow: false })).toBe(true);
+    expect(shouldShowMainWindowOnReady({ applicationQuitting: true, e2eHideWindow: false })).toBe(false);
+    expect(shouldHandleSecondaryLaunch({ applicationQuitting: false })).toBe(true);
+    expect(shouldHandleSecondaryLaunch({ applicationQuitting: true })).toBe(false);
   });
+
 });

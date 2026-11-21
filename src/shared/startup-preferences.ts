@@ -86,19 +86,15 @@ export function loginItemRegistration(input: {
 }
 
 export function shouldShowMainWindowOnReady(input: {
-  updateHandoff: boolean;
   applicationQuitting: boolean;
   e2eHideWindow: boolean;
 }): boolean {
-  return !input.updateHandoff
-    && !input.applicationQuitting
-    && !input.e2eHideWindow;
+  return !input.applicationQuitting && !input.e2eHideWindow;
 }
 
 /** A second launch may reveal the existing window only while the app is staying up. */
 export function shouldHandleSecondaryLaunch(input: {
-  updateHandoff: boolean;
   applicationQuitting: boolean;
 }): boolean {
-  return !input.updateHandoff && !input.applicationQuitting;
+  return !input.applicationQuitting;
 }

@@ -318,12 +318,6 @@ import { shouldRefreshContentForLibraryChange } from "./library-change-refresh";
 import { AboutDialog } from "./AboutDialog";
 import { OpenSourceLicensesDialog } from "./OpenSourceLicensesDialog";
 import { playTaskCompletionSound } from "./task-completion-sound";
-import type {
-  AppUpdateCheckResult,
-  AppUpdateInstallResult,
-  AppUpdateProgress,
-  SerpentAppUpdateApi,
-} from "../shared/app-update";
 import { AppSettingsEntry } from "./AppSettingsEntry";
 import type { AppSettingsCategoryId } from "./app-settings-sections";
 import {
@@ -732,7 +726,6 @@ type RendererWindow = Window & {
   serpent?: {
     library?: SerpentLibraryApi;
     shell?: SerpentShellApi;
-    appUpdate?: SerpentAppUpdateApi;
     automation?: SerpentAutomationScriptApi;
     plugins?: SerpentPluginManagerApi;
     mcp?: SerpentMcpSettingsApi;
@@ -1899,11 +1892,6 @@ function AppInner() {
   const [automaticTaskEditorId,setAutomaticTaskEditorId]=useState<string|null|undefined>(undefined);
   const [scriptSandboxPreviewOpen, setScriptSandboxPreviewOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
-  const [appUpdateCheck, setAppUpdateCheck] = useState<AppUpdateCheckResult | null>(null);
-  const [appUpdateInstall, setAppUpdateInstall] = useState<AppUpdateInstallResult | null>(null);
-  const [appUpdateChecking, setAppUpdateChecking] = useState(false);
-  const [appUpdateInstalling, setAppUpdateInstalling] = useState(false);
-  const [appUpdateProgress, setAppUpdateProgress] = useState<AppUpdateProgress | null>(null);
   const [openSourceLicensesOpen, setOpenSourceLicensesOpen] = useState(false);
   const [librarySettingsOpen, setLibrarySettingsOpen] = useState(false);
   const [openSyncLibraryOpen, setOpenSyncLibraryOpen] = useState(false);
@@ -2137,57 +2125,9 @@ function AppInner() {
     setOpenLibraryChooserOpen(true);
   }
 
-  const appUpdateApi = (window as RendererWindow).serpent?.appUpdate;
-
-  useEffect(() => {
-    if (appUpdateApi?.onDownloadProgress === undefined) return undefined;
-    return appUpdateApi.onDownloadProgress((progress) => {
-      setAppUpdateProgress(progress);
-    });
-  }, [appUpdateApi]);
-
-  const checkForAppUpdates = useCallback(async (): Promise<void> => {
-    setAppUpdateChecking(true);
-    setAppUpdateCheck(null);
-    setAppUpdateInstall(null);
-    setAppUpdateProgress(null);
-    try {
-      const result = appUpdateApi === undefined
-        ? { ok: false as const, status: "error" as const, code: "service-unavailable" as const }
-        : await appUpdateApi.checkForUpdates();
-      setAppUpdateCheck(result);
-    } catch {
-      setAppUpdateCheck({ ok: false, status: "error", code: "network" });
-    } finally {
-      setAppUpdateChecking(false);
-    }
-  }, [appUpdateApi]);
-
-  const downloadAndInstallAppUpdate = useCallback(async (): Promise<void> => {
-    setAppUpdateInstalling(true);
-    setAppUpdateInstall(null);
-    setAppUpdateProgress(null);
-    try {
-      const result = appUpdateApi === undefined
-        ? { ok: false as const, status: "error" as const, code: "service-unavailable" as const }
-        : await appUpdateApi.downloadAndInstall();
-      setAppUpdateInstall(result);
-    } catch {
-      setAppUpdateInstall({ ok: false, status: "error", code: "download-failed" });
-    } finally {
-      setAppUpdateInstalling(false);
-      setAppUpdateProgress(null);
-    }
-  }, [appUpdateApi]);
-
-  const cancelAppUpdateDownload = useCallback((): void => {
-    appUpdateApi?.cancelDownload();
-  }, [appUpdateApi]);
-
   const openAbout = useCallback(() => {
     setAboutOpen(true);
-    void checkForAppUpdates();
-  }, [checkForAppUpdates]);
+  }, []);
 
   async function refreshAppLog(automationCorrelationId = appLogAutomationCorrelationId): Promise<void> {
     const bridge = (window as RendererWindow).serpent?.shell;
@@ -16943,23 +16883,10 @@ function AppInner() {
         open={aboutOpen}
         version={SERPENT_VERSION}
         onClose={() => setAboutOpen(false)}
-        updateCheck={appUpdateCheck}
-        updateInstall={appUpdateInstall}
-        updateChecking={appUpdateChecking}
-        updateInstalling={appUpdateInstalling}
-        updateProgress={appUpdateProgress}
-        onCheckForUpdates={() => void checkForAppUpdates()}
-        onDownloadAndInstall={() => void downloadAndInstallAppUpdate()}
-        onCancelDownload={cancelAppUpdateDownload}
         onOpenGitHub={() => {
           const bridge = (window as RendererWindow).serpent?.shell;
           if (!bridge?.openExternalUrl) return;
-          void bridge.openExternalUrl("https://github.com/dolag233/Serpent");
-        }}
-        onOpenReleaseNotes={(url) => {
-          const bridge = (window as RendererWindow).serpent?.shell;
-          if (!bridge?.openExternalUrl) return;
-          void bridge.openExternalUrl(url);
+          void bridge.openExternalUrl("https://github.com/Ubik42/Keel");
         }}
       />
       <OpenSourceLicensesDialog

@@ -20,14 +20,6 @@ export const ACTIVE_CONTEXT_CHANNEL = 'serpent:active-context' as const;
 /** Renderer → Main: effective UI locale for native dialogs (Serpent-bwb). */
 export const APP_LOCALE_CHANNEL = 'serpent:app-locale' as const;
 export const OPEN_EXTERNAL_URL_CHANNEL = 'serpent:shell:open-external-url' as const;
-/** Renderer → Main: inspect the latest public GitHub Release for Serpent. */
-export const APP_UPDATE_CHECK_CHANNEL = 'serpent:app-update:check' as const;
-/** Renderer → Main: download and open the verified update asset. */
-export const APP_UPDATE_INSTALL_CHANNEL = 'serpent:app-update:install' as const;
-/** Renderer → Main: cancel an in-flight update download. */
-export const APP_UPDATE_CANCEL_CHANNEL = 'serpent:app-update:cancel' as const;
-/** Main → Renderer: update download/install progress for the About dialog. */
-export const APP_UPDATE_PROGRESS_CHANNEL = 'serpent:app-update:progress' as const;
 /** Renderer → Main: read launch-at-login preferences. */
 export const SHORTCUT_BINDINGS_GET_CHANNEL = 'serpent:shortcuts:get' as const;
 export const SHORTCUT_BINDINGS_SET_CHANNEL = 'serpent:shortcuts:set' as const;

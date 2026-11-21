@@ -39,7 +39,6 @@ import {
 import { applyDevAppIcon, appIconImage } from "./app-icon";
 import { mcpFullAccessConfirmationCopy } from "./mcp-full-access-confirmation-copy";
 import { ArtifactPathCache } from "./artifact-path-cache";
-import { createWindowsInstallerCleanupInvocation } from "./windows-installer-cleanup";
 import { SourcePathCache, type SourcePathResolution } from "./source-path-cache";
 import {
   NativeAssetDragCache,
@@ -178,15 +177,6 @@ import {
   type AppLocale,
 } from "../shared/native-dialog-i18n";
 import {
-  createAppUpdateService,
-  type AppUpdateFetch,
-  type AppUpdateService,
-} from './app-update-service';
-import type {
-  AppUpdateCheckResult,
-  AppUpdateInstallResult,
-} from '../shared/app-update';
-import {
   applyStartupLoginItem,
   readStartupPreferences,
   startupPreferencesSnapshot as createStartupPreferencesSnapshot,
@@ -264,10 +254,6 @@ import {
   AI_COMPLETED_CHANNEL,
   AI_CLEARED_CHANNEL,
   OPEN_EXTERNAL_URL_CHANNEL,
-  APP_UPDATE_CHECK_CHANNEL,
-  APP_UPDATE_INSTALL_CHANNEL,
-  APP_UPDATE_CANCEL_CHANNEL,
-  APP_UPDATE_PROGRESS_CHANNEL,
   STARTUP_PREFERENCES_GET_CHANNEL,
   STARTUP_PREFERENCES_SET_CHANNEL,
   SHORTCUT_BINDINGS_EXPORT_CHANNEL,
@@ -582,18 +568,6 @@ if (process.env.SERPENT_E2E === "1") {
       ? explicitUserDataPath
       : path.join(tmpdir(), "serpent-e2e-user-data", String(process.pid)),
   );
-  if (process.env.SERPENT_E2E_APP_UPDATE_FIXTURE === "1") {
-    for (const [pathName, environmentName] of [
-      ["downloads", "SERPENT_E2E_DOWNLOADS_PATH"],
-      ["temp", "SERPENT_E2E_TEMP_PATH"],
-    ] as const) {
-      const configuredPath = process.env[environmentName];
-      if (configuredPath && path.isAbsolute(configuredPath)) {
-        mkdirSync(configuredPath, { recursive: true });
-        app.setPath(pathName, configuredPath);
-      }
-    }
-  }
 }
 
 // Dev multi-instance (Serpent-i6xg): isolate userData so SingletonLock / prefs
@@ -885,13 +859,10 @@ let offscreenThumbnailRenderer: OffscreenThumbnailRenderer | undefined;
 let quitAfterShutdown = false;
 let applicationQuitting = false;
 let applicationShutdownPromise: Promise<void> | null = null;
-let updateHandoff = false;
 let startupComplete = false;
-const UPDATE_HANDOFF_EXIT_MS = 8_000;
 let logger: AppLogger | undefined;
 const VIEWER_TIMING_LOG = process.env.SERPENT_VIEWER_TIMING_LOG === "1";
 let appLogPath: string | undefined;
-let appUpdateService: AppUpdateService | undefined;
 let automationExecutionJournal: AutomationExecutionJournal | undefined;
 let embeddedMcpServer: EmbeddedMcpServer | undefined;
 let embeddedMcpInitializationFailure: McpCredentialStoreError | undefined;
@@ -1832,34 +1803,6 @@ function releaseLoopbackListeners(): Promise<void> {
   return loopbackRelease;
 }
 
-function beginUpdateHandoff(): void {
-  if (updateHandoff) return;
-  updateHandoff = true;
-  applicationQuitting = true;
-  for (const window of BrowserWindow.getAllWindows()) {
-    if (!window.isDestroyed()) window.hide();
-  }
-  if (process.platform === "darwin") app.hide();
-  void releaseLoopbackListeners();
-  const exitTimer = setTimeout(() => {
-    app.exit(0);
-  }, UPDATE_HANDOFF_EXIT_MS);
-  exitTimer.unref();
-}
-
-function suppressWindowDuringUpdateHandoff(window: BrowserWindow): void {
-  if (shouldHandleSecondaryLaunch({ updateHandoff, applicationQuitting })) return;
-  if (!window.isDestroyed()) window.hide();
-  window.once("ready-to-show", () => {
-    if (
-      !window.isDestroyed()
-      && !shouldHandleSecondaryLaunch({ updateHandoff, applicationQuitting })
-    ) {
-      window.hide();
-    }
-  });
-}
-
 function startupPreferencesPath(): string {
   return startupPreferencesFilePath(app.getPath("userData"));
 }
@@ -2101,14 +2044,14 @@ function storeStartupPreferences(input: unknown): StartupPreferencesSnapshot {
 }
 
 function handleSecondInstance(): void {
-  if (!shouldHandleSecondaryLaunch({ updateHandoff, applicationQuitting })) return;
+  if (!shouldHandleSecondaryLaunch({ applicationQuitting })) return;
   // A second launch while Vite is preparing its first module graph must not
   // reload the still-loading window and reset its mount deadline.
   focusMainWindow();
 }
 
 function focusSerpentWindow(windowId?: number): boolean {
-  if (!shouldHandleSecondaryLaunch({ updateHandoff, applicationQuitting })) return false;
+  if (!shouldHandleSecondaryLaunch({ applicationQuitting })) return false;
   const target =
     windowId === undefined
       ? mainWindow
@@ -2254,7 +2197,6 @@ async function createMainWindow(): Promise<void> {
     const e2eShowInactive = process.env.SERPENT_E2E === "1"
       && process.env.SERPENT_E2E_SHOW_INACTIVE === "1";
     if (shouldShowMainWindowOnReady({
-      updateHandoff,
       applicationQuitting,
       e2eHideWindow: process.env.SERPENT_E2E === "1"
         && process.env.SERPENT_E2E_HIDE_WINDOW === "1"
@@ -4657,116 +4599,6 @@ async function normalizeMcpCommandInput(input: {
   return input.commandInput;
 }
 
-/**
- * A Windows installer keeps its executable locked while it is running, and
- * the main process exits immediately after handing it off. A detached hidden
- * PowerShell worker removes the installer directory after setup releases it.
- * The path is generated by the update service under the OS temp directory.
- */
-async function scheduleWindowsInstallerCleanup(
-  installerPath: string,
-  installerPid: number,
-): Promise<void> {
-  if (process.platform !== "win32") return;
-  const cleanup = createWindowsInstallerCleanupInvocation({
-    installerPath,
-    installerPid,
-    logPath: appLogPath,
-  });
-  const spawnOptions = {
-    detached: true,
-    stdio: "ignore" as const,
-    windowsHide: true,
-    env: cleanup.env,
-  };
-  try {
-    const cleanupProcess = spawn(
-      cleanup.executable,
-      cleanup.args,
-      spawnOptions,
-    );
-    await new Promise<void>((resolve, reject) => {
-      const handleSpawnError = (error: Error) => {
-        cleanupProcess.off("spawn", handleSpawn);
-        reject(error);
-      };
-      const handleSpawn = () => {
-        cleanupProcess.off("error", handleSpawnError);
-        resolve();
-      };
-      cleanupProcess.once("error", handleSpawnError);
-      cleanupProcess.once("spawn", handleSpawn);
-    });
-    cleanupProcess.once("error", (error) => {
-      logger?.error("app-update.cleanup", error, {
-        artifactKind: "windows-installer-cleanup",
-      });
-    });
-    cleanupProcess.unref();
-
-    if (
-      process.env.SERPENT_E2E === "1"
-      && process.env.SERPENT_E2E_APP_UPDATE_FIXTURE === "1"
-      && process.env.SERPENT_E2E_APP_UPDATE_SPAWN_LOG
-    ) {
-      try {
-        appendFileSync(
-          process.env.SERPENT_E2E_APP_UPDATE_SPAWN_LOG,
-          `${JSON.stringify({
-            executable: cleanup.executable,
-            args: cleanup.args,
-            installerPath: cleanup.env.SERPENT_UPDATE_CLEANUP_INSTALLER,
-            ...spawnOptions,
-            env: undefined,
-            spawned: true,
-            pid: cleanupProcess.pid,
-          })}\n`,
-          "utf8",
-        );
-      } catch {
-        // Test instrumentation must not interfere with handing off an installer.
-      }
-    }
-  } catch (error) {
-    logger?.error("app-update.cleanup", error, {
-      artifactKind: "windows-installer-cleanup",
-    });
-    throw error;
-  }
-}
-
-function createAppUpdateE2eFetch(): AppUpdateFetch | undefined {
-  if (
-    process.env.SERPENT_E2E !== "1"
-    || process.env.SERPENT_E2E_APP_UPDATE_FIXTURE !== "1"
-  ) return undefined;
-  const releasePath = process.env.SERPENT_E2E_UPDATE_RELEASE;
-  const archivePath = process.env.SERPENT_E2E_UPDATE_ARCHIVE;
-  const assetUrl = process.env.SERPENT_E2E_UPDATE_ASSET_URL;
-  if (
-    !releasePath || !path.isAbsolute(releasePath)
-    || !archivePath || !path.isAbsolute(archivePath)
-    || !assetUrl
-  ) return undefined;
-
-  const releaseApiUrl = "https://api.github.com/repos/dolag233/Serpent/releases/latest";
-  return async (input) => {
-    if (input === releaseApiUrl) {
-      return new Response(await readFile(releasePath), {
-        status: 200,
-        headers: { "content-type": "application/json" },
-      });
-    }
-    if (input === assetUrl) {
-      return new Response(await readFile(archivePath), {
-        status: 200,
-        headers: { "content-type": "application/octet-stream" },
-      });
-    }
-    return new Response(null, { status: 404 });
-  };
-}
-
 async function startApplication(): Promise<void> {
   // Serpent-tluf: the macOS About panel is customized here (ready-late is
   // fine for it); app.setName lives at module top level so the application
@@ -4794,63 +4626,6 @@ async function startApplication(): Promise<void> {
   logger = new AppLogger(appLogPath);
   bindRendererKeyboardFocusLogger(logger);
   void sweepOrphanExternalLibraryStagingOnStartup();
-  appUpdateService = createAppUpdateService({
-    currentVersion: app.getVersion(),
-    isPackaged: app.isPackaged,
-    platform: process.platform,
-    arch: process.arch,
-    executablePath: app.getPath('exe'),
-    tempDirectory: app.getPath('temp'),
-    downloadsDirectory: app.getPath('downloads'),
-    environment: process.env,
-    fetchImpl: createAppUpdateE2eFetch(),
-    openPath: (filePath) => shell.openPath(filePath),
-    showItemInFolder: (filePath) => shell.showItemInFolder(filePath),
-    launchInstaller: async (installerPath) => {
-      if (process.platform === 'win32') {
-        if (
-          process.env.SERPENT_E2E === "1"
-          && process.env.SERPENT_E2E_APP_UPDATE_FIXTURE === "1"
-        ) {
-          // Keep the real updater download, extraction, cleanup worker and app
-          // quit path; only the inert fixture installer process is simulated.
-          await scheduleWindowsInstallerCleanup(installerPath, 730241);
-        } else {
-          const installer = spawn(installerPath, [], {
-            detached: true,
-            stdio: 'ignore',
-            windowsHide: true,
-          });
-          await new Promise<void>((resolve, reject) => {
-            const handleSpawnError = (error: Error) => reject(error);
-            installer.once('error', handleSpawnError);
-            installer.once('spawn', async () => {
-              installer.off('error', handleSpawnError);
-              if (installer.pid === undefined) {
-                reject(new Error('The Windows installer process has no process ID.'));
-                return;
-              }
-              installer.unref();
-              try {
-                await scheduleWindowsInstallerCleanup(installerPath, installer.pid);
-                resolve();
-              } catch (error) {
-                reject(error);
-              }
-            });
-          });
-        }
-      } else {
-        const openError = await shell.openPath(installerPath);
-        if (openError !== '') throw new Error(openError);
-      }
-      beginUpdateHandoff();
-    },
-    onDownloadProgress: (progress) => {
-      mainWindow?.webContents.send(APP_UPDATE_PROGRESS_CHANNEL, progress);
-    },
-    logger,
-  });
   // Serpent-wgmy: 会话日志最多保留最近 100 份，启动时清理最旧；
   // 清理失败不得阻断启动。
   try {
@@ -7077,55 +6852,6 @@ async function startApplication(): Promise<void> {
     }
   });
 
-  ipcMain.handle(
-    APP_UPDATE_CHECK_CHANNEL,
-    async (event): Promise<AppUpdateCheckResult> => {
-      if (!mainWindow || event.sender !== mainWindow.webContents) {
-        logger?.info('ipc.app-update', 'Rejected update check request.', {
-          code: 'unauthorized-sender',
-        });
-        return { ok: false, status: 'error', code: 'unauthorized-sender' };
-      }
-      if (appUpdateService === undefined) {
-        return { ok: false, status: 'error', code: 'service-unavailable' };
-      }
-      return appUpdateService.checkForUpdates();
-    },
-  );
-
-  ipcMain.handle(
-    APP_UPDATE_INSTALL_CHANNEL,
-    async (event): Promise<AppUpdateInstallResult> => {
-      if (!mainWindow || event.sender !== mainWindow.webContents) {
-        logger?.info('ipc.app-update', 'Rejected update install request.', {
-          code: 'unauthorized-sender',
-        });
-        return { ok: false, status: 'error', code: 'unauthorized-sender' };
-      }
-      if (appUpdateService === undefined) {
-        return { ok: false, status: 'error', code: 'service-unavailable' };
-      }
-      const result = await appUpdateService.downloadAndInstall();
-      if (result.ok && result.action === 'installer-opened') {
-        beginUpdateHandoff();
-        setImmediate(() => {
-          app.quit();
-        });
-      }
-      return result;
-    },
-  );
-
-  ipcMain.on(APP_UPDATE_CANCEL_CHANNEL, (event) => {
-    if (!mainWindow || event.sender !== mainWindow.webContents) {
-      logger?.info('ipc.app-update', 'Rejected update cancel request.', {
-        code: 'unauthorized-sender',
-      });
-      return;
-    }
-    appUpdateService?.cancelDownload();
-  });
-
   // 渲染进程请求在系统浏览器打开外部链接（检查器「源链接」跳转）。
   // 发送者与 URL 双重校验，仅放行不含凭据的 HTTP(S)。失败回传公开错误码；日志不含 URL。
   ipcMain.handle(
@@ -7486,10 +7212,6 @@ app.setName("Serpent");
 if (!hasSingleInstanceLock) {
   app.quit();
 } else {
-  app.on("browser-window-created", (_event, window) => {
-    suppressWindowDuringUpdateHandoff(window);
-  });
-
   app.on("second-instance", handleSecondInstance);
 
   app
@@ -7505,7 +7227,7 @@ if (!hasSingleInstanceLock) {
     });
 
   app.on("activate", () => {
-    if (!shouldHandleSecondaryLaunch({ updateHandoff, applicationQuitting })) return;
+    if (!shouldHandleSecondaryLaunch({ applicationQuitting })) return;
     if (!startupComplete) return;
     if (BrowserWindow.getAllWindows().length === 0) void createMainWindow();
     else focusMainWindow();
