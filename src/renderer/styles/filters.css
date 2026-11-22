@@ -12,9 +12,6 @@
 }
 
 .scope-trace {
-  display: flex;
-  align-items: center;
-  min-width: 0;
   height: 100%;
 }
 
@@ -1666,11 +1663,6 @@
   font-family: var(--ui-font-ui);
 }
 
-.dimension-filter-btn,
-.discovery-filters > summary {
-  border-radius: var(--ui-radius-control);
-}
-
 /* Search: restrained field, not pill / halo */
 
 .search-control-wrap {
@@ -1696,10 +1688,8 @@
 
 .dimension-filter-btn,
 .discovery-filters > summary {
-  border-radius: var(--ui-radius-control);
   border-color: var(--ui-border-subtle);
   background: transparent;
-  font-weight: 500;
 }
 
 .dimension-filter-btn:hover:not(:disabled):not(.is-active),
@@ -1721,11 +1711,6 @@
   box-shadow: none;
 }
 
-.dimension-filter-btn,
-.discovery-filters > summary {
-  border-radius: var(--ui-radius-control);
-}
-
 .dimension-filter-btn:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
@@ -1734,6 +1719,8 @@
 
 .dimension-filter-btn,
 .discovery-filters > summary {
+  font-weight: 500;
+  border-radius: var(--ui-radius-control);
   min-height: 28px;
   padding-inline: 10px;
 }
@@ -1777,11 +1764,8 @@
   gap: 5px;
   min-height: 22px;
   padding: 0 8px 0 9px;
-  border: 0;
   font-size: calc(11.5px * var(--ui-font-scale));
   font-weight: 480;
-  line-height: 22px;
-  letter-spacing: -0.005em;
 }
 
 .app-shell.app-shell .dimension-active-chip:not(.is-clear-all):hover {
@@ -1835,19 +1819,12 @@
   box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--ui-content-primary) 18%, transparent);
 }
 
-.app-shell.app-shell .dimension-active-chip:not(.is-clear-all) {
-  background: var(--island-surface-soft);
-  color: var(--ui-content-secondary);
-  box-shadow: none;
-}
-
 .app-shell.app-shell .workspace-title .scope-crumb-label.is-current {
   font-size: calc(13px * var(--ui-font-scale));
   font-weight: 600;
 }
 
 .app-shell.app-shell .dimension-filter-dims {
-  gap: 1px;
   padding: 2px;
   border-radius: calc(7px * var(--ui-radius-scale, 1));
   background: var(--island-segment-track);
@@ -1892,19 +1869,16 @@
 }
 
 .app-shell.app-shell .dimension-active-chip:not(.is-clear-all) {
+  line-height: 22px;
+  letter-spacing: -0.005em;
   background: var(--island-surface-soft);
   color: var(--ui-content-secondary);
   box-shadow: none;
-}
-
-.app-shell.app-shell .dimension-active-chip:not(.is-clear-all) {
   border: var(--island-hairline-w) solid var(--ui-island-hairline);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
 }
 
 .app-shell.app-shell .filter-tag-chip {
-  --tag-hairline: 28%;
-  --tag-hairline-hover: 36%;
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -1913,7 +1887,6 @@
   background: transparent !important;
   box-shadow: none !important;
   padding: 0 var(--tag-tip-w) 0 8px;
-  height: 22px;
   min-height: 22px;
   line-height: 1;
 }
@@ -1921,7 +1894,6 @@
 .app-shell.app-shell .filter-tag-chip::before {
   content: "";
   position: absolute;
-  inset: 0;
   background: var(--tag-chip-fill);
   z-index: 0;
 }
@@ -1988,6 +1960,7 @@
 }
 
 .app-shell.app-shell .dimension-filter-dims {
+  gap: 1px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -2044,21 +2017,15 @@
 }
 
 .app-shell.app-shell .filter-tag-chip {
+  --tag-hairline: 28%;
+  --tag-hairline-hover: 36%;
   --tag-tip-w: 16px;
   --tag-base: white;
   --tag-neutral: color-mix(in oklab, black 55%, white);
   --tag-fill-tint: 9%;
   --tag-fill-tint-hover: 13%;
-  --tag-fill-solid: color-mix(
-    in oklab,
-    var(--tag-chip-color, var(--tag-neutral)) var(--tag-fill-tint),
-    var(--tag-base)
-  );
   --tag-chip-fill: var(--tag-fill-solid);
   filter: drop-shadow(0 0 0.5px rgb(0 0 0 / 22%));
-}
-
-.app-shell.app-shell .filter-tag-chip {
   --tag-fill-solid: color-mix(in oklab, var(--tag-neutral) var(--tag-fill-tint), var(--tag-base));
 }
 
@@ -2092,6 +2059,7 @@
 }
 
 .app-shell.app-shell .filter-tag-chip::before {
+  inset: 0;
   pointer-events: none;
   -webkit-mask-box-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2780%27%20height%3D%2722%27%20viewBox%3D%270%200%2080%2022%27%3E%3Cpath%20fill%3D%27black%27%20d%3D%27M6%200H66.35A6%206%200%200%201%2070.79%201.96L77.47%209.32A2.5%202.5%200%200%201%2077.47%2012.68L70.79%2020.04A6%206%200%200%201%2066.35%2022H6A6%206%200%200%201%200%2016V6A6%206%200%200%201%206%200Z%27%2F%3E%3C%2Fsvg%3E") 0 16 0 6 fill / 0 var(--tag-tip-w) 0 6px / 0 stretch;
   mask-border: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2780%27%20height%3D%2722%27%20viewBox%3D%270%200%2080%2022%27%3E%3Cpath%20fill%3D%27black%27%20d%3D%27M6%200H66.35A6%206%200%200%201%2070.79%201.96L77.47%209.32A2.5%202.5%200%200%201%2077.47%2012.68L70.79%2020.04A6%206%200%200%201%2066.35%2022H6A6%206%200%200%201%200%2016V6A6%206%200%200%201%206%200Z%27%2F%3E%3C%2Fsvg%3E") 0 16 0 6 fill / 0 var(--tag-tip-w) 0 6px / 0 stretch;

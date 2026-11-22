@@ -105,18 +105,15 @@
   box-shadow: var(--ui-shadow-toolbar);
 }
 
-.toolbar-cluster {
-  display: flex;
-  align-items: center;
-  min-width: 0;
-  height: 100%;
-}
-
 /* 28px chrome must sit on the geometric midline of the 44px bar. A cluster
    line-height > 1 adds an inline strut that lifts icon buttons and the
    library name above the search field. */
 
 .toolbar-cluster {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  height: 100%;
   line-height: 1;
 }
 
@@ -265,7 +262,6 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 /* Quiet separator so captions read as chrome, not another toolbar cluster. */
 
 .windows-window-controls::before {
-  content: "";
   align-self: center;
   pointer-events: none;
 }
@@ -386,7 +382,6 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   padding: 0;
   place-items: center;
   border: 1px solid transparent;
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
   background: transparent;
   color: var(--ui-content-secondary);
   cursor: pointer;
@@ -1041,7 +1036,6 @@ body.keel-modal-open .app-shell {
 
 .workspace-canvas {
   position: relative;
-  user-select: none;
 }
 
 .workspace-canvas.is-restoring {
@@ -1384,10 +1378,6 @@ body.keel-modal-open .app-shell {
 
 /* --- Quiet control geometry --- */
 
-.tool-button {
-  border-radius: var(--ui-radius-control);
-}
-
 /* --- Title bar: flat strip + hairline --- */
 
 .app-toolbar {
@@ -1413,6 +1403,7 @@ body.keel-modal-open .app-shell {
 }
 
 .windows-window-controls::before {
+  content: "";
   width: 1px;
   height: 14px;
   margin-right: 2px;
@@ -1421,6 +1412,7 @@ body.keel-modal-open .app-shell {
 }
 
 .workspace-canvas {
+  user-select: none;
   background: var(--ui-canvas);
 }
 
@@ -1550,7 +1542,6 @@ html.keel-window-square .window-edge-resize-layer.is-disabled {
 .app-shell.app-shell > .app-toolbar {
   border-bottom-color: transparent;
   background: transparent;
-  box-shadow: none;
 }
 
 /* Title-bar controls align to island edges (grid columns are full-bleed;
@@ -1581,9 +1572,6 @@ html.keel-window-square .window-edge-resize-layer.is-disabled {
 .app-shell.app-shell .toolbar-workspace-search {
   height: var(--ui-shell-control-height);
   align-self: center;
-}
-
-.app-shell.app-shell .toolbar-workspace-search {
   margin-left: auto;
 }
 
@@ -1611,10 +1599,6 @@ html.keel-window-square .window-edge-resize-layer.is-disabled {
 
 /* ---- Canvas toolstrip (inside island) — Photos-like unified chrome ------ */
 
-.app-shell.app-shell .workspace-toolstrip {
-  flex: 0 0 auto;
-}
-
 .app-shell.app-shell .workspace-toolstrip.is-viewing {
   display: none;
 }
@@ -1639,6 +1623,7 @@ html.keel-window-square .window-edge-resize-layer.is-disabled {
    toolbar row must stack above the workspace island for that to work. */
 
 .app-shell.app-shell > .app-toolbar {
+  box-shadow: none;
   position: relative;
   z-index: 3;
 }
@@ -1752,7 +1737,6 @@ html.keel-window-square .window-edge-resize-layer.is-disabled {
 
 .app-shell.app-shell .workspace-canvas {
   background: var(--island-canvas);
-  scrollbar-gutter: stable both-edges;
 }
 
 /* 4) Card-content display toggles: secondary muted wash, never loud accent */
@@ -1781,7 +1765,6 @@ html.keel-window-square .window-edge-resize-layer.is-disabled {
 
 .app-shell.app-shell > .workspace {
   border: var(--island-hairline-w) solid var(--island-border);
-  border-radius: var(--ui-island-radius);
   box-shadow: none;
 }
 
@@ -1866,13 +1849,10 @@ html.keel-window-square .window-edge-resize-layer.is-disabled {
 }
 
 .app-shell.app-shell .workspace-canvas {
+  scrollbar-gutter: stable both-edges;
   padding: 10px 8px 18px;
   /* Keep a little top air so a 1px selection stroke is not chewed by the toolstrip seam */
   padding-top: 10px;
-}
-
-.app-shell.app-shell > .workspace {
-  margin: 0 var(--ui-island-gap) var(--ui-island-gap);
 }
 
 html.keel-window-square {
@@ -1885,10 +1865,6 @@ html.keel-window-square {
 
 /* Collapsed panes leave the remaining outer corner to the neighbor. */
 
-.app-shell.app-shell.left-collapsed > .workspace {
-  border-bottom-left-radius: var(--ui-window-corner-radius);
-}
-
 .app-shell.app-shell > .workspace {
   margin: 0 var(--ui-island-gap) var(--island-outer-gap);
 }
@@ -1896,6 +1872,7 @@ html.keel-window-square {
 /* Collapsed: workspace picks up the freed outer edge. */
 
 .app-shell.app-shell.left-collapsed > .workspace {
+  border-bottom-left-radius: var(--ui-window-corner-radius);
   margin-left: var(--island-outer-gap);
 }
 
@@ -1951,6 +1928,7 @@ html.keel-window-square {
    Always: row1 = workspace-bar (title/tools), row2 = workspace-discovery. */
 
 .app-shell.app-shell .workspace-toolstrip {
+  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;

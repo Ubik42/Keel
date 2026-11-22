@@ -881,16 +881,13 @@
    position:absolute 覆盖。字体查看器控件多，改为在流内居中并允许换行，
    否则窄窗口下 B/I/U 会被挤出可视区而点不到。 */
 
-.preview-zoom-controls.font-viewer-controls {
-  align-self: center;
-  gap: 8px;
-}
-
 /* 工具条上图标、输入框、下拉、滑杆、按钮的行高/内边距各不相同，曾出现看起来
    没对齐（2026-09-19 反馈）。这里统一 24px 高并显式居中，让所有控件共用同一条
    中心线；E2E 会量各控件的竖直中心并要求偏差 <= 1px。 */
 
 .preview-zoom-controls.font-viewer-controls {
+  align-self: center;
+  gap: 8px;
   position: static;
   flex-wrap: wrap;
   justify-content: center;
@@ -1209,7 +1206,6 @@
 .preview-nav:hover:not(:disabled),
 .preview-nav:focus-visible:not(:disabled) {
   color: inherit;
-  outline: none;
 }
 
 .preview-nav:disabled {
@@ -1568,6 +1564,7 @@
 
 .preview-nav:hover:not(:disabled),
 .preview-nav:focus-visible:not(:disabled) {
+  outline: none;
   background: transparent;
   box-shadow: none;
   opacity: 1;

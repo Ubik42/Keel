@@ -1,13 +1,5 @@
 /* dialogs: rules whose subject element belongs to this area (P5). */
 
-.dialog-close {
-  transition:
-    background-color 120ms ease,
-    border-color 120ms ease,
-    color 120ms ease,
-    box-shadow 120ms ease;
-}
-
 .create-dialog-existing-label {
   margin-bottom: 8px;
   color: var(--ui-content-secondary);
@@ -22,7 +14,6 @@
   gap: 2px;
   margin: 0;
   padding: 0;
-  list-style: none;
   /* Serpent-s0oq: at most five rows visible; the rest scroll. */
   max-height: 210px;
   overflow-y: auto;
@@ -121,6 +112,7 @@
 }
 
 .create-dialog-recent-list {
+  list-style: none;
   margin-top: 4px;
 }
 
@@ -541,6 +533,11 @@
 }
 
 .dialog-close {
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease,
+    box-shadow 120ms ease;
   display: grid;
   width: 28px;
   height: 28px;

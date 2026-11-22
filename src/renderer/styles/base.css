@@ -510,15 +510,11 @@ input[type="range"] {
    Info. Scoped to .app-shell. Import/drop stays on-dev. */
 
 :root {
-  --ui-island-gap: 12px;
-  --ui-island-radius: calc(22px * var(--ui-radius-scale, 1));
   --island-backdrop: color-mix(in srgb, var(--ui-surface-pane) 82%, var(--ui-surface-raised));
   --island-border: rgb(0 0 0 / 5%);
   --ui-island-shadow: 0 1px 2px rgb(0 0 0 / 4%), 0 4px 16px -6px rgb(0 0 0 / 8%);
   --island-select: color-mix(in srgb, var(--accent) 16%, transparent);
   --ui-island-hairline: rgb(0 0 0 / 6%);
-  --ui-island-group-gap: 20px;
-  --ui-island-card-radius: calc(14px * var(--ui-radius-scale, 1));
   --ui-island-toolstrip-bg: color-mix(in srgb, var(--ui-surface-raised) 72%, transparent);
   /* Opaque equivalent of the toolstrip over the canvas island: the active tab
      must be exactly this so it fuses with the toolstrip it attaches to. */
@@ -569,18 +565,8 @@ input[type="range"] {
   --ui-island-shadow: none;
 
   /* Stronger surface ladder: deep backdrop → opaque sides → bright canvas */
-  --island-surface-soft: color-mix(in srgb, var(--ui-surface-raised) 90%, var(--ui-content-primary));
-  --island-surface-recess: color-mix(in srgb, var(--ui-content-primary) 6%, var(--ui-surface-raised));
 
-  /* Accent almost only on selection + applied filters */
-  --island-accent-soft: var(--ui-content-secondary); /* demote soft accent → ink secondary */
-  --island-select: color-mix(in srgb, var(--ui-content-primary) 7%, transparent); /* NAV: neutral, not accent */
-  --island-pressed-wash: color-mix(in srgb, var(--ui-content-primary) 7%, transparent);
-  --island-hover-wash: color-mix(in srgb, var(--ui-content-primary) 4%, transparent);
-
-  --island-segment-track: var(--island-surface-recess);
-  --island-segment-hover: color-mix(in srgb, var(--ui-content-primary) 6%, transparent);
-  --island-segment-pill: var(--ui-surface-raised);
+  /* Accent almost only on selection + applied filters */ /* demote soft accent → ink secondary */ /* NAV: neutral, not accent */
 }
 
 :root[data-theme="dark"] .app-shell.app-shell {
@@ -609,9 +595,6 @@ input[type="range"] {
 
 .app-shell.app-shell {
   /* 1) Backdrop toward pane; canvas closer to sides */
-  --island-canvas: color-mix(in srgb, var(--ui-surface-raised) 45%, var(--ui-surface-pane));
-  --ui-island-toolstrip-bg: color-mix(in srgb, var(--ui-surface-pane) 70%, var(--island-canvas));
-  --ui-island-tab-fill: var(--ui-island-toolstrip-bg);
 }
 
 /* ==== a72: soften border presence ========================================
@@ -619,10 +602,7 @@ input[type="range"] {
    Punchy accents (a70) and tag silhouette (a65–a67) unchanged. */
 
 .app-shell.app-shell {
-  --island-border: color-mix(in srgb, var(--ui-content-primary) 6%, transparent);
-  --ui-island-hairline: color-mix(in srgb, var(--ui-content-primary) 4%, transparent);
   /* Tab stroke follows quieter border */
-  --island-tab-stroke: color-mix(in srgb, var(--island-border) 45%, var(--island-backdrop));
 }
 
 /* ==== a76: soften accent-soft button fills ================================
@@ -636,6 +616,10 @@ input[type="range"] {
    Maximized/square windows zero the outer radius. */
 
 :root {
+  --ui-island-gap: 12px;
+  --ui-island-radius: calc(22px * var(--ui-radius-scale, 1));
+  --ui-island-group-gap: 20px;
+  --ui-island-card-radius: calc(14px * var(--ui-radius-scale, 1));
   --ui-font-emoji:
     "Segoe UI Emoji",
     "Segoe UI Symbol",
@@ -716,11 +700,6 @@ input[type="range"] {
    small step (was ≈4 L* light / ≈3 L* dark; vscode & onedark dark were ~0
    or inverted). Now ≈ +1.5–2 L* more separation. */
 
-.app-shell.app-shell {
-  --island-backdrop: color-mix(in oklab, var(--ui-surface-pane) 95%, black);
-  background-color: var(--island-backdrop);
-}
-
 /* ==== a86: asset card drop shadow (Elevation shadows) ======================
    Scales with --ui-elev-size / --ui-elev-intensity; none at data-elevation="0".
    Smaller than the island shadow. Many later blocks reset card box-shadow to
@@ -733,6 +712,24 @@ input[type="range"] {
    layout / marquee hit-testing stable). */
 
 .app-shell.app-shell {
+  --island-surface-soft: color-mix(in srgb, var(--ui-surface-raised) 90%, var(--ui-content-primary));
+  --island-surface-recess: color-mix(in srgb, var(--ui-content-primary) 6%, var(--ui-surface-raised));
+  --island-accent-soft: var(--ui-content-secondary);
+  --island-select: color-mix(in srgb, var(--ui-content-primary) 7%, transparent);
+  --island-pressed-wash: color-mix(in srgb, var(--ui-content-primary) 7%, transparent);
+  --island-hover-wash: color-mix(in srgb, var(--ui-content-primary) 4%, transparent);
+
+  --island-segment-track: var(--island-surface-recess);
+  --island-segment-hover: color-mix(in srgb, var(--ui-content-primary) 6%, transparent);
+  --island-segment-pill: var(--ui-surface-raised);
+  --island-canvas: color-mix(in srgb, var(--ui-surface-raised) 45%, var(--ui-surface-pane));
+  --ui-island-toolstrip-bg: color-mix(in srgb, var(--ui-surface-pane) 70%, var(--island-canvas));
+  --ui-island-tab-fill: var(--ui-island-toolstrip-bg);
+  --island-border: color-mix(in srgb, var(--ui-content-primary) 6%, transparent);
+  --ui-island-hairline: color-mix(in srgb, var(--ui-content-primary) 4%, transparent);
+  --island-tab-stroke: color-mix(in srgb, var(--island-border) 45%, var(--island-backdrop));
+  --island-backdrop: color-mix(in oklab, var(--ui-surface-pane) 95%, black);
+  background-color: var(--island-backdrop);
   --ui-island-radius: calc(16px * var(--ui-radius-scale, 1));
   --ui-island-card-radius: calc(10px * var(--ui-radius-scale, 1));
   --ui-island-group-gap: 12px;

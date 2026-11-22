@@ -117,7 +117,6 @@
 .tiny-action {
   display: grid;
   padding: 0;
-  place-items: center;
   border: 0;
   background: transparent;
   cursor: pointer;
@@ -938,13 +937,6 @@
 }
 
 .tiny-action {
-  border-radius: var(--ui-radius-control);
-}
-
-.tiny-action {
-  width: 22px;
-  height: 22px;
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
   color: var(--ui-content-tertiary);
 }
 
@@ -973,6 +965,9 @@
 }
 
 .tiny-action {
+  place-items: center;
+  width: 22px;
+  height: 22px;
   border-radius: var(--ui-radius-control);
 }
 
@@ -993,20 +988,6 @@
 
 .app-shell.app-shell .inspector-content .micro-label {
   font-family: var(--ui-font-ui);
-}
-
-.app-shell.app-shell .inspector-empty > .icon {
-  box-sizing: content-box;
-  padding: 10px;
-  margin-bottom: 12px;
-  border: 1px solid var(--ui-border-subtle);
-  border-radius: calc(10px * var(--ui-radius-scale, 1));
-  background: var(--ui-surface-raised);
-  color: var(--ui-content-tertiary);
-}
-
-.app-shell.app-shell .inspector-empty > .icon {
-  color: var(--ui-content-tertiary);
 }
 
 .app-shell.app-shell .workspace-toolstrip .tool-button.is-active:not(.is-accent) .icon,
@@ -1032,6 +1013,11 @@
 }
 
 .app-shell.app-shell .inspector-empty > .icon {
+  box-sizing: content-box;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid var(--ui-border-subtle);
+  border-radius: calc(10px * var(--ui-radius-scale, 1));
   background: var(--island-surface-soft);
   border-color: var(--ui-island-hairline);
   color: var(--ui-content-tertiary);
@@ -1066,11 +1052,6 @@
   border: var(--island-hairline-w) solid var(--island-border);
   border-radius: 9999px;
   box-shadow: none;
-}
-
-.app-shell.app-shell .inspector-content .micro-label {
-  font-size: calc(11px * var(--ui-font-scale));
-  color: var(--ui-content-tertiary);
 }
 
 .app-shell.app-shell .nav-row .nav-entity-glyph .icon,

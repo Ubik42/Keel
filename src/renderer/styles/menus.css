@@ -22,10 +22,8 @@
   display: grid;
   width: var(--ui-shell-control-height);
   height: var(--ui-shell-control-height);
-  place-items: center;
   padding: 0;
   border: 1px solid transparent;
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
   background: transparent;
   color: var(--ui-content-secondary);
   cursor: pointer;
@@ -402,10 +400,6 @@
   color: var(--accent);
 }
 
-.main-menu-trigger {
-  border-radius: var(--ui-radius-control);
-}
-
 /* --- Main menu: compact flat surface --- */
 
 .main-menu-surface,
@@ -428,8 +422,6 @@
 
 .main-menu-section,
 .main-menu-item {
-  min-height: 30px;
-  padding: 6px 10px;
   font-size: calc(12.5px * var(--ui-font-scale));
   font-weight: 450;
 }
@@ -446,11 +438,14 @@
 }
 
 .main-menu-trigger {
+  place-items: center;
   border-radius: var(--ui-radius-control);
 }
 
 .main-menu-section,
 .main-menu-item {
+  min-height: 30px;
+  padding: 6px 10px;
   border-radius: max(4px, calc(var(--ui-radius-control) - 0px));
 }
 

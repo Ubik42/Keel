@@ -490,21 +490,6 @@
   gap: 6px;
 }
 
-.app-shell.app-shell .tag-chip {
-  gap: 5px;
-  min-height: 22px;
-  padding: 0 8px 0 9px;
-  border: 0;
-  font-size: calc(11.5px * var(--ui-font-scale));
-  font-weight: 480;
-  line-height: 22px;
-  letter-spacing: -0.005em;
-}
-
-.app-shell.app-shell .tag-chip:hover {
-  background: color-mix(in srgb, var(--ui-content-primary) 9%, transparent);
-}
-
 .app-shell.app-shell .tag-chip-dot {
   width: 7px;
   height: 7px;
@@ -518,21 +503,11 @@
 
 /* Soft surfaces: chips, filter summary, empty plates. */
 
-.app-shell.app-shell .tag-chip {
-  background: var(--island-surface-soft);
-}
-
 .app-shell.app-shell .tag-chip:hover {
   background: color-mix(in srgb, var(--island-surface-soft) 88%, var(--ui-content-primary));
 }
 
 /* Soft chips stay monochrome */
-
-.app-shell.app-shell .tag-chip {
-  background: var(--island-surface-soft);
-  color: var(--ui-content-secondary);
-  box-shadow: none;
-}
 
 /* ==== a48: inspector preview L/R padding match ============================
    Scrollbar consumed the right inset (CSS pad 12/12 → visual 12 vs 22).
@@ -548,18 +523,13 @@
    a65 radii + a63 contrast + single mask unchanged. */
 
 .app-shell.app-shell .tag-chip {
-  --tag-hairline: 28%;
-  --tag-hairline-hover: 36%;
   position: relative;
   display: inline-flex;
   align-items: center;
   border: 0 !important;
   border-radius: 0 !important;
   background: transparent !important;
-  box-shadow: none !important;
-  padding: 0 var(--tag-tip-w) 0 8px;
   height: 22px;
-  min-height: 22px;
   line-height: 1;
 }
 
@@ -568,18 +538,11 @@
 .app-shell.app-shell .tag-chip::before {
   content: "";
   position: absolute;
-  inset: 0;
-  background: var(--tag-chip-fill);
   z-index: 0;
 }
 
 .app-shell.app-shell .tag-chip::after {
   content: none;
-}
-
-.app-shell.app-shell .tag-chip {
-  gap: 2px;
-  color: var(--ui-content-secondary);
 }
 
 .app-shell.app-shell .tag-chip-dot {
@@ -638,6 +601,16 @@
    3) AI badge: chip left inset = badge's vertical inset (22-16)/2 = 3px. */
 
 .app-shell.app-shell .tag-chip {
+  font-size: calc(11.5px * var(--ui-font-scale));
+  font-weight: 480;
+  letter-spacing: -0.005em;
+  --tag-hairline: 28%;
+  --tag-hairline-hover: 36%;
+  box-shadow: none !important;
+  padding: 0 var(--tag-tip-w) 0 8px;
+  min-height: 22px;
+  gap: 2px;
+  color: var(--ui-content-secondary);
   --tag-tip-w: 16px;
   --tag-base: white;
   --tag-neutral: color-mix(in oklab, black 55%, white);
@@ -677,6 +650,8 @@
 }
 
 .app-shell.app-shell .tag-chip::before {
+  inset: 0;
+  background: var(--tag-chip-fill);
   pointer-events: none;
   -webkit-mask-box-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2780%27%20height%3D%2722%27%20viewBox%3D%270%200%2080%2022%27%3E%3Cpath%20fill%3D%27black%27%20d%3D%27M6%200H66.35A6%206%200%200%201%2070.79%201.96L77.47%209.32A2.5%202.5%200%200%201%2077.47%2012.68L70.79%2020.04A6%206%200%200%201%2066.35%2022H6A6%206%200%200%201%200%2016V6A6%206%200%200%201%206%200Z%27%2F%3E%3C%2Fsvg%3E") 0 16 0 6 fill / 0 var(--tag-tip-w) 0 6px / 0 stretch;
   mask-border: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2780%27%20height%3D%2722%27%20viewBox%3D%270%200%2080%2022%27%3E%3Cpath%20fill%3D%27black%27%20d%3D%27M6%200H66.35A6%206%200%200%201%2070.79%201.96L77.47%209.32A2.5%202.5%200%200%201%2077.47%2012.68L70.79%2020.04A6%206%200%200%201%2066.35%2022H6A6%206%200%200%201%200%2016V6A6%206%200%200%201%206%200Z%27%2F%3E%3C%2Fsvg%3E") 0 16 0 6 fill / 0 var(--tag-tip-w) 0 6px / 0 stretch;

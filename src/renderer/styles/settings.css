@@ -147,9 +147,6 @@
 
 .font-viewer-control {
   align-items: center;
-}
-
-.font-viewer-control {
   display: inline-flex;
   gap: 5px;
   color: var(--ui-content-secondary);
@@ -1549,7 +1546,6 @@ select.ai-config-input {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   width: 100%;
   overflow-y: auto;
-  overscroll-behavior: contain;
 }
 
 .app-settings-theme-profile {
@@ -2201,19 +2197,6 @@ select.ai-config-input {
   background: color-mix(in srgb, var(--ui-canvas) 88%, var(--ui-pane));
 }
 
-.app-settings-dialog:not(.library-settings-dialog) .app-settings-page-heading h3 {
-  font-size: calc(18px * var(--ui-font-scale));
-  font-weight: 650;
-  letter-spacing: -0.025em;
-}
-
-.app-settings-dialog:not(.library-settings-dialog) .app-settings-card {
-  border: 1px solid var(--ui-border-subtle);
-  border-radius: var(--ui-radius-surface);
-  background: color-mix(in srgb, var(--ui-surface-raised) 62%, var(--ui-canvas));
-  box-shadow: none;
-}
-
 /* --- Settings layout polish (app settings only) --- */
 
 .app-settings-dialog:not(.library-settings-dialog) .app-settings-page-heading {
@@ -2221,6 +2204,9 @@ select.ai-config-input {
 }
 
 .app-settings-dialog:not(.library-settings-dialog) .app-settings-page-heading h3 {
+  font-size: calc(18px * var(--ui-font-scale));
+  font-weight: 650;
+  letter-spacing: -0.025em;
   margin: 0;
 }
 
@@ -2230,6 +2216,10 @@ select.ai-config-input {
 }
 
 .app-settings-dialog:not(.library-settings-dialog) .app-settings-card {
+  border: 1px solid var(--ui-border-subtle);
+  border-radius: var(--ui-radius-surface);
+  background: color-mix(in srgb, var(--ui-surface-raised) 62%, var(--ui-canvas));
+  box-shadow: none;
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -2557,6 +2547,7 @@ select.ai-config-input {
    gap regardless of window width; a third row only peeks in on scroll. */
 
 .app-settings-theme-profiles {
+  overscroll-behavior: contain;
   --theme-card-row: 100px;
   --theme-card-gap: 10px;
   grid-auto-rows: var(--theme-card-row);
@@ -3198,12 +3189,6 @@ select.ai-config-input {
   line-height: 1.45;
 }
 
-.shortcut-conflict {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
 .shortcut-conflict p {
   margin: 0;
   color: var(--ui-content-primary);
@@ -3211,6 +3196,9 @@ select.ai-config-input {
 }
 
 .shortcut-conflict {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   padding: 8px 10px;
   border: 1px solid color-mix(in srgb, var(--ui-status-danger) 35%, var(--ui-border-divider));
   border-radius: calc(6px * var(--ui-radius-scale, 1));
