@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest';
+import { parseSearchExpression } from '../../src/shared/search-expression';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 
@@ -347,9 +348,7 @@ describe('Keel MCP tools/call → Gateway', () => {
       expect.objectContaining({
         type: 'asset.search',
         libraryId: 'library-1',
-        query: {
-          clauses: [{ field: 'filename', values: ['sunny'], exclude: false }],
-        },
+        query: parseSearchExpression('name:sunny'),
         limit: 50,
       }),
     ]);

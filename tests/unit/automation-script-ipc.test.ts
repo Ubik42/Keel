@@ -1,4 +1,5 @@
 import { mkdtempSync, rmSync } from 'node:fs';
+import { parseSearchExpression } from '../../src/shared/search-expression';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
@@ -215,16 +216,8 @@ describe('Desktop Console automation IPC', () => {
     expect(worker.commands.at(-1)).toEqual({
       type: 'asset.search',
       libraryId,
-      query: {
-        clauses: [],
-        groups: [
-          [
-            { field: 'filename', values: ['Ser'], exclude: false },
-            { field: 'tags', values: ['y2k'], exclude: false },
-          ],
-          [{ field: 'author', values: ['Jane'], exclude: false }],
-        ],
-      },
+      // Toolbar syntax goes through the shared expression parser.
+      query: parseSearchExpression('name:Ser tag:y2k | author:Jane'),
       scopeMode: false,
       limit: 100,
       offset: 2,
