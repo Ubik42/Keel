@@ -46,7 +46,7 @@ import {
 } from "./tag-suggestions";
 import { useLocale } from "./i18n";
 
-import type { AssetSummary, AssetMetadataResult, ExtractedVideoMetadata, TagSummary } from "../shared/asset-types";
+import type { AssetSummary, AssetMetadataResult, ExtractedVideoMetadata } from "../shared/asset-types";
 import {
   isEmbeddedImageMetadataExtension,
   mediaTypeHasPixelResolution,

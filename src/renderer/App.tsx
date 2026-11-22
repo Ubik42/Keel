@@ -321,7 +321,7 @@ import { useEmbeddingField } from "./stores/embedding-store";
 import { useJobsField } from "./stores/jobs-store";
 import { transfersFields, useTransfersField } from "./stores/transfers-store";
 import { usePreviewField } from "./stores/preview-store";
-import { useInspectorField } from "./stores/inspector-store";
+import { inspectorFields, useInspectorField } from "./stores/inspector-store";
 import { selectionFields, useSelectionField } from "./stores/selection-store";
 import { browseFields, useBrowseField } from "./stores/browse-store";
 import { useQueryField } from "./stores/query-store";
@@ -1443,13 +1443,13 @@ function AppInner() {
 
   // Metadata editor
   const [assetMetadata, setAssetMetadata] = useInspectorField("assetMetadata");
-  const [extractedMetadataRefreshKey, setExtractedMetadataRefreshKey] = useInspectorField("extractedMetadataRefreshKey");
-  const [versionConflict, setVersionConflict] = useInspectorField("versionConflict");
+  const setExtractedMetadataRefreshKey = inspectorFields.setterFor("extractedMetadataRefreshKey");
+  const setVersionConflict = inspectorFields.setterFor("versionConflict");
   const metadataByAssetRef = useRef(new Map<string, AssetMetadataResult>());
   const metadataConflictAssetIdsRef = useRef(new Set<string>());
   // Pending edit values
   const [editDescription, setEditDescription] = useInspectorField("editDescription");
-  const [editRating, setEditRating] = useInspectorField("editRating");
+  const setEditRating = inspectorFields.setterFor("editRating");
   const [editFavorite, setEditFavorite] = useInspectorField("editFavorite");
   const [editSourceUrl, setEditSourceUrl] = useInspectorField("editSourceUrl");
   const [editAuthor, setEditAuthor] = useInspectorField("editAuthor");
