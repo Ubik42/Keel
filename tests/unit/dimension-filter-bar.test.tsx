@@ -5,9 +5,16 @@ import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
-  DimensionFilterBar,
+  DimensionFilterBar as DimensionFilterBarComponent,
+  DimensionFilterBarActionsProvider,
+  type DimensionFilterBarActions,
   type DimensionFilterBarProps,
 } from "../../src/renderer/DimensionFilterBar";
+
+/** The bar with its operations provided the way WorkspaceHeader provides them. */
+function DimensionFilterBar(props: DimensionFilterBarProps) {
+  return createElement(DimensionFilterBarActionsProvider, { value: props as unknown as DimensionFilterBarActions }, createElement(DimensionFilterBarComponent, props));
+}
 import { LocaleProvider } from "../../src/renderer/i18n";
 import { queryFields } from "../../src/renderer/stores/query-store";
 

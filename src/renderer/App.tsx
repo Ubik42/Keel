@@ -8,7 +8,7 @@ import { ContextMenuProvider } from "./workbench/menu/context-menu";
 import { type WorkspaceTabSession, workspaceTabBrowseStateHasDiscoveryInput } from "./workspace-tabs";
 import { LibraryOperationError, toMessage } from "./error-utils";
 import { browseEntryUnderPreview, workspaceNavLocationsEqual } from "./workbench/workspace/workspace-nav-history";
-import { NavigationSidebar } from "./NavigationSidebar";
+import { NavigationSidebar , NavigationSidebarActionsProvider } from "./NavigationSidebar";
 import { type ReadAppLogResult } from "../shared/app-log";
 import { activeLibrarySwitchActivity } from "./library-switch-safety";
 import { captureWorkspaceNavViewport, resolveWorkspaceScrollTop } from "./workbench/workspace/workspace-scroll-position";
@@ -39,7 +39,7 @@ import { TagTreeSidebar } from "./TagTreeSidebar";
 import { AutomaticTasksSidebar } from "./AutomaticTasksSidebar";
 import { LIBRARY_ROOT_FOLDER_ID } from "../shared/library-root-folder";
 import { toggleFolderMultiSelection } from "./folder-selection-toggle";
-import { InspectorPanel } from "./InspectorPanel";
+import { InspectorPanel , InspectorPanelActionsProvider } from "./InspectorPanel";
 import type {
   QueryFilterSnapshot,
   RendererWindow,
@@ -953,16 +953,8 @@ function AppInner() {
         setRightOpen={setRightOpen}
         shellApi={shellApi}
       />
-      <NavigationSidebar
-        tagTree={library ? <TagTreeSidebar key={library.libraryId} libraryId={library.libraryId} tags={tags} activeTagId={activeTagId}
-          pinnedTagId={pinnedTagId} onPin={(id) => void togglePinnedTag(id)}
-          onChoose={(id) => void chooseTag(id)} onCreate={handleCreateTagInManagement} onRename={handleRenameTagInManagement}
-          onAppearance={(id, appearance) => handleRenameTagInManagement(id, tags.find((tag) => tag.tagId === id)?.name ?? "", appearance)}
-          onMove={moveTagInTree} onDelete={handleDeleteTagsInManagement} onAssign={assignAssetsToTreeTag} getAssetDragIds={getManagedAssetDragIds} isInternalAssetDrag={isInternalAssetDrag} onResolveManagedAssetDrop={resolveManagedAssetDrop} /> : undefined}
-        automaticTasks={library && api ? <AutomaticTasksSidebar key={library.libraryId} api={api} libraryId={library.libraryId} systemBusy={backgroundJobsActive} onCreate={()=>{setAutomaticTaskEditorId(null);setAutomaticTasksOpen(true);}} onEdit={id=>{setAutomaticTaskEditorId(id);setAutomaticTasksOpen(true);}} onOpenRuns={openMediaJobs} onOpenScripts={()=>setScriptSandboxPreviewOpen(true)} /> : undefined}
-        pluginSidebarViews={pluginSidebarViews}
-        revealTarget={workspaceTabRevealTarget}
-        onToggleShowIgnoredItems={() => {
+      <NavigationSidebarActionsProvider value={{
+        onToggleShowIgnoredItems: () => {
           const next = !showIgnoredItems;
           setShowIgnoredItems(next);
           if (library) {
@@ -972,31 +964,28 @@ function AppInner() {
               showIgnored: next,
             });
           }
-        }}
-        filteredFolderCounts={showTrash ? null : filteredFolderCounts}
-        onChooseAllAssets={() => void chooseFolder("all")}
-        onEnterTrash={() => void enterTrash()}
-        onTrashContextMenu={(event) => {
+        },
+        onChooseAllAssets: () => void chooseFolder("all"),
+        onEnterTrash: () => void enterTrash(),
+        onTrashContextMenu: (event) => {
           openContextMenu(
             { type: "trash" },
             { x: event.clientX, y: event.clientY },
           );
-        }}
-        onEnterTagManagement={() => void enterTagManagement()}
-        onChoosePluginSidebarView={(viewId) => void enterPluginSidebarView(viewId)}
-        onChooseFolder={(folderId) => {
+        },
+        onEnterTagManagement: () => void enterTagManagement(),
+        onChoosePluginSidebarView: (viewId) => void enterPluginSidebarView(viewId),
+        onChooseFolder: (folderId) => {
           // 普通点击 = 进入该文件夹：选区回到「只隐式选中当前文件夹」的状态。
           setSelectedFolderIds([]);
           void chooseFolder(folderId);
-        }}
-        onExternalDragOver={handleTargetExternalDragOver}
-        onExternalDrop={(event, targetFolderId) =>
-          handleTargetExternalDrop(event, targetFolderId)
-        }
-        getManagedAssetDragIds={getManagedAssetDragIds}
-        getManagedFolderDragIds={getManagedFolderDragIds}
-        folderTreeActionsRef={folderTreeActionsRef}
-        onOpenRootFolderContextMenu={({ x, y }) =>
+        },
+        onExternalDragOver: handleTargetExternalDragOver,
+        onExternalDrop: (event, targetFolderId) =>
+          handleTargetExternalDrop(event, targetFolderId),
+        getManagedAssetDragIds,
+        getManagedFolderDragIds,
+        onOpenRootFolderContextMenu: ({ x, y }) =>
           // Serpent-a6c516: the folder panel's blank area and the 「资源库根目录」
           // row are both the library root, so they share this menu.
           openContextMenu(
@@ -1009,15 +998,13 @@ function AppInner() {
               isLibraryRoot: true,
             },
             { x, y },
-          )
-        }
-        onResolveManagedAssetDrop={resolveManagedAssetDrop}
-        isInternalAssetDrag={isInternalAssetDrag}
-        onAssetsDroppedOnFolder={(folderId, assetIds, mode) =>
-          handleAssetsDroppedOnFolder(folderId, assetIds, mode)
-        }
-        onFoldersDroppedOnFolder={handleFoldersDroppedOnFolder}
-        onToggleFolderSelection={(folderId) => {
+          ),
+        onResolveManagedAssetDrop: resolveManagedAssetDrop,
+        isInternalAssetDrag,
+        onAssetsDroppedOnFolder: (folderId, assetIds, mode) =>
+          handleAssetsDroppedOnFolder(folderId, assetIds, mode),
+        onFoldersDroppedOnFolder: handleFoldersDroppedOnFolder,
+        onToggleFolderSelection: (folderId) => {
           // Serpent-d7acfa：侧栏 Ctrl/⌘+点击切换多选，与画布文件夹卡片共用状态。
           // 正在浏览的文件夹是「隐式选中」的：第一次 Ctrl+点击应得到 {当前, 点击}。
           const openFolderId =
@@ -1031,20 +1018,18 @@ function AppInner() {
               isSelectable: isSelectableFolder,
             }),
           );
-        }}
-        onAssetsDroppedOnTrash={(assetIds) =>
-          handleAssetsDroppedOnTrash(assetIds)
-        }
-        onFoldersDroppedOnTrash={handleFoldersDroppedOnTrash}
-        onManagedAssetCopyModeChange={(copyMode) => {
+        },
+        onAssetsDroppedOnTrash: (assetIds) =>
+          handleAssetsDroppedOnTrash(assetIds),
+        onFoldersDroppedOnTrash: handleFoldersDroppedOnTrash,
+        onManagedAssetCopyModeChange: (copyMode) => {
           setAssetDragPreviewCopyMode(dragPreviewRef.current, copyMode);
-        }}
-        onImportFolderAsLinked={() => void importFolderAsLinked()}
-        linkedFolderHintActive={linkedFolderHintShow}
-        onLinkedFolderHintHover={beginLinkedFolderHintHover}
-        onLinkedFolderHintHoverEnd={endLinkedFolderHintHover}
-        onRelinkFolder={(folderId) => void relinkFolder(folderId)}
-        onAddFolder={() => {
+        },
+        onImportFolderAsLinked: () => void importFolderAsLinked(),
+        onLinkedFolderHintHover: beginLinkedFolderHintHover,
+        onLinkedFolderHintHoverEnd: endLinkedFolderHintHover,
+        onRelinkFolder: (folderId) => void relinkFolder(folderId),
+        onAddFolder: () => {
           // Serpent-b8a853: while the user has never used linked folders,
           // adding an ordinary folder pulses the 导入链接文件夹 entry.
           if (linkedFolderAddHintEligible) {
@@ -1061,23 +1046,34 @@ function AppInner() {
           // library root, independent of the folder currently in scope.
           // Subfolders are created from the folder's context menu (新建子文件夹).
           openInlineFolderCreate(null);
-        }}
-        inlineFolderEdit={inlineFolderEdit}
-        onInlineFolderEditChange={changeInlineFolderEdit}
-        onInlineFolderEditCommit={(onCreateSuccess) =>
+        },
+        onInlineFolderEditChange: changeInlineFolderEdit,
+        onInlineFolderEditCommit: (onCreateSuccess) =>
           void commitInlineFolderEdit((folderId, parentFolderId) => {
             onCreateSuccess?.(folderId, parentFolderId);
-          })
-        }
-        onInlineFolderEditCancel={cancelInlineFolderEdit}
-        onOpenContextMenu={openContextMenu}
-        onImportDroppedFiles={(files, targetFolderId, webPayload) =>
-          void importDroppedFiles(files, targetFolderId, webPayload)
-        }
-        onCopyManagedToLinked={(folder, assetIds) =>
-          void copyManagedSelectionToLinked(folder, assetIds)
-        }
+          }),
+        onInlineFolderEditCancel: cancelInlineFolderEdit,
+        onOpenContextMenu: openContextMenu,
+        onImportDroppedFiles: (files, targetFolderId, webPayload) =>
+          void importDroppedFiles(files, targetFolderId, webPayload),
+        onCopyManagedToLinked: (folder, assetIds) =>
+          void copyManagedSelectionToLinked(folder, assetIds),
+      }}>
+      <NavigationSidebar
+        tagTree={library ? <TagTreeSidebar key={library.libraryId} libraryId={library.libraryId} tags={tags} activeTagId={activeTagId}
+          pinnedTagId={pinnedTagId} onPin={(id) => void togglePinnedTag(id)}
+          onChoose={(id) => void chooseTag(id)} onCreate={handleCreateTagInManagement} onRename={handleRenameTagInManagement}
+          onAppearance={(id, appearance) => handleRenameTagInManagement(id, tags.find((tag) => tag.tagId === id)?.name ?? "", appearance)}
+          onMove={moveTagInTree} onDelete={handleDeleteTagsInManagement} onAssign={assignAssetsToTreeTag} getAssetDragIds={getManagedAssetDragIds} isInternalAssetDrag={isInternalAssetDrag} onResolveManagedAssetDrop={resolveManagedAssetDrop} /> : undefined}
+        automaticTasks={library && api ? <AutomaticTasksSidebar key={library.libraryId} api={api} libraryId={library.libraryId} systemBusy={backgroundJobsActive} onCreate={()=>{setAutomaticTaskEditorId(null);setAutomaticTasksOpen(true);}} onEdit={id=>{setAutomaticTaskEditorId(id);setAutomaticTasksOpen(true);}} onOpenRuns={openMediaJobs} onOpenScripts={()=>setScriptSandboxPreviewOpen(true)} /> : undefined}
+        pluginSidebarViews={pluginSidebarViews}
+        revealTarget={workspaceTabRevealTarget}
+        filteredFolderCounts={showTrash ? null : filteredFolderCounts}
+        folderTreeActionsRef={folderTreeActionsRef}
+        linkedFolderHintActive={linkedFolderHintShow}
+        inlineFolderEdit={inlineFolderEdit}
       />
+      </NavigationSidebarActionsProvider>
       <section className="workspace">
         <WorkspaceHeader
           showPluginSidebarView={showPluginSidebarView}
@@ -1237,49 +1233,49 @@ function AppInner() {
           pluginContributionRefreshKey={pluginContributionRefreshKey}
         />
       </section>
+      <InspectorPanelActionsProvider value={{
+        handleFavoriteToggle,
+        handleMetadataDescriptionInput,
+        handleMetadataDescriptionSave,
+        handleRatingClick,
+        handleSourceUrlInput,
+        handleSourceUrlSave,
+        handleAuthorInput,
+        handleAuthorSave,
+        loadMetadata,
+        onAssignTagToAsset: (tagId) => void handleInspectorAssignTag(tagId),
+        onCreateAndAssignTag: (tagName) => void handleInspectorCreateAndAssignTag(tagName),
+        onApplyTagNames: (tagNames) => void handleInspectorApplyTagNames(tagNames),
+        onOpenSourceUrl: handleOpenSourceUrl,
+        onPaletteColorCopy: (color, copied) => {
+          if (copied) {
+            setNotice(t("toast.colorCopiedAlt", { color }));
+          } else {
+            setError(t("toast.colorCopyUnavailable"));
+          }
+        },
+        onRemoveTagFromAsset: handleInspectorRemoveTag,
+        onFilterTag: (tagId) => void chooseTag(tagId),
+        onRenameTag: handleRenameTagInManagement,
+      }}>
       <InspectorPanel
         aiContent={
           aiContent?.assetId === selectedAsset?.assetId ? aiContent : null
         }
         api={api}
         automaticPaletteRatios={automaticPaletteRatios}
-        displayedPalette={displayedPalette}
-        folderCount={folders.length}
+        displayedPalette={displayedPalette}
         folderInspector={folderInspector ? {
           entries: folderInspector.entries,
           appearance: folderInspectorAppearance,
           byteSize: folderInspector.byteSize,
         } : null}
-        handleFavoriteToggle={handleFavoriteToggle}
-        handleMetadataDescriptionInput={handleMetadataDescriptionInput}
-        handleMetadataDescriptionSave={handleMetadataDescriptionSave}
-        handleRatingClick={handleRatingClick}
-        handleSourceUrlInput={handleSourceUrlInput}
-        handleSourceUrlSave={handleSourceUrlSave}
-        handleAuthorInput={handleAuthorInput}
-        handleAuthorSave={handleAuthorSave}
-        loadMetadata={loadMetadata}
-        onAssignTagToAsset={(tagId) => void handleInspectorAssignTag(tagId)}
-        onCreateAndAssignTag={(tagName) => void handleInspectorCreateAndAssignTag(tagName)}
-        onApplyTagNames={(tagNames) => void handleInspectorApplyTagNames(tagNames)}
-        onOpenSourceUrl={handleOpenSourceUrl}
-        onPaletteColorCopy={(color, copied) => {
-          if (copied) {
-            setNotice(t("toast.colorCopiedAlt", { color }));
-          } else {
-            setError(t("toast.colorCopyUnavailable"));
-          }
-        }}
-        onRemoveTagFromAsset={handleInspectorRemoveTag}
-        onFilterTag={(tagId) => void chooseTag(tagId)}
-        onRenameTag={handleRenameTagInManagement}
         selectedAsset={selectedAsset}
         selectedAssets={selectedAssets}
-        multiEdit={multiEdit}
-        pluginApi={(window as RendererWindow).keel?.plugins}
-        libraryId={library?.libraryId}
+        multiEdit={multiEdit}
         pluginContributionRefreshKey={pluginContributionRefreshKey}
       />
+      </InspectorPanelActionsProvider>
       <AppDialogs
         updateImageSequenceFps={updateImageSequenceFps}
         createSelectedImageSequence={createSelectedImageSequence}

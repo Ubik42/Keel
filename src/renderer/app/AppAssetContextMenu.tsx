@@ -1,7 +1,5 @@
 import { useAiField } from "../stores/ai-store";
 import { dialogsFields } from "../stores/dialogs-store";
-import { useNavigationField } from "../stores/navigation-store";
-import { useSessionField } from "../stores/session-store";
 import type { Dispatch, RefObject, SetStateAction } from "react";
 import type { MenuSkipScopeOptions } from "../menu-skip-report";
 import type { TranslateFn } from "../i18n/LocaleProvider";
@@ -14,9 +12,9 @@ import { type AssetSummary } from "../../shared/asset-types";
 import { isLibraryRootFolderId } from "../../shared/library-root-folder";
 import { linkedRevealFolderId } from "../../shared/linked-folder-tree";
 import { aiAnalyzeConnectionReady, aiAnalyzeShowsDisconnectGlyph } from "../ai-connection-heartbeat";
-import { AssetContextMenu } from "../AssetContextMenu";
+import { AssetContextMenu , AssetContextMenuActionsProvider } from "../AssetContextMenu";
 import { type FolderTreeExpandActions } from "../NavigationSidebar";
-import { type RendererWindow, type WorkspaceNavigationRequest } from "./app-shared";
+import { type WorkspaceNavigationRequest } from "./app-shared";
 
 export interface AppAssetContextMenuProps {
   busy: boolean;
@@ -88,94 +86,82 @@ export interface AppAssetContextMenuProps {
 
 /** Extracted from AppInner's returned tree (P4); renders the same elements. */
 export function AppAssetContextMenu({ busy, pluginBrowseScope, pluginViewerState, pluginContributionRefreshKey, visibleAssets, menuSkipScope, closeWorkspaceTab, closeOtherWorkspaceTabs, setLeftOpen, setWorkspaceTabRevealTarget, workspaceTabRevealRequestRef, setNotice, t, setError, openInlineFolderCreate, folderTreeActionsRef, importFolderAsLinked, setIgnoreState, openInlineFolderRename, handleOpenFolderInFileManager, handleCopyFolderPath, handleCopyFolder, dispatchClipboardPaste, cloneFolder, openLinkedRules, requestTrashManagedFolder, openDiskDelete, removeLinkedFolder, setEntityAppearance, chooseFolderCover, openFolderCoverLibraryPicker, clearFolderCover, useAssetAsFolderCover, batchAssignTagToSelection, batchRemoveTagFromSelection, trashMixedSelection, requestSelectionDiskDelete, requestRestoreTrashedAssets, deletePermanentFromTrash, relinkMissingAsset, handleAnalyzeClick, handleClearAiContent, copyManagedSelectionToLinked, clearAssetSelection, handleOpenExternal, openWithSettings, openAssetWithProgram, openAssetPreview, persistAssetColorSpace, openCreateImageSequenceDialog, dissolveSelectedImageSequence, dissolveSelectedImageSequences, handleRevealInFolder, showAssetInContainingFolder, embeddingBound, embeddingSelectionId, embeddingService, runFindSimilar, handleCopyFilePath, handleCopyAssetFiles, browsePasteDestination, openAssetRename, assignAssetToTag, restoreTrashedManagedFolder, emptyTrash }: AppAssetContextMenuProps) {
-  const [library] = useSessionField("library");
   const setMoveDialog = dialogsFields.setterFor("moveDialog");
   const [aiHasKey] = useAiField("aiHasKey");
   const [aiConnectionState] = useAiField("aiConnectionState");
   const [aiAnalyzing] = useAiField("aiAnalyzing");
   const setImageSequenceDialog = dialogsFields.setterFor("imageSequenceDialog");
-  const [trashedFolders] = useNavigationField("trashedFolders");
   return (
 <>
 {/* Unified context menu */}
-      <AssetContextMenu
-        busy={busy}
-        libraryId={library?.libraryId}
-        pluginBrowseScope={pluginBrowseScope}
-        pluginViewerState={pluginViewerState}
-        pluginApi={(window as RendererWindow).keel?.plugins}
-        pluginContributionRefreshKey={pluginContributionRefreshKey}
-        assets={visibleAssets}
-        menuSkipScope={menuSkipScope}
-        onCloseWorkspaceTab={(tabId) => void closeWorkspaceTab(tabId)}
-        onCloseOtherWorkspaceTabs={(tabId) =>
-          void closeOtherWorkspaceTabs(tabId)
-        }
-        onRevealWorkspaceTabEntity={(entity) => {
+      <AssetContextMenuActionsProvider value={{
+        onCloseWorkspaceTab: (tabId) => void closeWorkspaceTab(tabId),
+        onCloseOtherWorkspaceTabs: (tabId) =>
+          void closeOtherWorkspaceTabs(tabId),
+        onRevealWorkspaceTabEntity: (entity) => {
           setLeftOpen(true);
           setWorkspaceTabRevealTarget({
             ...entity,
             requestId: ++workspaceTabRevealRequestRef.current,
           });
-        }}
-        onCopyWorkspaceTabName={(name) => {
+        },
+        onCopyWorkspaceTabName: (name) => {
           void navigator.clipboard.writeText(name).then(
             () => setNotice(t("tabs.copyNameDone")),
             () => setError(t("tabs.copyNameFailed")),
           );
-        }}
-        onCreateSubfolder={(folderId) => {
+        },
+        onCreateSubfolder: (folderId) => {
           openInlineFolderCreate(isLibraryRootFolderId(folderId) ? null : folderId);
-        }}
-        onExpandFolderTree={(folderId) => {
+        },
+        onExpandFolderTree: (folderId) => {
           folderTreeActionsRef.current?.expandSubtree(folderId);
-        }}
-        onCollapseFolderTree={(folderId) => {
+        },
+        onCollapseFolderTree: (folderId) => {
           folderTreeActionsRef.current?.collapseSubtree(folderId);
-        }}
-        onImportLinkedFolderInto={(folderId) => {
+        },
+        onImportLinkedFolderInto: (folderId) => {
           // Serpent-316493: 导入链接文件夹 under the right-clicked folder (or at
           // the library root when the folder panel's blank area was clicked).
           void importFolderAsLinked(
             isLibraryRootFolderId(folderId) ? null : folderId,
           );
-        }}
-        onSetIgnore={({ locationKind, linkedFolderId, relativePath, pathKind, ignored, name }) => {
+        },
+        onSetIgnore: ({ locationKind, linkedFolderId, relativePath, pathKind, ignored, name }) => {
           void setIgnoreState({ locationKind, linkedFolderId, relativePath, pathKind, ignored, name });
-        }}
-        onRenameFolder={(folderId, currentName) => {
+        },
+        onRenameFolder: (folderId, currentName) => {
           openInlineFolderRename(folderId, currentName);
-        }}
-        onOpenFolderInFileManager={(folderId) => {
+        },
+        onOpenFolderInFileManager: (folderId) => {
           void handleOpenFolderInFileManager(folderId);
-        }}
-        onCopyFolderPath={(folderId) => {
+        },
+        onCopyFolderPath: (folderId) => {
           void handleCopyFolderPath(folderId);
-        }}
-        onCopyFolder={(folderId) => {
+        },
+        onCopyFolder: (folderId) => {
           void handleCopyFolder(folderId);
-        }}
-        onPasteIntoFolder={(folderId) => {
+        },
+        onPasteIntoFolder: (folderId) => {
           // Serpent-316493 follow-up: the root sentinel means "the library
           // root", which paste/import APIs express as null.
           dispatchClipboardPaste(isLibraryRootFolderId(folderId) ? null : folderId);
-        }}
-        onCloneFolder={(folderId) => {
+        },
+        onCloneFolder: (folderId) => {
           void cloneFolder(folderId);
-        }}
-        onMoveFolder={(folderIds) =>
+        },
+        onMoveFolder: (folderIds) =>
           setMoveDialog({
             assetIds: [],
             folderIds: [...folderIds],
             targetFolderId: null,
             conflictStrategy: "keep-both",
-          })
-        }
-        onOpenLinkedRules={(folder) => void openLinkedRules(folder)}
-        onTrashManagedFolder={(folderId, name) => {
+          }),
+        onOpenLinkedRules: (folder) => void openLinkedRules(folder),
+        onTrashManagedFolder: (folderId, name) => {
           requestTrashManagedFolder(folderId, name);
-        }}
-        onDeleteFolderFromDisk={({ folderId, name, locationKind, linkedRelativePath }) => {
+        },
+        onDeleteFolderFromDisk: ({ folderId, name, locationKind, linkedRelativePath }) => {
           if (locationKind === "managed") {
             openDiskDelete({ kind: "managed", folderId, name });
             return;
@@ -197,70 +183,61 @@ export function AppAssetContextMenu({ busy, pluginBrowseScope, pluginViewerState
               name,
             });
           }
-        }}
-        onRemoveLinkedFolder={(folderId, name) => {
+        },
+        onRemoveLinkedFolder: (folderId, name) => {
           void removeLinkedFolder(folderId, name);
-        }}
-        onSetEntityAppearance={setEntityAppearance}
-        onChooseFolderCover={chooseFolderCover}
-        onChooseFolderCoverFromLibrary={openFolderCoverLibraryPicker}
-        onClearFolderCover={clearFolderCover}
-        onUseAssetAsFolderCover={useAssetAsFolderCover}
-        onBatchAssignTag={(tagId, assetIds) => {
+        },
+        onSetEntityAppearance: setEntityAppearance,
+        onChooseFolderCover: chooseFolderCover,
+        onChooseFolderCoverFromLibrary: openFolderCoverLibraryPicker,
+        onClearFolderCover: clearFolderCover,
+        onUseAssetAsFolderCover: useAssetAsFolderCover,
+        onBatchAssignTag: (tagId, assetIds) => {
           void batchAssignTagToSelection(tagId, assetIds);
-        }}
-        onBatchRemoveTag={(tagId, assetIds) => {
+        },
+        onBatchRemoveTag: (tagId, assetIds) => {
           void batchRemoveTagFromSelection(tagId, assetIds);
-        }}
-        onMoveToFolder={(assetIds, folderIds) =>
+        },
+        onMoveToFolder: (assetIds, folderIds) =>
           setMoveDialog({
             assetIds: [...assetIds],
             folderIds: [...(folderIds ?? [])],
             targetFolderId: null,
             conflictStrategy: "keep-both",
-          })
-        }
-        onTrash={(assetIds, folderIds) => {
+          }),
+        onTrash: (assetIds, folderIds) => {
           void trashMixedSelection(assetIds, folderIds ?? []);
-        }}
-        onDeleteFromDisk={(assetIds, folderIds) => {
+        },
+        onDeleteFromDisk: (assetIds, folderIds) => {
           requestSelectionDiskDelete(assetIds, folderIds ?? []);
-        }}
-        onRestore={(assetIds) => {
+        },
+        onRestore: (assetIds) => {
           void requestRestoreTrashedAssets(assetIds);
-        }}
-        onPermanentDelete={(assetIds) => {
+        },
+        onPermanentDelete: (assetIds) => {
           void deletePermanentFromTrash(assetIds);
-        }}
-        onRelink={(assetId) => { void relinkMissingAsset(assetId); }}
-        onAnalyze={(assetId, batchIds) => {
+        },
+        onRelink: (assetId) => { void relinkMissingAsset(assetId); },
+        onAnalyze: (assetId, batchIds) => {
           void handleAnalyzeClick(assetId, batchIds);
-        }}
-        onClearAiContent={(assetIds) => { void handleClearAiContent(assetIds); }}
-        canAnalyze={
-          aiAnalyzeConnectionReady(aiHasKey, aiConnectionState) && !aiAnalyzing
-        }
-        aiDisconnected={aiAnalyzeShowsDisconnectGlyph(
-          aiHasKey,
-          aiConnectionState,
-        )}
-        onCopyToLinked={(folder, assetIds) => { void copyManagedSelectionToLinked(folder, assetIds); }}
-        onClearSelection={clearAssetSelection}
-        onOpenExternal={(assetId) => { void handleOpenExternal(assetId); }}
-        openWithPrograms={openWithSettings.programs}
-        onOpenWithProgram={(assetId, programId) => { void openAssetWithProgram(assetId, programId); }}
-        onOpenWithPicker={(assetId) => { void openAssetWithProgram(assetId); }}
-        onViewAsset={(assetId) => {
+        },
+        onClearAiContent: (assetIds) => { void handleClearAiContent(assetIds); },
+        onCopyToLinked: (folder, assetIds) => { void copyManagedSelectionToLinked(folder, assetIds); },
+        onClearSelection: clearAssetSelection,
+        onOpenExternal: (assetId) => { void handleOpenExternal(assetId); },
+        onOpenWithProgram: (assetId, programId) => { void openAssetWithProgram(assetId, programId); },
+        onOpenWithPicker: (assetId) => { void openAssetWithProgram(assetId); },
+        onViewAsset: (assetId) => {
           const asset = visibleAssets.find((item) => item.assetId === assetId);
           if (asset) openAssetPreview(asset);
-        }}
-        onSetAssetColorSpace={(assetId, colorSpace) => {
+        },
+        onSetAssetColorSpace: (assetId, colorSpace) => {
           void persistAssetColorSpace(assetId, colorSpace);
-        }}
-        onCreateImageSequence={(assetIds) => {
+        },
+        onCreateImageSequence: (assetIds) => {
           void openCreateImageSequenceDialog(assetIds);
-        }}
-        onSetImageSequenceFps={(sequenceId, frameCount, fps) => {
+        },
+        onSetImageSequenceFps: (sequenceId, frameCount, fps) => {
           setImageSequenceDialog({
             assetIds: [],
             mode: "update",
@@ -270,39 +247,55 @@ export function AppAssetContextMenu({ busy, pluginBrowseScope, pluginViewerState
             submitting: false,
             error: null,
           });
-        }}
-        onDissolveImageSequence={(sequenceId) => {
+        },
+        onDissolveImageSequence: (sequenceId) => {
           void dissolveSelectedImageSequence(sequenceId);
-        }}
-        onDissolveImageSequences={(sequenceIds) => {
+        },
+        onDissolveImageSequences: (sequenceIds) => {
           void dissolveSelectedImageSequences(sequenceIds);
-        }}
-        onRevealInFolder={(assetId) => { void handleRevealInFolder(assetId); }}
-        onShowInLibraryFolder={(assetId) => {
+        },
+        onRevealInFolder: (assetId) => { void handleRevealInFolder(assetId); },
+        onShowInLibraryFolder: (assetId) => {
           void showAssetInContainingFolder(assetId);
-        }}
-        semanticSearchEnabled={embeddingBound}
-        embeddingSelectionId={embeddingSelectionId}
-        embeddingAdapter={embeddingService?.adapter ?? null}
-        embeddingModalities={embeddingService?.modalities ?? null}
-        onFindSimilar={(assetId) => {
+        },
+        onFindSimilar: (assetId) => {
           void runFindSimilar(assetId);
-        }}
-        onCopyFilePath={(assetId) => { void handleCopyFilePath(assetId); }}
-        onCopyAssetFiles={(assetIds) => {
+        },
+        onCopyFilePath: (assetId) => { void handleCopyFilePath(assetId); },
+        onCopyAssetFiles: (assetIds) => {
           void handleCopyAssetFiles(assetIds);
-        }}
-        pasteTargetFolderId={browsePasteDestination}
-        onRenameAssetFile={(assetId) => { openAssetRename(assetId); }}
-        onAssignTag={(assetId, tagId) => { void assignAssetToTag(assetId, tagId); }}
-        trashedFolderCount={trashedFolders.length}
-        onRestoreTrashedFolder={(tombstoneId, name) => {
+        },
+        onRenameAssetFile: (assetId) => { openAssetRename(assetId); },
+        onAssignTag: (assetId, tagId) => { void assignAssetToTag(assetId, tagId); },
+        onRestoreTrashedFolder: (tombstoneId, name) => {
           void restoreTrashedManagedFolder(tombstoneId, name);
-        }}
-        onEmptyTrash={() => {
+        },
+        onEmptyTrash: () => {
           void emptyTrash();
-        }}
+        },
+        pluginBrowseScope,
+  pluginViewerState,
+  pluginContributionRefreshKey,
+  menuSkipScope,
+  openWithPrograms: openWithSettings.programs,
+  semanticSearchEnabled: embeddingBound,
+  embeddingSelectionId,
+  embeddingAdapter: embeddingService?.adapter ?? null,
+  embeddingModalities: embeddingService?.modalities ?? null,
+}}>
+      <AssetContextMenu
+        busy={busy}
+        assets={visibleAssets}
+        canAnalyze={
+          aiAnalyzeConnectionReady(aiHasKey, aiConnectionState) && !aiAnalyzing
+        }
+        aiDisconnected={aiAnalyzeShowsDisconnectGlyph(
+          aiHasKey,
+          aiConnectionState,
+        )}
+        pasteTargetFolderId={browsePasteDestination}
       />
+      </AssetContextMenuActionsProvider>
 </>
   );
 }

@@ -1,6 +1,7 @@
+import { useSessionField } from "./stores/session-store";
 import { useBrowseField } from "./stores/browse-store";
 import { useNavigationField } from "./stores/navigation-store";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode, createContext, useContext } from "react";
 import type { KeelLibraryApi } from "../shared/library-api";
 import type {
   LinkedFolderSummary,
@@ -327,15 +328,21 @@ function FolderCoverMenuItems({
 }
 
 interface AssetContextMenuProps {
-  libraryId?: string;
   busy?: boolean;
-  pluginBrowseScope?: Partial<PluginContributionContext["browse"]>;
-  pluginViewerState?: Partial<PluginContributionContext["viewer"]>;
-  pluginApi?: KeelPluginManagerApi;
-  pluginContributionRefreshKey?: string | null;
   assets: AssetSummary[];
-  /** Current browse-scope IDs so select-all is not treated as "out of scope". */
-  menuSkipScope?: MenuSkipScopeOptions;
+  canAnalyze: boolean;
+  /** Serpent-rsbt: show link-off on AI analyze when connection is unavailable. */
+  aiDisconnected: boolean;
+  /**
+   * Managed folder that receives OS clipboard paste from asset menus.
+   * Typically the current browse folder; null hides paste.
+   */
+  pasteTargetFolderId: string | null | undefined;
+  /** Folder tombstones in trash (Serpent-b3kf / empty-trash enablement). */
+}
+
+/** Operations AssetContextMenu triggers; the parent provides them (P4). */
+export interface AssetContextMenuActions {
   onCreateSubfolder: (folderId: string) => void;
   onExpandFolderTree: (folderId: string) => void;
   onCollapseFolderTree: (folderId: string) => void;
@@ -384,14 +391,9 @@ interface AssetContextMenuProps {
   onRelink: (assetId: string) => void;
   onAnalyze: (assetId: string, batchIds?: readonly string[]) => void;
   onClearAiContent: (assetIds: string[]) => void;
-  canAnalyze: boolean;
-  /** Serpent-rsbt: show link-off on AI analyze when connection is unavailable. */
-  aiDisconnected: boolean;
   onCopyToLinked: (folder: LinkedFolderSummary, assetIds: string[]) => void;
   onClearSelection: () => void;
   onOpenExternal: (assetId: string) => void;
-  /** PF: programs registered in the open-with settings. */
-  openWithPrograms?: readonly { programId: string; name: string }[];
   onOpenWithProgram?: (assetId: string, programId: string) => void;
   /** PF: the system "open with" picker. */
   onOpenWithPicker?: (assetId: string) => void;
@@ -407,23 +409,12 @@ interface AssetContextMenuProps {
   onDissolveImageSequences: (sequenceIds: string[]) => void;
   onRevealInFolder: (assetId: string) => void;
   onShowInLibraryFolder: (assetId: string) => void;
-  semanticSearchEnabled: boolean;
-  embeddingSelectionId?: string | null;
-  embeddingAdapter?: EmbeddingHttpAdapter | null;
-  embeddingModalities?: readonly EmbeddingModality[] | null;
   onFindSimilar: (assetId: string) => void;
   onCopyFilePath: (assetId: string) => void;
   /** OS file clipboard copy (Finder/Explorer interoperable). */
   onCopyAssetFiles: (assetIds: string[]) => void;
-  /**
-   * Managed folder that receives OS clipboard paste from asset menus.
-   * Typically the current browse folder; null hides paste.
-   */
-  pasteTargetFolderId: string | null | undefined;
   onRenameAssetFile: (assetId: string) => void;
   onAssignTag: (assetId: string, tagId: string) => void;
-  /** Folder tombstones in trash (Serpent-b3kf / empty-trash enablement). */
-  trashedFolderCount: number;
   onRestoreTrashedFolder: (tombstoneId: string, name: string) => void;
   onEmptyTrash: () => void;
   onCloseWorkspaceTab: (tabId: string) => void;
@@ -432,65 +423,44 @@ interface AssetContextMenuProps {
     entity: { kind: "folder"; id: string },
   ) => void;
   onCopyWorkspaceTabName: (name: string) => void;
+
+  pluginBrowseScope?: Partial<PluginContributionContext["browse"]>;
+  pluginViewerState?: Partial<PluginContributionContext["viewer"]>;
+  pluginContributionRefreshKey?: string | null;
+  /** Current browse-scope IDs so select-all is not treated as "out of scope". */
+  menuSkipScope?: MenuSkipScopeOptions;
+  /** PF: programs registered in the open-with settings. */
+  openWithPrograms?: readonly { programId: string; name: string }[];
+  semanticSearchEnabled: boolean;
+  embeddingSelectionId?: string | null;
+  embeddingAdapter?: EmbeddingHttpAdapter | null;
+  embeddingModalities?: readonly EmbeddingModality[] | null;
+}
+
+const AssetContextMenuActionsContext = createContext<AssetContextMenuActions | null>(null);
+export const AssetContextMenuActionsProvider = AssetContextMenuActionsContext.Provider;
+
+function useAssetContextMenuActions(): AssetContextMenuActions {
+  const actions = useContext(AssetContextMenuActionsContext);
+  if (!actions) throw new Error("AssetContextMenu needs AssetContextMenuActionsProvider.");
+  return actions;
 }
 
 export function AssetContextMenu(props: AssetContextMenuProps) {
   const { locale, t } = useLocale();
   const {
     assets,
-    menuSkipScope,
-    onCreateSubfolder,
-    onExpandFolderTree,
-    onCollapseFolderTree,
-    onImportLinkedFolderInto,
-    onSetIgnore,
-    onRenameFolder,
-    onOpenFolderInFileManager,
-    onCopyFolderPath,
-    onCopyFolder,
-    onPasteIntoFolder,
-    onCloneFolder,
-    onMoveFolder,
-    onOpenLinkedRules,
-    onTrashManagedFolder,
-    onDeleteFolderFromDisk,
-    onRemoveLinkedFolder,
-    onSetEntityAppearance,
-    onChooseFolderCover,
-    onChooseFolderCoverFromLibrary,
-    onClearFolderCover,
-    onBatchAssignTag,
-    onBatchRemoveTag,
-    onMoveToFolder,
-    onTrash,
-    onDeleteFromDisk,
-    onRestore,
-    onPermanentDelete,
-    onRelink,
-    onAnalyze,
-    onClearAiContent,
     canAnalyze,
     aiDisconnected,
-    onClearSelection,
-    onOpenExternal,
-    openWithPrograms = [],
-    onOpenWithProgram,
-    onOpenWithPicker,
-    onViewAsset,
-    onRevealInFolder,
-    onShowInLibraryFolder,
-    semanticSearchEnabled,
-    embeddingSelectionId = null,
-    embeddingAdapter = null,
-    embeddingModalities = null,
-    onFindSimilar,
-    onCopyFilePath,
-    onCopyAssetFiles,
     pasteTargetFolderId,
-    onRenameAssetFile,
-    onAssignTag,
   } = props;
+  const { onCreateSubfolder, onExpandFolderTree, onCollapseFolderTree, onImportLinkedFolderInto, onSetIgnore, onRenameFolder, onOpenFolderInFileManager, onCopyFolderPath, onCopyFolder, onPasteIntoFolder, onCloneFolder, onMoveFolder, onOpenLinkedRules, onTrashManagedFolder, onDeleteFolderFromDisk, onRemoveLinkedFolder, onSetEntityAppearance, onChooseFolderCover, onChooseFolderCoverFromLibrary, onClearFolderCover, onUseAssetAsFolderCover, onBatchAssignTag, onBatchRemoveTag, onMoveToFolder, onTrash, onDeleteFromDisk, onRestore, onPermanentDelete, onRelink, onAnalyze, onClearAiContent, onClearSelection, onOpenExternal, onOpenWithProgram, onOpenWithPicker, onViewAsset, onSetAssetColorSpace, onCreateImageSequence, onSetImageSequenceFps, onDissolveImageSequence, onDissolveImageSequences, onRevealInFolder, onShowInLibraryFolder, onFindSimilar, onCopyFilePath, onCopyAssetFiles, onRenameAssetFile, onAssignTag, onRestoreTrashedFolder, onEmptyTrash, onCloseWorkspaceTab, onCloseOtherWorkspaceTabs, onRevealWorkspaceTabEntity, onCopyWorkspaceTabName , pluginBrowseScope, pluginViewerState, pluginContributionRefreshKey, menuSkipScope, openWithPrograms = [], semanticSearchEnabled, embeddingSelectionId = null, embeddingAdapter = null, embeddingModalities = null } = useAssetContextMenuActions();
   const [tags] = useNavigationField("tags");
+  const [contextLibrary] = useSessionField("library");
+  const libraryId = contextLibrary?.libraryId;
+  const pluginApi = (window as { keel?: { plugins?: KeelPluginManagerApi } }).keel?.plugins;
+  const [trashedFolders] = useNavigationField("trashedFolders");
+  const trashedFolderCount = trashedFolders.length;
   const [linkedFolders] = useNavigationField("linkedFolders");
   const [managedFolders] = useNavigationField("folders");
   const [customFolderCoverIds] = useBrowseField("folderCustomCoverIds");
@@ -510,20 +480,20 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
     return createPluginMenuContributionContext({
       descriptor: activeContextMenu.descriptor,
       assets: props.assets,
-      libraryId: props.libraryId,
+      libraryId: libraryId,
       busy: props.busy,
       locale,
-      browse: props.pluginBrowseScope,
-      viewer: props.pluginViewerState,
+      browse: pluginBrowseScope,
+      viewer: pluginViewerState,
     });
   }, [
     activeContextMenu,
     locale,
     props.busy,
     props.assets,
-    props.libraryId,
-    props.pluginBrowseScope,
-    props.pluginViewerState,
+    libraryId,
+    pluginBrowseScope,
+    pluginViewerState,
   ]);
   const [pickerMenuKey, setPickerMenuKey] = useState(activeDescriptorKey);
   if (pickerMenuKey !== activeDescriptorKey) {
@@ -545,7 +515,7 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
     if (
       !descriptor ||
       descriptor.type !== "multi-asset" ||
-      !props.libraryId
+      !libraryId
     ) {
       return;
     }
@@ -555,7 +525,7 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
     }
     let cancelled = false;
     void (window as RendererWindow).keel?.library
-      ?.pendingAiAssets({ libraryId: props.libraryId, assetIds })
+      ?.pendingAiAssets({ libraryId: libraryId, assetIds })
       .then((result) => {
         if (!cancelled && result.ok) {
           setAiPendingAssetIds(result.value.assetIds);
@@ -567,24 +537,24 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
     return () => {
       cancelled = true;
     };
-  }, [activeDescriptorKey, activeContextMenu, props.libraryId]);
+  }, [activeDescriptorKey, activeContextMenu, libraryId]);
 
 
   const pluginAssetMenuItems = usePluginMenuContributions(
-    props.pluginApi,
-    props.libraryId,
+    pluginApi,
+    libraryId,
     "menus.asset",
     activeContextMenu?.descriptor.type === "asset"
       || activeContextMenu?.descriptor.type === "multi-asset",
-    `${props.pluginContributionRefreshKey ?? ""}:${activeDescriptorKey}`,
+    `${pluginContributionRefreshKey ?? ""}:${activeDescriptorKey}`,
     pluginContributionContext,
   );
   const pluginFolderMenuItems = usePluginMenuContributions(
-    props.pluginApi,
-    props.libraryId,
+    pluginApi,
+    libraryId,
     "menus.folder",
     activeContextMenu?.descriptor.type === "folder",
-    `${props.pluginContributionRefreshKey ?? ""}:${activeDescriptorKey}`,
+    `${pluginContributionRefreshKey ?? ""}:${activeDescriptorKey}`,
     pluginContributionContext,
   );
   const pluginAssetMenuPlacement = useMemo(
@@ -604,11 +574,11 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
     [pluginFolderMenuItems],
   );
   const pluginWorkspaceMenuItems = usePluginMenuContributions(
-    props.pluginApi,
-    props.libraryId,
+    pluginApi,
+    libraryId,
     "menus.workspace",
     activeContextMenu?.descriptor.type === "workspace",
-    `${props.pluginContributionRefreshKey ?? ""}:${activeDescriptorKey}`,
+    `${pluginContributionRefreshKey ?? ""}:${activeDescriptorKey}`,
     pluginContributionContext,
   );
 
@@ -619,8 +589,8 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
       folderIds?: string[];
     },
   ) => {
-    if (!props.pluginApi || !props.libraryId) return;
-    void runPluginMenuCommand(props.pluginApi, props.libraryId, item, {
+    if (!pluginApi || !libraryId) return;
+    void runPluginMenuCommand(pluginApi, libraryId, item, {
       ...context,
       assets: (context.assetIds ?? [])
         .map((assetId) => props.assets.find((asset) => asset.assetId === assetId))
@@ -730,14 +700,14 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
                       "workspace.close-tab",
                       isMac ? "mac" : "windows",
                     ) ?? undefined}
-                    onAction={() => props.onCloseWorkspaceTab(desc.tabId)}
+                    onAction={() => onCloseWorkspaceTab(desc.tabId)}
                   />
                 ) : null}
                 <ContextMenuItem
                   disabled={!desc.canCloseOthers}
                   icon={<Icon name="close" size={14} />}
                   label={t("tabs.closeOthers")}
-                  onAction={() => props.onCloseOtherWorkspaceTabs(desc.tabId)}
+                  onAction={() => onCloseOtherWorkspaceTabs(desc.tabId)}
                 />
               </ContextMenuSection>
               {desc.entity ? (
@@ -745,12 +715,12 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
                   <ContextMenuItem
                     icon={<Icon name="folder-tree" size={14} />}
                     label={t("tabs.revealFolder")}
-                    onAction={() => props.onRevealWorkspaceTabEntity(desc.entity!)}
+                    onAction={() => onRevealWorkspaceTabEntity(desc.entity!)}
                   />
                   <ContextMenuItem
                     icon={<Icon name="copy" size={14} />}
                     label={t("tabs.copyName")}
-                    onAction={() => props.onCopyWorkspaceTabName(desc.name)}
+                    onAction={() => onCopyWorkspaceTabName(desc.name)}
                   />
                   {desc.entity.kind === "folder" ? (
                     <>
@@ -782,17 +752,17 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
               danger
               disabled={
                 trashedAssetCount === 0 &&
-                props.trashedFolderCount === 0
+                trashedFolderCount === 0
               }
               disabledReason={
                 trashedAssetCount === 0 &&
-                props.trashedFolderCount === 0
+                trashedFolderCount === 0
                   ? t("empty.trashTitle")
                   : undefined
               }
               icon={<Icon name="trash" size={14} />}
               label={t("toolbar.emptyTrash")}
-              onAction={props.onEmptyTrash}
+              onAction={onEmptyTrash}
             />
           </ContextMenuSection>
         )}
@@ -804,7 +774,7 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
               onAction={() => {
                 const desc = activeContextMenu.descriptor;
                 if (desc.type !== "trashed-folder") return;
-                props.onRestoreTrashedFolder(desc.tombstoneId, desc.name);
+                onRestoreTrashedFolder(desc.tombstoneId, desc.name);
               }}
             />
           </ContextMenuSection>
@@ -1500,7 +1470,7 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
                 icon={<Icon name="collection" size={14} />}
                 label={t("menu.createImageSequence")}
                 disabled={!canCreateImageSequence}
-                onAction={() => props.onCreateImageSequence(targetAssetIds)}
+                onAction={() => onCreateImageSequence(targetAssetIds)}
               />
               {canDissolveImageSequences && (
                 <ContextMenuItem
@@ -1508,7 +1478,7 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
                   label={t("menu.dissolveImageSequencesCount", {
                     count: sequenceIdsToDissolve.length,
                   })}
-                  onAction={() => props.onDissolveImageSequences(sequenceIdsToDissolve)}
+                  onAction={() => onDissolveImageSequences(sequenceIdsToDissolve)}
                 />
               )}
             {tags.length > 0 && assignTagItem && removeTagItem && (
@@ -1790,7 +1760,7 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
                     >
                       <ColorSpaceSubmenuItems
                         onPick={(colorSpace) =>
-                          props.onSetAssetColorSpace(assetId, colorSpace)
+                          onSetAssetColorSpace(assetId, colorSpace)
                         }
                       />
                     </ContextMenuSubmenu>
@@ -1893,7 +1863,7 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
                     <ContextMenuItem
                       icon={<Icon name="file" size={14} />}
                       label={t("command.asset.useAsFolderCover")}
-                      onAction={() => props.onUseAssetAsFolderCover(assetId, parentFolderCoverId)}
+                      onAction={() => onUseAssetAsFolderCover(assetId, parentFolderCoverId)}
                     />
                   ) : null}
                   {singleAsset?.sequence ? (
@@ -1901,7 +1871,7 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
                       icon={<Icon name="sliders" size={14} />}
                       label={t("menu.setImageSequenceFps")}
                       onAction={() =>
-                        props.onSetImageSequenceFps(
+                        onSetImageSequenceFps(
                           singleAsset.sequence!.sequenceId,
                           singleAsset.sequence!.frameCount,
                           singleAsset.sequence!.fps,
@@ -1914,7 +1884,7 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
                       icon={<Icon name="close" size={14} />}
                       label={t("menu.dissolveImageSequence")}
                       onAction={() =>
-                        props.onDissolveImageSequence(
+                        onDissolveImageSequence(
                           singleAsset.sequence!.sequenceId,
                         )
                       }

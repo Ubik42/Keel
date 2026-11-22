@@ -1,10 +1,6 @@
 import { useNavigationField } from "./stores/navigation-store";
 import { useQueryField } from "./stores/query-store";
-import {
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useRef, useState, createContext, useContext } from "react";
 
 import { Icon, type IconName } from "./Icons";
 import { Select } from "./workbench/ui/primitives";
@@ -78,15 +74,28 @@ export type DimensionFilterBarProps = {
    */
   interactionsLocked?: boolean;
   snapshot: DiscoveryFilterSnapshot;
+  shuffleActive?: boolean;
+};
+
+/** Operations DimensionFilterBar triggers; the parent provides them (P4). */
+export interface DimensionFilterBarActions {
   setTagFilterExpression?: (value: string) => void;
   setTagFilter: (value: string) => void;
   onTagNamesChange: (names: string[]) => void;
   setSortField: (value: SortFieldOption) => void;
   setSortOrder: (value: SortDefinition["order"]) => void;
-  shuffleActive?: boolean;
   onShuffle?: () => void;
   onClearFilter: (id: ClearableFilterId) => void;
-};
+}
+
+const DimensionFilterBarActionsContext = createContext<DimensionFilterBarActions | null>(null);
+export const DimensionFilterBarActionsProvider = DimensionFilterBarActionsContext.Provider;
+
+function useDimensionFilterBarActions(): DimensionFilterBarActions {
+  const actions = useContext(DimensionFilterBarActionsContext);
+  if (!actions) throw new Error("DimensionFilterBar needs DimensionFilterBarActionsProvider.");
+  return actions;
+}
 
 /** Category checkbox with native indeterminate for partial format selection. */
 function FormatGroupCheckbox({
@@ -162,14 +171,9 @@ export function DimensionFilterBar(props: DimensionFilterBarProps) {
     disabled,
     interactionsLocked = false,
     snapshot,
-    setTagFilterExpression,
-    onTagNamesChange,
-    setSortField,
-    setSortOrder,
     shuffleActive = false,
-    onShuffle,
-    onClearFilter,
   } = props;
+  const { setTagFilterExpression, onTagNamesChange, setSortField, setSortOrder, onShuffle, onClearFilter } = useDimensionFilterBarActions();
   const [availabilityFilter, setAvailabilityFilter] = useQueryField("availabilityFilter");
   const [aspectRatioRange, setAspectRatioRange] = useQueryField("aspectRatioRange");
   const [aspectRatioRanges, setAspectRatioRanges] = useQueryField("aspectRatioRanges");

@@ -4,18 +4,7 @@ import { useNavigationField } from "./stores/navigation-store";
 import { useQueryField } from "./stores/query-store";
 import { useSelectionField } from "./stores/selection-store";
 import { useSessionField } from "./stores/session-store";
-import {
-  useCallback,
-  useEffect,
-  useId,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-  type MutableRefObject,
-  type ReactNode,
-  type KeyboardEvent as ReactKeyboardEvent,
-} from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type MutableRefObject, type ReactNode, type KeyboardEvent as ReactKeyboardEvent, createContext, useContext } from "react";
 import { Icon, type IconName } from "./Icons";
 import { AppearanceGlyph } from "./AppearanceGlyph";
 import type { EntityAppearance } from "../shared/entity-appearance";
@@ -661,7 +650,6 @@ export interface NavigationSidebarProps {
   automaticTasks?: ReactNode;
 
   pluginSidebarViews?: readonly { id: string; title: string }[];
-  onToggleShowIgnoredItems: () => void;
   revealTarget?: {
     kind: "folder";
     id: string;
@@ -677,6 +665,17 @@ export interface NavigationSidebarProps {
     root: number;
     byFolderId: ReadonlyMap<string, number>;
   } | null;
+  folderTreeActionsRef?: MutableRefObject<FolderTreeExpandActions | null>;
+  /** Serpent-b8a853: pulse the sidebar "导入链接文件夹" entry as a feature hint. */
+  linkedFolderHintActive?: boolean;
+
+  // --- Inline folder edit (REQ-FOLDER-007) ---
+  inlineFolderEdit: InlineFolderEditState | null;
+}
+
+/** Operations NavigationSidebar triggers; the parent provides them (P4). */
+export interface NavigationSidebarActions {
+  onToggleShowIgnoredItems: () => void;
 
   // --- Navigation callbacks ---
   onChooseAllAssets: () => void;
@@ -705,7 +704,6 @@ export interface NavigationSidebarProps {
    * i.e. on the library root.
    */
   onOpenRootFolderContextMenu?: (position: { x: number; y: number }) => void;
-  folderTreeActionsRef?: MutableRefObject<FolderTreeExpandActions | null>;
   /** Resolve an Electron native file drop back to managed asset ids. */
   onResolveManagedAssetDrop?: (files: File[]) => Promise<string[]>;
   /** True only while Keel is completing a drag it started from an asset card. */
@@ -733,17 +731,12 @@ export interface NavigationSidebarProps {
 
   // --- Linked folder actions ---
   onImportFolderAsLinked: () => void;
-  /** Serpent-b8a853: pulse the sidebar "导入链接文件夹" entry as a feature hint. */
-  linkedFolderHintActive?: boolean;
   onLinkedFolderHintHover?: () => void;
   onLinkedFolderHintHoverEnd?: () => void;
   onRelinkFolder: (folderId: string) => void;
 
   // --- Folder creation entry (sidebar 「+」; opens the inline edit row) ---
   onAddFolder: () => void;
-
-  // --- Inline folder edit (REQ-FOLDER-007) ---
-  inlineFolderEdit: InlineFolderEditState | null;
   onInlineFolderEditChange: (value: string) => void;
   onInlineFolderEditCommit: (
     onCreateSuccess?: (
@@ -772,6 +765,15 @@ export interface NavigationSidebarProps {
   ) => void;
 }
 
+const NavigationSidebarActionsContext = createContext<NavigationSidebarActions | null>(null);
+export const NavigationSidebarActionsProvider = NavigationSidebarActionsContext.Provider;
+
+function useNavigationSidebarActions(): NavigationSidebarActions {
+  const actions = useContext(NavigationSidebarActionsContext);
+  if (!actions) throw new Error("NavigationSidebar needs NavigationSidebarActionsProvider.");
+  return actions;
+}
+
 // ---------------------------------------------------------------------------
 // NavigationSidebar — component
 // ---------------------------------------------------------------------------
@@ -792,43 +794,13 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
   const t = useT();
   const {
     pluginSidebarViews = [],
-    onToggleShowIgnoredItems,
     revealTarget = null,
     filteredFolderCounts = null,
-    onChooseAllAssets,
-    onEnterTrash,
-    onTrashContextMenu,
-    onEnterTagManagement,
-    onChoosePluginSidebarView,
-    onChooseFolder,
-    onExternalDragOver,
-    onExternalDrop,
-    getManagedAssetDragIds,
-    getManagedFolderDragIds,
-    onOpenRootFolderContextMenu,
     folderTreeActionsRef,
-    onResolveManagedAssetDrop,
-    isInternalAssetDrag,
-    onAssetsDroppedOnFolder,
-    onFoldersDroppedOnFolder,
-    onToggleFolderSelection,
-    onAssetsDroppedOnTrash,
-    onFoldersDroppedOnTrash,
-    onManagedAssetCopyModeChange,
-    onImportFolderAsLinked,
     linkedFolderHintActive,
-    onLinkedFolderHintHover,
-    onLinkedFolderHintHoverEnd,
-    onRelinkFolder,
-    onAddFolder,
     inlineFolderEdit,
-    onInlineFolderEditChange,
-    onInlineFolderEditCommit,
-    onInlineFolderEditCancel,
-    onOpenContextMenu,
-    onImportDroppedFiles,
-    onCopyManagedToLinked,
   } = props;
+  const { onToggleShowIgnoredItems, onChooseAllAssets, onEnterTrash, onTrashContextMenu, onEnterTagManagement, onChoosePluginSidebarView, onChooseFolder, onExternalDragOver, onExternalDrop, getManagedAssetDragIds, getManagedFolderDragIds, onOpenRootFolderContextMenu, onResolveManagedAssetDrop, isInternalAssetDrag, onAssetsDroppedOnFolder, onFoldersDroppedOnFolder, onToggleFolderSelection, onAssetsDroppedOnTrash, onFoldersDroppedOnTrash, onManagedAssetCopyModeChange, onImportFolderAsLinked, onLinkedFolderHintHover, onLinkedFolderHintHoverEnd, onRelinkFolder, onAddFolder, onInlineFolderEditChange, onInlineFolderEditCommit, onInlineFolderEditCancel, onOpenContextMenu, onImportDroppedFiles, onCopyManagedToLinked } = useNavigationSidebarActions();
   const [library] = useSessionField("library");
   const [assetScope] = useNavigationField("assetScope");
   const [showTrash] = useNavigationField("showTrash");

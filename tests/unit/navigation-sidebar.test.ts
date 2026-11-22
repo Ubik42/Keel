@@ -7,6 +7,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
   NavigationSidebar,
+  NavigationSidebarActionsProvider,
+  type NavigationSidebarActions,
   type NavigationSidebarProps,
 } from "../../src/renderer/NavigationSidebar";
 import { MANAGED_FOLDERS_DRAG_TYPE } from "../../src/renderer/workbench/tree/folder-drag-drop";
@@ -104,7 +106,13 @@ type NavigationStoreProps = {
   selectedFolderIds?: string[];
   onConvertLinkedDialog?: unknown;
 };
-type NavigationOverrides = Partial<NavigationSidebarProps> & NavigationStoreProps;
+type SidebarProps = NavigationSidebarProps & NavigationSidebarActions;
+type NavigationOverrides = Partial<SidebarProps> & NavigationStoreProps;
+
+/** The sidebar with its operations provided the way App provides them. */
+function sidebar(props: SidebarProps): ReturnType<typeof createElement> {
+  return createElement(NavigationSidebarActionsProvider, { value: props }, createElement(NavigationSidebar, props));
+}
 
 const STORE_PROPS: Record<keyof NavigationStoreProps, (value: never) => void> = {
   library: sessionFields.setterFor("library"),
@@ -126,7 +134,7 @@ const STORE_PROPS: Record<keyof NavigationStoreProps, (value: never) => void> = 
 
 function createNavigationProps(
   overrides: NavigationOverrides = {},
-): NavigationSidebarProps {
+): SidebarProps {
   const merged: Record<string, unknown> = { ...navigationDefaults(), ...overrides };
   for (const [key, set] of Object.entries(STORE_PROPS)) {
     if (key in merged) {
@@ -134,7 +142,7 @@ function createNavigationProps(
       delete merged[key];
     }
   }
-  return merged as unknown as NavigationSidebarProps;
+  return merged as unknown as SidebarProps;
 }
 
 function navigationDefaults(): NavigationOverrides {
@@ -206,7 +214,7 @@ describe("NavigationSidebar virtual library root", () => {
         createElement(
           LocaleProvider,
           null,
-          createElement(NavigationSidebar, props),
+          sidebar(props),
         ),
       );
     });
@@ -250,7 +258,7 @@ describe("NavigationSidebar virtual library root", () => {
       root?.render(createElement(
         LocaleProvider,
         null,
-        createElement(NavigationSidebar, createNavigationProps({
+        sidebar(createNavigationProps({
           folders: [parent, child],
           revealTarget: { kind: "folder", id: child.folderId, requestId: 1 },
         })),
@@ -315,7 +323,7 @@ describe("NavigationSidebar virtual library root", () => {
         createElement(
           LocaleProvider,
           null,
-          createElement(NavigationSidebar, props),
+          sidebar(props),
         ),
       );
     });
@@ -394,7 +402,7 @@ describe("NavigationSidebar virtual library root", () => {
         createElement(
           LocaleProvider,
           null,
-          createElement(NavigationSidebar, props),
+          sidebar(props),
         ),
       );
     });
@@ -428,7 +436,7 @@ describe("NavigationSidebar virtual library root", () => {
         createElement(
           LocaleProvider,
           null,
-          createElement(NavigationSidebar, props),
+          sidebar(props),
         ),
       );
     });
@@ -459,7 +467,7 @@ describe("NavigationSidebar virtual library root", () => {
         createElement(
           LocaleProvider,
           null,
-          createElement(NavigationSidebar, props),
+          sidebar(props),
         ),
       );
     });
@@ -500,7 +508,7 @@ describe("NavigationSidebar virtual library root", () => {
         createElement(
           LocaleProvider,
           null,
-          createElement(NavigationSidebar, props),
+          sidebar(props),
         ),
       );
     });
@@ -574,7 +582,7 @@ describe("NavigationSidebar folder-section blank area", () => {
           // Explicit preference keeps the renderer independent of
           // globalThis.localStorage (see the sibling suite).
           { children: null, initialPreference: "zh-CN" },
-          createElement(NavigationSidebar, props),
+          sidebar(props),
         ),
       );
     });

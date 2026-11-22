@@ -5,13 +5,7 @@ import { useNavigationField } from "./stores/navigation-store";
 import { usePrefsStore } from "./stores/prefs-store";
 import { useSessionField } from "./stores/session-store";
 import { appearanceColorVar } from './AppearanceGlyph';
-import {
-  useState,
-  useMemo,
-  useRef,
-  useEffect,
-  useLayoutEffect,
-} from "react";
+import { useState, useMemo, useRef, useEffect, useLayoutEffect, createContext, useContext } from "react";
 
 import type { EntityAppearance } from "../shared/entity-appearance";
 import type { FolderBrowseEntry } from "../shared/asset-types";
@@ -172,12 +166,24 @@ export interface InspectorPanelProps {
   /** Full multi-selection in canvas order; primary is still `selectedAsset`. */
   selectedAssets?: AssetSummary[];
   api?: KeelLibraryApi | null;
-  folderCount: number;
-  loadMetadata: () => void;
   // Metadata editor state
   displayedPalette: string[];
   automaticPaletteRatios: Map<string, number>;
   aiContent: AiContent | null;
+  // REQ-MENU-007 / REQ-SELECT-004: multi-select UE edit model (null = single-asset path).
+  multiEdit?: InspectorMultiEditModel | null;
+  pluginContributionRefreshKey?: string | null;
+  /** Canvas folder selection, or the folder currently open when nothing is selected. */
+  folderInspector?: {
+    entries: FolderBrowseEntry[];
+    appearance?: EntityAppearance | null;
+    byteSize: number | null;
+  } | null;
+}
+
+/** Operations InspectorPanel triggers; the parent provides them (P4). */
+export interface InspectorPanelActions {
+  loadMetadata: () => void;
   // Metadata editor handlers
   handleMetadataDescriptionSave: () => void;
   handleMetadataDescriptionInput: (
@@ -196,21 +202,19 @@ export interface InspectorPanelProps {
   onRenameTag?: (tagId: string, name: string) => Promise<boolean>;
   onCreateAndAssignTag?: (tagName: string) => void;
   onApplyTagNames?: (tagNames: string[]) => void;
-  // REQ-MENU-007 / REQ-SELECT-004: multi-select UE edit model (null = single-asset path).
-  multiEdit?: InspectorMultiEditModel | null;
   /** 点击色卡分段复制颜色后的反馈（toast 由 App 统一发）。copied=false 表示剪贴板写入失败。 */
   onPaletteColorCopy?: (color: string, copied: boolean) => void;
   /** 在系统浏览器中打开当前源链接（URL 有效性由主进程二次校验）。 */
   onOpenSourceUrl?: () => void;
-  pluginApi?: KeelPluginManagerApi;
-  libraryId?: string;
-  pluginContributionRefreshKey?: string | null;
-  /** Canvas folder selection, or the folder currently open when nothing is selected. */
-  folderInspector?: {
-    entries: FolderBrowseEntry[];
-    appearance?: EntityAppearance | null;
-    byteSize: number | null;
-  } | null;
+}
+
+const InspectorPanelActionsContext = createContext<InspectorPanelActions | null>(null);
+export const InspectorPanelActionsProvider = InspectorPanelActionsContext.Provider;
+
+function useInspectorPanelActions(): InspectorPanelActions {
+  const actions = useContext(InspectorPanelActionsContext);
+  if (!actions) throw new Error("InspectorPanel needs InspectorPanelActionsProvider.");
+  return actions;
 }
 
 function InspectorHeroSinglePreview({
@@ -622,34 +626,19 @@ export function InspectorPanel(props: InspectorPanelProps) {
     selectedAsset,
     selectedAssets = [],
     api = null,
-    folderCount,
-    loadMetadata,
     displayedPalette,
     automaticPaletteRatios,
     aiContent,
-    handleMetadataDescriptionSave,
-    handleMetadataDescriptionInput,
-    handleRatingClick,
-    handleFavoriteToggle,
-    handleSourceUrlSave,
-    handleSourceUrlInput,
-    handleAuthorSave,
-    handleAuthorInput,
-    onAssignTagToAsset,
-    onRemoveTagFromAsset,
-    onFilterTag,
-    onRenameTag,
-    onCreateAndAssignTag,
-    onApplyTagNames,
     multiEdit = null,
-    onPaletteColorCopy,
-    onOpenSourceUrl,
-    pluginApi,
-    libraryId,
     pluginContributionRefreshKey = null,
     folderInspector = null,
   } = props;
+  const { loadMetadata, handleMetadataDescriptionSave, handleMetadataDescriptionInput, handleRatingClick, handleFavoriteToggle, handleSourceUrlSave, handleSourceUrlInput, handleAuthorSave, handleAuthorInput, onAssignTagToAsset, onRemoveTagFromAsset, onFilterTag, onRenameTag, onCreateAndAssignTag, onApplyTagNames, onPaletteColorCopy, onOpenSourceUrl } = useInspectorPanelActions();
   const [library] = useSessionField("library");
+  const libraryId = library?.libraryId;
+  const [folders] = useNavigationField("folders");
+  const folderCount = folders.length;
+  const pluginApi = (window as { keel?: { plugins?: KeelPluginManagerApi } }).keel?.plugins;
   const [allAssetCount] = useBrowseField("allAssetCount");
   const [allTags] = useNavigationField("tags");
   const [rawAssetMetadata] = useInspectorField("assetMetadata");
