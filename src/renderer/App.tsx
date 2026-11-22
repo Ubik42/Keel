@@ -8,14 +8,14 @@ import { useScrollbarActivity } from "./workbench/collection/use-scrollbar-activ
 import { useNativeDragReadyIds } from "./use-native-drag-readiness";
 import { type AssetScope, useNavigationField } from "./stores/navigation-store";
 import { type AssetMetadataResult, type AssetSummary, type FilterClause, type LinkedFolderRule, type SortDefinition } from "../shared/asset-types";
-import { useDialogField } from "./stores/dialogs-store";
+import { dialogsFields, useDialogField } from "./stores/dialogs-store";
 import { browseFields, useBrowseField } from "./stores/browse-store";
 import { type BrowseMembershipChange } from "./browse-filter-membership";
 import { useSelectionField } from "./stores/selection-store";
 import { createLibraryTransitionLock } from "./library-transition-lock";
 import { createTrackedLibraryApi } from "./tracked-library-api";
 import { useToastNotifications } from "./useToastNotifications";
-import { CreateDialog, type CreateLibraryPhase } from "./CreateDialog";
+import { type CreateLibraryPhase } from "./CreateDialog";
 import { transfersFields, useTransfersField } from "./stores/transfers-store";
 import { isPostImportSequenceOfferId, type PostImportSequencePlan } from "./post-import-image-sequences";
 import { importedSequenceFrameUrl, type SequencePreviewFrame, type SequencePreviewSource } from "./image-sequence-preview";
@@ -23,13 +23,13 @@ import { type ImportConflictPlan, type ImportSourceFailurePlan } from "../shared
 import { loadImportConflictPreferences, type RememberedDuplicateDecision, type RememberedNameConflictDecision } from "./import-conflict-preferences";
 import { resolveImportConflictPresentation } from "./import-conflict-flow";
 import { usePanelResize } from "./workbench/shell/use-panel-resize";
-import { useWorkspaceField } from "./stores/workspace-store";
+import { workspaceFields } from "./stores/workspace-store";
 import { LINKED_FOLDER_ADD_HINT_KEY, shouldShowLinkedFolderAddHint } from "./linked-folder-add-hint";
 import { hasFeatureHintBeenShown, isFeatureHintEnabled, saveFeatureHintPreferences, withFeatureHintShown } from "./feature-hint-preferences";
 import { FOLDER_BROWSE_CARD_PREFERENCES_CHANGED, loadFolderBrowseCardPreferences } from "./folder-browse-card-preferences";
-import { useQueryField } from "./stores/query-store";
-import { parseSearchExpressionDetailed, searchExpressionReasonKey, type parseSearchExpression } from "./search-expression";
-import { clearSearchHistory, filterSearchHistory, moveSearchHistoryIndex, readSearchHistory, readVisibleSearchHistoryCount, rememberSearchQuery, searchHistoryNavigationDirection } from "./search-history";
+import { queryFields, useQueryField } from "./stores/query-store";
+import { parseSearchExpressionDetailed, type parseSearchExpression } from "./search-expression";
+import { readSearchHistory } from "./search-history";
 import { recursiveSubfoldersHintKey } from "./recursive-subfolders-hint";
 import { ContextMenuProvider, useContextMenu } from "./workbench/menu/context-menu";
 import { createDefaultWorkspaceTabBrowseState, type WorkspaceTabBrowseState, type WorkspaceTabSession, workspaceTabBrowseStateHasDiscoveryInput } from "./workspace-tabs";
@@ -42,7 +42,7 @@ import { addRetiredImportId, runImportRpc } from "./import-progress-session";
 import { usePluginsField } from "./stores/plugins-store";
 import { PluginSidebarViewPanel, isPluginSidebarViewsEnabled, usePluginSidebarViews } from "./plugin-sidebar-views";
 import { FOLDER_COVER_PICKER_PAGE_SIZE, folderCoverPickerAssetMatches, folderCoverPickerImageFilter, folderCoverPickerSearchQuery } from "./folder-cover-picker";
-import { LibraryOperationError, messageForPublicError, toMessage } from "./error-utils";
+import { LibraryOperationError, toMessage } from "./error-utils";
 import { browseEntryUnderPreview, type WorkspaceNavViewport, workspaceNavLocationsEqual } from "./workbench/workspace/workspace-nav-history";
 import { NavigationSidebar, type FolderTreeExpandActions } from "./NavigationSidebar";
 import { useWorkspaceTabsController } from "./use-workspace-tabs";
@@ -69,29 +69,24 @@ import { captureReflowAnchorFromCards, scheduleAnchorRestore, type ScrollOffsetS
 import { type PendingAssetReveal } from "./pending-asset-reveal";
 import { type BrowseViewSnapshot } from "./workbench/collection/view-restore";
 import { ASSET_DRAG_PREVIEW_HEIGHT, ASSET_DRAG_PREVIEW_WIDTH, dismissAssetDragPreview, setAssetDragPreviewCopyMode, showAssetDragPreview } from "./asset-drag-preview";
-import { loadSemanticSearchPreferences, saveSemanticSearchPreferences } from "./semantic-search-preferences";
 import { createPortal, flushSync } from "react-dom";
 import { virtualLayoutEntryForAsset } from "./browse/virtual-browse-layout";
 import { ScopeBreadcrumbs } from "./ScopeBreadcrumbs";
 import { assetCardKey, isCardHoverPreviewable, isCardSequencePlayable, resolveAssetCardCoverUrl } from "./asset-card-hover-preview";
 import { assetCaptionAlignClass, nextCanvasCaptionAlign, shouldShowGridDimensions } from "./canvas-preferences";
 import { folderSearchScope } from "./folder-browse-scope";
-import { LibrarySwitcher, buildRecentLibraryMenuEntries } from "./LibrarySwitcher";
+import { buildRecentLibraryMenuEntries } from "./LibrarySwitcher";
 import { saveFolderRecursivePreferences, withFolderRecursiveEnabled } from "./folder-recursive-preferences";
 import { descendantTagIds } from "./tag-tree-model";
 import { resolveInspectorTagTarget } from "./inspector-tag-target";
 import { compactFormatFilterTokens } from "../shared/text-media";
 import { buildTagFilterClauses, resolveTagFilterSets } from "./dimension-filter-selection";
-import { DEFAULT_IMAGE_SEQUENCE_FPS } from "../shared/image-sequence";
 import { splitAssetFileName } from "./useAssetRename";
-import { linkedRevealFolderId, parseLinkedVirtualFolderId } from "../shared/linked-folder-tree";
+import { parseLinkedVirtualFolderId } from "../shared/linked-folder-tree";
 import { playTaskCompletionSound } from "./task-completion-sound";
 import { isBrowseScopeAffectedByFolderTrash } from "./folder-trash-scope";
 import { formatBytes } from "./format-file-meta";
 import { isImeKeyboardEvent } from "./workbench/overlay/ime-safe-dismiss";
-import { aiAnalyzeConnectionReady, aiAnalyzeShowsDisconnectGlyph } from "./ai-connection-heartbeat";
-import { KEEL_VERSION } from "./main-menu-items";
-import { writeShowMissingLinkedFiles } from "./linked-missing-preference";
 import { resolveBrowseContextMenuIntent } from "./browse-selection-menu";
 import { HoverTipHost } from "./workbench/overlay/hover-tip";
 import { PluginUiDialogHost } from "./plugin-ui-dialog-host";
@@ -104,17 +99,10 @@ import { ContentDuplicateDialog } from "./ContentDuplicateDialog";
 import { ImportSourceFailureDialog } from "./ImportSourceFailureDialog";
 import { DeleteProgressOverlay } from "./DeleteProgressOverlay";
 import { BlockingProgressOverlay } from "./BlockingProgressOverlay";
-import { ScopeHistoryButtons } from "./ScopeHistoryButtons";
-import { MainMenu } from "./MainMenu";
-import { AppSettingsEntry } from "./AppSettingsEntry";
-import { WorkspaceTabs } from "./WorkspaceTabs";
 import { Icon } from "./Icons";
-import { SearchHistoryPopover } from "./SearchHistoryPopover";
-import { WindowsWindowControls } from "./workbench/shell/WindowsWindowControls";
-import { WindowEdgeResizeHandles } from "./workbench/shell/WindowEdgeResizeHandles";
 import { TagTreeSidebar } from "./TagTreeSidebar";
 import { AutomaticTasksSidebar } from "./AutomaticTasksSidebar";
-import { LIBRARY_ROOT_FOLDER_ID, isLibraryRootFolderId } from "../shared/library-root-folder";
+import { LIBRARY_ROOT_FOLDER_ID } from "../shared/library-root-folder";
 import { toggleFolderMultiSelection } from "./folder-selection-toggle";
 import { iconActionAttrs } from "./icon-action-attrs";
 import { CanvasToolbarControls } from "./CanvasToolbarControls";
@@ -143,31 +131,6 @@ import { MasonryColumns } from "./masonry-columns";
 import { BrowseLayoutPreview } from "./BrowseLayoutPreview";
 import { JustifiedAssetRows } from "./justified-asset-rows";
 import { InspectorPanel } from "./InspectorPanel";
-import { ImageSequenceDialog } from "./ImageSequenceDialog";
-import { LinkedRulesDialog } from "./LinkedRulesDialog";
-import { ConvertLinkedDialog } from "./ConvertLinkedDialog";
-import { RestoreDialog } from "./RestoreDialog";
-import { MoveDialog } from "./MoveDialog";
-import { FolderCoverPickerDialog } from "./FolderCoverPickerDialog";
-import { AppSettingsDialog } from "./AppSettingsDialog";
-import { AiConfigDialog } from "./AiConfigDialog";
-import { LibrarySettingsDialog } from "./LibrarySettingsDialog";
-import { OpenSyncLibraryDialog } from "./OpenSyncLibraryDialog";
-import { AppLogDialog } from "./AppLogDialog";
-import { LibraryRecoveryDialog } from "./LibraryRecoveryDialog";
-import { AutomaticTasksDialog } from "./AutomaticTasksDialog";
-import { ScriptSandboxPreviewDialog } from "./ScriptSandboxPreviewDialog";
-import { AboutDialog } from "./AboutDialog";
-import { OpenSourceLicensesDialog } from "./OpenSourceLicensesDialog";
-import { ExportDialog } from "./ExportDialog";
-import { ImportLibraryChooserDialog, OpenLibraryChooserDialog } from "./ImportLibraryChooserDialog";
-import { ImportDialog } from "./ImportDialog";
-import { RelinkPreview } from "./RelinkPreview";
-import { AiConnectionFailureDialog } from "./AiConnectionFailureDialog";
-import { FatalAlertDialog } from "./FatalAlertDialog";
-import { CriticalConfirmationDialog } from "./CriticalConfirmationDialog";
-import { MediaJobsDialog } from "./MediaJobsDialog";
-import { AssetContextMenu } from "./AssetContextMenu";
 import type {
   QueryFilterSnapshot,
   RendererWindow,
@@ -177,10 +140,8 @@ import type {
 import { folderRecursiveRef, late } from "./app/app-shared";
 import {
   IS_MAC_PLATFORM,
-  IS_WINDOWS_PLATFORM,
   LIBRARY_LOADING_DISPLAY_DELAY_MS,
   SHORTCUT_PLATFORM,
-  ToolButton,
   formatDate,
   formatDuration,
   highlightSnippet,
@@ -217,11 +178,15 @@ import { useCanvasEffects } from "./app/use-canvas-effects";
 import { useBrowseSelection } from "./app/use-browse-selection";
 import { useBrowsePluginContext } from "./app/use-browse-plugin-context";
 import { useAssetDragState } from "./app/use-asset-drag-state";
+import { AppToolbar } from "./app/AppToolbar";
+import { PaneResizeHandles } from "./app/PaneResizeHandles";
+import { AppAssetContextMenu } from "./app/AppAssetContextMenu";
+import { AppDialogs } from "./app/AppDialogs";
 
 
 function AppInner() {
   const setCanvasPrefs = usePrefsStore((state) => state.setCanvas);
-  const [libraryRecoveryDialogOpen, setLibraryRecoveryDialogOpen] = useSessionField("libraryRecoveryDialogOpen");
+  const setLibraryRecoveryDialogOpen = sessionFields.setterFor("libraryRecoveryDialogOpen");
   const localConfirmation = useLocalConfirmation();
   const shortcutRuntimeVersion = useShortcutRuntimeVersion();
   const t = useT();
@@ -277,8 +242,8 @@ function AppInner() {
   const [trashBrowseTombstoneId, setTrashBrowseTombstoneId] = useBrowseField("trashBrowseTombstoneId");
   const [masonryGridWidth, setMasonryGridWidth] = useState(0);
   const assetGridRef = useRef<HTMLDivElement | null>(null);
-  const [fatalDialogTitle, setFatalDialogTitle] = useDialogField("fatalDialogTitle");
-  const [fatalAlertAlreadyOpen, setFatalAlertAlreadyOpen] = useDialogField("fatalAlertAlreadyOpen");
+  const setFatalDialogTitle = dialogsFields.setterFor("fatalDialogTitle");
+  const setFatalAlertAlreadyOpen = dialogsFields.setterFor("fatalAlertAlreadyOpen");
   const pendingAlreadyOpenPathRef = useRef<string | null>(null);
   const [selectedFolderIds, setSelectedFolderIds] = useSelectionField("selectedFolderIds");
   const managedImportTargetFolderIdRef = useRef<string | undefined>(undefined);
@@ -565,7 +530,7 @@ function AppInner() {
   const workspaceTabTransitionRef = useRef(0);
   const [workspaceNavigationPending, setWorkspaceNavigationPending] =
     useState(false);
-  const [navHistoryUi, setNavHistoryUi] = useWorkspaceField("navHistoryUi");
+  const setNavHistoryUi = workspaceFields.setterFor("navHistoryUi");
 
   // Tags
   const [tags, setTags] = useNavigationField("tags");
@@ -662,9 +627,9 @@ function AppInner() {
   const lastValidFolderSearchQueryRef = useRef<{ scope: string; query: ReturnType<typeof parseSearchExpression> } | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [storedSearchHistory, setStoredSearchHistory] = useQueryField("storedSearchHistory");
-  const [searchHistoryOpen, setSearchHistoryOpen] = useDialogField("searchHistoryOpen");
+  const setSearchHistoryOpen = dialogsFields.setterFor("searchHistoryOpen");
   const searchHistoryDismissedUntilInputRef = useRef(false);
-  const [searchHistoryActiveIndex, setSearchHistoryActiveIndex] = useQueryField("searchHistoryActiveIndex");
+  const setSearchHistoryActiveIndex = queryFields.setterFor("searchHistoryActiveIndex");
   const searchHistoryLibraryId = library?.libraryId ?? null;
   const searchHistory =
     searchHistoryLibraryId === null
@@ -969,7 +934,7 @@ function AppInner() {
   }, [refreshOperationHistory]);
   const [imageSequenceDialog, setImageSequenceDialog] = useDialogField("imageSequenceDialog");
   const [batchRelinkPreview, setBatchRelinkPreview] = useTransfersField("batchRelinkPreview");
-  const [batchRelinkKeepMetadata, setBatchRelinkKeepMetadata] = useTransfersField("batchRelinkKeepMetadata");
+  const [batchRelinkKeepMetadata] = useTransfersField("batchRelinkKeepMetadata");
 
   // Export / Import state
   const [exportProgress, setExportProgress] = useTransfersField("exportProgress");
@@ -1041,14 +1006,13 @@ function AppInner() {
   );
   const showPluginSidebarView = activePluginSidebarView !== undefined;
   const [appLogOpen, setAppLogOpen] = useDialogField("appLogOpen");
-  const [automaticTasksOpen, setAutomaticTasksOpen] = useDialogField("automaticTasksOpen");
+  const setAutomaticTasksOpen = dialogsFields.setterFor("automaticTasksOpen");
   const [automaticTaskEditorId,setAutomaticTaskEditorId]=useState<string|null|undefined>(undefined);
   const [scriptSandboxPreviewOpen, setScriptSandboxPreviewOpen] = useDialogField("scriptSandboxPreviewOpen");
   const [aboutOpen, setAboutOpen] = useDialogField("aboutOpen");
   const [openSourceLicensesOpen, setOpenSourceLicensesOpen] = useDialogField("openSourceLicensesOpen");
   const [librarySettingsOpen, setLibrarySettingsOpen] = useDialogField("librarySettingsOpen");
-  const [openSyncLibraryOpen, setOpenSyncLibraryOpen] = useDialogField("openSyncLibraryOpen");
-  const [gitignoreContent, setGitignoreContent] = useDialogField("gitignoreContent");
+  const setGitignoreContent = dialogsFields.setterFor("gitignoreContent");
   /** 同步传输进度（手动/自动），供资源库设置同步页显示进度条与速度。 */
   const [syncProgress, setSyncProgress] = useTransfersField("syncProgress");
   /** 当前库的同步绑定状态（库切换器 link/link-off 图标）。 */
@@ -1243,8 +1207,8 @@ function AppInner() {
     },
     [restoreWorkspaceTabs],
   );
-  const [appLogEntries, setAppLogEntries] = useDialogField("appLogEntries");
-  const [appLogLoading, setAppLogLoading] = useDialogField("appLogLoading");
+  const setAppLogEntries = dialogsFields.setterFor("appLogEntries");
+  const setAppLogLoading = dialogsFields.setterFor("appLogLoading");
   const [appLogAutomationCorrelationId, setAppLogAutomationCorrelationId] = useDialogField("appLogAutomationCorrelationId");
   const [appLogErrorCode, setAppLogErrorCode] = useState<
     Extract<ReadAppLogResult, { ok: false }>["code"] | null
@@ -1341,10 +1305,10 @@ function AppInner() {
   const [aiMaxAnalysisImageEdgePx, setAiMaxAnalysisImageEdgePx] = useAiField("aiMaxAnalysisImageEdgePx");
   const [aiAutoAnalyzeEnabled, setAiAutoAnalyzeEnabled] = useAiField("aiAutoAnalyzeEnabled");
   const [aiDisclaimerAccepted, setAiDisclaimerAccepted] = useAiField("aiDisclaimerAccepted");
-  const [aiConnectionState, setAiConnectionState] = useAiField("aiConnectionState");
+  const setAiConnectionState = aiFields.setterFor("aiConnectionState");
   const setAiDraftConnectionState = aiFields.setterFor("aiDraftConnectionState");
   const setAiDraftConnectionReason = aiFields.setterFor("aiDraftConnectionReason");
-  const [aiSaveVerifying, setAiSaveVerifying] = useAiField("aiSaveVerifying");
+  const setAiSaveVerifying = aiFields.setterFor("aiSaveVerifying");
   const aiAutoConnectAttemptedRef = useRef(false);
   /** Fingerprint of credentials last proven by a successful probe. */
   const aiVerifiedFingerprintRef = useRef<string | null>(null);
@@ -1802,7 +1766,7 @@ function AppInner() {
   const previewCloseGenerationRef = useRef(0);
   const previewRestoreFrameRef = useRef<number | null>(null);
   const cancelPreviewViewRestoreRef = useRef<(() => void) | null>(null);
-  const { setMediaJobsOpen, visibleVirtualBrowseLayout, visibleBrowseLayout, shuffleOrder, selectedFolderId, visibleAssets, selectedFolder, setThumbnailFailures, selectedAsset, jobStatusCoordinatorRef, setAiJobs, workspaceTabPresentations, getManagedAssetDragIds, embeddingSelectionRef, embeddingService, mediaJobsOpen, aiConnectionFailureGate, onAiConnectionFailureAbort, pluginUiDialogOpen, aiJobs, notifyAiConnectionBatchStarted, setMediaJobsLoading, setMediaJobs, loadMediaJobsRef, mediaJobs, setPluginJobs, controlAiJobsRef, openMediaJobs, managedFolderDragIdsRef, setPluginUiDialogOpen, semanticSearchActive, embeddingSearchReady, embeddingIndex, backgroundJobsActive, getManagedFolderDragIds, dragPreviewRef, pluginJobActivity, hidePluginJobActivity, pluginJobQueuedMore, thumbnailFailures, managedAssetDragIdsRef, automaticPaletteRatios, displayedPalette, handleFavoriteToggle, handleMetadataDescriptionInput, handleMetadataDescriptionSave, handleRatingClick, handleSourceUrlInput, handleSourceUrlSave, handleAuthorInput, handleAuthorSave, handleOpenSourceUrl, embeddingBound, handleAiConnectionFailureRetry, mediaJobsLoading, embeddingSelectionId, pluginJobs } = useAssetDragState({ cancelPreviewViewRestoreRef, previewRestoreFrameRef, library, api, setFindSimilarSource, aiAnalyzing, lastAiBatchJobIdsRef, aiBatchStatusRequestRef, aiBatchJobIdsRef, aiBatchSkippedCountRef, aiBatchKnownJobsRef, aiBatchCounterBaselineRef, analyzingAssetIdRef, lastAiBatchAssetIdRef, analyzingBatchSizeRef, setAiBatchProgress, setAiAnalyzing, setAiProgressBannerVisible, assetScope, folders, showTrash, trashedAssets, selectedAssetId, assets, browseLayout, virtualBrowseLayout, shellApi, selectedAssetIds, assetMetadata, multiEdit, editDescription, editFavorite, editSourceUrl, editAuthor, descriptionIsAi, aiContent, setEditDescription, setEditRating, setEditFavorite, setEditSourceUrl, setEditAuthor, setDescriptionIsAi, setAiContent, saveMetadata, saveMetadataForSelection, batchSetRatingForSelection, loadMetadata, setNotice, setError, trashedFolders, trashBrowseTombstoneId, shuffleSeed, workspaceTabsState, linkedFolders, tags, pluginSidebarViews, t });
+  const { setMediaJobsOpen, visibleVirtualBrowseLayout, visibleBrowseLayout, shuffleOrder, selectedFolderId, visibleAssets, selectedFolder, setThumbnailFailures, selectedAsset, jobStatusCoordinatorRef, setAiJobs, workspaceTabPresentations, getManagedAssetDragIds, embeddingSelectionRef, embeddingService, mediaJobsOpen, aiConnectionFailureGate, onAiConnectionFailureAbort, pluginUiDialogOpen, aiJobs, notifyAiConnectionBatchStarted, setMediaJobsLoading, setMediaJobs, loadMediaJobsRef, mediaJobs, setPluginJobs, controlAiJobsRef, openMediaJobs, managedFolderDragIdsRef, setPluginUiDialogOpen, semanticSearchActive, embeddingSearchReady, backgroundJobsActive, getManagedFolderDragIds, dragPreviewRef, pluginJobActivity, hidePluginJobActivity, pluginJobQueuedMore, thumbnailFailures, managedAssetDragIdsRef, automaticPaletteRatios, displayedPalette, handleFavoriteToggle, handleMetadataDescriptionInput, handleMetadataDescriptionSave, handleRatingClick, handleSourceUrlInput, handleSourceUrlSave, handleAuthorInput, handleAuthorSave, handleOpenSourceUrl, embeddingBound, handleAiConnectionFailureRetry, embeddingSelectionId } = useAssetDragState({ cancelPreviewViewRestoreRef, previewRestoreFrameRef, library, api, setFindSimilarSource, aiAnalyzing, lastAiBatchJobIdsRef, aiBatchStatusRequestRef, aiBatchJobIdsRef, aiBatchSkippedCountRef, aiBatchKnownJobsRef, aiBatchCounterBaselineRef, analyzingAssetIdRef, lastAiBatchAssetIdRef, analyzingBatchSizeRef, setAiBatchProgress, setAiAnalyzing, setAiProgressBannerVisible, assetScope, folders, showTrash, trashedAssets, selectedAssetId, assets, browseLayout, virtualBrowseLayout, shellApi, selectedAssetIds, assetMetadata, multiEdit, editDescription, editFavorite, editSourceUrl, editAuthor, descriptionIsAi, aiContent, setEditDescription, setEditRating, setEditFavorite, setEditSourceUrl, setEditAuthor, setDescriptionIsAi, setAiContent, saveMetadata, saveMetadataForSelection, batchSetRatingForSelection, loadMetadata, setNotice, setError, trashedFolders, trashBrowseTombstoneId, shuffleSeed, workspaceTabsState, linkedFolders, tags, pluginSidebarViews, t });
   const { canvasFolderBrowseEntries, setHoveredAssetId, hoveredAssetIdRef, clearHoveredAssetId, selectedVisibleAssets, pluginSurfaceContext, filteredFolderCounts, browseCanvasBodyLayout, importMenuCopy, recursiveHintActive, scopeBreadcrumbSegments, sourceBadgeContext, hoveredAssetId, activePreviewAssetId, activeResolution, retryLiveVideoProxyFallback, assetRenderSections, browseEmptyState, pluginBrowseScope, pluginViewerState } = useBrowsePluginContext({ api, library, workspaceCanvasRef, reportedVisibleWindowKeyRef, interactionGenerationRef, viewportScrollTopRef, visibleVirtualBrowseLayout, visibleBrowseLayout, previewAssetRef, viewportGenerationRef, visibleWindowAssetIdsRef, assetViewMode, browseLayout, virtualBrowseLayout, shuffleOrder, ensureBrowseVisibleIndices, ensureBrowseVisibleRange, selectedFolderId, showTrash, activeTagId, searchValue, colorFilter, excludeColorFilter, formatFilter, excludeFormatFilter, tagFilter, excludeTagFilter, excludedTagFilter, tagFilterMatch, ratingFilter, excludeRatingFilter, favoriteFilter, sourceUrlFilter, availabilityFilter, excludeAvailabilityFilter, widthRange, heightRange, aspectRatioRange, aspectRatioRanges, longEdgeRange, durationRange, previewAsset, selectedAssetIds, visibleAssets, busy, locale, assetScope, tagFilterExpression, tagFilterMode, includeAiTagFilter, includeAiRatingFilter, selectedFolder, currentQueryDefinition, showIgnoredItems, filteredFolderCountRefreshToken, folderBrowseEntries, trashedFolders, trashBrowseTombstoneId, t, tags, folders, linkedFolders, recursiveHintKey, showTagManagement, showPluginSidebarView, folderRecursive, featureHintPrefs, selectedAssetId });
   const { resizeAssetCards, selectionAnchorRef, setAssetSelectionAnchor, clearAssetSelection, selectedAssets, diskDeleteKeyboardTargets, previewIndex, browseScopeAssetIds, selectAllBrowseScope, invertBrowseScope, handleFolderCardClick, cardMouseDownRef, selectedFolderIdSet, workspaceBrowseCount, handleCanvasMouseDown, selectedIdSet, handleCardClick, selectionAssetIds, folderInspector, folderInspectorAppearance, menuSkipScope } = useBrowseSelection({ assetViewMode, visibleAssets, masonryGridWidth, assetCardSize, canvasPrefs, assetGridRef, setMasonryGridWidth, canvasFolderBrowseEntries, selectedAssetIds, setSelectedAssetIds, setSelectedAssetId, previewAsset, workspaceCanvasRef, marqueeBoxRef, selectedFolderIds, setSelectedFolderIds, setHoveredAssetId, pendingRevealRef, pendingRestoredFocusRef, folderBrowseEntries, library, assetScope, showTrash, activeTagId, folders, linkedFolders, searchValue, api, trashedAssets, assets, showTagManagement, tags, searchTotal, fetchBrowseScopeAssetIds, shellApi, editableTextFocused, t, showBlockingError, setError, setWarning, setNotice, locale, ensureLibraryView, setFolderBrowseEntries, folderRecursive, showFolderCardsWhenRecursive, showIgnoredItems, isCurrentLibraryView, folderBrowseRefreshToken, folderCoverCandidateAssetIdsRef, folderNavigationCovers, virtualBrowseLayout, cardResizeAnchorRef, cardResizeScrollSnapshotRef, reflowRestoreFrameRef, reflowAnchorRef, reflowScrollSnapshotRef, setCanvasPrefs, cardSizeRestoreFrameRef });
   const { openAssetPreview, saveCurrentWorkspaceHistoryViewport, navigateAssetPreview, persistAssetColorSpace } = useCanvasEffects({ workspaceCanvasRef, setFolderCanvasContentWidthPx, setCanvasWidthPx, previewAssetRef, previewRestoringRef, cardResizeAnchorRef, reflowAnchorRef, reflowScrollSnapshotRef, panelResizeLockRef, reflowRestoreFrameRef, panelResizingRef, cardResizeScrollSnapshotRef, previewAsset, previewRestoring, cardSizeRestoreFrameRef, sortField, sortOrder, assetCardSize, resizeAssetCards, workspaceHistoryReplayActiveRef, cancelWorkspaceViewportRestoreRef, navHistoryRef, pendingViewportRestoreRef, wakeViewerChrome, previewRestoreFrameRef, previewCloseGenerationRef, closingPreviewRef, setPreviewRestoring, setPreviewCanvasReady, cancelPreviewViewRestoreRef, clearPreviewScrollHold, previewFocusReturnRef, previewScrollSnapshotRef, setSelectedAssetIds, setSelectedAssetId, selectionAnchorRef, setPreviewAsset, syncActiveWorkspaceTabLocation, setNavHistoryUi, api, library, setError, t, setNotice, pendingWorkspacePreviewRef, visibleAssets, assets });
@@ -2563,287 +2527,45 @@ function AppInner() {
       className={`app-shell${leftOpen ? "" : " left-collapsed"}${rightOpen ? "" : " right-collapsed"}${panelResizing ? " is-resizing" : ""}`}
       style={panelResizeShellStyle as React.CSSProperties}
     >
-      <header className="app-toolbar">
-        <div className="toolbar-cluster toolbar-nav-cluster">
-          <ToolButton
-            icon={leftOpen ? "panel-left-close" : "panel-left"}
-            label={leftOpen ? t("shell.collapseNav") : t("shell.expandNav")}
-            onClick={() => setLeftOpen((v) => !v)}
-            pressed={leftOpen}
-          />
-          <LibrarySwitcher
-            busy={busy}
-            disabled={!api}
-            portaled
-            importMenuCopy={importMenuCopy}
-            libraryName={library?.displayName ?? null}
-            libraryOpen={Boolean(library)}
-            onCloseLibrary={() => void closeLibrary()}
-            onRemoveLibrary={() => void removeLibrary()}
-            onDeleteLibraryFromDisk={() => requestDeleteLibraryFromDisk()}
-            onOpenLibrarySettings={() => {
-              setAppSettingsOpen(false);
-              setLibrarySettingsOpen(true);
-            }}
-            onCreateLibrary={() => {
-              setDialogValue(t("shell.myLibrary"));
-              setCreateLibraryPhase("form");
-              setDialog("library");
-            }}
-            onExportLibrary={() => setExportDialogOpen(true)}
-            onImportFolder={() => void importAssets("folder")}
-            onImportLibrary={() => {
-              setOpenLibraryChooserOpen(false);
-              setImportLibraryChooserOpen(true);
-            }}
-            onImportLinkedFolder={() => void importFolderAsLinked()}
-            onMenuOpen={() => void refreshRecentLibraries()}
-            onOpenLibrary={() => {
-              setImportLibraryChooserOpen(false);
-              setOpenLibraryChooserOpen(true);
-            }}
-            onOpenRecent={(path) => void openRecentLibrary(path)}
-            onForgetRecent={(path) => void forgetRecentLibrary(path)}
-          />
-        </div>
-        <div className="toolbar-cluster toolbar-workspace-cluster">
-          <div className="toolbar-workspace-main">
-            <div className="toolbar-workspace-leading">
-              <ScopeHistoryButtons
-                // Serpent-b7e173：预览已是历史条目（打开查看器必压在某浏览 scope 上），
-                // 所以后退/前进由纯历史驱动即可，无需对预览做任何特判。
-                canBack={navHistoryUi.canBack}
-                canForward={navHistoryUi.canForward}
-                onBack={() => void goWorkspaceBack()}
-                onForward={() => void goWorkspaceForward()}
-              />
-              {IS_WINDOWS_PLATFORM ? (
-                <MainMenu disabled={busy} sections={mainMenuSections} />
-              ) : (
-                <AppSettingsEntry
-                  disabled={busy}
-                  onOpen={() => {
-                    setAppSettingsCategory("general");
-                    setAppSettingsOpen(true);
-                  }}
-                />
-              )}
-            </div>
-            <WorkspaceTabs
-              activeTabId={workspaceTabsState.activeTabId}
-              disabled={!library || busy}
-              tabs={workspaceTabPresentations}
-              onAdd={() => void addWorkspaceTab()}
-              onClose={(tabId) => void closeWorkspaceTab(tabId)}
-              onSelect={(tabId) => {
-                void selectWorkspaceTab(tabId);
-              }}
-              onReorder={(tabId, toIndex) => moveWorkspaceTab(tabId, toIndex)}
-              onContextMenu={(tabId, position) => {
-                const tab = workspaceTabPresentations.find(
-                  (candidate) => candidate.id === tabId,
-                );
-                if (!tab) return;
-                openContextMenu(
-                  {
-                    type: "workspace-tab",
-                    tabId,
-                    name: tab.title,
-                    entity: tab.entity,
-                    canClose: workspaceTabPresentations.length > 1,
-                    canCloseOthers: workspaceTabPresentations.length > 1,
-                  },
-                  position,
-                );
-              }}
-            />
-          </div>
-          <form
-            className="toolbar-workspace-search"
-            onSubmit={(event) => void runSearch(event)}
-            role="search"
-          >
-            <div
-              className={`search-control-wrap${searchValue.trim() ? " has-value" : ""}${semanticSearchActive ? " is-semantic" : ""}`}
-            >
-              <Icon name="search" size={15} />
-              <input
-                aria-activedescendant={
-                  searchHistoryOpen && searchHistoryActiveIndex >= 0
-                    ? `search-history-${searchHistoryActiveIndex}`
-                    : undefined
-                }
-                aria-autocomplete="list"
-                aria-controls={searchHistoryOpen ? "search-history-list" : undefined}
-                aria-expanded={
-                  searchHistoryOpen &&
-                  filterSearchHistory(searchHistory, searchValue).length > 0
-                }
-                aria-label={t("toolbar.searchLibrary")}
-                className="search-control"
-                disabled={!library}
-                onBlur={() => {
-                  setSearchHistoryOpen(false);
-                  setSearchHistoryActiveIndex(-1);
-                }}
-                onChange={(event) => {
-                  searchHistoryDismissedUntilInputRef.current = false;
-                  setSearchValue(event.target.value);
-                  setSearchHistoryActiveIndex(-1);
-                  setSearchHistoryOpen(true);
-                }}
-                onFocus={() => {
-                  if (searchHistoryDismissedUntilInputRef.current) return;
-                  setSearchHistoryActiveIndex(-1);
-                  setSearchHistoryOpen(true);
-                }}
-                onKeyDown={(event) => {
-                  if (isImeKeyboardEvent(event)) return;
-                  const matches = filterSearchHistory(searchHistory, searchValue);
-                  const visibleCount = Math.min(
-                    matches.length,
-                    readVisibleSearchHistoryCount() ?? matches.length,
-                  );
-                  if (!searchHistoryOpen || visibleCount === 0) return;
-                  if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
-                    setSearchHistoryActiveIndex(-1);
-                    return;
-                  }
-                  const direction = searchHistoryNavigationDirection(event.key);
-                  if (direction) {
-                    event.preventDefault();
-                    setSearchHistoryActiveIndex((current) =>
-                      moveSearchHistoryIndex(current, visibleCount, direction),
-                    );
-                    return;
-                  }
-                  if (event.key === "Escape") {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    setSearchHistoryOpen(false);
-                    setSearchHistoryActiveIndex(-1);
-                    return;
-                  }
-                  if (event.key === "Enter" && searchHistoryActiveIndex >= 0) {
-                    const query = matches[searchHistoryActiveIndex];
-                    if (!query) return;
-                    event.preventDefault();
-                    setSearchValue(query);
-                    setSearchHistoryOpen(false);
-                    setSearchHistoryActiveIndex(-1);
-                  }
-                }}
-                placeholder={t("toolbar.searchPlaceholder")}
-                ref={searchInputRef}
-                role="combobox"
-                type="search"
-                value={searchValue}
-              />
-              {searchHistoryOpen && library && (
-                <SearchHistoryPopover
-                  activeIndex={searchHistoryActiveIndex}
-                  items={filterSearchHistory(searchHistory, searchValue)}
-                  onClear={() => {
-                    clearSearchHistory(window.localStorage, library.libraryId);
-                    publishSearchHistory([]);
-                    setSearchHistoryActiveIndex(-1);
-                    setSearchHistoryOpen(false);
-                  }}
-                  onHighlight={setSearchHistoryActiveIndex}
-                  onPick={(query) => {
-                    setSearchValue(query);
-                    setSearchHistoryOpen(false);
-                    setSearchHistoryActiveIndex(-1);
-                    publishSearchHistory(
-                      rememberSearchQuery(window.localStorage, library.libraryId, query),
-                    );
-                  }}
-                />
-              )}
-              <button
-                aria-disabled={!library || !embeddingSearchReady}
-                aria-label={t("toolbar.semanticSearch")}
-                aria-pressed={semanticSearchActive}
-                className={`search-semantic-toggle${semanticSearchActive ? " is-active" : ""}`}
-                data-hover-tip={
-                  !embeddingSearchReady
-                    ? t("toolbar.semanticSearchNeedsSetup")
-                    : embeddingIndex.phase === "starting" || embeddingIndex.phase === "indexing"
-                      ? t("toolbar.semanticSearchIndexing")
-                      : t(
-                        embeddingService
-                          ? "toolbar.semanticSearchHintText"
-                          : "toolbar.semanticSearchHint",
-                      )
-                }
-                disabled={!library}
-                onClick={() => {
-                  if (!embeddingSearchReady) return;
-                  const current = loadSemanticSearchPreferences();
-                  const active = current.searchMode === "semantic";
-                  saveSemanticSearchPreferences({
-                    version: 1,
-                    enabled: current.enabled,
-                    modelId: current.modelId,
-                    searchMode: active ? "keyword" : "semantic",
-                    pageSize: current.pageSize,
-                  });
-                  if (searchValue.trim()) void runSearch();
-                }}
-                type="button"
-              >
-                <Icon name="smart" size={13} />
-              </button>
-              <button
-                aria-label={t("toolbar.searchSyntax")}
-                className="search-syntax-help"
-                data-hover-tip={t("toolbar.searchSyntaxHint")}
-                data-hover-tip-variant="search-syntax"
-                type="button"
-              >
-                ?
-              </button>
-              {searchValue.trim() !== "" && (
-                <button
-                  aria-label={t("toolbar.clearSearch")}
-                  className="search-clear-btn"
-                  disabled={!library}
-                  onClick={() => setSearchValue("")}
-                  type="button"
-                >
-                  <Icon name="close" size={12} />
-                </button>
-              )}
-              {searchValue.trim() !== "" && (() => {
-                const result = parseSearchExpressionDetailed(searchValue);
-                return result.ok ? null : (
-                  <span className="search-expression-error" role="alert">
-                    {t("toolbar.searchExpressionError", { position: result.diagnostic.start + 1, reason: t(`toolbar.searchExpressionReasons.${searchExpressionReasonKey(result.diagnostic.code)}`) })}
-                  </span>
-                );
-              })()}
-            </div>
-          </form>
-        </div>
-        <div className="toolbar-cluster toolbar-inspector-cluster">
-          <ToolButton
-            icon={rightOpen ? "panel-right-close" : "panel-right"}
-            label={
-              rightOpen
-                ? t("shell.collapseInspector")
-                : t("shell.expandInspector")
-            }
-            onClick={() => setRightOpen((v) => !v)}
-            pressed={rightOpen}
-          />
-        </div>
-        {IS_WINDOWS_PLATFORM ? (
-          <>
-            <WindowsWindowControls shell={shellApi} />
-            <WindowEdgeResizeHandles shell={shellApi} />
-          </>
-        ) : null}
-      </header>
+      <AppToolbar
+        leftOpen={leftOpen}
+        t={t}
+        setLeftOpen={setLeftOpen}
+        busy={busy}
+        api={api}
+        importMenuCopy={importMenuCopy}
+        closeLibrary={closeLibrary}
+        removeLibrary={removeLibrary}
+        requestDeleteLibraryFromDisk={requestDeleteLibraryFromDisk}
+        setDialogValue={setDialogValue}
+        setCreateLibraryPhase={setCreateLibraryPhase}
+        importAssets={importAssets}
+        importFolderAsLinked={importFolderAsLinked}
+        refreshRecentLibraries={refreshRecentLibraries}
+        openRecentLibrary={openRecentLibrary}
+        forgetRecentLibrary={forgetRecentLibrary}
+        goWorkspaceBack={goWorkspaceBack}
+        goWorkspaceForward={goWorkspaceForward}
+        mainMenuSections={mainMenuSections}
+        workspaceTabsState={workspaceTabsState}
+        workspaceTabPresentations={workspaceTabPresentations}
+        addWorkspaceTab={addWorkspaceTab}
+        closeWorkspaceTab={closeWorkspaceTab}
+        selectWorkspaceTab={selectWorkspaceTab}
+        moveWorkspaceTab={moveWorkspaceTab}
+        openContextMenu={openContextMenu}
+        runSearch={runSearch}
+        semanticSearchActive={semanticSearchActive}
+        searchHistory={searchHistory}
+        searchHistoryDismissedUntilInputRef={searchHistoryDismissedUntilInputRef}
+        searchInputRef={searchInputRef}
+        publishSearchHistory={publishSearchHistory}
+        embeddingSearchReady={embeddingSearchReady}
+        embeddingService={embeddingService}
+        rightOpen={rightOpen}
+        setRightOpen={setRightOpen}
+        shellApi={shellApi}
+      />
       <NavigationSidebar
         tagTree={library ? <TagTreeSidebar key={library.libraryId} libraryId={library.libraryId} tags={tags} activeTagId={activeTagId}
           pinnedTagId={pinnedTagId} onPin={(id) => void togglePinnedTag(id)}
@@ -4335,960 +4057,182 @@ function AppInner() {
         libraryId={library?.libraryId}
         pluginContributionRefreshKey={pluginContributionRefreshKey}
       />
-      <ImageSequenceDialog
-        count={
-          imageSequenceDialog?.mode === "update"
-            ? imageSequenceDialog.frameCount ?? 0
-            : imageSequenceDialog?.assetIds.length ?? 0
-        }
-        error={imageSequenceDialog?.error}
-        fps={imageSequenceDialog?.fps ?? DEFAULT_IMAGE_SEQUENCE_FPS}
-        mode={imageSequenceDialog?.mode}
-        onCancel={() => setImageSequenceDialog(null)}
-        onFpsChange={(fps) =>
-          setImageSequenceDialog((current) =>
-            current ? { ...current, fps, error: null } : current,
-          )
-        }
-        onSubmit={() =>
-          void (
-            imageSequenceDialog?.mode === "update"
-              ? updateImageSequenceFps()
-              : createSelectedImageSequence()
-          )
-        }
-        open={imageSequenceDialog !== null}
-        submitting={imageSequenceDialog?.submitting}
-      />
-      {linkedRulesEditor && (
-        <LinkedRulesDialog
-          name={linkedRulesEditor.name}
-          initialRules={linkedRulesEditor.rules}
-          onClose={() => setLinkedRulesEditor(null)}
-          onSave={(finalRules) => void saveLinkedRules(finalRules)}
-        />
-      )}
-      {convertLinkedDialog.folderId && (
-        <ConvertLinkedDialog
-          folderName={convertLinkedDialog.name}
-          folders={folders}
-          targetFolderId={convertLinkedDialog.targetFolderId}
-          onCancel={() =>
-            setConvertLinkedDialog({
-              folderId: "",
-              name: "",
-              targetFolderId: "",
-            })
-          }
-          onConfirm={() => void convertLinkedToManaged()}
-          onTargetChange={(targetFolderId) =>
-            setConvertLinkedDialog((current) => ({
-              ...current,
-              targetFolderId,
-            }))
-          }
-        />
-      )}
-      {restoreDialog && (
-        <RestoreDialog
-          assetIds={restoreDialog.assetIds}
-          folders={folders}
-          target={restoreDialog.target}
-          conflictStrategy={restoreDialog.conflictStrategy}
-          onTargetChange={(target) =>
-            setRestoreDialog((current) =>
-              current ? { ...current, target } : current,
-            )
-          }
-          onStrategyChange={(strategy) =>
-            setRestoreDialog((current) =>
-              current ? { ...current, conflictStrategy: strategy } : current,
-            )
-          }
-          onConfirm={() => void restoreTrashedAssets()}
-          onCancel={() => setRestoreDialog(null)}
-        />
-      )}
-      {moveDialog && (
-        <MoveDialog
-          assetIds={moveDialog.assetIds}
-          folderIds={moveDialog.folderIds}
-          folders={folders}
-          linkedFolders={
-            moveDialog.assetIds.length > 0 && moveDialog.folderIds.length === 0
-              ? (() => {
-                  const rootNames = new Map(
-                    linkedFolders
-                      .filter((folder) => (folder.relativePath ?? "") === "")
-                      .map((folder) => [folder.folderId, folder.displayName]),
-                  );
-                  return linkedFolders.map((folder) => {
-                    const rootName =
-                      (folder.linkedFolderId
-                        ? rootNames.get(folder.linkedFolderId)
-                        : undefined) ?? folder.displayName;
-                    return {
-                      folderId: folder.folderId,
-                      name: folder.displayName,
-                      relativePath:
-                        (folder.relativePath ?? "") === ""
-                          ? rootName
-                          : `${rootName}/${folder.relativePath}`,
-                      assetCount: folder.assetCount,
-                    };
-                  });
-                })()
-              : undefined
-          }
-          targetFolderId={moveDialog.targetFolderId}
-          conflictStrategy={moveDialog.conflictStrategy}
-          folderOnly={
-            moveDialog.folderIds.length > 0 && moveDialog.assetIds.length === 0
-          }
-          onTargetChange={(folderId) =>
-            setMoveDialog((current) =>
-              current ? { ...current, targetFolderId: folderId } : current,
-            )
-          }
-          onStrategyChange={(strategy) =>
-            setMoveDialog((current) =>
-              current ? { ...current, conflictStrategy: strategy } : current,
-            )
-          }
-          onConfirm={() => void moveManagedAssets()}
-          onCancel={() => setMoveDialog(null)}
-        />
-      )}
-      <FolderCoverPickerDialog
-        open={folderCoverPicker !== null}
-        libraryId={library?.libraryId ?? null}
-        selectedAssetId={folderCoverPicker?.assetId ?? ""}
-        pageSize={FOLDER_COVER_PICKER_PAGE_SIZE}
-        loadPage={loadFolderCoverPickerPage}
-        onSelect={(assetId) =>
-          setFolderCoverPicker((current) =>
-            current ? { ...current, assetId } : current,
-          )
-        }
-        onConfirm={applyFolderCoverFromLibrary}
-        onCancel={() => setFolderCoverPicker(null)}
-      />
-      <AppSettingsDialog
-        aiConfigPanel={
-          <AiConfigDialog
-            open={appSettingsOpen && appSettingsCategory === "ai"}
-            variant="embedded"
-            onNewProfile={beginNewAiProfile}
-            onSelectProfile={selectAiProfile}
-            onActivateProfile={(id) => void activateAiProfile(id)}
-            onDeleteProfile={(id) => void removeAiProfile(id)}
-            onClearCredential={() => void clearAiProfileCredential()}
-            onConcurrencyLimitChange={commitAiConcurrencyLimit}
-            onMaxAnalysisImageEdgePxChange={commitAiMaxAnalysisImageEdgePx}
-            onCommitAnalysisSettingsPatch={commitAiAnalysisSettingsPatch}
-            onClose={() => {
-              if (aiSaveVerifying) return;
-              setAiApiKey("");
-              // Keep global connection state for heartbeat / context menu
-              // (Serpent-rsbt); re-sync from stored credentials after draft edits.
-              void probeStoredAiConnection();
-            }}
-            onSave={() => void saveAiConfig()}
-            onTestConnection={testAiConnectionFromDialog}
-            onFetchModels={fetchAiModelsFromDialog}
-          />
-        }
+      <AppDialogs
+        updateImageSequenceFps={updateImageSequenceFps}
+        createSelectedImageSequence={createSelectedImageSequence}
+        linkedRulesEditor={linkedRulesEditor}
+        setLinkedRulesEditor={setLinkedRulesEditor}
+        saveLinkedRules={saveLinkedRules}
+        convertLinkedToManaged={convertLinkedToManaged}
+        restoreTrashedAssets={restoreTrashedAssets}
+        moveManagedAssets={moveManagedAssets}
+        folderCoverPicker={folderCoverPicker}
+        loadFolderCoverPickerPage={loadFolderCoverPickerPage}
+        setFolderCoverPicker={setFolderCoverPicker}
+        applyFolderCoverFromLibrary={applyFolderCoverFromLibrary}
+        beginNewAiProfile={beginNewAiProfile}
+        selectAiProfile={selectAiProfile}
+        activateAiProfile={activateAiProfile}
+        removeAiProfile={removeAiProfile}
+        clearAiProfileCredential={clearAiProfileCredential}
+        commitAiConcurrencyLimit={commitAiConcurrencyLimit}
+        commitAiMaxAnalysisImageEdgePx={commitAiMaxAnalysisImageEdgePx}
+        commitAiAnalysisSettingsPatch={commitAiAnalysisSettingsPatch}
+        probeStoredAiConnection={probeStoredAiConnection}
+        saveAiConfig={saveAiConfig}
+        testAiConnectionFromDialog={testAiConnectionFromDialog}
+        fetchAiModelsFromDialog={fetchAiModelsFromDialog}
         aiUiPrefs={aiUiPrefs}
-        autoDetectImageSequences={imageSequencePrefs.autoDetectOnImport}
-        imageSequenceDetectionEnabled={imageSequencePrefs.detectionEnabled}
-        navArrowsOnApproach={viewerChromePrefs.navArrowsOnApproach}
-        onToggleNavArrowsOnApproach={() => {
-          setViewerChromePrefs((current) => ({
-            ...current,
-            navArrowsOnApproach: !current.navArrowsOnApproach,
-          }));
-        }}
-        onToggleShowMissingLinkedFiles={() => {
-          const next = !showMissingLinkedFiles;
-          setShowMissingLinkedFiles(next);
-          writeShowMissingLinkedFiles(next, globalThis.localStorage);
-          const pending = shellApi?.setShowMissingLinkedFiles(next) ?? Promise.resolve();
-          showMissingLinkedPublishRef.current = pending;
-          void pending.then(() => {
-            if (!library) return;
-            void loadContent(library, assetScope, {
-              trashMode: showTrash,
-              discovery: currentQueryDefinition(),
-              showIgnored: showIgnoredItems,
-            });
-          });
-        }}
-        onToggleVideoTransportOnApproach={() => {
-          setViewerChromePrefs((current) => ({
-            ...current,
-            videoTransportOnApproach: !current.videoTransportOnApproach,
-          }));
-        }}
-        videoTransportOnApproach={viewerChromePrefs.videoTransportOnApproach}
+        imageSequencePrefs={imageSequencePrefs}
+        viewerChromePrefs={viewerChromePrefs}
+        setViewerChromePrefs={setViewerChromePrefs}
+        shellApi={shellApi}
+        showMissingLinkedPublishRef={showMissingLinkedPublishRef}
+        loadContent={loadContent}
+        currentQueryDefinition={currentQueryDefinition}
         canvasPrefs={canvasPrefs}
-        onClose={() => {
-          setAppSettingsOpen(false);
-          setAppSettingsCategory("general");
-        }}
-        onSetViewMode={(mode) => {
-          setCanvasPrefs((p) => ({ ...p, viewMode: mode }));
-        }}
-        onSetCaptionAlign={(align) => {
-          setCanvasPrefs((p) => ({ ...p, captionAlign: align }));
-        }}
-        onToggleField={(field) => {
-          setCanvasPrefs((p) => ({
-            ...p,
-            fields: { ...p.fields, [field]: !p.fields[field] },
-          }));
-        }}
-        onToggleHoverAudioPlay={() => {
-          setCanvasPrefs((p) => ({ ...p, hoverAudioPlay: !p.hoverAudioPlay }));
-        }}
-        onToggleHoverVideoSound={() => {
-          setCanvasPrefs((p) => ({ ...p, hoverVideoSound: !p.hoverVideoSound }));
-        }}
+        setCanvasPrefs={setCanvasPrefs}
         audioPreviewPrefersCover={audioPreviewPrefersCover}
-        onAudioPreviewPrefersCoverChange={applyAudioPreviewPreference}
+        applyAudioPreviewPreference={applyAudioPreviewPreference}
         bakeImageRotation={bakeImageRotation}
-        onBakeImageRotationChange={applyBakeImageRotation}
-        onToggleShowAiBadges={() => {
-          setAiUiPrefs((p) => ({ ...p, showAiBadges: !p.showAiBadges }));
-        }}
-        onToggleAutoDetectImageSequences={() => {
-          setImageSequencePrefs((p) => ({
-            ...p,
-            autoDetectOnImport: !p.autoDetectOnImport,
-          }));
-        }}
-        onToggleImageSequenceDetection={() => {
-          setImageSequencePrefs((p) => ({
-            ...p,
-            detectionEnabled: !p.detectionEnabled,
-          }));
-        }}
-        onOpenAppLog={openAppLog}
-        onOpenExtensionReleases={() => {
-          void shellApi?.openExternalUrl(
-            "https://github.com/dolag233/Serpent-Extension/releases/latest",
-          );
-        }}
-        pluginApi={(window as RendererWindow).keel?.plugins}
+        applyBakeImageRotation={applyBakeImageRotation}
+        setAiUiPrefs={setAiUiPrefs}
+        setImageSequencePrefs={setImageSequencePrefs}
+        openAppLog={openAppLog}
         pluginContributionRefreshKey={pluginContributionRefreshKey}
-        libraryId={library?.libraryId}
-        mcpApi={(window as RendererWindow).keel?.mcp}
-        showCardSyncStatus={canvasPrefs.fields.badgeSync}
-        onShowCardSyncStatusChange={(checked) => {
-          setCanvasPrefs((current) => ({
-            ...current,
-            fields: { ...current.fields, badgeSync: checked },
-          }));
-        }}
-        embeddingServicesApi={api ?? undefined}
-        syncServerCallbacks={{
-          async syncListServers() {
-            if (!api) return { ok: false, message: t("common.unavailable") };
-            const result = await api.syncListServers();
-            if (!result.ok) return { ok: false, message: messageForPublicError(result.error, locale, t("toast.librarySettingsSaveFailed")) };
-            return { ok: true, value: result.value };
-          },
-          async syncSaveServer(input) {
-            if (!api) return { ok: false, message: t("common.unavailable") };
-            const result = await api.syncSaveServer(input);
-            if (!result.ok) return { ok: false, message: messageForPublicError(result.error, locale, t("toast.librarySettingsSaveFailed")) };
-            return { ok: true, value: result.value };
-          },
-          async syncDeleteServer(input) {
-            if (!api) return { ok: false, message: t("common.unavailable") };
-            const result = await api.syncDeleteServer(input);
-            if (!result.ok) return { ok: false, message: messageForPublicError(result.error, locale, t("toast.librarySettingsSaveFailed")) };
-            return { ok: true };
-          },
-          async syncProbe(input) {
-            if (!api) return { ok: false, message: t("common.unavailable") };
-            const result = await api.syncProbe(input);
-            if (!result.ok) return { ok: false, message: messageForPublicError(result.error, locale, t("toast.librarySettingsSaveFailed")) };
-            return { ok: true, value: result.value };
-          },
-        }}
-      />
-      <LibrarySettingsDialog
-        key={`${library?.libraryId ?? "none"}:${librarySettingsOpen ? "open" : "closed"}`}
-        library={library}
-        open={librarySettingsOpen}
-        gitignoreContent={gitignoreContent}
-        onClose={() => {
-          setLibrarySettingsOpen(false);
-        }}
-        onSaveName={async (name) => {
-          if (!api || !library) return;
-          const result = await api.rename({ libraryId: library.libraryId, displayName: name });
-          if (!result.ok) {
-            setError(messageForPublicError(result.error, locale, t("toast.librarySettingsSaveFailed")));
-            return;
-          }
-          setLibrary(result.value);
-          setNotice(t("toast.librarySettingsSaved"));
-        }}
-        onSaveGitignore={async (content) => {
-          if (!api || !library) return;
-          const result = await api.setGitignore({ libraryId: library.libraryId, content });
-          if (!result.ok) {
-            setError(messageForPublicError(result.error, locale, t("toast.librarySettingsSaveFailed")));
-            return;
-          }
-          setGitignoreContent(result.value.content);
-          setNotice(t("toast.librarySettingsSaved"));
-          await reloadCurrentContent();
-        }}
-        onPreviewGitignore={async (content) => {
-          if (!api || !library) return null;
-          const result = await api.previewGitignore({ libraryId: library.libraryId, content });
-          if (!result.ok) return null;
-          return result.value;
-        }}
-        syncCallbacks={{
-          async syncListServers() {
-            if (!api) return { ok: false, message: t("common.unavailable") };
-            const result = await api.syncListServers();
-            if (!result.ok) return { ok: false, message: messageForPublicError(result.error, locale, t("toast.librarySettingsSaveFailed")) };
-            return { ok: true, value: result.value };
-          },
-          async syncProbe(input) {
-            if (!api) return { ok: false, message: t("common.unavailable") };
-            const result = await api.syncProbe(input);
-            if (!result.ok) return { ok: false, message: messageForPublicError(result.error, locale, t("toast.librarySettingsSaveFailed")) };
-            return { ok: true, value: result.value };
-          },
-          async syncPreview(input) {
-            if (!api) return { ok: false, message: t("common.unavailable") };
-            const result = await api.syncPreview(input);
-            if (!result.ok) return { ok: false, message: messageForPublicError(result.error, locale, t("toast.librarySettingsSaveFailed")) };
-            return { ok: true, value: result.value };
-          },
-          async syncRun(input) {
-            if (!api) return { ok: false, message: t("common.unavailable") };
-            const startedAt = Date.now();
-            syncRunStartedAtRef.current = startedAt;
-            const result = await api.syncRun(input);
-            if (!result.ok) {
-              syncRunStartedAtRef.current = null;
-              playTaskCompletionSound(startedAt);
-              return { ok: false, message: messageForPublicError(result.error, locale, t("toast.librarySettingsSaveFailed")) };
-            }
-            return { ok: true, value: result.value };
-          },
-          async syncSaveBinding(input) {
-            if (!api) return { ok: false, message: t("common.unavailable") };
-            const result = await api.syncSaveBinding(input);
-            if (!result.ok) return { ok: false, message: messageForPublicError(result.error, locale, t("toast.librarySettingsSaveFailed")) };
-            if (input.enabled !== undefined) {
-              setSyncBindingStatus(input.enabled ? "enabled" : "disabled");
-            }
-            return { ok: true };
-          },
-          async syncGetBinding(input) {
-            if (!api) return { ok: false, message: t("common.unavailable") };
-            const result = await api.syncGetBinding(input);
-            if (!result.ok) return { ok: false, message: messageForPublicError(result.error, locale, t("toast.librarySettingsSaveFailed")) };
-            return { ok: true, value: result.value };
-          },
-        }}
-        syncProgress={syncProgress}
-        embeddingIndex={embeddingBound ? embeddingIndex : null}
-        embeddingCallbacks={{
-          async listServices() {
-            if (!api) return { ok: false };
-            const result = await api.embeddingListServices();
-            if (!result.ok || !result.value) return { ok: false };
-            return { ok: true, value: result.value };
-          },
-          async installStatus() {
-            if (!api) return { ok: false };
-            const result = await api.embeddingInstallStatus();
-            if (!result.ok) return { ok: false };
-            return { ok: true, value: result.value };
-          },
-          async getBinding(input) {
-            if (!api) return { ok: false };
-            const result = await api.embeddingGetBinding(input);
-            if (!result.ok) return { ok: false };
-            return { ok: true, value: result.value };
-          },
-          async saveBinding(input) {
-            if (!api) return { ok: false };
-            const result = await api.embeddingSaveBinding(input);
-            if (!result.ok) return { ok: false };
-            return { ok: true };
-          },
-          async rebuildIndex(input) {
-            if (!api) return { ok: false };
-            const result = await api.embeddingIndexStatus({
-              libraryId: input.libraryId, modelId: input.modelId, run: true, restart: false, rebuild: true,
-            });
-            return result.ok ? { ok: true } : { ok: false };
-          },
-        }}
-      />
-      <OpenSyncLibraryDialog
-        callbacks={{
-          async syncListServers() {
-            if (!api) return { ok: false, message: t("common.unavailable") };
-            const result = await api.syncListServers();
-            if (!result.ok) return { ok: false, message: messageForPublicError(result.error, locale, t("toast.librarySettingsSaveFailed")) };
-            return { ok: true, value: result.value };
-          },
-          async syncListRemoteLibraries(input) {
-            if (!api) return { ok: false, message: t("common.unavailable") };
-            const result = await api.syncListRemoteLibraries(input);
-            if (!result.ok) return { ok: false, message: messageForPublicError(result.error, locale, t("toast.librarySettingsSaveFailed")) };
-            return { ok: true, value: result.value };
-          },
-          async syncOpenRemoteLibrary(input) {
-            if (!api) return { ok: false, message: t("common.unavailable") };
-            const result = await api.syncOpenRemoteLibrary(input);
-            if (!result.ok) return { ok: false, message: messageForPublicError(result.error, locale, t("toast.librarySettingsSaveFailed")) };
-            return { ok: true, value: result.value };
-          },
-        }}
-        onClose={() => setOpenSyncLibraryOpen(false)}
-        onOpened={(opened) => {
-          void (async () => {
-            if (!api) return;
-            await runLibraryOpenPipeline(
-              "opening",
-              () => Promise.resolve({ ok: true, value: opened }),
-              t("toast.openRecentFailed"),
-            );
-          })();
-        }}
-        open={openSyncLibraryOpen}
-      />
-      <AppLogDialog
-        automationCorrelationId={appLogAutomationCorrelationId}
-        entries={appLogEntries}
-        errorCode={appLogErrorCode}
-        loading={appLogLoading}
-        onClose={() => setAppLogOpen(false)}
-        onAutomationCorrelationIdChange={setAppLogAutomationCorrelationId}
-        onRefresh={() => void refreshAppLog()}
-        onReveal={revealAppLog}
-        open={appLogOpen}
-      />
-      {library?.recovery && (
-        <LibraryRecoveryDialog
-          onClose={() => setLibraryRecoveryDialogOpen(false)}
-          onRevealReport={() => void revealRecoveryReport()}
-          open={libraryRecoveryDialogOpen}
-          recovery={library.recovery}
-        />
-      )}
-      {library && api && <AutomaticTasksDialog key={library.libraryId} api={api} libraryId={library.libraryId} initialTaskId={automaticTaskEditorId} open={automaticTasksOpen} currentQueryJson={JSON.stringify(currentQueryDefinition())} tags={tags} folders={folders} onClose={() => setAutomaticTasksOpen(false)} onOpenScripts={() => {setAutomaticTasksOpen(false);setScriptSandboxPreviewOpen(true);}} onChanged={async()=>{const r=await api.listTags({libraryId:library.libraryId});if(r.ok)setTags(r.value);}} />}
-      <ScriptSandboxPreviewDialog
-        automation={(window as RendererWindow).keel?.automation}
-        libraryId={library?.libraryId ?? null}
-        onClose={() => {
-          setScriptSandboxPreviewOpen(false);
-        }}
-        onExecutionSettled={() => refreshAfterAutomationScript()}
-        onOpenExecutionLog={(logId) => {
-          setScriptSandboxPreviewOpen(false);
-          openAppLog(logId);
-        }}
-        open={scriptSandboxPreviewOpen}
-      />
-      <AboutDialog
-        open={aboutOpen}
-        version={KEEL_VERSION}
-        onClose={() => setAboutOpen(false)}
-        onOpenGitHub={() => {
-          const bridge = (window as RendererWindow).keel?.shell;
-          if (!bridge?.openExternalUrl) return;
-          void bridge.openExternalUrl("https://github.com/Ubik42/Keel");
-        }}
-      />
-      <OpenSourceLicensesDialog
-        open={openSourceLicensesOpen}
-        onClose={() => setOpenSourceLicensesOpen(false)}
-      />
-      <CreateDialog
+        api={api}
+        t={t}
+        locale={locale}
+        setError={setError}
+        setNotice={setNotice}
+        reloadCurrentContent={reloadCurrentContent}
+        syncRunStartedAtRef={syncRunStartedAtRef}
+        embeddingBound={embeddingBound}
+        runLibraryOpenPipeline={runLibraryOpenPipeline}
+        appLogErrorCode={appLogErrorCode}
+        refreshAppLog={refreshAppLog}
+        revealAppLog={revealAppLog}
+        revealRecoveryReport={revealRecoveryReport}
+        automaticTaskEditorId={automaticTaskEditorId}
+        refreshAfterAutomationScript={refreshAfterAutomationScript}
         busy={busy}
-        open={dialog === "library"}
-        phase={createLibraryPhase}
-        required={!library}
-        value={dialogValue}
-        onValueChange={setDialogValue}
-        onBeginCreate={() => {
-          setDialogValue(t("shell.myLibrary"));
-          setCreateLibraryPhase("form");
-        }}
-        onBackToStart={() => {
-          if (createLibraryPhase === "eagle") {
-            cancelEagleInspectFlow();
-            if (library) setDialog(null);
-            return;
-          }
-          if (createLibraryPhase === "billfish") {
-            cancelBillfishInspectFlow();
-            if (library) setDialog(null);
-            return;
-          }
-          if (library) {
-            setDialog(null);
-            return;
-          }
-          setCreateLibraryPhase("start");
-        }}
-        onSubmit={() => {
-          if (createLibraryPhase === "eagle") {
-            void submitEagleLibraryName();
-            return;
-          }
-          if (createLibraryPhase === "billfish") {
-            void submitBillfishLibraryName();
-            return;
-          }
-          setDialog(null);
-          void runLibraryOperation("create");
-        }}
-        onCancel={() => {
-          if (createLibraryPhase === "eagle") {
-            cancelEagleInspectFlow();
-          }
-          if (createLibraryPhase === "billfish") {
-            cancelBillfishInspectFlow();
-          }
-          setDialog(null);
-          setCreateLibraryPhase("start");
-        }}
-        onOpenExisting={() => {
-          // Keep the required no-library surface mounted while the native
-          // picker is open. This avoids the auto-open effect racing a cancel
-          // and makes the action visibly await the selected library. When a
-          // library is already open, the menu dialog can close immediately.
-          if (library) setDialog(null);
-          void runLibraryOperation("open");
-        }}
-        onImportLibrary={() => {
-          setDialog(null);
-          setImportLibraryChooserOpen(true);
-        }}
-        onOpenRecent={(path) => {
-          setDialog(null);
-          void openRecentLibrary(path);
-        }}
-        onForgetRecent={(path) => {
-          void forgetRecentLibrary(path);
-        }}
+        createLibraryPhase={createLibraryPhase}
+        dialogValue={dialogValue}
+        setDialogValue={setDialogValue}
+        setCreateLibraryPhase={setCreateLibraryPhase}
+        cancelEagleInspectFlow={cancelEagleInspectFlow}
+        cancelBillfishInspectFlow={cancelBillfishInspectFlow}
+        submitEagleLibraryName={submitEagleLibraryName}
+        submitBillfishLibraryName={submitBillfishLibraryName}
+        runLibraryOperation={runLibraryOperation}
+        openRecentLibrary={openRecentLibrary}
+        forgetRecentLibrary={forgetRecentLibrary}
+        exportLibrary={exportLibrary}
+        openEagleLibrary={openEagleLibrary}
+        openBillfishLibrary={openBillfishLibrary}
+        startImport={startImport}
+        startImportZip={startImportZip}
+        importEagleLibrary={importEagleLibrary}
+        importBillfishLibrary={importBillfishLibrary}
+        completeImportCopy={completeImportCopy}
+        completeImportInPlace={completeImportInPlace}
+        applyBatchRelink={applyBatchRelink}
+        cancelBatchRelink={cancelBatchRelink}
+        aiConnectionFailureGate={aiConnectionFailureGate}
+        onAiConnectionFailureAbort={onAiConnectionFailureAbort}
+        handleAiConnectionFailureRetry={handleAiConnectionFailureRetry}
+        fatalAlertMessage={fatalAlertMessage}
+        dismissAlreadyOpenPrompt={dismissAlreadyOpenPrompt}
+        confirmAlreadyOpenLibrarySwitch={confirmAlreadyOpenLibrarySwitch}
+        dismissFatalAlert={dismissFatalAlert}
+        openLibraryChooserFromError={openLibraryChooserFromError}
+        criticalConfirmation={criticalConfirmation}
+        embeddingSearchReady={embeddingSearchReady}
+        embeddingSelectionId={embeddingSelectionId}
+        embeddingService={embeddingService}
+        controlMediaJobs={controlMediaJobs}
+        loadMoreMediaJobs={loadMoreMediaJobs}
+        controlAiJobs={controlAiJobs}
       />
-      {exportDialogOpen && (
-        <ExportDialog
-          open={exportDialogOpen}
-          exporting={
-            exportProgress !== null &&
-            !["complete", "cancelled", "failed"].includes(exportProgress.phase)
-          }
-          onClose={() => setExportDialogOpen(false)}
-          onExportFolder={(includeLinked) =>
-            void exportLibrary("folder", includeLinked)
-          }
-          onExportZip={(includeLinked) =>
-            void exportLibrary("zip", includeLinked)
-          }
-        />
-      )}
-      <OpenLibraryChooserDialog
-        open={openLibraryChooserOpen}
-        onCancel={() => setOpenLibraryChooserOpen(false)}
-        onOpenKeel={() => {
-          setOpenLibraryChooserOpen(false);
-          if (library) setDialog(null);
-          void runLibraryOperation("open");
-        }}
-        onOpenSyncLibrary={() => {
-          setOpenLibraryChooserOpen(false);
-          setAppSettingsOpen(false);
-          setOpenSyncLibraryOpen(true);
-        }}
-        onOpenEagle={() => {
-          setOpenLibraryChooserOpen(false);
-          void openEagleLibrary();
-        }}
-        onOpenBillfish={() => {
-          setOpenLibraryChooserOpen(false);
-          void openBillfishLibrary();
-        }}
-      />
-      <ImportLibraryChooserDialog
-        open={importLibraryChooserOpen}
-        externalKind={library ? "import" : "open"}
-        onCancel={() => setImportLibraryChooserOpen(false)}
-        onImportFolder={() => {
-          setImportLibraryChooserOpen(false);
-          void startImport();
-        }}
-        onImportZip={() => {
-          setImportLibraryChooserOpen(false);
-          void startImportZip();
-        }}
-        onOpenEagle={() => {
-          setImportLibraryChooserOpen(false);
-          void openEagleLibrary();
-        }}
-        onImportEagle={() => {
-          setImportLibraryChooserOpen(false);
-          void importEagleLibrary();
-        }}
-        onOpenBillfish={() => {
-          setImportLibraryChooserOpen(false);
-          void openBillfishLibrary();
-        }}
-        onImportBillfish={() => {
-          setImportLibraryChooserOpen(false);
-          void importBillfishLibrary();
-        }}
-      />
-      {importValidated && (
-        <ImportDialog
-          open
-          validated={importValidated}
-          importing={
-            importProgress !== null &&
-            !["complete", "cancelled", "failed"].includes(importProgress.phase)
-          }
-          onClose={() => setImportValidated(null)}
-          onImportCopy={() => void completeImportCopy()}
-          onImportOpenInPlace={() => void completeImportInPlace()}
-          onImportZip={() => {
-            setImportValidated(null);
-            void startImportZip();
-          }}
-        />
-      )}
-      <RelinkPreview
-        session={batchRelinkPreview}
-        keepMetadata={batchRelinkKeepMetadata}
-        onKeepMetadataChange={setBatchRelinkKeepMetadata}
-        onApply={() => void applyBatchRelink()}
-        onCancel={() => void cancelBatchRelink()}
-      />
-      <AiConnectionFailureDialog
-        failedCount={aiConnectionFailureGate.failedJobIds.length}
-        failureCode={aiConnectionFailureGate.failureCode}
-        onAbort={onAiConnectionFailureAbort}
-        onRetry={handleAiConnectionFailureRetry}
-        open={aiConnectionFailureGate.open}
-      />
-      <FatalAlertDialog
-        cancelLabel={fatalAlertAlreadyOpen ? t("common.cancel") : null}
-        confirmLabel={fatalAlertAlreadyOpen ? t("common.confirm") : null}
-        message={fatalAlertMessage}
-        title={fatalDialogTitle}
-        onCancel={fatalAlertAlreadyOpen ? dismissAlreadyOpenPrompt : undefined}
-        onConfirm={fatalAlertAlreadyOpen ? confirmAlreadyOpenLibrarySwitch : undefined}
-        onDismiss={fatalAlertAlreadyOpen ? dismissAlreadyOpenPrompt : dismissFatalAlert}
-        onSwitchLibrary={fatalAlertAlreadyOpen ? undefined : openLibraryChooserFromError}
-      />
-      <CriticalConfirmationDialog
-        onDecide={criticalConfirmation.decide}
-        request={criticalConfirmation.request}
-      />
-      <MediaJobsDialog
-        open={mediaJobsOpen && library !== null}
-        mediaJobs={mediaJobs}
-        mediaJobsLoading={mediaJobsLoading}
-        aiJobs={aiJobs}
-        embeddingIndex={embeddingSearchReady && embeddingSelectionId ? { modelId: embeddingSelectionId, snapshot: embeddingIndex, modalities: embeddingService?.modalities } : null}
-        pluginJobs={pluginJobs}
-        onClose={() => setMediaJobsOpen(false)}
-        onControlMediaJobs={(action, jobIds) => void controlMediaJobs(action, jobIds)}
-        onLoadMoreMediaJobs={() => void loadMoreMediaJobs()}
-        onControlAiJobs={(action, jobIds) => void controlAiJobs(action, jobIds)}
-        onRevealAppLog={revealAppLog}
-        onViewAppLog={openAppLog}
-      />
-      {/* Unified context menu */}
-      <AssetContextMenu
+      <AppAssetContextMenu
         busy={busy}
-        libraryId={library?.libraryId}
         pluginBrowseScope={pluginBrowseScope}
         pluginViewerState={pluginViewerState}
-        pluginApi={(window as RendererWindow).keel?.plugins}
         pluginContributionRefreshKey={pluginContributionRefreshKey}
-        assets={visibleAssets}
+        visibleAssets={visibleAssets}
         menuSkipScope={menuSkipScope}
-        onCloseWorkspaceTab={(tabId) => void closeWorkspaceTab(tabId)}
-        onCloseOtherWorkspaceTabs={(tabId) =>
-          void closeOtherWorkspaceTabs(tabId)
-        }
-        onRevealWorkspaceTabEntity={(entity) => {
-          setLeftOpen(true);
-          setWorkspaceTabRevealTarget({
-            ...entity,
-            requestId: ++workspaceTabRevealRequestRef.current,
-          });
-        }}
-        onCopyWorkspaceTabName={(name) => {
-          void navigator.clipboard.writeText(name).then(
-            () => setNotice(t("tabs.copyNameDone")),
-            () => setError(t("tabs.copyNameFailed")),
-          );
-        }}
-        onCreateSubfolder={(folderId) => {
-          openInlineFolderCreate(isLibraryRootFolderId(folderId) ? null : folderId);
-        }}
-        onExpandFolderTree={(folderId) => {
-          folderTreeActionsRef.current?.expandSubtree(folderId);
-        }}
-        onCollapseFolderTree={(folderId) => {
-          folderTreeActionsRef.current?.collapseSubtree(folderId);
-        }}
-        onImportLinkedFolderInto={(folderId) => {
-          // Serpent-316493: 导入链接文件夹 under the right-clicked folder (or at
-          // the library root when the folder panel's blank area was clicked).
-          void importFolderAsLinked(
-            isLibraryRootFolderId(folderId) ? null : folderId,
-          );
-        }}
-        onSetIgnore={({ locationKind, linkedFolderId, relativePath, pathKind, ignored, name }) => {
-          void setIgnoreState({ locationKind, linkedFolderId, relativePath, pathKind, ignored, name });
-        }}
-        onRenameFolder={(folderId, currentName) => {
-          openInlineFolderRename(folderId, currentName);
-        }}
-        onOpenFolderInFileManager={(folderId) => {
-          void handleOpenFolderInFileManager(folderId);
-        }}
-        onCopyFolderPath={(folderId) => {
-          void handleCopyFolderPath(folderId);
-        }}
-        onCopyFolder={(folderId) => {
-          void handleCopyFolder(folderId);
-        }}
-        onPasteIntoFolder={(folderId) => {
-          // Serpent-316493 follow-up: the root sentinel means "the library
-          // root", which paste/import APIs express as null.
-          dispatchClipboardPaste(isLibraryRootFolderId(folderId) ? null : folderId);
-        }}
-        onCloneFolder={(folderId) => {
-          void cloneFolder(folderId);
-        }}
-        onMoveFolder={(folderIds) =>
-          setMoveDialog({
-            assetIds: [],
-            folderIds: [...folderIds],
-            targetFolderId: null,
-            conflictStrategy: "keep-both",
-          })
-        }
-        onOpenLinkedRules={(folder) => void openLinkedRules(folder)}
-        onTrashManagedFolder={(folderId, name) => {
-          requestTrashManagedFolder(folderId, name);
-        }}
-        onDeleteFolderFromDisk={({ folderId, name, locationKind, linkedRelativePath }) => {
-          if (locationKind === "managed") {
-            openDiskDelete({ kind: "managed", folderId, name });
-            return;
-          }
-          if (linkedRelativePath) {
-            openDiskDelete({
-              kind: "linked-child",
-              folderId: linkedRevealFolderId(folderId, linkedRelativePath),
-              linkedFolderId: folderId,
-              relativePath: linkedRelativePath,
-              name,
-            });
-          } else {
-            openDiskDelete({
-              kind: "linked-child",
-              folderId,
-              linkedFolderId: folderId,
-              relativePath: "",
-              name,
-            });
-          }
-        }}
-        onRemoveLinkedFolder={(folderId, name) => {
-          void removeLinkedFolder(folderId, name);
-        }}
-        onSetEntityAppearance={setEntityAppearance}
-        onChooseFolderCover={chooseFolderCover}
-        onChooseFolderCoverFromLibrary={openFolderCoverLibraryPicker}
-        onClearFolderCover={clearFolderCover}
-        onUseAssetAsFolderCover={useAssetAsFolderCover}
-        onBatchAssignTag={(tagId, assetIds) => {
-          void batchAssignTagToSelection(tagId, assetIds);
-        }}
-        onBatchRemoveTag={(tagId, assetIds) => {
-          void batchRemoveTagFromSelection(tagId, assetIds);
-        }}
-        onMoveToFolder={(assetIds, folderIds) =>
-          setMoveDialog({
-            assetIds: [...assetIds],
-            folderIds: [...(folderIds ?? [])],
-            targetFolderId: null,
-            conflictStrategy: "keep-both",
-          })
-        }
-        onTrash={(assetIds, folderIds) => {
-          void trashMixedSelection(assetIds, folderIds ?? []);
-        }}
-        onDeleteFromDisk={(assetIds, folderIds) => {
-          requestSelectionDiskDelete(assetIds, folderIds ?? []);
-        }}
-        onRestore={(assetIds) => {
-          void requestRestoreTrashedAssets(assetIds);
-        }}
-        onPermanentDelete={(assetIds) => {
-          void deletePermanentFromTrash(assetIds);
-        }}
-        onRelink={(assetId) => { void relinkMissingAsset(assetId); }}
-        onAnalyze={(assetId, batchIds) => {
-          void handleAnalyzeClick(assetId, batchIds);
-        }}
-        onClearAiContent={(assetIds) => { void handleClearAiContent(assetIds); }}
-        canAnalyze={
-          aiAnalyzeConnectionReady(aiHasKey, aiConnectionState) && !aiAnalyzing
-        }
-        aiDisconnected={aiAnalyzeShowsDisconnectGlyph(
-          aiHasKey,
-          aiConnectionState,
-        )}
-        onCopyToLinked={(folder, assetIds) => { void copyManagedSelectionToLinked(folder, assetIds); }}
-        onClearSelection={clearAssetSelection}
-        onOpenExternal={(assetId) => { void handleOpenExternal(assetId); }}
-        openWithPrograms={openWithSettings.programs}
-        onOpenWithProgram={(assetId, programId) => { void openAssetWithProgram(assetId, programId); }}
-        onOpenWithPicker={(assetId) => { void openAssetWithProgram(assetId); }}
-        onViewAsset={(assetId) => {
-          const asset = visibleAssets.find((item) => item.assetId === assetId);
-          if (asset) openAssetPreview(asset);
-        }}
-        onSetAssetColorSpace={(assetId, colorSpace) => {
-          void persistAssetColorSpace(assetId, colorSpace);
-        }}
-        onCreateImageSequence={(assetIds) => {
-          void openCreateImageSequenceDialog(assetIds);
-        }}
-        onSetImageSequenceFps={(sequenceId, frameCount, fps) => {
-          setImageSequenceDialog({
-            assetIds: [],
-            mode: "update",
-            sequenceId,
-            frameCount,
-            fps,
-            submitting: false,
-            error: null,
-          });
-        }}
-        onDissolveImageSequence={(sequenceId) => {
-          void dissolveSelectedImageSequence(sequenceId);
-        }}
-        onDissolveImageSequences={(sequenceIds) => {
-          void dissolveSelectedImageSequences(sequenceIds);
-        }}
-        onRevealInFolder={(assetId) => { void handleRevealInFolder(assetId); }}
-        onShowInLibraryFolder={(assetId) => {
-          void showAssetInContainingFolder(assetId);
-        }}
-        semanticSearchEnabled={embeddingBound}
+        closeWorkspaceTab={closeWorkspaceTab}
+        closeOtherWorkspaceTabs={closeOtherWorkspaceTabs}
+        setLeftOpen={setLeftOpen}
+        setWorkspaceTabRevealTarget={setWorkspaceTabRevealTarget}
+        workspaceTabRevealRequestRef={workspaceTabRevealRequestRef}
+        setNotice={setNotice}
+        t={t}
+        setError={setError}
+        openInlineFolderCreate={openInlineFolderCreate}
+        folderTreeActionsRef={folderTreeActionsRef}
+        importFolderAsLinked={importFolderAsLinked}
+        setIgnoreState={setIgnoreState}
+        openInlineFolderRename={openInlineFolderRename}
+        handleOpenFolderInFileManager={handleOpenFolderInFileManager}
+        handleCopyFolderPath={handleCopyFolderPath}
+        handleCopyFolder={handleCopyFolder}
+        dispatchClipboardPaste={dispatchClipboardPaste}
+        cloneFolder={cloneFolder}
+        openLinkedRules={openLinkedRules}
+        requestTrashManagedFolder={requestTrashManagedFolder}
+        openDiskDelete={openDiskDelete}
+        removeLinkedFolder={removeLinkedFolder}
+        setEntityAppearance={setEntityAppearance}
+        chooseFolderCover={chooseFolderCover}
+        openFolderCoverLibraryPicker={openFolderCoverLibraryPicker}
+        clearFolderCover={clearFolderCover}
+        useAssetAsFolderCover={useAssetAsFolderCover}
+        batchAssignTagToSelection={batchAssignTagToSelection}
+        batchRemoveTagFromSelection={batchRemoveTagFromSelection}
+        trashMixedSelection={trashMixedSelection}
+        requestSelectionDiskDelete={requestSelectionDiskDelete}
+        requestRestoreTrashedAssets={requestRestoreTrashedAssets}
+        deletePermanentFromTrash={deletePermanentFromTrash}
+        relinkMissingAsset={relinkMissingAsset}
+        handleAnalyzeClick={handleAnalyzeClick}
+        handleClearAiContent={handleClearAiContent}
+        copyManagedSelectionToLinked={copyManagedSelectionToLinked}
+        clearAssetSelection={clearAssetSelection}
+        handleOpenExternal={handleOpenExternal}
+        openWithSettings={openWithSettings}
+        openAssetWithProgram={openAssetWithProgram}
+        openAssetPreview={openAssetPreview}
+        persistAssetColorSpace={persistAssetColorSpace}
+        openCreateImageSequenceDialog={openCreateImageSequenceDialog}
+        dissolveSelectedImageSequence={dissolveSelectedImageSequence}
+        dissolveSelectedImageSequences={dissolveSelectedImageSequences}
+        handleRevealInFolder={handleRevealInFolder}
+        showAssetInContainingFolder={showAssetInContainingFolder}
+        embeddingBound={embeddingBound}
         embeddingSelectionId={embeddingSelectionId}
-        embeddingAdapter={embeddingService?.adapter ?? null}
-        embeddingModalities={embeddingService?.modalities ?? null}
-        onFindSimilar={(assetId) => {
-          void runFindSimilar(assetId);
-        }}
-        onCopyFilePath={(assetId) => { void handleCopyFilePath(assetId); }}
-        onCopyAssetFiles={(assetIds) => {
-          void handleCopyAssetFiles(assetIds);
-        }}
-        pasteTargetFolderId={browsePasteDestination}
-        onRenameAssetFile={(assetId) => { openAssetRename(assetId); }}
-        onAssignTag={(assetId, tagId) => { void assignAssetToTag(assetId, tagId); }}
-        trashedFolderCount={trashedFolders.length}
-        onRestoreTrashedFolder={(tombstoneId, name) => {
-          void restoreTrashedManagedFolder(tombstoneId, name);
-        }}
-        onEmptyTrash={() => {
-          void emptyTrash();
-        }}
+        embeddingService={embeddingService}
+        runFindSimilar={runFindSimilar}
+        handleCopyFilePath={handleCopyFilePath}
+        handleCopyAssetFiles={handleCopyAssetFiles}
+        browsePasteDestination={browsePasteDestination}
+        openAssetRename={openAssetRename}
+        assignAssetToTag={assignAssetToTag}
+        restoreTrashedManagedFolder={restoreTrashedManagedFolder}
+        emptyTrash={emptyTrash}
       />
-      {/* REQ-SHELL-007 / REQ-SHELL-011 pane resize + edge restore handles. */}
-      {leftOpen ? (
-        <div
-          aria-label={t("shell.resizeNav")}
-          aria-orientation="vertical"
-          className={`panel-resizer${panelResizing === "nav" ? " is-active" : ""}`}
-          data-hover-tip={t("shell.resizeNav")}
-          onDoubleClick={() => {
-            capturePanelResizeAnchor(false);
-            resetPanelWidth("nav");
-          }}
-          onPointerDown={(event) => {
-            event.preventDefault();
-            capturePanelResizeAnchor();
-            beginPanelResize("nav", event.clientX);
-          }}
-          onMouseDown={() => capturePanelResizeAnchor()}
-          role="separator"
-          style={{ left: navPanelWidth - 3 }}
-        />
-      ) : (
-        <div
-          aria-label={t("shell.restoreNavEdge")}
-          aria-orientation="vertical"
-          className={`panel-resizer panel-resizer-edge${panelResizing === "nav" ? " is-active" : ""}`}
-          data-hover-tip={t("shell.restoreNavEdge")}
-          onPointerDown={(event) => {
-            event.preventDefault();
-            capturePanelResizeAnchor();
-            beginPanelEdgeRestore("nav", event.clientX);
-          }}
-          onMouseDown={() => capturePanelResizeAnchor()}
-          role="separator"
-          style={{ left: 0 }}
-        />
-      )}
-      {rightOpen ? (
-        <div
-          aria-label={t("shell.resizeInspector")}
-          aria-orientation="vertical"
-          className={`panel-resizer${panelResizing === "inspector" ? " is-active" : ""}`}
-          data-hover-tip={t("shell.resizeInspector")}
-          onDoubleClick={() => {
-            capturePanelResizeAnchor(false);
-            resetPanelWidth("inspector");
-          }}
-          onPointerDown={(event) => {
-            event.preventDefault();
-            capturePanelResizeAnchor();
-            beginPanelResize("inspector", event.clientX);
-          }}
-          onMouseDown={() => capturePanelResizeAnchor()}
-          role="separator"
-          style={{ right: inspectorPanelWidth - 3 }}
-        />
-      ) : (
-        <div
-          aria-label={t("shell.restoreInspectorEdge")}
-          aria-orientation="vertical"
-          className={`panel-resizer panel-resizer-edge${panelResizing === "inspector" ? " is-active" : ""}`}
-          data-hover-tip={t("shell.restoreInspectorEdge")}
-          onPointerDown={(event) => {
-            event.preventDefault();
-            capturePanelResizeAnchor();
-            beginPanelEdgeRestore("inspector", event.clientX);
-          }}
-          onMouseDown={() => capturePanelResizeAnchor()}
-          role="separator"
-          style={{ right: 0 }}
-        />
-      )}
+      <PaneResizeHandles
+        leftOpen={leftOpen}
+        t={t}
+        panelResizing={panelResizing}
+        capturePanelResizeAnchor={capturePanelResizeAnchor}
+        resetPanelWidth={resetPanelWidth}
+        beginPanelResize={beginPanelResize}
+        navPanelWidth={navPanelWidth}
+        beginPanelEdgeRestore={beginPanelEdgeRestore}
+        rightOpen={rightOpen}
+        inspectorPanelWidth={inspectorPanelWidth}
+      />
     </main>
     <LocalConfirmationHost blocked={criticalConfirmation.request !== null} scopeKey={library?.libraryId} />
     </>
