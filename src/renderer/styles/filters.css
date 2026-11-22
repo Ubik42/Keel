@@ -1213,7 +1213,7 @@
   font-size: calc(12px * var(--ui-font-scale));
   font-weight: var(--ui-font-weight-medium);
   line-height: 1.2;
-  color: var(--text-secondary);
+  color: var(--ui-content-secondary);
   cursor: pointer;
   user-select: none;
 }
