@@ -124,6 +124,7 @@ test('persists Worker-owned vectors through full app restart and reuses them for
     env: {
       ...process.env,
       KEEL_E2E: '1',
+      KEEL_E2E_SHOW_TEXT: '1',
       KEEL_E2E_HIDE_WINDOW: '1',
       KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
       KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
@@ -192,12 +193,12 @@ test('persists Worker-owned vectors through full app restart and reuses them for
     const failedAssetCard = await findImportedAssetCard(window, 'semantic-failure.txt');
     await failedAssetCard.click();
     await failedAssetCard.click({ button: 'right' });
-    const failedContextMenu = window.getByRole('menu');
+    const failedContextMenu = window.getByRole('menu').first();
     await expect(failedContextMenu.getByRole('menuitem', { name: '找相似', exact: true })).toBeVisible();
     await failedContextMenu.getByRole('menuitem', { name: '找相似', exact: true }).click();
     await expect(window.getByText('此资产未能完成向量编码，暂时无法查找相似内容。')).toBeVisible();
-    await window.getByRole('button', { name: '更多工具', exact: true }).click();
-    await window.getByRole('menuitem', { name: '后台任务', exact: true }).click();
+    await window.getByRole('button', { name: '规则菜单', exact: true }).click();
+    await window.getByRole('menuitem', { name: '运行状态', exact: true }).click();
     await expect(window.locator('.media-jobs-embedding-section'))
       .toContainText('有 1 个文本未能完成编码');
     await window.getByRole('button', { name: '关闭后台任务' }).click();
