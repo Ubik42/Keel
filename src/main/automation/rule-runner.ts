@@ -14,6 +14,7 @@ import {
   rulesInPriorityOrder,
   type RuleChangeCursor,
   type RuleListResult,
+  type RuleManifest,
   type RuleRun,
   type RuleSummary,
   type RuleTrigger,
@@ -33,7 +34,7 @@ export interface RuleRunnerOptions {
   gateway(): AutomationCommandGateway | undefined;
   runtime(): ScriptRuntimeExecutor | undefined;
   /** Desktop confirmation for a rule that has not been confirmed in this version. */
-  confirmDesktopWrite(rule: { name: string; purpose: string; permissions: readonly string[] }): Promise<boolean>;
+  confirmDesktopWrite(rule: Pick<RuleManifest, 'name' | 'purpose' | 'permissions' | 'trigger'>): Promise<boolean>;
   logger(): AppLogger | undefined;
   /** Called after a run is recorded, so the rule list can refresh. */
   onRunRecorded?(libraryId: string, run: RuleRun): void;

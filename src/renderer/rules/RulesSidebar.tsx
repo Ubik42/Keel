@@ -6,14 +6,14 @@ import {
   moveAutomaticTask,
   moveAutomaticTaskGroup,
 } from "./automatic-task-layout";
-import { RULE_TRIGGER_LABELS, invokeRules, rulesBridge, toRuleLayout, toTaskLayout } from "./rules-bridge";
+import { invokeRules, rulesBridge, toRuleLayout, toTaskLayout } from "./rules-bridge";
+import { describeRuleTrigger } from "../../shared/rule-labels";
 
 const DRAG_TYPE = "application/x-keel-rule";
 type RuleDrag = { kind: "rule" | "group"; id: string };
 
 function triggerLabel(rule: RuleSummary): string {
-  const trigger = rule.manifest.trigger;
-  return trigger.kind === "schedule" ? `每 ${trigger.everyMinutes} 分钟` : RULE_TRIGGER_LABELS[trigger.kind] ?? trigger.kind;
+  return describeRuleTrigger(rule.manifest.trigger);
 }
 
 function lastRunLabel(rule: RuleSummary): string {

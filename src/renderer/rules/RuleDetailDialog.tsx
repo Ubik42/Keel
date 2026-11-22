@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import type { RuleRun, RuleSummary } from "../../shared/rules";
 import { RULE_TRIGGER_LABELS, invokeRules, rulesBridge } from "./rules-bridge";
+import { describeRulePermissions, describeRuleTrigger } from "../../shared/rule-labels";
 import { DialogShell } from "../workbench/ui/patterns";
 
 function runTitle(run: RuleRun): string {
@@ -83,11 +84,13 @@ export function RuleDetailDialog(props: {
         {manifest && (
           <dl className="rule-detail-facts">
             <dt>触发</dt>
-            <dd>{trigger?.kind === "schedule" ? `每 ${trigger.everyMinutes} 分钟` : RULE_TRIGGER_LABELS[trigger?.kind ?? ""]}</dd>
+            <dd>{describeRuleTrigger(trigger)}</dd>
             <dt>状态</dt>
             <dd>{rule?.enabled ? "已开启" : "已关闭"}</dd>
-            <dt>权限</dt>
-            <dd>{manifest.permissions.join("、") || "无"}</dd>
+            <dt>会修改</dt>
+            <dd>{describeRulePermissions(manifest.permissions).writes.join("、") || "不修改资源库"}</dd>
+            <dt>会读取</dt>
+            <dd title={manifest.permissions.join(", ")}>{describeRulePermissions(manifest.permissions).reads.join("、") || "无"}</dd>
             <dt>文件</dt>
             <dd>rules/{manifest.id.slice(0, 8)}…/{manifest.script}</dd>
           </dl>

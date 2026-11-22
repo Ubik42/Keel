@@ -6,15 +6,18 @@ import { type AutomationSource } from '../../automation/command-registry';
 import type { RendererCriticalConfirmationBroker } from './critical-confirmation-prompt';
 import { mcpFullAccessConfirmationCopy } from '../mcp/mcp-full-access-confirmation-copy';
 import { type RendererRequest } from '../../shared/protocol/requests';
+import { describeRulePermissions, describeRuleTrigger } from '../../shared/rule-labels';
+import type { RuleManifest } from '../../shared/rules';
 import { criticalConfirmationInitialFocusForOperation, criticalDiskDeleteConfirmLabel } from '../../shared/critical-confirmation';
 
 /**
  * Desktop confirmations for rules, automation writes, file plans and critical operations (split out of index.ts, P8).
  */
 /** PR: first run of a new or edited rule. */
-export async function confirmRuleRun(rule: { name: string; purpose: string; permissions: readonly string[] }): Promise<boolean> {
+export async function confirmRuleRun(rule: Pick<RuleManifest, 'name' | 'purpose' | 'permissions' | 'trigger'>): Promise<boolean> {
   if (!state.mainWindow || state.mainWindow.isDestroyed()) return false;
   if (!app.isPackaged && process.env.KEEL_E2E === '1' && process.env.KEEL_E2E_AUTOMATION_CONFIRM === '1') return true;
+  const { reads, writes } = describeRulePermissions(rule.permissions);
   const response = await dialog.showMessageBox(state.mainWindow, {
     type: 'warning',
     buttons: ['取消', '运行规则'],
@@ -25,8 +28,11 @@ export async function confirmRuleRun(rule: { name: string; purpose: string; perm
     detail: [
       rule.purpose || '这条规则没有写用途。',
       '',
-      `它可以使用：${rule.permissions.join('、') || '无'}。`,
-      '确认后，这一版规则会按它的触发方式自动运行；规则文件改动后需要再确认一次。每次运行都记录在规则的触发历史中，改动可以撤销。',
+      `触发：${describeRuleTrigger(rule.trigger)}`,
+      `会修改：${writes.join('、') || '不修改资源库'}`,
+      `会读取：${reads.join('、') || '无'}`,
+      '',
+      '确认后，这一版规则按触发方式自动运行；规则文件改动后需要再确认一次。每次运行都记在规则的触发历史中，改动可以撤销。',
     ].join('\n'),
   });
   ensureRendererKeyboardFocus(state.mainWindow, { reattachHwnd: true, reason: 'rule.confirm' });
@@ -49,7 +55,7 @@ export async function confirmDesktopAutomationWrite(): Promise<boolean> {
     defaultId: 1,
     cancelId: 0,
     title: '运行自动化脚本',
-    message: '此脚本可以读取资产、标签与合集，修改评分与元数据，创建标签或空文件夹，整理合集，入队 AI 分析，复制文件路径，以及重命名或移入回收站。',
+    message: '此脚本可以读取资产与标签，修改评分与元数据，创建标签或空文件夹，添加或移除标签，排队 AI 分析，复制文件路径，以及重命名或移入回收站。',
     detail: '脚本只会获得受限自动化能力；新建资源库和批量导入仍需单独的本机计划确认，不会获得网络下载、磁盘直读、数据库或永久删除权限。每次运行都会记录到应用日志。',
   });
   ensureRendererKeyboardFocus(state.mainWindow, {
