@@ -32,7 +32,6 @@ import {
   shouldShowMissingAssetOverlay,
 } from "./availability-affordance";
 import {
-  readShowMissingLinkedFiles,
   writeShowMissingLinkedFiles,
 } from "./linked-missing-preference";
 import {
@@ -107,7 +106,7 @@ import {
   NavigationSidebar,
   type FolderTreeExpandActions,
 } from "./NavigationSidebar";
-import { LibrarySwitcher, buildRecentLibraryMenuEntries, type RecentLibraryMenuEntry } from "./LibrarySwitcher";
+import { LibrarySwitcher, buildRecentLibraryMenuEntries } from "./LibrarySwitcher";
 import {
   LibraryLoadingOverlay,
 } from "./LibraryLoadingOverlay";
@@ -177,7 +176,6 @@ import {
 import { FolderCard } from "./FolderCard";
 import {
   isFolderRecursiveEnabled,
-  loadFolderRecursivePreferences,
   saveFolderRecursivePreferences,
   withFolderRecursiveEnabled,
 } from "./folder-recursive-preferences";
@@ -205,7 +203,6 @@ import { useT, useLocale, translateForLocale, type AppLocale } from "./i18n";
 import type { AiApiFormat } from "../shared/ai-endpoints";
 import { DEFAULT_AI_API_FORMAT, DEFAULT_AI_MODELS } from "../shared/ai-endpoints";
 import type { KeelMcpSettingsApi } from "../shared/mcp";
-import type { HistoryStatus } from "../shared/protocol/responses";
 import { isEditableTextTarget } from "../shared/edit-context-menu";
 import type { SearchQuery } from "../shared/asset-types";
 import {
@@ -251,7 +248,6 @@ import {
 import { mergeAssetSummaries } from "./merge-asset-summaries";
 import {
   RelinkPreview,
-  type BatchRelinkPreviewSession,
   formatRelinkExamplePath,
 } from "./RelinkPreview";
 import { MoveDialog } from "./MoveDialog";
@@ -277,7 +273,6 @@ import {
 import {
   nextImportConflictPhaseAfterName,
   resolveImportConflictPresentation,
-  type ImportConflictPhase,
 } from "./import-conflict-flow";
 import {
   CreateDialog,
@@ -286,7 +281,6 @@ import {
 import { FolderCoverPickerDialog } from "./FolderCoverPickerDialog";
 import {
   AiConfigDialog,
-  type AiConnectionState,
 } from "./AiConfigDialog";
 import {
   cancellationAffectsAiBatch,
@@ -318,10 +312,19 @@ import { AboutDialog } from "./AboutDialog";
 import { OpenSourceLicensesDialog } from "./OpenSourceLicensesDialog";
 import { playTaskCompletionSound } from "./task-completion-sound";
 import { AppSettingsEntry } from "./AppSettingsEntry";
-import type { AppSettingsCategoryId } from "./app-settings-sections";
-import type { AiUiPreferences } from "./ai-ui-preferences";
 import { usePrefsStore } from "./stores/prefs-store";
 import { useDialogField } from "./stores/dialogs-store";
+import { useAiField } from "./stores/ai-store";
+import { useEmbeddingField } from "./stores/embedding-store";
+import { useJobsField } from "./stores/jobs-store";
+import { useTransfersField } from "./stores/transfers-store";
+import { usePreviewField } from "./stores/preview-store";
+import { useInspectorField } from "./stores/inspector-store";
+import { useSelectionField } from "./stores/selection-store";
+import { useBrowseField } from "./stores/browse-store";
+import { useQueryField } from "./stores/query-store";
+import { useNavigationField, type AssetScope } from "./stores/navigation-store";
+import { useSessionField } from "./stores/session-store";
 import {
   imageSequenceImportFlags,
 } from "./image-sequence-preferences";
@@ -331,7 +334,6 @@ import {
   postImportSequencePlanFromAssets,
   type PostImportSequencePlan,
 } from "./post-import-image-sequences";
-import type { ImageSequenceConfirmPurpose } from "./image-sequence-import-dialog";
 import { resolveAssetSummariesForSelection } from "./image-sequence-selection";
 import { MediaJobsDialog } from "./MediaJobsDialog";
 import { PluginJobActivityBanner } from "./PluginJobActivityBanner";
@@ -489,17 +491,13 @@ import type { EntityAppearance, EntityAppearanceTarget } from "../shared/entity-
 import type {
   AiSearchPlan,
   AssetSummary,
-  BrowseLayoutEntry,
   AssetMetadataResult,
   FilterClause,
-  FolderBrowseEntry,
   LinkedFolderRule,
   LinkedFolderSummary,
-  ManagedFolderSummary,
   SearchScope,
   SortDefinition,
   TagSummary,
-  TrashedFolderSummary,
 } from "../shared/asset-types";
 import {
   assetsRemainingAfterMembership,
@@ -508,7 +506,6 @@ import {
 import type { FolderNavigationCover, LibraryNavigationSummary } from "../shared/library-navigation";
 import { LIBRARY_ROOT_FOLDER_ID, isLibraryRootFolderId } from "../shared/library-root-folder";
 import { DEFAULT_COLOR_SIMILARITY } from "../shared/color-filter-presets";
-import { loadColorFilterPreferences } from "./color-filter-preferences";
 import {
   loadSemanticSearchPreferences,
   saveSemanticSearchPreferences,
@@ -535,14 +532,11 @@ import {
   canFindSimilarForAsset,
   type FindSimilarSource,
 } from "./find-similar";
-import { isSemanticSearchModelId, type EmbeddingIndexSnapshot, type SemanticSearchModelId } from "../shared/embedding/profile";
+import { isSemanticSearchModelId } from "../shared/embedding/profile";
 import { compactFormatFilterTokens } from "../shared/text-media";
 import type {
   KeelLibraryApi,
-  EmbeddingHttpServiceSummary,
   LibraryApiResult,
-  ImportValidatedResult,
-  MediaJobStatus,
   AiJobStatus,
   PluginJobStatus,
 } from "../shared/library-api";
@@ -554,12 +548,7 @@ import type { AppLogEntry, ReadAppLogResult } from "../shared/app-log";
 import type {
   ImportConflictPlan,
   ImportSourceFailurePlan,
-  ImageSequenceImportOffer,
   RendererLibrarySummary,
-  ExportProgressEvent,
-  ImportProgressEvent,
-  SyncProgressEvent,
-  DeleteProgressEvent,
 } from "../shared/protocol/responses";
 import { AssetPreviewModal, type AssetPreviewModalHandle } from "./AssetPreviewModal";
 import { TextAssetPreviewTile } from "./TextAssetPreviewTile";
@@ -581,10 +570,8 @@ import {
   CARD_SIZE_MAX,
   CARD_SIZE_MIN,
   shouldShowGridDimensions,
-  type CanvasPreferences,
 } from "./canvas-preferences";
 import {
-  loadBrowseSortPreferences,
   saveBrowseSortPreferences,
 } from "./browse-sort-preferences";
 import {
@@ -606,7 +593,6 @@ import {
 import { formatBytes, formatShortDate } from "./format-file-meta";
 import {
   libraryTransferKindFromOperation,
-  type LibraryTransferKind,
 } from "./library-transfer-progress";
 import {
   BROWSE_PAGE_SIZE,
@@ -714,10 +700,6 @@ type UiState =
   | "loading"
   | "importing"
   | "ready";
-type LibraryLoadingState = {
-  name: string | null;
-  operation?: "opening" | "deleting";
-};
 
 const LIBRARY_LOADING_DISPLAY_DELAY_MS = 3_000;
 
@@ -774,7 +756,6 @@ type QueryFilterSnapshot = {
 // REQ-FOLDER-007 removed the "folder" kind: folder create/rename now happens
 // inline in the directory tree (use-inline-folder-edit), not in a dialog.
 type DialogKind = "library" | "tag" | null;
-type AssetScope = "all" | "root" | string;
 type WorkspaceNavigationRequest = Readonly<{
   token?: WorkspaceNavigationToken;
   historyMode: WorkspaceNavigationHistoryMode;
@@ -857,6 +838,8 @@ function ToolButton({
 }
 
 function AppInner() {
+  const setCanvasPrefs = usePrefsStore((state) => state.setCanvas);
+  const [libraryRecoveryDialogOpen, setLibraryRecoveryDialogOpen] = useSessionField("libraryRecoveryDialogOpen");
   const localConfirmation = useLocalConfirmation();
   const shortcutRuntimeVersion = useShortcutRuntimeVersion();
   const t = useT();
@@ -873,23 +856,21 @@ function AppInner() {
   useScrollbarActivity();
 
   // Library / folder / assets (existing)
-  const [library, setLibrary] = useState<RendererLibrarySummary | null>(null);
+  const [library, setLibrary] = useSessionField("library");
   const nativeDragReadyIds = useNativeDragReadyIds(rawLibraryApi, library?.libraryId);
   const libraryRef = useRef<RendererLibrarySummary | null>(null);
   libraryRef.current = library;
-  const [recentLibraries, setRecentLibraries] = useState<
-    RecentLibraryMenuEntry[]
-  >([]);
-  const [folders, setFolders] = useState<ManagedFolderSummary[]>([]);
-  const [linkedFolders, setLinkedFolders] = useState<LinkedFolderSummary[]>([]);
+  const [recentLibraries, setRecentLibraries] = useSessionField("recentLibraries");
+  const [folders, setFolders] = useNavigationField("folders");
+  const [linkedFolders, setLinkedFolders] = useNavigationField("linkedFolders");
   const [linkedRulesEditor, setLinkedRulesEditor] = useState<{
     folderId: string;
     name: string;
     rules: LinkedFolderRule[];
   } | null>(null);
   const [convertLinkedDialog, setConvertLinkedDialog] = useDialogField("convertLinkedDialog");
-  const [assets, setAssets] = useState<AssetSummary[]>([]);
-  const [findSimilarSource, setFindSimilarSource] = useState<FindSimilarSource | null>(null);
+  const [assets, setAssets] = useBrowseField("assets");
+  const [findSimilarSource, setFindSimilarSource] = useNavigationField("findSimilarSource");
   const findSimilarTokenRef = useRef(0);
   const assetsRef = useRef<AssetSummary[]>([]);
   const syncBrowseFilterMembershipRef = useRef<
@@ -898,23 +879,15 @@ function AppInner() {
   useEffect(() => {
     assetsRef.current = assets;
   }, [assets]);
-  const [browseLayout, setBrowseLayout] = useState<BrowseLayoutEntry[]>([]);
-  const [virtualBrowseLayout, setVirtualBrowseLayout] =
-    useState<VirtualBrowseLayout | null>(null);
-  const [layoutThumbnailArtifacts, setLayoutThumbnailArtifacts] = useState<{
-    libraryId: string;
-    ids: Map<string, string>;
-  }>({ libraryId: "", ids: new Map() });
-  const [assetScope, setAssetScope] = useState<AssetScope>("all");
+  const [browseLayout, setBrowseLayout] = useBrowseField("browseLayout");
+  const [virtualBrowseLayout, setVirtualBrowseLayout] = useBrowseField("virtualBrowseLayout");
+  const [layoutThumbnailArtifacts, setLayoutThumbnailArtifacts] = useBrowseField("layoutThumbnailArtifacts");
+  const [assetScope, setAssetScope] = useNavigationField("assetScope");
   // REQ-FOLDER-001/002/003/010: direct child folder cards shown above assets
   // when the current browse parent is a managed folder or the managed root.
-  const [folderBrowseEntries, setFolderBrowseEntries] = useState<FolderBrowseEntry[]>([]);
-  const [folderNavigationCovers, setFolderNavigationCovers] = useState<readonly FolderNavigationCover[]>(
-    [],
-  );
-  const [folderCustomCoverIds, setFolderCustomCoverIds] = useState<ReadonlySet<string>>(
-    () => new Set(),
-  );
+  const [folderBrowseEntries, setFolderBrowseEntries] = useBrowseField("folderBrowseEntries");
+  const [folderNavigationCovers, setFolderNavigationCovers] = useBrowseField("folderNavigationCovers");
+  const [folderCustomCoverIds, setFolderCustomCoverIds] = useBrowseField("folderCustomCoverIds");
   const folderNavigationCoversRef = useRef<readonly FolderNavigationCover[]>([]);
   const [folderCoverPicker, setFolderCoverPicker] = useState<{
     folderIds: string[];
@@ -922,26 +895,22 @@ function AppInner() {
   } | null>(null);
   // Serpent-d0nv: bump to re-fetch folder browse entries when a cover
   // candidate's thumbnail becomes ready (progressive cover refresh).
-  const [folderBrowseRefreshToken, setFolderBrowseRefreshToken] = useState(0);
+  const [folderBrowseRefreshToken, setFolderBrowseRefreshToken] = useBrowseField("folderBrowseRefreshToken");
   const folderCoverCandidateAssetIdsRef = useRef<ReadonlySet<string>>(new Set());
   /** Full trash tombstone list for hierarchy browse (Serpent-6pcd). */
-  const [trashedFolders, setTrashedFolders] = useState<TrashedFolderSummary[]>(
-    [],
-  );
-  const [trashBrowseTombstoneId, setTrashBrowseTombstoneId] = useState<
-    string | null
-  >(null);
+  const [trashedFolders, setTrashedFolders] = useNavigationField("trashedFolders");
+  const [trashBrowseTombstoneId, setTrashBrowseTombstoneId] = useBrowseField("trashBrowseTombstoneId");
   const [masonryGridWidth, setMasonryGridWidth] = useState(0);
   const assetGridRef = useRef<HTMLDivElement | null>(null);
   const [fatalDialogTitle, setFatalDialogTitle] = useDialogField("fatalDialogTitle");
   const [fatalAlertAlreadyOpen, setFatalAlertAlreadyOpen] = useDialogField("fatalAlertAlreadyOpen");
   const pendingAlreadyOpenPathRef = useRef<string | null>(null);
-  const [selectedFolderIds, setSelectedFolderIds] = useState<string[]>([]);
+  const [selectedFolderIds, setSelectedFolderIds] = useSelectionField("selectedFolderIds");
   const managedImportTargetFolderIdRef = useRef<string | undefined>(undefined);
-  const [allAssetCount, setAllAssetCount] = useState(0);
-  const [rootAssetCount, setRootAssetCount] = useState(0);
-  const [selectedAssetId, setSelectedAssetId] = useState<string | undefined>();
-  const [selectedAssetIds, setSelectedAssetIds] = useState<string[]>([]);
+  const [allAssetCount, setAllAssetCount] = useBrowseField("allAssetCount");
+  const [rootAssetCount, setRootAssetCount] = useBrowseField("rootAssetCount");
+  const [selectedAssetId, setSelectedAssetId] = useSelectionField("selectedAssetId");
+  const [selectedAssetIds, setSelectedAssetIds] = useSelectionField("selectedAssetIds");
   const selectedNativeDragReady = useMemo(
     () => selectedAssetIds.every((id) => nativeDragReadyIds.has(id)),
     [nativeDragReadyIds, selectedAssetIds],
@@ -949,10 +918,9 @@ function AppInner() {
   // Session persistence must wait until the startup restore has applied the
   // saved scope and selection; otherwise the initial empty React state can
   // overwrite the last browsed asset in localStorage.
-  const [browserSessionReady, setBrowserSessionReady] = useState(false);
+  const [browserSessionReady, setBrowserSessionReady] = useSessionField("browserSessionReady");
   const [uiState, setUiState] = useState<UiState>("booting");
-  const [libraryLoading, setLibraryLoading] =
-    useState<LibraryLoadingState | null>(null);
+  const [libraryLoading, setLibraryLoading] = useSessionField("libraryLoading");
   const libraryLoadingVisible = useDelayedVisibility(
     libraryLoading !== null,
     LIBRARY_LOADING_DISPLAY_DELAY_MS,
@@ -1043,7 +1011,7 @@ function AppInner() {
     }
   }, [library, setNotice, setWarning, t]);
   const workerRecoveryStateRef = useRef<'ready' | 'recovering' | 'failed'>('ready');
-  const [workerRecoveryState, setWorkerRecoveryState] = useState<'ready' | 'recovering' | 'failed'>('ready');
+  const [workerRecoveryState, setWorkerRecoveryState] = useSessionField("workerRecoveryState");
   const topVisibleToastId = renderedToastStack.find(
     (entry) => !entry.closing,
   )?.id;
@@ -1051,7 +1019,7 @@ function AppInner() {
     setFatalAlertAlreadyOpen(false);
     setFatalDialogTitle(null);
     setFatal(null);
-  }, [setFatal]);
+  }, [setFatal, setFatalAlertAlreadyOpen, setFatalDialogTitle]);
   const dismissAlreadyOpenPrompt = useCallback(() => {
     pendingAlreadyOpenPathRef.current = null;
     dismissFatalAlert();
@@ -1066,7 +1034,7 @@ function AppInner() {
       setFatalDialogTitle(title);
       setFatal(message);
     },
-    [setFatal],
+    [setFatal, setFatalAlertAlreadyOpen, setFatalDialogTitle],
   );
 
   // NAS/SMB 库提示不再用常驻 banner（破坏界面一体性），改为每次打开库时
@@ -1090,7 +1058,7 @@ function AppInner() {
       recoveryNotifiedLibraryIdRef.current = library.libraryId;
       setLibraryRecoveryDialogOpen(true);
     }
-  }, [library?.recovery, library?.libraryId]);
+  }, [library?.recovery, library?.libraryId, setLibraryRecoveryDialogOpen]);
   const [dialog, setDialog] = useState<DialogKind>(null);
   const [createLibraryPhase, setCreateLibraryPhase] =
     useState<CreateLibraryPhase>("start");
@@ -1098,26 +1066,19 @@ function AppInner() {
   const [createStorageLayout, setCreateStorageLayout] = useState<'root' | 'assets'>('root');
   const hadLibraryRef = useRef(false);
   const [dialogValue, setDialogValue] = useState(() => t("shell.myLibrary"));
-  const [conflicts, setConflicts] = useState<ImportConflictPlan | null>(null);
-  const [importSourceFailurePlan, setImportSourceFailurePlan] =
-    useState<ImportSourceFailurePlan | null>(null);
-  const [importDecisionSubmitting, setImportDecisionSubmitting] =
-    useState(false);
+  const [conflicts, setConflicts] = useTransfersField("conflicts");
+  const [importSourceFailurePlan, setImportSourceFailurePlan] = useTransfersField("importSourceFailurePlan");
+  const [importDecisionSubmitting, setImportDecisionSubmitting] = useTransfersField("importDecisionSubmitting");
   const importDecisionSubmittingRef = useRef(false);
   const completedImportIdRef = useRef<string | null>(null);
   const retiredImportIdsRef = useRef<Set<string>>(new Set());
-  const [imageSequenceImportOffer, setImageSequenceImportOffer] =
-    useState<ImageSequenceImportOffer | null>(null);
-  const [imageSequenceImportIndex, setImageSequenceImportIndex] = useState(0);
+  const [imageSequenceImportOffer, setImageSequenceImportOffer] = useTransfersField("imageSequenceImportOffer");
+  const [imageSequenceImportIndex, setImageSequenceImportIndex] = useTransfersField("imageSequenceImportIndex");
   const imageSequenceOfferIdRef = useRef<string | null>(null);
-  const [imageSequenceImportError, setImageSequenceImportError] = useState<
-    string | null
-  >(null);
-  const [imageSequenceImportSubmitting, setImageSequenceImportSubmitting] =
-    useState(false);
+  const [imageSequenceImportError, setImageSequenceImportError] = useTransfersField("imageSequenceImportError");
+  const [imageSequenceImportSubmitting, setImageSequenceImportSubmitting] = useTransfersField("imageSequenceImportSubmitting");
   const postImportSequencePlanRef = useRef<PostImportSequencePlan | null>(null);
-  const [imageSequenceConfirmPurpose, setImageSequenceConfirmPurpose] =
-    useState<ImageSequenceConfirmPurpose>("import");
+  const [imageSequenceConfirmPurpose, setImageSequenceConfirmPurpose] = useTransfersField("imageSequenceConfirmPurpose");
 
   useEffect(() => {
     const offerId = imageSequenceImportOffer?.offerId ?? null;
@@ -1125,7 +1086,7 @@ function AppInner() {
       imageSequenceOfferIdRef.current = offerId;
       setImageSequenceImportIndex(0);
     }
-  }, [imageSequenceImportOffer]);
+  }, [imageSequenceImportOffer, setImageSequenceImportIndex]);
 
   /**
    * Serpent-866c20：确认面板的预览来源。导入后成组时帧已经是库内资产（走 source
@@ -1164,15 +1125,11 @@ function AppInner() {
       frameCount: sequence.frameCount,
     };
   }, [imageSequenceImportIndex, imageSequenceImportOffer]);
-  const [conflictPhase, setConflictPhase] = useState<ImportConflictPhase | null>(
-    null,
-  );
-  const [duplicateDecision, setDuplicateDecision] =
-    useState<RememberedDuplicateDecision>("skip");
-  const [nameDecision, setNameDecision] =
-    useState<RememberedNameConflictDecision>("keep-both");
-  const [rememberNameConflict, setRememberNameConflict] = useState(false);
-  const [rememberDuplicate, setRememberDuplicate] = useState(false);
+  const [conflictPhase, setConflictPhase] = useTransfersField("conflictPhase");
+  const [duplicateDecision, setDuplicateDecision] = useTransfersField("duplicateDecision");
+  const [nameDecision, setNameDecision] = useTransfersField("nameDecision");
+  const [rememberNameConflict, setRememberNameConflict] = useTransfersField("rememberNameConflict");
+  const [rememberDuplicate, setRememberDuplicate] = useTransfersField("rememberDuplicate");
   const resolveImportConflictsRef = useRef<
     (
       plan: ImportConflictPlan,
@@ -1197,18 +1154,18 @@ function AppInner() {
         presentation.duplicateDecision,
       );
     }
-  }, []);
+  }, [setConflictPhase, setConflicts, setDuplicateDecision, setImportSourceFailurePlan, setNameDecision, setRememberDuplicate, setRememberNameConflict]);
   const clearImportConflictsUi = useCallback(() => {
     setConflicts(null);
     setConflictPhase(null);
-  }, []);
+  }, [setConflictPhase, setConflicts]);
   const presentImportSourceFailure = useCallback((plan: ImportSourceFailurePlan) => {
     clearImportConflictsUi();
     setImportSourceFailurePlan(plan);
-  }, [clearImportConflictsUi]);
+  }, [clearImportConflictsUi, setImportSourceFailurePlan]);
   const clearImportSourceFailureUi = useCallback(() => {
     setImportSourceFailurePlan(null);
-  }, []);
+  }, [setImportSourceFailurePlan]);
   const [leftOpen, setLeftOpen] = useState(() => window.innerWidth > 800);
   const [rightOpen, setRightOpen] = useState(() => window.innerWidth > 1020);
   const panelResizeReleaseRef = useRef<() => void>(() => undefined);
@@ -1243,21 +1200,16 @@ function AppInner() {
   });
 
   // Tags
-  const [tags, setTags] = useState<TagSummary[]>([]);
+  const [tags, setTags] = useNavigationField("tags");
   const [tagDropTargetId, setTagDropTargetId] = useState<string | null>(null);
-  const [activeTagId, setActiveTagId] = useState<string | null>(null);
+  const [activeTagId, setActiveTagId] = useNavigationField("activeTagId");
   const [storedPinnedTagId, setPinnedTagId] = useState<string | null>(null);
 
   // REQ-FOLDER-009: folder browse/search recurse only when explicitly enabled.
-  const [folderRecursive, setFolderRecursive] = useState(false);
+  const [folderRecursive, setFolderRecursive] = useNavigationField("folderRecursive");
   const folderRecursiveRef = useRef(folderRecursive);
-  const [folderRecursivePrefs, setFolderRecursivePrefs] = useState(() =>
-    loadFolderRecursivePreferences(),
-  );
-  const [showFolderCardsWhenRecursive, setShowFolderCardsWhenRecursive] =
-    useState(
-      () => loadFolderBrowseCardPreferences().showWhenRecursive,
-    );
+  const [folderRecursivePrefs, setFolderRecursivePrefs] = useNavigationField("folderRecursivePrefs");
+  const [showFolderCardsWhenRecursive, setShowFolderCardsWhenRecursive] = useNavigationField("showFolderCardsWhenRecursive");
   // Serpent-b8a853: one-time feature hints for hidden UI affordances share a
   // global switch (Settings → Feature hints) and per-key "seen" marks.
   const [featureHintPrefs, setFeatureHintPrefs] = useState(() =>
@@ -1312,7 +1264,7 @@ function AppInner() {
         onChanged,
       );
     };
-  }, []);
+  }, [setShowFolderCardsWhenRecursive]);
   // Hovering a highlighted affordance for >0.5s dismisses that hint
   // permanently (shared "all highlights" rule, Serpent-b8a853).
   const linkedFolderHintShow =
@@ -1340,17 +1292,14 @@ function AppInner() {
     }
   };
 
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useQueryField("searchValue");
   const lastValidSearchQueryRef = useRef<{ scope: string; query: ReturnType<typeof parseSearchExpression> } | null>(null);
   const lastValidFolderSearchQueryRef = useRef<{ scope: string; query: ReturnType<typeof parseSearchExpression> } | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const [storedSearchHistory, setStoredSearchHistory] = useState<{
-    libraryId: string;
-    queries: string[];
-  } | null>(null);
+  const [storedSearchHistory, setStoredSearchHistory] = useQueryField("storedSearchHistory");
   const [searchHistoryOpen, setSearchHistoryOpen] = useDialogField("searchHistoryOpen");
   const searchHistoryDismissedUntilInputRef = useRef(false);
-  const [searchHistoryActiveIndex, setSearchHistoryActiveIndex] = useState(-1);
+  const [searchHistoryActiveIndex, setSearchHistoryActiveIndex] = useQueryField("searchHistoryActiveIndex");
   const searchHistoryLibraryId = library?.libraryId ?? null;
   const searchHistory =
     searchHistoryLibraryId === null
@@ -1362,84 +1311,47 @@ function AppInner() {
     if (!searchHistoryLibraryId) return;
     setStoredSearchHistory({ libraryId: searchHistoryLibraryId, queries });
   }
-  const [formatFilter, setFormatFilter] = useState("text");
-  const [excludeFormatFilter, setExcludeFormatFilter] = useState(true);
-  const [colorFilter, setColorFilter] = useState("");
-  const [colorSimilarity, setColorSimilarity] = useState(
-    () => loadColorFilterPreferences().similarity,
-  );
-  const [colorFilterPrefs, setColorFilterPrefs] = useState(loadColorFilterPreferences);
-  const [excludeColorFilter, setExcludeColorFilter] = useState(false);
-  const [tagFilter, setTagFilter] = useState("");
-  const [tagFilterExpression, setTagFilterExpression] = useState("");
-  const [tagFilterMode, setTagFilterMode] = useState<"selection" | "expression">("expression");
-  const [tagFilterLastValidExpression, setTagFilterLastValidExpression] = useState("");
+  const [formatFilter, setFormatFilter] = useQueryField("formatFilter");
+  const [excludeFormatFilter, setExcludeFormatFilter] = useQueryField("excludeFormatFilter");
+  const [colorFilter, setColorFilter] = useQueryField("colorFilter");
+  const [colorSimilarity, setColorSimilarity] = useQueryField("colorSimilarity");
+  const [colorFilterPrefs, setColorFilterPrefs] = useQueryField("colorFilterPrefs");
+  const [excludeColorFilter, setExcludeColorFilter] = useQueryField("excludeColorFilter");
+  const [tagFilter, setTagFilter] = useQueryField("tagFilter");
+  const [tagFilterExpression, setTagFilterExpression] = useQueryField("tagFilterExpression");
+  const [tagFilterMode, setTagFilterMode] = useQueryField("tagFilterMode");
+  const [tagFilterLastValidExpression, setTagFilterLastValidExpression] = useQueryField("tagFilterLastValidExpression");
   const pinnedTagId = tagFilterMode === "expression" && tags.some(tag => tag.tagId === storedPinnedTagId && tagFilterExpression === JSON.stringify(tag.name)) ? storedPinnedTagId : null;
-  const [excludeTagFilter, setExcludeTagFilter] = useState(false);
-  const [excludedTagFilter, setExcludedTagFilter] = useState("");
-  const [includeAiTagFilter, setIncludeAiTagFilter] = useState(true);
+  const [excludeTagFilter, setExcludeTagFilter] = useQueryField("excludeTagFilter");
+  const [excludedTagFilter, setExcludedTagFilter] = useQueryField("excludedTagFilter");
+  const [includeAiTagFilter, setIncludeAiTagFilter] = useQueryField("includeAiTagFilter");
   // Serpent-eaxs: tag-management AND search ("包含 N 个标签") splits the tag
   // names into separate clauses (clauses are ANDed; values within one clause
   // are ORed). Any explicit filter-bar edit resets this to "any".
-  const [tagFilterMatch, setTagFilterMatch] = useState<"any" | "all">("any");
-  const [ratingFilter, setRatingFilter] = useState("");
-  const [excludeRatingFilter, setExcludeRatingFilter] = useState(false);
-  const [includeAiRatingFilter, setIncludeAiRatingFilter] = useState(true);
-  const [favoriteFilter, setFavoriteFilter] = useState<"any" | "yes" | "no">(
-    "any",
-  );
-  const [sourceUrlFilter, setSourceUrlFilter] = useState<"any" | "yes" | "no">(
-    "any",
-  );
-  const [availabilityFilter, setAvailabilityFilter] = useState<
-    "any" | "available" | "missing"
-  >("any");
-  const [excludeAvailabilityFilter, setExcludeAvailabilityFilter] =
-    useState(false);
-  const [widthRange, setWidthRange] = useState({
-    min: "",
-    max: "",
-    exclude: false,
-  });
-  const [heightRange, setHeightRange] = useState({
-    min: "",
-    max: "",
-    exclude: false,
-  });
-  const [aspectRatioRange, setAspectRatioRange] = useState({
-    min: "",
-    max: "",
-    exclude: false,
-  });
+  const [tagFilterMatch, setTagFilterMatch] = useQueryField("tagFilterMatch");
+  const [ratingFilter, setRatingFilter] = useQueryField("ratingFilter");
+  const [excludeRatingFilter, setExcludeRatingFilter] = useQueryField("excludeRatingFilter");
+  const [includeAiRatingFilter, setIncludeAiRatingFilter] = useQueryField("includeAiRatingFilter");
+  const [favoriteFilter, setFavoriteFilter] = useQueryField("favoriteFilter");
+  const [sourceUrlFilter, setSourceUrlFilter] = useQueryField("sourceUrlFilter");
+  const [availabilityFilter, setAvailabilityFilter] = useQueryField("availabilityFilter");
+  const [excludeAvailabilityFilter, setExcludeAvailabilityFilter] = useQueryField("excludeAvailabilityFilter");
+  const [widthRange, setWidthRange] = useQueryField("widthRange");
+  const [heightRange, setHeightRange] = useQueryField("heightRange");
+  const [aspectRatioRange, setAspectRatioRange] = useQueryField("aspectRatioRange");
   /** Shape/aspect preset OR ranges (Serpent-gp4). */
-  const [aspectRatioRanges, setAspectRatioRanges] = useState<
-    Array<{ min: string; max: string }>
-  >([]);
+  const [aspectRatioRanges, setAspectRatioRanges] = useQueryField("aspectRatioRanges");
   // REQ-FILTER-010: resolution buckets filter on the longer edge (long_edge).
-  const [longEdgeRange, setLongEdgeRange] = useState({
-    min: "",
-    max: "",
-    exclude: false,
-  });
-  const [durationRange, setDurationRange] = useState({
-    min: "",
-    max: "",
-    exclude: false,
-  });
-  const [sortField, setSortField] = useState<SortDefinition["field"]>(
-    () => loadBrowseSortPreferences().field,
-  );
-  const [sortOrder, setSortOrder] = useState<SortDefinition["order"]>(
-    () => loadBrowseSortPreferences().order,
-  );
+  const [longEdgeRange, setLongEdgeRange] = useQueryField("longEdgeRange");
+  const [durationRange, setDurationRange] = useQueryField("durationRange");
+  const [sortField, setSortField] = useQueryField("sortField");
+  const [sortOrder, setSortOrder] = useQueryField("sortOrder");
   /** Serpent-hm28: null = normal sort; otherwise client shuffle seed. */
-  const [shuffleSeed, setShuffleSeed] = useState<number | null>(null);
-  const [searchOffset, setSearchOffset] = useState(0);
-  const [searchTotal, setSearchTotal] = useState<number | null>(null);
-  const [filteredFolderCountRefreshToken, setFilteredFolderCountRefreshToken] = useState(0);
-  const [searchSnippets, setSearchSnippets] = useState<Map<string, string>>(
-    new Map(),
-  );
+  const [shuffleSeed, setShuffleSeed] = useQueryField("shuffleSeed");
+  const [searchOffset, setSearchOffset] = useBrowseField("searchOffset");
+  const [searchTotal, setSearchTotal] = useBrowseField("searchTotal");
+  const [filteredFolderCountRefreshToken, setFilteredFolderCountRefreshToken] = useBrowseField("filteredFolderCountRefreshToken");
+  const [searchSnippets, setSearchSnippets] = useBrowseField("searchSnippets");
   // Serpent-b8a853: one-time hint for the include-subfolders icon. The hint
   // key is per (library, folder scope); the actual flash decision needs the
   // browse canvas mode (folders-only = child-folder cards but zero direct
@@ -1552,11 +1464,9 @@ function AppInner() {
   );
 
   // Metadata editor
-  const [assetMetadata, setAssetMetadata] =
-    useState<AssetMetadataResult | null>(null);
-  const [extractedMetadataRefreshKey, setExtractedMetadataRefreshKey] =
-    useState(0);
-  const [versionConflict, setVersionConflict] = useState(false);
+  const [assetMetadata, setAssetMetadata] = useInspectorField("assetMetadata");
+  const [extractedMetadataRefreshKey, setExtractedMetadataRefreshKey] = useInspectorField("extractedMetadataRefreshKey");
+  const [versionConflict, setVersionConflict] = useInspectorField("versionConflict");
   const selectedAssetIdRef = useRef(selectedAssetId);
   useEffect(() => {
     selectedAssetIdRef.current = selectedAssetId;
@@ -1564,11 +1474,11 @@ function AppInner() {
   const metadataByAssetRef = useRef(new Map<string, AssetMetadataResult>());
   const metadataConflictAssetIdsRef = useRef(new Set<string>());
   // Pending edit values
-  const [editDescription, setEditDescription] = useState("");
-  const [editRating, setEditRating] = useState(0);
-  const [editFavorite, setEditFavorite] = useState(false);
-  const [editSourceUrl, setEditSourceUrl] = useState("");
-  const [editAuthor, setEditAuthor] = useState("");
+  const [editDescription, setEditDescription] = useInspectorField("editDescription");
+  const [editRating, setEditRating] = useInspectorField("editRating");
+  const [editFavorite, setEditFavorite] = useInspectorField("editFavorite");
+  const [editSourceUrl, setEditSourceUrl] = useInspectorField("editSourceUrl");
+  const [editAuthor, setEditAuthor] = useInspectorField("editAuthor");
   // REQ-SELECT-004: UE-style multi-select Inspector model (null when <2 selected).
   const selectedAssetIdsRef = useRef(selectedAssetIds);
   useEffect(() => {
@@ -1576,16 +1486,16 @@ function AppInner() {
   }, [selectedAssetIds]);
 
   // Trash / Delete / Relink state
-  const [showTrash, setShowTrash] = useState(false);
+  const [showTrash, setShowTrash] = useNavigationField("showTrash");
   useEffect(() => {
     if (!showTrash) {
       queueMicrotask(() => setTrashBrowseTombstoneId(null));
     }
-  }, [showTrash]);
-  const [showTagManagement, setShowTagManagement] = useState(false);
-  const [activePluginSidebarViewId, setActivePluginSidebarViewId] = useState<string | null>(null);
-  const [trashedAssets, setTrashedAssets] = useState<AssetSummary[]>([]);
-  const [trashedAssetCount, setTrashedAssetCount] = useState(0);
+  }, [showTrash, setTrashBrowseTombstoneId]);
+  const [showTagManagement, setShowTagManagement] = useNavigationField("showTagManagement");
+  const [activePluginSidebarViewId, setActivePluginSidebarViewId] = useNavigationField("activePluginSidebarViewId");
+  const [trashedAssets, setTrashedAssets] = useBrowseField("trashedAssets");
+  const [trashedAssetCount, setTrashedAssetCount] = useBrowseField("trashedAssetCount");
 
   // Serpent-ws4k: paginated browse/search loading. First pages render
   // immediately; a scroll sentinel appends the next page; select-all/invert
@@ -1659,7 +1569,7 @@ function AppInner() {
 
   const [restoreDialog, setRestoreDialog] = useDialogField("restoreDialog");
   const [moveDialog, setMoveDialog] = useDialogField("moveDialog");
-  const [operationHistory, setOperationHistory] = useState<HistoryStatus | null>(null);
+  const [operationHistory, setOperationHistory] = useSessionField("operationHistory");
   const [editableTextFocused, setEditableTextFocused] = useState(false);
   useEffect(() => {
     const update = (target: EventTarget | null) => {
@@ -1695,7 +1605,7 @@ function AppInner() {
     if (result.ok && isCurrentLibraryView(viewSession)) {
       setOperationHistory(result.value);
     }
-  }, [api, ensureLibraryView, isCurrentLibraryView, library]);
+  }, [api, ensureLibraryView, isCurrentLibraryView, library, setOperationHistory]);
   useEffect(() => {
     const refreshTimer = window.setTimeout(() => {
       void refreshOperationHistory();
@@ -1703,31 +1613,28 @@ function AppInner() {
     return () => window.clearTimeout(refreshTimer);
   }, [refreshOperationHistory]);
   const [imageSequenceDialog, setImageSequenceDialog] = useDialogField("imageSequenceDialog");
-  const [batchRelinkPreview, setBatchRelinkPreview] =
-    useState<BatchRelinkPreviewSession | null>(null);
-  const [batchRelinkKeepMetadata, setBatchRelinkKeepMetadata] = useState(true);
+  const [batchRelinkPreview, setBatchRelinkPreview] = useTransfersField("batchRelinkPreview");
+  const [batchRelinkKeepMetadata, setBatchRelinkKeepMetadata] = useTransfersField("batchRelinkKeepMetadata");
 
   // Export / Import state
-  const [exportProgress, setExportProgress] =
-    useState<ExportProgressEvent | null>(null);
+  const [exportProgress, setExportProgress] = useTransfersField("exportProgress");
   const exportProgressRef = useRef(exportProgress);
   exportProgressRef.current = exportProgress;
   const exportStartedAtRef = useRef<number | null>(null);
-  const [importProgress, setImportProgress] =
-    useState<ImportProgressEvent | null>(null);
+  const [importProgress, setImportProgress] = useTransfersField("importProgress");
   const importProgressRef = useRef(importProgress);
   importProgressRef.current = importProgress;
   const importRpcDepthRef = useRef(0);
   const importOverlayDismissedRef = useRef(false);
   const activeImportIdRef = useRef<string | null>(null);
-  const [importRpcInFlight, setImportRpcInFlight] = useState(false);
-  const [importOverlayDismissed, setImportOverlayDismissed] = useState(false);
+  const [importRpcInFlight, setImportRpcInFlight] = useTransfersField("importRpcInFlight");
+  const [importOverlayDismissed, setImportOverlayDismissed] = useTransfersField("importOverlayDismissed");
   const beginImportRpc = useCallback(() => {
     importRpcDepthRef.current += 1;
     importOverlayDismissedRef.current = false;
     setImportOverlayDismissed(false);
     setImportRpcInFlight(true);
-  }, []);
+  }, [setImportOverlayDismissed, setImportRpcInFlight]);
   const endImportRpc = useCallback(() => {
     importRpcDepthRef.current = Math.max(0, importRpcDepthRef.current - 1);
     if (importRpcDepthRef.current === 0) {
@@ -1741,7 +1648,7 @@ function AppInner() {
       setImportOverlayDismissed(false);
       setImportRpcInFlight(false);
     }
-  }, []);
+  }, [setImportOverlayDismissed, setImportProgress, setImportRpcInFlight]);
   const runCurrentImportRpc = useCallback(
     <T,>(work: () => Promise<T>): Promise<T> => runImportRpc(
       { begin: beginImportRpc, end: endImportRpc },
@@ -1754,16 +1661,13 @@ function AppInner() {
     addRetiredImportId(retiredImportIdsRef.current, importId);
     importOverlayDismissedRef.current = true;
     setImportOverlayDismissed(true);
-  }, []);
+  }, [setImportOverlayDismissed]);
   const importAwaitingUserDecisionRef = useRef(false);
   const importInterruptRef = useRef<"abandon" | "stop" | null>(null);
-  const [importInterrupt, setImportInterrupt] = useState<"abandon" | "stop" | null>(
-    null,
-  );
-  const [deleteProgress, setDeleteProgress] =
-    useState<DeleteProgressEvent | null>(null);
-  const [libraryTransferKind, setLibraryTransferKind] = useState<LibraryTransferKind>("import");
-  const [libraryTransferName, setLibraryTransferName] = useState("");
+  const [importInterrupt, setImportInterrupt] = useTransfersField("importInterrupt");
+  const [deleteProgress, setDeleteProgress] = useTransfersField("deleteProgress");
+  const [libraryTransferKind, setLibraryTransferKind] = useTransfersField("libraryTransferKind");
+  const [libraryTransferName, setLibraryTransferName] = useTransfersField("libraryTransferName");
 
   // REQ-PREF-001: browse-area general settings panel (theme/language/canvas).
   const [appSettingsOpen, setAppSettingsOpen] = useDialogField("appSettingsOpen");
@@ -1791,8 +1695,6 @@ function AppInner() {
   );
   const showPluginSidebarView = activePluginSidebarView !== undefined;
   const [appLogOpen, setAppLogOpen] = useDialogField("appLogOpen");
-  const [libraryRecoveryDialogOpen, setLibraryRecoveryDialogOpen] =
-    useState(false);
   const [automaticTasksOpen, setAutomaticTasksOpen] = useDialogField("automaticTasksOpen");
   const [automaticTaskEditorId,setAutomaticTaskEditorId]=useState<string|null|undefined>(undefined);
   const [scriptSandboxPreviewOpen, setScriptSandboxPreviewOpen] = useDialogField("scriptSandboxPreviewOpen");
@@ -1802,15 +1704,15 @@ function AppInner() {
   const [openSyncLibraryOpen, setOpenSyncLibraryOpen] = useDialogField("openSyncLibraryOpen");
   const [gitignoreContent, setGitignoreContent] = useState("");
   /** 同步传输进度（手动/自动），供资源库设置同步页显示进度条与速度。 */
-  const [syncProgress, setSyncProgress] = useState<SyncProgressEvent | null>(null);
+  const [syncProgress, setSyncProgress] = useTransfersField("syncProgress");
   const syncProgressRef = useRef(syncProgress);
   syncProgressRef.current = syncProgress;
   /** 当前库的同步绑定状态（库切换器 link/link-off 图标）。 */
-  const [syncBindingStatus, setSyncBindingStatus] = useState<"none" | "disabled" | "enabled">("none");
+  const [syncBindingStatus, setSyncBindingStatus] = useTransfersField("syncBindingStatus");
   /** 本次同步是否发生过实际传输（完成音、Inspector 重拉仍用；不再弹 toast）。 */
   const syncRunNotifiedRef = useRef(false);
   const syncRunStartedAtRef = useRef<number | null>(null);
-  const [showIgnoredItems, setShowIgnoredItems] = useState(false);
+  const [showIgnoredItems, setShowIgnoredItems] = useQueryField("showIgnoredItems");
   const loadFolderCoverPickerPage = useCallback(async (query: string, offset: number) => {
     if (!api || !library) return { items: [], total: 0 };
     const result = await api.searchAssets({
@@ -1836,9 +1738,7 @@ function AppInner() {
       }));
     return { items, total: result.value.total };
   }, [api, library, showIgnoredItems]);
-  const [showMissingLinkedFiles, setShowMissingLinkedFiles] = useState(() =>
-    readShowMissingLinkedFiles(globalThis.localStorage),
-  );
+  const [showMissingLinkedFiles, setShowMissingLinkedFiles] = useQueryField("showMissingLinkedFiles");
   const showMissingLinkedPublishRef = useRef<Promise<void>>(Promise.resolve());
   useLayoutEffect(() => {
     showMissingLinkedPublishRef.current = shellApi?.setShowMissingLinkedFiles(showMissingLinkedFiles)
@@ -1932,12 +1832,8 @@ function AppInner() {
         .map((result) => `${result.locationKind}:${result.folderId}`)
         .join("|")
     : null;
-  const [searchFolderRealKey, setSearchFolderRealKey] = useState<string | null>(
-    null,
-  );
-  const [searchFolderRealEntries, setSearchFolderRealEntries] = useState<
-    FolderBrowseEntry[]
-  >([]);
+  const [searchFolderRealKey, setSearchFolderRealKey] = useBrowseField("searchFolderRealKey");
+  const [searchFolderRealEntries, setSearchFolderRealEntries] = useBrowseField("searchFolderRealEntries");
   const searchFolderEntriesKeyRef = useRef<string | null>(null);
   useEffect(() => {
     if (!api || !library || searchFolderMatchKey === null) return;
@@ -1967,7 +1863,7 @@ function AppInner() {
     return () => {
       cancelled = true;
     };
-  }, [searchFolderMatchKey, searchFolderResults, library, api]);
+  }, [searchFolderMatchKey, searchFolderResults, library, api, setSearchFolderRealEntries, setSearchFolderRealKey]);
   const beginBrowsePageClearingSimilar = useCallback(
     (...args: Parameters<typeof beginBrowsePage>) => {
       const definition = args[0];
@@ -1981,7 +1877,7 @@ function AppInner() {
       );
       return beginBrowsePage(...args);
     },
-    [beginBrowsePage],
+    [beginBrowsePage, setFindSimilarSource],
   );
   useEffect(() => {
     activateRenderSnapshotLibrary(library?.libraryId ?? null);
@@ -2032,7 +1928,7 @@ function AppInner() {
 
   const openAbout = useCallback(() => {
     setAboutOpen(true);
-  }, []);
+  }, [setAboutOpen]);
 
   async function refreshAppLog(automationCorrelationId = appLogAutomationCorrelationId): Promise<void> {
     const bridge = (window as RendererWindow).keel?.shell;
@@ -2077,50 +1973,36 @@ function AppInner() {
   }
 
   // AI analysis state
-  const [aiApiFormat, setAiApiFormat] = useState<AiApiFormat>(DEFAULT_AI_API_FORMAT);
-  const [aiModel, setAiModel] = useState(DEFAULT_AI_MODELS[DEFAULT_AI_API_FORMAT]);
-  const [aiBaseUrl, setAiBaseUrl] = useState("");
-  const [aiApiKey, setAiApiKey] = useState("");
-  const [aiDraftHasKey, setAiDraftHasKey] = useState(false);
-  const [aiHasKey, setAiHasKey] = useState(false);
-  const [aiProfiles, setAiProfiles] = useState<Array<{
-    id: string;
-    name: string;
-    apiFormat: AiApiFormat;
-    model: string;
-    baseUrl: string;
-    hasCredential: boolean;
-  }>>([]);
-  const [aiActiveProfileId, setAiActiveProfileId] = useState<string | null>(null);
+  const [aiApiFormat, setAiApiFormat] = useAiField("aiApiFormat");
+  const [aiModel, setAiModel] = useAiField("aiModel");
+  const [aiBaseUrl, setAiBaseUrl] = useAiField("aiBaseUrl");
+  const [aiApiKey, setAiApiKey] = useAiField("aiApiKey");
+  const [aiDraftHasKey, setAiDraftHasKey] = useAiField("aiDraftHasKey");
+  const [aiHasKey, setAiHasKey] = useAiField("aiHasKey");
+  const [aiProfiles, setAiProfiles] = useAiField("aiProfiles");
+  const [aiActiveProfileId, setAiActiveProfileId] = useAiField("aiActiveProfileId");
   const aiActiveProfileIdRef = useRef<string | null>(null);
   const aiConnectionProbeGenerationRef = useRef(0);
   const updateAiActiveProfileId = useCallback((profileId: string | null) => {
     aiActiveProfileIdRef.current = profileId;
     setAiActiveProfileId(profileId);
-  }, []);
-  const [aiProfileDraftId, setAiProfileDraftId] = useState<string | null>(null);
-  const [aiProfileName, setAiProfileName] = useState("");
-  const [aiDescriptionEnabled, setAiDescriptionEnabled] = useState(true);
-  const [aiTagsEnabled, setAiTagsEnabled] = useState(true);
-  const [aiRatingEnabled, setAiRatingEnabled] = useState(true);
-  const [aiForceExistingTags, setAiForceExistingTags] = useState(false);
-  const [aiAnalysisSettings, setAiAnalysisSettings] =
-    useState<AiAnalysisSettingsWire>(() =>
-      toWireAiAnalysisSettings(DEFAULT_AI_ANALYSIS_SETTINGS),
-    );
-  const [aiLanguages, setAiLanguages] = useState<
-    Array<"zh-CN" | "en" | "ja" | "ko">
-  >(["zh-CN"]);
-  const [aiConcurrencyLimit, setAiConcurrencyLimit] = useState(16);
-  const [aiMaxAnalysisImageEdgePx, setAiMaxAnalysisImageEdgePx] = useState(2048);
-  const [aiAutoAnalyzeEnabled, setAiAutoAnalyzeEnabled] = useState(false);
-  const [aiDisclaimerAccepted, setAiDisclaimerAccepted] = useState(false);
-  const [aiConnectionState, setAiConnectionState] =
-    useState<AiConnectionState>("idle");
-  const [aiDraftConnectionState, setAiDraftConnectionState] =
-    useState<AiConnectionState>("idle");
-  const [aiDraftConnectionReason, setAiDraftConnectionReason] = useState<string | undefined>(undefined);
-  const [aiSaveVerifying, setAiSaveVerifying] = useState(false);
+  }, [setAiActiveProfileId]);
+  const [aiProfileDraftId, setAiProfileDraftId] = useAiField("aiProfileDraftId");
+  const [aiProfileName, setAiProfileName] = useAiField("aiProfileName");
+  const [aiDescriptionEnabled, setAiDescriptionEnabled] = useAiField("aiDescriptionEnabled");
+  const [aiTagsEnabled, setAiTagsEnabled] = useAiField("aiTagsEnabled");
+  const [aiRatingEnabled, setAiRatingEnabled] = useAiField("aiRatingEnabled");
+  const [aiForceExistingTags, setAiForceExistingTags] = useAiField("aiForceExistingTags");
+  const [aiAnalysisSettings, setAiAnalysisSettings] = useAiField("aiAnalysisSettings");
+  const [aiLanguages, setAiLanguages] = useAiField("aiLanguages");
+  const [aiConcurrencyLimit, setAiConcurrencyLimit] = useAiField("aiConcurrencyLimit");
+  const [aiMaxAnalysisImageEdgePx, setAiMaxAnalysisImageEdgePx] = useAiField("aiMaxAnalysisImageEdgePx");
+  const [aiAutoAnalyzeEnabled, setAiAutoAnalyzeEnabled] = useAiField("aiAutoAnalyzeEnabled");
+  const [aiDisclaimerAccepted, setAiDisclaimerAccepted] = useAiField("aiDisclaimerAccepted");
+  const [aiConnectionState, setAiConnectionState] = useAiField("aiConnectionState");
+  const [aiDraftConnectionState, setAiDraftConnectionState] = useAiField("aiDraftConnectionState");
+  const [aiDraftConnectionReason, setAiDraftConnectionReason] = useAiField("aiDraftConnectionReason");
+  const [aiSaveVerifying, setAiSaveVerifying] = useAiField("aiSaveVerifying");
   const aiAutoConnectAttemptedRef = useRef(false);
   /** Fingerprint of credentials last proven by a successful probe. */
   const aiVerifiedFingerprintRef = useRef<string | null>(null);
@@ -2177,20 +2059,14 @@ function AppInner() {
     aiRatingEnabled,
     aiTagsEnabled,
   ]);
-  const [aiAnalyzing, setAiAnalyzing] = useState(false);
+  const [aiAnalyzing, setAiAnalyzing] = useAiField("aiAnalyzing");
   const aiAnalyzingRef = useRef(false);
-  const [aiProgressBannerVisible, setAiProgressBannerVisible] = useState(true);
-  const [aiContent, setAiContent] = useState<{
-    assetId: string;
-    description?: string;
-    tags?: string[];
-    rating?: number;
-    modelVersion?: string;
-  } | null>(null);
+  const [aiProgressBannerVisible, setAiProgressBannerVisible] = useAiField("aiProgressBannerVisible");
+  const [aiContent, setAiContent] = useInspectorField("aiContent");
   const aiContentRef = useRef(aiContent);
   aiContentRef.current = aiContent;
   /** Description editor is showing AI-layer text (human description empty). */
-  const [descriptionIsAi, setDescriptionIsAi] = useState(false);
+  const [descriptionIsAi, setDescriptionIsAi] = useInspectorField("descriptionIsAi");
 
   const {
     loadMetadata,
@@ -2240,25 +2116,22 @@ function AppInner() {
     failed: number;
     changedJobs?: AiProgressJobUpdate[];
   }) => void>(() => undefined);
-  const [aiBatchProgress, setAiBatchProgress] =
-    useState<AiBatchProgressSnapshot | null>(null);
+  const [aiBatchProgress, setAiBatchProgress] = useAiField("aiBatchProgress");
   const aiUiPrefs = usePrefsStore((state) => state.aiUi);
   const setAiUiPrefs = usePrefsStore((state) => state.setAiUi);
-  const [importValidated, setImportValidated] =
-    useState<ImportValidatedResult | null>(null);
+  const [importValidated, setImportValidated] = useTransfersField("importValidated");
   const [exportDialogOpen, setExportDialogOpen] = useDialogField("exportDialogOpen");
-  const [importLibraryChooserOpen, setImportLibraryChooserOpen] =
-    useState(false);
+  const [importLibraryChooserOpen, setImportLibraryChooserOpen] = useTransfersField("importLibraryChooserOpen");
   const [openLibraryChooserOpen, setOpenLibraryChooserOpen] = useDialogField("openLibraryChooserOpen");
 
   // Thumbnail / Preview state
-  const [previewAsset, setPreviewAsset] = useState<AssetSummary | null>(null);
+  const [previewAsset, setPreviewAsset] = usePreviewField("previewAsset");
   // Keep the browse surface visually hidden while the viewer close path
   // restores its scroll anchor. Revealing the grid before the two-frame
   // restoration causes a one-frame flash and can make Chromium paint at the
   // top of the canvas during a rapid open/close.
-  const [previewRestoring, setPreviewRestoring] = useState(false);
-  const [previewCanvasReady, setPreviewCanvasReady] = useState(false);
+  const [previewRestoring, setPreviewRestoring] = usePreviewField("previewRestoring");
+  const [previewCanvasReady, setPreviewCanvasReady] = usePreviewField("previewCanvasReady");
   const previewModalRef = useRef<AssetPreviewModalHandle>(null);
   // REQ-CANVAS-019: read synchronously inside the canvas ResizeObserver
   // callback (which is created once and does not close over fresh state)
@@ -2278,7 +2151,6 @@ function AppInner() {
     wake: wakeViewerChrome,
   } = useViewerChromeIdle(undefined, Boolean(previewAsset));
   const canvasPrefs = usePrefsStore((state) => state.canvas);
-  const setCanvasPrefs = usePrefsStore((state) => state.setCanvas);
   const syncCardAssetIds = useMemo(() => {
     const ids: string[] = [];
     const seen = new Set<string>();
@@ -2661,40 +2533,29 @@ function AppInner() {
     return () => window.removeEventListener("keydown", handleDragCancel);
   }, []);
   const [pluginUiDialogOpen, setPluginUiDialogOpen] = useDialogField("pluginUiDialogOpen");
-  const [thumbnailFailures, setThumbnailFailures] = useState<
-    Map<string, string>
-  >(new Map());
+  const [thumbnailFailures, setThumbnailFailures] = useBrowseField("thumbnailFailures");
   const [mediaJobsOpen, setMediaJobsOpen] = useDialogField("mediaJobsOpen");
   const mediaJobsOpenRef = useRef(false);
   const loadMediaJobsRef = useRef<(quiet?: boolean) => Promise<void>>(async () => undefined);
-  const [mediaJobs, setMediaJobs] = useState<MediaJobStatus | null>(null);
-  const [aiJobs, setAiJobs] = useState<AiJobStatus | null>(null);
-  const [pluginJobs, setPluginJobs] = useState<PluginJobStatus | null>(null);
-  const [hiddenPluginJobActivityId, setHiddenPluginJobActivityId] = useState<string | null>(null);
-  const [mediaJobsLoading, setMediaJobsLoading] = useState(false);
-  const [semanticSearchPrefs, setSemanticSearchPrefs] = useState(() => loadSemanticSearchPreferences());
-  const [embeddingIndex, setEmbeddingIndex] = useState<EmbeddingIndexSnapshot>({
-    phase: "unavailable",
-    done: 0,
-    total: 0,
-    failedCount: 0,
-  });
-  const [embeddingBinding, setEmbeddingBinding] = useState<{ selectionId: string | null; enabled: boolean; inherit: boolean } | null>(null);
-  const [embeddingForLibraryId, setEmbeddingForLibraryId] = useState<string | null>(null);
-  const [embeddingInstall, setEmbeddingInstall] = useState<{
-    runtimeInstalled: boolean;
-    runtimeDownloadable: boolean;
-    models: Array<{ modelId: SemanticSearchModelId; installed: boolean }>;
-  } | null>(null);
-  const [embeddingServices, setEmbeddingServices] = useState<EmbeddingHttpServiceSummary[]>([]);
-  const [embeddingInstalling, setEmbeddingInstalling] = useState(false);
+  const [mediaJobs, setMediaJobs] = useJobsField("mediaJobs");
+  const [aiJobs, setAiJobs] = useJobsField("aiJobs");
+  const [pluginJobs, setPluginJobs] = useJobsField("pluginJobs");
+  const [hiddenPluginJobActivityId, setHiddenPluginJobActivityId] = useJobsField("hiddenPluginJobActivityId");
+  const [mediaJobsLoading, setMediaJobsLoading] = useJobsField("mediaJobsLoading");
+  const [semanticSearchPrefs, setSemanticSearchPrefs] = useEmbeddingField("semanticSearchPrefs");
+  const [embeddingIndex, setEmbeddingIndex] = useEmbeddingField("embeddingIndex");
+  const [embeddingBinding, setEmbeddingBinding] = useEmbeddingField("embeddingBinding");
+  const [embeddingForLibraryId, setEmbeddingForLibraryId] = useEmbeddingField("embeddingForLibraryId");
+  const [embeddingInstall, setEmbeddingInstall] = useEmbeddingField("embeddingInstall");
+  const [embeddingServices, setEmbeddingServices] = useEmbeddingField("embeddingServices");
+  const [embeddingInstalling, setEmbeddingInstalling] = useEmbeddingField("embeddingInstalling");
   const embeddingRestartRef = useRef(true);
   const lastStartedSelectionRef = useRef<string | null>(null);
   const embeddingSelectionRef = useRef<string | null>(null);
   useEffect(() => subscribeSemanticSearchPreferences(() => {
     setSemanticSearchPrefs(loadSemanticSearchPreferences());
-  }), []);
-  useEffect(() => subscribeEmbeddingInstallActivity(setEmbeddingInstalling), []);
+  }), [setSemanticSearchPrefs]);
+  useEffect(() => subscribeEmbeddingInstallActivity(setEmbeddingInstalling), [setEmbeddingInstalling]);
   const openLibraryId = library?.libraryId ?? null;
   useEffect(() => {
     if (!api || !openLibraryId) return;
@@ -2741,7 +2602,7 @@ function AppInner() {
       cancelled = true;
       unsubscribe();
     };
-  }, [api, openLibraryId]);
+  }, [api, openLibraryId, setEmbeddingBinding, setEmbeddingForLibraryId, setEmbeddingInstall, setEmbeddingServices, setFindSimilarSource]);
   const activeEmbeddingBinding = embeddingForLibraryId === openLibraryId ? embeddingBinding : null;
   const embeddingSelectionId = resolveEffectiveEmbeddingSelection({
     globalEnabled: semanticSearchPrefs.enabled,
@@ -2813,8 +2674,7 @@ function AppInner() {
     library,
     embeddingSearchReady,
     embeddingSelectionId,
-    embeddingIndex.phase,
-  ]);
+    embeddingIndex.phase, setEmbeddingIndex]);
   const semanticSearchActive = embeddingSearchReady && semanticSearchPrefs.searchMode === "semantic";
   const pluginJobsActive = hasActivePluginJobs(pluginJobs);
   const pluginJobActivityCandidate = selectPluginJobActivity(pluginJobs);
@@ -2841,10 +2701,10 @@ function AppInner() {
     setMediaJobsLoading(true);
     setMediaJobsOpen(true);
     void loadMediaJobsRef.current(true);
-  }, []);
+  }, [setMediaJobsLoading, setMediaJobsOpen]);
   const hidePluginJobActivity = useCallback((jobId: string) => {
     setHiddenPluginJobActivityId(jobId);
-  }, []);
+  }, [setHiddenPluginJobActivityId]);
   const controlAiJobsRef = useRef<
     (action: "pause" | "resume" | "cancel" | "retry", jobIds?: string[]) => Promise<void>
   >(async () => undefined);
@@ -2895,7 +2755,7 @@ function AppInner() {
       setAiProgressBannerVisible(true);
     });
     // Progress events drive the banner; a status RPC would wait behind the queue.
-  }, [aiConnectionFailureGate.failedJobIds, onAiConnectionFailureRetry]);
+  }, [aiConnectionFailureGate.failedJobIds, onAiConnectionFailureRetry, setAiAnalyzing, setAiBatchProgress, setAiProgressBannerVisible]);
 
 
   const selectedFolderId =
@@ -3795,8 +3655,7 @@ function AppInner() {
     isCurrentLibraryView,
     // Serpent-d0nv: a cover candidate's thumbnail.ready bumps this token so
     // the row re-fetches and the generated cover appears without navigation.
-    folderBrowseRefreshToken,
-  ]);
+    folderBrowseRefreshToken, setFolderBrowseEntries]);
 
   // Serpent-d0nv: keep the cover-candidate asset set (from the last browse
   // entries response) visible to the thumbnail event subscriber so a ready
@@ -3933,7 +3792,7 @@ function AppInner() {
         cardResizeScrollSnapshotRef.current ?? undefined,
       );
     },
-    [assetCardSize],
+    [assetCardSize, setCanvasPrefs],
   );
 
   // REQ-CANVAS-019: dragging the sidebar or resizing the window changes the
@@ -4241,7 +4100,7 @@ function AppInner() {
         canForward: navHistoryRef.current.canForward,
       });
     }
-  }, [navHistoryRef, saveCurrentWorkspaceHistoryViewport, selectionAnchorRef, setNavHistoryUi, syncActiveWorkspaceTabLocation, wakeViewerChrome, clearPreviewScrollHold]);
+  }, [navHistoryRef, saveCurrentWorkspaceHistoryViewport, selectionAnchorRef, setNavHistoryUi, syncActiveWorkspaceTabLocation, wakeViewerChrome, clearPreviewScrollHold, setPreviewAsset, setPreviewCanvasReady, setPreviewRestoring, setSelectedAssetId, setSelectedAssetIds]);
 
   const persistAssetColorSpace = useCallback(async (assetId: string, colorSpace: string | null) => {
     if (!api || !library) return;
@@ -4278,7 +4137,7 @@ function AppInner() {
         canForward: navHistoryRef.current.canForward,
       });
     }
-  }, [navHistoryRef, selectionAnchorRef, setNavHistoryUi, syncActiveWorkspaceTabLocation]);
+  }, [navHistoryRef, selectionAnchorRef, setNavHistoryUi, syncActiveWorkspaceTabLocation, setPreviewAsset, setSelectedAssetId, setSelectedAssetIds]);
 
   useEffect(() => {
     const pendingPreview = pendingWorkspacePreviewRef.current;
@@ -4478,7 +4337,7 @@ function AppInner() {
         closingPreviewRef.current = null;
       }
     }
-  }, [api, armPreviewScrollHold, clearPreviewScrollHold, library, navHistoryRef, previewAsset, setNavHistoryUi, syncActiveWorkspaceTabLocation]);
+  }, [api, armPreviewScrollHold, clearPreviewScrollHold, library, navHistoryRef, previewAsset, setNavHistoryUi, syncActiveWorkspaceTabLocation, setPreviewAsset, setPreviewCanvasReady, setPreviewRestoring]);
 
   const loadContent = useCallback(
     async (
@@ -4754,8 +4613,7 @@ function AppInner() {
       locale,
       setError,
       showIgnoredItems,
-      t,
-    ],
+      t, setAllAssetCount, setFolderCustomCoverIds, setFolderNavigationCovers, setFolders, setLinkedFolders, setRootAssetCount, setSearchOffset, setSearchSnippets, setSearchTotal, setTags, setThumbnailFailures, setTrashedAssetCount, setTrashedFolders],
   );
 
   useBrowserSessionRestore({
@@ -5322,8 +5180,7 @@ function AppInner() {
     isCurrentLibraryView,
     library,
     library?.libraryId,
-    t,
-  ]);
+    t, setAssets, setExtractedMetadataRefreshKey, setFolderBrowseRefreshToken, setFolderNavigationCovers, setLayoutThumbnailArtifacts, setThumbnailFailures]);
   useEffect(() => {
     if (!api || !library) return;
     const unsubscribeProgress = api.onAiProgress((event) => {
@@ -5401,7 +5258,7 @@ function AppInner() {
       unsubscribeCompleted();
       unsubscribeCleared();
     };
-  }, [api, library, locale, setError, setFatal, setNotice, t]);
+  }, [api, library, locale, setError, setFatal, setNotice, t, setAiContent, setAiJobs, setFilteredFolderCountRefreshToken]);
 
   function syncNavHistoryUi() {
     // Keep the active tab's cached location at the shared cursor so the tab
@@ -7663,8 +7520,7 @@ function AppInner() {
       assets,
       removeLocallyFromBrowse,
       searchTotal,
-      trashedAssets,
-    ],
+      trashedAssets, setAllAssetCount, setAssets, setSearchTotal, setTrashedAssets],
   );
 
   function requestTrashManagedFolder(folderId: string, name: string) {
@@ -7926,7 +7782,7 @@ function AppInner() {
         return current.filter((folder) => !removed.has(folder.folderId));
       });
     },
-    [],
+    [setFolders],
   );
 
   const {
@@ -10030,7 +9886,7 @@ function AppInner() {
     } finally {
       setUiState("ready");
     }
-  }, [api, library, locale, operationHistory, refreshOperationHistory, setError, setNotice, t]);
+  }, [api, library, locale, operationHistory, refreshOperationHistory, setError, setNotice, t, setOperationHistory]);
 
   const redoLastOperation = useCallback(async () => {
     if (isEditableTextTarget(document.activeElement)) {
@@ -10056,7 +9912,7 @@ function AppInner() {
     } finally {
       setUiState("ready");
     }
-  }, [api, library, locale, operationHistory, refreshOperationHistory, setError, setNotice, t]);
+  }, [api, library, locale, operationHistory, refreshOperationHistory, setError, setNotice, t, setOperationHistory]);
 
   async function deletePermanentFromTrash(assetIds: string[]): Promise<boolean> {
     if (!api || !library || assetIds.length === 0) return false;
@@ -10527,7 +10383,7 @@ function AppInner() {
     } catch (caught) {
       setError(toMessage(caught, t("toast.cancelBatchRelinkFailed"), locale));
     }
-  }, [api, batchRelinkPreview, library, locale, setError, t]);
+  }, [api, batchRelinkPreview, library, locale, setError, t, setBatchRelinkPreview]);
 
   // --- Export / Import operations ---
 
@@ -11052,7 +10908,7 @@ function AppInner() {
       unsubscribe();
       unsubscribeLibraryChanged();
     };
-  }, [api, applyLoadedMetadata, library, locale, refreshOperationHistory, setError, setNotice, t]);
+  }, [api, applyLoadedMetadata, library, locale, refreshOperationHistory, setError, setNotice, t, setLayoutThumbnailArtifacts]);
 
   useEffect(() => {
     if (!api) return;
@@ -11138,7 +10994,7 @@ function AppInner() {
         }
       }
     });
-  }, [api, setNotice, t]);
+  }, [api, setNotice, t, setDeleteProgress, setExportProgress, setImportInterrupt, setImportProgress, setLibraryTransferKind, setSyncProgress]);
 
   const importAwaitingUserDecision = Boolean(
     (conflicts && conflictPhase) ||
@@ -11540,7 +11396,7 @@ function AppInner() {
     return () => {
       cancelled = true;
     };
-  }, [api, activeLibraryId]);
+  }, [api, activeLibraryId, setSyncBindingStatus]);
 
   useEffect(() => {
     const onPaste = (event: ClipboardEvent) => {
@@ -11872,8 +11728,7 @@ function AppInner() {
     matchingDraftAiProfileId,
     api,
     locale,
-    t,
-  ]);
+    t, setAiConnectionState, setAiDraftConnectionReason, setAiDraftConnectionState, setAiDraftHasKey, setAiHasKey]);
 
   type AiConfigPersistOverrides = {
     maxAnalysisImageEdgePx?: number;
@@ -12169,7 +12024,7 @@ function AppInner() {
     }
     setAiConnectionState("error");
     aiVerifiedFingerprintRef.current = null;
-  }, [api, aiActiveProfileId, aiHasKey]);
+  }, [api, aiActiveProfileId, aiHasKey, setAiConnectionState]);
 
   useEffect(() => {
     if (!shouldRunAiConnectionHeartbeat(aiHasKey)) {
@@ -12601,7 +12456,7 @@ function AppInner() {
         jobStatusCoordinatorRef.current = null;
       }
     };
-  }, [api, library]);
+  }, [api, library, setAiJobs, setMediaJobs, setMediaJobsLoading, setPluginJobs]);
 
   useEffect(() => {
     // Opening the panel tightens the cadence and re-enables event-driven
