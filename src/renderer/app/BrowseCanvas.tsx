@@ -701,8 +701,8 @@ export function BrowseCanvas({ externalDropActive, handleExternalDragEnter, hand
                           <span
                             className="missing-banner"
                             style={{
-                              background: "var(--raised-2)",
-                              color: "var(--secondary)",
+                              background: "var(--ui-surface-raised-subtle)",
+                              color: "var(--ui-content-secondary)",
                               bottom: 6,
                               right: 6,
                             }}

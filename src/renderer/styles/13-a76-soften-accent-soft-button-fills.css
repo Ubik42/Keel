@@ -26,15 +26,13 @@
   --preview-nav-on-light-disabled-fill: #8a8a8a;
   --elev-size: 0.9;
   --elev-intensity: 0.8;
-  --menu-surface-background: var(--ui-surface-raised);
   --menu-surface-border: color-mix(in srgb, var(--ui-border-divider) 82%, transparent);
   --menu-surface-radius: calc(8px * var(--ui-radius-scale, 1));
   --menu-surface-shadow: var(--shadow-menu);
-  --menu-item-hover-background: var(--ui-surface-hover);
   --menu-item-focus-background: color-mix(in srgb, var(--ui-content-primary) 11%, transparent);
   --menu-item-disabled-opacity: 0.4;
-  --menu-danger-color: color-mix(in srgb, var(--danger) 78%, var(--ui-content-primary));
-  --menu-danger-hover-background: color-mix(in srgb, var(--danger) 14%, var(--menu-item-hover-background));
+  --menu-danger-color: color-mix(in srgb, var(--ui-status-danger) 78%, var(--ui-content-primary));
+  --menu-danger-hover-background: color-mix(in srgb, var(--ui-status-danger) 14%, var(--ui-surface-hover));
   --menu-item-padding: 6px 10px;
   --menu-item-font-size: calc(12.5px * var(--ui-font-scale));
   --menu-item-line-height: 1.4;
@@ -43,7 +41,6 @@
   --shell-control-height: 28px;
   --shell-chip-height: 22px;
   --shell-library-switcher-width: 170px;
-  --viewer-chrome-border: var(--ui-border-subtle);
   --window-corner-radius: 8px;
 }
 html.keel-window-square {
@@ -235,7 +232,7 @@ html.keel-window-square {
   --tag-fill-solid: color-mix(in oklab, var(--accent) 11%, var(--tag-base));
 }
 .app-shell.app-shell .filter-tag-chip.is-excluding {
-  --tag-fill-solid: color-mix(in oklab, var(--filter-exclude) 16%, var(--tag-base));
+  --tag-fill-solid: color-mix(in oklab, var(--ui-status-danger) 16%, var(--tag-base));
   color: var(--filter-exclude-fg);
 }
 :root[data-theme="dark"] .app-shell.app-shell .tag-chip,
@@ -256,7 +253,7 @@ html.keel-window-square {
   --tag-fill-solid: color-mix(in oklab, var(--accent) 16%, var(--tag-base));
 }
 :root[data-theme="dark"] .app-shell.app-shell .filter-tag-chip.is-excluding {
-  --tag-fill-solid: color-mix(in oklab, var(--filter-exclude) 22%, var(--tag-base));
+  --tag-fill-solid: color-mix(in oklab, var(--ui-status-danger) 22%, var(--tag-base));
   color: var(--filter-exclude-fg);
 }
 .app-shell.app-shell .tag-chip::before,

@@ -188,7 +188,7 @@
    were 92% opaque (visually solid). All menu surfaces now share one
    translucent + blurred treatment per acrylic level; level 0 stays solid. */
 :root[data-menu-acrylic] :is(.ui-menu-surface, .context-menu, .main-menu-surface, .main-menu-submenu, .library-switcher-menu, .workspace-tools-overflow-menu):is(*, #a91-acrylic-specificity) {
-  --menu-acrylic-fill: var(--menu-surface-background, var(--ui-surface-overlay));
+  --menu-acrylic-fill: var(--ui-surface-raised);
 }
 
 :root[data-menu-acrylic="0"] :is(.ui-menu-surface, .context-menu, .main-menu-surface, .main-menu-submenu, .library-switcher-menu, .workspace-tools-overflow-menu):is(*, #a91-acrylic-specificity) {

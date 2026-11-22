@@ -13,14 +13,14 @@ describe('availability affordance (Serpent-rc9)', () => {
   it('uses a link icon for available linked folders', () => {
     expect(linkedFolderNavAffordance('available')).toEqual({
       icon: 'link',
-      iconColor: 'var(--secondary)',
+      iconColor: 'var(--ui-content-secondary)',
     });
   });
 
   it('uses a gray disconnect icon when the linked folder is offline', () => {
     expect(linkedFolderNavAffordance('offline')).toEqual({
       icon: 'link-off',
-      iconColor: 'var(--tertiary)',
+      iconColor: 'var(--ui-content-tertiary)',
     });
   });
 
@@ -42,7 +42,7 @@ describe('availability affordance (Serpent-rc9)', () => {
   it('uses a cracked-file affordance for missing assets', () => {
     expect(missingAssetAffordance()).toEqual({
       icon: 'broken-file',
-      iconColor: 'var(--danger)',
+      iconColor: 'var(--ui-status-danger)',
     });
   });
 
@@ -70,7 +70,7 @@ describe('availability affordance (Serpent-rc9)', () => {
   it('uses a warning-colored cracked-file affordance for damaged rows', () => {
     expect(corruptAssetAffordance()).toEqual({
       icon: 'broken-file',
-      iconColor: 'var(--warning)',
+      iconColor: 'var(--ui-status-warning)',
     });
   });
 });

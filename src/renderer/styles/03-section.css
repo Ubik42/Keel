@@ -224,14 +224,14 @@
   border: 0;
   border-bottom: 2px solid transparent;
   background: transparent;
-  color: var(--secondary);
+  color: var(--ui-content-secondary);
   cursor: pointer;
   font: inherit;
   font-size: calc(12px * var(--ui-font-scale));
 }
 .plugin-widget-tabs__tab:hover,
 .plugin-widget-tabs__tab:focus-visible {
-  background: var(--menu-item-hover-background);
+  background: var(--ui-surface-hover);
   color: var(--ui-content-primary);
 }
 .plugin-widget-tabs__tab.is-active {
@@ -245,7 +245,7 @@
 }
 .plugin-widget-note {
   margin: 0;
-  color: var(--secondary);
+  color: var(--ui-content-secondary);
   font-size: calc(12px * var(--ui-font-scale));
   line-height: 1.45;
 }
@@ -286,7 +286,7 @@
 }
 .plugin-widget-list__header {
   background: var(--ui-surface-raised);
-  color: var(--secondary);
+  color: var(--ui-content-secondary);
   font-weight: 600;
 }
 .plugin-widget-list__body {
@@ -295,7 +295,7 @@
   overflow: auto;
 }
 .plugin-widget-list__row:nth-child(odd) {
-  background: var(--raised-2);
+  background: var(--ui-surface-raised-subtle);
 }
 .plugin-widget-list__row:nth-child(even) {
   background: var(--ui-surface-raised);
@@ -312,7 +312,7 @@
 }
 .plugin-widget-list__empty {
   padding: 0.75rem 0.65rem;
-  color: var(--secondary);
+  color: var(--ui-content-secondary);
   text-align: center;
 }
 .plugin-widget-list__highlight {
@@ -324,7 +324,7 @@
   color: var(--accent);
 }
 .plugin-widget-list__highlight--change {
-  background: color-mix(in srgb, var(--warning) 28%, transparent);
+  background: color-mix(in srgb, var(--ui-status-warning) 28%, transparent);
   color: var(--ui-status-warning-content);
 }
 .plugin-widget-toggle {
@@ -336,7 +336,7 @@
   border: 1px solid var(--border-subtle);
   border-radius: 0.35rem;
   background: var(--ui-surface-raised);
-  color: var(--secondary);
+  color: var(--ui-content-secondary);
   font: inherit;
   font-size: calc(12px * var(--ui-font-scale));
   line-height: 1;

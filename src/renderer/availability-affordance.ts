@@ -10,9 +10,9 @@ export function linkedFolderNavAffordance(status: string): {
   readonly iconColor?: string;
 } {
   if (status === 'offline') {
-    return { icon: 'link-off', iconColor: 'var(--tertiary)' };
+    return { icon: 'link-off', iconColor: 'var(--ui-content-tertiary)' };
   }
-  return { icon: 'link', iconColor: 'var(--secondary)' };
+  return { icon: 'link', iconColor: 'var(--ui-content-secondary)' };
 }
 
 /** Tooltip body for a linked folder row (name handled by NavRow). */
@@ -52,7 +52,7 @@ export function missingAssetAffordance(): {
 } {
   return {
     icon: 'broken-file',
-    iconColor: 'var(--danger)',
+    iconColor: 'var(--ui-status-danger)',
   };
 }
 
@@ -63,6 +63,6 @@ export function corruptAssetAffordance(): {
 } {
   return {
     icon: 'broken-file',
-    iconColor: 'var(--warning)',
+    iconColor: 'var(--ui-status-warning)',
   };
 }

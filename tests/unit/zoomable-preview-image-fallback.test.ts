@@ -23,7 +23,7 @@ describe("zoomable image decode failure fallback", () => {
     expect(source).not.toContain("preview-image-middle");
     expect(source).toContain('decoding="async"');
     expect(styles).toMatch(
-      /\.preview-image-error\s*\{[\s\S]*?color:\s*var\(--tertiary\);/,
+      /\.preview-image-error\s*\{[\s\S]*?color:\s*var\(--ui-content-tertiary\);/,
     );
   });
 });

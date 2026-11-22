@@ -31,7 +31,7 @@
 .app-shell.app-shell .nav-empty {
   margin: 2px 0 6px;
   padding: 2px 8px 2px 50px;
-  color: var(--tertiary);
+  color: var(--ui-content-tertiary);
   font-size: calc(11px * var(--ui-font-scale));
 }
 
@@ -62,7 +62,7 @@
   padding: 0 11px;
   border: none;
   background: transparent;
-  color: var(--secondary);
+  color: var(--ui-content-secondary);
   font-weight: 450;
 }
 .app-shell.app-shell .dimension-filter-btn:hover:not(:disabled) {
@@ -173,9 +173,9 @@
   border-top: 1px solid var(--island-hairline);
   gap: 8px 10px;
 }
-.app-shell.app-shell .inspector-raw-tech-label { color: var(--tertiary); }
+.app-shell.app-shell .inspector-raw-tech-label { color: var(--ui-content-tertiary); }
 .app-shell.app-shell .inspector-raw-tech-value {
-  color: var(--secondary);
+  color: var(--ui-content-secondary);
   font-variant-numeric: tabular-nums;
 }
 .app-shell.app-shell .inspector-hero-preview {
@@ -200,7 +200,7 @@
 }
 .app-shell.app-shell .empty-library p {
   max-width: 340px;
-  color: var(--tertiary);
+  color: var(--ui-content-tertiary);
   font-size: calc(12px * var(--ui-font-scale));
 }
 .app-shell.app-shell .inspector-empty > .icon,
@@ -211,7 +211,7 @@
   border: 1px solid var(--ui-border-subtle);
   border-radius: calc(10px * var(--ui-radius-scale, 1));
   background: var(--ui-surface-raised);
-  color: var(--tertiary);
+  color: var(--ui-content-tertiary);
 }
 
 

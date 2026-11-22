@@ -1,4 +1,6 @@
 
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { readRendererStyles } from "../support/renderer-styles";
 
@@ -11,7 +13,6 @@ describe('theme CSS tokens (REQ-THEME-002)', () => {
       '--canvas',
       '--pane',
       '--accent',
-      '--danger',
       '--rating-star',
       '--elev-size',
       '--elev-intensity',
@@ -26,16 +27,11 @@ describe('theme CSS tokens (REQ-THEME-002)', () => {
   });
 
   it('keeps theme-specific exclude filter reds (Serpent-jfi / FILTER-022)', () => {
-    const darkRoot = css.match(
-      /:root\s*\{[\s\S]*?--filter-exclude:\s*([^;]+);/,
-    );
-    expect(darkRoot?.[1]?.trim()).toBe('var(--ui-status-danger, #b35660)');
-
-    const lightBlock = css.match(
-      /\[data-theme="light"\][\s\S]*?--filter-exclude:\s*([^;]+);/,
-    );
-    expect(lightBlock?.[1]?.trim()).toBe('var(--ui-status-danger, #c24e4e)');
-    expect(lightBlock?.[1]).not.toContain('var(--danger)');
+    // Exclude chips use the status danger token; each theme defines its own red.
+    const tokens = readFileSync(resolve(process.cwd(), 'src/renderer/workbench/ui/tokens.css'), 'utf8');
+    const reds = [...tokens.matchAll(/--ui-status-danger:\s*([^;]+);/g)].map((match) => match[1]!.trim());
+    expect(new Set(reds).size).toBeGreaterThanOrEqual(2);
+    expect(css).not.toMatch(/--filter-exclude:/);
   });
 
   it('keeps no raw hex colors outside token definition blocks', () => {

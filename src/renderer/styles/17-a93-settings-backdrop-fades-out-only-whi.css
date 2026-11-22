@@ -184,7 +184,7 @@
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
   background: transparent;
-  color: var(--secondary);
+  color: var(--ui-content-secondary);
   font-size: calc(11px * var(--ui-font-scale));
   cursor: pointer;
 }
@@ -232,7 +232,7 @@
 }
 
 .shortcut-settings-row.has-conflict .shortcut-keycap {
-  border-color: color-mix(in srgb, var(--danger) 55%, var(--ui-border-divider));
+  border-color: color-mix(in srgb, var(--ui-status-danger) 55%, var(--ui-border-divider));
 }
 
 .shortcut-settings-row-copy {
@@ -269,7 +269,7 @@
 
 .shortcut-settings-row-copy > span {
   flex: 0 0 auto;
-  color: var(--tertiary);
+  color: var(--ui-content-tertiary);
   font-size: calc(10.5px * var(--ui-font-scale));
   white-space: nowrap;
 }
@@ -319,12 +319,12 @@
 
 .shortcut-capture-input.is-waiting {
   border-color: var(--ui-border-divider);
-  color: var(--tertiary);
+  color: var(--ui-content-tertiary);
 }
 
 .shortcut-capture-input.is-conflict {
-  border-color: color-mix(in srgb, var(--danger) 70%, var(--ui-border-divider));
-  background: color-mix(in srgb, var(--danger) 14%, var(--ui-surface-raised));
+  border-color: color-mix(in srgb, var(--ui-status-danger) 70%, var(--ui-border-divider));
+  background: color-mix(in srgb, var(--ui-status-danger) 14%, var(--ui-surface-raised));
   color: var(--ui-content-primary);
 }
 
@@ -333,7 +333,7 @@
 }
 
 .shortcut-keycap.is-unassigned {
-  color: var(--tertiary);
+  color: var(--ui-content-tertiary);
   font-family: inherit;
   font-weight: 450;
 }
@@ -345,14 +345,14 @@
   padding: 0 6px;
   border-radius: calc(4px * var(--ui-radius-scale, 1));
   background: var(--ui-surface-hover);
-  color: var(--secondary);
+  color: var(--ui-content-secondary);
   font-size: calc(10px * var(--ui-font-scale));
   white-space: nowrap;
 }
 
 .shortcut-settings-badge.is-conflict {
-  background: color-mix(in srgb, var(--danger) 13%, transparent);
-  color: var(--danger);
+  background: color-mix(in srgb, var(--ui-status-danger) 13%, transparent);
+  color: var(--ui-status-danger);
 }
 
 .shortcut-settings-row-actions {
@@ -371,7 +371,7 @@
   border: 0;
   border-radius: calc(5px * var(--ui-radius-scale, 1));
   background: transparent;
-  color: var(--secondary);
+  color: var(--ui-content-secondary);
   cursor: pointer;
 }
 
@@ -385,7 +385,7 @@
 }
 
 .shortcut-settings-icon-button.is-confirm:disabled {
-  color: var(--tertiary);
+  color: var(--ui-content-tertiary);
 }
 
 .shortcut-settings-icon-button:disabled {
@@ -409,7 +409,7 @@
 }
 
 .shortcut-settings-text-button.is-muted {
-  color: var(--secondary);
+  color: var(--ui-content-secondary);
 }
 
 .shortcut-settings-text-button:disabled {
@@ -431,7 +431,7 @@
 .shortcut-keycap.is-preview.is-waiting {
   border-color: var(--ui-border-divider);
   background: transparent;
-  color: var(--tertiary);
+  color: var(--ui-content-tertiary);
   font-family: inherit;
   font-size: calc(10.5px * var(--ui-font-scale));
 }
@@ -445,7 +445,7 @@
 
 .shortcut-row-error {
   margin: 0;
-  color: var(--danger);
+  color: var(--ui-status-danger);
   font-size: calc(11.5px * var(--ui-font-scale));
   line-height: 1.45;
 }
@@ -464,7 +464,7 @@
 
 .shortcut-conflict {
   padding: 8px 10px;
-  border: 1px solid color-mix(in srgb, var(--danger) 35%, var(--ui-border-divider));
+  border: 1px solid color-mix(in srgb, var(--ui-status-danger) 35%, var(--ui-border-divider));
   border-radius: calc(6px * var(--ui-radius-scale, 1));
   order: 4;
   grid-column: 1 / -1;
@@ -484,7 +484,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  color: var(--secondary);
+  color: var(--ui-content-secondary);
   font-size: calc(11.5px * var(--ui-font-scale));
 }
 
@@ -513,7 +513,7 @@
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(5px * var(--ui-radius-scale, 1));
   background: transparent;
-  color: var(--secondary);
+  color: var(--ui-content-secondary);
   font-size: calc(11px * var(--ui-font-scale));
   cursor: pointer;
 }
@@ -529,7 +529,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
-  color: var(--secondary);
+  color: var(--ui-content-secondary);
   font-size: calc(11px * var(--ui-font-scale));
 }
 
@@ -539,9 +539,9 @@
   justify-content: space-between;
   gap: 10px;
   padding: 8px 10px;
-  border: 1px solid color-mix(in srgb, var(--danger) 35%, var(--ui-border-divider));
+  border: 1px solid color-mix(in srgb, var(--ui-status-danger) 35%, var(--ui-border-divider));
   border-radius: calc(6px * var(--ui-radius-scale, 1));
-  color: var(--danger);
+  color: var(--ui-status-danger);
   font-size: calc(11px * var(--ui-font-scale));
 }
 
@@ -594,7 +594,7 @@
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
   background: transparent;
-  color: var(--secondary);
+  color: var(--ui-content-secondary);
   box-shadow: none;
   font-size: calc(11px * var(--ui-font-scale));
   font-weight: 400;
@@ -606,7 +606,7 @@
 .app-shell.app-shell .app-settings-dialog .ui-button:not(.ui-button--primary):not(.ui-button--danger):hover:not(:disabled) {
   border-color: var(--ui-border-divider);
   background: var(--ui-surface-hover);
-  color: var(--secondary);
+  color: var(--ui-content-secondary);
 }
 
 .app-settings-dialog .primary-button,
@@ -638,15 +638,15 @@
 
 .app-settings-dialog .plugin-install-stop-button,
 .app-shell.app-shell .app-settings-dialog .plugin-install-stop-button {
-  border-color: var(--danger);
-  color: var(--danger);
+  border-color: var(--ui-status-danger);
+  color: var(--ui-status-danger);
 }
 
 .app-settings-dialog .plugin-install-stop-button:hover:not(:disabled),
 .app-shell.app-shell .app-settings-dialog .plugin-install-stop-button:hover:not(:disabled) {
-  border-color: var(--danger);
+  border-color: var(--ui-status-danger);
   background: var(--ui-status-danger-surface);
-  color: var(--danger);
+  color: var(--ui-status-danger);
 }
 
 /* Persistent tag taxonomy and linked asset navigation. */
@@ -697,7 +697,7 @@
 .automatic-task-name > span:last-child { overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
 .automatic-task-status { width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:currentColor;opacity:.25; }
 .automatic-task-status.is-enabled { background:var(--ui-accent);opacity:1; }
-.automatic-task-status.is-error { background:var(--danger);opacity:1; }
+.automatic-task-status.is-error { background:var(--ui-status-danger);opacity:1; }
 .automatic-task-row input[role=switch] { appearance:none;width:26px;height:15px;flex:0 0 26px;margin:0 5px;border-radius:calc(12px * var(--ui-radius-scale, 1));background:color-mix(in srgb,currentColor 22%,transparent);position:relative;cursor:pointer; }
 .automatic-task-row input[role=switch]::after { content:'';position:absolute;top:2px;left:2px;width:11px;height:11px;background:white;border-radius:50%;transition:transform 120ms; }
 .automatic-task-row input[role=switch]:checked { background:var(--ui-accent); }
@@ -713,7 +713,7 @@
 .automatic-task-section-menu { display:grid;gap:3px;padding:6px;border:1px solid var(--ui-border-subtle);border-radius:calc(8px * var(--ui-radius-scale, 1)); }
 .automatic-task-section-menu button { text-align:left;padding:6px;border:0;background:transparent;color:inherit;cursor:pointer; }
 .automatic-task-group-editor { display:grid;gap:6px;padding:6px; }.automatic-task-group-editor .text-field{width:100%;min-width:0}.automatic-task-group-editor > div{display:flex;gap:6px;}
-.automatic-task-error { font-size:11px;color:var(--danger);line-height:1.5; }
+.automatic-task-error { font-size:11px;color:var(--ui-status-danger);line-height:1.5; }
 
 /* Persistent sidebar search and editing at the tag's tree position. */
 .sidebar-heading-search { display: flex; align-items: center; gap: 4px; flex: 1 1 70px; min-width: 36px; height: 25px; padding: 0 4px; border: 1px solid transparent; border-radius: calc(5px * var(--ui-radius-scale, 1)); color: inherit; }
@@ -738,7 +738,7 @@
 .rule-detail-heading { margin: 12px 0 6px; font-size: inherit; }
 .rule-run-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
 .rule-run { border: 1px solid var(--ui-border-subtle); border-radius: calc(6px * var(--ui-radius-scale, 1)); }
-.rule-run.is-failed { border-color: color-mix(in srgb, var(--danger) 45%, transparent); }
+.rule-run.is-failed { border-color: color-mix(in srgb, var(--ui-status-danger) 45%, transparent); }
 .rule-run-summary { display: flex; justify-content: space-between; gap: 12px; width: 100%; padding: 6px 8px; background: none; border: 0; color: inherit; text-align: left; cursor: pointer; }
 .rule-run.is-dry-run .rule-run-summary { color: var(--text-secondary); }
 .rule-run-detail { padding: 0 8px 8px; }

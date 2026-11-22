@@ -39,7 +39,7 @@
 }
 
 .inspector-content .micro-label {
-  color: var(--tertiary);
+  color: var(--ui-content-tertiary);
   font-size: calc(10.5px * var(--ui-font-scale));
   letter-spacing: 0.04em;
 }
@@ -57,7 +57,7 @@
 }
 
 .inspector-empty p {
-  color: var(--tertiary);
+  color: var(--ui-content-tertiary);
 }
 
 .workspace-title {
@@ -70,7 +70,7 @@
 }
 
 .item-count {
-  color: var(--tertiary);
+  color: var(--ui-content-tertiary);
   font-weight: 450;
 }
 
@@ -153,7 +153,7 @@
 }
 
 .empty-library p {
-  color: var(--secondary);
+  color: var(--ui-content-secondary);
 }
 
 .empty-state,

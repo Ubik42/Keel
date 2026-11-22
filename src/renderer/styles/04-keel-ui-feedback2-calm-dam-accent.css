@@ -30,7 +30,7 @@
 }
 
 .windows-caption-button {
-  color: color-mix(in srgb, var(--ui-content-primary) 48%, var(--secondary));
+  color: color-mix(in srgb, var(--ui-content-primary) 48%, var(--ui-content-secondary));
 }
 
 .windows-caption-button:hover {
@@ -94,7 +94,7 @@
 }
 
 .main-menu-item-shortcut {
-  color: var(--tertiary);
+  color: var(--ui-content-tertiary);
   font-size: calc(11px * var(--ui-font-scale));
 }
 
@@ -122,7 +122,7 @@
   height: 24px;
   margin-bottom: 4px;
   padding: 0 8px 0 10px;
-  color: var(--tertiary);
+  color: var(--ui-content-tertiary);
   font-size: calc(10.5px * var(--ui-font-scale));
   font-weight: 600;
   letter-spacing: 0.06em;
@@ -132,7 +132,7 @@
 .nav-row {
   gap: 8px;
   padding: 0 8px;
-  color: color-mix(in srgb, var(--secondary) 88%, var(--tertiary));
+  color: color-mix(in srgb, var(--ui-content-secondary) 88%, var(--ui-content-tertiary));
   font-size: calc(12.5px * var(--ui-font-scale));
   font-weight: 450;
 }
@@ -152,7 +152,7 @@
 }
 
 .nav-count {
-  color: color-mix(in srgb, var(--tertiary) 85%, transparent);
+  color: color-mix(in srgb, var(--ui-content-tertiary) 85%, transparent);
   font-weight: 450;
 }
 
@@ -166,7 +166,7 @@
   border: none;
   border-radius: 0;
   background: transparent;
-  color: var(--tertiary);
+  color: var(--ui-content-tertiary);
   font-size: calc(11.5px * var(--ui-font-scale));
   line-height: 1.45;
 }
@@ -175,7 +175,7 @@
   width: 22px;
   height: 22px;
   border-radius: calc(6px * var(--ui-radius-scale, 1));
-  color: var(--tertiary);
+  color: var(--ui-content-tertiary);
 }
 
 /* --- Browse stage + flat cards --- */
@@ -248,7 +248,7 @@
 }
 
 .asset-caption span {
-  color: var(--tertiary);
+  color: var(--ui-content-tertiary);
   line-height: calc(12px * var(--ui-font-scale));
 }
 

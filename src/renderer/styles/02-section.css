@@ -14,7 +14,7 @@
   padding: 2px 7px 2px 0;
   border: 1px solid transparent;
   border-radius: calc(6px * var(--ui-radius-scale, 1));
-  color: var(--secondary);
+  color: var(--ui-content-secondary);
 }
 
 .nav-inline-edit > .icon {
@@ -41,7 +41,7 @@
   grid-column: 1 / -1;
   margin: 0 0 2px;
   padding-left: 24px;
-  color: var(--warning);
+  color: var(--ui-status-warning);
   font-size: calc(10px * var(--ui-font-scale));
   line-height: 1.5;
 }
@@ -70,7 +70,7 @@
   font-size: calc(12px * var(--ui-font-scale));
   /* The tertiary token is intentionally decorative and falls below small-text
      contrast on both themes. Windows captions remain subtle but readable. */
-  color: var(--secondary);
+  color: var(--ui-content-secondary);
 }
 
 :root[data-platform="windows"] .metadata-list div {
@@ -78,7 +78,7 @@
 }
 
 :root[data-platform="windows"] .metadata-list dt {
-  color: var(--secondary);
+  color: var(--ui-content-secondary);
 }
 
 :root[data-platform="windows"] .micro-label {
@@ -103,7 +103,7 @@
 :root[data-platform="windows"] .app-shell.app-shell .inspector-content .micro-label {
   font-size: calc(12px * var(--ui-font-scale));
   letter-spacing: 0.01em;
-  color: var(--secondary);
+  color: var(--ui-content-secondary);
 }
 
 :root[data-platform="windows"] .app-shell.app-shell :is(
@@ -112,7 +112,7 @@
     .library-switcher-section-label
   ) {
   font-size: calc(12px * var(--ui-font-scale));
-  color: var(--secondary);
+  color: var(--ui-content-secondary);
 }
 
 :root[data-platform="windows"] .app-shell.app-shell .library-switcher-item:not(.is-danger):not(:disabled) {
@@ -196,7 +196,7 @@
 
 .plugin-job-progress-message {
   margin-top: 4px;
-  color: var(--secondary);
+  color: var(--ui-content-secondary);
   font-size: calc(11px * var(--ui-font-scale));
   line-height: 1.4;
   overflow-wrap: anywhere;

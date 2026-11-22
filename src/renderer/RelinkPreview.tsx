@@ -78,7 +78,7 @@ export function RelinkPreview({
               <span
                 key={`${item.relativeFilePath}-${index}`}
                 style={{
-                  color: item.matched ? "var(--accent)" : "var(--warning)",
+                  color: item.matched ? "var(--accent)" : "var(--ui-status-warning)",
                 }}
               >
                 <Icon name={item.matched ? "file" : "warning"} size={13} />

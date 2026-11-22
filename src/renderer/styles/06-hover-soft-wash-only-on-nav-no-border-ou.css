@@ -72,7 +72,7 @@
 
 .app-settings-dialog:not(.library-settings-dialog) .app-settings-row-copy > span {
   max-width: 52rem;
-  color: var(--tertiary);
+  color: var(--ui-content-tertiary);
   font-size: calc(12px * var(--ui-font-scale));
   line-height: 1.5;
 }
