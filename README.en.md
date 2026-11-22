@@ -8,52 +8,46 @@
 
 <div align="center">
 
-<img src="docs/assets/ui/Serpent-Logo.png" alt="Serpent-Logo" width="30%" />
+<img src="docs/assets/ui/Serpent-Logo.png" alt="Keel" width="30%" />
 
 </div>
 
-Keel is developed from [dolag233/Serpent](https://github.com/dolag233/Serpent) (MIT) and maintained separately since 2026-11-21. The homepage, download and extension links below still point to the upstream project.
+Keel is developed from [dolag233/Serpent](https://github.com/dolag233/Serpent) (MIT) and maintained separately since 2026-11-21 at [Ubik42/Keel](https://github.com/Ubik42/Keel).
 
 Open-source (MIT), cross-platform (macOS / Windows / Linux) digital asset manager for game artists, film and post-production teams, and designers.
 
-[Homepage](https://serpent.dolag.work) · [Online docs](https://serpent.dolag.work/docs/user-guide/) · [Latest release](https://github.com/dolag233/Serpent/releases) · [Browser extension](https://github.com/dolag233/Serpent-Extension/releases)
+[Releases](https://github.com/Ubik42/Keel/releases) · [Browser extension](https://github.com/Ubik42/Keel/releases?q=extension) · [User guide](docs/user-guide/README.en.md)
 
-Import, browse, search, tag, collect, preview 3D models (FBX/OBJ/GLB and more), and render with HDRI environment lighting and PBR. Data stays in a local library — no cloud dependency.
+Import, browse, search, tag, preview 3D models (FBX/OBJ/GLB and more), and render with HDRI environment lighting and PBR. Data stays in a local library — no cloud dependency.
 
 ## Features
 
 + **Massive asset support.** Most video, image, and audio formats, plus 3D models and text assets.
-+ **Asset management.** Tags, ratings, descriptions, fast filtering and search, and collections.
-+ **Workspace tabs.** Keep several folders, collections, or searches open at once, each with its own place, query, and selection.
++ **Asset management.** Hierarchical tags with colors and icons, ratings, descriptions, and fast filtering and search.
++ **Workspace tabs.** Keep several folders, tags, or searches open at once, each with its own place, query, and selection.
++ **Rules.** Scripts written by AI that run after imports, after library changes, on a schedule, or continuously (for example to tag new files); every run is recorded and its changes can be undone.
++ **Open with and companion files.** Choose the program per file type; companion files such as `.xmp` move, rename and delete with their main file.
 + **Plugin system.** Extend Keel with plugins.
 + **Scripting & MCP.** Control Keel with scripts, and let agents connect and automate through MCP.
 + **AI analysis.** Built-in AI module analyzes images, videos, and 3D assets.
-+ **New UI.** Appearance settings switch between the New UI and the legacy layout, and can edit themes plus background and panel opacity.
++ **Themes.** Edit theme colors, background and panel opacity; interface scale 75%–200%.
 + **Semantic search (experimental).** Find images and text by meaning, and find similar assets.
 + **WebDAV cloud sync.** Two-way library sync across machines, with auto-sync and a configurable poll interval.
 + **External libraries.** Open Eagle / Billfish libraries directly and browse and search them seamlessly after conversion.
 
 <div align="center">
 
-<img src="docs/assets/ui/Serpent-Preview.png" alt="Serpent-Preview" />
+<img src="docs/assets/ui/Serpent-Preview.png" alt="Keel" />
 
 </div>
 
 ## Install
 
-Download the latest release package from [GitHub Releases](https://github.com/dolag233/Serpent/releases).
+Download from the [GitHub releases](https://github.com/Ubik42/Keel/releases). The release page currently carries release notes and the browser extension; build the desktop app yourself as described under "Build locally" (on Windows `npm run package`, output in `out/Keel-win32-x64/`).
 
-**macOS**: download `Serpent-darwin-arm64-<version>-package.dmg` (or portable `.zip`) and drag Keel into Applications. On first launch, if macOS prompts "cannot verify the developer", right-click the app → select Open (first time only), or run:
+Packages made by the release pipeline (`npm run release:make`) are named: macOS `Keel-darwin-arm64-<version>-package.dmg`, Windows `Keel-win-x86-64-<version>-setup.zip` or `-portable.zip`, Linux `Keel-linux-x86-64-<version>.AppImage`. For unsigned builds: on macOS right-click the app and choose Open, or run `xattr -cr /Applications/Keel.app`; on Windows choose "More info → Run anyway" in SmartScreen. The AppImage needs FUSE (`libfuse2`); without it use `--appimage-extract-and-run`. Packages include `ffmpeg`, `ffprobe` and `oiiotool`; `KEEL_FFMPEG_PATH` / `KEEL_OIIO_PATH` can point at other copies.
 
-```bash
-xattr -cr /Applications/Serpent.app
-```
-
-**Windows**: download the installer package `Serpent-win-x86-64-<version>-setup.zip` (extract and run the included installer), or download the portable version `Serpent-win-x86-64-<version>-portable.zip` (extract and run directly). Unsigned builds show a SmartScreen warning on first run — choose "More info → Run anyway".
-
-**Linux**: download `Serpent-linux-x86-64-<version>.AppImage`, `chmod +x`, then run. Needs FUSE (`libfuse2`); without FUSE use `--appimage-extract-and-run`. The package includes `ffmpeg`, `ffprobe`, and `oiiotool`, so video and professional-image previews do not depend on the system PATH. `KEEL_FFMPEG_PATH` / `KEEL_OIIO_PATH` can still point at another copy.
-
-**Browser extension**: download it from the [browser extension releases](https://github.com/dolag233/Serpent-Extension/releases). See the [Browser Extension User Guide](docs/user-guide/browser-extension.en.md) for installation and setup instructions.
+**Browser extension**: download `keel-extension-<version>.zip` from the [extension releases](https://github.com/Ubik42/Keel/releases?q=extension), extract it, enable Developer mode on the Chrome / Edge extensions page and choose "Load unpacked". Packaged desktop builds also include a copy (`resources/extension`). See the [Browser Extension User Guide](docs/user-guide/browser-extension.en.md).
 
 ## Build locally
 
@@ -72,7 +66,7 @@ npm run lint             # ESLint
 npm run typecheck        # tsc --noEmit
 npm run test             # unit + worker integration tests
 npm run test:e2e         # Playwright E2E
-npm run package          # package to out/Serpent-<platform>-<arch>/
+npm run package          # package to out/Keel-<platform>-<arch>/
 npm run make             # build platform installers (macOS dmg / Windows zip; Linux via make:appimage)
 ```
 
@@ -107,12 +101,12 @@ Environment switches:
 #### AppImage (Linux)
 
 ```bash
-npm run make:appimage           # host build → out/make/appimage/Serpent-<version>-x86_64.AppImage or -aarch64.AppImage
+npm run make:appimage           # host build → out/make/appimage/Keel-<version>-x86_64.AppImage or -aarch64.AppImage
 npm run make:appimage:docker    # Ubuntu 22.04 (glibc 2.35 baseline); container arch follows the host; needs docker
-chmod +x out/make/appimage/Serpent-*.AppImage && ./out/make/appimage/Serpent-*.AppImage
+chmod +x out/make/appimage/Keel-*.AppImage && ./out/make/appimage/Keel-*.AppImage
 ```
 
-The release pipeline `npm run release:make` prefers `make:appimage:docker` and renames the artifact to `Serpent-linux-x86-64-<version>.AppImage` or `Serpent-linux-arm64-<version>.AppImage` (same naming contract as macOS/Windows assets). Both architectures share the glibc baseline, FUSE requirement, and X11/Wayland limits. aarch64 cannot produce a release package until its media zip is promoted.
+The release pipeline `npm run release:make` prefers `make:appimage:docker` and renames the artifact to `Keel-linux-x86-64-<version>.AppImage` or `Keel-linux-arm64-<version>.AppImage` (same naming contract as macOS/Windows assets). Both architectures share the glibc baseline, FUSE requirement, and X11/Wayland limits. aarch64 cannot produce a release package until its media zip is promoted.
 
 The release AppImage bundles the pinned media tools (`ffmpeg` / `ffprobe` / `oiiotool`) and does not require them on the system PATH. `KEEL_FFMPEG_PATH` / `KEEL_OIIO_PATH` still override. Running it needs FUSE (`libfuse2`); without FUSE use `--appimage-extract-and-run`. When unprivileged user namespaces are unavailable (some containers; Ubuntu 24.04 AppArmor policy), the launcher falls back to `--no-sandbox`.
 
@@ -120,8 +114,7 @@ The release AppImage bundles the pinned media tools (`ffmpeg` / `ffprobe` / `oii
 
 | Doc | Content |
 | --- | --- |
-| [User guide](docs/user-guide/README.en.md) | Install, import, browse, search (including experimental semantic search), New UI, tags, collections, 3D viewer, troubleshooting |
-| [Online docs](https://keel.dolag.work/docs/user-guide/) | The latest user guide in your browser |
+| [User guide](docs/user-guide/README.en.md) | Install, import, browse, search (including experimental semantic search), appearance, tags, rules, 3D viewer, troubleshooting |
 | [Developer docs](docs/developer/README.en.md) | Setup, build & packaging, architecture, testing |
 | [Contributing Guide](docs/developer/contributing.en.md) | Open source collaboration, environment setup, and Pull Request workflow |
 | [Extension author manual](docs/manual/README.md) | Plugins / scripts / MCP |

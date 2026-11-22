@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Serpent Windows 安装器（Inno Setup）构建脚本。
+ * Keel Windows 安装器（Inno Setup）构建脚本。
  *
  * 流程：ISCC.exe 编译 assets/inno/keelsetup.iss → out/make/inno/KeelSetup.exe，
  * 并校验产物（存在 + 非空）。

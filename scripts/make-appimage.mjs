@@ -51,7 +51,7 @@ if (!existsSync(path.join(packageDir, pkg.name)) && !existsSync(path.join(packag
 
 rmSync(appDir, { recursive: true, force: true });
 mkdirSync(path.join(appDir, 'usr', 'lib'), { recursive: true });
-const libDir = path.join(appDir, 'usr', 'lib', 'serpent');
+const libDir = path.join(appDir, 'usr', 'lib', 'keel');
 cpSync(packageDir, libDir, { recursive: true, verbatimSymlinks: true });
 // chrome-sandbox cannot be setuid inside a FUSE-mounted AppImage; without it
 // Chromium uses the user-namespace sandbox. AppRun falls back to
@@ -68,24 +68,24 @@ EXTRA=""
 if [ -z "$KEEL_FORCE_SANDBOX" ] && ! unshare -Ur true >/dev/null 2>&1; then
   EXTRA="--no-sandbox"
 fi
-exec "$HERE/usr/lib/serpent/${exe}" $EXTRA "$@"
+exec "$HERE/usr/lib/keel/${exe}" $EXTRA "$@"
 `,
 );
 chmodSync(path.join(appDir, 'AppRun'), 0o755);
 writeFileSync(
-  path.join(appDir, 'serpent.desktop'),
+  path.join(appDir, 'keel.desktop'),
   `[Desktop Entry]
 Type=Application
 Name=${pkg.productName}
 Comment=${pkg.description}
 Exec=AppRun %U
-Icon=serpent
+Icon=keel
 Categories=Graphics;Utility;
 StartupWMClass=${pkg.productName}
 Terminal=false
 `,
 );
-copyFileSync(path.join(root, 'assets', 'icons', 'app.png'), path.join(appDir, 'serpent.png'));
+copyFileSync(path.join(root, 'assets', 'icons', 'app.png'), path.join(appDir, 'keel.png'));
 copyFileSync(path.join(root, 'assets', 'icons', 'app.png'), path.join(appDir, '.DirIcon'));
 
 mkdirSync(toolDir, { recursive: true });

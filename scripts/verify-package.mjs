@@ -27,22 +27,22 @@ if (!apiVersionMatch) {
 const apiVersion = Number(apiVersionMatch[1]);
 
 const targetPlatform = process.env.KEEL_PACKAGE_PLATFORM
-  ?? path.basename(process.env.KEEL_PACKAGE_ROOT ?? path.resolve('out', `Serpent-${process.platform}-${process.arch}`))
-    .replace(/^Serpent-/u, '');
+  ?? path.basename(process.env.KEEL_PACKAGE_ROOT ?? path.resolve('out', `Keel-${process.platform}-${process.arch}`))
+    .replace(/^Keel-/u, '');
 const targetSeparator = targetPlatform.lastIndexOf('-');
 const packagePlatform = targetPlatform.slice(0, targetSeparator);
 const packageArch = targetPlatform.slice(targetSeparator + 1);
 if (targetSeparator <= 0 || !packageArch) {
-  throw new Error('Set KEEL_PACKAGE_PLATFORM or use a Serpent-<platform>-<arch> package directory.');
+  throw new Error('Set KEEL_PACKAGE_PLATFORM or use a Keel-<platform>-<arch> package directory.');
 }
 if (packagePlatform !== process.platform || packageArch !== process.arch) {
   throw new Error(`Package verification requires a matching host; target is ${packagePlatform}-${packageArch}, host is ${process.platform}-${process.arch}.`);
 }
-const platformDirectory = `Serpent-${packagePlatform}-${packageArch}`;
+const platformDirectory = `Keel-${packagePlatform}-${packageArch}`;
 const packageRoot = process.env.KEEL_PACKAGE_ROOT ?? path.resolve('out', platformDirectory);
 const resourcesPath =
   packagePlatform === 'darwin'
-    ? path.join(packageRoot, 'Serpent.app', 'Contents', 'Resources')
+    ? path.join(packageRoot, 'Keel.app', 'Contents', 'Resources')
     : path.join(packageRoot, 'resources');
 
 const requiredPaths = [
@@ -180,7 +180,7 @@ if (process.env.KEEL_MEDIA_SKIP_PROVENANCE === '1') {
 }
 
 if (packagePlatform === 'darwin') {
-  const appPath = path.join(packageRoot, 'Serpent.app');
+  const appPath = path.join(packageRoot, 'Keel.app');
   const codeResources = path.join(appPath, 'Contents', '_CodeSignature', 'CodeResources');
   if (!existsSync(codeResources)) {
     throw new Error(

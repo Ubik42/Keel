@@ -15,7 +15,7 @@ For developers working on Keel itself: architecture, building from source, testi
 - [Adding media format support](media-format-support.md) — registry, import, preview, filters, protocols, and acceptance
 - [Branches and workflow](workflow.md) — branching strategy, open source contribution process, and maintainer workflow discipline
 - [Contributing guide](contributing.en.md) — open source collaboration, Pull Requests, and code gate requirements
-- [Contributors](https://github.com/dolag233/Serpent/blob/main/CONTRIBUTORS.md) — contributions accepted and merged into the project
+- [Contributors](../../CONTRIBUTORS.md) — contributions accepted and merged into the project
 
 Other software docs (internal records live on `dolag_dev` and are not published to the site):
 

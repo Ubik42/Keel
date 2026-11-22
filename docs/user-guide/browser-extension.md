@@ -6,24 +6,21 @@
 
 ## 安装
 
-> 扩展尚未上架浏览器商店，需要手动安装。所有安装文件在[扩展发布页](https://github.com/dolag233/Serpent-Extension/releases/latest)下载，按浏览器选择对应文件。
+> 扩展尚未上架浏览器商店，需要手动安装。安装文件在 Keel 仓库的[扩展发布页](https://github.com/Ubik42/Keel/releases?q=extension)下载；打包的 Keel 桌面程序也自带一份，位于程序目录的 `resources/extension`。
 
 ### Chrome / Edge
 
-1. 到[扩展发布页](https://github.com/dolag233/Serpent-Extension/releases/latest)下载 `serpent-extension-<版本>.zip`，解压到固定文件夹（例如「文档/Serpent-extension」），文件夹内需直接包含 `manifest.json`。
+1. 到[扩展发布页](https://github.com/Ubik42/Keel/releases?q=extension)下载 `keel-extension-<版本>.zip`，解压到固定文件夹（例如「文档/Keel-extension」），文件夹内需直接包含 `manifest.json`。
 2. 打开 `chrome://extensions`（Edge 为 `edge://extensions`），开启右上角「开发者模式」。
 3. 点击「加载已解压的扩展程序」，选择解压出的文件夹。
 
 ### Firefox
 
-1. 到[扩展发布页](https://github.com/dolag233/Serpent-Extension/releases/latest)下载 `serpent-extension-firefox-<版本>-signed.xpi`。
-2. 打开 `about:addons` → 齿轮图标 →「从文件安装附加组件…」→ 选择下载的 `.xpi`。
-3. 安装后**重启 Firefox 仍然生效**，与商店安装一致。
+Keel 版扩展目前没有经过 Mozilla 签名的 `.xpi`。可以在 `about:debugging` →「此 Firefox」→「临时载入附加组件」中选择解压文件夹里的 `manifest.json`；临时载入的扩展在重启 Firefox 后失效。
 
 ### 更新
 
-- **Chrome / Edge**：到发布页下载新版本 zip → 解压覆盖 → 在 `chrome://extensions` 扩展卡片上点「刷新」（或移除后重新加载）。
-- **Firefox**：到发布页下载新版本 `.xpi` → 重复安装步骤，覆盖旧版本。
+到发布页下载新版本 zip → 解压覆盖 → 在 `chrome://extensions` 扩展卡片上点「刷新」（或移除后重新加载）。
 
 ## 使用
 

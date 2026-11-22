@@ -10,50 +10,44 @@
 
 <div align="center">
 
-<img src="docs/assets/ui/Serpent-Logo.png" alt="Serpent-Logo" width="30%" />
+<img src="docs/assets/ui/Serpent-Logo.png" alt="Keel" width="30%" />
 
 </div>
 
-Keel 基于 [dolag233/Serpent](https://github.com/dolag233/Serpent)（MIT）开发，2026-11-21 起独立维护。下方的主页、下载与扩展链接仍指向上游项目。
+Keel 基于 [dolag233/Serpent](https://github.com/dolag233/Serpent)（MIT）开发，2026-11-21 起独立维护，仓库为 [Ubik42/Keel](https://github.com/Ubik42/Keel)。
 
 开源（MIT）、跨平台（macOS / Windows / Linux）的数字资产管理软件，面向游戏美术、影视后期、平面/动态图形设计师。
 
-主页：[serpent.dolag.work](https://serpent.dolag.work) · [在线文档](https://serpent.dolag.work/docs/user-guide/) · [下载最新版本](https://github.com/dolag233/Serpent/releases) · [浏览器扩展](https://github.com/dolag233/Serpent-Extension/releases)
+[发布页](https://github.com/Ubik42/Keel/releases) · [浏览器扩展](https://github.com/Ubik42/Keel/releases?q=extension) · [使用手册](docs/user-guide/README.md)
 
 ## 特性
 
 + 支持**海量**资产类型。支持大多数视频、图像、音频格式。额外支持3D模型、文本类型资产。
-+ 资产管理系统。支持对资产添加标签、打分、添加描述等功能。支持快速过滤和搜索。支持添加合集。
-+ 支持工作区标签页。可同时打开多个文件夹、合集或搜索，各自保留浏览位置、搜索和选择。
++ 资产管理系统。支持层级标签（标签可设颜色和图标）、打分、描述，以及快速过滤和搜索。
++ 支持工作区标签页。可同时打开多个文件夹、标签或搜索，各自保留浏览位置、搜索和选择。
++ 支持规则。规则是由 AI 编写的脚本，在导入后、资源库变化后、定时或持续运行，例如自动打标签；每次运行都有记录，改动可以撤销。
++ 支持按文件类型设置打开方式，伴生文件（如 `.xmp`）随主文件移动、改名和删除。
 + 支持插件系统。支持用插件扩展Keel功能。
 + 支持脚本、MCP调用。支持使用脚本控制Keel。支持Agent通过MCP连接、控制Keel，以实现自动化管理。
 + 支持AI分析。内置AI分析模块，支持对图像、视频、3D资产进行AI分析。
-+ 支持全新 UI。外观设置可在全新 UI 与旧版布局之间切换，并可编辑主题、背景和面板不透明度。
++ 支持主题。可编辑主题颜色、背景和面板不透明度，界面缩放 75%–200%。
 + 支持语义搜索（实验性）。可按含义查找图片和文本，并查找相似资产。
 + 支持WebDAV云同步。多台设备间双向同步资源库，支持自动同步与可配置的轮询间隔。
 + 支持打开外部资源库。可直接打开 Eagle / Billfish 资源库，转换后无缝浏览与检索。
 
 <div align="center">
 
-<img src="docs/assets/ui/Serpent-Preview.png" alt="Serpent-Preview" />
+<img src="docs/assets/ui/Serpent-Preview.png" alt="Keel" />
 
 </div>
 
 ## 安装
 
-从 [GitHub Releases](https://github.com/dolag233/Serpent/releases) 下载最新安装包。
+从 [GitHub 发布页](https://github.com/Ubik42/Keel/releases) 下载。目前发布页只提供版本说明和浏览器扩展；桌面程序请按下方“本地构建”自行打包（Windows 用 `npm run package`，产物在 `out/Keel-win32-x64/`）。
 
-**macOS**：下载 `Serpent-darwin-arm64-<版本>-package.dmg`（或便携版 `.zip`），将 Keel 拖入「应用程序」。首次打开时 macOS 若提示"无法验证开发者"，右键点击应用 → 选择「打开」（仅首次），或在终端执行：
+用发布流程（`npm run release:make`）打出的安装包命名为：macOS `Keel-darwin-arm64-<版本>-package.dmg`，Windows `Keel-win-x86-64-<版本>-setup.zip` 或 `-portable.zip`，Linux `Keel-linux-x86-64-<版本>.AppImage`。未签名版本首次运行时：macOS 右键应用选择「打开」，或执行 `xattr -cr /Applications/Keel.app`；Windows 在 SmartScreen 中选择「更多信息 → 仍要运行」。AppImage 需要 FUSE（`libfuse2`），没有 FUSE 时加 `--appimage-extract-and-run`。安装包内带 `ffmpeg`、`ffprobe` 和 `oiiotool`；可用 `KEEL_FFMPEG_PATH` / `KEEL_OIIO_PATH` 改用其他路径。
 
-```bash
-xattr -cr /Applications/Serpent.app
-```
-
-**Windows**：下载安装包 `Serpent-win-x86-64-<版本>-setup.zip`（解压运行内含的安装程序），或下载便携版 `Serpent-win-x86-64-<版本>-portable.zip`（解压即用）。未签名版本首次运行会显示 SmartScreen 警告，选择「更多信息 → 仍要运行」。
-
-**Linux**：下载 `Serpent-linux-x86-64-<版本>.AppImage`，`chmod +x` 后运行。需要 FUSE（`libfuse2`）；无 FUSE 时加 `--appimage-extract-and-run`。安装包内带 `ffmpeg`、`ffprobe` 和 `oiiotool`，视频与专业图像预览不依赖系统 PATH。仍可用 `KEEL_FFMPEG_PATH` / `KEEL_OIIO_PATH` 改用其他路径。
-
-**浏览器扩展**：从[浏览器扩展发布页](https://github.com/dolag233/Serpent-Extension/releases)下载。安装与配置指引见[浏览器扩展使用指南](docs/user-guide/browser-extension.md)。
+**浏览器扩展**：从[发布页的扩展版本](https://github.com/Ubik42/Keel/releases?q=extension)下载 `keel-extension-<版本>.zip`，解压后在 Chrome / Edge 的扩展管理页开启“开发者模式”，选择“加载已解压的扩展程序”。打包的桌面程序也自带一份（`resources/extension`）。配置见[浏览器扩展使用指南](docs/user-guide/browser-extension.md)。
 
 ## 本地构建
 
@@ -72,7 +66,7 @@ npm run lint             # ESLint
 npm run typecheck        # tsc --noEmit
 npm run test             # 单元 + Worker 集成测试
 npm run test:e2e         # Playwright E2E
-npm run package          # 打包到 out/Serpent-<platform>-<arch>/
+npm run package          # 打包到 out/Keel-<platform>-<arch>/
 npm run make             # 按平台生成安装包（macOS dmg / Windows zip；Linux 用 make:appimage）
 ```
 
@@ -107,12 +101,12 @@ sudo apt install build-essential python3 ffmpeg    # better-sqlite3 需要编译
 #### AppImage（Linux）
 
 ```bash
-npm run make:appimage           # 在本机构建 → out/make/appimage/Serpent-<version>-x86_64.AppImage 或 -aarch64.AppImage
+npm run make:appimage           # 在本机构建 → out/make/appimage/Keel-<version>-x86_64.AppImage 或 -aarch64.AppImage
 npm run make:appimage:docker    # 在 Ubuntu 22.04（glibc 2.35 基线）中构建，容器架构跟随宿主机，需要 docker
-chmod +x out/make/appimage/Serpent-*.AppImage && ./out/make/appimage/Serpent-*.AppImage
+chmod +x out/make/appimage/Keel-*.AppImage && ./out/make/appimage/Keel-*.AppImage
 ```
 
-发布管线 `npm run release:make` 会优先 `make:appimage:docker`，并把产物重命名为 `Serpent-linux-x86-64-<version>.AppImage` 或 `Serpent-linux-arm64-<version>.AppImage`（与 macOS/Windows 资产命名一致）。两条架构的 glibc 基线、FUSE 和 X11/Wayland 限制相同。aarch64 要等媒体 zip 晋升后才能打出发布包。
+发布管线 `npm run release:make` 会优先 `make:appimage:docker`，并把产物重命名为 `Keel-linux-x86-64-<version>.AppImage` 或 `Keel-linux-arm64-<version>.AppImage`（与 macOS/Windows 资产命名一致）。两条架构的 glibc 基线、FUSE 和 X11/Wayland 限制相同。aarch64 要等媒体 zip 晋升后才能打出发布包。
 
 发布用 AppImage 内置 pinned 媒体工具（`ffmpeg` / `ffprobe` / `oiiotool`），不要求这些程序已经在系统 PATH 上。`KEEL_FFMPEG_PATH` / `KEEL_OIIO_PATH` 仍可覆盖。运行需要 FUSE（`libfuse2`）；没有 FUSE 时加 `--appimage-extract-and-run`。系统不允许非特权 user namespace 时（部分容器、Ubuntu 24.04 的 AppArmor 策略），启动器会自动改用 `--no-sandbox`。
 
@@ -120,8 +114,7 @@ chmod +x out/make/appimage/Serpent-*.AppImage && ./out/make/appimage/Serpent-*.A
 
 | 文档 | 内容 |
 | --- | --- |
-| [使用手册](docs/user-guide/README.md) | 安装、导入、浏览、搜索（含实验性语义搜索）、全新 UI、标签、合集、3D 查看、故障排查 |
-| [在线文档](https://keel.dolag.work/docs/user-guide/) | 浏览器中阅读最新使用手册 |
+| [使用手册](docs/user-guide/README.md) | 安装、导入、浏览、搜索（含实验性语义搜索）、外观、标签、规则、3D 查看、故障排查 |
 | [开发者文档](docs/developer/README.md) | 环境搭建、构建打包、架构、测试 |
 | [贡献指南](docs/developer/contributing.md) | 开源协作准则、环境准备与 Pull Request 流程 |
 | [扩展作者手册](docs/manual/README.md) | 插件 / 脚本 / MCP |

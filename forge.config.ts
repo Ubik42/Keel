@@ -177,7 +177,7 @@ const config: ForgeConfig = {
           target: 'preload',
         },
         {
-          // Slice E (Serpent-hnmg): dedicated bridge for the hidden offscreen
+          // Slice E: dedicated bridge for the hidden offscreen
           // thumbnail window; emitted as `.vite/build/offscreen.js`.
           entry: 'src/preload/offscreen.ts',
           config: 'config/vite/offscreen-preload.config.ts',

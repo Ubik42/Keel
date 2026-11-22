@@ -6,24 +6,21 @@ Media is downloaded by the **browser** (with cookies and the page Referer) and u
 
 ## Installation
 
-> The extension is not on a browser store yet; install it manually. All install files are downloaded from the [extension releases page](https://github.com/dolag233/Serpent-Extension/releases/latest) — pick the file for your browser.
+> The extension is not on a browser store yet; install it manually. Download it from the [extension releases](https://github.com/Ubik42/Keel/releases?q=extension) of the Keel repository; packaged Keel desktop builds also include a copy in `resources/extension` inside the program folder.
 
 ### Chrome / Edge
 
-1. Download `serpent-extension-<version>.zip` from the [releases page](https://github.com/dolag233/Serpent-Extension/releases/latest) and extract it to a fixed folder (e.g. `Documents/Serpent-extension`). The folder must directly contain `manifest.json`.
-2. Open `chrome://extensions` (Edge: `edge://extensions`) and enable Developer mode (top-right).
-3. Click “Load unpacked” and select the extracted folder.
+1. Download `keel-extension-<version>.zip` from the [extension releases](https://github.com/Ubik42/Keel/releases?q=extension) and extract it to a fixed folder (e.g. `Documents/Keel-extension`). The folder must directly contain `manifest.json`.
+2. Open `chrome://extensions` (Edge: `edge://extensions`) and turn on Developer mode in the top-right corner.
+3. Click "Load unpacked" and choose the extracted folder.
 
 ### Firefox
 
-1. Download `serpent-extension-firefox-<version>-signed.xpi` from the [releases page](https://github.com/dolag233/Serpent-Extension/releases/latest).
-2. Open `about:addons` → gear icon → “Install Add-on From File…” → select the downloaded `.xpi`.
-3. The extension stays installed across Firefox restarts, like a store install.
+There is no Mozilla-signed `.xpi` of the Keel extension yet. In `about:debugging` → "This Firefox" → "Load Temporary Add-on", choose `manifest.json` in the extracted folder; a temporary add-on is removed when Firefox restarts.
 
 ### Updating
 
-- **Chrome / Edge**: download the new zip from the releases page, extract over the old folder, then click Refresh on the extension card in `chrome://extensions` (or remove and reload).
-- **Firefox**: download the new `.xpi` from the releases page and repeat the install steps; it replaces the old version.
+Download the new zip from the releases page → extract over the old folder → click "Reload" on the extension card in `chrome://extensions` (or remove and load it again).
 
 ## Usage
 
