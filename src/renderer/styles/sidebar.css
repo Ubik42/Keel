@@ -1621,7 +1621,9 @@
 }
 .tag-tree-row.is-drop-target .nav-row-label { font-weight: 600; }
 
-.tag-tree-edit, .tag-tree-confirm { margin: 6px 0 9px; padding: 9px; border: 1px solid var(--ui-border-subtle); border-radius: calc(8px * var(--ui-radius-scale, 1)); }
+.tag-tree-confirm { width: 260px; padding: 10px; font-size: calc(13px * var(--ui-font-scale)); }
+.tag-tree-confirm p { margin: 6px 0 10px; }
+.tag-tree-edit { margin: 6px 0 9px; padding: 9px; border: 1px solid var(--ui-border-subtle); border-radius: calc(8px * var(--ui-radius-scale, 1)); }
 
 .tag-tree-edit label { display: block; margin-bottom: 6px; font-size: 12px; }
 

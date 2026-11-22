@@ -43,6 +43,16 @@ test('tag appearance, reverse image drop and persistent interface scale', async 
     await picker.getByRole('button', { name: '🎨', exact: true }).click();
     await expect.poll(async () => (await tags())[0]?.appearance).toEqual({ colorId: 'blue', glyphKind: 'emoji', glyphValue: '🎨' });
     await window.keyboard.press('Escape');
+    // Delete confirmation opens beside the tag row; Escape cancels it.
+    await tag.click({ button: 'right' });
+    await window.getByRole('menuitem', { name: '删除标签', exact: true }).click();
+    const confirm = window.getByRole('dialog', { name: '删除标签 · 角色', exact: true });
+    await expect(confirm).toBeVisible();
+    const tagBox = (await tag.boundingBox())!;
+    expect((await confirm.boundingBox())!.x).toBeGreaterThanOrEqual(tagBox.x + tagBox.width);
+    await window.keyboard.press('Escape');
+    await expect(confirm).toHaveCount(0);
+    await expect(tag).toBeVisible();
     writeFileSync(path.join(root, '外观测试', 'image.png'), Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+j5ZkAAAAASUVORK5CYII=', 'base64'));
     copyFileSync(path.join(root, '外观测试', 'image.png'), path.join(root, '外观测试', 'second.png'));
     const card = window.locator('.asset-card').filter({ hasText: 'image.png' }).first();

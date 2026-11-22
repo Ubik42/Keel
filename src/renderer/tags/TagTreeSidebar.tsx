@@ -10,6 +10,8 @@ import { descendantTagIds, tagTreeRows } from './tag-tree-model';
 
 import { TAG_DRAG_TYPE } from './tag-drag-drop';
 import { AppearanceSubmenu } from '../appearance/AppearanceSubmenu';
+import { PortaledPopover } from '../workbench/overlay/PortaledPopover';
+import { Button } from '../workbench/ui/primitives';
 import { AppearanceGlyph, appearanceColorVar } from '../appearance/AppearanceGlyph';
 import { randomTagAppearance } from '../../shared/tag-appearance';
 import type { EntityAppearance } from '../../shared/entity-appearance';
@@ -107,10 +109,13 @@ export function TagTreeSidebar(props: TagTreeSidebarProps) {
       <button className="tiny-action" type="button" aria-label={t('tagTree.collapseAll')} title={t('tagTree.collapseAll')} onClick={() => setCollapsed(new Set(props.tags.map((tag) => tag.tagId)))}><Icon name="minus" size={13} /></button>
       <button className="tiny-action" type="button" aria-label={t('tagTree.create')} title={t('tagTree.create')} disabled={saving} onClick={() => beginDraft({ parentTagId: null, value: '' })}><Icon name="plus" size={14} /></button>
     </div>
-    {confirmDelete && <div className="tag-tree-confirm" role="alert">
-      <strong>{t('tagTree.delete')} · {byId.get(confirmDelete)?.name}</strong><p>{t('tagTree.deleteHelp')}</p>
-      <div className="tag-tree-edit-actions"><button className="secondary-button" type="button" onClick={() => setConfirmDelete(null)}>{t('common.cancel')}</button><button className="danger-button" type="button" disabled={saving} onClick={() => { setSaving(true); void props.onDelete([confirmDelete]).then((ok) => { if (ok) setConfirmDelete(null); }).finally(() => setSaving(false)); }}>{t('tagTree.delete')}</button></div>
-    </div>}
+    {confirmDelete && <TagDeleteConfirm
+      tagId={confirmDelete}
+      name={byId.get(confirmDelete)?.name ?? ''}
+      saving={saving}
+      onCancel={() => setConfirmDelete(null)}
+      onConfirm={() => { setSaving(true); void props.onDelete([confirmDelete]).then((ok) => { if (ok) setConfirmDelete(null); }).finally(() => setSaving(false)); }}
+    />}
     <TreeList className="tag-tree-list" label={t('tagTree.title')}>
       {rows.map(({ tag, depth, hasChildren, expanded }) => <Fragment key={tag.tagId}>{draft?.tagId === tag.tagId ? renderDraft(depth) : <div className={`tag-tree-row${dropTarget === tag.tagId ? ' is-drop-target' : ''}`} key={tag.tagId} style={{ paddingLeft: depth * 14 }} onDragOver={(event) => { if (canDrop(event, tag.tagId)) { event.preventDefault(); event.stopPropagation(); setDropTarget(tag.tagId); event.dataTransfer.dropEffect = event.dataTransfer.types.includes(TAG_DRAG_TYPE) ? 'move' : (resolveManagedDropEffect('copy', event.dataTransfer.effectAllowed) ?? 'none'); } }} onDragLeave={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setDropTarget((current) => (current === tag.tagId ? null : current)); }} onDrop={(event) => { if (canDrop(event, tag.tagId)) void drop(event, tag.tagId); }}>
         {Array.from({ length: depth }, (_, level) => <span key={level} className="tag-tree-guide" aria-hidden="true" style={{ left: level * 14 + 8 }} />)}
@@ -134,4 +139,43 @@ export function TagTreeSidebar(props: TagTreeSidebarProps) {
       <ContextMenuSection><ContextMenuItem danger icon={<Icon name="trash" size={14} />} label={t('tagTree.delete')} onAction={() => { setMenu(null); setConfirmDelete(menuTag.tagId); }} /></ContextMenuSection>
     </ContextMenu></ContextMenuBackdrop>}
   </section>;
+}
+
+/**
+ * Delete confirmation that opens beside the tag's row, like the appearance
+ * submenu. Escape or a click outside cancels.
+ */
+function TagDeleteConfirm({ tagId, name, saving, onCancel, onConfirm }: {
+  tagId: string;
+  name: string;
+  saving: boolean;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  const t = useT();
+  // The row is already rendered when the menu asks for confirmation.
+  const anchorRef = useMemo(() => ({ current: document.querySelector<HTMLElement>(`.tag-tree-row [data-tag-id="${CSS.escape(tagId)}"]`) }), [tagId]);
+  const surfaceRef = useRef<HTMLDivElement>(null);
+  const confirmRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    confirmRef.current?.focus();
+    const onPointerDown = (event: PointerEvent) => {
+      if (!surfaceRef.current?.contains(event.target as Node)) onCancel();
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); onCancel(); }
+    };
+    document.addEventListener('pointerdown', onPointerDown, true);
+    document.addEventListener('keydown', onKeyDown, true);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown, true);
+      document.removeEventListener('keydown', onKeyDown, true);
+    };
+  }, [onCancel]);
+  return <PortaledPopover anchorRef={anchorRef} beside className="tag-tree-confirm" role="dialog" aria-label={`${t('tagTree.delete')} · ${name}`}>
+    <div ref={surfaceRef}>
+      <strong>{t('tagTree.delete')} · {name}</strong><p>{t('tagTree.deleteHelp')}</p>
+      <div className="tag-tree-edit-actions"><Button size="sm" variant="secondary" onClick={onCancel}>{t('common.cancel')}</Button><Button ref={confirmRef} size="sm" variant="danger" disabled={saving} onClick={onConfirm}>{t('tagTree.delete')}</Button></div>
+    </div>
+  </PortaledPopover>;
 }

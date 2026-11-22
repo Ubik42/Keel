@@ -95,3 +95,26 @@ export function readOverlayViewport(): OverlayViewport {
     height: document.documentElement.clientHeight || window.innerHeight,
   };
 }
+
+/**
+ * Place a surface beside the anchor, top-aligned with it: on the right when it
+ * fits, otherwise on the left, and kept inside the window vertically.
+ */
+export function placeBeside(
+  anchor: OverlayAnchor,
+  size: OverlaySize,
+  viewport: OverlayViewport,
+  gap = 6,
+): PlacedOverlay {
+  const margin = OVERLAY_VIEWPORT_MARGIN;
+  const fitsRight = anchor.right + gap + size.width <= viewport.width - margin;
+  const left = fitsRight
+    ? anchor.right + gap
+    : Math.max(margin, anchor.left - gap - size.width);
+  const maxHeight = Math.max(0, viewport.height - margin * 2);
+  const top = Math.min(
+    Math.max(margin, anchor.top),
+    Math.max(margin, viewport.height - margin - Math.min(size.height, maxHeight)),
+  );
+  return { left, top, maxWidth: viewport.width - margin * 2, maxHeight, side: "below" };
+}

@@ -16,6 +16,7 @@ import { createShellPortal } from "../ui/ShellStyleScope";
 import { layerCssVar, type UiLayerName } from "../ui/foundation";
 import { PopoverSurface, type PopoverSurfaceProps } from "../ui/patterns";
 import {
+  placeBeside,
   placeOverlayInViewport,
   readOverlayViewport,
   type PlacedOverlay,
@@ -38,12 +39,19 @@ export type PortaledPopoverProps = PopoverSurfaceProps & {
    * DOM order above the dialog while leaving the window caption above both.
    */
   readonly layer?: PortaledPopoverLayer;
+  /**
+   * Open beside the anchor (right of it, or left when the right side has no
+   * room) instead of below it, like a submenu next to a tree row.
+   */
+  readonly beside?: boolean;
 };
+
 
 export function PortaledPopover({
   anchorRef,
   preferRight = false,
   layer = "popover",
+  beside = false,
   className,
   style,
   children,
@@ -58,12 +66,16 @@ export function PortaledPopover({
       const surface = surfaceRef.current;
       if (!anchor || !surface) return;
       const rect = anchor.getBoundingClientRect();
-      const placed = placeOverlayInViewport({
-        anchor: rect,
-        size: { width: surface.offsetWidth, height: surface.offsetHeight },
-        viewport: readOverlayViewport(),
-        align: preferRight ? "end" : "start",
-      });
+      const size = { width: surface.offsetWidth, height: surface.offsetHeight };
+      const viewport = readOverlayViewport();
+      const placed = beside
+        ? placeBeside(rect, size, viewport)
+        : placeOverlayInViewport({
+            anchor: rect,
+            size,
+            viewport,
+            align: preferRight ? "end" : "start",
+          });
       const next: PopoverPlacement = {
         ...placed,
         inModal: anchor.closest('[role="dialog"]') != null,
@@ -87,7 +99,7 @@ export function PortaledPopover({
       window.removeEventListener("resize", update);
       window.removeEventListener("scroll", update, true);
     };
-  }, [anchorRef, preferRight]);
+  }, [anchorRef, preferRight, beside]);
 
   if (typeof document === "undefined") return null;
 
