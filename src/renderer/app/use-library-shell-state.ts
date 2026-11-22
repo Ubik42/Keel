@@ -1,3 +1,4 @@
+import { loadPanelOpenPreferences, savePanelOpenPreferences } from "../workbench/shell/panel-open-preferences";
 import type { Dispatch, RefObject, SetStateAction } from "react";
 import type { TranslateFn } from "../i18n/LocaleProvider";
 import { type ImportConflictPlan, type ImportSourceFailurePlan } from "../../shared/protocol/responses";
@@ -217,8 +218,12 @@ export function useLibraryShellState({ library, t, setFatalAlertAlreadyOpen, set
   const clearImportSourceFailureUi = useCallback(() => {
     setImportSourceFailurePlan(null);
   }, [setImportSourceFailurePlan]);
-  const [leftOpen, setLeftOpen] = useState(() => window.innerWidth > 800);
-  const [rightOpen, setRightOpen] = useState(() => window.innerWidth > 1020);
+  const [initialPanelOpen] = useState(() => loadPanelOpenPreferences(window.innerWidth));
+  const [leftOpen, setLeftOpen] = useState(initialPanelOpen.leftOpen);
+  const [rightOpen, setRightOpen] = useState(initialPanelOpen.rightOpen);
+  useEffect(() => {
+    savePanelOpenPreferences({ version: 1, leftOpen, rightOpen });
+  }, [leftOpen, rightOpen]);
   const panelResizeReleaseRef = useRef<() => void>(() => undefined);
   // REQ-SHELL-007 / REQ-SHELL-011: draggable nav/inspector pane widths + auto-hide.
   const {
