@@ -5,7 +5,7 @@ import { useNavigationField } from "./stores/navigation-store";
 import { usePrefsStore } from "./stores/prefs-store";
 import { useSessionField } from "./stores/session-store";
 import { appearanceColorVar } from './AppearanceGlyph';
-import { useState, useMemo, useRef, useEffect, useLayoutEffect, createContext, useContext } from "react";
+import { memo, useState, useMemo, useRef, useEffect, useLayoutEffect, createContext, useContext } from "react";
 
 import type { EntityAppearance } from "../shared/entity-appearance";
 import type { FolderBrowseEntry } from "../shared/asset-types";
@@ -621,7 +621,9 @@ function tagColor(tagId: string) {
 
 // --- Component ---
 
-export function InspectorPanel(props: InspectorPanelProps) {
+// Memoized: the app shell re-renders often; this panel renders only when its
+// props or consumed contexts change.
+export const InspectorPanel = memo(function InspectorPanel(props: InspectorPanelProps) {
   const {
     selectedAsset,
     selectedAssets = [],
@@ -1824,4 +1826,4 @@ export function InspectorPanel(props: InspectorPanelProps) {
       )}
     </PaneSurface>
   );
-}
+});

@@ -1,3 +1,5 @@
+import type { AssetContextMenuActions } from "../AssetContextMenu";
+import { useStableCallbacks } from "./use-stable-callbacks";
 import { useAiField } from "../stores/ai-store";
 import { dialogsFields } from "../stores/dialogs-store";
 import type { Dispatch, RefObject, SetStateAction } from "react";
@@ -91,10 +93,7 @@ export function AppAssetContextMenu({ busy, pluginBrowseScope, pluginViewerState
   const [aiConnectionState] = useAiField("aiConnectionState");
   const [aiAnalyzing] = useAiField("aiAnalyzing");
   const setImageSequenceDialog = dialogsFields.setterFor("imageSequenceDialog");
-  return (
-<>
-{/* Unified context menu */}
-      <AssetContextMenuActionsProvider value={{
+  const assetContextMenuActions = useStableCallbacks<AssetContextMenuActions>({
         onCloseWorkspaceTab: (tabId) => void closeWorkspaceTab(tabId),
         onCloseOtherWorkspaceTabs: (tabId) =>
           void closeOtherWorkspaceTabs(tabId),
@@ -282,7 +281,11 @@ export function AppAssetContextMenu({ busy, pluginBrowseScope, pluginViewerState
   embeddingSelectionId,
   embeddingAdapter: embeddingService?.adapter ?? null,
   embeddingModalities: embeddingService?.modalities ?? null,
-}}>
+});
+  return (
+<>
+{/* Unified context menu */}
+      <AssetContextMenuActionsProvider value={assetContextMenuActions}>
       <AssetContextMenu
         busy={busy}
         assets={visibleAssets}

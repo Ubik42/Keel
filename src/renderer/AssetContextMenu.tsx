@@ -1,7 +1,7 @@
 import { useSessionField } from "./stores/session-store";
 import { useBrowseField } from "./stores/browse-store";
 import { useNavigationField } from "./stores/navigation-store";
-import { useEffect, useMemo, useState, type ReactNode, createContext, useContext } from "react";
+import { memo, useEffect, useMemo, useState, type ReactNode, createContext, useContext } from "react";
 import type { KeelLibraryApi } from "../shared/library-api";
 import type {
   LinkedFolderSummary,
@@ -446,7 +446,9 @@ function useAssetContextMenuActions(): AssetContextMenuActions {
   return actions;
 }
 
-export function AssetContextMenu(props: AssetContextMenuProps) {
+// Memoized: the app shell re-renders often; this panel renders only when its
+// props or consumed contexts change.
+export const AssetContextMenu = memo(function AssetContextMenu(props: AssetContextMenuProps) {
   const { locale, t } = useLocale();
   const {
     assets,
@@ -2100,4 +2102,4 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
       </ContextMenu>
     </ContextMenuBackdrop>
   );
-}
+});

@@ -1,6 +1,6 @@
 import { useNavigationField } from "./stores/navigation-store";
 import { useQueryField } from "./stores/query-store";
-import { useEffect, useRef, useState, createContext, useContext } from "react";
+import { memo, useEffect, useRef, useState, createContext, useContext } from "react";
 
 import { Icon, type IconName } from "./Icons";
 import { Select } from "./workbench/ui/primitives";
@@ -165,7 +165,9 @@ function DimensionButton({
   );
 }
 
-export function DimensionFilterBar(props: DimensionFilterBarProps) {
+// Memoized: the app shell re-renders often; this panel renders only when its
+// props or consumed contexts change.
+export const DimensionFilterBar = memo(function DimensionFilterBar(props: DimensionFilterBarProps) {
   const t = useT();
   const {
     disabled,
@@ -1068,7 +1070,7 @@ export function DimensionFilterBar(props: DimensionFilterBarProps) {
       )}
     </div>
   );
-}
+});
 
 function labelForActiveChip(id: string, t: ReturnType<typeof useT>): string {
   switch (id) {

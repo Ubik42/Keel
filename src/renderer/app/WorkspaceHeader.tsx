@@ -1,3 +1,5 @@
+import type { DimensionFilterBarActions } from "../DimensionFilterBar";
+import { useStableCallbacks } from "./use-stable-callbacks";
 import { dialogsFields } from "../stores/dialogs-store";
 import { useNavigationField } from "../stores/navigation-store";
 import { usePreviewField } from "../stores/preview-store";
@@ -107,6 +109,69 @@ export function WorkspaceHeader({ showPluginSidebarView, recursiveHintActive, in
   const [aspectRatioRanges] = useQueryField("aspectRatioRanges");
   const [longEdgeRange] = useQueryField("longEdgeRange");
   const [durationRange] = useQueryField("durationRange");
+  const dimensionFilterBarActions = useStableCallbacks<DimensionFilterBarActions>({
+            onClearFilter: clearDiscoveryFilter,
+            onTagNamesChange: (names) => {
+              // Discovery tag filters overlay the current folder/collection
+              // scope. Do not set activeTagId — that is "browse by tag" mode
+              // (chooseTag) and would clear folder nav highlight + folder cards
+              // (Serpent-w9c6 / resolveFolderBrowseParentId).
+              setTagFilter(names.join(", "));
+              setActiveTagId(null);
+            },
+            setSortField: (field) => {
+              setShuffleSeed(null);
+              setSortField(field);
+            },
+            setSortOrder: (order) => {
+              setShuffleSeed(null);
+              setSortOrder(order);
+            },
+            setTagFilter: (value) => {
+              // Explicit filter-bar edits leave the tag-management AND mode.
+              setTagFilterMatch("any");
+              setTagFilter(value);
+              setTagFilterExpression("");
+            },
+            setTagFilterExpression: (value) => {
+              setPinnedTagId(null);
+              setTagFilterExpression(value);
+              if (parseSearchExpressionDetailed(value, "tags").ok) setTagFilterLastValidExpression(value);
+            },
+            onShuffle: () => {
+              setShuffleSeed((prev) => {
+                const next = Date.now() >>> 0;
+                return prev === null ? next : (next ^ ((prev + 1) >>> 0)) >>> 0;
+              });
+            },
+          });
+  // Same object while no filter value changes, so the memoized bar can skip renders.
+  const filterSnapshot = useStableCallbacks({
+    colorFilter,
+    excludeColorFilter,
+    formatFilter,
+    excludeFormatFilter,
+    tagFilter,
+    tagFilterExpression,
+    tagFilterMode,
+    tagFilterLastValidExpression,
+    excludeTagFilter,
+    excludedTagFilter,
+    includeAiTagFilter,
+    ratingFilter,
+    excludeRatingFilter,
+    includeAiRatingFilter,
+    favoriteFilter,
+    sourceUrlFilter,
+    availabilityFilter,
+    excludeAvailabilityFilter,
+    widthRange,
+    heightRange,
+    aspectRatioRange,
+    aspectRatioRanges,
+    longEdgeRange,
+    durationRange,
+  });
   return (
 <div
           className={`workspace-toolstrip${previewAsset ? " is-viewing" : previewRestoring ? " is-restoring" : ""}`}
@@ -314,72 +379,12 @@ export function WorkspaceHeader({ showPluginSidebarView, recursiveHintActive, in
         <div
           className={`workspace-discovery${previewAsset ? " is-viewing" : previewRestoring ? " is-restoring" : ""}`}
         >
-          <DimensionFilterBarActionsProvider value={{
-            onClearFilter: clearDiscoveryFilter,
-            onTagNamesChange: (names) => {
-              // Discovery tag filters overlay the current folder/collection
-              // scope. Do not set activeTagId — that is "browse by tag" mode
-              // (chooseTag) and would clear folder nav highlight + folder cards
-              // (Serpent-w9c6 / resolveFolderBrowseParentId).
-              setTagFilter(names.join(", "));
-              setActiveTagId(null);
-            },
-            setSortField: (field) => {
-              setShuffleSeed(null);
-              setSortField(field);
-            },
-            setSortOrder: (order) => {
-              setShuffleSeed(null);
-              setSortOrder(order);
-            },
-            setTagFilter: (value) => {
-              // Explicit filter-bar edits leave the tag-management AND mode.
-              setTagFilterMatch("any");
-              setTagFilter(value);
-              setTagFilterExpression("");
-            },
-            setTagFilterExpression: (value) => {
-              setPinnedTagId(null);
-              setTagFilterExpression(value);
-              if (parseSearchExpressionDetailed(value, "tags").ok) setTagFilterLastValidExpression(value);
-            },
-            onShuffle: () => {
-              setShuffleSeed((prev) => {
-                const next = Date.now() >>> 0;
-                return prev === null ? next : (next ^ ((prev + 1) >>> 0)) >>> 0;
-              });
-            },
-          }}>
+          <DimensionFilterBarActionsProvider value={dimensionFilterBarActions}>
           <DimensionFilterBar
             disabled={!library}
             interactionsLocked={dialogFocusTrapActive}
             shuffleActive={shuffleSeed !== null}
-            snapshot={{
-              colorFilter,
-              excludeColorFilter,
-              formatFilter,
-              excludeFormatFilter,
-              tagFilter,
-              tagFilterExpression,
-              tagFilterMode,
-              tagFilterLastValidExpression,
-              excludeTagFilter,
-              excludedTagFilter,
-              includeAiTagFilter,
-              ratingFilter,
-              excludeRatingFilter,
-              includeAiRatingFilter,
-              favoriteFilter,
-              sourceUrlFilter,
-              availabilityFilter,
-              excludeAvailabilityFilter,
-              widthRange,
-              heightRange,
-              aspectRatioRange,
-              aspectRatioRanges,
-              longEdgeRange,
-              durationRange,
-            }}
+            snapshot={filterSnapshot}
           />
           </DimensionFilterBarActionsProvider>
         </div>

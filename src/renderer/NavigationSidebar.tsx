@@ -4,7 +4,7 @@ import { useNavigationField } from "./stores/navigation-store";
 import { useQueryField } from "./stores/query-store";
 import { useSelectionField } from "./stores/selection-store";
 import { useSessionField } from "./stores/session-store";
-import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type MutableRefObject, type ReactNode, type KeyboardEvent as ReactKeyboardEvent, createContext, useContext } from "react";
+import { memo, useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type MutableRefObject, type ReactNode, type KeyboardEvent as ReactKeyboardEvent, createContext, useContext } from "react";
 import { Icon, type IconName } from "./Icons";
 import { AppearanceGlyph } from "./AppearanceGlyph";
 import type { EntityAppearance } from "../shared/entity-appearance";
@@ -790,7 +790,9 @@ function isFolderMultiSelectClick(event: {
   return isToggleSelectionModifier(event, SIDEBAR_SELECTION_PLATFORM);
 }
 
-export function NavigationSidebar(props: NavigationSidebarProps) {
+// Memoized: the app shell re-renders often; this panel renders only when its
+// props or consumed contexts change.
+export const NavigationSidebar = memo(function NavigationSidebar(props: NavigationSidebarProps) {
   const t = useT();
   const {
     pluginSidebarViews = [],
@@ -2066,4 +2068,4 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
       </nav>
     </PaneSurface>
   );
-}
+});

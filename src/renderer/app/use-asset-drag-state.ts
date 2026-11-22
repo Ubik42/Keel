@@ -443,12 +443,12 @@ export function useAssetDragState({ cancelPreviewViewRestoreRef, previewRestoreF
     setError,
   });
 
-  const displayedPalette = assetMetadata?.effectivePalette ?? [];
-  const automaticPaletteRatios = new Map(
-    (assetMetadata?.automaticPalette ?? []).map((color) => [
-      color.hex,
-      color.ratio,
-    ]),
+  const effectivePalette = assetMetadata?.effectivePalette;
+  const displayedPalette = useMemo(() => effectivePalette ?? [], [effectivePalette]);
+  const automaticPalette = assetMetadata?.automaticPalette;
+  const automaticPaletteRatios = useMemo(
+    () => new Map((automaticPalette ?? []).map((color) => [color.hex, color.ratio])),
+    [automaticPalette],
   );
 
   const visibleAssets = useMemo(() => {
