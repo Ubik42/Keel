@@ -46,43 +46,98 @@ export function shortcutInputFromMouseEvent(
   };
 }
 
+type ShortcutInputHandler = (input: ShortcutEventLike, event: ShortcutDomEvent) => void;
+
+/**
+ * One keydown and one mousedown listener per target and phase serve every
+ * shortcut handler (unified dispatch, P4). Handlers run in registration
+ * order, exactly as separate listeners would; stopImmediatePropagation in a
+ * handler skips the handlers after it, as it would skip later listeners.
+ */
+const dispatchers = new Map<Window | Document, Map<boolean, ShortcutInputHandler[]>>();
+
+function keyboardInput(event: KeyboardEvent): ShortcutEventLike {
+  // Native keyboard fields are prototype getters. Copy them explicitly so
+  // consumers can spread the input to attach a target without losing keys.
+  const input = {
+    kind: "keyboard" as const,
+    key: event.key,
+    code: event.code,
+    keyCode: event.keyCode,
+    location: event.location,
+    metaKey: event.metaKey,
+    ctrlKey: event.ctrlKey,
+    altKey: event.altKey,
+    shiftKey: event.shiftKey,
+    repeat: event.repeat,
+    isComposing: event.isComposing,
+  };
+  return input;
+}
+
+function dispatch(handlers: readonly ShortcutInputHandler[], input: ShortcutEventLike, event: ShortcutDomEvent): void {
+  let stopped = false;
+  const original = event.stopImmediatePropagation;
+  event.stopImmediatePropagation = function stopImmediatePropagation(this: Event) {
+    stopped = true;
+    original.call(this);
+  };
+  try {
+    for (const handler of [...handlers]) {
+      handler(input, event);
+      if (stopped) break;
+    }
+  } finally {
+    event.stopImmediatePropagation = original;
+  }
+}
+
 /** Register the keyboard and side-button event kinds used by the shortcut catalog. */
 export function listenForShortcutInputs(
   target: Window | Document,
-  handler: (input: ShortcutEventLike, event: ShortcutDomEvent) => void,
+  handler: ShortcutInputHandler,
   capture = false,
 ): () => void {
-  const onKeyDown: EventListener = (rawEvent) => {
-    const event = rawEvent as KeyboardEvent;
-    // Native keyboard fields are prototype getters. Copy them explicitly so
-    // consumers can spread the input to attach a target without losing keys.
-    const input = {
-      kind: "keyboard" as const,
-      key: event.key,
-      code: event.code,
-      keyCode: event.keyCode,
-      location: event.location,
-      metaKey: event.metaKey,
-      ctrlKey: event.ctrlKey,
-      altKey: event.altKey,
-      shiftKey: event.shiftKey,
-      repeat: event.repeat,
-      isComposing: event.isComposing,
+  let phases = dispatchers.get(target);
+  if (!phases) {
+    phases = new Map();
+    dispatchers.set(target, phases);
+  }
+  let handlers = phases.get(capture);
+  if (!handlers) {
+    const list: ShortcutInputHandler[] = [];
+    handlers = list;
+    phases.set(capture, list);
+    const onKeyDown: EventListener = (rawEvent) => {
+      const event = rawEvent as KeyboardEvent;
+      dispatch(list, keyboardInput(event), event);
     };
-    handler(input, event);
-  };
-  const onMouseDown: EventListener = (rawEvent) => {
-    const event = rawEvent as MouseEvent;
-    const input = shortcutInputFromMouseEvent(event);
-    if (input !== null) handler(input, event);
-  };
-  target.addEventListener("keydown", onKeyDown, capture);
-  target.addEventListener("mousedown", onMouseDown, capture);
+    const onMouseDown: EventListener = (rawEvent) => {
+      const event = rawEvent as MouseEvent;
+      const input = shortcutInputFromMouseEvent(event);
+      if (input !== null) dispatch(list, input, event);
+    };
+    target.addEventListener("keydown", onKeyDown, capture);
+    target.addEventListener("mousedown", onMouseDown, capture);
+    listenerCleanups.set(list, () => {
+      target.removeEventListener("keydown", onKeyDown, capture);
+      target.removeEventListener("mousedown", onMouseDown, capture);
+    });
+  }
+  const list = handlers;
+  list.push(handler);
   return () => {
-    target.removeEventListener("keydown", onKeyDown, capture);
-    target.removeEventListener("mousedown", onMouseDown, capture);
+    const index = list.indexOf(handler);
+    if (index >= 0) list.splice(index, 1);
+    if (list.length === 0) {
+      listenerCleanups.get(list)?.();
+      listenerCleanups.delete(list);
+      phases!.delete(capture);
+    }
   };
 }
+
+const listenerCleanups = new WeakMap<ShortcutInputHandler[], () => void>();
 
 /** Register only mouse side buttons when a native accelerator owns keyboard input. */
 export function listenForMouseShortcutInputs(

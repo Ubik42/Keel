@@ -315,7 +315,8 @@ test("custom menu accelerators sync, yield to text inputs, and viewer keys run o
       .toMatchObject({ enabled: false });
     await window
       .getByRole("dialog", { name: "通用设置" })
-      .getByRole("button", { name: "关闭" })
+      .getByRole("button", { name: "关闭", exact: true })
+      .first()
       .click();
 
     await expect.poll(() => menuItemState(application!, fullscreenMenuItemId))
@@ -443,7 +444,8 @@ test("custom menu accelerators sync, yield to text inputs, and viewer keys run o
     await expect(firstViewer).toBeVisible();
     await window
       .getByRole("dialog", { name: "通用设置" })
-      .getByRole("button", { name: "关闭" })
+      .getByRole("button", { name: "关闭", exact: true })
+      .first()
       .click();
     await expect(firstViewer).toBeVisible();
 
@@ -464,7 +466,8 @@ test("custom menu accelerators sync, yield to text inputs, and viewer keys run o
     );
     await window
       .getByRole("dialog", { name: "通用设置" })
-      .getByRole("button", { name: "关闭" })
+      .getByRole("button", { name: "关闭", exact: true })
+      .first()
       .click();
     await firstCard.dblclick();
     await expect(firstViewer).toBeVisible();
