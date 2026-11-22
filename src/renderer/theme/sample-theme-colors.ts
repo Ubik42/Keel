@@ -1,7 +1,7 @@
 /**
  * Read the colours the real app is painting right now, so the custom-theme
  * editor and its preview use exactly the same surfaces (a93). Island
- * surfaces are scoped to `.app-shell[data-shell-layout="islands"]`, so the
+ * surfaces are scoped to `.app-shell`, so the
  * probe is mounted inside the shell when it exists.
  */
 export type SampledThemeColors = {
@@ -52,7 +52,7 @@ function probe(host: Element, background: string): string {
 
 export function sampleThemeColors(): SampledThemeColors | null {
   if (typeof document === 'undefined') return null;
-  const shell = document.querySelector('.app-shell[data-shell-layout="islands"]');
+  const shell = document.querySelector('.app-shell');
   const host = shell ?? document.body;
   const side = probe(host, 'var(--island-side, var(--ui-surface-pane))');
   const canvas = probe(host, 'var(--island-canvas, var(--ui-surface-raised))');

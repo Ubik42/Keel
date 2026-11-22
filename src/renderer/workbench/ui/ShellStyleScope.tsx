@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 
 export function ShellStyleScope({ children }: { readonly children: ReactNode }) {
   return (
-    <div className="app-shell ui-shell-style-scope" data-shell-layout="islands">
+    <div className="app-shell ui-shell-style-scope">
       {children}
     </div>
   );

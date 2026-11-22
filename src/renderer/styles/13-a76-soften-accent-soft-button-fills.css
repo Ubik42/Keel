@@ -59,17 +59,17 @@ html.keel-window-square {
 
 /* Outer corners that meet the window chrome = window radius; other corners
    keep the island radius so inner seams stay soft. */
-.app-shell[data-shell-layout="islands"] > .navigation-pane {
+.app-shell.app-shell > .navigation-pane {
   border-radius: var(--island-radius) var(--island-radius) var(--island-radius) var(--window-corner-radius);
 }
-.app-shell[data-shell-layout="islands"] > .inspector-pane {
+.app-shell.app-shell > .inspector-pane {
   border-radius: var(--island-radius) var(--island-radius) var(--window-corner-radius) var(--island-radius);
 }
-.app-shell[data-shell-layout="islands"] > .workspace {
+.app-shell.app-shell > .workspace {
   border-radius: var(--island-radius);
 }
 /* Collapsed panes leave the remaining outer corner to the neighbor. */
-.app-shell[data-shell-layout="islands"].left-collapsed > .workspace {
+.app-shell.app-shell.left-collapsed > .workspace {
   border-bottom-left-radius: var(--window-corner-radius);
 }
 
@@ -80,66 +80,66 @@ html.keel-window-square {
 
 /* Outer: L of nav, R of inspector, bottom of all three.
    Inter: L/R of workspace (nav↔ws↔inspector). */
-.app-shell[data-shell-layout="islands"] > .navigation-pane {
+.app-shell.app-shell > .navigation-pane {
   margin: 0 0 var(--island-outer-gap) var(--island-outer-gap);
 }
-.app-shell[data-shell-layout="islands"] > .workspace {
+.app-shell.app-shell > .workspace {
   margin: 0 var(--island-gap) var(--island-outer-gap);
 }
-.app-shell[data-shell-layout="islands"] > .inspector-pane {
+.app-shell.app-shell > .inspector-pane {
   margin: 0 var(--island-outer-gap) var(--island-outer-gap) 0;
 }
-.app-shell[data-shell-layout="islands"].left-collapsed > .navigation-pane,
-.app-shell[data-shell-layout="islands"].right-collapsed > .inspector-pane {
+.app-shell.app-shell.left-collapsed > .navigation-pane,
+.app-shell.app-shell.right-collapsed > .inspector-pane {
   margin: 0;
 }
 /* Collapsed: workspace picks up the freed outer edge. */
-.app-shell[data-shell-layout="islands"].left-collapsed > .workspace {
+.app-shell.app-shell.left-collapsed > .workspace {
   margin-left: var(--island-outer-gap);
 }
-.app-shell[data-shell-layout="islands"].right-collapsed > .workspace {
+.app-shell.app-shell.right-collapsed > .workspace {
   border-bottom-right-radius: var(--window-corner-radius);
   margin-right: var(--island-outer-gap);
 }
 
 /* Toolbar: outer clusters follow outer-gap; workspace cluster follows inter gap. */
-.app-shell[data-shell-layout="islands"] .toolbar-nav-cluster {
+.app-shell.app-shell .toolbar-nav-cluster {
   padding-left: var(--island-outer-gap);
 }
-.app-shell[data-shell-layout="islands"] .toolbar-workspace-cluster {
+.app-shell.app-shell .toolbar-workspace-cluster {
   padding-left: var(--island-gap);
   padding-right: var(--island-gap);
 }
-.app-shell[data-shell-layout="islands"]:not(.left-collapsed) .toolbar-workspace-cluster:has(.workspace-tabs) {
+.app-shell.app-shell:not(.left-collapsed) .toolbar-workspace-cluster:has(.workspace-tabs) {
   padding-left: var(--island-gap);
 }
-.app-shell[data-shell-layout="islands"]:not(.right-collapsed) .toolbar-workspace-cluster:has(.workspace-tabs) {
+.app-shell.app-shell:not(.right-collapsed) .toolbar-workspace-cluster:has(.workspace-tabs) {
   padding-right: var(--island-gap);
 }
 /* The shell's first column is 0 when the sidebar is collapsed, and a fixed
    reservation left a wide hole after a short library name. Give the toolbar
    its own leading column sized to the name, so history and tabs sit against it. */
-.app-shell[data-shell-layout="islands"].left-collapsed > .app-toolbar {
+.app-shell.app-shell.left-collapsed > .app-toolbar {
   grid-template-columns: max-content minmax(0, 1fr) var(--inspector-width, 268px);
 }
-.app-shell[data-shell-layout="islands"].left-collapsed.right-collapsed > .app-toolbar {
+.app-shell.app-shell.left-collapsed.right-collapsed > .app-toolbar {
   grid-template-columns: max-content minmax(0, 1fr) 0;
 }
-.app-shell[data-shell-layout="islands"].left-collapsed .toolbar-nav-cluster {
+.app-shell.app-shell.left-collapsed .toolbar-nav-cluster {
   position: static;
   left: auto;
   width: auto;
   padding-left: var(--island-outer-gap);
 }
-.app-shell[data-shell-layout="islands"].left-collapsed .toolbar-nav-cluster .library-switcher {
+.app-shell.app-shell.left-collapsed .toolbar-nav-cluster .library-switcher {
   flex: 0 0 auto;
   width: fit-content;
   max-width: var(--shell-library-switcher-width);
 }
-.app-shell[data-shell-layout="islands"].left-collapsed .toolbar-nav-cluster .library-switcher-trigger {
+.app-shell.app-shell.left-collapsed .toolbar-nav-cluster .library-switcher-trigger {
   width: auto;
 }
-.app-shell[data-shell-layout="islands"].left-collapsed .toolbar-workspace-cluster {
+.app-shell.app-shell.left-collapsed .toolbar-workspace-cluster {
   padding-left: 8px;
 }
 
@@ -147,19 +147,19 @@ html.keel-window-square {
 /* ==== a79: pin filter bar to second row ===================================
    a28 row+wrap let discovery jump onto the title row when space allowed.
    Always: row1 = workspace-bar (title/tools), row2 = workspace-discovery. */
-.app-shell[data-shell-layout="islands"] .workspace-toolstrip {
+.app-shell.app-shell .workspace-toolstrip {
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
   align-items: stretch;
   gap: 4px;
 }
-.app-shell[data-shell-layout="islands"] .workspace-toolstrip .workspace-bar {
+.app-shell.app-shell .workspace-toolstrip .workspace-bar {
   flex: 0 0 auto;
   width: 100%;
   min-width: 0;
 }
-.app-shell[data-shell-layout="islands"] .workspace-toolstrip .workspace-discovery {
+.app-shell.app-shell .workspace-toolstrip .workspace-discovery {
   flex: 0 0 auto;
   display: flex;
   flex-wrap: wrap;
@@ -176,19 +176,19 @@ html.keel-window-square {
    is painted outside the island, so its overflow:hidden doesn't clip it.
    Offsets/blur are kept tight (negative spread) so the shadow stays within
    --island-outer-gap at the window edge, where .app-shell clips. */
-:root[data-elevation="0"] .app-shell[data-shell-layout="islands"] {
+:root[data-elevation="0"] .app-shell.app-shell {
   --island-shadow: none;
 }
 
 /* ==== a81: sort trigger matches icon-button height ========================
    It read as tall as the whole filter row. Pin it to the same 24px rhythm as
    the icon buttons and never stretch; quiet (no fill unless hover/active). */
-.app-shell[data-shell-layout="islands"] .dimension-filter-dims .sort-mode-control,
-.app-shell[data-shell-layout="islands"] .dimension-filter-dims .sort-mode-control .dimension-filter-dim {
+.app-shell.app-shell .dimension-filter-dims .sort-mode-control,
+.app-shell.app-shell .dimension-filter-dims .sort-mode-control .dimension-filter-dim {
   align-self: center;
   height: auto;
 }
-.app-shell[data-shell-layout="islands"] .dimension-filter-dims .sort-mode-control .dimension-filter-btn {
+.app-shell.app-shell .dimension-filter-dims .sort-mode-control .dimension-filter-btn {
   align-self: center;
   box-sizing: border-box;
   height: 24px;
@@ -199,7 +199,7 @@ html.keel-window-square {
   border-radius: calc(5px * var(--ui-radius-scale, 1));
   line-height: 1;
 }
-.app-shell[data-shell-layout="islands"] .dimension-filter-dims .sort-mode-control .sort-order-glyph {
+.app-shell.app-shell .dimension-filter-dims .sort-mode-control .sort-order-glyph {
   opacity: 1;
 }
 
@@ -212,8 +212,8 @@ html.keel-window-square {
       2.5px (was 1.2). Tip slopes stay straight lines between fillets; left
       slice widened to 6 so the 9-slice never cuts a curve (no seams).
    3) AI badge: chip left inset = badge's vertical inset (22-16)/2 = 3px. */
-.app-shell[data-shell-layout="islands"] .tag-chip,
-.app-shell[data-shell-layout="islands"] .filter-tag-chip {
+.app-shell.app-shell .tag-chip,
+.app-shell.app-shell .filter-tag-chip {
   --tag-tip-w: 16px;
   --tag-base: white;
   --tag-neutral: color-mix(in oklab, black 55%, white);
@@ -227,7 +227,7 @@ html.keel-window-square {
   --tag-chip-fill: var(--tag-fill-solid);
   filter: drop-shadow(0 0 0.5px rgb(0 0 0 / 22%));
 }
-.app-shell[data-shell-layout="islands"] .tag-chip:hover {
+.app-shell.app-shell .tag-chip:hover {
   --tag-fill-solid: color-mix(
     in oklab,
     var(--tag-chip-color, var(--tag-neutral)) var(--tag-fill-tint-hover),
@@ -235,18 +235,18 @@ html.keel-window-square {
   );
   filter: drop-shadow(0 0 0.5px rgb(0 0 0 / 30%));
 }
-.app-shell[data-shell-layout="islands"] .filter-tag-chip {
+.app-shell.app-shell .filter-tag-chip {
   --tag-fill-solid: color-mix(in oklab, var(--tag-neutral) var(--tag-fill-tint), var(--tag-base));
 }
-.app-shell[data-shell-layout="islands"] .filter-tag-chip.is-selected {
+.app-shell.app-shell .filter-tag-chip.is-selected {
   --tag-fill-solid: color-mix(in oklab, var(--accent) 11%, var(--tag-base));
 }
-.app-shell[data-shell-layout="islands"] .filter-tag-chip.is-excluding {
+.app-shell.app-shell .filter-tag-chip.is-excluding {
   --tag-fill-solid: color-mix(in oklab, var(--filter-exclude) 16%, var(--tag-base));
   color: var(--filter-exclude-fg);
 }
-:root[data-theme="dark"] .app-shell[data-shell-layout="islands"] .tag-chip,
-:root[data-theme="dark"] .app-shell[data-shell-layout="islands"] .filter-tag-chip {
+:root[data-theme="dark"] .app-shell.app-shell .tag-chip,
+:root[data-theme="dark"] .app-shell.app-shell .filter-tag-chip {
   --tag-hairline: 10%;
   --tag-hairline-hover: 15%;
   --tag-base: var(--island-surface-soft);
@@ -256,26 +256,26 @@ html.keel-window-square {
   --tag-chip-fill: color-mix(in oklab, var(--tag-fill-solid) 78%, transparent);
   filter: drop-shadow(0 0 0.5px rgb(255 255 255 / 12%));
 }
-:root[data-theme="dark"] .app-shell[data-shell-layout="islands"] .tag-chip:hover {
+:root[data-theme="dark"] .app-shell.app-shell .tag-chip:hover {
   filter: drop-shadow(0 0 0.5px rgb(255 255 255 / 18%));
 }
-:root[data-theme="dark"] .app-shell[data-shell-layout="islands"] .filter-tag-chip.is-selected {
+:root[data-theme="dark"] .app-shell.app-shell .filter-tag-chip.is-selected {
   --tag-fill-solid: color-mix(in oklab, var(--accent) 16%, var(--tag-base));
 }
-:root[data-theme="dark"] .app-shell[data-shell-layout="islands"] .filter-tag-chip.is-excluding {
+:root[data-theme="dark"] .app-shell.app-shell .filter-tag-chip.is-excluding {
   --tag-fill-solid: color-mix(in oklab, var(--filter-exclude) 22%, var(--tag-base));
   color: var(--filter-exclude-fg);
 }
-.app-shell[data-shell-layout="islands"] .tag-chip::before,
-.app-shell[data-shell-layout="islands"] .filter-tag-chip::before {
+.app-shell.app-shell .tag-chip::before,
+.app-shell.app-shell .filter-tag-chip::before {
   pointer-events: none;
   -webkit-mask-box-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2780%27%20height%3D%2722%27%20viewBox%3D%270%200%2080%2022%27%3E%3Cpath%20fill%3D%27black%27%20d%3D%27M6%200H66.35A6%206%200%200%201%2070.79%201.96L77.47%209.32A2.5%202.5%200%200%201%2077.47%2012.68L70.79%2020.04A6%206%200%200%201%2066.35%2022H6A6%206%200%200%201%200%2016V6A6%206%200%200%201%206%200Z%27%2F%3E%3C%2Fsvg%3E") 0 16 0 6 fill / 0 var(--tag-tip-w) 0 6px / 0 stretch;
   mask-border: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2780%27%20height%3D%2722%27%20viewBox%3D%270%200%2080%2022%27%3E%3Cpath%20fill%3D%27black%27%20d%3D%27M6%200H66.35A6%206%200%200%201%2070.79%201.96L77.47%209.32A2.5%202.5%200%200%201%2077.47%2012.68L70.79%2020.04A6%206%200%200%201%2066.35%2022H6A6%206%200%200%201%200%2016V6A6%206%200%200%201%206%200Z%27%2F%3E%3C%2Fsvg%3E") 0 16 0 6 fill / 0 var(--tag-tip-w) 0 6px / 0 stretch;
 }
-.app-shell[data-shell-layout="islands"] .tag-chip:has(> .inspector-ai-badge-inline) {
+.app-shell.app-shell .tag-chip:has(> .inspector-ai-badge-inline) {
   padding-left: 3px;
 }
-.app-shell[data-shell-layout="islands"] .tag-chip > .inspector-ai-badge-inline {
+.app-shell.app-shell .tag-chip > .inspector-ai-badge-inline {
   border-radius: calc(3px * var(--ui-radius-scale, 1));
   line-height: calc(14px * var(--ui-font-scale));
 }
@@ -290,28 +290,28 @@ html.keel-window-square {
    --elev-intensity, applied live by ElevationProvider). Level 0: none.
    Offsets are mostly blur so it reads in the inter-panel gaps; at the window
    edge it simply fades out under the frame. */
-:root:not([data-elevation="0"]) .app-shell[data-shell-layout="islands"] {
+:root:not([data-elevation="0"]) .app-shell.app-shell {
   --island-shadow:
     0 calc(1px * var(--elev-size)) calc(3px * var(--elev-size))
       rgb(0 0 0 / calc(0.08 * var(--elev-intensity))),
     0 calc(3px * var(--elev-size)) calc(14px * var(--elev-size))
       rgb(0 0 0 / calc(0.14 * var(--elev-intensity)));
 }
-:root[data-theme="dark"]:not([data-elevation="0"]) .app-shell[data-shell-layout="islands"] {
+:root[data-theme="dark"]:not([data-elevation="0"]) .app-shell.app-shell {
   --island-shadow:
     0 calc(1px * var(--elev-size)) calc(3px * var(--elev-size))
       rgb(0 0 0 / calc(0.30 * var(--elev-intensity))),
     0 calc(3px * var(--elev-size)) calc(14px * var(--elev-size))
       rgb(0 0 0 / calc(0.45 * var(--elev-intensity)));
 }
-:root[data-elevation] .app-shell[data-shell-layout="islands"] > .navigation-pane,
-:root[data-elevation] .app-shell[data-shell-layout="islands"] > .inspector-pane,
-:root[data-elevation] .app-shell[data-shell-layout="islands"] > .workspace {
+:root[data-elevation] .app-shell.app-shell > .navigation-pane,
+:root[data-elevation] .app-shell.app-shell > .inspector-pane,
+:root[data-elevation] .app-shell.app-shell > .workspace {
   box-shadow: var(--island-shadow);
 }
-:root[data-elevation="0"] .app-shell[data-shell-layout="islands"] > .navigation-pane,
-:root[data-elevation="0"] .app-shell[data-shell-layout="islands"] > .inspector-pane,
-:root[data-elevation="0"] .app-shell[data-shell-layout="islands"] > .workspace {
+:root[data-elevation="0"] .app-shell.app-shell > .navigation-pane,
+:root[data-elevation="0"] .app-shell.app-shell > .inspector-pane,
+:root[data-elevation="0"] .app-shell.app-shell > .workspace {
   box-shadow: none;
 }
 
@@ -325,18 +325,18 @@ html.keel-window-square {
    clears the lights. Drop the fixed browse-row reservation or the tabs sit
    a switcher-width too far right.
    Custom caption buttons render only on Windows (App.tsx), unchanged. */
-body.platform-darwin .app-shell[data-shell-layout="islands"] .toolbar-nav-cluster {
+body.platform-darwin .app-shell.app-shell .toolbar-nav-cluster {
   padding-left: 78px;
 }
-body.platform-darwin .app-shell[data-shell-layout="islands"].left-collapsed .toolbar-nav-cluster {
+body.platform-darwin .app-shell.app-shell.left-collapsed .toolbar-nav-cluster {
   padding-left: 78px;
 }
-body.platform-darwin .app-shell[data-shell-layout="islands"].left-collapsed .toolbar-workspace-cluster {
+body.platform-darwin .app-shell.app-shell.left-collapsed .toolbar-workspace-cluster {
   padding-left: 8px;
 }
 /* The 78px inset narrows the cluster; keep the toggle square, let the
    library switcher truncate instead. */
-body.platform-darwin .app-shell[data-shell-layout="islands"] .toolbar-nav-cluster > :first-child {
+body.platform-darwin .app-shell.app-shell .toolbar-nav-cluster > :first-child {
   flex-shrink: 0;
 }
 

@@ -1,12 +1,12 @@
 /* ==== a84b: gap between inspector section label and AI badge ============== */
-.app-shell[data-shell-layout="islands"] .inspector-content .micro-label:has(> .inspector-ai-badge-inline),
-.app-shell[data-shell-layout="islands"] .inspector-section-label:has(> .inspector-ai-badge-inline) {
+.app-shell.app-shell .inspector-content .micro-label:has(> .inspector-ai-badge-inline),
+.app-shell.app-shell .inspector-section-label:has(> .inspector-ai-badge-inline) {
   display: inline-flex;
   align-items: center;
   gap: 6px;
 }
-.app-shell[data-shell-layout="islands"] .inspector-content .micro-label > .inspector-ai-badge-inline,
-.app-shell[data-shell-layout="islands"] .inspector-section-label > .inspector-ai-badge-inline {
+.app-shell.app-shell .inspector-content .micro-label > .inspector-ai-badge-inline,
+.app-shell.app-shell .inspector-section-label > .inspector-ai-badge-inline {
   margin: 0;
 }
 
@@ -14,7 +14,7 @@
    Backdrop anchored to the side-panel surface so every theme gets the same
    small step (was ≈4 L* light / ≈3 L* dark; vscode & onedark dark were ~0
    or inverted). Now ≈ +1.5–2 L* more separation. */
-.app-shell[data-shell-layout="islands"] {
+.app-shell.app-shell {
   --island-backdrop: color-mix(in oklab, var(--ui-surface-pane) 95%, black);
   background-color: var(--island-backdrop);
 }
@@ -29,7 +29,7 @@
    (10/8/18px) and slots are overflow:visible, so it is not clipped.
    Hover "lifts" by deepening the shadow (no transform: keeps virtualized
    layout / marquee hit-testing stable). */
-.app-shell[data-shell-layout="islands"] {
+.app-shell.app-shell {
   --island-radius: calc(16px * var(--ui-radius-scale, 1));
   --island-card-radius: calc(10px * var(--ui-radius-scale, 1));
   --island-group-gap: 12px;
@@ -50,7 +50,7 @@
     0 calc(3px * var(--elev-size)) calc(8px * var(--elev-size))
       rgb(0 0 0 / calc(0.14 * var(--elev-intensity)));
 }
-:root[data-theme="dark"] .app-shell[data-shell-layout="islands"] {
+:root[data-theme="dark"] .app-shell.app-shell {
   --island-surface-soft: color-mix(in srgb, var(--ui-surface-raised) 88%, white);
   --island-surface-recess: color-mix(in srgb, white 7%, transparent);
   --island-select: color-mix(in srgb, white 8%, transparent);
@@ -79,13 +79,13 @@
     0 calc(3px * var(--elev-size)) calc(8px * var(--elev-size))
       rgb(0 0 0 / calc(0.42 * var(--elev-intensity)));
 }
-:root:not([data-elevation="0"]) .app-shell[data-shell-layout="islands"] .asset-card:is(.is-selected.is-selected:hover:focus-visible, *) .asset-preview {
+:root:not([data-elevation="0"]) .app-shell.app-shell .asset-card:is(.is-selected.is-selected:hover:focus-visible, *) .asset-preview {
   box-shadow: var(--card-shadow);
 }
-:root:not([data-elevation="0"]) .app-shell[data-shell-layout="islands"] .asset-card:is(.is-selected.is-selected:hover:focus-visible, *):hover .asset-preview {
+:root:not([data-elevation="0"]) .app-shell.app-shell .asset-card:is(.is-selected.is-selected:hover:focus-visible, *):hover .asset-preview {
   box-shadow: var(--card-shadow-hover);
 }
-:root[data-elevation="0"] .app-shell[data-shell-layout="islands"] .asset-card:is(.is-selected.is-selected:hover:focus-visible, *) {
+:root[data-elevation="0"] .app-shell.app-shell .asset-card:is(.is-selected.is-selected:hover:focus-visible, *) {
   box-shadow: none;
 }
 

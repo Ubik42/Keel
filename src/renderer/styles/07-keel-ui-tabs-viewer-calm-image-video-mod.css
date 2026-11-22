@@ -233,7 +233,7 @@
 
 /* ==== Shell layout: Islands + bold Apple/Photos materials ================
    Floating islands kept; visual language pushed toward macOS Photos / Finder /
-   Info. Scoped to [data-shell-layout="islands"]. Import/drop stays on-dev. */
+   Info. Scoped to .app-shell. Import/drop stays on-dev. */
 :root {
   --island-gap: 12px;
   --island-radius: calc(22px * var(--ui-radius-scale, 1));
@@ -260,7 +260,7 @@
 }
 
 /* Quieter window chrome: transparent title bar (backdrop shows through). */
-.app-shell[data-shell-layout="islands"] > .app-toolbar {
+.app-shell.app-shell > .app-toolbar {
   border-bottom-color: transparent;
   background: transparent;
   box-shadow: none;
@@ -269,16 +269,16 @@
 /* Title-bar controls align to island edges (grid columns are full-bleed;
    islands are inset by --island-gap). Search was overhanging the canvas
    island by one gap into the inspector column. No soft title-bar fill. */
-.app-shell[data-shell-layout="islands"] .toolbar-nav-cluster {
+.app-shell.app-shell .toolbar-nav-cluster {
   align-items: center;
 }
-.app-shell[data-shell-layout="islands"] .toolbar-workspace-cluster {
+.app-shell.app-shell .toolbar-workspace-cluster {
   align-items: center;
   gap: 10px;
 }
 /* workspace-tabs.css zeroes L/R padding when tabs exist (higher specificity).
    Re-assert island-gap so search lines up with the canvas island edges. */
-.app-shell[data-shell-layout="islands"] .toolbar-inspector-cluster {
+.app-shell.app-shell .toolbar-inspector-cluster {
   /* Sit at the inspector island's leading edge so search | gap | toggle read
      as one aligned control row (captions stay reserved on the right). */
   justify-content: flex-start;
@@ -286,47 +286,47 @@
   align-items: center;
   gap: 8px;
 }
-.app-shell[data-shell-layout="islands"] .toolbar-workspace-search,
-.app-shell[data-shell-layout="islands"] .search-control-wrap {
+.app-shell.app-shell .toolbar-workspace-search,
+.app-shell.app-shell .search-control-wrap {
   height: var(--shell-control-height);
   align-self: center;
 }
-.app-shell[data-shell-layout="islands"] .toolbar-workspace-search {
+.app-shell.app-shell .toolbar-workspace-search {
   margin-left: auto;
 }
 /* Shared vertical center for search neighbors: settings/main-menu, panel
    toggles, history, library switcher. */
-.app-shell[data-shell-layout="islands"] .toolbar-nav-cluster > .tool-button,
-.app-shell[data-shell-layout="islands"] .library-switcher-trigger,
-.app-shell[data-shell-layout="islands"] .scope-history-button,
-.app-shell[data-shell-layout="islands"] .main-menu-trigger,
-.app-shell[data-shell-layout="islands"] .app-settings-entry,
-.app-shell[data-shell-layout="islands"] .app-settings-entry .tool-button,
-.app-shell[data-shell-layout="islands"] .toolbar-inspector-cluster .tool-button {
+.app-shell.app-shell .toolbar-nav-cluster > .tool-button,
+.app-shell.app-shell .library-switcher-trigger,
+.app-shell.app-shell .scope-history-button,
+.app-shell.app-shell .main-menu-trigger,
+.app-shell.app-shell .app-settings-entry,
+.app-shell.app-shell .app-settings-entry .tool-button,
+.app-shell.app-shell .toolbar-inspector-cluster .tool-button {
   align-self: center;
   margin-top: 0;
   margin-bottom: 0;
 }
-.app-shell[data-shell-layout="islands"] .toolbar-workspace-leading {
+.app-shell.app-shell .toolbar-workspace-leading {
   display: flex;
   align-items: center;
   gap: 8px;
   height: var(--shell-toolbar-height);
 }
 
-.app-shell[data-shell-layout="islands"] > .navigation-pane,
-.app-shell[data-shell-layout="islands"] > .inspector-pane,
-.app-shell[data-shell-layout="islands"] > .workspace {
+.app-shell.app-shell > .navigation-pane,
+.app-shell.app-shell > .inspector-pane,
+.app-shell.app-shell > .workspace {
   overflow: hidden;
 }
 
-.app-shell[data-shell-layout="islands"].left-collapsed > .navigation-pane,
-.app-shell[data-shell-layout="islands"].right-collapsed > .inspector-pane {
+.app-shell.app-shell.left-collapsed > .navigation-pane,
+.app-shell.app-shell.right-collapsed > .inspector-pane {
   border-width: 0;
   box-shadow: none;
 }
-.app-shell[data-shell-layout="islands"] > .navigation-pane::before,
-.app-shell[data-shell-layout="islands"] > .inspector-pane::before {
+.app-shell.app-shell > .navigation-pane::before,
+.app-shell.app-shell > .inspector-pane::before {
   content: none;
 }
 

@@ -12,7 +12,7 @@ describe('a91 acrylic menus + wallpaper panels', () => {
   });
 
   it('tints all three islands with the panel opacity when the wallpaper option is on', () => {
-    expect(css).toMatch(/:root\[data-bg-main-panel="on"\] \.app-shell\[data-shell-layout="islands"\] > :is\(\.navigation-pane, \.workspace, \.inspector-pane\) \{[^}]*var\(--ui-panel-opacity/);
+    expect(css).toMatch(/:root\[data-bg-main-panel="on"\] \.app-shell\.app-shell > :is\(\.navigation-pane, \.workspace, \.inspector-pane\) \{[^}]*var\(--ui-panel-opacity/);
   });
 });
 

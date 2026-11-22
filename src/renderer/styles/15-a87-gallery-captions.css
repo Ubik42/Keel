@@ -3,39 +3,39 @@
    Metadata sits on the
    canvas below it, without a boxed footer. Caption metrics mirror the layout
    helpers so virtual rows reserve only the space occupied by visible text. */
-.app-shell[data-shell-layout="islands"] .asset-card,
-.app-shell[data-shell-layout="islands"] .asset-card:hover,
-.app-shell[data-shell-layout="islands"] .asset-card.is-selected,
-.app-shell[data-shell-layout="islands"] .asset-card:focus-visible,
-.app-shell[data-shell-layout="islands"] .asset-card.is-selected:hover,
-.app-shell[data-shell-layout="islands"] .asset-card.is-selected:focus-visible {
+.app-shell.app-shell .asset-card,
+.app-shell.app-shell .asset-card:hover,
+.app-shell.app-shell .asset-card.is-selected,
+.app-shell.app-shell .asset-card:focus-visible,
+.app-shell.app-shell .asset-card.is-selected:hover,
+.app-shell.app-shell .asset-card.is-selected:focus-visible {
   background: transparent;
   border-color: transparent;
   border-width: 0;
   box-shadow: none;
   overflow: visible;
 }
-.app-shell[data-shell-layout="islands"] .asset-card .asset-preview {
+.app-shell.app-shell .asset-card .asset-preview {
   border-radius: var(--island-card-radius);
   outline: 1px solid var(--island-hairline);
   outline-offset: -1px;
 }
-.app-shell[data-shell-layout="islands"] .asset-card .asset-preview .asset-card-media,
-.app-shell[data-shell-layout="islands"] .asset-card .asset-preview .asset-thumbnail {
+.app-shell.app-shell .asset-card .asset-preview .asset-card-media,
+.app-shell.app-shell .asset-card .asset-preview .asset-thumbnail {
   border-radius: inherit;
 }
-.app-shell[data-shell-layout="islands"] .asset-card.is-selected,
-.app-shell[data-shell-layout="islands"] .asset-card:focus-visible,
-.app-shell[data-shell-layout="islands"] .asset-card.is-selected:hover,
-.app-shell[data-shell-layout="islands"] .asset-card.is-selected:focus-visible,
-.app-shell[data-shell-layout="islands"] .asset-card.is-selected:hover:focus-visible {
+.app-shell.app-shell .asset-card.is-selected,
+.app-shell.app-shell .asset-card:focus-visible,
+.app-shell.app-shell .asset-card.is-selected:hover,
+.app-shell.app-shell .asset-card.is-selected:focus-visible,
+.app-shell.app-shell .asset-card.is-selected:hover:focus-visible {
   background: color-mix(in srgb, var(--accent) 9%, transparent);
   outline: 2px solid var(--accent);
   outline-offset: 0;
 }
-.app-shell[data-shell-layout="islands"] .justified-card-slot .asset-caption,
-.app-shell[data-shell-layout="islands"] .masonry-card-slot .asset-caption,
-.app-shell[data-shell-layout="islands"] .asset-card .asset-caption {
+.app-shell.app-shell .justified-card-slot .asset-caption,
+.app-shell.app-shell .masonry-card-slot .asset-caption,
+.app-shell.app-shell .asset-card .asset-caption {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -45,14 +45,14 @@
   gap: calc(4px * var(--ui-font-scale));
   background: transparent;
 }
-.app-shell[data-shell-layout="islands"] .asset-card.is-selected .asset-caption,
-.app-shell[data-shell-layout="islands"] .asset-card:focus-visible .asset-caption {
+.app-shell.app-shell .asset-card.is-selected .asset-caption,
+.app-shell.app-shell .asset-card:focus-visible .asset-caption {
   background: transparent;
 }
-.app-shell[data-shell-layout="islands"] .asset-caption > :first-child {
+.app-shell.app-shell .asset-caption > :first-child {
   margin-top: 0;
 }
-.app-shell[data-shell-layout="islands"] .asset-caption > :last-child {
+.app-shell.app-shell .asset-caption > :last-child {
   margin-bottom: 0;
 }
 
@@ -128,36 +128,36 @@
    --ui-panel-opacity (own setting, independent of the window-image opacity),
    so the same aligned image shows through. Cards keep solid surfaces.
    With the acrylic setting on, the panels also blur what is beneath. */
-:root[data-bg-main-panel="on"] .app-shell[data-shell-layout="islands"] > :is(.navigation-pane, .workspace, .inspector-pane) {
+:root[data-bg-main-panel="on"] .app-shell.app-shell > :is(.navigation-pane, .workspace, .inspector-pane) {
   --panel-fill: var(--ui-surface-pane);
   background-color: color-mix(in oklab, var(--panel-fill) var(--ui-panel-opacity, 72%), transparent);
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
 }
 
-:root[data-bg-main-panel="on"] .app-shell[data-shell-layout="islands"] > .workspace {
+:root[data-bg-main-panel="on"] .app-shell.app-shell > .workspace {
   --panel-fill: var(--island-canvas, var(--ui-surface-pane));
 }
 
-:root[data-bg-main-panel="on"] .app-shell[data-shell-layout="islands"] > .workspace .workspace-canvas {
+:root[data-bg-main-panel="on"] .app-shell.app-shell > .workspace .workspace-canvas {
   background: transparent;
 }
 
-:root[data-bg-main-panel="on"] .app-shell[data-shell-layout="islands"] > .workspace .workspace-toolstrip {
+:root[data-bg-main-panel="on"] .app-shell.app-shell > .workspace .workspace-toolstrip {
   background: color-mix(in oklab, var(--island-canvas, var(--ui-surface-pane)) 35%, transparent);
 }
 
-:root[data-bg-main-panel="on"][data-menu-acrylic="1"] .app-shell[data-shell-layout="islands"] > :is(.navigation-pane, .workspace, .inspector-pane) {
+:root[data-bg-main-panel="on"][data-menu-acrylic="1"] .app-shell.app-shell > :is(.navigation-pane, .workspace, .inspector-pane) {
   -webkit-backdrop-filter: blur(12px) saturate(1.15);
   backdrop-filter: blur(12px) saturate(1.15);
 }
 
-:root[data-bg-main-panel="on"][data-menu-acrylic="2"] .app-shell[data-shell-layout="islands"] > :is(.navigation-pane, .workspace, .inspector-pane) {
+:root[data-bg-main-panel="on"][data-menu-acrylic="2"] .app-shell.app-shell > :is(.navigation-pane, .workspace, .inspector-pane) {
   -webkit-backdrop-filter: blur(20px) saturate(1.2);
   backdrop-filter: blur(20px) saturate(1.2);
 }
 
-:root[data-bg-main-panel="on"][data-menu-acrylic="3"] .app-shell[data-shell-layout="islands"] > :is(.navigation-pane, .workspace, .inspector-pane) {
+:root[data-bg-main-panel="on"][data-menu-acrylic="3"] .app-shell.app-shell > :is(.navigation-pane, .workspace, .inspector-pane) {
   -webkit-backdrop-filter: blur(30px) saturate(1.3);
   backdrop-filter: blur(30px) saturate(1.3);
 }

@@ -19,7 +19,7 @@
 /* ── a94: wallpaper veil uses the window backdrop colour in islands ────────
    With an image, the inverse-opacity veil is tinted with --island-backdrop
    (the 窗口背景 field) instead of the Inputs surface. */
-:root[data-bg-image="on"] .app-shell[data-shell-layout="islands"] {
+:root[data-bg-image="on"] .app-shell.app-shell {
   --ui-a94-veil: color-mix(
     in srgb,
     var(--island-backdrop) calc((1 - var(--ui-background-image-opacity, 0.8)) * 100%),
@@ -559,9 +559,9 @@
 
 /* Settings fields and buttons use the shortcut search/filter stroke. */
 .app-settings-dialog .text-field:not(textarea),
-.app-shell[data-shell-layout="islands"] .app-settings-dialog .text-field:not(textarea),
+.app-shell.app-shell .app-settings-dialog .text-field:not(textarea),
 .app-settings-dialog .ui-field__control:not(textarea),
-.app-shell[data-shell-layout="islands"] .app-settings-dialog .ui-field__control:not(textarea) {
+.app-shell.app-shell .app-settings-dialog .ui-field__control:not(textarea) {
   height: 30px;
   border: 1px solid var(--divider);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
@@ -572,12 +572,12 @@
 
 .app-settings-dialog .text-field:not(textarea):focus,
 .app-settings-dialog .text-field:not(textarea):focus-visible,
-.app-shell[data-shell-layout="islands"] .app-settings-dialog .text-field:not(textarea):focus,
-.app-shell[data-shell-layout="islands"] .app-settings-dialog .text-field:not(textarea):focus-visible,
+.app-shell.app-shell .app-settings-dialog .text-field:not(textarea):focus,
+.app-shell.app-shell .app-settings-dialog .text-field:not(textarea):focus-visible,
 .app-settings-dialog .ui-field__control:not(textarea):focus,
 .app-settings-dialog .ui-field__control:not(textarea):focus-visible,
-.app-shell[data-shell-layout="islands"] .app-settings-dialog .ui-field__control:not(textarea):focus,
-.app-shell[data-shell-layout="islands"] .app-settings-dialog .ui-field__control:not(textarea):focus-visible {
+.app-shell.app-shell .app-settings-dialog .ui-field__control:not(textarea):focus,
+.app-shell.app-shell .app-settings-dialog .ui-field__control:not(textarea):focus-visible {
   border-color: color-mix(in srgb, var(--accent) 55%, var(--divider));
   outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
   outline-offset: 1px;
@@ -586,8 +586,8 @@
 
 .app-settings-dialog .secondary-button,
 .app-settings-dialog .ui-button:not(.ui-button--primary):not(.ui-button--danger),
-.app-shell[data-shell-layout="islands"] .app-settings-dialog .secondary-button,
-.app-shell[data-shell-layout="islands"] .app-settings-dialog .ui-button:not(.ui-button--primary):not(.ui-button--danger) {
+.app-shell.app-shell .app-settings-dialog .secondary-button,
+.app-shell.app-shell .app-settings-dialog .ui-button:not(.ui-button--primary):not(.ui-button--danger) {
   height: 28px;
   min-height: 28px;
   padding: 0 10px;
@@ -602,8 +602,8 @@
 
 .app-settings-dialog .secondary-button:hover:not(:disabled),
 .app-settings-dialog .ui-button:not(.ui-button--primary):not(.ui-button--danger):hover:not(:disabled),
-.app-shell[data-shell-layout="islands"] .app-settings-dialog .secondary-button:hover:not(:disabled),
-.app-shell[data-shell-layout="islands"] .app-settings-dialog .ui-button:not(.ui-button--primary):not(.ui-button--danger):hover:not(:disabled) {
+.app-shell.app-shell .app-settings-dialog .secondary-button:hover:not(:disabled),
+.app-shell.app-shell .app-settings-dialog .ui-button:not(.ui-button--primary):not(.ui-button--danger):hover:not(:disabled) {
   border-color: var(--divider);
   background: var(--hover);
   color: var(--secondary);
@@ -611,9 +611,9 @@
 
 .app-settings-dialog .primary-button,
 .app-settings-dialog .ui-button.ui-button--primary,
-.app-shell[data-shell-layout="islands"] .app-settings-dialog .primary-button,
-.app-shell[data-shell-layout="islands"] .app-settings-dialog .dialog-actions .primary-button,
-.app-shell[data-shell-layout="islands"] .app-settings-dialog .ui-button.ui-button--primary {
+.app-shell.app-shell .app-settings-dialog .primary-button,
+.app-shell.app-shell .app-settings-dialog .dialog-actions .primary-button,
+.app-shell.app-shell .app-settings-dialog .ui-button.ui-button--primary {
   height: 28px;
   min-height: 28px;
   padding: 0 10px;
@@ -628,22 +628,22 @@
 
 .app-settings-dialog .primary-button:hover:not(:disabled),
 .app-settings-dialog .ui-button.ui-button--primary:hover:not(:disabled),
-.app-shell[data-shell-layout="islands"] .app-settings-dialog .primary-button:hover:not(:disabled),
-.app-shell[data-shell-layout="islands"] .app-settings-dialog .dialog-actions .primary-button:hover:not(:disabled),
-.app-shell[data-shell-layout="islands"] .app-settings-dialog .ui-button.ui-button--primary:hover:not(:disabled) {
+.app-shell.app-shell .app-settings-dialog .primary-button:hover:not(:disabled),
+.app-shell.app-shell .app-settings-dialog .dialog-actions .primary-button:hover:not(:disabled),
+.app-shell.app-shell .app-settings-dialog .ui-button.ui-button--primary:hover:not(:disabled) {
   border-color: var(--accent);
   background: var(--accent-soft);
   color: var(--accent-soft-fg);
 }
 
 .app-settings-dialog .plugin-install-stop-button,
-.app-shell[data-shell-layout="islands"] .app-settings-dialog .plugin-install-stop-button {
+.app-shell.app-shell .app-settings-dialog .plugin-install-stop-button {
   border-color: var(--danger);
   color: var(--danger);
 }
 
 .app-settings-dialog .plugin-install-stop-button:hover:not(:disabled),
-.app-shell[data-shell-layout="islands"] .app-settings-dialog .plugin-install-stop-button:hover:not(:disabled) {
+.app-shell.app-shell .app-settings-dialog .plugin-install-stop-button:hover:not(:disabled) {
   border-color: var(--danger);
   background: var(--danger-muted);
   color: var(--danger);

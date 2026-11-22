@@ -48,7 +48,7 @@ describe("islands accent budget + Codex transfer tokens (a27/a28)", () => {
 
   it("keeps selected card ring on loud accent (not pressed-wash)", () => {
     // The last rule for the selected card decides its ring (earlier layers are overridden).
-    const rules = [...css.matchAll(/(?:^|\n)\.app-shell\[data-shell-layout="islands"\] \.asset-card\.is-selected,[^{]*\{([^}]*)\}/g)];
+    const rules = [...css.matchAll(/(?:^|\n)\.app-shell\.app-shell \.asset-card\.is-selected,[^{]*\{([^}]*)\}/g)];
     // Since a87 the ring is an outline on the whole card; the border stays transparent.
     const ring = rules.map((m) => /outline:\s*([^;]+);/.exec(m[1] ?? "")?.[1]).filter(Boolean).at(-1);
     expect(ring).toMatch(/solid var\(--(island-accent-loud|accent)\)/);
@@ -71,7 +71,7 @@ describe("islands accent budget + Codex transfer tokens (a27/a28)", () => {
 
   it("paints islands primary CTAs with content ink, not action accent fill", () => {
     expect(a27).toMatch(
-      /\.empty-library \.primary-button,\s*\n\.app-shell\[data-shell-layout="islands"\] \.empty-state \.primary-button/,
+      /\.empty-library \.primary-button,\s*\n\.app-shell\.app-shell \.empty-state \.primary-button/,
     );
     const blockStart = a27.indexOf(".empty-library .primary-button,");
     const block = a27.slice(blockStart, blockStart + 700);

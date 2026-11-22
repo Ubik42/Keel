@@ -1,17 +1,14 @@
 /* a93: tag-chip shape follows the corner-radius tier (left corners, shoulders
    and nose rounded in sync; level 2 keeps the a82 SVG). */
-:root[data-radius="0"] .app-shell[data-shell-layout="islands"] :is(.tag-chip, .filter-tag-chip)::before,
-:root[data-radius="0"] .tp-tag::before {
+:root[data-radius="0"] .app-shell.app-shell :is(.tag-chip, .filter-tag-chip)::before, :root[data-radius="0"] .tp-tag::before {
   -webkit-mask-box-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2780%27%20height%3D%2722%27%20viewBox%3D%270%200%2080%2022%27%3E%3Cpath%20fill%3D%27black%27%20d%3D%27M0.5%200%20L69.78%200%20A0.5%200.5%200%200%201%2070.15%200.16%20L79.69%2010.66%20A0.5%200.5%200%200%201%2079.69%2011.34%20L70.15%2021.84%20A0.5%200.5%200%200%201%2069.78%2022%20L0.5%2022%20A0.5%200.5%200%200%201%200%2021.5%20L0%200.5%20A0.5%200.5%200%200%201%200.5%200Z%27%2F%3E%3C%2Fsvg%3E") 0 16 0 6 fill / 0 var(--tag-tip-w, 12px) 0 6px / 0 stretch;
   mask-border: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2780%27%20height%3D%2722%27%20viewBox%3D%270%200%2080%2022%27%3E%3Cpath%20fill%3D%27black%27%20d%3D%27M0.5%200%20L69.78%200%20A0.5%200.5%200%200%201%2070.15%200.16%20L79.69%2010.66%20A0.5%200.5%200%200%201%2079.69%2011.34%20L70.15%2021.84%20A0.5%200.5%200%200%201%2069.78%2022%20L0.5%2022%20A0.5%200.5%200%200%201%200%2021.5%20L0%200.5%20A0.5%200.5%200%200%201%200.5%200Z%27%2F%3E%3C%2Fsvg%3E") 0 16 0 6 fill / 0 var(--tag-tip-w, 12px) 0 6px / 0 stretch;
 }
-:root[data-radius="1"] .app-shell[data-shell-layout="islands"] :is(.tag-chip, .filter-tag-chip)::before,
-:root[data-radius="1"] .tp-tag::before {
+:root[data-radius="1"] .app-shell.app-shell :is(.tag-chip, .filter-tag-chip)::before, :root[data-radius="1"] .tp-tag::before {
   -webkit-mask-box-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2780%27%20height%3D%2722%27%20viewBox%3D%270%200%2080%2022%27%3E%3Cpath%20fill%3D%27black%27%20d%3D%27M3.5%200%20L68.45%200%20A3.5%203.5%200%200%201%2071.04%201.15%20L79.1%2010.01%20A1.47%201.47%200%200%201%2079.1%2011.99%20L71.04%2020.85%20A3.5%203.5%200%200%201%2068.45%2022%20L3.5%2022%20A3.5%203.5%200%200%201%200%2018.5%20L0%203.5%20A3.5%203.5%200%200%201%203.5%200Z%27%2F%3E%3C%2Fsvg%3E") 0 16 0 6 fill / 0 var(--tag-tip-w, 12px) 0 6px / 0 stretch;
   mask-border: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2780%27%20height%3D%2722%27%20viewBox%3D%270%200%2080%2022%27%3E%3Cpath%20fill%3D%27black%27%20d%3D%27M3.5%200%20L68.45%200%20A3.5%203.5%200%200%201%2071.04%201.15%20L79.1%2010.01%20A1.47%201.47%200%200%201%2079.1%2011.99%20L71.04%2020.85%20A3.5%203.5%200%200%201%2068.45%2022%20L3.5%2022%20A3.5%203.5%200%200%201%200%2018.5%20L0%203.5%20A3.5%203.5%200%200%201%203.5%200Z%27%2F%3E%3C%2Fsvg%3E") 0 16 0 6 fill / 0 var(--tag-tip-w, 12px) 0 6px / 0 stretch;
 }
-:root[data-radius="3"] .app-shell[data-shell-layout="islands"] :is(.tag-chip, .filter-tag-chip)::before,
-:root[data-radius="3"] .tp-tag::before {
+:root[data-radius="3"] .app-shell.app-shell :is(.tag-chip, .filter-tag-chip)::before, :root[data-radius="3"] .tp-tag::before {
   -webkit-mask-box-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2780%27%20height%3D%2722%27%20viewBox%3D%270%200%2080%2022%27%3E%3Cpath%20fill%3D%27black%27%20d%3D%27M9%200%20L66.02%200%20A9%209%200%200%201%2072.68%202.95%20L77.69%208.46%20A3.78%203.78%200%200%201%2077.69%2013.54%20L72.68%2019.05%20A9%209%200%200%201%2066.02%2022%20L9%2022%20A9%209%200%200%201%200%2013%20L0%209%20A9%209%200%200%201%209%200Z%27%2F%3E%3C%2Fsvg%3E") 0 16 0 9 fill / 0 var(--tag-tip-w, 12px) 0 9px / 0 stretch;
   mask-border: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2780%27%20height%3D%2722%27%20viewBox%3D%270%200%2080%2022%27%3E%3Cpath%20fill%3D%27black%27%20d%3D%27M9%200%20L66.02%200%20A9%209%200%200%201%2072.68%202.95%20L77.69%208.46%20A3.78%203.78%200%200%201%2077.69%2013.54%20L72.68%2019.05%20A9%209%200%200%201%2066.02%2022%20L9%2022%20A9%209%200%200%201%200%2013%20L0%209%20A9%209%200%200%201%209%200Z%27%2F%3E%3C%2Fsvg%3E") 0 16 0 9 fill / 0 var(--tag-tip-w, 12px) 0 9px / 0 stretch;
 }
@@ -21,24 +18,24 @@
    custom theme may pin them via --ui-island-* (set inline on :root by the
    theme provider only when overridden; the attribute match keeps the
    derived formulas untouched otherwise). */
-:root[style*="--ui-island-backdrop:"] .app-shell[data-shell-layout="islands"]:is(*, #a93-island) {
+:root[style*="--ui-island-backdrop:"] .app-shell.app-shell:is(*, #a93-island) {
   --island-backdrop: var(--ui-island-backdrop);
 }
 
-:root[style*="--ui-island-canvas:"] .app-shell[data-shell-layout="islands"]:is(*, #a93-island) {
+:root[style*="--ui-island-canvas:"] .app-shell.app-shell:is(*, #a93-island) {
   --island-canvas: var(--ui-island-canvas);
 }
 
-:root[style*="--ui-island-border:"] .app-shell[data-shell-layout="islands"]:is(*, #a93-island) {
+:root[style*="--ui-island-border:"] .app-shell.app-shell:is(*, #a93-island) {
   --island-border: var(--ui-island-border);
 }
 
-:root[style*="--ui-island-card:"] .app-shell[data-shell-layout="islands"] .asset-card .asset-preview:is(*, #a93-island) {
+:root[style*="--ui-island-card:"] .app-shell.app-shell .asset-card .asset-preview:is(*, #a93-island) {
   background-color: var(--ui-island-card);
 }
 
 /* a94: 强调色（柔和）= the selection wash (nav row, …) when pinned. */
-:root[style*="--ui-island-select:"] .app-shell[data-shell-layout="islands"]:is(*, #a93-island) {
+:root[style*="--ui-island-select:"] .app-shell.app-shell:is(*, #a93-island) {
   --island-select: var(--ui-island-select);
 }
 

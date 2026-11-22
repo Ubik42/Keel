@@ -100,13 +100,13 @@
   font-family: var(--font-ui-unified);
 }
 
-:root[data-platform="windows"] .app-shell[data-shell-layout="islands"] .inspector-content .micro-label {
+:root[data-platform="windows"] .app-shell.app-shell .inspector-content .micro-label {
   font-size: calc(12px * var(--ui-font-scale));
   letter-spacing: 0.01em;
   color: var(--secondary);
 }
 
-:root[data-platform="windows"] .app-shell[data-shell-layout="islands"] :is(
+:root[data-platform="windows"] .app-shell.app-shell :is(
     .nav-section-heading,
     .nav-count,
     .library-switcher-section-label
@@ -115,7 +115,7 @@
   color: var(--secondary);
 }
 
-:root[data-platform="windows"] .app-shell[data-shell-layout="islands"] .library-switcher-item:not(.is-danger):not(:disabled) {
+:root[data-platform="windows"] .app-shell.app-shell .library-switcher-item:not(.is-danger):not(:disabled) {
   font-size: calc(12px * var(--ui-font-scale));
   color: var(--text);
 }

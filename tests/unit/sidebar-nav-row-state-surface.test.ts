@@ -28,7 +28,7 @@ describe("sidebar nav row states share one highlight rectangle", () => {
     const base = /\.nav-row\.is-multi-selected \{[^}]*\}/.exec(css)?.[0] ?? "";
     expect(base).not.toMatch(/box-shadow/);
     const islands =
-      /\.app-shell\[data-shell-layout="islands"\] \.nav-tree-row:has\(> \.nav-row\.is-multi-selected\) \{[^}]*\}/
+      /\.app-shell\.app-shell \.nav-tree-row:has\(> \.nav-row\.is-multi-selected\) \{[^}]*\}/
         .exec(css)?.[0] ?? "";
     expect(islands).toMatch(/background: var\(--nav-selected-wash\);/);
     expect(islands).not.toMatch(/box-shadow/);
@@ -36,24 +36,24 @@ describe("sidebar nav row states share one highlight rectangle", () => {
 
   it("paints hover on the tree row instead of the inner button", () => {
     expect(css).toMatch(
-      /\.app-shell\[data-shell-layout="islands"\] \.nav-tree-row:has\(> \.nav-row:hover:not\(:disabled\):not\(\.is-active\):not\(\.is-multi-selected\):not\(\.is-drop-target\)\) \{\s*background: color-mix\(/,
+      /\.app-shell\.app-shell \.nav-tree-row:has\(> \.nav-row:hover:not\(:disabled\):not\(\.is-active\):not\(\.is-multi-selected\):not\(\.is-drop-target\)\) \{\s*background: color-mix\(/,
     );
   });
 
   it("keeps the asset drop target on the same rectangle", () => {
     expect(css).toMatch(
-      /\.app-shell\[data-shell-layout="islands"\] \.nav-tree-row:has\(> \.nav-row\.is-drop-target\) \{\s*background: color-mix\(/,
+      /\.app-shell\.app-shell \.nav-tree-row:has\(> \.nav-row\.is-drop-target\) \{\s*background: color-mix\(/,
     );
   });
 
   it("leaves the inner button unpainted so no second narrower highlight shows", () => {
     expect(css).toMatch(
-      /\.app-shell\[data-shell-layout="islands"\] \.nav-tree-row > \.nav-row:hover:not\(:disabled\)[^{]*\{\s*background: transparent;\s*box-shadow: none;\s*\}/,
+      /\.app-shell\.app-shell \.nav-tree-row > \.nav-row:hover:not\(:disabled\)[^{]*\{\s*background: transparent;\s*box-shadow: none;\s*\}/,
     );
     for (const state of ["is-active", "is-multi-selected", "is-drop-target"]) {
       expect(css).toMatch(
         new RegExp(
-          String.raw`\.app-shell\[data-shell-layout="islands"\] \.nav-tree-row > \.nav-row\.${state}[^{]*\{\s*background: transparent;`,
+          String.raw`\.app-shell\.app-shell \.nav-tree-row > \.nav-row\.${state}[^{]*\{\s*background: transparent;`,
         ),
       );
     }
@@ -62,10 +62,10 @@ describe("sidebar nav row states share one highlight rectangle", () => {
   it("lets a row that is both browsed and selected keep the selected treatment", () => {
     // 选中态规则必须排在「当前浏览」的 tree-row 底色之后，否则中性 wash 会把它盖掉。
     const activeIndex = lastIndex(
-      /\.app-shell\[data-shell-layout="islands"\] \.nav-row\.is-active,\s*\.app-shell\[data-shell-layout="islands"\] \.nav-row\[aria-current="page"\],\s*\.app-shell\[data-shell-layout="islands"\] \.nav-tree-row:has\(> \.nav-row\.is-active\) \{\s*background: var\(--island-select\);/g,
+      /\.app-shell\.app-shell \.nav-row\.is-active,\s*\.app-shell\.app-shell \.nav-row\[aria-current="page"\],\s*\.app-shell\.app-shell \.nav-tree-row:has\(> \.nav-row\.is-active\) \{\s*background: var\(--island-select\);/g,
     );
     const selectedIndex = lastIndex(
-      /\.app-shell\[data-shell-layout="islands"\] \.nav-tree-row:has\(> \.nav-row\.is-multi-selected\) \{\s*background: var\(--nav-selected-wash\);/g,
+      /\.app-shell\.app-shell \.nav-tree-row:has\(> \.nav-row\.is-multi-selected\) \{\s*background: var\(--nav-selected-wash\);/g,
     );
     expect(selectedIndex).toBeGreaterThan(activeIndex);
   });

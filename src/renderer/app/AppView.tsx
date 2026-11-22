@@ -787,7 +787,6 @@ export function AppView({ setPluginUiDialogOpen, pluginManagerApi, libraryLoadin
     ) : null}
     <main
       data-shortcut-version={shortcutRuntimeVersion}
-      data-shell-layout="islands"
       className={`app-shell${leftOpen ? "" : " left-collapsed"}${rightOpen ? "" : " right-collapsed"}${panelResizing ? " is-resizing" : ""}`}
       style={panelResizeShellStyle as React.CSSProperties}
     >

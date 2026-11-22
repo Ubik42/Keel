@@ -17,7 +17,7 @@ describe("a94 window background wiring", () => {
   });
 
   it("tints the veil with the window backdrop (not the Inputs surface) in islands", () => {
-    expect(css).toMatch(/:root\[data-bg-image="on"\] \.app-shell\[data-shell-layout="islands"\] \{[^}]*var\(--island-backdrop\)/);
+    expect(css).toMatch(/:root\[data-bg-image="on"\] \.app-shell\.app-shell \{[^}]*var\(--island-backdrop\)/);
   });
 
   it("pins the selection wash and card preview when the card color is overridden", () => {

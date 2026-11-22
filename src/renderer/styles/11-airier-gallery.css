@@ -1,43 +1,43 @@
 /* ---- Airier gallery ---------------------------------------------------- */
-.app-shell[data-shell-layout="islands"] .justified-row {
+.app-shell.app-shell .justified-row {
   /* Match ASSET_GRID_GAP_PX = 22 */
 }
-.app-shell[data-shell-layout="islands"] .asset-caption > span {
+.app-shell.app-shell .asset-caption > span {
   color: var(--ui-content-tertiary);
 }
 
 /* Soft chips stay monochrome */
-.app-shell[data-shell-layout="islands"] .tag-chip,
-.app-shell[data-shell-layout="islands"] .dimension-active-chip:not(.is-clear-all) {
+.app-shell.app-shell .tag-chip,
+.app-shell.app-shell .dimension-active-chip:not(.is-clear-all) {
   background: var(--island-surface-soft);
   color: var(--ui-content-secondary);
   box-shadow: none;
 }
-.app-shell[data-shell-layout="islands"] .dimension-active-chip:not(.is-clear-all) {
+.app-shell.app-shell .dimension-active-chip:not(.is-clear-all) {
   border: var(--island-hairline-w) solid var(--island-hairline);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
 }
 
 /* Inspector denser + flat */
-.app-shell[data-shell-layout="islands"] .inspector-section-label,
-.app-shell[data-shell-layout="islands"] .inspector-content .micro-label {
+.app-shell.app-shell .inspector-section-label,
+.app-shell.app-shell .inspector-content .micro-label {
   font-size: calc(10.5px * var(--ui-font-scale));
   text-transform: uppercase;
   letter-spacing: 0.04em;
   font-weight: 600;
   color: var(--ui-content-tertiary);
 }
-.app-shell[data-shell-layout="islands"] .inspector-quick-row,
-.app-shell[data-shell-layout="islands"] .inspector-quick-row + .editor-field,
-.app-shell[data-shell-layout="islands"] .inspector-tech-bar {
+.app-shell.app-shell .inspector-quick-row,
+.app-shell.app-shell .inspector-quick-row + .editor-field,
+.app-shell.app-shell .inspector-tech-bar {
   border-top: var(--island-hairline-w) solid var(--island-hairline);
 }
 
 /* Monochrome CTAs — ink pills everywhere in islands chrome */
-.app-shell[data-shell-layout="islands"] .primary-button,
-.app-shell[data-shell-layout="islands"] .empty-library .primary-button,
-.app-shell[data-shell-layout="islands"] .empty-state .primary-button,
-.app-shell[data-shell-layout="islands"] .dialog-actions .primary-button {
+.app-shell.app-shell .primary-button,
+.app-shell.app-shell .empty-library .primary-button,
+.app-shell.app-shell .empty-state .primary-button,
+.app-shell.app-shell .dialog-actions .primary-button {
   background: var(--ui-content-primary);
   color: var(--ui-content-inverse);
   border: none;
@@ -48,11 +48,11 @@
   padding-inline: 16px;
   font-weight: 560;
 }
-.app-shell[data-shell-layout="islands"] .primary-button:hover:not(:disabled) {
+.app-shell.app-shell .primary-button:hover:not(:disabled) {
   background: color-mix(in srgb, var(--ui-content-primary) 82%, var(--ui-content-inverse));
   color: var(--ui-content-inverse);
 }
-.app-shell[data-shell-layout="islands"] .secondary-button {
+.app-shell.app-shell .secondary-button {
   background: transparent;
   color: var(--ui-content-primary);
   border: var(--island-hairline-w) solid var(--island-border);
@@ -63,17 +63,17 @@
 }
 
 /* Links: secondary ink, not accent soft */
-.app-shell[data-shell-layout="islands"] a:not(.tool-button):not(.nav-row):not(.dimension-filter-btn) {
+.app-shell.app-shell a:not(.tool-button):not(.nav-row):not(.dimension-filter-btn) {
   color: var(--ui-content-secondary);
   text-decoration-color: color-mix(in srgb, var(--ui-content-primary) 25%, transparent);
 }
-.app-shell[data-shell-layout="islands"] a:not(.tool-button):not(.nav-row):hover {
+.app-shell.app-shell a:not(.tool-button):not(.nav-row):hover {
   color: var(--ui-content-primary);
 }
 
 /* Active workspace tab fuses with unified toolstrip */
-.app-shell[data-shell-layout="islands"] .workspace-tab.is-active .workspace-tab-select > .icon,
-.app-shell[data-shell-layout="islands"] .workspace-tab.is-active .workspace-tab-select > .nav-entity-glyph {
+.app-shell.app-shell .workspace-tab.is-active .workspace-tab-select > .icon,
+.app-shell.app-shell .workspace-tab.is-active .workspace-tab-select > .nav-entity-glyph {
   color: var(--ui-content-primary);
 }
 
@@ -86,32 +86,32 @@
    6) Keep a28 panel hairlines — do NOT strip
    7) No tab strokes added */
 
-.app-shell[data-shell-layout="islands"] {
+.app-shell.app-shell {
   /* 1) Backdrop toward pane; canvas closer to sides */
   --island-canvas: color-mix(in srgb, var(--ui-surface-raised) 45%, var(--ui-surface-pane));
   --island-toolstrip-bg: color-mix(in srgb, var(--ui-surface-pane) 70%, var(--island-canvas));
   --island-tab-fill: var(--island-toolstrip-bg);
 }
 
-.app-shell[data-shell-layout="islands"] > .workspace {
+.app-shell.app-shell > .workspace {
   background: var(--island-canvas);
 }
 
 /* L/R side panels: --island-side token only (no later background repaint — guard) */
 
 /* 2) Less empty space — equal L/R + scrollbar both-edges */
-.app-shell[data-shell-layout="islands"] .workspace-canvas {
+.app-shell.app-shell .workspace-canvas {
   background: var(--island-canvas);
   scrollbar-gutter: stable both-edges;
 }
-.app-shell[data-shell-layout="islands"] .justified-row {
+.app-shell.app-shell .justified-row {
   /* Match ASSET_GRID_GAP_PX = 14 */
   margin-bottom: 14px !important;
 }
-.app-shell[data-shell-layout="islands"] .navigation-scroll {
+.app-shell.app-shell .navigation-scroll {
   padding: 8px 12px 12px;
 }
-.app-shell[data-shell-layout="islands"] .inspector-content {
+.app-shell.app-shell .inspector-content {
   padding: 12px 12px 20px;
   /* Scrollbar was eating the right edge (L visual 12 vs R 12+sb) — reserve
      gutter on both edges so hero preview L/R insets match. */
@@ -119,41 +119,41 @@
 }
 
 /* 3) Caption padding tightened */
-.app-shell[data-shell-layout="islands"] .justified-card-slot .asset-caption,
-.app-shell[data-shell-layout="islands"] .masonry-card-slot .asset-caption {
+.app-shell.app-shell .justified-card-slot .asset-caption,
+.app-shell.app-shell .masonry-card-slot .asset-caption {
   padding: 11px 12px;
   gap: 4px;
   background: var(--island-canvas);
 }
 
 /* 4) Card-content display toggles: secondary muted wash, never loud accent */
-.app-shell[data-shell-layout="islands"] .canvas-controls .tool-button[aria-pressed="true"]:not(:disabled),
-.app-shell[data-shell-layout="islands"] .canvas-controls .tool-button.is-active:not(.is-accent) {
+.app-shell.app-shell .canvas-controls .tool-button[aria-pressed="true"]:not(:disabled),
+.app-shell.app-shell .canvas-controls .tool-button.is-active:not(.is-accent) {
   background: var(--island-pressed-wash);
   color: var(--ui-content-primary);
   border-color: transparent;
   box-shadow: none;
 }
-.app-shell[data-shell-layout="islands"] .canvas-controls .tool-button[aria-pressed="true"]:not(:disabled) .icon,
-.app-shell[data-shell-layout="islands"] .canvas-controls .tool-button.is-active:not(.is-accent) .icon {
+.app-shell.app-shell .canvas-controls .tool-button[aria-pressed="true"]:not(:disabled) .icon,
+.app-shell.app-shell .canvas-controls .tool-button.is-active:not(.is-accent) .icon {
   color: var(--ui-content-secondary);
 }
 
 /* 5) Toolstrip breathe from island edge (left title + right field toggles) */
-.app-shell[data-shell-layout="islands"] .workspace-toolstrip {
+.app-shell.app-shell .workspace-toolstrip {
   padding: 8px 20px 10px;
 }
-.app-shell[data-shell-layout="islands"] .workspace-toolstrip .workspace-bar {
+.app-shell.app-shell .workspace-toolstrip .workspace-bar {
   padding: 0;
 }
-.app-shell[data-shell-layout="islands"] .workspace-toolstrip .workspace-discovery {
+.app-shell.app-shell .workspace-toolstrip .workspace-discovery {
   padding: 2px 0 0;
 }
 
 /* 6) Reassert a28 panel hairlines (do not strip) */
-.app-shell[data-shell-layout="islands"] > .navigation-pane,
-.app-shell[data-shell-layout="islands"] > .inspector-pane,
-.app-shell[data-shell-layout="islands"] > .workspace {
+.app-shell.app-shell > .navigation-pane,
+.app-shell.app-shell > .inspector-pane,
+.app-shell.app-shell > .workspace {
   border: var(--island-hairline-w) solid var(--island-border);
   border-radius: var(--island-radius);
   box-shadow: none;
@@ -166,17 +166,17 @@
    the same for .workspace. Hole under active tab covered with tab-fill only
    (no divider). Tab SVG keeps soft --island-tab-stroke; a45 backdrop kept. */
 
-.app-shell[data-shell-layout="islands"] .workspace-tab,
-.app-shell[data-shell-layout="islands"] .workspace-tab:not(.is-active),
-.app-shell[data-shell-layout="islands"] .workspace-tab:not(.is-active):hover,
-.app-shell[data-shell-layout="islands"] .workspace-tab.is-active {
+.app-shell.app-shell .workspace-tab,
+.app-shell.app-shell .workspace-tab:not(.is-active),
+.app-shell.app-shell .workspace-tab:not(.is-active):hover,
+.app-shell.app-shell .workspace-tab.is-active {
   border: none;
   border-width: 0;
   outline: none;
   filter: none;
 }
 
-.app-shell[data-shell-layout="islands"] .workspace-tab.is-active {
+.app-shell.app-shell .workspace-tab.is-active {
   --canvas: var(--island-tab-fill);
   background: transparent;
   color: var(--ui-content-primary);
@@ -186,21 +186,21 @@
   z-index: 2;
 }
 
-.app-shell[data-shell-layout="islands"] .workspace-tab.is-active::before,
-.app-shell[data-shell-layout="islands"] .workspace-tab.is-active::after {
+.app-shell.app-shell .workspace-tab.is-active::before,
+.app-shell.app-shell .workspace-tab.is-active::after {
   content: none;
 }
 
-.app-shell[data-shell-layout="islands"] .workspace-tab-outline {
+.app-shell.app-shell .workspace-tab-outline {
   z-index: 0;
 }
 
-.app-shell[data-shell-layout="islands"] .workspace-tab-outline-fill {
+.app-shell.app-shell .workspace-tab-outline-fill {
   fill: var(--island-tab-fill);
   stroke: none;
 }
 
-.app-shell[data-shell-layout="islands"] .workspace-tab-outline-path {
+.app-shell.app-shell .workspace-tab-outline-path {
   fill: none;
   stroke: var(--island-tab-stroke);
   stroke-width: var(--island-hairline-w);
@@ -212,14 +212,14 @@
 /* Same perimeter language as nav/inspector: one border color on all sides so
    radius corners AA cleanly. Semi-transparent border still shows through a
    background hole — cover under-tab with an opaque ::after ON TOP of the border. */
-.app-shell[data-shell-layout="islands"]:has(.workspace-tab-outline) > .workspace {
+.app-shell.app-shell:has(.workspace-tab-outline) > .workspace {
   border: var(--island-hairline-w) solid var(--island-border);
   border-radius: var(--island-radius);
   background-color: var(--island-canvas);
   background-image: none;
 }
 
-.app-shell[data-shell-layout="islands"]:has(.workspace-tab-outline) > .workspace::after {
+.app-shell.app-shell:has(.workspace-tab-outline) > .workspace::after {
   content: "";
   position: absolute;
   /* Absolute containing block is the padding edge — sit on the top border. */
@@ -232,7 +232,7 @@
   z-index: 4;
 }
 
-.app-shell[data-shell-layout="islands"] .workspace-tabs-list {
+.app-shell.app-shell .workspace-tabs-list {
   padding-bottom: 2px;
   margin-bottom: -2px;
   overflow-y: visible;

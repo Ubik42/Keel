@@ -10,8 +10,8 @@
    a66 label centering kept (name translateY 0.5px). Remove × with the same
    0.5px down sat optically low in the tip — flip to translateY(-0.5px).
    a65 radii + a63 contrast + single mask unchanged. */
-.app-shell[data-shell-layout="islands"] .tag-chip,
-.app-shell[data-shell-layout="islands"] .filter-tag-chip {
+.app-shell.app-shell .tag-chip,
+.app-shell.app-shell .filter-tag-chip {
   --tag-hairline: 28%;
   --tag-hairline-hover: 36%;
   position: relative;
@@ -28,8 +28,8 @@
 }
 
 /* Single paint + one 9-slice mask (tip & left radius fixed; middle stretches) */
-.app-shell[data-shell-layout="islands"] .tag-chip::before,
-.app-shell[data-shell-layout="islands"] .filter-tag-chip::before {
+.app-shell.app-shell .tag-chip::before,
+.app-shell.app-shell .filter-tag-chip::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -37,28 +37,28 @@
   z-index: 0;
 }
 
-.app-shell[data-shell-layout="islands"] .tag-chip::after,
-.app-shell[data-shell-layout="islands"] .filter-tag-chip::after {
+.app-shell.app-shell .tag-chip::after,
+.app-shell.app-shell .filter-tag-chip::after {
   content: none;
 }
 
-.app-shell[data-shell-layout="islands"] .tag-chip {
+.app-shell.app-shell .tag-chip {
   gap: 2px;
   color: var(--ui-content-secondary);
 }
 
-.app-shell[data-shell-layout="islands"] .tag-chip-dot {
+.app-shell.app-shell .tag-chip-dot {
   display: none;
 }
 
-.app-shell[data-shell-layout="islands"] .tag-chip-name,
-.app-shell[data-shell-layout="islands"] .tag-chip-remove,
-.app-shell[data-shell-layout="islands"] .inspector-ai-badge-inline {
+.app-shell.app-shell .tag-chip-name,
+.app-shell.app-shell .tag-chip-remove,
+.app-shell.app-shell .inspector-ai-badge-inline {
   position: relative;
   z-index: 1;
 }
 
-.app-shell[data-shell-layout="islands"] .tag-chip-remove {
+.app-shell.app-shell .tag-chip-remove {
   order: 3;
   display: inline-flex;
   align-items: center;
@@ -72,30 +72,30 @@
   /* Opposite of label nudge: Lucide × in the tip reads low at +0.5px */
   transform: translateY(-0.5px);
 }
-.app-shell[data-shell-layout="islands"] .tag-chip-remove .icon {
+.app-shell.app-shell .tag-chip-remove .icon {
   display: block;
   flex: 0 0 auto;
 }
-.app-shell[data-shell-layout="islands"] .tag-chip:hover .tag-chip-remove {
+.app-shell.app-shell .tag-chip:hover .tag-chip-remove {
   opacity: 1;
 }
-.app-shell[data-shell-layout="islands"] .tag-chip-name {
+.app-shell.app-shell .tag-chip-name {
   order: 2;
   display: inline-flex;
   align-items: center;
   line-height: 1;
   transform: translateY(0.5px);
 }
-.app-shell[data-shell-layout="islands"] .tag-chip-dot,
-.app-shell[data-shell-layout="islands"] .inspector-ai-badge-inline {
+.app-shell.app-shell .tag-chip-dot,
+.app-shell.app-shell .inspector-ai-badge-inline {
   order: 1;
 }
 
-.app-shell[data-shell-layout="islands"] .filter-tag-chip {
+.app-shell.app-shell .filter-tag-chip {
   height: var(--shell-chip-height);
   color: var(--ui-content-secondary);
 }
-.app-shell[data-shell-layout="islands"] .filter-tag-chip button {
+.app-shell.app-shell .filter-tag-chip button {
   position: relative;
   z-index: 1;
   display: inline-flex;
@@ -105,43 +105,43 @@
   line-height: 0;
   transform: translateY(-0.5px);
 }
-.app-shell[data-shell-layout="islands"] .filter-tag-chip.is-selected {
+.app-shell.app-shell .filter-tag-chip.is-selected {
   color: color-mix(in srgb, var(--accent) 55%, var(--ui-content-primary));
 }
-:root[data-theme="dark"] .app-shell[data-shell-layout="islands"] .filter-tag-chip.is-selected {
+:root[data-theme="dark"] .app-shell.app-shell .filter-tag-chip.is-selected {
   color: color-mix(in srgb, var(--accent) 45%, white);
 }
 
 /* ==== a70: punchy accent highlights (Codex) ==============================
    Surfaces stay quiet; emphasis glyphs use FULL --accent (not tertiary mixes).
    Codex: full accent on muted chrome — scarce but vivid. */
-.app-shell[data-shell-layout="islands"] .rating-star[data-active],
-.app-shell[data-shell-layout="islands"] .rating-star:hover {
+.app-shell.app-shell .rating-star[data-active],
+.app-shell.app-shell .rating-star:hover {
   color: var(--accent);
 }
-.app-shell[data-shell-layout="islands"] .rating-star[data-active] .icon,
-.app-shell[data-shell-layout="islands"] .rating-star:hover .icon {
+.app-shell.app-shell .rating-star[data-active] .icon,
+.app-shell.app-shell .rating-star:hover .icon {
   color: var(--accent);
   fill: currentColor;
   stroke: currentColor;
   stroke-width: 1;
   opacity: 1;
 }
-.app-shell[data-shell-layout="islands"] .dimension-rating-chip.is-active:not(:disabled) {
+.app-shell.app-shell .dimension-rating-chip.is-active:not(:disabled) {
   border-color: color-mix(in srgb, var(--accent) 75%, transparent);
   background: color-mix(in srgb, var(--accent) 26%, transparent);
   color: var(--accent);
   font-weight: 650;
 }
-.app-shell[data-shell-layout="islands"] .item-count {
+.app-shell.app-shell .item-count {
   color: var(--accent);
   font-weight: 550;
 }
-.app-shell[data-shell-layout="islands"] .nav-row.is-active .nav-count {
+.app-shell.app-shell .nav-row.is-active .nav-count {
   color: var(--accent);
   font-weight: 550;
 }
-.app-shell[data-shell-layout="islands"] .inspector-ai-badge {
+.app-shell.app-shell .inspector-ai-badge {
   background: color-mix(in srgb, var(--accent) 24%, transparent);
   color: var(--accent);
 }
@@ -149,7 +149,7 @@
 /* ==== a72: soften border presence ========================================
    Owner: borders felt too loud. Keep structure, drop contrast + weight.
    Punchy accents (a70) and tag silhouette (a65–a67) unchanged. */
-.app-shell[data-shell-layout="islands"] {
+.app-shell.app-shell {
   --island-border: color-mix(in srgb, var(--ui-content-primary) 6%, transparent);
   --island-hairline: color-mix(in srgb, var(--ui-content-primary) 4%, transparent);
   /* Tab stroke follows quieter border */
@@ -157,25 +157,25 @@
 }
 
 /* Cards / chips / fields: quieter default strokes (selection accent stays loud). */
-.app-shell[data-shell-layout="islands"] .asset-card:not(.is-selected):not(:focus-visible) {
+.app-shell.app-shell .asset-card:not(.is-selected):not(:focus-visible) {
   border-color: var(--island-hairline);
 }
-.app-shell[data-shell-layout="islands"] .text-field,
-.app-shell[data-shell-layout="islands"] .filter-tag-expression-input,
-.app-shell[data-shell-layout="islands"] .inspector-input,
-.app-shell[data-shell-layout="islands"] .inspector-textarea,
-.app-shell[data-shell-layout="islands"] .search-control-wrap,
-.app-shell[data-shell-layout="islands"] .tag-input-chip,
-.app-shell[data-shell-layout="islands"] .dimension-filter-popover,
-.app-shell[data-shell-layout="islands"] .filter-preset-chip:not(.is-active),
-.app-shell[data-shell-layout="islands"] .dimension-active-chip:not(.is-clear-all) {
+.app-shell.app-shell .text-field,
+.app-shell.app-shell .filter-tag-expression-input,
+.app-shell.app-shell .inspector-input,
+.app-shell.app-shell .inspector-textarea,
+.app-shell.app-shell .search-control-wrap,
+.app-shell.app-shell .tag-input-chip,
+.app-shell.app-shell .dimension-filter-popover,
+.app-shell.app-shell .filter-preset-chip:not(.is-active),
+.app-shell.app-shell .dimension-active-chip:not(.is-clear-all) {
   border-color: var(--island-hairline);
 }
-.app-shell[data-shell-layout="islands"] .text-field:focus,
-.app-shell[data-shell-layout="islands"] .filter-tag-expression-input:focus-within,
-.app-shell[data-shell-layout="islands"] .inspector-input:focus,
-.app-shell[data-shell-layout="islands"] .inspector-textarea:focus,
-.app-shell[data-shell-layout="islands"] .search-control-wrap:focus-within {
+.app-shell.app-shell .text-field:focus,
+.app-shell.app-shell .filter-tag-expression-input:focus-within,
+.app-shell.app-shell .inspector-input:focus,
+.app-shell.app-shell .inspector-textarea:focus,
+.app-shell.app-shell .search-control-wrap:focus-within {
   border-color: color-mix(in srgb, var(--accent) 45%, var(--island-hairline));
 }
 
@@ -184,13 +184,13 @@
    Keep a70 accents, a72 borders, a65–a67 tags. */
 
 /* 1) Filter chips wrap within their own row (row pin is a79) */
-.app-shell[data-shell-layout="islands"] .dimension-filter-bar {
+.app-shell.app-shell .dimension-filter-bar {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
   min-width: 0;
 }
-.app-shell[data-shell-layout="islands"] .dimension-filter-dims {
+.app-shell.app-shell .dimension-filter-dims {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -201,57 +201,57 @@
 }
 
 /* 2) Create-library: smaller radii — not 999px capsules */
-.app-shell[data-shell-layout="islands"] .create-dialog .primary-button,
-.app-shell[data-shell-layout="islands"] .create-dialog .secondary-button,
-.app-shell[data-shell-layout="islands"] .create-library-dialog .primary-button,
-.app-shell[data-shell-layout="islands"] .create-library-dialog .secondary-button,
-.app-shell[data-shell-layout="islands"] .create-dialog .dialog-actions .primary-button,
-.app-shell[data-shell-layout="islands"] .create-dialog .dialog-actions .secondary-button,
-.app-shell[data-shell-layout="islands"] .create-dialog .empty-actions .primary-button,
-.app-shell[data-shell-layout="islands"] .create-dialog .empty-actions .secondary-button {
+.app-shell.app-shell .create-dialog .primary-button,
+.app-shell.app-shell .create-dialog .secondary-button,
+.app-shell.app-shell .create-library-dialog .primary-button,
+.app-shell.app-shell .create-library-dialog .secondary-button,
+.app-shell.app-shell .create-dialog .dialog-actions .primary-button,
+.app-shell.app-shell .create-dialog .dialog-actions .secondary-button,
+.app-shell.app-shell .create-dialog .empty-actions .primary-button,
+.app-shell.app-shell .create-dialog .empty-actions .secondary-button {
   border-radius: calc(8px * var(--ui-radius-scale, 1));
 }
-.app-shell[data-shell-layout="islands"] .create-dialog .text-field,
-.app-shell[data-shell-layout="islands"] .create-library-dialog .text-field {
+.app-shell.app-shell .create-dialog .text-field,
+.app-shell.app-shell .create-library-dialog .text-field {
   border-radius: calc(8px * var(--ui-radius-scale, 1));
 }
 
 /* 3) Sort: quieter than full accent filter highlight */
-.app-shell[data-shell-layout="islands"] .sort-mode-control .dimension-filter-btn.is-active:not(:disabled),
-.app-shell[data-shell-layout="islands"] .sort-mode-control .dimension-filter-btn.is-active[aria-pressed="true"] {
+.app-shell.app-shell .sort-mode-control .dimension-filter-btn.is-active:not(:disabled),
+.app-shell.app-shell .sort-mode-control .dimension-filter-btn.is-active[aria-pressed="true"] {
   background: var(--island-pressed-wash);
   color: var(--ui-content-primary);
   font-weight: 510;
   box-shadow: none;
 }
-.app-shell[data-shell-layout="islands"] .sort-mode-control .dimension-filter-btn.is-active .icon {
+.app-shell.app-shell .sort-mode-control .dimension-filter-btn.is-active .icon {
   color: var(--ui-content-secondary);
 }
-:root[data-theme="dark"] .app-shell[data-shell-layout="islands"] .sort-mode-control .dimension-filter-btn.is-active:not(:disabled) {
+:root[data-theme="dark"] .app-shell.app-shell .sort-mode-control .dimension-filter-btn.is-active:not(:disabled) {
   background: var(--island-pressed-wash);
   color: var(--ui-content-primary);
 }
-.app-shell[data-shell-layout="islands"] .sort-mode-option.is-active {
+.app-shell.app-shell .sort-mode-option.is-active {
   background: var(--island-pressed-wash);
   color: var(--ui-content-primary);
 }
 
 /* 4) Asset card text truncation — clean ellipsis */
-.app-shell[data-shell-layout="islands"] .asset-caption {
+.app-shell.app-shell .asset-caption {
   min-width: 0;
   overflow: hidden;
 }
-.app-shell[data-shell-layout="islands"] .asset-caption strong,
-.app-shell[data-shell-layout="islands"] .asset-caption strong.asset-caption-filename {
+.app-shell.app-shell .asset-caption strong,
+.app-shell.app-shell .asset-caption strong.asset-caption-filename {
   min-width: 0;
   max-width: 100%;
   overflow: hidden;
 }
-.app-shell[data-shell-layout="islands"] .asset-caption strong.asset-caption-filename {
+.app-shell.app-shell .asset-caption strong.asset-caption-filename {
   display: flex;
   text-overflow: clip;
 }
-.app-shell[data-shell-layout="islands"] .asset-filename-prefix {
+.app-shell.app-shell .asset-filename-prefix {
   min-width: 0;
   flex: 0 1 auto;
   overflow: hidden;
@@ -260,13 +260,13 @@
 }
 
 /* 5 + 9) Restore original card title weight + type sizes (main/dev: 11/500 + 9) */
-.app-shell[data-shell-layout="islands"] .asset-caption strong {
+.app-shell.app-shell .asset-caption strong {
   font-size: calc(11px * var(--ui-font-scale));
   line-height: calc(14px * var(--ui-font-scale));
   font-weight: var(--ui-font-weight-medium);
   letter-spacing: 0.01em;
 }
-.app-shell[data-shell-layout="islands"] .asset-caption > span {
+.app-shell.app-shell .asset-caption > span {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -278,15 +278,15 @@
 /* 6) Asset browser L/R padding — less empty gutter */
 
 /* 7) Selected card hover keeps accent selection stroke (not gray) */
-.app-shell[data-shell-layout="islands"] .asset-card.is-selected:hover,
-.app-shell[data-shell-layout="islands"] .asset-card.is-selected:focus-visible,
-.app-shell[data-shell-layout="islands"] .asset-card.is-selected:hover:focus-visible {
+.app-shell.app-shell .asset-card.is-selected:hover,
+.app-shell.app-shell .asset-card.is-selected:focus-visible,
+.app-shell.app-shell .asset-card.is-selected:hover:focus-visible {
   border-color: var(--accent);
   /* Ring is the 1px border only — no outer shadow that doubles/gaps the top. */
   box-shadow: none;
 }
-:root:not([data-elevation="0"]) .app-shell[data-shell-layout="islands"] .asset-card.is-selected:hover,
-:root:not([data-elevation="0"]) .app-shell[data-shell-layout="islands"] .asset-card.is-selected:focus-visible {
+:root:not([data-elevation="0"]) .app-shell.app-shell .asset-card.is-selected:hover,
+:root:not([data-elevation="0"]) .app-shell.app-shell .asset-card.is-selected:focus-visible {
   box-shadow: none;
 }
 
@@ -294,7 +294,7 @@
    Selection ring = 1px accent border. Selected card fill is accent so any
    sub-pixel frame between border and media reads as the ring (not canvas).
    Media uses the card radius and is clipped by overflow:hidden. */
-.app-shell[data-shell-layout="islands"] .asset-card {
+.app-shell.app-shell .asset-card {
   isolation: isolate;
   container-type: inline-size;
   border-width: 1px;
@@ -302,45 +302,45 @@
   background-clip: border-box;
   overflow: hidden;
 }
-.app-shell[data-shell-layout="islands"] .asset-card.is-selected,
-.app-shell[data-shell-layout="islands"] .asset-card:focus-visible {
+.app-shell.app-shell .asset-card.is-selected,
+.app-shell.app-shell .asset-card:focus-visible {
   border-width: 1px;
   border-color: var(--accent);
   background: var(--accent);
   box-shadow: none;
   outline: none;
 }
-:root:not([data-elevation="0"]) .app-shell[data-shell-layout="islands"] .asset-card.is-selected,
-:root:not([data-elevation="0"]) .app-shell[data-shell-layout="islands"] .asset-card:focus-visible {
+:root:not([data-elevation="0"]) .app-shell.app-shell .asset-card.is-selected,
+:root:not([data-elevation="0"]) .app-shell.app-shell .asset-card:focus-visible {
   box-shadow: none;
 }
-.app-shell[data-shell-layout="islands"] .asset-card.is-selected:hover,
-.app-shell[data-shell-layout="islands"] .asset-card.is-selected:focus-visible {
+.app-shell.app-shell .asset-card.is-selected:hover,
+.app-shell.app-shell .asset-card.is-selected:focus-visible {
   border-color: var(--accent);
   background: var(--accent);
   box-shadow: none;
 }
-.app-shell[data-shell-layout="islands"] .asset-card .asset-preview {
+.app-shell.app-shell .asset-card .asset-preview {
   margin: 0;
 }
-.app-shell[data-shell-layout="islands"] .justified-row,
-.app-shell[data-shell-layout="islands"] .justified-card-slot,
-.app-shell[data-shell-layout="islands"] .masonry-card-slot {
+.app-shell.app-shell .justified-row,
+.app-shell.app-shell .justified-card-slot,
+.app-shell.app-shell .masonry-card-slot {
   overflow: visible;
 }
-.app-shell[data-shell-layout="islands"] .workspace-canvas {
+.app-shell.app-shell .workspace-canvas {
   padding: 10px 8px 18px;
   /* Keep a little top air so a 1px selection stroke is not chewed by the toolstrip seam */
   padding-top: 10px;
 }
 
 /* 10) Panels closer to window edges — smaller outer island inset (Codex/macOS) */
-.app-shell[data-shell-layout="islands"] > .navigation-pane,
-.app-shell[data-shell-layout="islands"] > .inspector-pane,
-.app-shell[data-shell-layout="islands"] > .workspace {
+.app-shell.app-shell > .navigation-pane,
+.app-shell.app-shell > .inspector-pane,
+.app-shell.app-shell > .workspace {
   margin: 0 var(--island-gap) var(--island-gap);
 }
-.app-shell[data-shell-layout="islands"] > .navigation-pane { margin-right: 0; }
-.app-shell[data-shell-layout="islands"] > .inspector-pane { margin-left: 0; }
+.app-shell.app-shell > .navigation-pane { margin-right: 0; }
+.app-shell.app-shell > .inspector-pane { margin-left: 0; }
 
 

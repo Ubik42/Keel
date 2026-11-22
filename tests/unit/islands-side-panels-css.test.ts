@@ -10,7 +10,7 @@ describe("islands side panels share one surface", () => {
 
   it("paints sidebar and inspector with the same token, opaque, as the last word", () => {
     const rule =
-      /\.app-shell\[data-shell-layout="islands"\] > \.navigation-pane,\s*\.app-shell\[data-shell-layout="islands"\] > \.inspector-pane \{\s*background: var\(--island-side\);\s*backdrop-filter: none;/g;
+      /\.app-shell\.app-shell > \.navigation-pane,\s*\.app-shell\.app-shell > \.inspector-pane \{\s*background: var\(--island-side\);\s*backdrop-filter: none;/g;
     const matches = [...css.matchAll(rule)];
     expect(matches.length).toBeGreaterThan(0);
     const last = matches.at(-1)!.index!;
