@@ -162,10 +162,13 @@ export class RuleRunner {
     // The rule context is one line in front of the script.
     const context = { id: rule.manifest.id, trigger: reason, scope: rule.manifest.scope, dryRun };
     const source = `const rule = Object.freeze(${JSON.stringify(context)});\n${rule.source}`;
+    // The grant is keyed by manifest + script, not by this run's context, so
+    // one confirmation covers every trigger until the rule is edited.
     const created = journal.create({
       source: 'script',
       libraryId,
-      scriptSource: source,
+      scriptSource: `${JSON.stringify(rule.manifest)}
+${rule.source}`,
       declaredCapabilities: capabilities as never,
     });
     const executionId = created.executionId;
