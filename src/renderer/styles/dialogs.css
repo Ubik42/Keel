@@ -3,7 +3,7 @@
 .create-dialog-existing-label {
   margin-bottom: 8px;
   color: var(--ui-content-secondary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   font-weight: 560;
   letter-spacing: 0.02em;
 }
@@ -37,7 +37,7 @@
   gap: 8px;
   padding: 8px 10px;
   border: none;
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   background: transparent;
   color: var(--ui-content-primary);
   cursor: pointer;
@@ -59,7 +59,7 @@
   justify-content: center;
   width: 22px;
   height: 22px;
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   color: var(--ui-content-secondary);
 }
 
@@ -80,7 +80,7 @@
 .create-dialog-recent-name {
   overflow: hidden;
   max-width: 100%;
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   font-weight: 560;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -91,7 +91,7 @@
   max-width: 100%;
   color: var(--ui-content-tertiary);
   font-family: "IBM Plex Mono", ui-monospace, monospace;
-  font-size: calc(10px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-10);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -193,7 +193,7 @@
 .zip-archive-file-size,
 .zip-archive-note {
   color: var(--ui-content-secondary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
 }
 
 .zip-archive-note {
@@ -229,7 +229,7 @@
   margin: auto;
   padding: 20px;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(12px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-12);
   background: var(--ui-pane);
   box-shadow: var(--ui-shadow-elevated);
   /* Opacity-only enter — translateY fights true window centering. */
@@ -245,7 +245,7 @@
   max-width: 36em;
   margin: 8px 0 0;
   color: var(--ui-content-secondary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   line-height: 1.65;
 }
 
@@ -278,7 +278,7 @@
 .script-sandbox-preview-result-title {
   margin: 0 0 7px;
   color: var(--ui-content-secondary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   font-weight: var(--ui-font-weight-semibold);
 }
 
@@ -289,11 +289,11 @@
   margin: 0;
   padding: 12px;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
   background: color-mix(in srgb, var(--ui-canvas) 72%, var(--ui-surface-raised));
   color: var(--ui-content-primary);
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   line-height: 1.55;
   tab-size: 2;
 }
@@ -326,10 +326,10 @@
   overflow: auto;
   min-height: 260px;
   border: 1px solid var(--ui-border-subtle);
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
   background: color-mix(in srgb, var(--ui-surface-raised) 72%, var(--ui-pane));
   color: var(--ui-content-secondary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   line-height: 1.5;
 }
 
@@ -356,7 +356,9 @@
 }
 
 .script-sandbox-preview-output-label {
+  /* stylelint-disable declaration-no-important -- not yet covered by the style snapshot; check this view before removing */
   margin-top: 12px !important;
+  /* stylelint-enable declaration-no-important */
 }
 
 .script-sandbox-preview-recent {
@@ -389,7 +391,7 @@
   min-height: 32px;
   padding: 5px 8px;
   border: 1px solid var(--ui-border-subtle);
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   background: color-mix(in srgb, var(--ui-surface-raised) 70%, transparent);
   color: var(--ui-content-secondary);
 }
@@ -410,11 +412,11 @@
   min-height: 26px;
   padding: 3px 8px;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-5);
   background: transparent;
   color: var(--ui-content-secondary);
   cursor: pointer;
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
 }
 
 .script-sandbox-preview-history-action:hover {
@@ -432,8 +434,8 @@
 
 .script-sandbox-preview-dialog .dialog-actions > button {
   min-height: 32px;
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
-  font-size: calc(12px * var(--ui-font-scale));
+  border-radius: var(--ui-radius-6);
+  font-size: var(--ui-font-size-12);
 }
 
 .dialog-actions-start {
@@ -457,7 +459,7 @@
 
 .dialog-heading h2 {
   margin: 5px 0 0;
-  font-size: calc(19px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-19);
   font-weight: 590;
 }
 
@@ -521,10 +523,10 @@
   height: 24px;
   padding: 0 10px;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   background: var(--ui-pane);
   color: var(--ui-content-primary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
 }
 
 .open-sync-library-open:hover {
@@ -544,7 +546,7 @@
   padding: 0;
   place-items: center;
   border: 1px solid transparent;
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   background: transparent;
   color: var(--ui-content-secondary);
   cursor: pointer;
@@ -557,7 +559,7 @@
 .dialog-body-copy {
   margin: 0;
   color: var(--ui-content-secondary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   line-height: 1.6;
 }
 
@@ -565,7 +567,7 @@
   margin: 0;
   padding-left: 1.25rem;
   color: var(--ui-content-secondary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   line-height: 1.6;
 }
 
@@ -575,7 +577,7 @@
   gap: 8px;
   margin-top: 12px;
   color: var(--ui-content-secondary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   line-height: 1.5;
   cursor: pointer;
 }
@@ -591,13 +593,13 @@
 .dialog-checkbox-row.field-help {
   margin-top: 12px;
   color: var(--ui-content-tertiary);
-  font-size: calc(10px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-10);
 }
 
 .dialog-alert-warning {
   margin: 8px 0 0;
   color: var(--ui-status-warning);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   line-height: 1.5;
 }
 
@@ -651,23 +653,23 @@
   gap: 3px;
   padding: 10px 12px;
   border: 1px solid var(--ui-border-subtle);
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
   background: var(--ui-surface-raised-subtle);
 }
 
 .open-source-dialog-content li strong {
   color: var(--ui-content-primary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
 }
 
 .open-source-dialog-content li span {
   color: var(--ui-content-secondary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
 }
 
 .import-progress-strip {
   align-items: center;
-  border-radius: calc(10px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-10);
 }
 
 .import-progress-body {
@@ -738,7 +740,7 @@
   margin: auto;
   padding: 20px;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(12px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-12);
   background: var(--ui-pane);
   box-shadow: var(--ui-shadow-elevated);
   animation: dialog-enter 180ms ease-out both;
@@ -751,7 +753,7 @@
 .conflict-summary-line {
   margin: 0 0 14px;
   color: var(--ui-content-secondary);
-  font-size: calc(13px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-13);
   line-height: 1.45;
 }
 
@@ -761,7 +763,7 @@
   gap: 8px;
   margin: 10px 0 4px;
   color: var(--ui-content-tertiary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   line-height: 1.4;
 }
 
@@ -773,7 +775,7 @@
   margin: 8px 0 0;
   overflow: hidden;
   color: var(--ui-content-tertiary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -805,7 +807,7 @@
   height: 40px;
   flex: 0 0 auto;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   object-fit: cover;
   background: var(--ui-canvas);
 }
@@ -827,7 +829,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   line-height: 1.35;
 }
 
@@ -850,7 +852,7 @@
   overflow: hidden;
   margin-bottom: 18px;
   border: 1px solid var(--ui-border-subtle);
-  border-radius: calc(4px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-4);
   background: var(--ui-border-subtle);
 }
 
@@ -866,13 +868,13 @@
 .conflict-summary strong {
   color: var(--ui-content-primary);
   font-family: "IBM Plex Mono", monospace;
-  font-size: calc(17px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-17);
   font-weight: var(--ui-font-weight-medium);
 }
 
 .conflict-summary span {
   color: var(--ui-content-tertiary);
-  font-size: calc(9px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-9);
 }
 
 .decision-field {
@@ -882,7 +884,7 @@
   gap: 10px;
   margin: 9px 0;
   color: var(--ui-content-secondary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
 }
 
 .decision-field select {
@@ -894,14 +896,14 @@
   height: var(--ui-shell-control-height);
   padding: 0 28px 0 8px;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   background-color: var(--ui-surface-raised);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' viewBox='0 0 12 12'%3E%3Cpath stroke='%23777c79' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M3 4.5 6 7.5 9 4.5'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 8px center;
   background-size: 12px 12px;
   color: var(--ui-content-primary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   cursor: pointer;
   transition:
     border-color 120ms ease,
@@ -919,7 +921,9 @@
 }
 
 [data-theme="light"] .decision-field select {
+  /* stylelint-disable keel/no-theme-overrides -- existing override; move it into a per-theme token when this component is rewritten (docs/进度.md PT ④) */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' viewBox='0 0 12 12'%3E%3Cpath stroke='%238a8f8a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M3 4.5 6 7.5 9 4.5'/%3E%3C/svg%3E");
+  /* stylelint-enable keel/no-theme-overrides */
 }
 
 .conflict-examples {
@@ -931,7 +935,7 @@
   margin-top: 14px;
   padding: 9px;
   border: 1px solid var(--ui-border-subtle);
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
   background: var(--ui-pane);
 }
 
@@ -941,7 +945,7 @@
   gap: 7px;
   min-width: 0;
   color: var(--ui-content-secondary);
-  font-size: calc(10px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-10);
 }
 
 /* a93: Settings backdrop fades out only while an appearance control is being

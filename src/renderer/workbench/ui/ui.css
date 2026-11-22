@@ -352,7 +352,7 @@ textarea.ui-field__control {
 
 .ui-select .ui-select-text-field {
   padding-right: 28px;
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   line-height: normal;
   text-align: left;
   cursor: pointer;

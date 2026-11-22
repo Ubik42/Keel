@@ -2,8 +2,8 @@
 
 :root {
   color-scheme: dark;
-  color: var(--ui-content-primary, #f2f3f5);
-  background: var(--ui-surface-canvas, #16171a);
+  color: var(--ui-content-primary);
+  background: var(--ui-surface-canvas);
   /* Latin-first stack: U+2026 (the text-overflow ellipsis glyph) must resolve
      from a Latin font so the dots sit on the text baseline. CJK fonts such as
      Noto Sans SC render U+2026 as a full-width, vertically-centered glyph,
@@ -120,9 +120,9 @@
 
 [data-theme="light"] {
   color-scheme: light;
-  color: var(--ui-content-primary, #1a1b1e);
+  color: var(--ui-content-primary);
   /* ~1% brighter canvas after elevation shadows read dark. */
-  background: var(--ui-surface-canvas, #f0f1f3);
+  background: var(--ui-surface-canvas);
   /* Was hardcoded #1d4ed8 — that froze soft labels to blue after accent change. */
   /* Light: exclude red softer than --danger on destructive buttons (FILTER-022). */
   /* soft amber warning family (one hue for icon+text). */
@@ -180,18 +180,22 @@ summary:focus-visible {
 
 *.is-scrollbar-active,
 *.is-scrollbar-proximity {
-  scrollbar-color: rgb(255 255 255 / 22%) transparent;
+  scrollbar-color: var(--ui-white-a22) transparent;
   transition: none;
 }
 
 [data-theme="light"] * {
+  /* stylelint-disable keel/no-theme-overrides -- existing override; move it into a per-theme token when this component is rewritten (docs/进度.md PT ④) */
   transition: scrollbar-color var(--scrollbar-fade-out, 220ms) ease-in;
+  /* stylelint-enable keel/no-theme-overrides */
 }
 
 [data-theme="light"] *.is-scrollbar-active,
 [data-theme="light"] *.is-scrollbar-proximity {
-  scrollbar-color: rgb(0 0 0 / 28%) transparent;
+  /* stylelint-disable keel/no-theme-overrides -- existing override; move it into a per-theme token when this component is rewritten (docs/进度.md PT ④) */
+  scrollbar-color: var(--ui-black-a28) transparent;
   transition: none;
+  /* stylelint-enable keel/no-theme-overrides */
 }
 
 ::-webkit-scrollbar {
@@ -206,7 +210,7 @@ summary:focus-visible {
 
 ::-webkit-scrollbar-thumb {
   border: 3px solid transparent;
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
   background: transparent;
   background-clip: padding-box;
   transition: background var(--scrollbar-fade-out, 220ms) ease-in;
@@ -214,30 +218,34 @@ summary:focus-visible {
 
 *.is-scrollbar-active::-webkit-scrollbar-thumb,
 *.is-scrollbar-proximity::-webkit-scrollbar-thumb {
-  background: rgb(255 255 255 / 13%);
+  background: var(--ui-white-a13);
   background-clip: padding-box;
   transition: none;
 }
 
 *.is-scrollbar-active::-webkit-scrollbar-thumb:hover,
 *.is-scrollbar-proximity::-webkit-scrollbar-thumb:hover {
-  background: rgb(255 255 255 / 24%);
+  background: var(--ui-white-a24);
   background-clip: padding-box;
   transition: background 120ms ease-out;
 }
 
 [data-theme="light"] *.is-scrollbar-active::-webkit-scrollbar-thumb,
 [data-theme="light"] *.is-scrollbar-proximity::-webkit-scrollbar-thumb {
-  background: rgb(0 0 0 / 18%);
+  /* stylelint-disable keel/no-theme-overrides -- existing override; move it into a per-theme token when this component is rewritten (docs/进度.md PT ④) */
+  background: var(--ui-black-a18);
   background-clip: padding-box;
   transition: none;
+  /* stylelint-enable keel/no-theme-overrides */
 }
 
 [data-theme="light"] *.is-scrollbar-active::-webkit-scrollbar-thumb:hover,
 [data-theme="light"] *.is-scrollbar-proximity::-webkit-scrollbar-thumb:hover {
-  background: rgb(0 0 0 / 28%);
+  /* stylelint-disable keel/no-theme-overrides -- existing override; move it into a per-theme token when this component is rewritten (docs/进度.md PT ④) */
+  background: var(--ui-black-a28);
   background-clip: padding-box;
   transition: background 120ms ease-out;
+  /* stylelint-enable keel/no-theme-overrides */
 }
 
 .app-shell {
@@ -373,6 +381,8 @@ input[type="range"] {
   }
 }
 
+/* Reduced motion must win over every component animation. */
+/* stylelint-disable declaration-no-important */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -383,6 +393,7 @@ input[type="range"] {
     transition-duration: 0.01ms !important;
   }
 }
+/* stylelint-enable declaration-no-important */
 
 /* Windows guidance sets 12 effective pixels as the regular UI-text floor.
    Keep these explicit platform overrides after component rules so the cascade
@@ -405,7 +416,7 @@ input[type="range"] {
     .filter-tag-options button,
     .filter-tag-count
   ) {
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   /* The tertiary token is intentionally decorative and falls below small-text
      contrast on both themes. Windows captions remain subtle but readable. */
   color: var(--ui-content-secondary);
@@ -425,7 +436,7 @@ input[type="range"] {
     .nav-count,
     .library-switcher-section-label
   ) {
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   color: var(--ui-content-secondary);
 }
 
@@ -617,9 +628,9 @@ input[type="range"] {
 
 :root {
   --ui-island-gap: 12px;
-  --ui-island-radius: calc(22px * var(--ui-radius-scale, 1));
+  --ui-island-radius: var(--ui-radius-22);
   --ui-island-group-gap: 20px;
-  --ui-island-card-radius: calc(14px * var(--ui-radius-scale, 1));
+  --ui-island-card-radius: var(--ui-radius-14);
   --ui-font-emoji:
     "Segoe UI Emoji",
     "Segoe UI Symbol",
@@ -627,6 +638,8 @@ input[type="range"] {
     "Noto Color Emoji",
     sans-serif;
   --ui-windows-caption-close-hover: #e81123;
+  --ui-windows-caption-fg-light: #5a5a5a;
+  --ui-windows-caption-hover-fg-light: #1a1a1a;
   --ui-windows-caption-close-hover-fg: #ffffff;
   --ui-preview-nav-on-dark-stroke: #000;
   --ui-preview-nav-on-dark-fill: #fff;
@@ -639,14 +652,14 @@ input[type="range"] {
   --ui-elev-size: 0.9;
   --ui-elev-intensity: 0.8;
   --ui-menu-surface-border: color-mix(in srgb, var(--ui-border-divider) 82%, transparent);
-  --ui-menu-surface-radius: calc(8px * var(--ui-radius-scale, 1));
+  --ui-menu-surface-radius: var(--ui-radius-8);
   --ui-menu-surface-shadow: var(--ui-shadow-menu);
   --ui-menu-item-focus-background: color-mix(in srgb, var(--ui-content-primary) 11%, transparent);
   --ui-menu-item-disabled-opacity: 0.4;
   --ui-menu-danger-color: color-mix(in srgb, var(--ui-status-danger) 78%, var(--ui-content-primary));
   --ui-menu-danger-hover-background: color-mix(in srgb, var(--ui-status-danger) 14%, var(--ui-surface-hover));
   --ui-menu-item-padding: 6px 10px;
-  --ui-menu-item-font-size: calc(12.5px * var(--ui-font-scale));
+  --ui-menu-item-font-size: var(--ui-font-size-12-5);
   --ui-menu-item-line-height: 1.4;
   --ui-shell-toolbar-height: 44px;
   --ui-shell-workspace-bar-height: 40px;
@@ -730,8 +743,8 @@ input[type="range"] {
   --island-tab-stroke: color-mix(in srgb, var(--island-border) 45%, var(--island-backdrop));
   --island-backdrop: color-mix(in oklab, var(--ui-surface-pane) 95%, black);
   background-color: var(--island-backdrop);
-  --ui-island-radius: calc(16px * var(--ui-radius-scale, 1));
-  --ui-island-card-radius: calc(10px * var(--ui-radius-scale, 1));
+  --ui-island-radius: var(--ui-radius-16);
+  --ui-island-card-radius: var(--ui-radius-10);
   --ui-island-group-gap: 12px;
   --island-accent-loud: var(--ui-action-accent);
   --island-segment-pill-shadow: none;
@@ -752,6 +765,7 @@ input[type="range"] {
 }
 
 :root[data-theme="dark"] .app-shell.app-shell {
+  /* stylelint-disable keel/no-theme-overrides -- existing override; move it into a per-theme token when this component is rewritten (docs/进度.md PT ④) */
   --island-surface-soft: color-mix(in srgb, var(--ui-surface-raised) 88%, white);
   --island-surface-recess: color-mix(in srgb, white 7%, transparent);
   --island-select: color-mix(in srgb, white 8%, transparent);
@@ -779,6 +793,7 @@ input[type="range"] {
       rgb(0 0 0 / calc(0.30 * var(--ui-elev-intensity))),
     0 calc(3px * var(--ui-elev-size)) calc(8px * var(--ui-elev-size))
       rgb(0 0 0 / calc(0.42 * var(--ui-elev-intensity)));
+  /* stylelint-enable keel/no-theme-overrides */
 }
 
 /* ── a90/a91: background image in the panels ──────────────────────────────

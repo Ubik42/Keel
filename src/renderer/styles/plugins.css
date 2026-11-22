@@ -29,14 +29,14 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   color: var(--ui-content-primary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   font-weight: 620;
 }
 
 .plugin-job-activity-queued-more {
   flex: 0 0 auto;
   color: var(--ui-content-secondary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   font-weight: 500;
   white-space: nowrap;
 }
@@ -44,7 +44,7 @@
 .plugin-job-activity-error {
   overflow: hidden;
   color: var(--ui-status-danger);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   line-height: 1.35;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -69,20 +69,20 @@
 }
 
 .preview-markdown .plugin-readme-markdown {
-  font-size: calc(15px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-15);
   line-height: 1.6;
 }
 
 .preview-markdown .plugin-readme-markdown [data-level="1"] {
-  font-size: calc(22px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-22);
 }
 
 .preview-markdown .plugin-readme-markdown [data-level="2"] {
-  font-size: calc(18px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-18);
 }
 
 .preview-markdown .plugin-readme-markdown [data-level="3"] {
-  font-size: calc(16px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-16);
 }
 
 .text-asset-preview-markdown .plugin-readme-markdown {
@@ -90,7 +90,7 @@
   height: 100%;
   overflow: hidden;
   gap: 4px;
-  font-size: calc(10px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-10);
   line-height: 1.35;
 }
 
@@ -103,18 +103,18 @@
 }
 
 .text-asset-preview-markdown .plugin-readme-markdown [data-level="1"] {
-  font-size: calc(13px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-13);
 }
 
 .text-asset-preview-markdown .plugin-readme-markdown [data-level="2"] {
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
 }
 
 .text-asset-preview-markdown .plugin-readme-markdown [data-level="3"],
 .text-asset-preview-markdown .plugin-readme-markdown [data-level="4"],
 .text-asset-preview-markdown .plugin-readme-markdown [data-level="5"],
 .text-asset-preview-markdown .plugin-readme-markdown [data-level="6"] {
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
 }
 
 .text-asset-preview-markdown .plugin-readme-markdown p,
@@ -130,7 +130,7 @@
 }
 
 .inspector-hero-text-preview .text-asset-preview-markdown .plugin-readme-markdown {
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
 }
 
 .plugin-inspector-section-header {
@@ -144,10 +144,10 @@
   flex-shrink: 0;
   padding: 4px 10px;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   background: var(--ui-surface-raised);
   color: var(--ui-content-primary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   cursor: pointer;
 }
 
@@ -176,7 +176,7 @@
   min-height: 280px;
   flex: 1 1 280px;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
   /* Transparent: the rounded corners show the workspace veil (same backdrop
      opacity as the canvas); the iframe document covers it once loaded. */
   background: transparent;
@@ -229,7 +229,7 @@
   width: 100%;
   min-height: 200px;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
   background: var(--ui-canvas);
 }
 
@@ -255,7 +255,7 @@
   padding: 6px 10px;
   border: 1px solid var(--ui-border-divider);
   color: var(--ui-content-primary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   cursor: pointer;
 }
 
@@ -266,9 +266,9 @@
   width: min(400px, calc(100vw - 48px));
   padding: 8px;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(10px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-10);
   background: color-mix(in srgb, var(--ui-pane) 92%, transparent);
-  box-shadow: 0 8px 24px rgb(0 0 0 / 18%);
+  box-shadow: 0 8px 24px var(--ui-black-a18);
   backdrop-filter: blur(12px);
 }
 
@@ -282,7 +282,7 @@
   width: 100%;
   min-height: 180px;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
   background: var(--ui-canvas);
 }
 
@@ -308,7 +308,7 @@
   width: 100%;
   min-height: 280px;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
   background: var(--ui-canvas);
 }
 
@@ -349,7 +349,7 @@
   gap: 10px;
   min-width: 0;
   color: var(--ui-content-primary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   line-height: 1.55;
 }
 
@@ -363,15 +363,15 @@
 }
 
 .plugin-readme-markdown h4 {
-  font-size: calc(14px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-14);
 }
 
 .plugin-readme-markdown h5 {
-  font-size: calc(13px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-13);
 }
 
 .plugin-readme-markdown h6 {
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
 }
 
 .plugin-readme-markdown p,
@@ -444,19 +444,19 @@
   overflow-x: auto;
   margin: 0;
   padding: 10px 12px;
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   background: var(--ui-surface-raised-subtle);
 }
 
 .plugin-readme-markdown code {
   font-family: var(--ui-font-family-mono);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
 }
 
 .plugin-readme-markdown p code,
 .plugin-readme-markdown li code {
   padding: 1px 5px;
-  border-radius: calc(4px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-4);
   background: var(--ui-surface-raised-subtle);
 }
 
@@ -517,7 +517,7 @@
 }
 
 .plugin-settings-package-name {
-  font-size: calc(13px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-13);
   font-weight: var(--ui-font-weight-semibold);
   color: var(--ui-content-primary);
   line-height: 1.35;
@@ -538,7 +538,7 @@
   gap: 5px;
   margin: 0;
   color: var(--ui-status-warning-content);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   line-height: 1.4;
 }
 
@@ -567,7 +567,7 @@
   height: 28px;
   padding: 0;
   border: none;
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   background: transparent;
   color: var(--ui-content-secondary);
   cursor: pointer;
@@ -689,7 +689,7 @@
 }
 
 .plugin-install-choice-copy strong {
-  font-size: calc(13px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-13);
   font-weight: 620;
 }
 
@@ -697,7 +697,7 @@
 .plugin-install-github-intro p {
   margin: 0;
   color: var(--ui-content-secondary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   line-height: 1.4;
 }
 
@@ -715,7 +715,7 @@
   border: 0;
   background: transparent;
   color: var(--ui-content-secondary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   cursor: pointer;
 }
 
@@ -730,7 +730,7 @@
 }
 
 .plugin-install-github-intro strong {
-  font-size: calc(13px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-13);
   font-weight: 620;
 }
 
@@ -753,7 +753,7 @@
   justify-content: space-between;
   gap: 12px;
   color: var(--ui-content-primary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   font-weight: 560;
 }
 
@@ -786,7 +786,7 @@
 .plugin-settings-error {
   margin: 0;
   color: var(--ui-status-danger);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   line-height: 1.45;
 }
 
@@ -802,7 +802,7 @@
   justify-content: flex-start;
   padding-top: 2px;
   color: var(--ui-content-secondary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   line-height: 1.4;
 }
 
@@ -863,7 +863,7 @@
 .plugin-job-progress-message {
   margin-top: 4px;
   color: var(--ui-content-secondary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   line-height: 1.4;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
@@ -1084,7 +1084,7 @@
   color: var(--ui-content-secondary);
   cursor: pointer;
   font: inherit;
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
 }
 
 .plugin-widget-tabs__tab:hover,
@@ -1107,14 +1107,14 @@
 .plugin-widget-note {
   margin: 0;
   color: var(--ui-content-secondary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   line-height: 1.45;
 }
 
 .plugin-widget-heading {
   margin: 0.65rem 0 0;
   color: var(--ui-content-primary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   font-weight: 600;
   line-height: 1.3;
 }
@@ -1136,7 +1136,7 @@
   border: 1px solid var(--ui-border-subtle);
   border-radius: var(--ui-radius-control);
   color: var(--ui-content-primary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
 }
 
 .plugin-widget-group:has(.plugin-widget-list) .plugin-widget-list {
@@ -1191,7 +1191,7 @@
 }
 
 .plugin-widget-list__highlight {
-  border-radius: 0.18rem;
+  border-radius: calc(0.18rem * var(--ui-radius-scale));
   padding: 0 0.08em;
 }
 
@@ -1212,11 +1212,11 @@
   align-self: flex-end;
   padding: 0.35rem 0.55rem;
   border: 1px solid var(--ui-border-subtle);
-  border-radius: 0.35rem;
+  border-radius: calc(0.35rem * var(--ui-radius-scale));
   background: var(--ui-surface-raised);
   color: var(--ui-content-secondary);
   font: inherit;
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   line-height: 1;
   cursor: pointer;
 }

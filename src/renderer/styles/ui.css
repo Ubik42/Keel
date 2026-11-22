@@ -1,12 +1,16 @@
 /* ui: rules whose subject element belongs to this area (P5). */
 
 [data-theme="light"] .toast .icon {
+  /* stylelint-disable keel/no-theme-overrides -- existing override; move it into a per-theme token when this component is rewritten (docs/进度.md PT ④) */
   color: var(--ui-content-secondary);
+  /* stylelint-enable keel/no-theme-overrides */
 }
 
 [data-theme="light"] .toast.is-error .icon,
 [data-theme="light"] .toast.is-warning .icon {
+  /* stylelint-disable keel/no-theme-overrides -- existing override; move it into a per-theme token when this component is rewritten (docs/进度.md PT ④) */
   color: var(--ui-status-warning-content);
+  /* stylelint-enable keel/no-theme-overrides */
 }
 
 /* A solid fill already draws the edge. Another outline repeats it. */
@@ -187,10 +191,10 @@
   min-height: 28px;
   padding: 0 11px;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   background: var(--ui-pane);
   color: var(--ui-content-primary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   font-weight: 520;
   line-height: 1;
   white-space: nowrap;
@@ -235,10 +239,10 @@
   min-height: 30px;
   padding: 0 12px;
   border: 1px solid color-mix(in srgb, var(--plugin-job-status-color) 28%, var(--ui-border-divider));
-  border-radius: calc(7px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-7);
   background: var(--ui-pane);
   color: var(--ui-content-primary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   font-weight: 560;
   line-height: 1;
   white-space: nowrap;
@@ -263,12 +267,15 @@
   animation: feature-hint-accent-pulse 2.2s ease-in-out infinite;
 }
 
+/* The feature hint keeps pulsing: it overrides the global reduced-motion reset. */
+/* stylelint-disable declaration-no-important */
 @media (prefers-reduced-motion: reduce) {
   .tiny-action.is-feature-hinting {
     animation-duration: 2.2s !important;
     animation-iteration-count: infinite !important;
   }
 }
+/* stylelint-enable declaration-no-important */
 
 .tag-management-create .text-field {
   flex: 1 1 180px;
@@ -278,7 +285,7 @@
 .micro-label {
   color: var(--accent);
   font-family: "IBM Plex Mono", monospace;
-  font-size: calc(9px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-9);
   font-weight: var(--ui-font-weight-medium);
   letter-spacing: 0.13em;
 }
@@ -287,7 +294,7 @@
   max-width: 440px;
   margin: 0;
   color: var(--ui-content-secondary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   line-height: 1.72;
 }
 
@@ -299,8 +306,8 @@
   justify-content: center;
   gap: 7px;
   padding: 0 14px;
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
-  font-size: calc(12px * var(--ui-font-scale));
+  border-radius: var(--ui-radius-6);
+  font-size: var(--ui-font-size-12);
   font-weight: 560;
   cursor: pointer;
 }
@@ -328,10 +335,10 @@
   padding: 10px 11px;
   border: 1px solid color-mix(in srgb, var(--ui-status-warning) 38%, transparent);
   border-left: 2px solid var(--ui-status-warning);
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   background: color-mix(in srgb, var(--ui-status-warning) 8%, var(--ui-pane));
   color: var(--ui-content-primary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
 }
 
 .inline-error > .icon {
@@ -355,7 +362,7 @@
   border: 0;
   background: transparent;
   color: var(--ui-status-warning-content);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   cursor: pointer;
 }
 
@@ -483,7 +490,7 @@
 
 .create-dialog .micro-label {
   color: var(--ui-content-tertiary);
-  font-size: calc(9.5px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-9-5);
   letter-spacing: 0.1em;
 }
 
@@ -538,7 +545,7 @@
   height: 22px;
   padding: 0;
   border: none;
-  border-radius: calc(4px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-4);
   background: transparent;
   color: var(--ui-content-tertiary);
   cursor: pointer;
@@ -573,7 +580,7 @@
   margin: 0;
   padding: 0 6px;
   font: inherit;
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   line-height: 1.3;
   color: var(--ui-content-primary);
   user-select: text;
@@ -632,7 +639,7 @@
   color: var(--accent);
   cursor: pointer;
   font: inherit;
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
 }
 
 .text-button:disabled {
@@ -654,7 +661,7 @@
   display: block;
   margin-bottom: 7px;
   color: var(--ui-content-secondary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   font-weight: 560;
 }
 
@@ -667,10 +674,10 @@
   height: 34px;
   padding: 0 10px;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   background: var(--ui-canvas);
   color: var(--ui-content-primary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   transition:
     border-color 120ms ease,
     box-shadow 120ms ease;
@@ -697,12 +704,12 @@
 .field-help {
   margin: 7px 0 0;
   color: var(--ui-content-tertiary);
-  font-size: calc(10px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-10);
 }
 
 .text-field-mono {
   font-family: "IBM Plex Mono", monospace;
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
 }
 
 .dialog-actions.is-stacked .primary-button,
@@ -727,10 +734,10 @@
   gap: 6px;
   padding: 0 10px;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   background: transparent;
   color: var(--ui-content-primary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   white-space: nowrap;
   cursor: pointer;
 }
@@ -792,7 +799,7 @@
   height: 18px;
   margin: 0;
   border-radius: 0;
-  font-size: calc(14px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-14);
 }
 
 .library-settings-name-row .text-field {
@@ -866,14 +873,14 @@
   height: var(--ui-shell-control-height);
   padding: 0 28px 0 8px;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   background-color: var(--ui-surface-raised);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' viewBox='0 0 12 12'%3E%3Cpath stroke='%23777c79' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M3 4.5 6 7.5 9 4.5'/%3E%3C/svg%3E");
+  background-image: var(--ui-select-chevron);
   background-repeat: no-repeat;
   background-position: right 8px center;
   background-size: 12px 12px;
   color: var(--ui-content-primary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   cursor: pointer;
   transition:
     border-color 120ms ease,
@@ -894,10 +901,6 @@
   content: none;
 }
 
-[data-theme="light"] .decision-field .ui-select-trigger {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' viewBox='0 0 12 12'%3E%3Cpath stroke='%238a8f8a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M3 4.5 6 7.5 9 4.5'/%3E%3C/svg%3E");
-}
-
 .nav-inline-edit > .icon {
   justify-self: center;
 }
@@ -908,7 +911,7 @@
   border: 0;
   background: transparent;
   box-shadow: none;
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
 }
 
 :root[data-platform="windows"] .micro-label {
@@ -922,7 +925,7 @@
 }
 
 :root[data-platform="windows"] .app-shell.app-shell .inspector-content .micro-label {
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   letter-spacing: 0.01em;
   color: var(--ui-content-secondary);
 }
@@ -942,7 +945,7 @@
 
 .inspector-content .micro-label {
   color: var(--ui-content-tertiary);
-  font-size: calc(10.5px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-10-5);
   letter-spacing: 0.04em;
 }
 
@@ -1017,7 +1020,7 @@
   padding: 10px;
   margin-bottom: 12px;
   border: 1px solid var(--ui-border-subtle);
-  border-radius: calc(10px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-10);
   background: var(--island-surface-soft);
   border-color: var(--ui-island-hairline);
   color: var(--ui-content-tertiary);
@@ -1033,7 +1036,7 @@
   background: var(--ui-content-primary);
   color: var(--ui-content-inverse);
   border-color: transparent;
-  border-radius: 9999px;
+  border-radius: var(--ui-radius-9999);
   box-shadow: none;
 }
 
@@ -1050,7 +1053,7 @@
   background: transparent;
   color: var(--ui-content-primary);
   border: var(--island-hairline-w) solid var(--island-border);
-  border-radius: 9999px;
+  border-radius: var(--ui-radius-9999);
   box-shadow: none;
 }
 
@@ -1073,7 +1076,7 @@
 }
 
 .app-shell.app-shell .inspector-content .micro-label {
-  font-size: calc(10.5px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-10-5);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   font-weight: 600;
@@ -1090,7 +1093,7 @@
   color: var(--ui-content-inverse);
   border: none;
   outline: none;
-  border-radius: 9999px;
+  border-radius: var(--ui-radius-9999);
   box-shadow: none;
   min-height: 32px;
   padding-inline: 16px;
@@ -1106,7 +1109,7 @@
   background: transparent;
   color: var(--ui-content-primary);
   border: var(--island-hairline-w) solid var(--island-border);
-  border-radius: 9999px;
+  border-radius: var(--ui-radius-9999);
   box-shadow: none;
   min-height: 32px;
   padding-inline: 16px;
@@ -1155,12 +1158,12 @@
 .app-shell.app-shell .create-dialog .dialog-actions .secondary-button,
 .app-shell.app-shell .create-dialog .empty-actions .primary-button,
 .app-shell.app-shell .create-dialog .empty-actions .secondary-button {
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
 }
 
 .app-shell.app-shell .create-dialog .text-field,
 .app-shell.app-shell .create-library-dialog .text-field {
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
 }
 
 .app-shell.app-shell .sort-mode-control .dimension-filter-btn.is-active .icon {
@@ -1183,7 +1186,7 @@
 .app-shell.app-shell .app-settings-dialog .ui-field__control:not(textarea) {
   height: 30px;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   background: var(--ui-surface-raised);
   box-shadow: none;
   font-weight: 400;
@@ -1211,11 +1214,11 @@
   min-height: 28px;
   padding: 0 10px;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   background: transparent;
   color: var(--ui-content-secondary);
   box-shadow: none;
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   font-weight: 400;
 }
 
@@ -1237,11 +1240,11 @@
   min-height: 28px;
   padding: 0 10px;
   border: 1px solid var(--accent);
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   background: var(--ui-action-accent-soft);
   color: var(--ui-content-accent);
   box-shadow: none;
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   font-weight: 400;
 }
 
@@ -1259,4 +1262,4 @@
 
 .automatic-task-group-editor .text-field{width:100%;min-width:0}
 
-.tag-tree-inline-edit > .text-field { flex: 1; min-width: 0; width: 0; height: 26px; padding: 2px 5px; font-size: 12px; }
+.tag-tree-inline-edit > .text-field { flex: 1; min-width: 0; width: 0; height: 26px; padding: 2px 5px; font-size: var(--ui-font-size-12); }

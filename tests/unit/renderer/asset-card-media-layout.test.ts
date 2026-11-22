@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 import { readRendererStyles } from "../../support/renderer-styles";
@@ -14,17 +16,17 @@ describe("asset-card media fallback layout", () => {
   it("uses a thin pill progress bar for hover scrub", () => {
     const styles = readRendererStyles();
     expect(styles).toMatch(
-      /\.asset-card-hover-progress\s*\{[\s\S]*?height:\s*10px;[\s\S]*?background:\s*rgb\(255 255 255 \/ 35%\);/,
+      /\.asset-card-hover-progress\s*\{[\s\S]*?height:\s*10px;[\s\S]*?background:\s*var\(--ui-white-a35\);/,
     );
     expect(styles).toMatch(
-      /\.asset-card-hover-progress-fill\s*\{[\s\S]*?background:\s*rgb\(255 255 255 \/ 70%\);/,
+      /\.asset-card-hover-progress-fill\s*\{[\s\S]*?background:\s*var\(--ui-hover-progress-fill\);/,
     );
     expect(styles).toMatch(
-      /\[data-theme="light"\] \.asset-card-hover-progress\s*\{[\s\S]*?background:\s*rgb\(255 255 255 \/ 25%\);/,
+      /\[data-theme="light"\] \.asset-card-hover-progress\s*\{[\s\S]*?background:\s*var\(--ui-white-a25\);/,
     );
-    expect(styles).toMatch(
-      /\[data-theme="light"\] \.asset-card-hover-progress-fill\s*\{[\s\S]*?background:\s*rgb\(255 255 255 \/ 50%\);/,
-    );
+    // The fill differs by theme through a token: 70% white in dark, 50% in light.
+    const tokens = readFileSync(path.resolve(__dirname, "../../../src/renderer/workbench/ui/tokens.css"), "utf8");
+    expect(tokens).toMatch(/--ui-hover-progress-fill: var\(--ui-white-a70\);[\s\S]*--ui-hover-progress-fill: var\(--ui-white-a50\);/);
     expect(styles).not.toMatch(/\.asset-card-hover-playhead\s*\{/);
   });
 

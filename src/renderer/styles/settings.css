@@ -59,7 +59,7 @@
 .appearance-picker-heading {
   margin: 0;
   color: var(--ui-content-tertiary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   font-weight: 650;
 }
 
@@ -76,7 +76,7 @@
   place-items: center;
   padding: 0;
   border: 1px solid transparent;
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   background: transparent;
   color: var(--ui-content-primary);
   cursor: pointer;
@@ -104,11 +104,11 @@
 .appearance-picker-clear {
   padding: 4px 8px;
   border: none;
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   background: transparent;
   color: var(--ui-content-secondary);
   font-family: inherit;
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   cursor: pointer;
 }
 
@@ -155,7 +155,7 @@
   display: inline-flex;
   gap: 5px;
   color: var(--ui-content-secondary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   white-space: nowrap;
   min-height: 24px;
   line-height: 1.2;
@@ -200,7 +200,7 @@
   width: min(200px, 28vw);
   padding: 3px 6px;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-5);
   background: transparent;
   color: var(--ui-content-primary);
   font: inherit;
@@ -231,7 +231,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   line-height: 1;
 }
 
@@ -250,7 +250,7 @@
 .ai-config-note {
   margin: -4px 0 0;
   color: var(--ui-content-secondary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   line-height: 1.55;
 }
 
@@ -272,7 +272,7 @@
   gap: 6px;
   min-width: 0;
   color: var(--ui-content-secondary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   line-height: 1.25;
 }
 
@@ -411,13 +411,13 @@
 
 .ai-config-input {
   height: 28px;
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
 }
 
 .ai-config-hint {
   margin: 4px 0 0;
   color: var(--ui-content-tertiary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   line-height: 1.45;
 }
 
@@ -479,7 +479,7 @@
   overflow: auto;
   list-style: none;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
   background: var(--ui-pane);
   box-shadow: var(--ui-shadow-menu);
 }
@@ -495,12 +495,12 @@
   width: 100%;
   padding: 6px 8px;
   border: 0;
-  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-5);
   background: transparent;
   color: var(--ui-content-primary);
   cursor: pointer;
   font: inherit;
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   text-align: left;
 }
 
@@ -512,7 +512,7 @@
 .ai-config-model-picker-empty {
   padding: 8px;
   color: var(--ui-content-tertiary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   line-height: 1.45;
 }
 
@@ -551,7 +551,7 @@ select.ai-config-input {
   gap: 8px;
   padding: 3px 0;
   color: var(--ui-content-primary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   cursor: pointer;
 }
 
@@ -588,7 +588,7 @@ select.ai-config-input {
   cursor: pointer;
   list-style: none;
   padding: 8px 0;
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   font-weight: var(--ui-font-weight-medium);
   color: var(--ui-content-secondary);
   user-select: none;
@@ -647,7 +647,7 @@ select.ai-config-input {
 }
 
 .ai-config-test-inline {
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   line-height: 1.35;
   max-width: 280px;
 }
@@ -662,7 +662,7 @@ select.ai-config-input {
 
 .ai-config-save-wait {
   margin: 0 16px 12px;
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   color: var(--ui-content-secondary);
 }
 
@@ -675,7 +675,7 @@ select.ai-config-input {
   place-items: center;
   padding: 0;
   border: 1px solid transparent;
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
   background: transparent;
   color: var(--ui-content-secondary);
   cursor: pointer;
@@ -755,7 +755,7 @@ select.ai-config-input {
   margin: 0;
   padding: 6px 10px;
   color: var(--ui-content-secondary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   line-height: 1.4;
   white-space: nowrap;
   overflow: hidden;
@@ -770,11 +770,11 @@ select.ai-config-input {
   gap: 9px;
   padding: 7px 9px;
   border: 1px solid transparent;
-  border-radius: calc(7px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-7);
   background: transparent;
   color: var(--ui-content-secondary);
   cursor: pointer;
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   font-weight: 540;
   text-align: left;
   transition:
@@ -809,7 +809,7 @@ select.ai-config-input {
   min-height: calc(var(--ui-size-chip) - var(--ui-space-1));
   padding: 0 var(--ui-space-1);
   border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-5);
   background: var(--ui-action-accent-soft);
   color: var(--ui-content-accent);
   font-size: calc(var(--ui-font-size-micro) - 2px);
@@ -872,14 +872,14 @@ select.ai-config-input {
 .app-settings-page-heading p {
   margin: 6px 0 0;
   color: var(--ui-content-secondary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   line-height: 1.45;
 }
 
 .app-settings-page-heading h3 {
   margin: 0;
   color: var(--ui-content-primary);
-  font-size: calc(19px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-19);
   font-weight: 590;
   letter-spacing: -0.025em;
   line-height: 1.2;
@@ -889,9 +889,9 @@ select.ai-config-input {
   min-width: 0;
   padding: 14px 15px;
   border: 1px solid color-mix(in srgb, var(--ui-border-divider) 92%, transparent);
-  border-radius: calc(10px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-10);
   background: color-mix(in srgb, var(--ui-surface-raised) 92%, var(--ui-pane));
-  box-shadow: inset 0 1px rgb(255 255 255 / 2%);
+  box-shadow: inset 0 1px var(--ui-white-a2);
 }
 
 .app-settings-row,
@@ -913,14 +913,14 @@ select.ai-config-input {
   margin: 0;
   padding-left: 1.2rem;
   color: var(--ui-content-secondary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   line-height: 1.55;
 }
 
 .app-settings-help-note {
   margin: 0;
   color: color-mix(in srgb, var(--ui-content-secondary) 82%, var(--ui-content-tertiary));
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   line-height: 1.5;
 }
 
@@ -938,14 +938,14 @@ select.ai-config-input {
   margin: 0;
   padding: 5px 0 2px;
   color: var(--ui-content-tertiary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   line-height: 1.5;
 }
 
 .mcp-permission-client {
   padding: 10px 11px;
   border: 1px solid color-mix(in srgb, var(--ui-border-divider) 88%, transparent);
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
   background: color-mix(in srgb, var(--ui-surface-raised) 55%, var(--ui-pane));
 }
 
@@ -963,11 +963,11 @@ select.ai-config-input {
   min-width: 120px;
   padding: 4px 8px;
   border: 1px solid transparent;
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   background: transparent;
   color: var(--ui-content-primary);
   font: inherit;
-  font-size: calc(13px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-13);
   font-weight: 590;
   line-height: 1.4;
 }
@@ -1001,7 +1001,7 @@ select.ai-config-input {
   height: 30px;
   padding: 0;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   background: transparent;
   color: var(--ui-content-secondary);
   cursor: pointer;
@@ -1059,7 +1059,7 @@ select.ai-config-input {
   border-radius: var(--ui-radius-pill);
   background: var(--ui-pane);
   color: var(--ui-content-secondary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   line-height: 1.45;
 }
 
@@ -1117,19 +1117,19 @@ select.ai-config-input {
   display: block;
   margin-top: 12px;
   color: var(--ui-content-tertiary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
 }
 
 .app-settings-row-copy strong {
   color: var(--ui-content-primary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   font-weight: 590;
   line-height: 1.35;
 }
 
 .app-settings-row-copy > span {
   color: var(--ui-content-secondary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   line-height: 1.45;
 }
 
@@ -1237,7 +1237,7 @@ select.ai-config-input {
 .app-settings-toggle-track {
   width: 100%;
   height: 100%;
-  border-radius: 999px;
+  border-radius: var(--ui-radius-999);
   background: color-mix(in srgb, var(--ui-content-tertiary) 52%, var(--ui-border-divider));
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ui-content-inverse) 10%, transparent);
   transition:
@@ -1254,7 +1254,7 @@ select.ai-config-input {
   height: 14px;
   border-radius: 50%;
   background: white;
-  box-shadow: 0 1px 2px rgb(0 0 0 / 22%);
+  box-shadow: 0 1px 2px var(--ui-black-a22);
   transition: transform 140ms ease;
 }
 
@@ -1283,7 +1283,7 @@ select.ai-config-input {
   gap: 6px;
   color: var(--ui-content-primary);
   cursor: pointer;
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
 }
 
 @media (max-width: 680px) {
@@ -1322,7 +1322,7 @@ select.ai-config-input {
 .app-settings-hint {
   margin: 4px 0 0;
   color: var(--ui-content-tertiary);
-  font-size: calc(10px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-10);
   line-height: 1.35;
 }
 
@@ -1355,7 +1355,7 @@ select.ai-config-input {
 
 .app-settings-elevation-slider::-webkit-slider-runnable-track {
   height: 3px;
-  border-radius: calc(2px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-2);
   background: var(--ui-border-divider);
 }
 
@@ -1376,7 +1376,7 @@ select.ai-config-input {
 
 .app-settings-elevation-slider::-moz-range-track {
   height: 3px;
-  border-radius: calc(2px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-2);
   background: var(--ui-border-divider);
 }
 
@@ -1441,7 +1441,7 @@ select.ai-config-input {
 
 .app-settings-elevation-tick-label {
   font-family: "IBM Plex Mono", monospace;
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   font-variant-numeric: tabular-nums;
   line-height: 1;
   white-space: nowrap;
@@ -1452,7 +1452,7 @@ select.ai-config-input {
   justify-content: space-between;
   padding: 2px var(--elev-inset) 0;
   color: var(--ui-content-tertiary);
-  font-size: calc(10px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-10);
   line-height: 1.2;
 }
 
@@ -1467,7 +1467,7 @@ select.ai-config-input {
 .app-settings-font-size-label {
   padding: 2px var(--elev-inset) 0;
   color: var(--ui-content-secondary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   line-height: 1.2;
   text-align: center;
 }
@@ -1482,10 +1482,10 @@ select.ai-config-input {
 .app-settings-option {
   padding: 6px 12px;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   background: transparent;
   color: var(--ui-content-primary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   cursor: pointer;
 }
 
@@ -1522,7 +1522,7 @@ select.ai-config-input {
 .settings-error-message,
 .settings-success-message {
   margin: 12px 0 0;
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   line-height: 1.45;
 }
 
@@ -1628,7 +1628,7 @@ select.ai-config-input {
   width: 72%;
   height: 20px;
   margin-top: 3px;
-  border-radius: calc(3px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-3);
   background: var(--theme-preview-raised);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--theme-preview-text) 14%, transparent);
 }
@@ -1824,7 +1824,7 @@ select.ai-config-input {
   gap: 2px;
   min-width: 0;
   color: var(--ui-content-primary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
 }
 
 .about-dialog {
@@ -1850,7 +1850,7 @@ select.ai-config-input {
   place-items: center;
   padding: 0;
   border: 0;
-  border-radius: calc(7px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-7);
   background: transparent;
   color: var(--ui-content-tertiary);
   cursor: pointer;
@@ -1877,7 +1877,7 @@ select.ai-config-input {
   height: 76px;
   margin-bottom: 4px;
   border: 1px solid color-mix(in srgb, var(--ui-border-divider) 72%, transparent);
-  border-radius: calc(18px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-18);
   box-shadow: var(--ui-shadow-panel);
   object-fit: cover;
 }
@@ -1885,7 +1885,7 @@ select.ai-config-input {
 .about-dialog-brand h2 {
   margin: 0;
   color: var(--ui-content-primary);
-  font-size: calc(24px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-24);
   font-weight: var(--ui-font-weight-bold);
   letter-spacing: -0.03em;
 }
@@ -1893,7 +1893,7 @@ select.ai-config-input {
 .about-dialog-brand p {
   margin: 0;
   color: var(--ui-content-secondary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
 }
 
 .about-dialog-version-row {
@@ -1906,7 +1906,7 @@ select.ai-config-input {
 
 .about-dialog-version {
   color: var(--accent);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   font-weight: var(--ui-font-weight-semibold);
 }
 
@@ -1944,16 +1944,18 @@ select.ai-config-input {
 .about-dialog-copy p {
   margin: 0;
   color: var(--ui-content-secondary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   line-height: 1.65;
 }
 
 .about-dialog-etymology {
+  /* stylelint-disable declaration-no-important -- not yet covered by the style snapshot; check this view before removing */
   margin-top: 12px !important;
   color: var(--ui-content-tertiary) !important;
   font-family: "IBM Plex Mono", monospace;
-  font-size: calc(10px * var(--ui-font-scale)) !important;
+  font-size: var(--ui-font-size-10) !important;
   letter-spacing: 0.01em;
+  /* stylelint-enable declaration-no-important */
 }
 
 /* Theme color settings: two columns of aligned label/swatch pairs. */
@@ -1987,7 +1989,7 @@ select.ai-config-input {
   height: 30px;
   padding: 0;
   border: 1px solid color-mix(in srgb, var(--ui-content-primary) 12%, transparent);
-  border-radius: calc(10px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-10);
   cursor: pointer;
   appearance: none;
   background: transparent;
@@ -2000,7 +2002,7 @@ select.ai-config-input {
 
 .app-settings-custom-theme-swatch::-webkit-color-swatch {
   border: none;
-  border-radius: calc(9px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-9);
 }
 
 .app-settings-custom-theme-swatch:focus-visible {
@@ -2169,7 +2171,7 @@ select.ai-config-input {
 
 .app-settings-dialog:not(.library-settings-dialog) > [data-dialog-header="true"] h2 {
   color: var(--ui-content-primary);
-  font-size: calc(14px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-14);
   font-weight: 600;
   letter-spacing: -0.015em;
 }
@@ -2186,7 +2188,7 @@ select.ai-config-input {
 
 .app-settings-dialog:not(.library-settings-dialog) .app-settings-nav-item {
   padding: 7px 10px;
-  font-size: calc(12.5px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12-5);
   font-weight: 450;
 }
 
@@ -2209,7 +2211,7 @@ select.ai-config-input {
 }
 
 .app-settings-dialog:not(.library-settings-dialog) .app-settings-page-heading h3 {
-  font-size: calc(18px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-18);
   font-weight: 650;
   letter-spacing: -0.025em;
   margin: 0;
@@ -2238,7 +2240,7 @@ select.ai-config-input {
 }
 
 .app-settings-dialog:not(.library-settings-dialog) .app-settings-row-copy strong {
-  font-size: calc(13px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-13);
   font-weight: 600;
   letter-spacing: -0.01em;
   line-height: 1.35;
@@ -2247,7 +2249,7 @@ select.ai-config-input {
 .app-settings-dialog:not(.library-settings-dialog) .app-settings-row-copy > span {
   max-width: 52rem;
   color: var(--ui-content-tertiary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   line-height: 1.5;
 }
 
@@ -2325,7 +2327,7 @@ select.ai-config-input {
   --pad-y: calc(var(--pad-inset) + (100% - 2 * var(--pad-inset)) * var(--pad-fy));
   width: 184px;
   height: 184px;
-  border-radius: calc(20px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-20);
   background:
     radial-gradient(120% 90% at 18% 0%, color-mix(in oklab, white 55%, transparent), transparent 60%),
     linear-gradient(180deg, var(--pad-surface), color-mix(in oklab, var(--pad-surface) 96%, var(--pad-ink)));
@@ -2340,6 +2342,7 @@ select.ai-config-input {
 }
 
 :root[data-theme="dark"] .elevation-pad {
+  /* stylelint-disable keel/no-theme-overrides -- existing override; move it into a per-theme token when this component is rewritten (docs/进度.md PT ④) */
   --pad-shadow:
     0 calc(1px * var(--pad-elev-size)) calc(3px * var(--pad-elev-size))
       rgb(0 0 0 / calc(0.30 * var(--pad-elev-intensity))),
@@ -2352,6 +2355,7 @@ select.ai-config-input {
     inset 0 0 0 0.5px color-mix(in oklab, white 9%, transparent),
     inset 0 1px 0 color-mix(in oklab, white 7%, transparent),
     var(--pad-shadow);
+  /* stylelint-enable keel/no-theme-overrides */
 }
 
 .elevation-pad.is-off {
@@ -2373,7 +2377,9 @@ select.ai-config-input {
 }
 
 :root[data-theme="dark"] .elevation-pad-field-dots {
+  /* stylelint-disable keel/no-theme-overrides -- existing override; move it into a per-theme token when this component is rewritten (docs/进度.md PT ④) */
   background-image: radial-gradient(circle, color-mix(in oklab, white 13%, transparent) 0.7px, transparent 1.1px);
+  /* stylelint-enable keel/no-theme-overrides */
 }
 
 /* Sphere thumb */
@@ -2445,7 +2451,9 @@ select.ai-config-input {
 }
 
 :root[data-theme="dark"] .elevation-pad-thumb-shadow {
+  /* stylelint-disable keel/no-theme-overrides -- existing override; move it into a per-theme token when this component is rewritten (docs/进度.md PT ④) */
   opacity: min(0.9, calc(0.6 * var(--pad-elev-intensity) * var(--thumb-shadow-boost)));
+  /* stylelint-enable keel/no-theme-overrides */
 }
 
 .elevation-pad-thumb:focus-visible .elevation-pad-sphere {
@@ -2473,7 +2481,7 @@ select.ai-config-input {
   align-items: center;
   gap: 6px;
   color: var(--ui-content-tertiary);
-  font-size: calc(10px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-10);
   font-weight: 500;
   letter-spacing: 0.08em;
   line-height: 1;
@@ -2534,7 +2542,7 @@ select.ai-config-input {
   justify-self: start;
   align-self: center;
   color: color-mix(in oklab, var(--ui-content-tertiary) 60%, transparent);
-  font-size: calc(10px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-10);
   letter-spacing: 0.04em;
   line-height: 1;
   opacity: 0;
@@ -2595,7 +2603,7 @@ select.ai-config-input {
   border-radius: var(--ui-radius-pill);
   background: color-mix(in oklab, var(--ui-action-accent) 14%, transparent);
   color: var(--ui-content-accent);
-  font-size: 10px;
+  font-size: var(--ui-font-size-10);
   font-weight: var(--ui-font-weight-medium);
   line-height: 16px;
 }
@@ -2664,11 +2672,11 @@ select.ai-config-input {
   grid-template-columns: minmax(0, 1fr) minmax(0, 2.3fr) minmax(0, 1fr);
   gap: 6px;
   padding: 8px;
-  border-radius: calc(14px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-14);
   background: var(--tp-backdrop, var(--ui-surface-canvas));
   box-shadow: inset 0 0 0 1px var(--tp-edge, transparent);
   color: var(--ui-content-primary);
-  font-size: 11px;
+  font-size: var(--ui-font-size-11);
 }
 
 :root[data-theme="dark"] .app-settings-theme-preview .tp-window {
@@ -2677,18 +2685,18 @@ select.ai-config-input {
 
 .tp-island {
   min-width: 0;
-  border-radius: calc(11px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-11);
   background: var(--tp-panel, var(--ui-surface-pane));
   box-shadow: var(--tp-shadow);
 }
 
 .tp-nav { display: grid; align-content: start; gap: 4px; padding: 10px 7px; }
 
-.tp-nav-row { display: flex; align-items: center; gap: 6px; height: 20px; padding: 0 6px; border-radius: calc(6px * var(--ui-radius-scale, 1)); }
+.tp-nav-row { display: flex; align-items: center; gap: 6px; height: 20px; padding: 0 6px; border-radius: var(--ui-radius-6); }
 
-.tp-nav-row i { flex: none; width: 9px; height: 9px; border-radius: calc(3px * var(--ui-radius-scale, 1)); background: var(--tp-line); }
+.tp-nav-row i { flex: none; width: 9px; height: 9px; border-radius: var(--ui-radius-3); background: var(--tp-line); }
 
-.tp-nav-row b { flex: 1; height: 4px; border-radius: calc(2px * var(--ui-radius-scale, 1)); background: var(--tp-line); }
+.tp-nav-row b { flex: 1; height: 4px; border-radius: var(--ui-radius-2); background: var(--tp-line); }
 
 .tp-nav-row b.is-short { flex: 0 0 55%; }
 
@@ -2696,23 +2704,23 @@ select.ai-config-input {
 
 .tp-nav-row.is-active i, .tp-nav-row.is-active b { background: var(--ui-action-accent); }
 
-.tp-nav-label { width: 40%; height: 3px; margin: 8px 6px 2px; border-radius: calc(2px * var(--ui-radius-scale, 1)); background: color-mix(in oklab, var(--ui-content-primary) 10%, transparent); }
+.tp-nav-label { width: 40%; height: 3px; margin: 8px 6px 2px; border-radius: var(--ui-radius-2); background: color-mix(in oklab, var(--ui-content-primary) 10%, transparent); }
 
 .tp-main { display: grid; grid-template-rows: auto 1fr; gap: 8px; padding: 8px; background: var(--tp-canvas, var(--ui-surface-raised)); }
 
-.tp-toolstrip { display: flex; align-items: center; gap: 5px; height: 22px; padding: 0 6px; border-radius: calc(7px * var(--ui-radius-scale, 1)); background: var(--tp-tool, color-mix(in oklab, var(--ui-content-primary) 4%, transparent)); }
+.tp-toolstrip { display: flex; align-items: center; gap: 5px; height: 22px; padding: 0 6px; border-radius: var(--ui-radius-7); background: var(--tp-tool, color-mix(in oklab, var(--ui-content-primary) 4%, transparent)); }
 
-.tp-pill { width: 34px; height: 12px; border-radius: 999px; background: var(--tp-line); }
+.tp-pill { width: 34px; height: 12px; border-radius: var(--ui-radius-999); background: var(--tp-line); }
 
 .tp-pill.is-accent { background: var(--ui-action-accent-soft); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ui-action-accent) 35%, transparent); }
 
 .tp-toolstrip-spacer { flex: 1; }
 
-.tp-dot { width: 12px; height: 12px; border-radius: calc(4px * var(--ui-radius-scale, 1)); background: var(--tp-line); }
+.tp-dot { width: 12px; height: 12px; border-radius: var(--ui-radius-4); background: var(--tp-line); }
 
 .tp-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-content: start; gap: 8px; }
 
-.tp-card { min-width: 0; overflow: hidden; border-radius: calc(10px * var(--ui-radius-scale, 1)); background: var(--tp-card, var(--ui-surface-raised)); box-shadow: 0 0 0 0.5px var(--tp-edge), 0 2px 6px -3px color-mix(in oklab, black 16%, transparent); }
+.tp-card { min-width: 0; overflow: hidden; border-radius: var(--ui-radius-10); background: var(--tp-card, var(--ui-surface-raised)); box-shadow: 0 0 0 0.5px var(--tp-edge), 0 2px 6px -3px color-mix(in oklab, black 16%, transparent); }
 
 .tp-card.is-selected { box-shadow: 0 0 0 2px var(--ui-action-accent); }
 
@@ -2726,29 +2734,29 @@ select.ai-config-input {
 
 .tp-card-caption { display: grid; gap: 3px; min-width: 0; padding: 7px 8px 8px; }
 
-.tp-card-caption strong { overflow: hidden; font-size: 10.5px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.tp-card-caption strong { overflow: hidden; font-size: var(--ui-font-size-10-5); font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
 
-.tp-card-caption span { overflow: hidden; color: var(--ui-content-tertiary); font-size: 9.5px; text-overflow: ellipsis; white-space: nowrap; }
+.tp-card-caption span { overflow: hidden; color: var(--ui-content-tertiary); font-size: var(--ui-font-size-9-5); text-overflow: ellipsis; white-space: nowrap; }
 
-.tp-card-caption b, .tp-card-caption i { display: block; width: 70%; height: 5px; border-radius: calc(3px * var(--ui-radius-scale, 1)); background: var(--tp-line); }
+.tp-card-caption b, .tp-card-caption i { display: block; width: 70%; height: 5px; border-radius: var(--ui-radius-3); background: var(--tp-line); }
 
 .tp-card-caption i { width: 45%; height: 4px; opacity: 0.7; }
 
 .tp-inspector { display: grid; align-content: start; gap: 5px; padding: 8px; }
 
-.tp-inspector-thumb { aspect-ratio: 4 / 3; border-radius: calc(8px * var(--ui-radius-scale, 1)); background:
+.tp-inspector-thumb { aspect-ratio: 4 / 3; border-radius: var(--ui-radius-8); background:
   radial-gradient(circle at 30% 35%, color-mix(in oklab, var(--ui-action-accent) 55%, white) 0 16%, transparent 17%),
   linear-gradient(160deg, color-mix(in oklab, var(--ui-action-accent) 40%, var(--tp-card, white)), color-mix(in oklab, var(--ui-content-primary) 16%, var(--tp-card, white))); }
 
-.tp-inspector-name { overflow: hidden; margin-top: 2px; font-size: 11px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.tp-inspector-name { overflow: hidden; margin-top: 2px; font-size: var(--ui-font-size-11); font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
 
-.tp-inspector-meta { overflow: hidden; color: var(--ui-content-tertiary); font-size: 9.5px; text-overflow: ellipsis; white-space: nowrap; }
+.tp-inspector-meta { overflow: hidden; color: var(--ui-content-tertiary); font-size: var(--ui-font-size-9-5); text-overflow: ellipsis; white-space: nowrap; }
 
-.tp-inspector-section { margin-top: 4px; color: var(--ui-content-tertiary); font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+.tp-inspector-section { margin-top: 4px; color: var(--ui-content-tertiary); font-size: var(--ui-font-size-9); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
 
 .tp-tags { display: flex; flex-wrap: wrap; gap: 4px; }
 
-.tp-tag { --tp-tag-color: royalblue; position: relative; display: inline-flex; align-items: center; gap: 4px; height: 18px; padding: 0 12px 0 6px; color: var(--ui-content-primary); font-size: 10px; isolation: isolate; filter: drop-shadow(0 0 0.5px color-mix(in oklab, black 25%, transparent)); }
+.tp-tag { --tp-tag-color: royalblue; position: relative; display: inline-flex; align-items: center; gap: 4px; height: 18px; padding: 0 12px 0 6px; color: var(--ui-content-primary); font-size: var(--ui-font-size-10); isolation: isolate; filter: drop-shadow(0 0 0.5px color-mix(in oklab, black 25%, transparent)); }
 
 .tp-tag.is-alt { --tp-tag-color: seagreen; }
 
@@ -2764,7 +2772,7 @@ select.ai-config-input {
 
 .tp-stars i.is-on { background: var(--ui-action-accent); }
 
-.tp-description { padding: 6px 7px; border-radius: calc(6px * var(--ui-radius-scale, 1)); background: var(--tp-field, color-mix(in oklab, var(--ui-content-primary) 4%, transparent)); color: var(--ui-content-secondary); font-size: 10px; line-height: 1.35; }
+.tp-description { padding: 6px 7px; border-radius: var(--ui-radius-6); background: var(--tp-field, color-mix(in oklab, var(--ui-content-primary) 4%, transparent)); color: var(--ui-content-secondary); font-size: var(--ui-font-size-10); line-height: 1.35; }
 
 /* ── a94: theme grid cells — hover-revealed delete on custom themes ─────── */
 
@@ -2790,7 +2798,7 @@ select.ai-config-input {
   height: 22px;
   padding: 0;
   border: 1px solid var(--ui-border-subtle);
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   background: var(--ui-surface-raised);
   color: var(--ui-content-secondary);
   box-shadow: 0 1px 3px color-mix(in oklab, black 18%, transparent);
@@ -2844,7 +2852,7 @@ select.ai-config-input {
   width: min(340px, calc(100vw - 48px));
   padding: 0;
   border: 1px solid var(--ui-border-subtle);
-  border-radius: calc(12px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-12);
   background: var(--ui-surface-raised);
   color: var(--ui-content-primary);
   box-shadow: 0 18px 48px -12px color-mix(in oklab, black 45%, transparent);
@@ -2902,10 +2910,10 @@ select.ai-config-input {
   height: 30px;
   padding: 0 10px;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   background: var(--ui-surface-raised);
   color: var(--ui-content-primary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
 }
 
 .shortcut-settings-search:focus-visible {
@@ -2926,10 +2934,10 @@ select.ai-config-input {
   gap: 6px;
   padding: 0 10px;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   background: transparent;
   color: var(--ui-content-secondary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   cursor: pointer;
 }
 
@@ -2971,7 +2979,7 @@ select.ai-config-input {
 .shortcut-settings-row.is-recording {
   margin: 0 -8px;
   padding: 6px 8px;
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
   background: color-mix(in srgb, var(--accent) 7%, transparent);
 }
 
@@ -3005,7 +3013,7 @@ select.ai-config-input {
 .shortcut-settings-row-copy strong {
   overflow: hidden;
   color: var(--ui-content-primary);
-  font-size: calc(12.5px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12-5);
   font-weight: 400;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -3014,7 +3022,7 @@ select.ai-config-input {
 .shortcut-settings-row-copy > span {
   flex: 0 0 auto;
   color: var(--ui-content-tertiary);
-  font-size: calc(10.5px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-10-5);
   white-space: nowrap;
 }
 
@@ -3031,11 +3039,11 @@ select.ai-config-input {
   height: 26px;
   padding: 0 9px;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-5);
   background: var(--ui-surface-raised);
   color: var(--ui-content-primary);
   font-family: inherit;
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   cursor: pointer;
 }
 
@@ -3047,11 +3055,11 @@ select.ai-config-input {
   justify-content: center;
   padding: 0 10px;
   border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--ui-border-divider));
-  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-5);
   background: var(--ui-surface-raised);
   color: var(--ui-content-primary);
   font-family: inherit;
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   white-space: nowrap;
   cursor: text;
 }
@@ -3087,10 +3095,10 @@ select.ai-config-input {
   height: 18px;
   align-items: center;
   padding: 0 6px;
-  border-radius: calc(4px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-4);
   background: var(--ui-surface-hover);
   color: var(--ui-content-secondary);
-  font-size: calc(10px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-10);
   white-space: nowrap;
 }
 
@@ -3113,7 +3121,7 @@ select.ai-config-input {
   padding: 0;
   place-items: center;
   border: 0;
-  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-5);
   background: transparent;
   color: var(--ui-content-secondary);
   cursor: pointer;
@@ -3141,10 +3149,10 @@ select.ai-config-input {
   height: 26px;
   padding: 0 7px;
   border: 0;
-  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-5);
   background: transparent;
   color: var(--accent);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   cursor: pointer;
 }
 
@@ -3177,7 +3185,7 @@ select.ai-config-input {
   background: transparent;
   color: var(--ui-content-tertiary);
   font-family: inherit;
-  font-size: calc(10.5px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-10-5);
 }
 
 .shortcut-row-feedback {
@@ -3190,14 +3198,14 @@ select.ai-config-input {
 .shortcut-row-error {
   margin: 0;
   color: var(--ui-status-danger);
-  font-size: calc(11.5px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11-5);
   line-height: 1.45;
 }
 
 .shortcut-conflict p {
   margin: 0;
   color: var(--ui-content-primary);
-  font-size: calc(11.5px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11-5);
 }
 
 .shortcut-conflict {
@@ -3206,7 +3214,7 @@ select.ai-config-input {
   gap: 6px;
   padding: 8px 10px;
   border: 1px solid color-mix(in srgb, var(--ui-status-danger) 35%, var(--ui-border-divider));
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   order: 4;
   grid-column: 1 / -1;
 }
@@ -3226,7 +3234,7 @@ select.ai-config-input {
   justify-content: space-between;
   gap: 12px;
   color: var(--ui-content-secondary);
-  font-size: calc(11.5px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11-5);
 }
 
 .shortcut-settings-footer {
@@ -3252,10 +3260,10 @@ select.ai-config-input {
   gap: 5px;
   padding: 0 8px;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-5);
   background: transparent;
   color: var(--ui-content-secondary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   cursor: pointer;
 }
 
@@ -3271,7 +3279,7 @@ select.ai-config-input {
   justify-content: flex-end;
   gap: 8px;
   color: var(--ui-content-secondary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
 }
 
 .shortcut-settings-error {
@@ -3281,15 +3289,15 @@ select.ai-config-input {
   gap: 10px;
   padding: 8px 10px;
   border: 1px solid color-mix(in srgb, var(--ui-status-danger) 35%, var(--ui-border-divider));
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   color: var(--ui-status-danger);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
 }
 
 .shortcut-settings-notice {
   margin: 0;
   color: var(--accent);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
 }
 
 @media (max-width: 720px) {

@@ -40,7 +40,7 @@ describe("workspace tab chrome", () => {
     expect(css).toContain(
       "--workspace-tab-width-budget: calc(8em + var(--workspace-tab-chrome))",
     );
-    expect(css).toContain("--workspace-tab-font-size: calc(12.5px * var(--ui-font-scale))");
+    expect(css).toContain("--workspace-tab-font-size: var(--ui-font-size-12-5)");
     expect(css).toContain("min-width: var(--workspace-tab-min-width)");
     expect(css).toContain("font-size: var(--workspace-tab-font-size)");
   });

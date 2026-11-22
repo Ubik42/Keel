@@ -58,3 +58,6 @@ CLAUDE.md
 # Local fork profile and scratch work
 /work/
 /.local-profile/
+
+# Temporary local E2E scripts (other sessions and one-off checks)
+tests/e2e/zz-*

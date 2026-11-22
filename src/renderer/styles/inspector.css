@@ -50,18 +50,18 @@
   height: 46px;
   place-items: center;
   border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--ui-border-divider));
-  border-radius: calc(10px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-10);
   background: color-mix(in srgb, var(--accent) 9%, var(--ui-pane));
   color: var(--ui-content-accent);
   font-family: "IBM Plex Mono", monospace;
-  font-size: calc(13px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-13);
 }
 
 .inspector-identity strong {
   display: block;
   overflow: hidden;
   margin-top: 4px;
-  font-size: calc(13px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-13);
   font-weight: 560;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -79,7 +79,7 @@
   min-height: 23px;
   grid-template-columns: 56px minmax(0, 1fr);
   align-items: center;
-  font-size: calc(10px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-10);
 }
 
 .metadata-list dt {
@@ -114,14 +114,14 @@
 }
 
 .inspector-empty strong {
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   font-weight: 560;
 }
 
 .inspector-empty p {
   max-width: 190px;
   margin: 7px 0 0;
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   line-height: 1.6;
 }
 
@@ -136,7 +136,7 @@
   max-height: none;
   overflow: hidden;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
   background: var(--ui-surface-raised);
 }
 
@@ -155,7 +155,7 @@
   overflow: hidden;
   color: var(--ui-content-secondary);
   font-family: var(--ui-font-ui);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   line-height: 1.45;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -171,8 +171,8 @@
   height: 22px;
   margin-top: 0;
   overflow: hidden;
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 8%);
+  border-radius: var(--ui-radius-6);
+  box-shadow: inset 0 0 0 1px var(--ui-white-a8);
 }
 
 .editor-field-palette {
@@ -236,7 +236,7 @@
   aspect-ratio: 1;
   max-height: none;
   overflow: hidden;
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
   background: var(--ui-surface-raised-subtle);
 }
 
@@ -311,7 +311,7 @@
   min-height: 112px;
   width: 100%;
   border: 1px solid var(--ui-border-subtle);
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
   background: color-mix(in srgb, var(--ui-canvas) 86%, var(--ui-content-inverse));
 }
 
@@ -321,7 +321,7 @@
   max-width: 100%;
   height: auto;
   max-height: min(360px, 45vh);
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
   object-fit: contain;
 }
 
@@ -336,7 +336,7 @@
   height: min(360px, 45vh);
   min-height: 112px;
   overflow: hidden;
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
 }
 
 .inspector-hero-sequence-preview .inspector-hero-face {
@@ -345,7 +345,7 @@
   width: 100%;
   height: 100%;
   min-height: 112px;
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
 }
 
 :root:not([data-elevation="0"]) .inspector-hero-sequence-preview .inspector-hero-face {
@@ -368,7 +368,7 @@
   display: inline-flex;
   max-width: 100%;
   max-height: min(360px, 45vh);
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
 }
 
 .inspector-pane[data-inspector-card-feel="on"]
@@ -400,25 +400,25 @@
   height: auto;
   border-radius: inherit;
   /* Shadow lives on the face host so glare inset matches the card, not a halo. */
-  box-shadow: none !important;
+  box-shadow: none;
 }
 
 .inspector-pane[data-inspector-card-feel="on"] .inspector-hero-preview-fallback,
 .inspector-pane[data-inspector-card-feel="on"] .inspector-hero-face {
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.04),
-    0 0 0 1px rgb(255 255 255 / 0.025),
-    0 1px 2px rgb(0 0 0 / 0.16),
-    0 5px 14px rgb(0 0 0 / 0.12);
+    inset 0 1px 0 var(--ui-white-a4),
+    0 0 0 1px var(--ui-white-a2-5),
+    0 1px 2px var(--ui-black-a16),
+    0 5px 14px var(--ui-black-a12);
 }
 
 .inspector-pane[data-inspector-card-feel="on"]
   .inspector-hero-text-preview.text-asset-preview {
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.04),
-    0 0 0 1px rgb(255 255 255 / 0.025),
-    0 1px 2px rgb(0 0 0 / 0.16),
-    0 5px 14px rgb(0 0 0 / 0.12);
+    inset 0 1px 0 var(--ui-white-a4),
+    0 0 0 1px var(--ui-white-a2-5),
+    0 1px 2px var(--ui-black-a16),
+    0 5px 14px var(--ui-black-a12);
 }
 
 :root:not([data-elevation="0"])
@@ -432,8 +432,8 @@
   .inspector-hero-text-preview.text-asset-preview {
   box-shadow:
     var(--ui-shadow-card),
-    inset 0 1px 0 rgb(255 255 255 / 0.04),
-    0 1px 2px rgb(0 0 0 / 0.12);
+    inset 0 1px 0 var(--ui-white-a4),
+    0 1px 2px var(--ui-black-a12);
 }
 
 [data-theme="light"]
@@ -445,11 +445,13 @@
 [data-theme="light"]
   .inspector-pane[data-inspector-card-feel="on"]
   .inspector-hero-text-preview.text-asset-preview {
+  /* stylelint-disable keel/no-theme-overrides -- existing override; move it into a per-theme token when this component is rewritten (docs/进度.md PT ④) */
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.7),
-    0 0 0 1px rgb(0 0 0 / 0.04),
-    0 1px 2px rgb(0 0 0 / 0.04),
-    0 4px 12px rgb(0 0 0 / 0.05);
+    inset 0 1px 0 var(--ui-white-a70),
+    0 0 0 1px var(--ui-black-a4),
+    0 1px 2px var(--ui-black-a4),
+    0 4px 12px var(--ui-black-a5);
+  /* stylelint-enable keel/no-theme-overrides */
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -493,8 +495,8 @@
     /* Point-light specular only — no fixed-angle linear stripe. */
     background: radial-gradient(
       circle at var(--card-glare-x, 50%) var(--card-glare-y, 40%),
-      rgb(255 255 255 / 0.32) 0%,
-      rgb(255 255 255 / 0.1) 38%,
+      var(--ui-white-a32) 0%,
+      var(--ui-white-a10) 38%,
       transparent 66%
     );
     mix-blend-mode: soft-light;
@@ -509,9 +511,9 @@
   .inspector-pane[data-inspector-card-feel="on"]
     [data-card-feel-tilt].is-card-tilting {
     box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.06),
+      inset 0 1px 0 var(--ui-white-a6),
       var(--card-shadow-x, 0px) var(--card-shadow-y, 8px) 14px
-        rgb(0 0 0 / 0.15);
+        var(--ui-black-a15);
   }
 
   .inspector-pane[data-inspector-card-feel="on"]
@@ -534,7 +536,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: calc(12.5px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12-5);
   font-weight: var(--ui-font-weight-semibold);
   line-height: 1.7;
   padding-block: 0.1em 0.2em;
@@ -574,7 +576,7 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
   background: color-mix(in srgb, var(--ui-canvas) 90%, var(--ui-content-inverse));
   /* REQ-INSPECT-004: soft layered shadows so stacked multi-select previews stay separable. */
   box-shadow:
@@ -637,13 +639,13 @@
   padding: 10px 12px;
   border-top: 1px solid var(--ui-border-subtle);
   color: var(--ui-content-secondary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   line-height: 1.35;
 }
 
 .inspector-tech-part {
   font-family: "IBM Plex Mono", ui-monospace, monospace;
-  font-size: calc(10px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-10);
   color: var(--ui-content-tertiary);
 }
 
@@ -657,7 +659,7 @@
   width: 100%;
   /* Match the Inspector description field so Chinese metadata stays readable. */
   font-family: var(--ui-font-ui);
-  font-size: calc(11.5px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11-5);
   font-weight: var(--ui-font-weight-regular);
   line-height: 1.35;
 }
@@ -717,7 +719,7 @@
   row-gap: 2px;
   color: var(--ui-content-tertiary);
   font-family: "IBM Plex Mono", monospace;
-  font-size: calc(10px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-10);
   line-height: 1.5;
 }
 
@@ -738,7 +740,7 @@
   gap: 7px;
   margin-top: 10px;
   color: var(--ui-content-secondary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
 }
 
 .inspector-status-label {
@@ -755,7 +757,7 @@
 
 .inspector-status-row[data-tone="ok"] .inspector-status-dot {
   background: var(--ui-status-success);
-  box-shadow: 0 0 0 3px rgb(109 184 93 / 14%);
+  box-shadow: 0 0 0 3px var(--ui-status-success-ring);
 }
 
 .inspector-status-row[data-tone="missing"] {
@@ -764,7 +766,7 @@
 
 .inspector-status-row[data-tone="missing"] .inspector-status-dot {
   background: var(--ui-status-danger);
-  box-shadow: 0 0 0 3px rgb(199 82 82 / 14%);
+  box-shadow: 0 0 0 3px var(--ui-status-danger-ring);
 }
 
 .inspector-status-row[data-tone="corrupt"] {
@@ -777,7 +779,7 @@
 
 .inspector-status-row[data-tone="trash"] .inspector-status-dot {
   background: var(--ui-status-warning);
-  box-shadow: 0 0 0 3px rgb(217 154 62 / 14%);
+  box-shadow: 0 0 0 3px var(--ui-status-warning-ring);
 }
 
 /* 高频元数据操作聚拢行：评分在左、喜欢在右。 */
@@ -798,7 +800,7 @@
 .inspector-mixed-value,
 .inspector-mixed-field {
   color: var(--ui-content-tertiary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   font-style: italic;
   user-select: none;
 }
@@ -850,7 +852,7 @@
   background: transparent;
   color: var(--ui-content-tertiary);
   cursor: pointer;
-  font-size: calc(10px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-10);
   transition: color 120ms ease;
 }
 
@@ -863,7 +865,7 @@
   padding: 3px;
   place-items: center;
   border: 0;
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
   background: transparent;
   color: var(--ui-content-tertiary);
   cursor: pointer;
@@ -898,7 +900,7 @@
   padding-bottom: 6px;
   overflow-y: auto;
   resize: none;
-  font-size: calc(11.5px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11-5);
   line-height: 1.35;
 }
 
@@ -922,7 +924,7 @@
   gap: 6px;
   min-width: 0;
   color: var(--ui-content-tertiary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
 }
 
 .inspector-companion-list li span {
@@ -945,7 +947,7 @@
   padding: 0;
   place-items: center;
   border: 0;
-  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-5);
   background: transparent;
   color: var(--ui-content-tertiary);
   cursor: pointer;
@@ -966,7 +968,7 @@
 
 .inspector-input {
   height: 28px;
-  font-size: calc(11.5px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11-5);
 }
 
 .inspector-version-conflict {
@@ -976,10 +978,10 @@
 .inspector-ai-badge {
   display: inline-block;
   padding: 1px 5px;
-  border-radius: calc(3px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-3);
   background: color-mix(in srgb, var(--accent) 22%, transparent);
   color: var(--accent);
-  font-size: calc(9px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-9);
   font-weight: var(--ui-font-weight-bold);
   line-height: calc(14px * var(--ui-font-scale));
   letter-spacing: 0.02em;
@@ -1006,10 +1008,10 @@
   margin-top: 10px;
   padding: 8px 10px;
   border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--ui-border-divider));
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
   background: color-mix(in srgb, var(--accent) 8%, var(--ui-pane));
   color: var(--ui-content-secondary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
 }
 
 .inspector-textarea.is-ai-sourced {
@@ -1024,7 +1026,7 @@
   gap: 4px;
   margin: 0 0 6px;
   color: var(--ui-content-secondary);
-  font-size: calc(10px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-10);
   font-weight: 650;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -1079,7 +1081,7 @@
   box-sizing: border-box;
   padding: 0 2px;
   border: 0;
-  border-radius: calc(2px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-2);
   background: transparent;
   color: inherit;
   font: inherit;
@@ -1118,7 +1120,7 @@
 }
 
 :root[data-platform="windows"] .metadata-list div {
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
 }
 
 :root[data-platform="windows"] .metadata-list dt {
@@ -1126,9 +1128,11 @@
 }
 
 [data-theme="light"] .inspector-badge {
+  /* stylelint-disable keel/no-theme-overrides -- existing override; move it into a per-theme token when this component is rewritten (docs/进度.md PT ④) */
   /* light palette 的 --ui-content-accent（#5b7cf0）在浅底对比度仅 2.8；
      图标改用深色 accent（accent 60%+black）保证 ≥4.5。 */
   color: color-mix(in srgb, var(--accent) 60%, black);
+  /* stylelint-enable keel/no-theme-overrides */
 }
 
 :root[data-platform="windows"] .inspector-identity strong {
@@ -1171,7 +1175,7 @@
 
 .inspector-section h2 {
   margin: 0 0 10px;
-  font-size: calc(10.5px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-10-5);
   text-transform: uppercase;
   letter-spacing: 0.02em;
   color: var(--ui-content-tertiary);
@@ -1228,13 +1232,13 @@
 }
 
 .app-shell.app-shell .inspector-hero-preview {
-  border-radius: calc(12px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-12);
   overflow: hidden;
 }
 
 .app-shell.app-shell .inspector-empty > svg {
   border: 1px solid var(--ui-border-subtle);
-  border-radius: calc(10px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-10);
 }
 
 .app-shell.app-shell > .inspector-pane {
@@ -1266,7 +1270,7 @@
 /* Inspector denser + flat */
 
 .app-shell.app-shell .inspector-section-label {
-  font-size: calc(10.5px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-10-5);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   font-weight: 600;
@@ -1333,7 +1337,7 @@
 }
 
 .app-shell.app-shell .tag-chip > .inspector-ai-badge-inline {
-  border-radius: calc(3px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-3);
   line-height: calc(14px * var(--ui-font-scale));
 }
 

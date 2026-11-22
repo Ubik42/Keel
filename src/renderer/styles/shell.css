@@ -1,27 +1,35 @@
 /* shell: rules whose subject element belongs to this area (P5). */
 
 [data-theme="light"] .toast {
+  /* stylelint-disable keel/no-theme-overrides -- existing override; move it into a per-theme token when this component is rewritten (docs/进度.md PT ④) */
   background: var(--ui-surface-raised);
   box-shadow: var(--ui-shadow-toast);
   color: var(--ui-content-primary);
+  /* stylelint-enable keel/no-theme-overrides */
 }
 
 [data-theme="light"] .toast > :first-child {
+  /* stylelint-disable keel/no-theme-overrides -- existing override; move it into a per-theme token when this component is rewritten (docs/进度.md PT ④) */
   color: var(--ui-content-secondary);
+  /* stylelint-enable keel/no-theme-overrides */
 }
 
 [data-theme="light"] .toast.is-error,
 [data-theme="light"] .toast.is-warning {
+  /* stylelint-disable keel/no-theme-overrides -- existing override; move it into a per-theme token when this component is rewritten (docs/进度.md PT ④) */
   background: var(--ui-status-warning-surface);
   color: var(--ui-status-warning-content);
   border: 1px solid color-mix(in srgb, var(--ui-status-warning) 28%, transparent);
+  /* stylelint-enable keel/no-theme-overrides */
 }
 
 [data-theme="light"] .toast.is-error > :first-child,
 [data-theme="light"] .toast.is-error button,
 [data-theme="light"] .toast.is-warning > :first-child,
 [data-theme="light"] .toast.is-warning button {
+  /* stylelint-disable keel/no-theme-overrides -- existing override; move it into a per-theme token when this component is rewritten (docs/进度.md PT ④) */
   color: var(--ui-status-warning-content);
+  /* stylelint-enable keel/no-theme-overrides */
 }
 
 /* One shared motion language for every quiet control: fast, opacity-neutral
@@ -299,17 +307,23 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 }
 
 [data-theme="light"] .windows-caption-button {
-  color: #5a5a5a;
+  /* stylelint-disable keel/no-theme-overrides -- existing override; move it into a per-theme token when this component is rewritten (docs/进度.md PT ④) */
+  color: var(--ui-windows-caption-fg-light);
+  /* stylelint-enable keel/no-theme-overrides */
 }
 
 [data-theme="light"] .windows-caption-button:hover {
-  background: rgb(0 0 0 / 6%);
-  color: #1a1a1a;
+  /* stylelint-disable keel/no-theme-overrides -- existing override; move it into a per-theme token when this component is rewritten (docs/进度.md PT ④) */
+  background: var(--ui-black-a6);
+  color: var(--ui-windows-caption-hover-fg-light);
+  /* stylelint-enable keel/no-theme-overrides */
 }
 
 [data-theme="light"] .windows-caption-button-close:hover {
-  background: #e81123;
-  color: #fff;
+  /* stylelint-disable keel/no-theme-overrides -- existing override; move it into a per-theme token when this component is rewritten (docs/进度.md PT ④) */
+  background: var(--ui-windows-caption-close-hover);
+  color: var(--ui-windows-caption-close-hover-fg);
+  /* stylelint-enable keel/no-theme-overrides */
 }
 
 /* Interactive chrome must opt out of the toolbar drag region; otherwise
@@ -333,22 +347,24 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   max-width: min(280px, calc(100vw - 24px));
   padding: 3px 7px;
   border: 1px solid var(--ui-border-subtle);
-  border-radius: calc(4px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-4);
   background: var(--ui-surface-raised-subtle);
   color: var(--ui-content-secondary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   font-weight: 450;
   line-height: 1.35;
   letter-spacing: 0;
   white-space: normal;
   overflow-wrap: anywhere;
   pointer-events: none;
-  box-shadow: 0 1px 2px rgb(0 0 0 / 12%);
+  box-shadow: 0 1px 2px var(--ui-black-a12);
 }
 
 [data-theme="light"] .hover-tip {
+  /* stylelint-disable keel/no-theme-overrides -- existing override; move it into a per-theme token when this component is rewritten (docs/进度.md PT ④) */
   background: var(--ui-surface-raised);
-  box-shadow: 0 1px 2px rgb(0 0 0 / 8%);
+  box-shadow: 0 1px 2px var(--ui-black-a8);
+  /* stylelint-enable keel/no-theme-overrides */
 }
 
 /* Search grammar needs a little room to teach rather than a one-line system
@@ -358,20 +374,15 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   width: min(312px, calc(100vw - 24px));
   max-width: none;
   padding: 8px 10px;
-  border-color: color-mix(in srgb, var(--ui-border-subtle) 72%, white);
-  border-radius: calc(7px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--ui-surface-raised-subtle) 84%, white);
+  border-color: var(--ui-search-tip-border);
+  border-radius: var(--ui-radius-7);
+  background: var(--ui-search-tip-background);
   color: var(--ui-content-secondary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   line-height: 1.55;
   white-space: normal;
   text-align: left;
-  box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
-}
-
-[data-theme="light"] .hover-tip.is-search-syntax {
-  background: color-mix(in srgb, var(--ui-surface-raised-subtle) 94%, white);
-  border-color: var(--ui-border-subtle);
+  box-shadow: 0 4px 12px var(--ui-black-a10);
 }
 
 .tool-button {
@@ -501,7 +512,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   border-bottom: 1px solid var(--ui-border-divider);
   background: var(--ui-surface-raised);
   color: var(--ui-content-primary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   font-weight: 520;
 }
 
@@ -545,7 +556,9 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 }
 
 [data-theme="light"] .workspace-ai-progress {
+  /* stylelint-disable keel/no-theme-overrides -- existing override; move it into a per-theme token when this component is rewritten (docs/进度.md PT ④) */
   background: var(--ui-surface-raised);
+  /* stylelint-enable keel/no-theme-overrides */
 }
 
 /* Plugin jobs keep identity and current phase on one header row, with the
@@ -593,7 +606,9 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 }
 
 [data-theme="light"] .workspace-plugin-job-progress {
+  /* stylelint-disable keel/no-theme-overrides -- existing override; move it into a per-theme token when this component is rewritten (docs/进度.md PT ④) */
   background: color-mix(in srgb, var(--plugin-job-status-color) 4%, var(--ui-surface-raised));
+  /* stylelint-enable keel/no-theme-overrides */
 }
 
 @media (max-width: 720px) {
@@ -618,7 +633,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   flex: 0 0 auto;
   align-items: center;
   gap: 9px;
-  font-size: calc(13px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-13);
   white-space: nowrap;
 }
 
@@ -640,7 +655,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   flex-shrink: 0;
   place-items: center;
   border: 1px solid transparent;
-  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-5);
   background: transparent;
   color: var(--ui-content-tertiary);
   cursor: pointer;
@@ -670,12 +685,15 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   animation: feature-hint-accent-pulse 2.2s ease-in-out infinite;
 }
 
+/* The feature hint keeps pulsing: it overrides the global reduced-motion reset. */
+/* stylelint-disable declaration-no-important */
 @media (prefers-reduced-motion: reduce) {
   .workspace-include-subfolders.is-feature-hinting {
     animation-duration: 2.2s !important;
     animation-iteration-count: infinite !important;
   }
 }
+/* stylelint-enable declaration-no-important */
 
 .workspace-tools {
   min-width: 0;
@@ -712,7 +730,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   min-width: 180px;
   padding: 4px;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
   background: color-mix(in srgb, var(--ui-surface-raised) 92%, transparent);
   box-shadow: var(--ui-shadow-menu);
   backdrop-filter: blur(14px) saturate(120%);
@@ -864,7 +882,8 @@ body.keel-modal-open .app-shell {
 .workspace-viewer:fullscreen.is-chrome-idle *,
 .workspace-viewer-transition:fullscreen.is-chrome-idle *,
 .workspace-viewer-transition:fullscreen .workspace-viewer.is-chrome-idle * {
-  cursor: none !important;
+  /* Idle fullscreen hides the cursor over every child, whatever it sets. */
+  cursor: none !important; /* stylelint-disable-line declaration-no-important */
 }
 
 /* Sidebar plugin pages should fill the canvas like .tag-management, not sit as a
@@ -896,7 +915,7 @@ body.keel-modal-open .app-shell {
 .app-log-subtitle {
   margin: 7px 0 0;
   color: var(--ui-content-secondary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   line-height: 1.5;
 }
 
@@ -919,14 +938,14 @@ body.keel-modal-open .app-shell {
   min-height: 0;
   overflow: auto;
   border: 1px solid var(--ui-border-divider);
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
   background: color-mix(in srgb, var(--ui-surface-raised) 70%, var(--ui-pane));
 }
 
 .app-log-entry {
   padding: 10px 12px;
   border-bottom: 1px solid var(--ui-border-divider);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   line-height: 1.45;
 }
 
@@ -975,11 +994,11 @@ body.keel-modal-open .app-shell {
   margin: 6px 0 0;
   padding: 8px;
   overflow: auto;
-  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-5);
   background: color-mix(in srgb, var(--ui-canvas) 65%, var(--ui-surface-raised));
   color: var(--ui-content-secondary);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: calc(10px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-10);
   line-height: 1.45;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -1005,7 +1024,7 @@ body.keel-modal-open .app-shell {
   min-width: 0;
   flex: 0 0 auto;
   color: var(--ui-content-secondary);
-  font-size: calc(12px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-12);
   line-height: 1.25;
 }
 
@@ -1160,7 +1179,7 @@ body.keel-modal-open .app-shell {
   /* tighter trailing pad — X sat in a wide empty gutter. */
   padding: 7px 6px 7px 10px;
   border: var(--ui-border-width-hairline) solid var(--ui-border-divider);
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
   background: var(--ui-surface-raised);
   box-shadow: var(--ui-shadow-notice);
   color: var(--ui-content-primary);
@@ -1272,11 +1291,11 @@ body.keel-modal-open .app-shell {
   gap: 8px;
   padding: 9px 9px 9px 11px;
   border: 0;
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-8);
   background: var(--ui-surface-raised);
   box-shadow: var(--ui-shadow-toast);
   color: var(--ui-content-primary);
-  font-size: calc(11px * var(--ui-font-scale));
+  font-size: var(--ui-font-size-11);
   /* REQ-SHELL-010: dismissal adds .is-closing and unmounts only after this
      exit transition ends (see toast-notifications.ts). */
   transition:
@@ -1339,14 +1358,14 @@ body.keel-modal-open .app-shell {
   width: 100%;
   height: 4px;
   margin-top: 4px;
-  border-radius: calc(2px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-2);
   background: var(--ui-surface-hover);
   overflow: hidden;
 }
 
 .task-progress-fill {
   height: 100%;
-  border-radius: calc(2px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-2);
   background: var(--accent);
   transition: width 250ms ease;
 }
@@ -1364,7 +1383,7 @@ body.keel-modal-open .app-shell {
 .task-progress-indeterminate {
   width: 35%;
   height: 100%;
-  border-radius: calc(2px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-2);
   background: var(--accent);
   animation: task-progress-slide 1.4s ease-in-out infinite;
 }
@@ -1724,7 +1743,7 @@ html.keel-window-square .window-edge-resize-layer.is-disabled {
 .app-shell.app-shell .workspace-bar .tool-button {
   min-height: 26px;
   min-width: 26px;
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  border-radius: var(--ui-radius-6);
 }
 
 .app-shell.app-shell > .workspace {
