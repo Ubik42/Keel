@@ -193,11 +193,11 @@ test("generates a decoded thumbnail and keeps asset viewer context coherent", as
     await expect
       .poll(() => thumbnail.getAttribute("src"))
       .toMatch(/^keel:\/\/preview\//);
-    // Islands justified slots fill the frame (cover) so rounded corners do not
-    // show a 1–2px letterbox. The inspector preview below stays contain.
-    expect(
+    // Since 82176fcf justified slots keep every source edge: "contain", or
+    // "fill" when only integer rounding changes the ratio.
+    expect(["contain", "fill"]).toContain(
       await thumbnail.evaluate((image) => getComputedStyle(image).objectFit),
-    ).toBe("cover");
+    );
 
     // Import reveal selects the imported batch and reapplies it once the
     // debounced browse refresh settles. Clear that intentional reveal before

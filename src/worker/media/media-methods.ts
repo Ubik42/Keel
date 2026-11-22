@@ -6542,6 +6542,15 @@ export async function generateVideoProxy(this: LibraryService, input: { libraryI
   const artifactId = randomUUID();
   const profiles = await this.resolveVideoProxyProfiles(ffmpegPath, execution);
   let lastError: unknown = new Error('No H.264 video proxy encoder is available.');
+  if (profiles.length === 0) {
+    // A missing FFmpeg is not "no H.264 encoder": keep its ENOENT so the
+    // failed artifact records FFMPEG_REQUIRED and the viewer names the cause.
+    try {
+      await this.runFfmpeg(ffmpegPath, ['-hide_banner', '-version'], { signal: execution.signal });
+    } catch (error) {
+      if (typeof error === 'object' && error !== null && (error as { code?: unknown }).code === 'ENOENT') lastError = error;
+    }
+  }
   let failedProfile = profiles[0] ?? this.h264VideoProxyProfile('unavailable');
 
   for (const profile of profiles) {
