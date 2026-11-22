@@ -2,6 +2,7 @@ import "../shared/install-legacy-env";
 import path from "node:path";
 import { tmpdir } from "node:os";
 import { copyLegacyUserData } from "./legacy-user-data";
+import { MCP_START_FLAG } from "./mcp-stdio-launcher";
 import { spawn } from "node:child_process";
 import { openWithSettingsFilePath, readOpenWithSettings, writeOpenWithSettings } from "./open-with-settings-store";
 import { DEFAULT_OPEN_WITH_SETTINGS } from "../shared/open-with";
@@ -2053,8 +2054,23 @@ function storeStartupPreferences(input: unknown): StartupPreferencesSnapshot {
   return snapshot;
 }
 
-function handleSecondInstance(): void {
+/** Launched by `Keel.exe --mcp`: start the MCP server, stay in the background. */
+const launchedForMcp = process.argv.includes(MCP_START_FLAG);
+
+async function startMcpForLauncher(): Promise<void> {
+  try {
+    if (embeddedMcpServer?.snapshot().runtime.status !== "running") await embeddedMcpServer?.start();
+  } catch (error) {
+    logger?.error("mcp.server.launcher-start", error);
+  }
+}
+
+function handleSecondInstance(_event: Electron.Event, argv: string[]): void {
   if (!shouldHandleSecondaryLaunch({ applicationQuitting })) return;
+  if (argv.includes(MCP_START_FLAG)) {
+    void startMcpForLauncher();
+    return;
+  }
   // A second launch while Vite is preparing its first module graph must not
   // reload the still-loading window and reset its mount deadline.
   focusMainWindow();
@@ -2213,7 +2229,11 @@ async function createMainWindow(): Promise<void> {
         && !e2eShowInactive,
     })) {
       if (window.isVisible()) return;
-      if (e2eShowInactive) window.showInactive();
+      if (launchedForMcp) {
+        // Started by the MCP launcher: keep the window out of the way.
+        window.showInactive();
+        window.minimize();
+      } else if (e2eShowInactive) window.showInactive();
       else window.show();
     }
   };
@@ -7145,6 +7165,7 @@ async function startApplication(): Promise<void> {
   } catch (error) {
     logger?.error('mcp.server.initialize', error);
   }
+  if (launchedForMcp) await startMcpForLauncher();
   windowsTray = createWindowsTray({
     getMainWindow: () => mainWindow,
     onQuit: () => app.quit(),

@@ -143,14 +143,15 @@ afterEach(() => {
 describe('Embedded MCP Streamable HTTP server', () => {
     it('copies an Agent bundle without changing the existing credential token', async () => {
     const harness = await createServerHarness();
-    const credential = harness.server.snapshot().credentials[0];
+    const credential = harness.server.snapshot().credentials.find((item) => item.label === 'HTTP test client');
     expect(credential).toBeDefined();
 
     const copied = await harness.server.copyAgentConnection(credential!.credentialId, 'generic-json');
     const nextToken = copied.connectionText.match(/^Authorization: Bearer ([^\r\n]+)$/mu)?.[1];
 
     expect(copied.credentialId).toBe(credential!.credentialId);
-    expect(harness.server.snapshot().credentials).toHaveLength(1);
+    // The second credential belongs to the stdio launcher (`Keel.exe --mcp`).
+    expect(harness.server.snapshot().credentials).toHaveLength(2);
       expect(nextToken).toBe(harness.token);
       expect(harness.credentialStore.authenticationState(harness.token)).toBe('valid');
     expect(copied.connectionText).toContain('explicit libraryId');
@@ -296,10 +297,10 @@ describe('Embedded MCP Streamable HTTP server', () => {
     });
     expect(forgedOrigin.statusCode).toBe(403);
 
-    const credentialId = harness.server.snapshot().credentials[0]?.credentialId;
+    const credentialId = harness.server.snapshot().credentials.find((item) => item.label === 'HTTP test client')?.credentialId;
     expect(credentialId).toBeDefined();
     const revoked = await harness.server.revokeCredential(credentialId!);
-    expect(revoked.credentials[0]?.revokedAt).not.toBeNull();
+    expect(revoked.credentials.find((item) => item.credentialId === credentialId)?.revokedAt).not.toBeNull();
     const afterRevoke = await sendHttp(harness.endpoint, {
       method: 'POST',
       headers: {

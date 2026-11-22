@@ -361,6 +361,17 @@ export class McpClientCredentialStore {
     return { credentialId: record.credentialId, token, summary: summary(record) };
   }
 
+  /**
+   * Token of the credential the stdio launcher uses (`Keel.exe --mcp`).
+   * Created on first use; revoking it in settings makes the next server
+   * start issue a new one.
+   */
+  launcherToken(label: string): string {
+    const existing = this.#records.find((record) => record.label === label && record.revokedAt === null);
+    const token = existing === undefined ? undefined : this.tokenFor(existing.credentialId);
+    return token ?? this.issue(label).token;
+  }
+
   /** Return the stable token for a live credential so it can be copied again. */
   tokenFor(credentialId: string): string | undefined {
     const record = this.#records.find((candidate) => candidate.credentialId === credentialId);
@@ -444,4 +455,11 @@ export class McpClientCredentialStore {
       JSON.stringify({ version: 1, credentials: this.#records }, null, 2),
     );
   }
+}
+
+/** Write a file only the current user can read (mode 0600; ACL on Windows). */
+export function writeUserOnlyFile(filename: string, contents: string): void {
+  writeFileSync(filename, contents, { encoding: 'utf8', mode: 0o600 });
+  chmodSync(filename, 0o600);
+  if (process.platform === 'win32') restrictNewPepperFile(filename);
 }

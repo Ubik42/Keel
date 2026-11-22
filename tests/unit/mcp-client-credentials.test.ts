@@ -160,4 +160,19 @@ describe('MCP credential token persistence', () => {
     }
   });
 
+  it('reuses the launcher credential until it is revoked', () => {
+    const root = mkdtempSync(path.join(tmpdir(), 'keel-mcp-credential-launcher-'));
+    try {
+      const store = new McpClientCredentialStore(root);
+      const first = store.launcherToken('Keel stdio launcher');
+      expect(new McpClientCredentialStore(root).launcherToken('Keel stdio launcher')).toBe(first);
+      const record = store.list().find((item) => item.label === 'Keel stdio launcher')!;
+      store.revoke(record.credentialId);
+      const second = store.launcherToken('Keel stdio launcher');
+      expect(second).not.toBe(first);
+      expect(store.authenticationState(second)).toBe('valid');
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
 });

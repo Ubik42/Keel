@@ -1,3 +1,4 @@
+import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { createServer, type IncomingMessage, type ServerResponse, type Server as HttpServer } from 'node:http';
 
@@ -31,7 +32,8 @@ import {
   type McpSettingsSnapshot,
   type McpServerPreferences,
 } from '../shared/mcp';
-import { McpClientCredentialStore } from './mcp-client-credentials';
+import { McpClientCredentialStore, writeUserOnlyFile } from './mcp-client-credentials';
+import { MCP_LAUNCHER_CONNECTION_FILE_NAME, MCP_LAUNCHER_CREDENTIAL_LABEL } from './mcp-stdio-launcher';
 import { buildMcpAgentConnectionText, buildMcpClientConfigText } from '../shared/mcp-client-config';
 import type { McpPermissionPolicyStore } from './mcp-permission-policy-store';
 import type { McpPermissionBroker } from './mcp-permission-broker';
@@ -295,10 +297,12 @@ export class EmbeddedMcpServer {
   /** Last known per-library change sequence (ADR-0031 §2 response echo). */
   readonly #libraryChangeSequences = new Map<string, number>();
   #runtime: McpRuntimeState = { status: 'stopped' };
+  readonly #userDataPath: string | undefined;
   #httpServer: HttpServer | undefined;
   #startPromise: Promise<McpSettingsSnapshot> | undefined;
 
   public constructor(options: EmbeddedMcpServerOptions) {
+    this.#userDataPath = options.userDataPath;
     this.#settings = options.settingsStore ?? new McpSettingsStore(options.userDataPath);
     this.#credentials = options.credentialStore ?? new McpClientCredentialStore(options.userDataPath);
     this.#journal = options.journal;
@@ -634,7 +638,22 @@ export class EmbeddedMcpServer {
       port,
       address: '127.0.0.1',
     });
+    this.#writeLauncherConnection(`http://127.0.0.1:${port}${MCP_ENDPOINT_PATH}`);
     return this.#publish();
+  }
+
+  /** Endpoint and token for `Keel.exe --mcp`, readable only by this user. */
+  #writeLauncherConnection(endpoint: string): void {
+    if (this.#userDataPath === undefined) return;
+    try {
+      const token = this.#credentials.launcherToken(MCP_LAUNCHER_CREDENTIAL_LABEL);
+      writeUserOnlyFile(
+        path.join(this.#userDataPath, MCP_LAUNCHER_CONNECTION_FILE_NAME),
+        `${JSON.stringify({ endpoint, token }, null, 2)}\n`,
+      );
+    } catch (error) {
+      this.#logger.error('mcp.server.launcher-connection', error);
+    }
   }
 
   async #handleRequest(request: IncomingMessage, response: ServerResponse): Promise<void> {
