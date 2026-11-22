@@ -4,7 +4,7 @@ import path from "node:path";
 
 import { _electron as electron, expect, test, type Page } from "@playwright/test";
 
-import { resolveElectronExecutablePath } from "./electron-test-helpers";
+import { resolveElectronExecutablePath, useTagPicker } from "./electron-test-helpers";
 
 test.describe.configure({ timeout: 120_000 });
 
@@ -41,6 +41,7 @@ test("ordinary browsing continuously appends every asset without page controls",
     env: {
       ...process.env,
       KEEL_E2E: "1",
+      KEEL_E2E_SHOW_TEXT: "1",
       KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
       KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
       KEEL_E2E_IMPORT_FILES: sourcePaths.join(path.delimiter),
@@ -552,7 +553,8 @@ test("ordinary browsing continuously appends every asset without page controls",
     // The sidebar no longer enumerates tags (REQ-TAG-001); enter the
     // tag-filtered view through the retained 标签过滤 entry instead.
     await window.getByRole("button", { name: "标签", exact: true }).click();
-    await window.getByLabel("标签过滤").fill("分页标签");
+    await useTagPicker(window);
+    await window.getByRole("textbox", { name: "标签过滤", exact: true }).fill("分页标签");
     await window.getByRole("option", { name: /分页标签/ }).click();
     await loadEveryAssetInCurrentScope();
 
@@ -625,6 +627,7 @@ test("bottom-scroll appends assets beyond the first page (Serpent-ws4k)", async 
     env: {
       ...process.env,
       KEEL_E2E: "1",
+      KEEL_E2E_SHOW_TEXT: "1",
       KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
       KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
       KEEL_E2E_IMPORT_FILES: sourcePaths.join(path.delimiter),

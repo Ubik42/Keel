@@ -7,6 +7,7 @@ import { _electron as electron, expect, test } from "@playwright/test";
 import {
   assetCard as locateAssetCard,
   resolveElectronExecutablePath,
+  useTagPicker,
 } from "./electron-test-helpers";
 
 test("persists organization and metadata across restart and surfaces optimistic-lock conflicts", async () => {
@@ -33,6 +34,7 @@ test("persists organization and metadata across restart and surfaces optimistic-
       env: {
         ...process.env,
         KEEL_E2E: "1",
+        KEEL_E2E_SHOW_TEXT: "1",
         KEEL_E2E_RESTORE_RECENT: "1",
         KEEL_E2E_USER_DATA_PATH: profilePath,
         KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
@@ -165,7 +167,8 @@ test("persists organization and metadata across restart and surfaces optimistic-
     // and its assignment survived the restart through the retained 标签过滤
     // entry instead.
     await window.getByRole("button", { name: "标签", exact: true }).click();
-    await window.getByLabel("标签过滤").fill("持久标签");
+    await useTagPicker(window);
+    await window.getByRole("textbox", { name: "标签过滤", exact: true }).fill("持久标签");
     await window.getByRole("option", { name: /持久标签/ }).click();
     await expect(
       locateAssetCard(window, "persistent-asset.txt"),
@@ -370,6 +373,7 @@ test("switches Inspector assets without connection flashes or mixed metadata", a
     env: {
       ...process.env,
       KEEL_E2E: "1",
+      KEEL_E2E_SHOW_TEXT: "1",
       KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
       KEEL_E2E_IMPORT_FILES: [alphaSourcePath, betaSourcePath].join(
         path.delimiter,
@@ -592,6 +596,7 @@ test("assigns Inspector tag suggestions directly and hides tags after their fina
       env: {
         ...process.env,
         KEEL_E2E: "1",
+        KEEL_E2E_SHOW_TEXT: "1",
         KEEL_E2E_RESTORE_RECENT: "1",
         KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
         KEEL_E2E_IMPORT_FILES: [alphaSourcePath, betaSourcePath].join(

@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import zlib from "node:zlib";
 
-import { resolveElectronExecutablePath } from "./electron-test-helpers";
+import { resolveElectronExecutablePath, useTagPicker } from "./electron-test-helpers";
 
 /**
  * Wave 3 UI/UX audit capture utility (not part of the gate suites): drives the
@@ -162,7 +162,8 @@ test("capture primary UI surfaces for the wave-3 UX audit", async () => {
 
     // Filter panel: presets + tag picker.
     await window.getByRole("button", { name: "标签", exact: true }).click();
-    await window.getByLabel("标签过滤").focus();
+    await useTagPicker(window);
+    await window.getByRole("textbox", { name: "标签过滤", exact: true }).focus();
     await window.waitForTimeout(400);
     await shot(window, "09-filter-panel");
     await window.getByRole("button", { name: "标签", exact: true }).click();

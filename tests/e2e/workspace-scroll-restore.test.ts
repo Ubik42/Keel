@@ -26,6 +26,7 @@ function launchApp(temporaryRoot: string, libraryPath: string, importFiles: stri
     env: {
       ...process.env,
       KEEL_E2E: "1",
+      KEEL_E2E_SHOW_TEXT: "1",
       KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
       KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
       KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),

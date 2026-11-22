@@ -245,14 +245,14 @@ export async function openPluginSettingsTab(settingsDialog: Locator): Promise<vo
 }
 
 /**
- * Open advanced plugin install (local folder/ZIP or GitHub). The primary entry
- * is now「打开插件社区」; tests that install fixed E2E packages use「高级安装」.
+ * Open plugin install (local folder/ZIP or GitHub). Since the community
+ * catalog was removed (0ae0ad1f) the entry is「安装插件」.
  */
 export async function openPluginAdvancedInstallDialog(
   window: Page,
   settingsDialog: Locator,
 ): Promise<Locator> {
-  await settingsDialog.getByRole('button', { name: '高级安装' }).click();
+  await settingsDialog.getByRole('button', { name: '安装插件', exact: true }).click();
   const installDialog = window.getByRole('dialog', { name: '安装插件' });
   await expect(installDialog).toBeVisible();
   return installDialog;
