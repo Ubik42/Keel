@@ -319,20 +319,11 @@ import { OpenSourceLicensesDialog } from "./OpenSourceLicensesDialog";
 import { playTaskCompletionSound } from "./task-completion-sound";
 import { AppSettingsEntry } from "./AppSettingsEntry";
 import type { AppSettingsCategoryId } from "./app-settings-sections";
-import {
-  loadAiUiPreferences,
-  saveAiUiPreferences,
-  type AiUiPreferences,
-} from "./ai-ui-preferences";
+import type { AiUiPreferences } from "./ai-ui-preferences";
+import { usePrefsStore } from "./stores/prefs-store";
 import {
   imageSequenceImportFlags,
-  loadImageSequencePreferences,
-  saveImageSequencePreferences,
 } from "./image-sequence-preferences";
-import {
-  loadViewerChromePreferences,
-  saveViewerChromePreferences,
-} from "./viewer-chrome-preferences";
 import {
   isPostImportSequenceOfferId,
   postImportFrameGroupsForAction,
@@ -588,19 +579,9 @@ import {
   nextCanvasCaptionAlign,
   CARD_SIZE_MAX,
   CARD_SIZE_MIN,
-  loadCanvasPreferences,
-  saveCanvasPreferences,
   shouldShowGridDimensions,
   type CanvasPreferences,
 } from "./canvas-preferences";
-import {
-  loadAudioPreviewPreferences,
-  saveAudioPreviewPreferences,
-} from "./audio-preview-preferences";
-import {
-  loadImageRotationPreferences,
-  saveImageRotationPreferences,
-} from "./image-rotation-preferences";
 import {
   loadBrowseSortPreferences,
   saveBrowseSortPreferences,
@@ -1022,20 +1003,10 @@ function AppInner() {
         : undefined,
     [beginLibraryWrite, endLibraryWrite, libraryTransitionLock, rawLibraryApi],
   );
-  const [audioPreviewPrefersCover, setAudioPreviewPrefersCover] = useState(
-    () => loadAudioPreviewPreferences().preferCover,
-  );
-  const applyAudioPreviewPreference = useCallback((preferCover: boolean) => {
-    saveAudioPreviewPreferences({ version: 1, preferCover });
-    setAudioPreviewPrefersCover(preferCover);
-  }, []);
-  const [bakeImageRotation, setBakeImageRotation] = useState(
-    () => loadImageRotationPreferences().bakeIntoFile,
-  );
-  const applyBakeImageRotation = useCallback((bakeIntoFile: boolean) => {
-    saveImageRotationPreferences({ version: 1, bakeIntoFile });
-    setBakeImageRotation(bakeIntoFile);
-  }, []);
+  const audioPreviewPrefersCover = usePrefsStore((state) => state.audioPreviewPrefersCover);
+  const applyAudioPreviewPreference = usePrefsStore((state) => state.setAudioPreviewPrefersCover);
+  const bakeImageRotation = usePrefsStore((state) => state.bakeImageRotation);
+  const applyBakeImageRotation = usePrefsStore((state) => state.setBakeImageRotation);
   const libraryIdForAudioPreview = library?.libraryId;
   useEffect(() => {
     if (!api || !libraryIdForAudioPreview) return;
@@ -2292,9 +2263,8 @@ function AppInner() {
   }) => void>(() => undefined);
   const [aiBatchProgress, setAiBatchProgress] =
     useState<AiBatchProgressSnapshot | null>(null);
-  const [aiUiPrefs, setAiUiPrefs] = useState<AiUiPreferences>(() =>
-    loadAiUiPreferences(),
-  );
+  const aiUiPrefs = usePrefsStore((state) => state.aiUi);
+  const setAiUiPrefs = usePrefsStore((state) => state.setAiUi);
   const [importValidated, setImportValidated] =
     useState<ImportValidatedResult | null>(null);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
@@ -2328,9 +2298,8 @@ function AppInner() {
     onActivity: onViewerChromeActivity,
     wake: wakeViewerChrome,
   } = useViewerChromeIdle(undefined, Boolean(previewAsset));
-  const [canvasPrefs, setCanvasPrefs] = useState<CanvasPreferences>(() =>
-    loadCanvasPreferences(),
-  );
+  const canvasPrefs = usePrefsStore((state) => state.canvas);
+  const setCanvasPrefs = usePrefsStore((state) => state.setCanvas);
   const syncCardAssetIds = useMemo(() => {
     const ids: string[] = [];
     const seen = new Set<string>();
@@ -2355,12 +2324,10 @@ function AppInner() {
       && syncProgress.filesTotal > 0,
     ),
   });
-  const [imageSequencePrefs, setImageSequencePrefs] = useState(() =>
-    loadImageSequencePreferences(),
-  );
-  const [viewerChromePrefs, setViewerChromePrefs] = useState(() =>
-    loadViewerChromePreferences(),
-  );
+  const imageSequencePrefs = usePrefsStore((state) => state.imageSequence);
+  const setImageSequencePrefs = usePrefsStore((state) => state.setImageSequence);
+  const viewerChromePrefs = usePrefsStore((state) => state.viewerChrome);
+  const setViewerChromePrefs = usePrefsStore((state) => state.setViewerChrome);
   // Hover live previews (audio/video) carry the viewer volume preference over.
   const {
     volume: viewerVolume,
@@ -4104,25 +4071,12 @@ function AppInner() {
   }, [previewAsset, previewRestoring]);
 
   useEffect(() => {
-    saveCanvasPreferences(canvasPrefs);
-  }, [canvasPrefs]);
-  useEffect(() => {
     saveBrowseSortPreferences({
       version: 1,
       field: sortField,
       order: sortOrder,
     });
   }, [sortField, sortOrder]);
-  useEffect(() => {
-    saveAiUiPreferences(aiUiPrefs);
-  }, [aiUiPrefs]);
-
-  useEffect(() => {
-    saveImageSequencePreferences(imageSequencePrefs);
-  }, [imageSequencePrefs]);
-  useEffect(() => {
-    saveViewerChromePreferences(viewerChromePrefs);
-  }, [viewerChromePrefs]);
 
   useEffect(() => {
     const canvas = workspaceCanvasRef.current;
