@@ -77,7 +77,7 @@ export function useFolderCardRowElement({ folderCardRowVisible, browseCanvasBody
               entry.folderId,
               selectedFolderIds,
             );
-            // Serpent-374266: let the sidebar validate drop targets with it.
+            // let the sidebar validate drop targets with it.
             managedFolderDragIdsRef.current = [...folderIds];
             event.dataTransfer.setData(
               MANAGED_FOLDERS_DRAG_TYPE,

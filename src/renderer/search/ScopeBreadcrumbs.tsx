@@ -5,7 +5,7 @@ import type { TrashBreadcrumbHop } from "../trash/trash-browse";
 export type ScopeBreadcrumbSegment =
   | { kind: "static"; id: string; label: string }
   | { kind: "folder"; id: string; label: string; folderId: string }
-  /** Trash hierarchy hop; tombstoneId null = trash root (Serpent-6pcd / whvm). */
+  /** Trash hierarchy hop; tombstoneId null = trash root (whvm). */
   | {
       kind: "trash-path";
       id: string;

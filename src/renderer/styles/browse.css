@@ -118,7 +118,7 @@
 /* REQ-PREF-001: general settings panel — theme/language/canvas display
    grouped as labelled sections of pill-style radio options. */
 
-/* MENU-023 / Serpent-0rg: asset inline rename mirrors folder nav-inline-edit
+/* MENU-023: asset inline rename mirrors folder nav-inline-edit
    (shared .text-field chrome: single border, focus ring via box-shadow only,
    normal foreground — not caption tertiary gray). */
 
@@ -212,7 +212,7 @@
   width: 100%;
 }
 
-/* Serpent-ws4k: infinite-scroll sentinel row under the asset grid. Idle it is
+/* infinite-scroll sentinel row under the asset grid. Idle it is
    an invisible 1px trigger; while a page fetch is in flight it shows the
    shared activity pulse + token-colored caption. */
 
@@ -241,8 +241,7 @@
   flex-direction: column;
   /* Windowing spacers own the inter-row gap via row margin. A CSS gap
      here would add extra empty strips that the row window cannot see, so
-     loadImmediately drifts above the real viewport (Serpent-1s3d /
-     Serpent-614293). */
+     loadImmediately drifts above the real viewport. */
   gap: 0;
 }
 
@@ -251,11 +250,11 @@
   width: 100%;
   flex-direction: row;
   /* flex-start: caption natural height must not stretch/shrink sibling media
-     boxes (Serpent-5p45). */
+     boxes. */
   align-items: flex-start;
   gap: 14px;
   /* Selection ring is an outward box-shadow; clipping the row turns the
-     left edge into a thick bar that ignores border-radius (Serpent-ebff32).
+     left edge into a thick bar that ignores border-radius.
      Row height is locked in virtualJustifiedRowStyle instead. */
   overflow: visible;
 }
@@ -263,7 +262,7 @@
 .justified-card-slot {
   min-width: 0;
   /* Integer widths from layoutJustifiedRows must not be flex-shrunk back
-     into fractional CSS pixels (Serpent-oq86). */
+     into fractional CSS pixels. */
   flex: 0 0 auto;
 }
 
@@ -276,7 +275,7 @@
 
 .justified-card-slot .asset-preview {
   /* Explicit height from --justified-preview-height (placement.height).
-     Never flex-shrink against the caption band (Serpent-omn / Serpent-5p45). */
+     Never flex-shrink against the caption band. */
   flex: 0 0 auto;
   width: 100%;
   height: var(--justified-preview-height);
@@ -326,8 +325,7 @@
   min-width: 0;
   flex-direction: column;
   /* Windowing spacers own the inter-card gap via slot margin. A CSS gap
-     here would add extra empty strips that the column window cannot see
-     (Serpent-1s3d). */
+     here would add extra empty strips that the column window cannot see. */
   gap: 0;
 }
 
@@ -471,7 +469,7 @@
 /* Hover only lifts the surface — no border flash, so dense grids stay calm
    while the pointer scans across cards. */
 
-/* Serpent-wgl2: while a marquee drag is active the per-card selection
+/* while a marquee drag is active the per-card selection
    transition is disabled — a large hit set would otherwise animate hundreds
    of box-shadows at once. Selection lands instantly, which also reads better
    for batch marquee interaction. */
@@ -571,7 +569,7 @@
   text-align: center;
 }
 
-/* Serpent-aa3: Option/Alt copy mode marker (Finder-style "+"). */
+/* Option/Alt copy mode marker (Finder-style "+"). */
 
 .asset-drag-preview-copy {
   position: absolute;
@@ -600,13 +598,13 @@
      The selection ring lives on the parent .asset-card, so this overflow
      clip only rounds the thumbnail, never the ring. */
   /* Force a clipping context so absolutely-positioned GIF/video layers
-     (`.asset-card-media`) inherit the same rounded mask (Serpent-woa). */
+     (`.asset-card-media`) inherit the same rounded mask. */
   /* Flat, near-canvas stage: letterboxed areas of contain-fit thumbnails
      read as quiet negative space instead of a patterned placeholder. */
   color: var(--ui-content-tertiary);
 }
 
-/* Serpent-485aeb：字体卡片封面是 16:9 的样张（不是 4:3），卡片框跟着一起变成
+/* 字体卡片封面是 16:9 的样张（不是 4:3），卡片框跟着一起变成
    16:9，否则 contain 会在上下留出与样张底色不同的横条。 */
 
 .asset-card[data-media-type="font"] .asset-preview {
@@ -623,7 +621,7 @@
 /* REQ-CANVAS-009: GIF/video in-place hover (or primary selection) preview.
    Absolute fill; pointer-events none so card click/drag stay on the button.
    Own overflow+radius so live layers cannot paint sharp corners or spill
-   into the caption band on extreme portrait cards (Serpent-woa). */
+   into the caption band on extreme portrait cards. */
 
 .asset-card-media {
   position: absolute;
@@ -635,7 +633,7 @@
   pointer-events: none;
 }
 
-/* Serpent-l2at / Serpent-qc7v: 占位 caption 与完成卡共用 .asset-caption 间距；
+/* 占位 caption 与完成卡共用 .asset-caption 间距；
    骨架条只填尚未到达的文件名/大小日期行，高度贴近对应文字行。 */
 
 .asset-caption-skeleton-line {
@@ -759,7 +757,7 @@
 
 /* Solid theme chips keep labels legible without a per-card backdrop blur.
    Dense video grids otherwise spend most scroll frames rebuilding blur layers.
-   Serpent-i07: duration bottom-left; extension bottom-right (non-images). */
+   duration bottom-left; extension bottom-right (non-images). */
 
 .asset-extension {
   position: absolute;
@@ -776,7 +774,7 @@
   pointer-events: none;
 }
 
-/* Duration always bottom-left (Serpent-i07). */
+/* Duration always bottom-left. */
 
 .asset-duration-badge {
   position: absolute;
@@ -809,7 +807,7 @@
   pointer-events: none;
 }
 
-/* Serpent-871f34: ring at the card's bottom-right. Pending = blue, syncing =
+/* ring at the card's bottom-right. Pending = blue, syncing =
    green with a moving highlight, conflict = yellow + warning. */
 
 .asset-sync-status {
@@ -1004,7 +1002,7 @@
 
 .asset-filename-prefix {
   min-width: 0;
-  /* Serpent-kmgw: flex-grow stretched the prefix on short names, pushing the
+  /* flex-grow stretched the prefix on short names, pushing the
      tail/extension to the far right (a short sample name rendered with a gap).
      grow 0 keeps the name tightly packed when it fits; shrink 1 still lets
      the prefix collapse with an ellipsis when the name overflows. */

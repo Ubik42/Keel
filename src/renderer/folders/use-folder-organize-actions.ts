@@ -38,7 +38,7 @@ export type UseFolderOrganizeActionsParams = {
 
 /**
  * Folder copy-aside actions: paste (OS clipboard import), clone, move confirm
- * helpers used by REQ-MENU-005 / Serpent-vgp. OS copy itself lives in
+ * helpers used by REQ-MENU-005. OS copy itself lives in
  * use-shell-file-actions (Main clipboard write).
  */
 export function useFolderOrganizeActions({

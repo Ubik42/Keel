@@ -17,7 +17,7 @@ export interface AiImageArtifactService {
     assetId: string,
     kind: string,
   ): ThumbnailArtifact | null;
-  // Null for model assets (no Worker raster generator; Serpent-fu2i). AI
+  // Null for model assets (no Worker raster generator). AI
   // analysis only reaches this path for images, so null is never consumed.
   generateThumbnail(input: { libraryId: string; assetId: string }): Promise<{ artifactId: string } | null>;
   getArtifactAbsolutePath(libraryId: string, artifactId: string): string;

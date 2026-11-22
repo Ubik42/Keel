@@ -110,7 +110,7 @@ describe('buildAiAnalysisSystemPrompt', () => {
     expect(prompt).not.toContain('关于评分');
   });
 
-  it('hard-constrains Chinese tags when language is zh-CN (Serpent-sbnt)', () => {
+  it('hard-constrains Chinese tags when language is zh-CN', () => {
     const prompt = buildAiAnalysisSystemPrompt({
       language: 'Chinese (zh-CN)',
       settings: DEFAULT_AI_ANALYSIS_SETTINGS,

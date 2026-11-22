@@ -940,7 +940,7 @@ describe('LibraryService lifecycle', () => {
     expectServiceError(() => service.openLibrary(created.libraryPath), 'NOT_A_LIBRARY');
   });
 
-  it('opens a database created by a newer schema version writable (Serpent-033e)', () => {
+  it('opens a database created by a newer schema version writable', () => {
     const root = temporaryRoot();
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Future', selectedParentPath: root });
@@ -1011,7 +1011,7 @@ describe('LibraryService lifecycle', () => {
     service.closeAll();
     downgradeLibraryToV1(created.libraryPath, true);
 
-    // Serpent-verg.5 (0031 §2.2): a rolled-back migration failure is now a
+    // (0031 §2.2): a rolled-back migration failure is now a
     // retryable LIBRARY_MIGRATION_FAILED (recorded for the retry path)
     // rather than LIBRARY_CORRUPT — the version still does not advance.
     expectServiceError(() => service.openLibrary(created.libraryPath), 'LIBRARY_MIGRATION_FAILED');
@@ -1041,7 +1041,7 @@ describe('LibraryService lifecycle', () => {
     ).run(randomUUID(), randomUUID(), new Date().toISOString(), new Date().toISOString());
     before.close();
 
-    // Serpent-verg.5: a rolled-back table-rebuild failure is retryable.
+    // a rolled-back table-rebuild failure is retryable.
     expectServiceError(() => service.openLibrary(created.libraryPath), 'LIBRARY_MIGRATION_FAILED');
 
     const after = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
@@ -1128,7 +1128,7 @@ describe('LibraryService lifecycle', () => {
     expect(service.listLibraries()).toEqual([]);
   });
 
-  it('deletes an open library root from disk and leaves linked sources (Serpent-9i8)', () => {
+  it('deletes an open library root from disk and leaves linked sources', () => {
     const root = temporaryRoot();
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets',
@@ -1166,7 +1166,7 @@ describe('LibraryService lifecycle', () => {
     expectServiceError(() => service.openLibrary(libraryPath), 'LIBRARY_NOT_FOUND');
   });
 
-  it('cleans up aside roots left by a prior deletion and skips foreign paths (Serpent-65d837)', () => {
+  it('cleans up aside roots left by a prior deletion and skips foreign paths', () => {
     const root = temporaryRoot();
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets',

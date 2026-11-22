@@ -9,7 +9,7 @@ import {
   writePendingCleanupAsidePaths,
 } from '../../src/main/library/pending-cleanup-store';
 
-describe('pending cleanup store (Serpent-65d837)', () => {
+describe('pending cleanup store', () => {
   let storeDirectory = '';
   let storePath = '';
 

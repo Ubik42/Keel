@@ -1,9 +1,9 @@
 /**
- * REQ-MENU-004 / Serpent-guq: classify a multi-asset context-menu selection
+ * REQ-MENU-004: classify a multi-asset context-menu selection
  * into process vs skip counts with stable reason codes, and format a concise
  * menu footer (e.g. "将处理 3 / 跳过 2（回收站）").
  *
- * Serpent-koy / Serpent-vgp: folder cards in a mixed selection participate in
+ * folder cards in a mixed selection participate in
  * trash / disk-delete and move (reparent). Asset-only actions (tags, …) still
  * skip folders with reason "folder".
  *

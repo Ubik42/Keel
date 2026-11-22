@@ -121,7 +121,7 @@ export function AppAssetContextMenu({ busy, pluginBrowseScope, pluginViewerState
           folderTreeActionsRef.current?.collapseSubtree(folderId);
         },
         onImportLinkedFolderInto: (folderId) => {
-          // Serpent-316493: 导入链接文件夹 under the right-clicked folder (or at
+          // 导入链接文件夹 under the right-clicked folder (or at
           // the library root when the folder panel's blank area was clicked).
           void importFolderAsLinked(
             isLibraryRootFolderId(folderId) ? null : folderId,
@@ -143,7 +143,7 @@ export function AppAssetContextMenu({ busy, pluginBrowseScope, pluginViewerState
           void handleCopyFolder(folderId);
         },
         onPasteIntoFolder: (folderId) => {
-          // Serpent-316493 follow-up: the root sentinel means "the library
+          // the root sentinel means "the library
           // root", which paste/import APIs express as null.
           dispatchClipboardPaste(isLibraryRootFolderId(folderId) ? null : folderId);
         },

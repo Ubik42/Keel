@@ -4,10 +4,10 @@ import { resolveFolderBrowseParentId } from "../../src/renderer/browse/folder-br
 import type { ManagedFolderSummary } from "../../src/shared/asset-types";
 
 /**
- * Serpent-w9c6: toolbar tag *filters* must not behave like chooseTag
+ * toolbar tag *filters* must not behave like chooseTag
  * (activeTagId), or folder cards disappear and the nav looks deselected.
  */
-describe("folder browse vs discovery tag filter (Serpent-w9c6)", () => {
+describe("folder browse vs discovery tag filter", () => {
   const folders: ManagedFolderSummary[] = [
     {
       folderId: "folder-a",

@@ -100,7 +100,7 @@ interface AssetPreviewModalProps {
   asset: AssetSummary;
   /** When on, quarter-turns of bakeable stills are written into the file. */
   bakeImageRotation?: boolean;
-  /** Owned by a parent that survives per-asset remounts (Serpent-ayf). */
+  /** Owned by a parent that survives per-asset remounts. */
   chromeIdle: boolean;
   libraryId: string;
   onChromeActivity: (source: ViewerChromeActivitySource) => void;
@@ -325,7 +325,7 @@ const AssetPreviewModalContent = forwardRef<
   const [directApproved, setDirectApproved] = useState(false);
   const [proxyNoticeVisible, setProxyNoticeVisible] = useState(false);
   const proxyNoticeDismissedRef = useRef(false);
-  // Serpent-e56a1f: 代理回退的可见状态。生成中/加载中显示普通状态提示
+  // 代理回退的可见状态。生成中/加载中显示普通状态提示
   // （非警告），只有生成失败才显示警告。
   const [proxyFallbackState, setProxyFallbackState] = useState<
     "idle" | "generating" | "loading" | "failed"
@@ -557,7 +557,7 @@ const AssetPreviewModalContent = forwardRef<
           detail,
         })
         .catch(() => undefined);
-      // Serpent-e56a1f: 生成中显示状态提示（非警告），失败才警告。
+      // 生成中显示状态提示（非警告），失败才警告。
       setProxyFallbackState("generating");
       const result = await api.retryArtifact({
         libraryId,
@@ -594,7 +594,7 @@ const AssetPreviewModalContent = forwardRef<
             preview.value.url
           ) {
             // Proxy 已就绪，video 即将重新挂载加载——进入「加载中」状态，
-            // onReady 时清除（Serpent-e56a1f）。
+            // onReady 时清除。
             setProxyFallbackState("loading");
             return;
           }
@@ -705,7 +705,7 @@ const AssetPreviewModalContent = forwardRef<
     viewerSessionController.cancelTask("proxy-fallback");
     requestedProxyFallbackRef.current = null;
     setRetrying(true);
-    // Serpent-e56a1f: 手动重试同样进入生成中状态，失败前不显示警告。
+    // 手动重试同样进入生成中状态，失败前不显示警告。
     setProxyFallbackState("generating");
     setPlaybackRetryGeneration((generation) => generation + 1);
     // For a source-backed video, keep the existing playback error until
@@ -838,7 +838,7 @@ const AssetPreviewModalContent = forwardRef<
 
   function handlePlaybackError(event: SyntheticEvent<HTMLMediaElement>) {
     const mediaError = event.currentTarget.error;
-    // Serpent-68d5fd: 视频播放失败的诊断——记录 resolution 快照与媒体错误，
+    // 视频播放失败的诊断——记录 resolution 快照与媒体错误，
     // 用于定位间歇性「预览不可用」（已适配 mp4 偶发，需日志证据）。
     try {
       console.error(
@@ -902,7 +902,7 @@ const AssetPreviewModalContent = forwardRef<
           ? t("preview.audioFailed", { code: errorCode })
           : t("preview.videoFailed", { code: errorCode }));
       playbackErrorRef.current = message;
-      // Serpent-e56a1f: 进入代理生成流程后不再显示「视频无法播放」警告——
+      // 进入代理生成流程后不再显示「视频无法播放」警告——
       // 由「代理生成中」状态提示替代；无 playbackToken（无法生成代理）时
       // 保留原始错误供用户看到。
       if (resolution?.playbackToken) {
@@ -932,7 +932,7 @@ const AssetPreviewModalContent = forwardRef<
     playbackErrorRef.current = message;
     setError(message);
     // 代理本身也播放失败：从「加载中」转入失败态，状态条不再显示
-    // （Serpent-e56a1f）。
+    //。
     setProxyFallbackState("failed");
     void api
       .reportPreviewError({
@@ -1133,7 +1133,7 @@ const AssetPreviewModalContent = forwardRef<
   }, [api, asset.assetId, asset.availability, asset.deletedAt, libraryId, onInfoNotice, setError, t]);
 
   const copyViewerAsset = useCallback(async () => {
-    // Serpent-f8e175: 与右键「复制」一致，把当前资产源文件复制到剪贴板。
+    // 与右键「复制」一致，把当前资产源文件复制到剪贴板。
     const result = await api.copyAssetFiles({
       libraryId,
       assetIds: [asset.assetId],
@@ -1146,7 +1146,7 @@ const AssetPreviewModalContent = forwardRef<
 
   useEffect(() => {
     if (preloadOnly) return;
-    // Serpent-f8e175: 图片/视频/PDF/音频等非文本查看器聚焦时 Ctrl/Cmd+C
+    // 图片/视频/PDF/音频等非文本查看器聚焦时 Ctrl/Cmd+C
     // 复制当前资产；文本查看器让渡给原生（复制选中文本），输入框/可编辑
     // 元素聚焦时不抢键（判定见 shouldCopyAssetOnShortcut）。
     const onKeyDown = (event: KeyboardEvent) => {
@@ -1331,7 +1331,7 @@ const AssetPreviewModalContent = forwardRef<
               waveformUrl={resolution.posterUrl}
             />
           ) : ready && resolution?.mediaType === "model" && resolution.url ? (
-            // Slice C (Serpent-qvc6): the 3D viewport surface. Keyed so a
+            // Slice C: the 3D viewport surface. Keyed so a
             // navigation to another asset remounts the WebGL session cleanly
             // (the modal itself is already keyed by assetId in App.tsx).
             <ModelViewerSurface
@@ -1347,7 +1347,7 @@ const AssetPreviewModalContent = forwardRef<
               sourceUrl={resolution.url}
             />
           ) : ready && resolution?.mediaType === "font" && resolution.url ? (
-            // Serpent-485aeb: glyphs render in the Renderer with a FontFace;
+            // glyphs render in the Renderer with a FontFace;
             // preview text/size are view-only and never written back.
             <FontViewerSurface
               api={api}

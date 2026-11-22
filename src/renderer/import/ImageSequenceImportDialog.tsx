@@ -24,7 +24,7 @@ export interface ImageSequenceImportDialogProps {
   error?: string | null;
   offer: ImageSequenceImportOffer | null;
   sequenceIndex?: number;
-  /** 当前这一组的帧预览来源（Serpent-866c20）；为空时不显示预览。 */
+  /** 当前这一组的帧预览来源；为空时不显示预览。 */
   previewSource?: SequencePreviewSource | null;
   /** Manual create reuses this form; copy stays create-specific. */
   purpose?: ImageSequenceConfirmPurpose;

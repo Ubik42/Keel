@@ -772,7 +772,7 @@ export const pluginContributesSchema = z.strictObject({
   viewerActions: z.array(contributionViewerActionSchema).max(64).default([]),
   shortcuts: z.array(contributionShortcutSchema).max(64).default([]),
   views: z.array(contributionViewSchema).max(128).default([]),
-  /** Modal settings dialogs (Serpent-a3de58); opened via `serpent.ui.openDialog`. */
+  /** Modal settings dialogs; opened via `serpent.ui.openDialog`. */
   dialogs: z.array(contributionDialogSchema).max(32).optional(),
   settings: z.array(contributionSettingSchema).max(128).default([]),
   hooks: z.array(contributionHookSchema).max(128).default([]),

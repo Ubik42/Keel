@@ -1,7 +1,7 @@
 const RAW_METADATA_BACKFILL_MIN_INTERVAL_MS = 2_000;
 
 /**
- * Serpent-288cd9：RAW metadata 回填的准入游标。
+ * RAW metadata 回填的准入游标。
  *
  * 旧实现只有一个 2 秒节流：即使全库 RAW 都已有任务/产物，secondary pump 每 2 秒仍会
  * 重跑一次昂贵候选探测（真实库单次约 94 ms，profile 里累计约 22.6 秒）。

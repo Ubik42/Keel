@@ -20,7 +20,7 @@ const EDITABLE_SELECTOR =
 /**
  * Document capture listener: right-click on text inputs/textareas pops the
  * Main-owned native edit menu and stops the event so asset/folder React
- * context menus do not open (Serpent-d8u).
+ * context menus do not open.
  *
  * Mount inside `<ContextMenuProvider>` so any open React menu is closed first.
  */

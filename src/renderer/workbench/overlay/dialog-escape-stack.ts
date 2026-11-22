@@ -1,5 +1,5 @@
 /**
- * Pure priority for Escape dismiss across stacked App dialogs (Serpent-uye).
+ * Pure priority for Escape dismiss across stacked App dialogs.
  * Order matches the historical App.tsx keydown handler.
  */
 
@@ -27,15 +27,15 @@ export type DialogEscapeSnapshot = {
   dialogOpen: boolean;
   /** Calm prompt when library plugins appear that still need per-device trust. */
   pluginTrustPromptOpen: boolean;
-  /** Serpent-99lv: blocking fatal alert — Escape acknowledges/dismisses. */
+  /** blocking fatal alert — Escape acknowledges/dismisses. */
   fatalAlertOpen: boolean;
-  /** Serpent-kdnm: AI connection lost — Escape aborts remaining jobs. */
+  /** AI connection lost — Escape aborts remaining jobs. */
   aiConnectionFailureOpen: boolean;
   /** When set, Escape abandons this pending import conflict plan. */
   conflictsImportId: string | null;
   /** When set, Escape abandons this pending unreadable-source skip plan. */
   sourceFailureImportId?: string | null;
-  /** Confirm is in-flight; Escape must not abandon the token (Serpent-85e60c). */
+  /** Confirm is in-flight; Escape must not abandon the token. */
   importDecisionSubmitting?: boolean;
   /** Full-window import overlay: Escape cancels when cancelable, otherwise hides it. */
   blockingImportOpen?: boolean;
@@ -85,15 +85,15 @@ export function isDialogEscapeLayerActive(
 export function resolveDialogEscapeAction(
   snapshot: DialogEscapeSnapshot,
 ): DialogEscapeAction {
-  // Generic fatal alert sits above other layers (Serpent-99lv).
+  // Generic fatal alert sits above other layers.
   if (snapshot.fatalAlertOpen) {
     return { kind: "dismiss-fatal-alert" };
   }
-  // Fatal AI connection dialog sits above remaining layers (Serpent-kdnm).
+  // Fatal AI connection dialog sits above remaining layers.
   if (snapshot.aiConnectionFailureOpen) {
     return { kind: "abort-ai-connection-failure" };
   }
-  // Import decision dialogs must beat the progress overlay (Serpent-224ac8).
+  // Import decision dialogs must beat the progress overlay.
   // Sequence import is also above the regular sequence settings dialog.
   if (snapshot.imageSequenceImportOpen) {
     return { kind: "close-image-sequence-import" };

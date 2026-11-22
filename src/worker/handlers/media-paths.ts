@@ -102,7 +102,7 @@ export async function executeMediaPathWorkerCommand(
       // first; the light visible wave can start on the next turn without
       // delaying that response. A provided plugin artifact already satisfies
       // the request, so avoid enqueueing a native job that could overwrite it.
-      // Serpent-tz35: the viewer wave stays at priority 350 and skips repair
+      // the viewer wave stays at priority 350 and skips repair
       // scans, but it is deliberately detached from the first-paint request.
       if (!pluginArtifact) {
         const previewLibraryId = request.command.libraryId;
@@ -159,7 +159,7 @@ export async function executeMediaPathWorkerCommand(
     case 'media.get-asset-drag-infos': {
       // Main-only cache primer for native drag. Resolve visible entries before
       // dragstart: webContents.startDrag cannot wait for this Worker round trip.
-      // Serpent-v4jf: batched resolution — the legacy per-asset loop cost 3-4
+      // batched resolution — the legacy per-asset loop cost 3-4
       // point queries per asset (~150k+ queries for a 50k browse result) and
       // stalled the Worker event loop; resolveAssetDragInfos batches in 500-id
       // chunks with identical per-entry semantics (missing skipped, hard

@@ -422,7 +422,7 @@ export function enumerateImportSources(this: LibraryService, input: {
     } catch (error) {
       throw new LibraryServiceError('INVALID_IMPORT_SOURCE', { cause: error });
     }
-    // Serpent-8b5b.3: walking a filesystem root would import the whole disk
+    // walking a filesystem root would import the whole disk
     // (the folder branch recurses); reject '/' and 'C:\' explicitly.
     if (sourcePath === path.parse(sourcePath).root) {
       throw new LibraryServiceError('INVALID_IMPORT_SOURCE', {
@@ -452,7 +452,7 @@ export function importFolderAsLinked(this: LibraryService, input: {
     libraryId: string;
     sourceRootPath: string;
     displayName?: string;
-    /** Serpent-316493: managed folder to hang the linked root under. */
+    /** managed folder to hang the linked root under. */
     parentFolderId?: string | null;
     /**
      * Worker RPC passes false so watcher setup runs after the command returns.
@@ -469,7 +469,7 @@ export function importFolderAsLinked(this: LibraryService, input: {
     throw serviceError(error, 'INVALID_IMPORT_SOURCE');
   }
 
-  // Serpent-316493: the parent must be an active managed folder of this
+  // the parent must be an active managed folder of this
   // library. Linked ids never match, so "link under a linked folder" is
   // rejected here rather than silently accepted.
   const parentFolderId = input.parentFolderId ?? null;
@@ -512,7 +512,7 @@ export function importFolderAsLinked(this: LibraryService, input: {
   // helper rejects absolute paths; the linked root is device-specific anyway.
   const pathIdentity = canonicalRoot;
 
-  // Serpent-316493 rejection rules: the library's own tree is managed by
+  // rejection rules: the library's own tree is managed by
   // Keel, and a folder already covered by a linked root would be indexed
   // twice. Both are reported with a specific reason so the UI can explain.
   let canonicalLibraryPath = openLibrary.summary.libraryPath;
@@ -734,7 +734,7 @@ export function importFolderAsLinked(this: LibraryService, input: {
       absoluteRootPath: canonicalRoot,
       linkedFolderId: folderId,
       relativePath: '',
-      // Serpent-316493: echo the requested parent (null = library root).
+      // echo the requested parent (null = library root).
       parentFolderId,
       createdAt: now,
       // New linked root: default look, matching listLinkedFolders.
@@ -748,7 +748,7 @@ export function importFolderAsLinked(this: LibraryService, input: {
 
 /**
 * Copy external paths into a linked folder root and register via refresh
-* (Serpent-d3h / LINK-005). Returns an ImportCompletion-shaped result when
+* (LINK-005). Returns an ImportCompletion-shaped result when
 * called from prepareOrExecuteImport; prepareImport routes linked targets
 * here via a zero-conflict plan + immediate resolve is not used — instead
 * prepareOrExecuteImport short-circuits.
@@ -857,7 +857,7 @@ export function importPathsIntoLinkedFolder(this: LibraryService, input: {
   }
 
   // 只注册本次写入的文件，避免 refreshManagedAssets 全量枚举所有链接文件夹
-  // 导致的导入缓慢（Serpent-f6f779）。
+  // 导致的导入缓慢。
   this.registerWrittenLinkedAssets(
     openLibrary,
     input.linkedFolderId,
@@ -920,7 +920,7 @@ export function classifyImportEntryConflict(this: LibraryService, input: {
     skipLibraryDuplicateScan = false,
   } = input;
 
-  // Path collision always wins (IMPORT-007 / Serpent-12ae): same destination
+  // Path collision always wins (IMPORT-007): same destination
   // basename is a name conflict even when the bytes also match. Content
   // duplicate is reserved for free destination names with matching content.
   if (existingSize !== undefined) {
@@ -1354,7 +1354,7 @@ export function completePreparedImport(this: LibraryService, context: {
       if (conflictKind === 'name-conflict') {
         nameConflictCount += 1;
         if (examples.length < 8) {
-          // Serpent-793k: surface the colliding (already-existing) asset's
+          // surface the colliding (already-existing) asset's
           // display name + thumbnail in the name-conflict dialog, matching
           // what content duplicates already show.
           const destination = this.lookupImportDestination(
@@ -1796,7 +1796,7 @@ export function resolveImport(this: LibraryService, input: {
         if (input.suspectedDuplicate === 'create-copy') {
           // Path-level duplicate: destination occupied → auto-number.
           // Library-level duplicate with a free destination basename: keep the
-          // requested name (Serpent-hy1n); only renumber when the path is taken.
+          // requested name; only renumber when the path is taken.
           const requestedIdentity = portablePathIdentity(requestedDestination);
           const destinationFree =
             existingDestination === undefined &&
@@ -2144,7 +2144,7 @@ export function resolveImport(this: LibraryService, input: {
     this.failAt('after-place');
     this.failAt('crash-after-place');
 
-    // Serpent-yqrl: commit folders first, then each asset in its own
+    // commit folders first, then each asset in its own
     // transaction so the canvas can refresh as items become durable.
     // failAt('before-db-commit') still fires before the first asset commit
     // (import-planning rollback tests). After ≥1 asset commits, later
@@ -3015,7 +3015,7 @@ export function cancelImport(this: LibraryService, importId: string, mode: 'aban
   }
   // After prepare returns a conflict/sequence decision, the import lives in
   // pendingImports. Overlay "取消导入" must abandon rather than throw
-  // IMPORT_NOT_FOUND and leave the UI deadlocked (Serpent-224ac8).
+  // IMPORT_NOT_FOUND and leave the UI deadlocked.
   if (this.pendingImports.has(importId)) {
     this.abandonImport(importId);
     this.emitProgress({

@@ -40,7 +40,7 @@ test("AUDIO_EXTENSION_NAMES lists enqueue tokens without dots", () => {
   expect(AUDIO_EXTENSION_NAMES.every((name) => !name.includes("."))).toBe(true);
 });
 
-test("waveform cover geometry is approximately 4:3 (Serpent-dxk)", () => {
+test("waveform cover geometry is approximately 4:3", () => {
   expect(AUDIO_WAVEFORM_COVER_WIDTH).toBe(640);
   expect(AUDIO_WAVEFORM_COVER_HEIGHT).toBe(480);
   expect(audioWaveformCoverAspectRatio()).toBeCloseTo(4 / 3, 5);
@@ -69,7 +69,7 @@ test("viewer waveform strip is wide (not 4:3 grid cover)", () => {
   ).toBe(false);
 });
 
-test("waveform cover stage is charcoal grey-black (Serpent-vlx)", () => {
+test("waveform cover stage is charcoal grey-black", () => {
   expect(
     isLightFriendlyWaveformCoverBackground(AUDIO_WAVEFORM_COVER_BACKGROUND),
   ).toBe(true);
@@ -84,7 +84,7 @@ test("waveform cover stage is charcoal grey-black (Serpent-vlx)", () => {
   ).toBe(false);
 });
 
-test("waveform cover stage contrasts with light canvas (Serpent-muc)", () => {
+test("waveform cover stage contrasts with light canvas", () => {
   expect(LIGHT_CANVAS_BACKGROUND).toEqual({ r: 0xe8, g: 0xea, b: 0xe7 });
   expect(contrastsWithLightCanvas(AUDIO_WAVEFORM_COVER_BACKGROUND)).toBe(true);
   expect(contrastsWithLightCanvas(LIGHT_CANVAS_BACKGROUND)).toBe(false);

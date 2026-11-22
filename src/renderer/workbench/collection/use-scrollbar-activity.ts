@@ -8,7 +8,7 @@ import {
 const SCROLLBAR_IDLE_MS = 900;
 
 /**
- * Overlay scrollbars (Serpent-62wm): show a thumb only while the user is
+ * Overlay scrollbars: show a thumb only while the user is
  * actively scrolling or the pointer is near the scrollbar track — not when
  * the mouse merely hovers the scrollport content.
  */

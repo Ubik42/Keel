@@ -68,7 +68,7 @@ export const PUBLIC_ERROR_MESSAGES = {
     'Creating the library failed, and leftover temporary files could not be removed automatically. Delete any `.keel-create-*.partial` folder next to the chosen location, then retry with a writable folder.',
   LIBRARY_NOT_OPEN: 'That library is not open in this window. Open it again, then retry the action.',
   ASSET_NOT_FOUND: 'The requested asset could not be found.',
-  // Serpent-50c466: trash / restore / delete state conflicts had no code of
+  // trash / restore / delete state conflicts had no code of
   // their own and fell back to INVALID_IMPORT_DECISION ("invalid import
   // conflict decision"), which told the user nothing about what happened.
   ASSET_ALREADY_TRASHED:
@@ -79,7 +79,7 @@ export const PUBLIC_ERROR_MESSAGES = {
     'That file lives in a linked folder, outside the library’s own storage. Keel leaves those files where they are — handle it in your file manager.',
   INVALID_STATE_TRANSITION:
     'That action is not valid in the library’s current state, which another window or background task may have changed. Refresh disk changes and try again.',
-  // Serpent-50c466 audit (2026-09-12): argument/selection guards are a different
+  // audit (2026-09-12): argument/selection guards are a different
   // failure from a state race — telling the user "another window changed the
   // library, refresh disk changes" is a false cause for an empty or duplicated
   // selection.
@@ -87,21 +87,21 @@ export const PUBLIC_ERROR_MESSAGES = {
     'The selected items cannot be used for this action. Reselect them, or refresh the list and try again.',
   ASSET_STATE_CONFLICT:
     'This asset is not in a state that supports this action — it may have been deleted, restored, or changed elsewhere. Refresh the list and try again.',
-  // Serpent-50c466 Phase 2 (audit §2.1 #13-#15, #21-#23): an operation that does
+  // Phase 2 (audit §2.1 #13-#15, #21-#23): an operation that does
   // not apply to this file kind is not an invalid import decision.
   UNSUPPORTED_MEDIA_TYPE:
     'This kind of file does not support that action. Choose a supported file type instead.',
-  // Serpent-50c466 Phase 2 (audit §2.1 #11): a destructive AI scope change that
+  // Phase 2 (audit §2.1 #11): a destructive AI scope change that
   // arrived without the confirmation flag.
   CONFIRMATION_REQUIRED:
     'That action needs confirmation first. Reopen the dialog, confirm it, and try again.',
-  // Serpent-50c466 review F3: the file type is supported; its *content* is not text.
+  // review F3: the file type is supported; its *content* is not text.
   ASSET_CONTENT_INVALID:
     'This file’s content is not text — it may be binary or damaged, so the text view cannot open it. If it should be text, check that the file is intact.',
-  // Serpent-50c466 review F4: the import itself is blocked on the user’s answer.
+  // review F4: the import itself is blocked on the user’s answer.
   IMPORT_AWAITING_DECISION:
     'This import is still waiting for you to decide what to do with the files that could not be read. Answer that prompt first, then continue.',
-  // Serpent-50c466 review F7: the user is saving AI settings, not watching an analysis.
+  // review F7: the user is saving AI settings, not watching an analysis.
   AI_SETTINGS_INCOMPLETE:
     'Automatic analysis is not on yet. Add an API key and choose a model in AI settings, then try again.',
   AI_PROFILE_STORAGE_FAILED:
@@ -211,13 +211,13 @@ export const publicErrorReasonSchema = z.enum([
   'LINKED_FOLDER_NETWORK_DISCONNECTED',
   'LINKED_FOLDER_NOT_FOUND',
   'LINKED_FOLDER_FOREIGN_DEVICE',
-  // Serpent-316493: 导入链接文件夹的拒绝原因
+  // 导入链接文件夹的拒绝原因
   'LINKED_SOURCE_INSIDE_LIBRARY',
   'LINKED_SOURCE_ALREADY_LINKED',
   'LINKED_SOURCE_INSIDE_LINKED_FOLDER',
-  /** Serpent-50c466 audit: image-sequence selection does not form one series. */
+  /** audit: image-sequence selection does not form one series. */
   'IMAGE_SEQUENCE_SELECTION',
-  /** Serpent-50c466 review F5: permanent delete only applies to trashed assets. */
+  /** review F5: permanent delete only applies to trashed assets. */
   'PERMANENT_DELETE_NEEDS_TRASH',
 ]);
 

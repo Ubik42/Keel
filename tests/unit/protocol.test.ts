@@ -52,7 +52,7 @@ describe('renderer request protocol', () => {
     });
   });
 
-  it('keeps pollIntervalMs on sync binding save (Serpent-8c4920)', () => {
+  it('keeps pollIntervalMs on sync binding save', () => {
     expect(parseRendererRequest({
       type: 'sync.library.binding.save.request',
       libraryId: 'lib-1',
@@ -65,7 +65,7 @@ describe('renderer request protocol', () => {
     });
   });
 
-  it('keeps showCardSyncStatus on sync binding save (Serpent-871f34)', () => {
+  it('keeps showCardSyncStatus on sync binding save', () => {
     expect(parseRendererRequest({
       type: 'sync.library.binding.save.request',
       libraryId: 'lib-1',
@@ -89,7 +89,7 @@ describe('renderer request protocol', () => {
     });
   });
 
-  it('lists visible-card sync statuses without synced entries (Serpent-871f34)', () => {
+  it('lists visible-card sync statuses without synced entries', () => {
     expect(parseRendererRequest({
       type: 'sync.asset-card-status.request',
       libraryId: 'lib-1',
@@ -1254,7 +1254,7 @@ describe('renderer request protocol', () => {
     })).toThrow();
   });
 
-  it('accepts path-free managed copy and one-shot undo requests (Serpent-2vn)', () => {
+  it('accepts path-free managed copy and one-shot undo requests', () => {
     expect(parseRendererRequest({
       type: 'asset.copy.request',
       libraryId: 'library-01',
@@ -2115,7 +2115,7 @@ describe('worker request protocol', () => {
       fieldCount: 2,
       tagCount: 3,
     })).toMatchObject({ assetId: 'asset-1', tagCount: 3 });
-    // Serpent-c9r3: the cleared event carries the affected IDs (strict).
+    // the cleared event carries the affected IDs (strict).
     expect(parseAiContentClearedEvent({
       type: 'ai.content.cleared',
       libraryId: 'library-1',
@@ -2479,7 +2479,7 @@ describe('public errors', () => {
     });
   });
 
-  it('keeps library-parent and transfer-timeout reasons renderer-safe (Serpent-sq4i)', () => {
+  it('keeps library-parent and transfer-timeout reasons renderer-safe', () => {
     expect(createPublicError('INVALID_LIBRARY_PATH', 'LIBRARY_PARENT_MISSING')).toMatchObject({
       code: 'INVALID_LIBRARY_PATH',
       reason: 'LIBRARY_PARENT_MISSING',
@@ -2772,7 +2772,7 @@ describe('batch content replacement protocol', () => {
   });
 });
 
-describe('model companion protocol (slice A, Serpent-fu2i)', () => {
+describe('model companion protocol (slice A)', () => {
   it('accepts model.resolve-companions as a read-only worker command', () => {
     expect(parseWorkerRequest({
       requestId: 'companions-01',
@@ -2786,7 +2786,7 @@ describe('model companion protocol (slice A, Serpent-fu2i)', () => {
       libraryId: 'library-01',
       assetId: 'asset-01',
     });
-    // Slice C (Serpent-qvc6) opened the renderer request surface for the 3D
+    // Slice C opened the renderer request surface for the 3D
     // viewer; the request maps 1:1 onto the worker command with no extra
     // fields (still no paths, no arbitrary input).
     expect(parseRendererRequest({
@@ -2891,7 +2891,7 @@ describe('model companion protocol (slice A, Serpent-fu2i)', () => {
   });
 });
 
-describe('model convert-fbx protocol (slice B, Serpent-5ygi)', () => {
+describe('model convert-fbx protocol (slice B)', () => {
   it('accepts model.convert-fbx as a worker command (not forgeable by renderer)', () => {
     expect(parseWorkerRequest({
       requestId: 'convert-01',
@@ -2905,7 +2905,7 @@ describe('model convert-fbx protocol (slice B, Serpent-5ygi)', () => {
       libraryId: 'library-01',
       assetId: 'asset-01',
     });
-    // Slice C (Serpent-qvc6) drives the conversion from the 3D viewer; the
+    // Slice C drives the conversion from the 3D viewer; the
     // renderer request surface is open but carries only library/asset ids.
     expect(parseRendererRequest({
       type: 'model.convert-fbx.request',
@@ -3009,7 +3009,7 @@ describe('publicReasonFromError', () => {
   });
 });
 
-describe('sync open-remote-libraries protocol (Serpent-xffq)', () => {
+describe('sync open-remote-libraries protocol', () => {
   it('accepts the list-remote-libraries renderer request and worker command', () => {
     expect(parseRendererRequest({
       type: 'sync.list-remote-libraries.request',
@@ -3074,7 +3074,7 @@ describe('sync open-remote-libraries protocol (Serpent-xffq)', () => {
   });
 });
 
-describe('library deletion deferred-cleanup protocol (Serpent-65d837)', () => {
+describe('library deletion deferred-cleanup protocol', () => {
   it('parses a worker deletion carrying a pending aside path', () => {
     const response = parseWorkerResponse({
       requestId: 'req-01',

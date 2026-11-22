@@ -51,7 +51,7 @@ function makeDeps(
   };
 }
 
-describe("file-clipboard (Serpent-vgp)", () => {
+describe("file-clipboard", () => {
   it("detects darwin / win32 / other", () => {
     expect(detectFileClipboardPlatform("darwin")).toBe("darwin");
     expect(detectFileClipboardPlatform("win32")).toBe("win32");

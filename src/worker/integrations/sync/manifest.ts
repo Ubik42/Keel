@@ -1,5 +1,5 @@
 /**
- * 同步交换格式 manifest（Serpent-xffq）。
+ * 同步交换格式 manifest。
  *
  * 远端库目录内的版本清单：以 assetId 为键记录每个同步单元的版本。
  * 内容哈希/版本号是冲突裁决的权威；ETag 用于条件写（CAS），
@@ -68,7 +68,7 @@ export function serializeManifest(manifest: SyncManifest): string {
 
 /**
  * 远端已有合法身份时，写回必须保留远端 libraryId/displayName/directoryName。
- * 空 entries 不得覆盖非空远端清单（GitHub #40 / Serpent-079d71）。
+ * 空 entries 不得覆盖非空远端清单（GitHub #40）。
  */
 export function stampRemoteIdentity(
   outgoing: SyncManifest,

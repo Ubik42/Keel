@@ -6,7 +6,7 @@ import {
   libraryTransferKindFromOperation,
 } from '../../src/renderer/library/library-transfer-progress';
 
-describe('library transfer progress copy (Serpent-lvif)', () => {
+describe('library transfer progress copy', () => {
   it('maps Eagle opening to Eagle copy, not Billfish or import', () => {
     expect(libraryTransferKindFromOperation('open-eagle')).toBe('open-eagle');
     expect(libraryTransferHeadlineKey('open-eagle')).toEqual({

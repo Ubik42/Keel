@@ -786,7 +786,7 @@ export function createManagedFolder(this: LibraryService, input: {
     childFolderCount: 0,
     createdAt,
     // Every summary path reports appearance, so a single-row return and
-    // listManagedFolders must not disagree (Serpent-df3049 follow-up).
+    // listManagedFolders must not disagree.
     appearance: null,
   };
   try {
@@ -1004,7 +1004,7 @@ export function renameManagedFolder(this: LibraryService, input: {
 }
 
 /**
-* Clone a managed folder as a sibling (REQ-MENU-005 / Serpent-vgp).
+* Clone a managed folder as a sibling (REQ-MENU-005).
 * Creates a new folder tree with fresh folder/asset identities; human
 * metadata + tags are cloned via copyAssets. Linked folders are refused.
 */
@@ -1093,7 +1093,7 @@ export function cloneManagedFolder(this: LibraryService, input: {
 }
 
 /**
-* Move managed folders under a new parent (REQ-MENU-005 / Serpent-vgp).
+* Move managed folders under a new parent (REQ-MENU-005).
 * Rejects moves into self/descendant. Nested selections are collapsed to
 * outermost folders so a parent move does not double-move a child.
 */
@@ -1532,7 +1532,7 @@ export function listManagedFolders(this: LibraryService, libraryId: string, show
     showIgnored || !this.explicitFolderIgnored(openLibrary, 'managed', null, row.relative_path),
   );
   const counts = this.managedFolderCountMaps(openLibrary, undefined, showIgnored);
-  // Serpent-toh: ManagedFolderSummary.directAssetCount is the displayed
+  // ManagedFolderSummary.directAssetCount is the displayed
   // badge count = all descendants (schema field name kept for compat).
   const recursive = this.managedFolderRecursiveAssetCounts(openLibrary, rows, showIgnored);
   return rows.map((row) => {
@@ -2351,7 +2351,7 @@ export function listFolderBrowseEntries(this: LibraryService, input: {
     visibleChildren.map((row) => row.folder_id),
     input.showIgnored === true,
   );
-  // Serpent-d0nv: scheduling candidates are the top-3 direct assets by path
+  // scheduling candidates are the top-3 direct assets by path
   // with NO ready-thumbnail requirement — the cover scene must enqueue the
   // folders that have no covers yet (the user-visible symptom).
   const coverCandidateMap = this.folderCoverCandidateAssetMap(
@@ -2370,11 +2370,11 @@ export function listFolderBrowseEntries(this: LibraryService, input: {
       relativePath: row.relative_path,
       status: 'available' as const,
       directAssetCount,
-      // Serpent-toh / REQ-FOLDER-003: display all descendant assets.
+      // REQ-FOLDER-003: display all descendant assets.
       recursiveAssetCount: recursiveCounts.get(row.folder_id) ?? directAssetCount,
       childFolderCount: counts.childFolderCounts.get(row.folder_id) ?? 0,
       coverArtifactIds: coverMap.get(row.folder_id) ?? [],
-      // Serpent-d0nv: cover candidates as asset ids (cover scene scheduling
+      // cover candidates as asset ids (cover scene scheduling
       // + progressive refresh on thumbnail.ready). Candidates do NOT require
       // a ready thumbnail — ungenerated assets get enqueued by the cover
       // scene; display covers stay ready-gated in coverArtifactIds.
@@ -2385,7 +2385,7 @@ export function listFolderBrowseEntries(this: LibraryService, input: {
 }
 
 /**
-* Serpent-f74e48: real FolderBrowseEntry (counts + covers) for concrete
+* real FolderBrowseEntry (counts + covers) for concrete
 * folder refs matched by text search — so search-result folder cards reuse
 * the exact asset-browser cards (preview images included). Accepts managed
 * ids, linked-root ids and encoded linked virtual subdirectory ids.
@@ -2520,13 +2520,13 @@ export function folderEntriesByRefs(this: LibraryService, input: {
 
 /**
 * Count assets in each folder's full subtree (self + descendants by
-* relative_path prefix). Serpent-toh / REQ-FOLDER-003.
+* relative_path prefix). REQ-FOLDER-003.
 */
 export function managedFolderRecursiveAssetCounts(this: LibraryService, openLibrary: OpenLibrary, folders: Array<{ folder_id: string; relative_path: string }>, showIgnored = false): Map<string, number> {
   const result = new Map<string, number>();
   if (folders.length === 0) return result;
 
-  // Serpent-4bdd26 / 0032-E.3: serve the recursive totals from the memo
+  // 0032-E.3: serve the recursive totals from the memo
   // until a browse-visible write advances the narrow sequence. Thumbnail,
   // job and artifact progress must not evict this sidebar read model.
   const browseChangeSequence = this.getBrowseChangeSequence(openLibrary.summary.libraryId);
@@ -2598,7 +2598,7 @@ export function managedFolderCountMaps(this: LibraryService, openLibrary: OpenLi
   }
 
   if (folderIds) {
-    // Serpent-verg review fix: the ignore/sequence-frame subqueries
+    // review fix: the ignore/sequence-frame subqueries
     // reference tables older libraries do not have; conditions are only
     // added when the tables exist.
     const connection = openLibrary.connection;
@@ -2678,7 +2678,7 @@ export function managedFolderCountMaps(this: LibraryService, openLibrary: OpenLi
     return { directAssetCounts, childFolderCounts };
   }
 
-  // Serpent-verg review fix: guard the ignore/sequence-frame subqueries
+  // review fix: guard the ignore/sequence-frame subqueries
   // (same table-existence rules as the folderIds variant above).
   const connection = openLibrary.connection;
   const hasIgnoreTable = hasTable(connection, 'linked_ignored_assets');
@@ -2746,7 +2746,7 @@ export function managedFolderCountMaps(this: LibraryService, openLibrary: OpenLi
 }
 
 /**
-* Serpent-9021d1: For pure folders (folders with directAssetCount === 0),
+* For pure folders (folders with directAssetCount === 0),
 * pick up to 4 covers from their child folders in round-robin order so
 * the folder card displays a 2x2 collage preview of its subfolder contents.
 */
@@ -2876,7 +2876,7 @@ export function populateChildFolderCovers(this: LibraryService, openLibrary: Ope
 }
 
 /**
-* Serpent-d0nv: cover scheduling candidates — the top-4 direct assets per
+* cover scheduling candidates — the top-4 direct assets per
 * folder by path, with NO ready-thumbnail requirement. The cover thumbnail
 * scene (priority 400) schedules these asset ids so folders without covers
 * generate their cover before the p50 path-alphabetical backfill; assets
@@ -2915,7 +2915,7 @@ export function folderCoverCandidateAssetMap(this: LibraryService, openLibrary: 
     candidates.set(row.folder_id, existing);
   }
 
-  // Serpent-9021d1: Candidate assets for pure folders' child folder covers
+  // Candidate assets for pure folders' child folder covers
   // so thumbnail generation at `cover` scene schedules them proactively.
   const missingFolderIds = folderIds.filter((id) => (candidates.get(id)?.length ?? 0) === 0);
   if (missingFolderIds.length > 0) {
@@ -2926,7 +2926,7 @@ export function folderCoverCandidateAssetMap(this: LibraryService, openLibrary: 
 }
 
 /**
-* Serpent-9021d1: For pure folders (folders with directAssetCount === 0),
+* For pure folders (folders with directAssetCount === 0),
 * pick up to 4 candidate asset ids from their child folders in round-robin
 * order so the cover thumbnail scene schedules them proactively.
 */
@@ -3061,7 +3061,7 @@ export function summarizeManagedFolderRow(this: LibraryService, openLibrary: Ope
 }
 
 /**
-* Serpent-toh: single-row returns (rename no-op / normal) must show the
+* single-row returns (rename no-op / normal) must show the
 * displayed recursive directAssetCount, matching listManagedFolders —
 * otherwise the badge flickers from direct-only to recursive on refresh.
 */
@@ -3102,7 +3102,7 @@ export function getAssetManagedFolderId(this: LibraryService, libraryId: string,
 */
 export function resolveFolderPath(this: LibraryService, libraryId: string, folderId: string): string {
   const openLibrary = this.requireOpenLibrary(libraryId);
-  // Serpent-316493: the folder panel's blank area is the library root — its
+  // the folder panel's blank area is the library root — its
   // context menu resolves to the Assets directory that holds top-level files.
   if (isLibraryRootFolderId(folderId)) {
     const assetsPath = this.assetsPath(openLibrary);
@@ -3467,7 +3467,7 @@ export function moveAssets(this: LibraryService, input: {
   input = { ...input, assetIds: this.withCompanionAssetIds(openLibrary, input.assetIds) };
   // 目标是链接文件夹（链接根或其虚拟子目录）：把 managed 资产复制进链接
   // 外部目录并注册为链接资产，再永久删除已复制的 managed 源——对用户而言
-  // 等价于「移动到链接文件夹」，链接资产与 managed 资产同为目标（Serpent-f6f779）。
+  // 等价于「移动到链接文件夹」，链接资产与 managed 资产同为目标。
   const linkedTarget = input.targetFolderId === null
     ? null
     : this.linkedFolderRowForImport(openLibrary, input.targetFolderId);

@@ -161,7 +161,7 @@ describe("toggleFormatToken (REQ-FILTER-025)", () => {
     expect(toggleFormatToken("png, mp4", "mp4", true)).toBe("png");
   });
 
-  it("supports the unified text format token (Serpent-4l7)", () => {
+  it("supports the unified text format token", () => {
     expect(toggleFormatToken("", "text", false)).toBe("text");
     expect(formatTokensHas("text", "text")).toBe(true);
     expect(toggleFormatToken("png", "text", true)).toBe("png, text");
@@ -169,7 +169,7 @@ describe("toggleFormatToken (REQ-FILTER-025)", () => {
   });
 });
 
-describe("format group category toggle (FILTER-001 / Serpent-yc9n)", () => {
+describe("format group category toggle (FILTER-001)", () => {
   const imageExts = ["png", "jpg", "gif"] as const;
 
   it("reports none / partial / all selection states", () => {

@@ -1,4 +1,4 @@
-// Serpent-verg.3 — structural mutation matrix (0031 §3.1): for every key
+// structural mutation matrix (0031 §3.1): for every key
 // table, delete / add / rename a column and then assert that the core read
 // paths (browse/search/preview plus the table-specific reader) neither crash
 // nor misread — missing columns degrade, extra columns are ignored.

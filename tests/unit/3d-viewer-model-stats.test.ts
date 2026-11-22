@@ -24,7 +24,7 @@ function indexedGeometry(triangleCount: number): SceneObjectLike['geometry'] {
   return { index: { count: triangleCount * 3 }, attributes: {} };
 }
 
-describe('model-stats (Serpent-qvc6 / 3D-13)', () => {
+describe('model-stats (3D-13)', () => {
   it('counts indexed and non-indexed triangles and vertices', () => {
     const stats = countSceneStats(
       sceneWith(

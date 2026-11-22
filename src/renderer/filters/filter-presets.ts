@@ -85,7 +85,7 @@ export function isPresetRangeSelected(
 }
 
 /**
- * Shape / numeric preset chips (Serpent-gp4 / FILTER-017):
+ * Shape / numeric preset chips (FILTER-017):
  * default click replaces selection with the preset (or clears if sole match);
  * Shift+click OR-toggles the preset among selected ranges.
  */

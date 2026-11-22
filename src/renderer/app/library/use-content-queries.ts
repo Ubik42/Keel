@@ -119,7 +119,7 @@ export function useContentQueries({ currentQueryDefinition, captureWorkspaceTabB
       snippets?: Array<{ assetId: string; text: string }>;
     },
   ) {
-    // Serpent-87pd: canvas slots come from beginPage. Replacing the list with
+    // canvas slots come from beginPage. Replacing the list with
     // the first window here would collapse the scrollbar to 100 items.
     setSearchTotal(result.total);
     setSearchOffset(result.offset + result.items.length);

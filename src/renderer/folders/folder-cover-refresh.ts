@@ -2,7 +2,7 @@ import type { FolderBrowseEntry } from "../../shared/asset-types";
 import type { FolderNavigationCover } from "../../shared/library-navigation";
 
 /**
- * Serpent-d0nv: the set of cover-candidate asset ids for the current
+ * the set of cover-candidate asset ids for the current
  * folder-card row and for sidebar/breadcrumb custom covers. The Worker
  * schedules automatic candidates at the `cover` thumbnail scene and emits
  * `asset.thumbnail.ready` once each is generated. A ready event for any id

@@ -1,5 +1,5 @@
 /**
- * Folder card width aligned to masonry column tracks (Serpent-l67w).
+ * Folder card width aligned to masonry column tracks.
  *
  * Masonry uses `repeat(N, minmax(0, 1fr))` after choosing N from the preferred
  * card size, so the painted column width is the flush-packed size — not the

@@ -44,7 +44,7 @@ export type ListFoldersDisposition =
     }
   | { ok: false; status: number; reason: string };
 
-/** Metadata for browser-fetched binary uploads (Serpent-1jyi). */
+/** Metadata for browser-fetched binary uploads. */
 export interface SaveUploadRequest {
   kind: 'image' | 'video';
   sourcePageUrl?: string;
@@ -114,8 +114,8 @@ function isAllowedOrigin(origin: string | string[] | undefined): boolean {
   // Chromium MV3 service-worker fetches may omit Origin. Any explicit browser
   // Origin must be a real unpacked/store-installed extension origin:
   // - Chromium: chrome-extension://<32 lowercase a-p chars>
-  // - Firefox:  moz-extension://<UUID> (Serpent-54122a)
-  // Auth is loopback-only (product decision: no pairing token — Serpent-1cxv).
+  // - Firefox:  moz-extension://<UUID>
+  // Auth is loopback-only (product decision: no pairing token).
   if (origin === undefined) return true;
   if (Array.isArray(origin)) return false;
   if (/^chrome-extension:\/\/[a-p]{32}$/u.test(origin)) return true;
@@ -278,7 +278,7 @@ function sizeLimitTransform(maxBytes: number): {
  *   POST /save-upload  → 202 after browser-fetched bytes are staged (preferred)
  *
  * Only loopback connections (127.0.0.1, ::1) are accepted. No pairing token
- * (Serpent-1cxv): identity is loopback + optional chrome-extension Origin.
+ *: identity is loopback + optional chrome-extension Origin.
  */
 export async function createExtensionServer(
   options: ExtensionServerOptions,

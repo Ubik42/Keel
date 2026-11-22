@@ -384,7 +384,7 @@ export function useAiAnalysisJobs({ selectedAssetId, api, library, setError, t, 
   applyLiveAiProgressRef.current = applyLiveAiProgress;
 
   useEffect(() => {
-    // Serpent-e97c00: one bounded, coalesced fallback stream per open library.
+    // one bounded, coalesced fallback stream per open library.
     // Worker events stay the primary source; this only catches missed ones, and
     // it never queues a second request for a kind that is already in flight —
     // a Worker blocked for 30 seconds can therefore not accumulate 30 requests.

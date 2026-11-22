@@ -61,7 +61,7 @@ function readPan(container: HTMLElement): { x: number; y: number } {
   };
 }
 
-describe("useViewerZoomPan middle-button pan (Serpent-16cd1e)", () => {
+describe("useViewerZoomPan middle-button pan", () => {
   let root: Root | undefined;
   let container: HTMLDivElement | undefined;
   let api: UseViewerZoomPanApi | undefined;

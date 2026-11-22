@@ -1,5 +1,5 @@
 /**
- * Offscreen thumbnail page entry (slice E, Serpent-hnmg).
+ * Offscreen thumbnail page entry (slice E).
  *
  * This page is loaded ONLY inside the hidden offscreen BrowserWindow owned by
  * Main (`src/main/media/offscreen-thumbnail-renderer.ts`). It receives one render

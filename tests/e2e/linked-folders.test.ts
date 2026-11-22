@@ -130,7 +130,7 @@ test('imports a linked folder, reconciles external changes, and relinks after th
       .click();
     // 2026-09-15：外部移动的身份归并在刷新后的后台收敛里完成（前台刷新只保证「已重新
     // 扫描」），所以这里轮询到收敛为止。**已知间歇失败**：watcher 增量路径会先把新路径
-    // 落成新资产、旧路径标 missing，此时全量刷新再也并不回来——预存在的 P1 `Serpent-463571`
+    // 落成新资产、旧路径标 missing，此时全量刷新再也并不回来——预存在的 P1 ``
     // （干净 HEAD 上同样复现，与本次链接文件夹删除改动无关）；轮询失败即说明踩到了它。
     await expect
       .poll(async () => (await listAllAssets(window)).length, { timeout: 20_000 })
@@ -615,7 +615,7 @@ test('applies default ignore rules — .git and node_modules are not registered 
   }
 });
 
-// Serpent-316493: 文件夹右键 →「导入链接文件夹」把磁盘目录链接为该文件夹的子级。
+// 文件夹右键 →「导入链接文件夹」把磁盘目录链接为该文件夹的子级。
 // The import itself is driven through the typed bridge so the assertion is not
 // coupled to the native folder picker; the menu entry itself is asserted
 // separately (managed only, never on a linked folder).

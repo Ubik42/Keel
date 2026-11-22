@@ -9,7 +9,7 @@ import type { LibraryNavigationSummary } from './library-navigation';
 import type { MutationReceipt } from './performance-contract';
 import type { NativeDragReadinessEvent } from './native-drag-readiness';
 
-/** Serpent-xffq：WebDAV 服务端能力探测结果。 */
+/** WebDAV 服务端能力探测结果。 */
 export interface SyncCapabilities {
   auth: 'none' | 'basic' | 'digest';
   supportsContentTransfer: boolean;
@@ -22,7 +22,7 @@ export interface SyncCapabilities {
   maxUploadBytes?: number;
 }
 
-/** Serpent-xffq：同步差异/结果汇总。 */
+/** 同步差异/结果汇总。 */
 export interface SyncReport {
   libraryDirectory: string;
   newLocal: number;
@@ -268,17 +268,17 @@ export interface KeelLibraryApi {
   openBillfish(input: { displayName: string }): Promise<LibraryApiResult<RendererLibrarySummary>>;
   listRecent(): Promise<LibraryApiResult<RecentLibraryEntry[]>>;
   openRecent(input: { path: string }): Promise<LibraryApiResult<RendererLibrarySummary>>;
-  /** Remove a path from the recent list without deleting disk (Serpent-ucx). */
+  /** Remove a path from the recent list without deleting disk. */
   forgetRecent(input: { path: string }): Promise<LibraryApiResult<{ path: string }>>;
   close(input: { libraryId: string }): Promise<LibraryApiResult<{ libraryId: string }>>;
   rename(input: { libraryId: string; displayName: string }): Promise<LibraryApiResult<RendererLibrarySummary>>;
-  /** Close then permanently delete the library root on disk (Serpent-9i8). */
+  /** Close then permanently delete the library root on disk. */
   deleteLibraryFromDisk(input: {
     libraryId: string;
   }): Promise<LibraryApiResult<{
     libraryId: string;
     displayName: string;
-    /** Serpent-65d837: a `.del-*` aside still needs deferred cleanup. */
+    /** a `.del-*` aside still needs deferred cleanup. */
     pendingCleanup?: boolean;
   }>>;
   listOpen(): Promise<LibraryApiResult<RendererLibrarySummary[]>>;
@@ -526,7 +526,7 @@ export interface KeelLibraryApi {
     libraryId: string;
     displayName?: string;
     /**
-     * Serpent-316493: managed folder the linked root hangs under; null/omitted
+     * managed folder the linked root hangs under; null/omitted
      * links it at the library root (the folder-section 「+」 / link button).
      */
     parentFolderId?: string | null;
@@ -770,9 +770,9 @@ export interface KeelLibraryApi {
     assetIds: string[];
   }): Promise<LibraryApiResult<{ assetIds: string[] }>>;
   // artifactId is absent for model assets: no Worker raster generator exists
-  // for them (Serpent-fu2i), so the no-op result carries no artifact.
+  // for them, so the no-op result carries no artifact.
   requestThumbnail(input: { libraryId: string; assetId: string }): Promise<LibraryApiResult<{ assetId: string; artifactId?: string }>>;
-  /** Serpent-visible-window: queue-jump + header-probe the viewport assets. */
+  /** queue-jump + header-probe the viewport assets. */
   reportVisibleWindow(input: {
     libraryId: string;
     assetIds: string[];
@@ -786,11 +786,11 @@ export interface KeelLibraryApi {
     nearBackwardAssetIds?: string[];
     scopeWarmAssetIds?: string[];
   }): Promise<void>;
-  /** Serpent-xffq: 同步服务器列表（全局，Main 持有；密码不回传）。 */
+  /** 同步服务器列表（全局，Main 持有；密码不回传）。 */
   syncListServers(): Promise<LibraryApiResult<Array<{ id: string; baseUrl: string; username?: string; hasPassword: boolean; allowInsecureTls: boolean }>>>;
-  /** Serpent-xffq: 保存/新增同步服务器（密码经 Main safeStorage 加密）。 */
+  /** 保存/新增同步服务器（密码经 Main safeStorage 加密）。 */
   syncSaveServer(input: { id?: string; baseUrl: string; username?: string; password?: string; allowInsecureTls?: boolean }): Promise<LibraryApiResult<{ id: string }>>;
-  /** Serpent-xffq: 删除同步服务器。 */
+  /** 删除同步服务器。 */
   syncDeleteServer(input: { id: string }): Promise<LibraryApiResult<{ id: string }>>;
   /** Device-local EmbeddingGemma 2 registration. Does not write a library index. */
   embeddingListModels(): Promise<LibraryApiResult<EmbeddingModelSummary[]>>;
@@ -875,25 +875,25 @@ export interface KeelLibraryApi {
   embeddingGrantService(input: { id: string; libraryId: string }): Promise<LibraryApiResult<{ id: string }>>;
   embeddingGetBinding(input: { libraryId: string }): Promise<LibraryApiResult<EmbeddingLibraryBinding>>;
   embeddingSaveBinding(input: { libraryId: string; selectionId: string | null; inherit?: boolean }): Promise<LibraryApiResult<EmbeddingLibraryBinding>>;
-  /** Serpent-xffq: 保存库绑定（服务器 + 可选同步文件夹名，默认库名；enabled=自动同步开关；pollIntervalMs=云端轮询间隔；showCardSyncStatus=卡片同步状态）。 */
+  /** 保存库绑定（服务器 + 可选同步文件夹名，默认库名；enabled=自动同步开关；pollIntervalMs=云端轮询间隔；showCardSyncStatus=卡片同步状态）。 */
   syncSaveBinding(input: { libraryId: string; serverId: string; directoryName?: string; enabled?: boolean; pollIntervalMs?: number; showCardSyncStatus?: boolean }): Promise<LibraryApiResult<void>>;
-  /** Serpent-xffq: 读取库绑定。 */
+  /** 读取库绑定。 */
   syncGetBinding(input: { libraryId: string }): Promise<LibraryApiResult<{ serverId: string; directoryName?: string; lastSyncedAt?: string; enabled?: boolean; pollIntervalMs?: number; showCardSyncStatus?: boolean } | null>>;
-  /** Serpent-871f34: 当前页资产的本地同步状态（已同步项不返回）。 */
+  /** 当前页资产的本地同步状态（已同步项不返回）。 */
   syncListCardStatuses(input: { libraryId: string; assetIds: string[] }): Promise<LibraryApiResult<Array<{ assetId: string; status: 'pending' | 'conflict' }>>>;
-  /** Serpent-xffq: 对指定服务器做连接能力探测（不触碰库）。 */
+  /** 对指定服务器做连接能力探测（不触碰库）。 */
   syncProbe(input: { serverId: string }): Promise<LibraryApiResult<SyncCapabilities>>;
-  /** Serpent-xffq: 列出服务器上可打开的同步库（读远端 manifest）。 */
+  /** 列出服务器上可打开的同步库（读远端 manifest）。 */
   syncListRemoteLibraries(input: { serverId: string }): Promise<LibraryApiResult<Array<{ libraryId: string; displayName: string; directoryName: string }>>>;
-  /** Serpent-xffq: 从服务器拉取远端库并创建本地库（Main 选择保存位置）。 */
+  /** 从服务器拉取远端库并创建本地库（Main 选择保存位置）。 */
   syncOpenRemoteLibrary(input: { serverId: string; libraryId: string; displayName: string; directoryName: string }): Promise<LibraryApiResult<RendererLibrarySummary>>;
-  /** Serpent-xffq: 首次同步差异预览（不写任何内容）。 */
+  /** 首次同步差异预览（不写任何内容）。 */
   syncPreview(input: { libraryId: string; serverId: string; directoryName?: string }): Promise<LibraryApiResult<SyncReport>>;
-  /** Serpent-xffq: 执行完整双向同步。 */
+  /** 执行完整双向同步。 */
   syncRun(input: { libraryId: string; serverId: string; directoryName?: string }): Promise<LibraryApiResult<{ report: SyncReport; conflicts: Array<{ syncId: string; conflictCopyPath: string }> }>>;
   requestPreview(input: { libraryId: string; assetId: string; mode: 'client' | 'fullscreen'; intent?: 'viewer' | 'hover' | 'proxy-fallback'; exrPlane?: number; colorSpace?: string }): Promise<LibraryApiResult<PreviewResolution>>;
   closePreview(input: { libraryId: string; assetId: string }): Promise<LibraryApiResult<void>>;
-  // 3D viewer (slice C, Serpent-qvc6): companion-texture index for model
+  // 3D viewer (slice C): companion-texture index for model
   // previews. Only library-relative paths + ids; no absolute paths.
   resolveModelCompanions(input: { libraryId: string; assetId: string }): Promise<LibraryApiResult<ModelCompanionAsset[]>>;
   /** FBX→GLB conversion; `failed` results carry a typed error code for fallback routing. */

@@ -1,5 +1,5 @@
 /**
- * Platform-aware selection modifier keys (Serpent-b44c / Serpent-6kiw).
+ * Platform-aware selection modifier keys.
  *
  * macOS: toggle/range additive uses ⌘ only; Ctrl+click stays available for
  * the system context menu and must not toggle selection.

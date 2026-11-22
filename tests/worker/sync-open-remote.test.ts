@@ -45,7 +45,7 @@ function importFile(service: LibraryService, libraryId: string, filePath: string
   }
 }
 
-describe('open synced library from a WebDAV server (Serpent-xffq)', () => {
+describe('open synced library from a WebDAV server', () => {
   it('lists remote libraries and pulls one into a fresh local library', async () => {
     const server = await startMockWebDAVServer();
 

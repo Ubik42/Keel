@@ -15,7 +15,7 @@ function fakeTexture(): Texture {
   return { dispose: vi.fn() } as unknown as Texture;
 }
 
-describe('mapPhongToStandard (Serpent-v363 / 3D-11 / §5)', () => {
+describe('mapPhongToStandard (3D-11 / §5)', () => {
   it('maps the full MTL channel matrix to metal-rough standard params', () => {
     const albedo = fakeTexture();
     const specular = fakeTexture();
@@ -86,7 +86,7 @@ describe('mapPhongToStandard (Serpent-v363 / 3D-11 / §5)', () => {
   });
 });
 
-describe('stlDefaultMaterial (Serpent-v363 / §5)', () => {
+describe('stlDefaultMaterial (§5)', () => {
   it('uses a gray-blue neutral differentiated per theme', () => {
     const light = stlDefaultMaterial('light');
     const dark = stlDefaultMaterial('dark');

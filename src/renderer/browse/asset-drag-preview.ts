@@ -21,7 +21,7 @@ export interface AssetDragPreviewOptions {
   readonly fileName: string;
   /** Dragged asset count; anything above 1 adds a badge with the number. */
   readonly count: number;
-  /** Option/Alt copy mode: show a "+" affordance on the ghost (Serpent-aa3). */
+  /** Option/Alt copy mode: show a "+" affordance on the ghost. */
   readonly copyMode?: boolean;
 }
 

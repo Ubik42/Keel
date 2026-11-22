@@ -28,7 +28,7 @@ export const pluginUiStorageValueSchema = z.unknown().refine((value) => {
 }, 'Plugin UI storage values must be bounded JSON data.');
 
 /**
- * Host-managed plugin view contract (Serpent-ex46.7).
+ * Host-managed plugin view contract.
  *
  * A plugin view is a sandboxed iframe contribution that the Host mounts into
  * one of several surfaces. The Host owns the lifecycle: it announces

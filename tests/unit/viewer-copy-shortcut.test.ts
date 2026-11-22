@@ -13,7 +13,7 @@ function ctx(overrides: Partial<Parameters<typeof shouldCopyAssetOnShortcut>[0]>
   };
 }
 
-describe("shouldCopyAssetOnShortcut (Serpent-f8e175)", () => {
+describe("shouldCopyAssetOnShortcut", () => {
   it("copies on Ctrl+C / Cmd+C outside editable targets", () => {
     expect(shouldCopyAssetOnShortcut(ctx())).toBe(true);
     expect(shouldCopyAssetOnShortcut(ctx({ key: "C" }))).toBe(true);

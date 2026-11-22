@@ -126,7 +126,7 @@ export function useBatchActions({
       if (activeTagId === tagId) {
         await chooseTag(tagId);
       }
-      // Serpent-ws4k review: tag removals do not broadcast asset.changed, and
+      // review: tag removals do not broadcast asset.changed, and
       // the tag-filter overlay keeps its filter after the removal — reload the
       // current content so a filtered scope empties immediately instead of
       // showing stale cards until the next navigation.
@@ -156,7 +156,7 @@ export function useBatchActions({
   async function trashManagedAssets(assetIds: string[]) {
     if (!api || !library) return undefined;
     const operationLibraryId = library.libraryId;
-    // Serpent-a711e8: the Worker must still finish the durable trash/history
+    // the Worker must still finish the durable trash/history
     // transaction before we report success, but the visible cards do not need
     // to wait for that round trip.  Remove them optimistically and reconcile
     // immediately if the mutation fails; otherwise large-library deletes can

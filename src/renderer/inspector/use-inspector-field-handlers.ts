@@ -1,6 +1,6 @@
 /**
  * Inspector field input/save handlers + AI description promote
- * (Serpent-uye wave 7 extract from App.tsx).
+ * (wave 7 extract from App.tsx).
  */
 
 import {

@@ -34,7 +34,7 @@ test("waveform seek helpers clamp pointer geometry to duration", () => {
   expect(seekTimeFromWaveformRatio(2, 40)).toBe(40);
 });
 
-test("containContentBox letterboxes a 4:3 image in a wide shell (Serpent-vlx)", () => {
+test("containContentBox letterboxes a 4:3 image in a wide shell", () => {
   const box = containContentBox(800, 200, 640, 480);
   expect(box.height).toBe(200);
   expect(box.width).toBeCloseTo((200 * 640) / 480, 5);

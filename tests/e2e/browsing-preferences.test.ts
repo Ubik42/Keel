@@ -647,7 +647,7 @@ test("maintains consistent preferences, accessible names, zoom behavior, and avo
 
     // Portrait masonry previews must keep the source aspect ratio. A fixed
     // max-height with full column width makes contain-fit paint a horizontal
-    // letterbox (the Windows right-side blank reported in Serpent-5p45).
+    // letterbox (the Windows right-side blank reported).
     const portraitCard = window
       .locator(".asset-card")
       .filter({ hasText: "automatic-b-sample.png" })
@@ -1030,7 +1030,7 @@ test("maintains consistent preferences, accessible names, zoom behavior, and avo
     await window.getByRole("button", { name: "所有资产", exact: true }).click();
     await assertHiddenFieldPresentation(true);
 
-    // REQ-FILTER-020 / Serpent-77c919: the default picker keeps recently
+    // REQ-FILTER-020: the default picker keeps recently
     // filtered tags visible while exposing the complete tag collection in a
     // separate scroll region. The two footer rows must stay visible at the
     // bottom of the popover.

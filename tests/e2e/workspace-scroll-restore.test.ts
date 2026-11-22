@@ -8,7 +8,7 @@ import path from "node:path";
 import { resolveElectronExecutablePath } from "./electron-test-helpers";
 
 // ---------------------------------------------------------------------------
-// Serpent-565785: a restored scroll offset must be in place in the FIRST frame
+// a restored scroll offset must be in place in the FIRST frame
 // the new content paints. Sampling the canvas every animation frame across a
 // Back restore and a tab switch must never see a frame that already has
 // content (scroll extent > 0) but sits at scrollTop 0 — that top frame is the

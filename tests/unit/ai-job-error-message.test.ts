@@ -6,12 +6,12 @@ import { PUBLIC_ERROR_MESSAGES } from '../../src/shared/protocol/errors';
 import { PUBLIC_ERROR_MESSAGES_ZH } from '../../src/renderer/common/error-utils';
 
 /**
- * Serpent-50c466 review F9: `jobs.error_code` can hold a *public error code*
+ * review F9: `jobs.error_code` can hold a *public error code*
  * (the Worker refuses a thumbnail for an unsupported media type and the AI
  * image-input path rethrows it). Only `error.reason.*` used to be looked up, so
  * the AI-failure dialog showed the bare identifier `UNSUPPORTED_MEDIA_TYPE`.
  */
-describe('AI job failure messages (Serpent-50c466 review F9)', () => {
+describe('AI job failure messages (review F9)', () => {
   it('renders a public error code through its code copy instead of the raw id', () => {
     const zh = messageForAiErrorCode('UNSUPPORTED_MEDIA_TYPE', 'zh-CN');
     expect(zh).toBe(PUBLIC_ERROR_MESSAGES_ZH.UNSUPPORTED_MEDIA_TYPE);

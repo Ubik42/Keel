@@ -122,7 +122,7 @@ export function resolveE2eIsolatedPlacement(
     "e2e.isolated-window",
     "KEEL_E2E_ISOLATED=1 was set but no secondary display was detected; " +
       "falling back to the primary display. The E2E window will steal " +
-      "foreground focus on this machine (documented limitation of Serpent-a1b).",
+      "foreground focus on this machine (a known limitation).",
     { displayCount: displays.length },
   );
   return undefined;
@@ -161,7 +161,7 @@ export async function createMainWindow(): Promise<void> {
   });
 
   const devIcon = appIconImage();
-  // Serpent-tluf: the macOS dock otherwise shows the default Electron icon
+  // the macOS dock otherwise shows the default Electron icon
   // in dev builds (packaged apps ship the real .icns).
   if (process.platform === "darwin" && devIcon) {
     app.dock?.setIcon(devIcon);
@@ -186,7 +186,7 @@ export async function createMainWindow(): Promise<void> {
         }
       : shouldUseFramelessTitleBar(process.platform)
         ? {
-            // Serpent-znex: hide system title bar; renderer draws caption buttons.
+            // hide system title bar; renderer draws caption buttons.
             titleBarStyle: "hidden" as const,
           }
         : {}),
@@ -371,10 +371,10 @@ export async function createMainWindow(): Promise<void> {
       });
     }
   });
-  // Defense in depth (Serpent-46i9): even if a page-zoom accelerator sneaks
+  // Defense in depth: even if a page-zoom accelerator sneaks
   // back into the menu, Chromium must not rescale the whole UI.
   void window.webContents.setVisualZoomLevelLimits(1, 1);
-  // Serpent-znex: keep caption maximize/restore glyph in sync on Windows.
+  // keep caption maximize/restore glyph in sync on Windows.
   if (shouldUseFramelessTitleBar(process.platform)) {
     bindWindowMaximizedEvents(window);
   }

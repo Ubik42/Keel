@@ -35,7 +35,7 @@ export type DiscoveryFilterSnapshot = {
   widthRange: { min: string; max: string; exclude: boolean };
   heightRange: { min: string; max: string; exclude: boolean };
   aspectRatioRange: { min: string; max: string; exclude: boolean };
-  /** OR-selected shape/aspect preset ranges (Serpent-gp4). */
+  /** OR-selected shape/aspect preset ranges. */
   aspectRatioRanges?: readonly { min: string; max: string }[];
   longEdgeRange: { min: string; max: string; exclude: boolean };
   durationRange: { min: string; max: string; exclude: boolean };
@@ -56,7 +56,7 @@ function formatRangeDetail(range: { min: string; max: string }): string {
 
 /**
  * Build the ordered list of active filter chips for the toolbar strip.
- * Sort is intentionally omitted (Serpent-w4p promotes sort separately).
+ * Sort is intentionally omitted (promotes sort separately).
  */
 export function buildActiveFilterChips(
   snapshot: DiscoveryFilterSnapshot,

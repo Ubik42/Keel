@@ -32,7 +32,7 @@ import { usePluginWidgetDialogKeyboardFocus } from './plugin-ui-dialog-focus';
 import { DialogShell } from '../workbench/ui/patterns';
 
 /**
- * Host for plugin modal dialogs (Serpent-a3de58).
+ * Host for plugin modal dialogs.
  *
  * Widget sessions (`openDialog({ title, render })`) map IR onto Host
  * primitives. The Manifest `entry` iframe path remains an escape hatch.

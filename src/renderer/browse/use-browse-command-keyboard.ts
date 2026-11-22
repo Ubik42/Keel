@@ -1,10 +1,10 @@
 /**
- * Browse-canvas command chords (Serpent-x78x / REQ-COMMAND-004).
+ * Browse-canvas command chords (REQ-COMMAND-004).
  *
  * Asset actions from the command registry plus discovery toolbar (search
  * focus, F5 refresh). Selection mutations stay in useSelectionKeyboard.
  *
- * F2 / Delete apply to managed and linked assets alike (Serpent-g8u9). Linked
+ * F2 / Delete apply to managed and linked assets alike. Linked
  * Delete sends source files to the OS recycle bin with no confirmation.
  */
 

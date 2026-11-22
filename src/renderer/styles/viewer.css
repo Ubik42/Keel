@@ -13,7 +13,7 @@
   font-weight: var(--ui-font-weight-regular);
 }
 
-/* Color-space picker (Serpent-aoj0) — secondary view for viewer/context menu. */
+/* Color-space picker — secondary view for viewer/context menu. */
 
 .color-space-picker {
   min-width: 220px;
@@ -152,7 +152,7 @@
   pointer-events: none;
 }
 
-/* Serpent-vlx: wide strip fills the shell (not 4:3 grid cover / contain letterbox). */
+/* wide strip fills the shell (not 4:3 grid cover / contain letterbox). */
 
 .preview-audio-waveform-shell {
   position: relative;
@@ -189,7 +189,7 @@
     var(--ui-pane);
 }
 
-/* Serpent-r8a: full-height star-yellow playhead; trail = separate particles. */
+/* full-height star-yellow playhead; trail = separate particles. */
 
 .preview-audio-playhead {
   position: absolute;
@@ -423,7 +423,7 @@
 .preview-video {
   /* Centered via left/top 50% + translate −50% (not margin auto): keeps the
      layout origin scale-independent so the translate-based zoom anchor
-     holds at overflow; see .preview-image (Serpent-yo0n / Serpent-190). */
+     holds at overflow; see .preview-image. */
   position: absolute;
   left: 50%;
   top: 50%;
@@ -436,7 +436,7 @@
   object-fit: contain;
 }
 
-/* Custom video transport (REQ-VIEW-005 / Serpent-60k): one unified bar so
+/* Custom video transport (REQ-VIEW-005): one unified bar so
    auto-hide has a single owner (chrome-idle) instead of fighting the UA's
    own native-controls hide timer, which caused the prior VIEW-009 failure. */
 
@@ -676,8 +676,7 @@
      own box, so the layout origin never depends on scale. Grid/flex "safe"
      centering and abs margin-auto both pin the start edge on overflow
      (marginLeft computes to 0 for replaced elements), shifting the origin
-     by (media−viewport)/2 and breaking the pointer-zoom anchor
-     (Serpent-yo0n). The pan offset stays in the inline `transform`, which
+     by (media−viewport)/2 and breaking the pointer-zoom anchor. The pan offset stays in the inline `transform`, which
      composes after the `translate` property. */
   position: absolute;
   left: 50%;
@@ -715,7 +714,7 @@
   white-space: nowrap;
 }
 
-/* Serpent-8ca259: PDF viewer — vertical page column rendered by pdfjs. */
+/* PDF viewer — vertical page column rendered by pdfjs. */
 
 .pdf-viewer {
   position: relative;
@@ -822,7 +821,7 @@
   margin-right: auto;
   /* Explicit pixel height (--pdf-page-height) is the blinds fix. flex-shrink
      plus min-height:0 and overflow:hidden collapsed aspect-ratio pages into
-     rounded strips (Serpent-8ca259). */
+     rounded strips. */
   box-sizing: border-box;
   flex: 0 0 var(--pdf-page-height, auto);
   flex-shrink: 0;
@@ -856,7 +855,7 @@
   text-align: center;
 }
 
-/* Serpent-8ca259: HTML viewer — sandboxed iframe. */
+/* HTML viewer — sandboxed iframe. */
 
 .html-viewer {
   display: flex;
@@ -942,7 +941,7 @@
   pointer-events: none;
 }
 
-/* Volume/scrub chrome must stay interactive while idle-faded (Serpent-jy9z).
+/* Volume/scrub chrome must stay interactive while idle-faded.
    In fullscreen, pointer movement wakes the whole viewer; focus alone must
    not keep the transport bar visible after the idle timer expires. */
 
@@ -954,7 +953,7 @@
   pointer-events: auto;
 }
 
-/* Keyboard focus on chrome must remain visible even while idle-faded (Serpent-vvn). */
+/* Keyboard focus on chrome must remain visible even while idle-faded. */
 
 .workspace-viewer.is-chrome-idle:has(.preview-chrome-fade:focus-visible) .preview-chrome-fade {
   opacity: 1;
@@ -1270,7 +1269,7 @@
   font-size: calc(11px * var(--ui-font-scale));
 }
 
-/* Serpent-cljb: the fallback explanation is intentionally quiet. It stays
+/* the fallback explanation is intentionally quiet. It stays
    in the viewer rather than becoming a blocking error. Hiding it is final
    for the current asset; looping must not bring it back. */
 
@@ -1305,7 +1304,7 @@
   color: var(--ui-content-primary);
 }
 
-/* Serpent-e56a1f: 代理生成中/加载中的状态提示（非警告样式）。 */
+/* 代理生成中/加载中的状态提示（非警告样式）。 */
 
 .preview-proxy-status {
   position: absolute;
@@ -1364,7 +1363,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* Serpent-866c20：序列帧确认面板的播放预览（只用主题 token，亮/暗一致）。 */
+/* 序列帧确认面板的播放预览（只用主题 token，亮/暗一致）。 */
 
 .image-sequence-preview {
   display: flex;
@@ -1466,7 +1465,7 @@
   min-height: 0;
   padding: 0;
   gap: 0;
-  /* Serpent-xkzf: no pulse, no copy — silent wait only. */
+  /* no pulse, no copy — silent wait only. */
   background: transparent;
   color: transparent;
 }

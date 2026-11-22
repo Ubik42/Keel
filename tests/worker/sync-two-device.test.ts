@@ -42,7 +42,7 @@ function importFile(service: LibraryService, libraryId: string, filePath: string
   }
 }
 
-describe('two-device sync over a shared WebDAV server (Serpent-xffq)', () => {
+describe('two-device sync over a shared WebDAV server', () => {
   it('propagates additions and content changes from machine A to machine B', async () => {
     const server = await startMockWebDAVServer();
     const root = { id: 'server', baseUrl: server.baseUrl };
@@ -173,7 +173,7 @@ describe('two-device sync over a shared WebDAV server (Serpent-xffq)', () => {
     await server.close();
   });
 
-  it('drops empty source folders on the receiving device after a folder move (Serpent-546f1a)', async () => {
+  it('drops empty source folders on the receiving device after a folder move', async () => {
     const server = await startMockWebDAVServer();
     const root = { id: 'server', baseUrl: server.baseUrl };
 

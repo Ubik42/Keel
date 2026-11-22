@@ -61,7 +61,7 @@ function makeOptions(overrides: Partial<SyncAutoSchedulerOptions> = {}): {
 
 const settle = () => new Promise((resolve) => setTimeout(resolve, 40));
 
-describe('SyncAutoScheduler (Serpent-bfsb 后续)', () => {
+describe('SyncAutoScheduler (后续)', () => {
   it('defers a save-triggered run while a manual sync owns the library', async () => {
     let manualActive = true;
     const { options, client } = makeOptions({

@@ -1,5 +1,5 @@
 /**
- * Batch AI analysis progress helpers (Serpent-k3dw / iokf).
+ * Batch AI analysis progress helpers (iokf).
  * Keeps determinate progress math out of App.tsx.
  */
 

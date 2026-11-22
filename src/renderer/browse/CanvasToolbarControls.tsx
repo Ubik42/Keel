@@ -100,7 +100,7 @@ export function CanvasToolbarControls({
   busy: boolean;
   canvasPrefs: CanvasPreferences;
   cardSize: number;
-  /** Width-aligned discrete stops (Serpent-7ny); slider indexes into these. */
+  /** Width-aligned discrete stops; slider indexes into these. */
   cardSizeStops: readonly number[];
   locale: CommandLocale;
   platform: CommandPlatform;

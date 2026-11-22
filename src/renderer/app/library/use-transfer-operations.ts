@@ -139,7 +139,7 @@ export function useTransferOperations({ api, library, setUiState, locale, setNot
       });
       if (!result.ok) {
         if (result.error.code === "CANCELLED") {
-          // Serpent-tye: folder/save dialog cancel must clear the optimistic strip.
+          // folder/save dialog cancel must clear the optimistic strip.
           setExportProgress(null);
           exportStartedAtRef.current = null;
           setNotice(t("toast.exportCancelled"));
@@ -384,7 +384,7 @@ export function useTransferOperations({ api, library, setUiState, locale, setNot
 
   async function completeImportCopy() {
     if (!api || !importValidated) return;
-    // Serpent-1tio: the validated dialog must disappear the moment the import
+    // the validated dialog must disappear the moment the import
     // starts; the blocking import overlay is the only indicator from here until completion.
     const validated = importValidated;
     const startedAt = Date.now();
@@ -428,7 +428,7 @@ export function useTransferOperations({ api, library, setUiState, locale, setNot
 
   async function completeImportInPlace() {
     if (!api || !importValidated) return;
-    // Serpent-1tio: same immediate-dismissal contract as completeImportCopy —
+    // same immediate-dismissal contract as completeImportCopy —
     // the validated dialog closes as soon as the import starts and the
     // persistent activity strip (正在导入资源库) becomes the only indicator.
     const validated = importValidated;

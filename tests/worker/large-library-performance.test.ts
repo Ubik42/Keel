@@ -150,7 +150,7 @@ describe.skipIf(!fixturePath)('20k asset large-library performance baseline', ()
     const startupMs = performance.now() - startupStartedAt;
     startupService.closeAll();
 
-    // Serpent-6355d7: keep the all-scope baseline separate from a real folder
+    // keep the all-scope baseline separate from a real folder
     // scope so folder switching has a like-for-like navigation reference.
     const allBrowseMs = benchmark(() => service.searchAssets({
       libraryId: manifest.libraryId,
@@ -246,7 +246,7 @@ describe.skipIf(!fixturePath)('20k asset large-library performance baseline', ()
       navigationSummaryWarmMs: Number(navigationWarmMs.toFixed(1)),
       inspectorMs: Number(inspectorMs.toFixed(1)),
       deleteRefreshMs: null,
-      deleteRefreshNote: 'Not exercised by this baseline; Serpent-x710 is explicitly excluded.',
+      deleteRefreshNote: 'Not exercised by this baseline is explicitly excluded.',
     }));
     expect(searchMs).toBeLessThan(5_000);
     expect(layoutMs).toBeLessThan(5_000);

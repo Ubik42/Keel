@@ -65,7 +65,7 @@ afterEach(() => {
   }
 });
 
-describe('resolveAssetDragInfos (Serpent-v4jf batched drag priming)', () => {
+describe('resolveAssetDragInfos (batched drag priming)', () => {
   it('resolves managed assets in one batch with thumbnail paths matching the single-entry resolvers', async () => {
     const root = temporaryRoot();
     const service = newService();

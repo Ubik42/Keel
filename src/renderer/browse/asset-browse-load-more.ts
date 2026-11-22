@@ -1,5 +1,5 @@
 /**
- * Browse-canvas infinite scroll helpers (Serpent-r94b).
+ * Browse-canvas infinite scroll helpers.
  *
  * Keeps load-more triggering honest: only the scrollport is a valid
  * IntersectionObserver root, and an empty/no-progress page must clamp
@@ -49,7 +49,7 @@ export function countNewlyAddedAssets<T extends { readonly assetId: string }>(
 
 /**
  * Append a fetched page to the browse list, dropping ids that are already
- * present (Serpent-ws4k). The page is a strict continuation of the previous
+ * present. The page is a strict continuation of the previous
  * page, so appended rows keep their worker order at the tail; duplicates only
  * appear when the underlying scope changed between page fetches.
  */

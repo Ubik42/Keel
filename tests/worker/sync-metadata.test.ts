@@ -6,7 +6,7 @@ import {
   parseSyncAssetMetadata,
 } from '../../src/worker/integrations/sync/sync-metadata';
 
-describe('sync metadata sidecar (GitHub #39 / Serpent-4ffae8)', () => {
+describe('sync metadata sidecar (GitHub #39)', () => {
   it('keeps human-only JSON identical to the previous sidecar format', () => {
     const json = canonicalizeSyncAssetMetadata({
       tags: ['角色'],

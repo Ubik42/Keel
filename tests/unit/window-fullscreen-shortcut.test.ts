@@ -4,7 +4,7 @@ import { matchWindowFullscreenShortcut } from "../../src/shared/window-fullscree
 import { findPlatformShortcut } from "../../src/shared/platform-shortcut-table";
 import { matchesShortcut } from "../../src/renderer/workbench/menu/command-types";
 
-describe("window fullscreen shortcut (Serpent-692279)", () => {
+describe("window fullscreen shortcut", () => {
   it("matches unmodified F11 on Windows and Linux", () => {
     expect(
       matchWindowFullscreenShortcut({ key: "F11", code: "F11" }, "win32"),

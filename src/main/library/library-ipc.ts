@@ -124,7 +124,7 @@ export function pendingLibraryCleanupPath(): string {
   return path.join(app.getPath("userData"), "pending-library-cleanup.json");
 }
 
-// Serpent-65d837: backoff schedule for asking the Worker to remove `.del-*`
+// backoff schedule for asking the Worker to remove `.del-*`
 // aside roots left behind by a disk deletion. Windows handles (Defender scan,
 // Explorer, lingering `keel://` streams) usually close within seconds, so a
 // few short retries resolve it without user action; anything still remaining
@@ -328,7 +328,7 @@ export async function reopenLibrariesAfterFailedReplacement(
   }
 }
 
-/** Serpent-xffq：每台设备的稳定同步身份（userData 持久化，非敏感）。 */
+/** 每台设备的稳定同步身份（userData 持久化，非敏感）。 */
 export function syncDeviceId(): string {
   if (state.cachedSyncDeviceId) return state.cachedSyncDeviceId;
   const file = path.join(app.getPath('userData'), 'sync-device.json');
@@ -781,7 +781,7 @@ export async function handleLibraryRequest(
     });
     if (ingestionOwnedResult) return ingestionOwnedResult;
 
-    // Serpent-xffq: 同步服务器与库绑定是 Main 本地配置（凭据经 safeStorage）。
+    // 同步服务器与库绑定是 Main 本地配置（凭据经 safeStorage）。
     const syncOwnedResult = await tryHandleSyncOwnedRequest(request, {
       readSyncServers,
       writeSyncServers,

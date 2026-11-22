@@ -215,7 +215,7 @@ export async function callKeelMcpTool(
   const libraryContext = automationLibraryContextForMcpTool(tool);
   let explicitLibraryId: string | undefined;
   if (libraryContext === 'active') {
-    // Stateless contract (Serpent-8b5b): every library-scoped call carries its
+    // Stateless contract: every library-scoped call carries its
     // own explicit target. Existence is validated by the Gateway/Worker
     // (LIBRARY_NOT_FOUND); the MCP layer only rejects empty or non-string
     // targets with a stable error, never a human prompt.
@@ -248,7 +248,7 @@ export async function callKeelMcpTool(
     },
   });
   if (!gatewayResult.ok) {
-    // Serpent-8b5b.2: a dangerous call answered with a two-phase challenge is
+    // a dangerous call answered with a two-phase challenge is
     // a structured risk report for the agent, not an error.
     if ('challenge' in gatewayResult && gatewayResult.challenge !== undefined) {
       return {

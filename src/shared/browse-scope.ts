@@ -1,5 +1,5 @@
 /**
- * Browse-scope fetch limits (Serpent-6w7n).
+ * Browse-scope fetch limits.
  * One query returns every lightweight row for the current scope; thumbnails
  * and heavy metadata stay on-demand.
  */

@@ -576,7 +576,7 @@ export const zhCN = {
       aiAnalyzeMissing: "AI 分析未分析项（{count} 项）",
       aiAnalyze: "AI 分析（{count} 项）",
       copy: "复制（{count} 项）",
-      // Serpent-d7acfa：多选里对文件夹生效的批量项（计数只算真正能做的文件夹）。
+      // 多选里对文件夹生效的批量项（计数只算真正能做的文件夹）。
       appearance: "设置图标与颜色…（{count} 项）",
       ignore: "忽略（{count} 项）"
     },
@@ -693,7 +693,7 @@ export const zhCN = {
     batchAssetOps: "批量资产操作：{count} 项",
     assetOps: "资产操作：{name}",
     folderOps: "文件夹操作：{name}",
-    /** Serpent-a6c516: 文件夹面板空白处 / 根目录行的右键主体名。 */
+    /** 文件夹面板空白处 / 根目录行的右键主体名。 */
     libraryRoot: "根目录",
     restoreTrashedFolder: "恢复文件夹",
     skipReportLine: "{action}：将处理 {process} / 跳过 {skip}（{reasons}）",
@@ -1283,7 +1283,7 @@ export const zhCN = {
     autoAnalyze: "新增资产自动进行AI分析",
     save: "保存配置"
   },
-  /** REQ-PREF-001 / Serpent-9es: 浏览区通用设置面板；主题/语言复用 shell.theme 与 shell.language 下的键。文件名/大小/日期共用一条 cardFieldsHint。 */
+  /** REQ-PREF-001: 浏览区通用设置面板；主题/语言复用 shell.theme 与 shell.language 下的键。文件名/大小/日期共用一条 cardFieldsHint。 */
   plugin: {
     viewLoadFailed: "插件视图加载失败",
     dialogSubmit: "开始处理",

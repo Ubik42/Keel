@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { toggleFolderMultiSelection } from "../../src/renderer/folders/folder-selection-toggle";
 
-// Serpent-d7acfa：Ctrl/⌘ 点击文件夹时的选区（当前打开的文件夹是隐式选中的）。
+// Ctrl/⌘ 点击文件夹时的选区（当前打开的文件夹是隐式选中的）。
 describe("toggle folder multi selection", () => {
   it("appends the clicked folder when nothing is selected", () => {
     expect(toggleFolderMultiSelection([], "b")).toEqual(["b"]);

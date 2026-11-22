@@ -2,7 +2,7 @@ import type { IconName } from '../common/Icons';
 import type { AssetSummary } from '../../shared/asset-types';
 
 /**
- * Serpent-rc9: linked folders always show a link glyph (online or offline).
+ * linked folders always show a link glyph (online or offline).
  * Offline uses the disconnect icon + muted color.
  */
 export function linkedFolderNavAffordance(status: string): {

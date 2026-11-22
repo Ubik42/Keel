@@ -28,9 +28,9 @@ export function assetSupportsThumbnail(asset: {
 }): boolean {
   if (asset.mediaType === "text") return false;
   // Documents (PDF etc.) get a first-page thumbnail; HTML thumbnails render
-  // offscreen in Main (Serpent-8ca259).
+  // offscreen in Main.
   if (asset.mediaType === "document") return true;
-  // Fonts render a real sample line offscreen (Serpent-485aeb).
+  // Fonts render a real sample line offscreen.
   if (asset.mediaType === "font") return true;
   return asset.mediaType !== "other";
 }

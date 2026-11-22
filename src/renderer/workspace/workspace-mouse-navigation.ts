@@ -1,5 +1,5 @@
 /**
- * Workspace back/forward via mouse side buttons (Serpent-1xmk / REQ-NAV-007).
+ * Workspace back/forward via mouse side buttons (REQ-NAV-007).
  *
  * Pure helpers — useWorkspaceMouseNavigation owns the window listener.
  * Search / Inspector / dialog fields still skip; viewer surfaces do not.

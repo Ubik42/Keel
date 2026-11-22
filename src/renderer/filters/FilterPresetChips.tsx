@@ -4,7 +4,7 @@ import {
 } from "./filter-presets";
 
 // ---------------------------------------------------------------------------
-// FilterPresetChips (REQ-FILTER-009 / REQ-FILTER-010 / Serpent-gp4)
+// FilterPresetChips (REQ-FILTER-009 / REQ-FILTER-010)
 //
 // One-tap dimension presets. A chip is active when its range is among the
 // selected ranges; the parent applies togglePresetRanges (Shift = OR).

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 /**
- * Platform edit context menu for text inputs (Serpent-d8u).
+ * Platform edit context menu for text inputs.
  *
  * Renderer only decides *whether* and *where* to show the menu. Main builds a
  * role-based native Menu (Undo/Cut/Copy/Paste/Delete/Select All). Electron

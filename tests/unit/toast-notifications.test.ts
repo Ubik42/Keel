@@ -202,7 +202,7 @@ describe('createToastNotifications', () => {
     toast.dispose();
   });
 
-  it('keeps error visible when a later info notice arrives (Serpent-99lv)', () => {
+  it('keeps error visible when a later info notice arrives', () => {
     const toast = createToastNotifications();
     toast.setError('AI 分析失败。');
     toast.setNotice('搜索完成：找到 12 项。');
@@ -214,7 +214,7 @@ describe('createToastNotifications', () => {
     toast.dispose();
   });
 
-  it('keeps warning visible when a later info notice arrives (Serpent-99lv)', () => {
+  it('keeps warning visible when a later info notice arrives', () => {
     const toast = createToastNotifications();
     toast.setWarning('链接源不可用。');
     toast.setNotice('搜索完成：找到 3 项。');
@@ -242,7 +242,7 @@ describe('createToastNotifications', () => {
     toast.dispose();
   });
 
-  it('keeps fatal open while lower toast channels change (Serpent-99lv)', () => {
+  it('keeps fatal open while lower toast channels change', () => {
     const toast = createToastNotifications();
     toast.setFatal('开库失败。');
     toast.setError('普通错误。');

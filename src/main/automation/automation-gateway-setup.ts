@@ -246,7 +246,7 @@ export function setUpAutomationGateway({ automationWorkerAdapter, automationIdem
       libraryContextHandler: {
         execute: executeMcpLibraryContextCommand,
       },
-      // Serpent-ihpx: automation imports (MCP/scripts) are no different from
+      // automation imports (MCP/scripts) are no different from
       // human imports — the same automatic AI analysis side effect fires here,
       // converging on the exact function the desktop import IPC uses.
       onImportCompleted: ({ libraryId, importedAssetIds }) => {

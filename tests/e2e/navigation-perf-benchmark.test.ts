@@ -24,7 +24,7 @@ import {
 } from "./perf-bench-helpers";
 
 /**
- * Serpent-217028: end-to-end navigation benchmark on a real library.
+ * end-to-end navigation benchmark on a real library.
  *
  * It is an operator tool, not a pass/fail gate: it never runs without
  * `KEEL_NAV_BENCH_LIBRARY`, and it never stores a library path, library name

@@ -321,7 +321,7 @@ export function useJobControlsAndMenu({ api, library, setError, t, locale, aiBat
         (found, section) => found ?? findMenuItem(section.items ?? [], command),
         undefined,
       );
-      // Serpent-q0b1: honor the same disabled state the Windows in-app menu
+      // honor the same disabled state the Windows in-app menu
       // renders greyed out — a native macOS item stays clickable otherwise.
       if (item && !item.disabled) item.onSelect();
     });
@@ -433,7 +433,7 @@ export function useJobControlsAndMenu({ api, library, setError, t, locale, aiBat
     undoLastFileOp,
   ]);
 
-  // Serpent-f74e48: during a text search the ordinary folder-card-row is
+  // during a text search the ordinary folder-card-row is
   // reused directly (matching folders appear as the same cards as browsing)
   // instead of a bespoke "search results" section. The row is hoisted so it
   // also renders when the asset grid resolves to the empty state (search can

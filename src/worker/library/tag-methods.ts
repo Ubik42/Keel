@@ -294,7 +294,7 @@ export function createTag(this: LibraryService, input: { libraryId: string; name
 
 export function listTags(this: LibraryService, libraryId: string): TagSummary[] {
   const openLibrary = this.requireOpenLibrary(libraryId);
-  // Serpent-verg.2 — lenient read (0031 §1): libraries predating the tag
+  // lenient read (0031 §1): libraries predating the tag
   // tables degrade to an empty tag list; missing asset-tag join tables
   // just drop that side of the count; a missing created_at sorts by name.
   const connection = openLibrary.connection;
@@ -452,7 +452,7 @@ export function renameTag(this: LibraryService, input: { libraryId: string; tagI
 }
 
 /**
-* Merge multiple tags into a newly named tag (REQ-TAG-012b / Serpent-36il.4).
+* Merge multiple tags into a newly named tag (REQ-TAG-012b).
 * All human/AI links from source tags move to the new tag; sources are removed.
 */
 export function mergeTags(this: LibraryService, input: {
@@ -569,7 +569,7 @@ export function mergeTags(this: LibraryService, input: {
 }
 
 /**
-* Tag co-occurrence graph for the management graph view (Serpent-k6g6.1).
+* Tag co-occurrence graph for the management graph view.
 * Limits node/edge counts for large libraries; edges are undirected (a < b).
 */
 export function getTagCooccurrenceGraph(this: LibraryService, input: {
@@ -747,7 +747,7 @@ export function removeTags(this: LibraryService, input: {
         ...chunk,
         ...tagChunk,
       ];
-      // Serpent-h2i2: removing a chip must also clear AI-authored tag links.
+      // removing a chip must also clear AI-authored tag links.
       removedCount += sqliteRunInChunks({
         connection: openLibrary.connection,
         values: assetChunk,

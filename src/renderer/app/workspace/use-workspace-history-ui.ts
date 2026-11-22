@@ -79,7 +79,7 @@ export function useWorkspaceHistoryUi({ api, library, jobStatusCoordinatorRef, s
       // Progress events already carry the counts; the fallback poll only needs
       // to learn that AI work exists (and stop backing off).
       jobStatusCoordinatorRef.current?.noteActivity("ai");
-      // Serpent-u0tn: do not arm analyzing UI for background/import auto jobs
+      // do not arm analyzing UI for background/import auto jobs
       // when no user-initiated batch size was set (JOBS-007 rollback residue).
       setAiJobs((current) =>
         current
@@ -105,10 +105,10 @@ export function useWorkspaceHistoryUi({ api, library, jobStatusCoordinatorRef, s
     const unsubscribeCompleted = api.onAiCompleted((event) => {
       if (event.libraryId !== library.libraryId) return;
       jobStatusCoordinatorRef.current?.noteActivity("ai");
-      // Refresh only — completion toast is owned by queue-drain (Serpent-4i18).
+      // Refresh only — completion toast is owned by queue-drain.
       void reloadCurrentContentRef.current();
       if (selectionFields.get("selectedAssetId") === event.assetId) {
-        // Serpent-c9r3: refreshAfterAi refreshes the primary's metadata and
+        // refreshAfterAi refreshes the primary's metadata and
         // (for multi-selections) every selected asset's metadata, then
         // rebuilds the batch-edit Inspector model — without the rebuild the
         // multiEdit chips stay stale after a batch AI analysis completes.
@@ -121,7 +121,7 @@ export function useWorkspaceHistoryUi({ api, library, jobStatusCoordinatorRef, s
       jobStatusCoordinatorRef.current?.noteActivity("ai");
       setAiContent(null);
       setNotice(t("toast.aiContentCleared", { count: event.affectedAssetCount }));
-      // Serpent-c9r3: clearing AI must NOT disturb the browsing view, selection
+      // clearing AI must NOT disturb the browsing view, selection
       // or scroll position — so we deliberately do NOT call reloadCurrentContent
       // here (a full grid refetch resets the canvas). Grid cards carry no AI
       // badges, so skipping the grid reload leaves no visible AI residue. The

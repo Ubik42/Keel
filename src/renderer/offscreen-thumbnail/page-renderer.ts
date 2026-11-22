@@ -1,5 +1,5 @@
 /**
- * Offscreen thumbnail frame pipeline (slice E, Serpent-hnmg).
+ * Offscreen thumbnail frame pipeline (slice E).
  *
  * Renders exactly one frame of a model job into the shared offscreen page:
  * composer → HDRI environment → model load → auto-fit camera → contact
@@ -294,7 +294,7 @@ export async function renderModelThumbnailFrame(
     };
 
     if (job.data.views && job.data.views.length > 0) {
-      // Serpent-6w40: multi-view render (AI four views) — each direction
+      // multi-view render (AI four views) — each direction
       // renders one frame; the worker tiles them afterwards.
       const frames: Array<{
         view: [number, number, number];

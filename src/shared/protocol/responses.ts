@@ -60,7 +60,7 @@ const rendererLibraryRecoverySchema = z.strictObject({
   metadataLosses: z.array(recoveryMetadataLossSchema).optional(),
 });
 
-/** Serpent-xffq: WebDAV 能力探测结果（probe/preview/run 的 report 内均带）。 */
+/** WebDAV 能力探测结果（probe/preview/run 的 report 内均带）。 */
 const syncCapabilitiesSchema = z.strictObject({
   auth: z.enum(['none', 'basic', 'digest']),
   supportsContentTransfer: z.boolean(),
@@ -108,7 +108,7 @@ export const internalLibrarySummarySchema = z.strictObject({
   displayName: nonBlankString,
   storageLayout: z.enum(['root', 'assets']).optional(),
   libraryPath: nonBlankString,
-  // Serpent-033e: the library was written by a newer Keel build than the
+  // the library was written by a newer Keel build than the
   // running one. Desktop still opens it writable (additive schema; extra
   // columns/rows are ignored). libraryVersion/supportedSchemaVersion remain
   // for diagnostics. Inspection-only handles may still set readOnly.
@@ -351,7 +351,7 @@ export function parseImportProgressEvent(input: unknown): ImportProgressEvent {
 }
 
 /**
- * 同步传输进度（Serpent-xffq 增量）：done/total 为文件动作数，
+ * 同步传输进度：done/total 为文件动作数，
  * bytesDone/bytesTotal 为已传输与总字节（含上传与下载），供 UI
  * 显示进度条与传输速度。phase=run 为执行中；preview 为差异计算阶段；
  * complete 表示本次同步已结束（UI 据此收起进度条）。
@@ -587,7 +587,7 @@ export const aiContentClearedEventSchema = z.strictObject({
   type: z.literal('ai.content.cleared'),
   libraryId: nonBlankString,
   affectedAssetCount: z.number().int().nonnegative(),
-  // Serpent-c9r3: IDs whose AI layer was cleared, so the renderer can refresh
+  // IDs whose AI layer was cleared, so the renderer can refresh
   // the Inspector when the selected asset is among them (count alone is not
   // enough to know whether the current selection was affected).
   affectedAssetIds: z.array(nonBlankString),
@@ -1148,7 +1148,7 @@ const assetOperationSuccessSchemas = [
         text: nonBlankString,
       }),
     ).optional(),
-    /** Serpent-ws4k: present when the request used idsOnly (select-all). */
+    /** present when the request used idsOnly (select-all). */
     assetIds: z.array(nonBlankString).optional(),
     layout: z.array(browseLayoutEntrySchema).optional(),
   }),
@@ -1524,7 +1524,7 @@ const assetOperationSuccessSchemas = [
     type: z.literal('asset.thumbnail.generated'),
     assetId: nonBlankString,
     // Mirrors media.thumbnail.generated: no artifact for model assets
-    // (no Worker raster generator; Serpent-fu2i).
+    // (no Worker raster generator).
     artifactId: nonBlankString.optional(),
   }),
   z.strictObject({
@@ -1793,7 +1793,7 @@ const workerSuccessResultSchema = z.discriminatedUnion('type', [
     libraryId: nonBlankString,
     displayName: nonBlankString,
     libraryPath: nonBlankString,
-    // Serpent-65d837: set when the root was renamed aside and the aside copy
+    // set when the root was renamed aside and the aside copy
     // still could not be removed; Main must re-queue it for deferred cleanup.
     pendingAsidePath: nonBlankString.optional(),
   }),
@@ -1836,7 +1836,7 @@ const workerSuccessResultSchema = z.discriminatedUnion('type', [
     assetId: nonBlankString,
     // Absent for model assets: the Worker has no raster generator for them
     // (slice E owns the offscreen renderer), so the no-op result carries no
-    // artifact (Serpent-fu2i).
+    // artifact.
     artifactId: nonBlankString.optional(),
   }),
   z.strictObject({
@@ -1938,7 +1938,7 @@ const workerSuccessResultSchema = z.discriminatedUnion('type', [
     assetId: nonBlankString,
     absolutePath: nonBlankString,
   }),
-  // Slice A (Serpent-fu2i): companion-texture index for a model asset. Only
+  // Slice A: companion-texture index for a model asset. Only
   // library-relative POSIX paths and ids; no absolute paths (REQ-COMMAND-003).
   z.strictObject({
     ok: z.literal(true),
@@ -2374,7 +2374,7 @@ const rendererSuccessResultSchema = z.discriminatedUnion('type', [
     type: z.literal('library.deleted'),
     libraryId: nonBlankString,
     displayName: nonBlankString,
-    // Serpent-65d837: true when a leftover .del-* root still needs deferred
+    // true when a leftover .del-* root still needs deferred
     // cleanup; the Renderer shows a notice describing automatic retries.
     pendingCleanup: z.boolean().optional(),
   }),
@@ -2397,7 +2397,7 @@ const rendererSuccessResultSchema = z.discriminatedUnion('type', [
     includedLinkedContent: z.boolean(),
     durationMs: z.number().int().nonnegative(),
   }),
-  // Slice C (Serpent-qvc6): renderer-side results for the 3D viewer requests.
+  // Slice C: renderer-side results for the 3D viewer requests.
   // The Worker already emits these (workerSuccessResultSchema); Main passes
   // them through untouched, so they must be parseable here too.
   z.strictObject({

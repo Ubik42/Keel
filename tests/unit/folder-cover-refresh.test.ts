@@ -19,7 +19,7 @@ function entry(folderId: string, coverAssetIds: string[]): FolderBrowseEntry {
   };
 }
 
-describe("collectFolderCoverCandidateAssetIds (Serpent-d0nv)", () => {
+describe("collectFolderCoverCandidateAssetIds", () => {
   it("collects every cover candidate asset id across the folder-card row", () => {
     const entries = [
       entry("folder-a", ["asset-1", "asset-2"]),

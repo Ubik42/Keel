@@ -161,7 +161,7 @@ export function writeFilePathsToClipboard(
         );
       }
       // Do not call writeText here: Electron replaces the pasteboard and drops
-      // NSFilenamesPboardType (Serpent-z67e / MENU-032).
+      // NSFilenamesPboardType (MENU-032).
       return true;
     }
     if (deps.platform === "win32") {

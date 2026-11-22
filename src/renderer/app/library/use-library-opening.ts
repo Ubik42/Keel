@@ -90,7 +90,7 @@ export function useLibraryOpening({ api, t, dialogValue, useExistingCreateFolder
     if (kind === "open") {
       // Pick the location first (dialog only) so the loading overlay and its
       // timer start with the actual load, never while the picker is open
-      // (Serpent-565785 feedback).
+      //.
       const chosen = await api.chooseLibraryPath();
       if (!chosen.ok || chosen.value === null) return;
       await runLibraryOpenPipeline(
@@ -382,7 +382,7 @@ export function useLibraryOpening({ api, t, dialogValue, useExistingCreateFolder
           toMessage(caught, failureMessage, locale),
           { alreadyOpen: failureCode === "LIBRARY_ALREADY_OPEN" },
         );
-        // Serpent-s0oq: opening an invalid library removes it from the recent
+        // opening an invalid library removes it from the recent
         // store in Main — refresh so the switcher menu and the no-library
         // create dialog both drop it immediately. Same-catalog identity is
         // not invalid; keep the current recents list as-is.

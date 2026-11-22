@@ -121,7 +121,7 @@ export interface UseKeyboardRoutingDeps {
 export function useKeyboardRouting({ dialogFocusTrapActive, previewAssetRef, visibleAssets, navigateAssetPreview, closeAssetPreview, library, busy, workspaceTabsState, previewAsset, addWorkspaceTab, closeWorkspaceTab, showTagManagement, showPluginSidebarView, showTrash, selectedAsset, selectedAssets, browsePasteDestination, diskDeleteKeyboardTargets, searchInputRef, handleOpenExternal, trashManagedAssets, openAssetRename, handleCopyAssetFiles, handleCopyFilePath, dispatchClipboardPaste, handleRevealInFolder, showAssetInContainingFolder, requestSelectionDiskDelete, deletePermanentFromTrash, refreshAssets, pluginSidebarRefreshKey, selectedAssetIds, selectedVisibleAssets, pluginSurfaceContext, shellApi, dialogEscapeSnapshot, goWorkspaceBack, goWorkspaceForward, managedImportTargetFolderIdRef, api, setSyncBindingStatus, pasteClipboardImage, pasteOsClipboardFiles, dialog, conflicts, batchRelinkPreview, restoreDialog, previewModalRef, previewIndex, openAssetPreview, t, activePluginSidebarView, activeTagId, tags, assetScope, selectedFolder, setError, locale, setAiProfiles, updateAiActiveProfileId, setAiProfileDraftId, setAiProfileName, setAiApiFormat, setAiModel, setAiBaseUrl, setAiHasKey, setAiDraftHasKey, setAiDraftConnectionState, setAiDraftConnectionReason, setAiDescriptionEnabled, setAiTagsEnabled, setAiRatingEnabled, setAiForceExistingTags, setAiAnalysisSettings, setAiLanguages, setAiConcurrencyLimit, setAiMaxAnalysisImageEdgePx, setAiAutoAnalyzeEnabled, setAiDisclaimerAccepted, aiVerifiedFingerprintRef, aiProfiles, aiProfileDraftId }: UseKeyboardRoutingDeps) {
 
   useEffect(() => {
-    // Serpent-0rk: freeze shell pointer targets while any modal is open.
+    // freeze shell pointer targets while any modal is open.
     document.body.classList.toggle("keel-modal-open", dialogFocusTrapActive);
     return () => {
       document.body.classList.remove("keel-modal-open");
@@ -235,7 +235,7 @@ export function useKeyboardRouting({ dialogFocusTrapActive, previewAssetRef, vis
     },
   });
 
-  // Serpent-166q: macOS Edit → Copy accelerator (custom menu, not role:copy).
+  // macOS Edit → Copy accelerator (custom menu, not role:copy).
   useEffect(() => {
     if (!shellApi) return;
     return shellApi.onCopySelection(() => {
@@ -471,7 +471,7 @@ export function useKeyboardRouting({ dialogFocusTrapActive, previewAssetRef, vis
     visibleAssets,
   ]);
 
-  // Serpent-oy07: sync BrowserWindow focus to document (native macOS traffic lights
+  // sync BrowserWindow focus to document (native macOS traffic lights
   // dim on inactive via hiddenInset; renderer can mirror for shell chrome).
   useEffect(() => {
     const shellBridge = (window as RendererWindow).keel?.shell;

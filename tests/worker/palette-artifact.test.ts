@@ -85,7 +85,7 @@ describe('local extracted palette artifact', () => {
       effectivePalette: [persisted[0]!.hex],
       paletteSource: 'automatic',
     });
-    // Serpent-7pg: manual palette writes are ignored; effective stays automatic.
+    // manual palette writes are ignored; effective stays automatic.
     const manualWrite = service.setAssetMetadata({
       libraryId: library.libraryId,
       assetId,

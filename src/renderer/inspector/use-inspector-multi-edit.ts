@@ -1,6 +1,6 @@
 /**
  * Multi-select Inspector metadata load / batch save / batch rating
- * (REQ-SELECT-004 / REQ-MENU-007; Serpent-uye extract from App.tsx).
+ * (REQ-SELECT-004 / REQ-MENU-007 extract from App.tsx).
  *
  * Owns `multiEdit` state and the selection-driven load effect. The shared
  * metadata cache + conflict set stay in App so single-asset save/load keep

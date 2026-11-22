@@ -1,5 +1,5 @@
 /**
- * Pure helpers for the audio viewer waveform timeline / playhead (Serpent-13v).
+ * Pure helpers for the audio viewer waveform timeline / playhead.
  * Reuses the same 0..1 ratio math as video scrub so unit tests stay DOM-free.
  */
 
@@ -25,7 +25,7 @@ export function playheadLeftPercent(ratio: number): number {
 }
 
 /**
- * Content box for `object-fit: contain` inside a shell (Serpent-vlx).
+ * Content box for `object-fit: contain` inside a shell.
  * Returns offsets/size in the same coordinate space as the shell.
  */
 export function containContentBox(

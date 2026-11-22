@@ -185,7 +185,7 @@ export async function executeLibraryMainCommand(
       // Both are handled directly in handleLibraryRequest: the list comes from
       // the Main-owned recent libraries store, and open-recent validates store
       // membership before building the same library.open command used here.
-      // forget-recent only mutates the Main store (Serpent-ucx).
+      // forget-recent only mutates the Main store.
       return undefined;
     case "library.open-cancel.request":
       // Main-only request; handled before Worker dispatch.

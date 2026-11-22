@@ -1,5 +1,5 @@
 /**
- * Particle-style playhead trail for the audio viewer (Serpent-r8a).
+ * Particle-style playhead trail for the audio viewer.
  *
  * Emit samples at a fixed rate while playing; each sample stays at the ratio
  * where it was born and fades over a lifetime. Pause stops emission so the

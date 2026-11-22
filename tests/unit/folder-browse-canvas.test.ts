@@ -5,7 +5,7 @@ import {
   shouldShowFolderBrowseCards,
 } from "../../src/renderer/browse/folder-browse-canvas";
 
-describe("resolveBrowseCanvasBodyLayout (CANVAS-022 / Serpent-an1)", () => {
+describe("resolveBrowseCanvasBodyLayout (CANVAS-022)", () => {
   it("returns empty when there are no folders and no assets", () => {
     expect(resolveBrowseCanvasBodyLayout(0, 0)).toEqual({ mode: "empty" });
   });
@@ -35,7 +35,7 @@ describe("resolveBrowseCanvasBodyLayout (CANVAS-022 / Serpent-an1)", () => {
   });
 });
 
-describe("shouldShowFolderBrowseCards (Serpent-7a9e89)", () => {
+describe("shouldShowFolderBrowseCards", () => {
   it("keeps child folder cards by default when recursive browse is on", () => {
     expect(shouldShowFolderBrowseCards("folder-1", true)).toBe(true);
     expect(shouldShowFolderBrowseCards("folder-1", true, true)).toBe(true);

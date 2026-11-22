@@ -91,7 +91,7 @@ export function aiProfileKeyPath(id: string): string {
   return path.join(app.getPath("userData"), "ai-profile-keys", `${id}.bin`);
 }
 
-// ── Serpent-xffq: 同步服务器（全局）与库绑定持久化 ───────────────────
+// ── 同步服务器（全局）与库绑定持久化 ───────────────────
 export function syncServersPath(): string {
   return path.join(app.getPath("userData"), "sync-servers.json");
 }

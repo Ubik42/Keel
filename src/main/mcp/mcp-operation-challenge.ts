@@ -7,7 +7,7 @@ import {
 } from '../../automation/mcp-challenge';
 
 /**
- * Two-phase confirmation for dangerous MCP operations (Serpent-8b5b.2,
+ * Two-phase confirmation for dangerous MCP operations (
  * ADR-0031 §5.3).
  *
  * The first call to a dangerous tool never executes: it issues a short-lived,

@@ -1,4 +1,4 @@
-// Serpent-verg.2: preview resolution (getPreviewArtifact) must keep working
+// preview resolution (getPreviewArtifact) must keep working
 // on an older library whose artifact table or artifact columns are missing —
 // degraded to "no artifact" instead of failing (0031 §1).
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
@@ -83,7 +83,7 @@ function dropColumns(dbPath: string, table: string, columns: string[]): void {
   db.close();
 }
 
-describe('getPreviewArtifact lenient read (Serpent-verg.2)', () => {
+describe('getPreviewArtifact lenient read', () => {
   it('resolves a thumbnail artifact on a current library (baseline)', () => {
     const root = temporaryRoot();
     const { service, libraryId, assetId } = libraryWithOneAsset(root, 'PreviewBaseline');

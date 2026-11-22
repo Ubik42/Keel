@@ -77,7 +77,7 @@ export interface UseTagOperationsDeps {
 /** Extracted from AppInner (P4); the statements run in the same order as before. */
 export function useTagOperations({ api, library, beginWorkspaceNavigationRequest, ensureLibraryView, managedImportTargetFolderIdRef, saveCurrentWorkspaceHistoryViewport, closeAssetPreview, isCurrentLibraryView, currentQueryDefinition, showIgnoredItems, closeContextMenu, resetBrowsePaginationPreservingVisibleLayout, skipDiscoveryReloadSignatureRef, setShowTrash, setShowTagManagement, setActivePluginSidebarViewId, setActiveTagId, setAssetScope, clearAssetSelection, setTagFilter, setExcludeTagFilter, setExcludedTagFilter, setTagFilterMatch, setSearchOffset, applySearchResult, beginBrowsePageClearingSimilar, recordNavigation, finishWorkspaceNavigation, setError, t, locale, setWorkspaceNavigationPending, setUiState, tags, createWorkspaceNavigationRequest, acknowledgeWorkspaceNavigation, queryDefinitionForWorkspaceBrowseState, applyWorkspaceTabBrowseStateForNavigation, clearDiscoveryControls, setTagFilterExpression, setTagFilterLastValidExpression, setTagFilterMode, pinnedTagId, setPinnedTagId, activeTagId, refreshTagAndMetadataState, syncBrowseFilterMembershipRef, setNotice, selectedAssetId }: UseTagOperationsDeps) {
 
-  // Serpent-eaxs: tag-management AND/OR jump — leave management, scope to all
+  // tag-management AND/OR jump — leave management, scope to all
   // assets and apply the selected tag names as one OR clause (any) or one
   // clause per tag (all).
   async function handleSearchTagsFromManagement(
@@ -108,7 +108,7 @@ export function useTagOperations({ api, library, beginWorkspaceNavigationRequest
         query: definition.search ?? null,
         filters: definition.filters,
         sort: definition.sort,
-        // Serpent-87pd: first window only; scrollbar jumps fetch other offsets.
+        // first window only; scrollbar jumps fetch other offsets.
         limit: BROWSE_PAGE_SIZE,
         showIgnored: includeIgnored,
       });
@@ -189,7 +189,7 @@ export function useTagOperations({ api, library, beginWorkspaceNavigationRequest
         query: definition.search ?? null,
         filters: definition.filters,
         sort: definition.sort,
-        // Serpent-87pd: first window only; scrollbar jumps fetch other offsets.
+        // first window only; scrollbar jumps fetch other offsets.
         limit: BROWSE_PAGE_SIZE,
         showIgnored: includeIgnored,
       });

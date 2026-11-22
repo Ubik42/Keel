@@ -15,7 +15,7 @@ export interface WorkspaceNoticeBannerProps {
 }
 
 /**
- * Unified top-center shell notice for info/warning/error (Serpent-ss1k / nlji).
+ * Unified top-center shell notice for info/warning/error (nlji).
  */
 export function WorkspaceNoticeBanner({
   message,

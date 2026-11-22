@@ -94,7 +94,7 @@ export type AutomationGatewaySuccess<Id extends AutomationCommandId = Automation
   undoGroupId?: string;
 };
 
-/** Serpent-8b5b.2: a dangerous call answered with a two-phase challenge instead of executing. */
+/** a dangerous call answered with a two-phase challenge instead of executing. */
 export type AutomationGatewayChallengeOutcome = {
   ok: false;
   challenge: McpDangerousOperationChallenge;
@@ -357,7 +357,7 @@ export interface AutomationCommandGatewayOptions {
   historyEntryHandler?: AutomationHistoryEntryHandler;
   permissionBroker?: AutomationPermissionBroker;
   /**
-   * Serpent-ihpx: an automation import (MCP/script/console) completed — the
+   * an automation import (MCP/script/console) completed — the
    * SAME side effects as a human import must fire (automatic AI analysis).
    * Called synchronously with the projected asset IDs; a throwing hook must
    * not fail the already-committed import.
@@ -482,7 +482,7 @@ export function createAutomationCommandGateway(
   const executionHistoryRules = new Map<string, AutomationHistoryRule>();
   /** Serialize the first group handshake when a script dispatches commands concurrently. */
   const pendingHistoryGroupBegins = new Map<string, Promise<ExecutionHistoryGroup | undefined>>();
-  // Serpent-8b5b.4 review: cap idempotency retention so a chatty client with
+  // review: cap idempotency retention so a chatty client with
   // unique keys cannot grow the map without bound; oldest entries evict first.
   const IDEMPOTENCY_ENTRY_LIMIT = 4096;
   const idempotencyEntries = new Map<string, {
@@ -620,7 +620,7 @@ export function createAutomationCommandGateway(
       if (!parsedEnvelope.success) return gatewayFailure('AUTOMATION_INVALID_REQUEST');
 
       const { apiVersion, commandId, executionId, input: envelopeInput } = parsedEnvelope.data;
-      // Serpent-8b5b.2: challenge confirmation fields are stripped after the
+      // challenge confirmation fields are stripped after the
       // broker consumes the challenge, before schema parsing / worker dispatch.
       let input: unknown = envelopeInput;
       if (apiVersion !== AUTOMATION_API_VERSION) {
@@ -725,7 +725,7 @@ export function createAutomationCommandGateway(
       }
       const isCriticalOperation = descriptor.criticalOperation === true;
       if (isCriticalOperation) {
-        // Serpent-8b5b.2: dangerous commands are MCP-only and gated entirely
+        // dangerous commands are MCP-only and gated entirely
         // by the two-phase agent challenge — capabilities are never askable
         // for them, and the first call must not dispatch anything.
         if (context.source !== 'mcp' || permissionBroker === undefined) {
@@ -767,7 +767,7 @@ export function createAutomationCommandGateway(
           && context.source === 'mcp'
           && permissionBroker !== undefined
           && missingRequestableCapabilities.length > 0;
-        // Serpent-8b5b.8 review: a read-only credential must be gated on
+        // review: a read-only credential must be gated on
         // EVERY write, not only on askable capabilities — allow-policy write
         // capabilities (e.g. library.create) are pre-granted by the session
         // and would otherwise bypass the permission broker entirely.
@@ -1364,7 +1364,7 @@ export function createAutomationCommandGateway(
         }
       }
 
-      // Serpent-ihpx: an automation import must behave like a human import —
+      // an automation import must behave like a human import —
       // same post-import side effects (automatic AI analysis). Fires only for
       // a completed import with projected asset IDs (conflicts import
       // nothing); a throwing hook must not fail the committed import.

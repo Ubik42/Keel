@@ -527,7 +527,7 @@ export class LibraryWorkerClient {
     };
   }
 
-  /** Serpent-8ca259: worker asks Main to capture an HTML document thumbnail. */
+  /** worker asks Main to capture an HTML document thumbnail. */
   onDocumentThumbnailRenderRequest(
     listener: (request: DocumentThumbnailRenderRequest) => Promise<DocumentThumbnailRenderResponse["result"]>,
   ): () => void {
@@ -630,7 +630,7 @@ export class LibraryWorkerClient {
   }
 
   /**
-   * Handle a worker `document-thumbnail.render-request` (Serpent-8ca259):
+   * Handle a worker `document-thumbnail.render-request`:
    * hand it to the offscreen document renderer listener and post the typed
    * result back to the Worker. Returns true when consumed.
    */
@@ -725,7 +725,7 @@ export class LibraryWorkerClient {
     // parsers: the request is answered with a typed response, not forwarded.
     if (this.#dispatchModelThumbnailRenderCancel(message)) return;
     if (this.#dispatchModelThumbnailRenderRequest(message)) return;
-    // Serpent-8ca259: HTML document thumbnail capture, same request/response
+    // HTML document thumbnail capture, same request/response
     // pattern as model thumbnails.
     if (this.#dispatchDocumentThumbnailRenderRequest(message)) return;
 

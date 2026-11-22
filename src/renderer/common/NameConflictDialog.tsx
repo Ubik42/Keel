@@ -18,7 +18,7 @@ export interface NameConflictDialogProps {
   submitting?: boolean;
 }
 
-/** Same-folder name conflicts only (Serpent-9iyi / zp8q / 79c7 / 793k). */
+/** Same-folder name conflicts only (zp8q / 79c7 / 793k). */
 export function NameConflictDialog({
   conflicts,
   libraryId,
@@ -36,7 +36,7 @@ export function NameConflictDialog({
   );
   const examples = nameConflicts.map((item) => item.displayName);
 
-  // Serpent-793k: show the colliding (already-existing) asset's name and
+  // show the colliding (already-existing) asset's name and
   // thumbnail, matching the content-duplicate dialog.
   const examplesContent: ReactNode =
     nameConflicts.length === 0 ? null : (

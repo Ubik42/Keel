@@ -16,7 +16,7 @@ describe('inferRelinkBatchRoot', () => {
     expect(inferRelinkBatchRoot('FolderA/photo.png', anchor)).toBe(batchRoot);
   });
 
-  it('keeps a deep absolute root intact (Serpent-zc9y regression)', () => {
+  it('keeps a deep absolute root intact', () => {
     const batchRoot = abs('var', 'tmp', 'serpent-trash-relink-test', 'replacements');
     const anchor = path.join(batchRoot, 'img.png');
     expect(inferRelinkBatchRoot('img.png', anchor)).toBe(batchRoot);

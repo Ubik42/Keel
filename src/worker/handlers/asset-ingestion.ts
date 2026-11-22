@@ -45,7 +45,7 @@ export async function executeAssetIngestionWorkerCommand(
   switch (request.command.type) {
     case 'asset.list': {
       const assets = libraryService.listAssets(request.command);
-      // Serpent-4bdd26 收编 codex/large-library-performance@d5f58088：渲染端
+      // 收编 codex/large-library-performance@d5f58088：渲染端
       // 布局完成后会上报真实视口。在这里先开一页规模的解码波会与该上报竞争，
       // 让首个可见窗口反而等待折叠线以下的任务；visible-window 处理器是
       // 浏览优先级的唯一来源。startup/import/mutation 场景仍为非渲染端调用方

@@ -58,7 +58,7 @@ function distinctPngBytes(index: number): Buffer {
 /**
  * Instant mock decoder: the decode itself costs ~0ms, so a
  * processThumbnailQueue wave is dominated by the queue's per-job DB work —
- * exactly what the Serpent-xoaz batching assertions target.
+ * exactly what the batching assertions target.
  */
 function instantSharp() {
   return () => {
@@ -127,7 +127,7 @@ afterEach(() => {
   }
 });
 
-describe('thumbnail queue DB-write batching (Serpent-xoaz)', () => {
+describe('thumbnail queue DB-write batching', () => {
   it('returns control between successive claim rounds', async () => {
     const root = temporaryRoot();
     let claimCount = 0;
@@ -322,7 +322,7 @@ describe('thumbnail queue DB-write batching (Serpent-xoaz)', () => {
   });
 });
 
-describe('thumbnail fill order (Serpent-xoaz)', () => {
+describe('thumbnail fill order', () => {
   it('drains most-recently-imported assets first (created_at DESC) instead of pure path order', async () => {
     const root = temporaryRoot();
     const service = new LibraryService({ sharpFn: instantSharp() });
@@ -359,7 +359,7 @@ describe('thumbnail fill order (Serpent-xoaz)', () => {
     service.closeAll();
   });
 
-  it('keeps the caller id order for explicit waves regardless of created_at (Serpent-x9xu follow-up)', async () => {
+  it('keeps the caller id order for explicit waves regardless of created_at', async () => {
     const root = temporaryRoot();
     const service = new LibraryService({ sharpFn: instantSharp() });
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'ExplicitOrder', selectedParentPath: root });
@@ -396,7 +396,7 @@ describe('thumbnail fill order (Serpent-xoaz)', () => {
   });
 });
 
-describe('visible thumbnail admission (Serpent-d6)', () => {
+describe('visible thumbnail admission', () => {
   it('keeps model rendering out of the fast visible wave while preserving order', () => {
     const root = temporaryRoot();
     const service = new LibraryService();

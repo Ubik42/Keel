@@ -7,7 +7,7 @@ import {
   resolveAiAnalysisConcurrency,
 } from "../../src/shared/ai-concurrency";
 
-describe("resolveAiAnalysisConcurrency (Serpent-opme)", () => {
+describe("resolveAiAnalysisConcurrency", () => {
   it("defaults to 16", () => {
     expect(resolveAiAnalysisConcurrency(undefined)).toBe(
       DEFAULT_AI_ANALYSIS_CONCURRENCY,

@@ -1,6 +1,6 @@
 /**
  * Deduplicate Menu accelerator + before-input + renderer keydown for the
- * same browse shortcut (Serpent-g8u9).
+ * same browse shortcut.
  */
 
 let lastForwarded: { action: string; at: number } | null = null;

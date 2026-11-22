@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /**
- * Frameless Windows caption controls (Serpent-znex).
+ * Frameless Windows caption controls.
  *
  * Renderer draws min / max-restore / close; Main owns BrowserWindow actions.
  * Requests are typed actions; maximize state is returned and pushed as events.
@@ -83,7 +83,7 @@ export function parseWindowMaximizedStateEvent(
 }
 
 /**
- * Windows hides the menu bar for frameless shell unity (Serpent-znex).
+ * Windows hides the menu bar for frameless shell unity.
  * Linux has no macOS-style global menu bar, so it follows the Windows shell:
  * the in-app main menu replaces the native GTK menu bar.
  */

@@ -26,7 +26,7 @@ export interface SidebarCommandActions {
   readonly openFolderInFileManager: (folderId: string) => void;
   readonly createSubfolder: (folderId: string) => void;
   /**
-   * Serpent-316493: link a disk directory as a child of this managed folder
+   * link a disk directory as a child of this managed folder
    * (folder context menu → 导入链接文件夹).
    */
   readonly importLinkedFolderInto: (folderId: string) => void;
@@ -67,7 +67,7 @@ export interface SidebarCommandContext extends CommandContext {
   /** Present when the subject is a linked child directory path. */
   readonly linkedRelativePath?: string;
   /**
-   * Serpent-316493: the subject is the library root itself (the folder panel's
+   * the subject is the library root itself (the folder panel's
    * blank area). Only actions that make sense without a managed_folders row are
    * offered: open in file manager, create, import a linked folder, paste and
    * copy path. Rename / clone / move / trash / disk-delete / remove are hidden.
@@ -118,7 +118,7 @@ export const sidebarCommandDefinitions: readonly SidebarCommandDefinition[] = [
           : 'command.folder.newSubfolder',
       ),
     group: 'organize',
-    // Finder/Explorer new-folder chord; Windows Ctrl twin (Serpent-vf8x).
+    // Finder/Explorer new-folder chord; Windows Ctrl twin.
     shortcut: {
       mac: { label: '⌘⇧N', key: 'n', metaKey: true, shiftKey: true },
       windows: { label: 'Ctrl+Shift+N', key: 'n', ctrlKey: true, shiftKey: true },
@@ -147,7 +147,7 @@ export const sidebarCommandDefinitions: readonly SidebarCommandDefinition[] = [
     title: (ctx) =>
       translateForLocale(ctx.locale, 'command.folder.importLinked'),
     group: 'organize',
-    // Serpent-316493: only a managed folder can own a linked child; linking a
+    // only a managed folder can own a linked child; linking a
     // folder under an existing linked folder stays unsupported.
     visible: (ctx) =>
       ctx.menuKind === 'folder' && ctx.locationKind === 'managed',
@@ -172,7 +172,7 @@ export const sidebarCommandDefinitions: readonly SidebarCommandDefinition[] = [
     title: (ctx) =>
       translateForLocale(ctx.locale, 'command.folder.linkedRules'),
     group: 'organize',
-    // Serpent-c6d907: linked ignore is the same .keelignore file as
+    // linked ignore is the same .keelignore file as
     // managed folders. Keep the command for automation; do not offer a
     // separate rules window in the folder menu.
     visible: () => false,

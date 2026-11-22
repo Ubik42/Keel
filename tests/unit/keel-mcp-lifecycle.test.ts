@@ -98,7 +98,7 @@ async function callTool(
   });
 }
 
-describe('MCP lifecycle commands: folder (Serpent-dcb1)', () => {
+describe('MCP lifecycle commands: folder', () => {
   it('exposes rename/move/delete-empty tools', () => {
     const names = listKeelMcpTools(writeExposure).tools.map((tool) => tool.name);
     expect(names).toContain('keel_folder_rename');
@@ -166,7 +166,7 @@ describe('MCP lifecycle commands: folder (Serpent-dcb1)', () => {
   });
 });
 
-describe('MCP lifecycle commands: library (Serpent-96ys)', () => {
+describe('MCP lifecycle commands: library', () => {
   it('exposes list-recent/close/rename/export/import/delete tools', () => {
     const names = listKeelMcpTools(writeExposure).tools.map((tool) => tool.name);
     for (const name of [
@@ -222,7 +222,7 @@ describe('MCP lifecycle commands: library (Serpent-96ys)', () => {
   });
 });
 
-describe('MCP lifecycle commands: tag (Serpent-j9n2)', () => {
+describe('MCP lifecycle commands: tag', () => {
   it('routes tag.rename/delete/merge', async () => {
     const renamed = new RecordingWorker({
       ok: true,
@@ -267,7 +267,7 @@ describe('MCP lifecycle commands: tag (Serpent-j9n2)', () => {
   });
 });
 
-describe('MCP lifecycle commands: linked folder (Serpent-eyus)', () => {
+describe('MCP lifecycle commands: linked folder', () => {
   it('routes linked-folder.create with the explicit source root', async () => {
     const worker = new RecordingWorker({
       ok: true,
@@ -288,7 +288,7 @@ describe('MCP lifecycle commands: linked folder (Serpent-eyus)', () => {
   });
 });
 
-describe('MCP lifecycle commands: asset helpers (Serpent-uup6)', () => {
+describe('MCP lifecycle commands: asset helpers', () => {
   it('routes asset.copy with target folder', async () => {
     const worker = new RecordingWorker({
       ok: true,

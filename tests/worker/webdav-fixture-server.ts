@@ -1,5 +1,5 @@
 /**
- * 最小内存 WebDAV 服务端 fixture（Serpent-xffq）。
+ * 最小内存 WebDAV 服务端 fixture。
  *
  * 用于在无真实服务端时验证 WebDAVDriver 的认证、PROPFIND 解析、
  * 条件写、MOVE/MKCOL 与能力探测。行为可通过 options 开关模拟

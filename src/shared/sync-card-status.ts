@@ -1,5 +1,5 @@
 /**
- * Card-corner sync status (Serpent-871f34).
+ * Card-corner sync status.
  *
  * Derived from local SQLite + last-sync manifest cache. Never poll WebDAV
  * per card. Synced assets return null so the canvas stays quiet.

@@ -217,7 +217,7 @@ describe("scheduleAnchorRestore", () => {
     globalThis.cancelAnimationFrame = originalCancel;
   });
 
-  it("restores scroll even when scrollTop drifted during the wait (Serpent-32p)", () => {
+  it("restores scroll even when scrollTop drifted during the wait", () => {
     const rafQueue: FrameRequestCallback[] = [];
     const listeners = new Map<string, Set<() => void>>();
     const originalRaf = globalThis.requestAnimationFrame;

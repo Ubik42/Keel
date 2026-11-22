@@ -1,5 +1,5 @@
 /**
- * Window-level mouse back/forward for workspace history (Serpent-1xmk).
+ * Window-level mouse back/forward for workspace history.
  *
  * Mirrors toolbar back/forward; preview close is delegated to the callbacks.
  */

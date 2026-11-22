@@ -131,7 +131,7 @@ describe('viewer preview policy (REQ-VIEW-002)', () => {
     ).toBe('waiting');
   });
 
-  it('presents mip placeholder while full preview is still loading (Serpent-eh07)', () => {
+  it('presents mip placeholder while full preview is still loading', () => {
     expect(
       resolveViewerPrimarySurface({
         loading: true,

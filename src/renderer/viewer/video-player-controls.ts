@@ -1,9 +1,9 @@
 /**
- * Pure helpers for the asset viewer video player (REQ-VIEW-005 / Serpent-60k).
+ * Pure helpers for the asset viewer video player (REQ-VIEW-005).
  *
  * The transport chrome (play/pause, scrub track, rate) is fully custom —
  * layering a thin UI on top of `HTMLVideoElement`'s native `controls` was
- * tried first (Serpent-2j9) and failed human acceptance: the browser's own
+ * tried first and failed human acceptance: the browser's own
  * control auto-hide timer fights the viewer's chrome-idle fade, and its
  * shadow-DOM focus/keyboard handling made Space unreliable. This module
  * backs Space play/pause, the rate list, and the scrub-track position math
@@ -101,7 +101,7 @@ export function isEditableKeyboardTarget(
 /**
  * True only for targets where letter keys must type (Inspector fields etc.).
  * Viewer chrome `<select>` / buttons are NOT typing targets — D/F/X/C must
- * still work after the rate control was clicked (VIEWER-018 / Serpent-gwp1).
+ * still work after the rate control was clicked (VIEWER-018).
  */
 export function isTypingKeyboardTarget(
   target: KeyboardTargetLike | EventTarget | null,
@@ -156,7 +156,7 @@ export function shouldHandleVideoSpaceKey(event: ShortcutEventLike & {
  */
 export const VIDEO_FRAME_STEP_SECONDS = 1 / 30;
 
-/** Default Ctrl+← / Ctrl+→ skip when the jump setting is “by time” (Serpent-sk1). */
+/** Default Ctrl+← / Ctrl+→ skip when the jump setting is “by time”. */
 export const VIDEO_SKIP_SECONDS = 2;
 
 /**
@@ -183,7 +183,7 @@ export type VideoKeyboardSeekAction =
   | { kind: "skip"; direction: 1 | -1 };
 
 /**
- * D = previous frame, F = next frame (Serpent-soii);
+ * D = previous frame, F = next frame;
  * Ctrl+←/→ jumps by the seek setting (time or a share of the duration).
  * Capture-phase callers must stopPropagation so shell ←/→ asset nav does not fire.
  * Uses Ctrl (not Cmd) on all platforms per product request.
@@ -220,7 +220,7 @@ export type ViewerPlaybackHandle = {
 };
 
 /**
- * X = slower, C = faster — step within VIDEO_PLAYBACK_RATES (Serpent-soii).
+ * X = slower, C = faster — step within VIDEO_PLAYBACK_RATES.
  */
 export function matchVideoPlaybackRateKey(event: ShortcutEventLike & {
   target: KeyboardTargetLike | EventTarget | null;

@@ -273,7 +273,7 @@ export async function inspectMediaNativeInput(
 // will remove it if it never becomes referenced.
 export const ORPHAN_ARTIFACT_GRACE_MS = 5 * 60_000;
 /**
- * Serpent-x9xu / Serpent-87pd: the current browse/search page size
+ * the current browse/search page size
  * (BROWSE_PAGE_SIZE = 100). The `visible` thumbnail wave must cover the
  * window the user is looking at so a freshly imported library shows the
  * current page first while the import flood (mutation 300) fills in behind.
@@ -284,7 +284,7 @@ export const THUMBNAIL_VISIBLE_PAGE_SIZE = 100;
 export const OIIO_VERSION = '3.1.12.0';
 export const FFMPEG_VERSION = '8.1';
 /**
- * Serpent-308675: media jobs run under full-decoder CPU saturation, where the
+ * media jobs run under full-decoder CPU saturation, where the
  * single Worker thread can stall well past a 15s lease between heartbeat
  * ticks. Media-job leases use their own longer window (heartbeat = 1/3 of it)
  * so transient stalls don't fail-and-requeue live work. Scoped to media jobs
@@ -297,7 +297,7 @@ export const RAW_IMAGE_METADATA_RETRY_DELAY_MS = 30_000;
 export const RAW_IMAGE_METADATA_MAX_ATTEMPTS = 3;
 export const EMBEDDED_IMAGE_METADATA_GENERATOR = 'exifr@7.1.3;embedded-image-metadata-v2';
 export const FFMPEG_METADATA_GENERATOR = `ffprobe@${FFMPEG_VERSION};embedded-metadata-v1`;
-/** Opaque ≈4:3 light-stage covers (Serpent-dxk); stale strip/dark covers requeue. */
+/** Opaque ≈4:3 light-stage covers; stale strip/dark covers requeue. */
 export const AUDIO_WAVEFORM_GENERATOR = `ffmpeg@${FFMPEG_VERSION}+${AUDIO_WAVEFORM_COVER_GENERATOR_TAG}`;
 export const VIDEO_PROXY_SCALE_FILTER =
   'scale=w=min(720\\,iw):h=min(720\\,ih):force_original_aspect_ratio=decrease:force_divisible_by=2';
@@ -1534,7 +1534,7 @@ const RETIRE_ASSET_LABEL_SCHEMA_CHECKSUM = createHash('sha256')
   .update(RETIRE_ASSET_LABEL_SCHEMA_SQL)
   .digest('hex');
 
-// Migration v15 (Serpent-7x0): add an author/creator metadata field, editable
+// Migration v15: add an author/creator metadata field, editable
 // by users and auto-populated from EXIF/IPTC/XMP on first thumbnail
 // generation. FTS5 content tables cannot have a column appended in place, so
 // the search index and its triggers are rebuilt with an `author` column
@@ -1583,7 +1583,7 @@ const AUTHOR_METADATA_SCHEMA_CHECKSUM = createHash('sha256')
   .update(AUTHOR_METADATA_SCHEMA_SQL)
   .digest('hex');
 
-// Migration v16 (F8 / Serpent-1us6): AI aesthetic rating in ai_content;
+// Migration v16 (F8): AI aesthetic rating in ai_content;
 // retire structured_metadata bag.
 const AI_RATING_CONTENT_SCHEMA_SQL = `
   DELETE FROM ai_content WHERE field_name = 'structured_metadata';
@@ -1631,7 +1631,7 @@ const TRASHED_MANAGED_FOLDERS_SCHEMA_CHECKSUM = createHash('sha256')
   .update(TRASHED_MANAGED_FOLDERS_SCHEMA_SQL)
   .digest('hex');
 
-// Migration v18 (Serpent-wcnk): replace exact-token FTS with a raw,
+// Migration v18: replace exact-token FTS with a raw,
 // normalized trigram index. FTS5's trigram tokenizer accelerates arbitrary
 // contains matching for terms of three or more characters; the Worker applies
 // the same exact predicate for shorter terms so one-character search remains
@@ -1677,7 +1677,7 @@ const CONTEXTUAL_SUBSTRING_SEARCH_SCHEMA_CHECKSUM = createHash('sha256')
   .update(CONTEXTUAL_SUBSTRING_SEARCH_SCHEMA_SQL)
   .digest('hex');
 
-// Migration v19 (Serpent-3cz9): AI descriptions are stored separately from
+// Migration v19: AI descriptions are stored separately from
 // human metadata. Rebuild the canonical search index so existing AI analysis
 // results are searchable without requiring a new analysis run.
 const AI_DESCRIPTION_SEARCH_BACKFILL_SCHEMA_SQL = `
@@ -1687,7 +1687,7 @@ const AI_DESCRIPTION_SEARCH_BACKFILL_SCHEMA_CHECKSUM = createHash('sha256')
   .update(AI_DESCRIPTION_SEARCH_BACKFILL_SCHEMA_SQL)
   .digest('hex');
 
-// Migration v20 (Serpent-whvm / jcur): durable trash-folder binding so
+// Migration v20 (jcur): durable trash-folder binding so
 // same-name tombstones do not share assets/covers after managed_folders rows
 // are deleted (trashed_from_folder_id is FK ON DELETE SET NULL).
 const TRASH_TOMBSTONE_ASSET_BIND_SCHEMA_SQL = `
@@ -1700,7 +1700,7 @@ const TRASH_TOMBSTONE_ASSET_BIND_SCHEMA_CHECKSUM = createHash('sha256')
   .update(TRASH_TOMBSTONE_ASSET_BIND_SCHEMA_SQL)
   .digest('hex');
 
-// Migration v21 (Serpent-aav1): audio must not depend on Chromium's variable
+// Migration v21: audio must not depend on Chromium's variable
 // container/codec support. Add a distinct Opus/Ogg playback proxy and job kind
 // without changing the established video WebM artifact contract.
 const MEDIA_PROXY_SCHEMA_SQL = `
@@ -1779,7 +1779,7 @@ const MEDIA_PROXY_SCHEMA_CHECKSUM = createHash('sha256')
   .update(MEDIA_PROXY_SCHEMA_SQL)
   .digest('hex');
 
-// Migration v22 (Serpent-aoj0): keep a user-selected input color space
+// Migration v22: keep a user-selected input color space
 // separate from file metadata so the source remains untouched and clearing the
 // override restores automatic detection.
 const COLOR_SPACE_OVERRIDE_SCHEMA_SQL = `
@@ -2058,7 +2058,7 @@ const JOB_LEASE_SCHEMA_CHECKSUM = createHash('sha256')
   .update(JOB_LEASE_SCHEMA_SQL)
   .digest('hex');
 
-// Migration v29: 资源库同步（Serpent-xffq）。
+// Migration v29: 资源库同步。
 // - assets.sync_id：跨设备稳定身份（每台设备本地 asset_id 不同），
 //   同步交换格式以 sync_id 为键；NULL 表示尚未参与同步。
 // - sync_manifest_cache：上次同步点的远端 manifest 缓存。
@@ -2078,7 +2078,7 @@ const SYNC_SCHEMA_CHECKSUM = createHash('sha256')
 // Migration v39: sync session ledger. The v38 sync migration shipped without
 // the sync_sessions table that beginSyncSession/finishSyncSession write to;
 // adding it as a fresh append-only migration keeps every released v38 checksum
-// immutable (Serpent-xffq).
+// immutable.
 const SYNC_SESSIONS_SCHEMA_SQL = `
   CREATE TABLE IF NOT EXISTS sync_sessions (
     session_id TEXT NOT NULL PRIMARY KEY,
@@ -2104,11 +2104,11 @@ const SYNC_SESSIONS_SCHEMA_CHECKSUM = createHash('sha256')
 // SMB/NAS libraries each cold page read is a network round trip, which made
 // the first browse after open take seconds.
 //
-// Serpent-4bdd26 版本收编：dev_performance_1 worktree 已用相同版本号发布过
+// 版本收编：dev_performance_1 worktree 已用相同版本号发布过
 // v40（BROWSE_HOT_PATH_INDEX_SCHEMA_SQL，checksum c6bb1f26…）且真实用户库
 // （NAS 图像测试库）已按该定义迁移。此处必须原样保留那份 SQL 文本——改动一个
 // 字节都会改变 checksum，让两个分支互相把对方的库判成 LIBRARY_CORRUPT 触发
-// 数据抢救。Additive-only，符合数据兼容纪律（ADR-0028 / Serpent-dw9a v37/v38 先例）。
+// 数据抢救。Additive-only，符合数据兼容纪律（ADR-0028 v37/v38 先例）。
 const ASSETS_ACTIVE_NAME_INDEX_SCHEMA_SQL = `
   CREATE INDEX IF NOT EXISTS assets_active_folder_name_idx
     ON assets(managed_folder_id, relative_file_path, asset_id)
@@ -2500,7 +2500,7 @@ const LINKED_SOURCE_IDENTITY_SCHEMA_CHECKSUM = createHash('sha256')
   .update(LINKED_SOURCE_IDENTITY_SCHEMA_SQL)
   .digest('hex');
 
-// Migration v49 (Serpent-316493): a linked root can be attached under a managed
+// Migration v49: a linked root can be attached under a managed
 // folder ("导入链接文件夹" from the folder context menu). Deliberately no
 // REFERENCES clause: trashing a managed folder DELETEs its managed_folders row,
 // and a cascading SET NULL would silently reset the nesting — the id is kept so
@@ -2513,7 +2513,7 @@ const LINKED_FOLDER_PARENT_SCHEMA_CHECKSUM = createHash('sha256')
   .update(LINKED_FOLDER_PARENT_SCHEMA_SQL)
   .digest('hex');
 
-// Migration v50 (Serpent-e97c00): the recent media-job list is ordered by
+// Migration v50: the recent media-job list is ordered by
 // created_at/job_id for one library. The status/priority index cannot satisfy
 // that order, so a task-panel refresh otherwise sorts the full history before
 // applying its 500-row limit.
@@ -2525,7 +2525,7 @@ const JOB_RECENT_LIST_INDEX_SCHEMA_CHECKSUM = createHash('sha256')
   .update(JOB_RECENT_LIST_INDEX_SCHEMA_SQL)
   .digest('hex');
 
-// Migration v51 (Serpent-288cd9): persist the bounded RAW metadata admission
+// Migration v51: persist the bounded RAW metadata admission
 // cursor. The secondary pump is allowed to restart without losing the fact
 // that a library was exhausted; the browse token fences the cursor against
 // catalog and ignore-rule changes, while failed RAW retries use a separate
@@ -2556,7 +2556,7 @@ export function hasRawMetadataBackfillStateSchema(connection: DatabaseConnection
   return RAW_METADATA_BACKFILL_STATE_COLUMNS.every((column) => columns.has(column));
 }
 
-// Migration v52 (Serpent-288cd9): the retry-only admission path must inspect
+// Migration v52: the retry-only admission path must inspect
 // only due RAW failures rather than walking the general job history.
 const RAW_METADATA_RETRY_INDEX_SCHEMA_SQL = `
   CREATE INDEX IF NOT EXISTS jobs_raw_metadata_retry
@@ -2572,7 +2572,7 @@ const RAW_METADATA_RETRY_INDEX_SCHEMA_CHECKSUM = createHash('sha256')
 const MEDIA_JOB_STATUS_COUNT_KINDS_SQL = `'generate_thumbnail', 'generate_video_poster', 'extract_metadata', 'generate_contact_sheet', 'generate_webm_proxy', 'generate_audio_proxy', 'extract_palette'`;
 const MEDIA_JOB_STATUS_COUNT_STATUSES_SQL = `'queued', 'running', 'succeeded', 'failed', 'paused', 'cancelled'`;
 
-// Migration v53 (Serpent-e97c00): media job status counts are maintained in the
+// Migration v53: media job status counts are maintained in the
 // same transaction as jobs writes. Panel/status reads then become a 6-row
 // primary-key lookup instead of GROUP BY over the whole job history.
 const MEDIA_JOB_STATUS_COUNTS_SCHEMA_SQL = `
@@ -2647,7 +2647,7 @@ const MEDIA_JOB_STATUS_COUNTS_SCHEMA_CHECKSUM = createHash('sha256')
   .update(MEDIA_JOB_STATUS_COUNTS_SCHEMA_SQL)
   .digest('hex');
 
-// Migration v54 (Serpent-288cd9): persist a normalized filename extension so
+// Migration v54: persist a normalized filename extension so
 // RAW metadata admission can use an equality/IN predicate plus a covering
 // index instead of LOWER(relative_file_path) LIKE '%suffix' over the catalog.
 const ASSET_NORMALIZED_EXTENSION_EXPR = `CASE
@@ -2981,7 +2981,7 @@ const PLUGIN_JOB_INTERRUPTED_SCHEMA_CHECKSUM = createHash('sha256')
   .update(PLUGIN_JOB_INTERRUPTED_SCHEMA_SQL)
   .digest('hex');
 
-// Migration v33 (Serpent-5ygi, slice 0030-B): FBX conversion stores its GLB
+// Migration v33 (slice 0030-B): FBX conversion stores its GLB
 // as a derived artifact (`kind = 'model_glb'`). The v21 rebuild of
 // revision_artifacts pinned the kind CHECK to the media-artifact set, so the
 // table is rebuilt again with the new kind. The rebuild must also recreate the
@@ -3119,7 +3119,7 @@ const PLUGIN_DERIVED_FIELDS_SCHEMA_CHECKSUM = createHash('sha256')
   .update(PLUGIN_DERIVED_FIELDS_SCHEMA_SQL)
   .digest('hex');
 
-// Migration v24 (Serpent-v6m3): explicit user ignore entries.  Paths are
+// Migration v24: explicit user ignore entries.  Paths are
 // relative to the managed Assets root or a linked-folder root.  A folder entry
 // hides the folder and every descendant without deleting the indexed rows, so
 // unignore can restore the view when the source is still present.
@@ -3187,7 +3187,7 @@ const GITIGNORE_SCHEMA_CHECKSUM = createHash('sha256')
   .update(GITIGNORE_SCHEMA_SQL)
   .digest('hex');
 
-// Migration v35 (Serpent-5n4z.1 / ADR-0032): one durable, per-library
+// Migration v35 (ADR-0032): one durable, per-library
 // operation history shared by Desktop, scripts, MCP and plugins. The payloads
 // are typed recipe JSON owned by the Worker; they are never exposed through
 // the renderer or automation protocol as executable recovery instructions.
@@ -3298,7 +3298,7 @@ export const OPERATION_HISTORY_MAX_AUDIT_ENTRIES = 2_000;
 export const OPERATION_HISTORY_STALE_RETENTION_MS = 180 * 24 * 60 * 60 * 1000;
 
 // Exported for schema-compatibility tests that replay migrations
-// version-by-version (Serpent-verg.4/6).
+// version-by-version (/6).
 const TAG_HIERARCHY_SQL = `
   CREATE TABLE IF NOT EXISTS tag_hierarchy (
     tag_id TEXT PRIMARY KEY REFERENCES tags(tag_id) ON DELETE CASCADE,
@@ -3411,7 +3411,7 @@ export const MIGRATIONS = [
   // v37 was first consumed by real user data (auto-analysis suppression) before
   // the sync work landed; the sync migration therefore takes v38 to keep every
   // existing v37 library (whose schema_migrations row carries the suppression
-  // checksum) openable without touching its history. See Serpent-dw9a.
+  // checksum) openable without touching its history..
   // Libraries opened by the sync-first fork recorded the opposite assignment
   // (v37=SYNC, v38=AUTO). migrateForkedSyncAutoAnalysisMigrationHistory
   // rewrites only schema_migrations for that exact history.
@@ -3537,7 +3537,7 @@ export const MIGRATIONS = [
 export const SUPPORTED_SCHEMA_VERSION = MIGRATIONS.at(-1)!.version;
 
 /**
- * Serpent-verg.7 — the in-place table-rebuild migrations (CREATE replacement
+ * the in-place table-rebuild migrations (CREATE replacement
  * → copy → DROP old → RENAME). The worker disables FK enforcement around
  * these; `tests/worker/migration-discipline.test.ts` asserts this set matches
  * the static gate's rebuild exceptions exactly, so a new rebuild migration
@@ -3574,14 +3574,14 @@ export interface OpenLibrary {
   /** Whether the current ignore text has been materialized at least once. */
   gitignoreMaterialized: boolean;
   /**
-   * Serpent-4bdd26: memo for the recursive per-collection asset counts keyed
+   * memo for the recursive per-collection asset counts keyed
    * by the narrow browse change sequence. The recursive CTE costs ~25-100ms
    * on a 20k library and the sidebar re-requests it after every mutation;
    * artifact/job progress is not a membership change and must not evict it.
    */
   collectionCountCache?: { browseChangeSequence: number; counts: Map<string, number> };
   /**
-   * Serpent-4bdd26: memo for recursive per-folder asset counts keyed by
+   * memo for recursive per-folder asset counts keyed by
    * browse sequence + showIgnored. The sidebar re-requests it after every
    * mutation; the direct-count GROUP BY dominates the ~20ms otherwise.
    */
@@ -3722,7 +3722,7 @@ export interface ManagedFolderRow {
   parent_folder_id: string | null;
   relative_path: string;
   path_identity: string;
-  /** Serpent-db1835: sidebar folder sort by creation time. */
+  /** sidebar folder sort by creation time. */
   created_at?: string;
   appearance_glyph_kind?: string | null;
   appearance_glyph_value?: string | null;
@@ -3843,7 +3843,7 @@ export interface PendingImport {
   operationPath: string;
   dedupeSameNameByContent?: boolean;
   suppressAssetChangeEvents?: boolean;
-  /** External bulk conversion skips full-file hashing (Serpent-7tjg). */
+  /** External bulk conversion skips full-file hashing. */
   skipContentHash?: boolean;
   /**
    * Identity → on-disk destination for bulk conversion. Avoids readdir of
@@ -4536,7 +4536,7 @@ export function runSharpDecoder<T>(
   );
 }
 const MEDIA_QUEUE_LOG = process.env.KEEL_MEDIA_QUEUE_LOG === '1';
-// Serpent-e97c00：摘要命中/重算必须可观测，否则「面板关闭时不再全表扫描」无法作为
+// 摘要命中/重算必须可观测，否则「面板关闭时不再全表扫描」无法作为
 // 验收证据。与其它命令级诊断共用同一个开关（benchmark 已默认打开）。
 const JOB_SUMMARY_LOG = process.env.KEEL_WORKER_CMD_LOG === '1';
 // 诊断用开关：置 0 即回到「每次读取都重算」的旧行为，用于同树 A/B 归因（生产不设即启用缓存）。
@@ -4649,7 +4649,7 @@ export async function waitForSharedMediaOperation<T>(
 }
 
 /**
- * Slice E (Serpent-hnmg): offscreen model-thumbnail renderer contract. The
+ * Slice E: offscreen model-thumbnail renderer contract. The
  * Worker stays the queue/artifact owner; Main (via worker/index.ts) performs
  * the GPU render. `errorCode` may carry a MODEL_* code (render failure) or an
  * FBX_* code (conversion failure that preceded the render) — both are
@@ -4790,7 +4790,7 @@ export interface LibraryServiceOptions {
    */
   beforeLibraryRescueForTests?: () => void;
   /**
-   * Serpent-8ca259: offscreen HTML document thumbnail renderer, injected by
+   * offscreen HTML document thumbnail renderer, injected by
    * the Worker (asks Main to capture the source). When absent, HTML thumbnails
    * stay a benign no-op (generic file icon, never `failed`).
    */
@@ -4808,7 +4808,7 @@ export interface LibraryServiceOptions {
   sqliteBusyTimeoutMsForTests?: number;  /** Test-only clock for the 24-hour database-backup throttle. */
   databaseBackupClock?: { now(): number };
   /**
-   * Test-only seam (Serpent-xoaz): receives every SQL statement executed on
+   * Test-only seam: receives every SQL statement executed on
    * the open-library connection, used by queue-throughput benchmarks to
    * assert DB write counts (e.g. batched success UPDATEs). Never set in
    * production — it adds a callback per statement.
@@ -4848,7 +4848,7 @@ export interface ImportExpiryClock {
 
 export interface AssetRefreshResult {
   /**
-   * Serpent-4bdd26: the full recursive asset list is opt-in. Every internal
+   * the full recursive asset list is opt-in. Every internal
    * caller (open reconciliation, watcher refresh) only reads the counters,
    * and the eager `listAssets(recursive: true)` re-scan cost ~400ms per
    * refresh on a 20k library — pure waste when nobody consumes the rows.
@@ -4859,7 +4859,7 @@ export interface AssetRefreshResult {
 }
 
 /**
- * Serpent-4bdd26 收编 codex/large-library-performance@15f3325c：开库对账的
+ * 收编 codex/large-library-performance@15f3325c：开库对账的
  * 渐进批次选项。assetIds 限定 stat 范围（空列表 = 仅发现新文件）；
  * discoverSources=false 跳过文件系统枚举。
  */
@@ -5558,7 +5558,7 @@ export function openConfiguredDatabase(
     /** Test seam; production classifies the database path before opening it. */
     storageKind?: LibraryStorageKind;
     /**
-     * Test-only seam (Serpent-xoaz): per-statement trace used to assert DB
+     * Test-only seam: per-statement trace used to assert DB
      * write counts in queue-throughput benchmarks. better-sqlite3's `verbose`
      * callback receives the SQL of every executed statement on this
      * connection; production callers never pass it.
@@ -5569,7 +5569,7 @@ export function openConfiguredDatabase(
   if (!Number.isSafeInteger(busyTimeoutMs) || busyTimeoutMs < 0 || busyTimeoutMs > 60_000) {
     throw new Error('SQLite busy timeout must be an integer between 0 and 60000 milliseconds.');
   }
-  // Serpent-033e: schemaVersionProbe and backup validation open a SQLite
+  // schemaVersionProbe and backup validation open a SQLite
   // read-only connection so those checks cannot mutate the file. Desktop
   // never uses this flag for a user-facing library handle. journal_mode /
   // synchronous are write PRAGMAs and must be skipped here.
@@ -5611,7 +5611,7 @@ export function openConfiguredDatabase(
       { simple: true },
     );
     connection.pragma('synchronous = FULL');
-    // Serpent-4bdd26: a 20k-asset library database is ~60MB; the SQLite
+    // a 20k-asset library database is ~60MB; the SQLite
     // default page cache (~2MB) cannot hold its hot indexes, so every cold
     // browse re-reads index pages over the network (measured ~0.9s per COUNT
     // on gigabit SMB vs <10ms warm). A 64MB cache is read-only working set —
@@ -5654,7 +5654,7 @@ export function schemaVersion(connection: DatabaseConnection): number {
 }
 
 /**
- * Serpent-033e/verg.5: probe the library's schema version without running
+ * probe the library's schema version without running
  * any migration or WAL pragma. Returns the version number, or null when the
  * file cannot be probed (the normal open path reports real errors itself).
  */
@@ -5926,7 +5926,7 @@ function ensureTrashTombstoneAssetBindSchema(
 export function backfillTrashedFromTombstoneIds(
   connection: DatabaseConnection,
 ): void {
-  // Serpent-verg.2 — lenient open (0031 §1): libraries older than the
+  // lenient open (0031 §1): libraries older than the
   // trash-tombstone columns/table must still open; the backfill only applies
   // when the structure it reads exists.
   const assetColumns = columnsFor(connection, 'assets');
@@ -5937,7 +5937,7 @@ export function backfillTrashedFromTombstoneIds(
   ) {
     return;
   }
-  // Serpent-4bdd26: count candidates through the v42 partial index first —
+  // count candidates through the v42 partial index first —
   // a pure read. On SMB every UPDATE pays ~200ms of journal-file round trips
   // even when zero rows match, and the common case is an empty trash.
   const candidateCount = connection
@@ -6312,7 +6312,7 @@ export function buildContextualSearchWhere(
  * needs cross-process protection now.
  */
 /**
- * Serpent-033e: migrateDatabase refuses to rewrite a newer schema. Desktop
+ * migrateDatabase refuses to rewrite a newer schema. Desktop
  * still opens that library writable; create/import validation treats the
  * same signal as LIBRARY_VERSION_TOO_NEW.
  */
@@ -6416,7 +6416,7 @@ function migrateDatabaseUnserialized(connection: DatabaseConnection, allowFresh:
   if (hasLegacyPluginMigrationHistory(connection, currentVersion)) {
     migrateLegacyPluginMigrationHistory(connection);
     verifyMigrationHistory(connection, SUPPORTED_SCHEMA_VERSION);
-    // Serpent-verg: the migration mutated the schema; the lenient-read
+    // the migration mutated the schema; the lenient-read
     // column cache must be rebuilt from the new structure.
     invalidateColumnProbe(connection);
     return;
@@ -6448,7 +6448,7 @@ function migrateDatabaseUnserialized(connection: DatabaseConnection, allowFresh:
     // outgoing FK to library(library_id). Disabling FK prevents DROP TABLE
     // from blocking and guarantees the rebuild is clean.
     //
-    // Serpent-verg.7 (discipline audit): the full set of in-place table
+    // (discipline audit): the full set of in-place table
     // rebuilds — every one creates a replacement table, copies, drops the
     // old and renames. The FK guard is kept in lockstep so a future FK on
     // any rebuilt table cannot silently break the DROP phase. (v15 dropped
@@ -6515,7 +6515,7 @@ function migrateDatabaseUnserialized(connection: DatabaseConnection, allowFresh:
           // The primary migration failure remains more useful than a re-enable failure.
         }
       }
-      // Serpent-verg.5 (0031 §2.2): a rolled-back migration failure is
+      // (0031 §2.2): a rolled-back migration failure is
       // retryable and diagnosed via .keel/migration-failed.json; the
       // open path records it. verifyMigrationHistory failures above/below
       // keep LIBRARY_CORRUPT (damaged history is never retried).
@@ -6525,7 +6525,7 @@ function migrateDatabaseUnserialized(connection: DatabaseConnection, allowFresh:
   }
 
   verifyMigrationHistory(connection, SUPPORTED_SCHEMA_VERSION);
-  // Serpent-verg: migrations may have mutated the schema; the lenient-read
+  // migrations may have mutated the schema; the lenient-read
   // column cache must be rebuilt from the new structure.
   invalidateColumnProbe(connection);
 }
@@ -6578,7 +6578,7 @@ export function verifyDatabase(
     throw new LibraryServiceError('LIBRARY_CORRUPT');
   }
   verifyMigrationHistory(connection, version);
-  // Serpent-4bdd26: quick_check scans every B-tree (~270ms on a 60MB/20k
+  // quick_check scans every B-tree (~270ms on a 60MB/20k
   // library) and dominated the synchronous open. The open hot path defers it
   // to the background reconciliation; create/recovery paths keep the full
   // check because their inputs are untrusted by construction.
@@ -6633,14 +6633,14 @@ export class LibraryService {
   readonly runningAutomaticTasks = new Set<string>();
   readonly openIdByPath = new Map<string, string>();
   /**
-   * Serpent-4bdd26: prepared-statement cache keyed by `libraryId\0sql`.
+   * prepared-statement cache keyed by `libraryId\0sql`.
    * better-sqlite3 re-compiles on every `.prepare()` call; hot per-row paths
    * (isExplicitlyIgnored runs once per enumerated file) measured 410ms of
    * pure compile time per 20k rows vs 54ms with a cached statement.
    */
   readonly preparedStatementCache = new Map<string, unknown>();
   /**
-   * Serpent-29125f: text cards only need a small UTF-8 prefix. Keep the
+   * text cards only need a small UTF-8 prefix. Keep the
    * decoded result by revision so remounting cards (or opening the Inspector
    * for the same asset) does not reopen the linked source file in the Worker.
    * The cache is deliberately bounded and includes maxBytes because the text
@@ -6707,7 +6707,7 @@ export class LibraryService {
   >();
   /** Eagle imports keep their media previews but never enter auto-AI later. */
   readonly autoAnalysisSuppressedAssetIds = new Map<string, Set<string>>();
-  /** Serpent-140fe2 review fix: coalesce overlapping lazy contact-sheet generations. */
+  /** review fix: coalesce overlapping lazy contact-sheet generations. */
   readonly videoContactSheetInFlight = new Map<string, {
     controller: AbortController;
     promise: Promise<boolean>;
@@ -6745,7 +6745,7 @@ export class LibraryService {
    */
   readonly artifactPathCache = new Map<string, ArtifactPathCacheEntry>();
   /**
-   * Serpent-e97c00：任务面板/状态栏读的是按状态分组的总数，而该查询要遍历整个媒体
+   * 任务面板/状态栏读的是按状态分组的总数，而该查询要遍历整个媒体
    * 任务历史（真实库中位约 110 ms）。`jobs` 的写入已经由 `library_change_on_jobs_*`
    * 触发器 bump `library_change_sequence`，所以按序号校验 + 有界陈旧即可把它变成
    * O(1) 读，不需要在每个任务写路径挂钩子。
@@ -6844,13 +6844,13 @@ export class LibraryService {
     if (isAudioFileName(lower)) {
       return 'audio';
     }
-    // Serpent-8ca259: PDF and HTML are documents previewed in a browser-like
+    // PDF and HTML are documents previewed in a browser-like
     // renderer, not plain text. Check before the text whitelist so they
     // classify as `document`.
     if (isSupportedDocumentExtension(lower)) {
       return 'document';
     }
-    // Serpent-485aeb: fonts get their own media type (card sample + viewer).
+    // fonts get their own media type (card sample + viewer).
     if (isSupportedFontExtension(lower)) {
       return 'font';
     }
@@ -6863,7 +6863,7 @@ export class LibraryService {
   /**
    * Map detector output onto AssetSummary.mediaType.
    * searchAssets / trash listing previously collapsed audio+text to `other`
-   * (Serpent-671), which hid duration badges and Inspector audio tech lines.
+   *, which hid duration badges and Inspector audio tech lines.
    * `model` passes through unchanged since slice A.
    */
   static toSummaryMediaType(

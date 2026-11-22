@@ -125,7 +125,7 @@ export const nativeAssetDragCache = new NativeAssetDragCache();
 export const lastVisibleDragAssetIds = new Map<string, string[]>();
 
 /**
- * Serpent-8ee170: every media completion enqueues here instead of issuing its
+ * every media completion enqueues here instead of issuing its
  * own Worker request, so a 2,000-job wave cannot become 2,000 background
  * requests competing with the queue that produced them.
  */

@@ -12,7 +12,7 @@ const FOCUSABLE_SELECTOR =
 /**
  * When any modal dialog is open: trap Tab inside the topmost dialog, move
  * initial focus to the first focusable control, and restore prior focus on
- * close. Escape handling stays with the caller (Serpent-vvn).
+ * close. Escape handling stays with the caller.
  */
 export function useDialogFocusTrap(active: boolean, focusKey?: string): void {
   const previousFocusRef = useRef<HTMLElement | null>(null);

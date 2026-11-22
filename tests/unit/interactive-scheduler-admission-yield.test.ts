@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { InteractiveScheduler } from '../../src/worker/library/interactive-scheduler';
 
 /**
- * Serpent-be29a9: a long background pass (the open reconciliation) must not hold
+ * a long background pass (the open reconciliation) must not hold
  * the single background admission for its whole duration. Measured on a real
  * library before this existed: `browse.session.open` waited 28.3 s behind one
  * reconciliation whose task ran up to 25.8 s, because the scheduler admits at

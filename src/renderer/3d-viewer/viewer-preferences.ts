@@ -28,7 +28,7 @@ export interface Viewer3dPreferences {
   presetId: HdriPresetId;
   /** Environment light intensity (replaces the old "exposure" semantics). */
   lightIntensity: number;
-  /** Display mode (PBR / wireframe / gray-shaded, Serpent-fkhe). */
+  /** Display mode (PBR / wireframe / gray-shaded). */
   displayMode: ModelDisplayMode;
   /** Draw both faces. Off leaves each material's own side unchanged. */
   doubleSided: boolean;

@@ -321,7 +321,7 @@ describe('generateThumbnail (sharp)', () => {
     service.closeAll();
   });
 
-  it('imports, thumbnails, and serves AVIF as a native image (Serpent-c93c75)', async () => {
+  it('imports, thumbnails, and serves AVIF as a native image', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Avif', selectedParentPath: root });
@@ -424,7 +424,7 @@ describe('generateThumbnail (sharp)', () => {
     service.closeAll();
   });
 
-  it('generates a JPEG thumbnail for an opaque PNG asset (Serpent-thumb-perf)', async () => {
+  it('generates a JPEG thumbnail for an opaque PNG asset', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'PNG', selectedParentPath: root });
@@ -458,7 +458,7 @@ describe('generateThumbnail (sharp)', () => {
     service.closeAll();
   });
 
-  it('keeps WebP for an alpha PNG so transparency survives (Serpent-thumb-perf)', async () => {
+  it('keeps WebP for an alpha PNG so transparency survives', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'AlphaPNG', selectedParentPath: root });
@@ -560,7 +560,7 @@ describe('generateThumbnail (sharp)', () => {
     service.closeAll();
   });
 
-  it('generates a JPEG thumbnail for a JPEG asset (Serpent-thumb-perf)', async () => {
+  it('generates a JPEG thumbnail for a JPEG asset', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'JPEG', selectedParentPath: root });
@@ -950,7 +950,7 @@ describe('preview availability while derivatives are generated', () => {
     );
     db.close();
 
-    // Serpent-cljb: even an existing in-flight proxy must not steal playback
+    // even an existing in-flight proxy must not steal playback
     // from the original source. The proxy is only a fallback after a real
     // media-element failure.
     expect(service.getPreviewArtifact(created.libraryId, asset.assetId, 'hover')).toMatchObject({
@@ -1183,7 +1183,7 @@ describe('enqueueThumbnailJobs', () => {
       .filter((asset) => asset.displayName.endsWith('.png'))
       .map((asset) => asset.assetId));
 
-    // Serpent-xoaz: the background fill drains most-recently-imported assets
+    // the background fill drains most-recently-imported assets
     // first (created_at DESC). Stamp distinct import times so the fill picks
     // a deterministic pair regardless of per-import clock granularity.
     const db = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
@@ -1223,7 +1223,7 @@ describe('enqueueThumbnailJobs', () => {
     importNoConflict(service, created.libraryId, source);
     service.closeAll();
 
-    // Serpent-4bdd26: the synchronous open no longer enqueues the startup
+    // the synchronous open no longer enqueues the startup
     // wave (~230ms of full-table scans on a 20k library). The Worker's
     // deferStartupThumbnailScene schedules the same parameters after the
     // renderer reports its first viewport; an explicit caller (automation,
@@ -2800,7 +2800,7 @@ describe('generateThumbnail (animated GIF still page)', () => {
       libraryId: created.libraryId,
       assetId: asset.assetId,
     }))!;
-    // Serpent-thumb-perf: GIF stills encode as webp when the palette reports
+    // GIF stills encode as webp when the palette reports
     // alpha, jpeg otherwise — assert through the stored file path instead of
     // hardcoding an extension.
     const dbPathForCheck = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
@@ -2837,7 +2837,7 @@ describe('generateThumbnail (animated GIF still page)', () => {
   });
 });
 
-describe('animated GIF native playback (Serpent-43d32f)', () => {
+describe('animated GIF native playback', () => {
   async function buildGif(root: string, frames: number): Promise<string> {
     const { execFileSync } = await import('node:child_process');
     const ffmpeg = process.env['KEEL_FFMPEG_PATH'] ?? 'ffmpeg';
@@ -2898,7 +2898,7 @@ describe('animated GIF native playback (Serpent-43d32f)', () => {
     expect(rows).toHaveLength(0);
 
     // Chromium renders animated GIFs inside <img>, so hover/viewer play the
-    // original source instead of a WebM transcode (Serpent-43d32f).
+    // original source instead of a WebM transcode.
     const preview = await service.resolvePreviewArtifact(created.libraryId, asset.assetId);
     expect(preview.mediaType).toBe('image');
     expect(preview.kind).not.toBe('webm_proxy');
@@ -2930,7 +2930,7 @@ describe('animated GIF native playback (Serpent-43d32f)', () => {
 
     const reopened = new LibraryService();
     const reopenedLibrary = reopened.openLibrary(created.libraryPath);
-    // Serpent-4bdd26: the retirement moved into the background reconciliation
+    // the retirement moved into the background reconciliation
     // (its GIF scan costs ~180ms on SMB); drive it explicitly.
     await reopened.runOpenBackgroundReconciliation(reopenedLibrary.libraryId);
     const verifyDb = new TestDatabase(path.join(created.libraryPath, '.keel', 'library.db'));
@@ -2965,7 +2965,7 @@ describe('animated GIF native playback (Serpent-43d32f)', () => {
   });
 });
 
-describe('visible-wave priority boost (Serpent-azf6)', () => {
+describe('visible-wave priority boost', () => {
   it('raises queued preview jobs of the scheduled assets to the scene priority', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
@@ -3014,7 +3014,7 @@ describe('visible-wave priority boost (Serpent-azf6)', () => {
   });
 });
 
-describe('cover-wave priority (Serpent-d0nv)', () => {
+describe('cover-wave priority', () => {
   it('enqueues cover candidates at the cover tier (400) so they beat the visible wave (350)', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
@@ -3051,7 +3051,7 @@ describe('cover-wave priority (Serpent-d0nv)', () => {
   });
 });
 
-describe('visible page window covers the whole browse page (Serpent-x9xu)', () => {
+describe('visible page window covers the whole browse page', () => {
   it('boosts the entire returned page (300) above the mutation wave and leaves unbrowsed assets at 300', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
@@ -3134,7 +3134,7 @@ describe('visible page window covers the whole browse page (Serpent-x9xu)', () =
   });
 });
 
-describe('visible-window header probe (Serpent-visible-window)', () => {
+describe('visible-window header probe', () => {
   it('returns header-probed dimensions for visible images, persists them as extracted_metadata, and skips non-images', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
@@ -3239,7 +3239,7 @@ describe('visible-window header probe (Serpent-visible-window)', () => {
     service.closeAll();
   });
 
-  it('generates a first-page thumbnail for a PDF asset (Serpent-8ca259)', async () => {
+  it('generates a first-page thumbnail for a PDF asset', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'PDF', selectedParentPath: root });
@@ -3285,7 +3285,7 @@ describe('visible-window header probe (Serpent-visible-window)', () => {
     service.closeAll();
   });
 
-  it('stores an offscreen-captured HTML thumbnail as a JPEG artifact (Serpent-8ca259)', async () => {
+  it('stores an offscreen-captured HTML thumbnail as a JPEG artifact', async () => {
     const root = temporaryRoot();
     const service = new LibraryService({
       documentThumbnailRenderer: async ({ url, signal }) => {
@@ -3324,7 +3324,7 @@ describe('visible-window header probe (Serpent-visible-window)', () => {
     service.closeAll();
   });
 
-  it('enqueues generate_thumbnail jobs for PDF and HTML document assets (Serpent-8ca259)', () => {
+  it('enqueues generate_thumbnail jobs for PDF and HTML document assets', () => {
     // Regression: the enqueue gate used to whitelist only image/video/audio/
     // model extensions, so document assets never received a generate_thumbnail
     // job — cards stayed on the generic icon with no artifact row at all.
@@ -3363,7 +3363,7 @@ describe('visible-window header probe (Serpent-visible-window)', () => {
     service.closeAll();
   });
 
-  it('serves PDF and HTML sources with their real MIME for the viewer (Serpent-8ca259)', () => {
+  it('serves PDF and HTML sources with their real MIME for the viewer', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'DocMime', selectedParentPath: root });

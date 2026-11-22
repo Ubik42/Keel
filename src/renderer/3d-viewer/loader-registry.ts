@@ -167,7 +167,7 @@ async function loadGltfText(input: LoadModelSceneInput): Promise<LoadedModelScen
 }
 
 async function loadFbx(input: LoadModelSceneInput): Promise<LoadedModelScene> {
-  // Serpent-a5ic: ufbx conversion is the primary path. The bridge now uses
+  // ufbx conversion is the primary path. The bridge now uses
   // ufbx_triangulate_face (correct concave handling — the earlier fan
   // workaround rendered textures fragmented on complex meshes). On conversion
   // failure the FBXLoader fallback runs with companion-texture remapping.

@@ -1,4 +1,4 @@
-// Serpent-verg.6 — full version-chain compatibility (0031 §3):
+// full version-chain compatibility (0031 §3):
 //  • upgrade chain: every vN library (with seed data) migrates to latest
 //    with the seed data intact (assets/revisions/tags/collections/metadata);
 //  • downgrade chain: a latest library with seed data is structurally rewound

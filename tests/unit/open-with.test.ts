@@ -21,7 +21,7 @@ function makeDeps(
   };
 }
 
-describe("open-with platform helper (Serpent-w29)", () => {
+describe("open-with platform helper", () => {
   it("detects darwin / win32 / other", () => {
     expect(detectOpenWithPlatform("darwin")).toBe("darwin");
     expect(detectOpenWithPlatform("win32")).toBe("win32");

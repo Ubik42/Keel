@@ -32,7 +32,7 @@ afterEach(() => {
   for (const value of roots.splice(0)) rmSync(value, { force: true, recursive: true });
 });
 
-describe('cloneManagedFolder / moveManagedFolders (Serpent-vgp)', () => {
+describe('cloneManagedFolder / moveManagedFolders', () => {
   it('clones a folder tree with assets as a sibling copy', () => {
     const temp = root();
     const service = newService();

@@ -870,7 +870,7 @@
 }
 
 /* ------------------------------------------------------------------ *
- * Plugin view host (Serpent-ex46.7): lifecycle placeholder + crash state
+ * Plugin view host: lifecycle placeholder + crash state
  * ------------------------------------------------------------------ */
 
 .plugin-view-host {
@@ -948,7 +948,7 @@
   background: var(--ui-action-hover);
 }
 
-/* Plugin modal dialog (Serpent-a3de58): DialogShell chrome, iframe is the form. */
+/* Plugin modal dialog: DialogShell chrome, iframe is the form. */
 
 .plugin-ui-dialog {
   width: min(520px, calc(100vw - 48px));

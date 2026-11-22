@@ -100,7 +100,7 @@ export function registerKeelProtocol() {
         );
         return new Response("Invalid keel:// path", { status: 400 });
       }
-      // Serpent-866c20：序列帧确认面板要在导入前预览候选帧。Renderer 只拿到
+      // 序列帧确认面板要在导入前预览候选帧。Renderer 只拿到
       // Main 自己发出的不透明 offerId 与帧号，真实路径由这里从候选清单解析——
       // 请求里永远不出现磁盘路径。
       if (url.hostname === "import-frame") {
@@ -205,7 +205,7 @@ export function registerKeelProtocol() {
           "Resolving a source asset request.",
           { libraryId, assetId: artifactId },
         );
-        // Serpent-485aeb：字体卡片样张页。字体卡片的封面由 Main 的离屏捕获
+        // 字体卡片样张页。字体卡片的封面由 Main 的离屏捕获
         // 渲染成 512px 缩略图，因此这里按同一个 source URL + `sample=font`
         // 返回一张生成的 HTML 样张页；页面里的 @font-face 指向去掉该参数的
         // 原始 URL，与页面同源（同 scheme + 同 host），不需要给字体请求放开
@@ -366,7 +366,7 @@ export function registerKeelProtocol() {
         return new Response("Library unavailable", { status: 410 });
       }
 
-      // Serpent-1e3d4f: image previews are mirrored into userData on first
+      // image previews are mirrored into userData on first
       // serve; later sessions stream from the local mirror instead of the
       // (possibly remote) origin. Video proxies/posters stay uncached — they
       // are large and Range-streamed.

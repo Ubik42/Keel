@@ -15,7 +15,7 @@ export interface ExportDialogProps {
 
 /**
  * Library export chooser — same stacked folder/ZIP pattern as
- * ImportLibraryChooserDialog (Serpent-ec5).
+ * ImportLibraryChooserDialog.
  */
 export function ExportDialog({
   open,

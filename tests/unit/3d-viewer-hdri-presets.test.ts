@@ -29,7 +29,7 @@ function bundledAssetPath(preset: HdriPreset): string {
   );
 }
 
-describe('hdri-presets (Serpent-v363 / 3D-09)', () => {
+describe('hdri-presets (3D-09)', () => {
   it('ships exactly the four user-selected studio + natural 1K CC0 presets', () => {
     expect(HDRI_PRESETS.map((preset) => preset.id)).toEqual([
       'ferndale-studio-03',

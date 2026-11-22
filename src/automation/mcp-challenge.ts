@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 
 /**
- * Two-phase challenge contract for dangerous MCP operations (Serpent-8b5b.2,
+ * Two-phase challenge contract for dangerous MCP operations (
  * ADR-0031 §5.3). Transport-neutral: the gateway issues/consumes challenges,
  * the MCP adapter maps them onto tool results, and Desktop Console/Scripts can
  * never reach critical operations (they are MCP-only by registry declaration).

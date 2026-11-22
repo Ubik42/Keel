@@ -1,6 +1,6 @@
 import type { AppLocale } from "../i18n";
 
-// Serpent-4bdd26 收编 codex/large-library-performance@3f56d3df：Intl.DateTimeFormat
+// 收编 codex/large-library-performance@3f56d3df：Intl.DateTimeFormat
 // 构造昂贵，而资产卡片每次渲染都会格式化日期。按 locale 缓存 formatter。
 const shortDateFormatters = new Map<AppLocale, Intl.DateTimeFormat>();
 

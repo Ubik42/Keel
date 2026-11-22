@@ -1,5 +1,5 @@
 /**
- * AI analysis parallelism (Serpent-opme).
+ * AI analysis parallelism.
  * Lane count for `ai.process-queue` and the provider semaphore share this cap
  * so we never start more in-flight vendor calls than the limiter allows.
  *

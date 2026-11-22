@@ -60,7 +60,7 @@ describe('preset toggle helpers', () => {
     expect(togglePresetRange({ min: '2', max: '' }, preset)).toEqual(preset);
   });
 
-  it('togglePresetRanges supports Shift OR multi-select (Serpent-gp4)', () => {
+  it('togglePresetRanges supports Shift OR multi-select', () => {
     const a = { min: '1.05', max: '' };
     const b = { min: '', max: '0.95' };
     expect(togglePresetRanges([], a, false)).toEqual([a]);

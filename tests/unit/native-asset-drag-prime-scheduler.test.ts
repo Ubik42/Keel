@@ -5,7 +5,7 @@ import { NativeAssetDragPrimeScheduler } from "../../src/main/shell/native-asset
 afterEach(() => vi.useRealTimers());
 
 /**
- * Serpent-8ee170: the drag-cache preheat must stay bounded when thousands of
+ * the drag-cache preheat must stay bounded when thousands of
  * media jobs finish. These tests pin the bound: requests scale with
  * `pending / chunkSize`, never with the number of events; duplicates collapse;
  * the per-library cap holds; and a library switch drops stale work instead of

@@ -1,5 +1,5 @@
 /**
- * 远端存储驱动抽象（Serpent-xffq）。
+ * 远端存储驱动抽象。
  *
  * 同步编排层只依赖这里的文件语义（list/read/write/delete/mkdir/move/
  * exists + 能力探测），与具体协议无关。WebDAV 是第一个实现；未来可

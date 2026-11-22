@@ -281,7 +281,7 @@ describe("virtual browse geometry", () => {
     expect(geometryPatch.geometryEntries).not.toBe(current.geometryEntries);
   });
 
-  it("patches live video dimensions onto loaded virtual slots (Serpent-9c9f97)", () => {
+  it("patches live video dimensions onto loaded virtual slots", () => {
     const current = createVirtualBrowseLayout({
       total: 2_100,
       firstPage: {

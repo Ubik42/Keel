@@ -13,11 +13,11 @@ const revealInFileManagerName =
   process.platform === "darwin" ? "在 Finder 中打开" : "在文件浏览器中打开";
 
 /**
- * Serpent-6e3b10 / Serpent-b29bc4: the blank area **of the folder section** —
+ * the blank area **of the folder section** —
  * the indentation gutter left of the rows — returns to the library root on
  * click and accepts managed-folder drops. The rest of the pane is not blank
  * space.
- * Serpent-374266 adds the counterpart rule: a folder dropped back where it
+ * adds the counterpart rule: a folder dropped back where it
  * already is (its own row) changes nothing, so it neither highlights nor
  * reports anything.
  *
@@ -64,7 +64,7 @@ async function createLibrary(window: Page, name: string) {
  * ("A library transition is already in progress."), so retry until the row
  * exists instead of assuming the first attempt landed.
  *
- * Serpent-186547: the folder-section 「+」 always creates at the library root,
+ * the folder-section 「+」 always creates at the library root,
  * so a nested folder is created from its parent's context menu.
  */
 async function createFolder(window: Page, name: string) {
@@ -131,7 +131,7 @@ async function elementClassAt(window: Page, point: Point): Promise<string> {
   );
 }
 
-// Serpent-186547: the folder-section 「+」 is a library-root action; a
+// the folder-section 「+」 is a library-root action; a
 // subfolder is created from the folder's context menu instead.
 test("folder-section + creates at the library root while a subfolder is in scope", async () => {
   const temporaryRoot = mkdtempSync(path.join(tmpdir(), "serpent-nav-plus-"));
@@ -204,7 +204,7 @@ test("folder-section + creates at the library root while a subfolder is in scope
   }
 });
 
-// Serpent-316493 follow-up: the blank area *is* the library root, so its
+// the blank area *is* the library root, so its
 // right-click menu is the root folder menu.
 test("right-clicking the blank area opens the library-root folder menu", async () => {
   const temporaryRoot = mkdtempSync(path.join(tmpdir(), "serpent-nav-root-menu-"));
@@ -233,7 +233,7 @@ test("right-clicking the blank area opens the library-root folder menu", async (
       exact: true,
     });
     await expect(menu).toBeVisible();
-    // Serpent-a6c516: the menu starts by naming its subject, as a quiet caption
+    // the menu starts by naming its subject, as a quiet caption
     // (the multi-select summary style it reuses is the emphasized one).
     await expect(
       menu.locator(".context-menu-selection-summary", { hasText: /^根目录$/u }),
@@ -260,7 +260,7 @@ test("right-clicking the blank area opens the library-root folder menu", async (
     await expect(menu.getByRole("menuitem", { name: "重命名…" })).toHaveCount(0);
     await expect(menu.getByRole("menuitem", { name: "移入回收站" })).toHaveCount(0);
     await expect(menu.getByRole("menuitem", { name: "删除" })).toHaveCount(0);
-    // Serpent-a6c516: 根目录不可忽略 —— 该项对根目录会拿菜单标题当路径。
+    // 根目录不可忽略 —— 该项对根目录会拿菜单标题当路径。
     await expect(menu.getByRole("menuitem", { name: "忽略此文件夹" })).toHaveCount(0);
 
     // A real folder row still offers it (no regression).
@@ -316,7 +316,7 @@ test("right-clicking the blank area opens the library-root folder menu", async (
       }),
     ).toBe("root");
 
-    // Serpent-a6c516: the 「资源库根目录」 row opens the very same menu.
+    // the 「资源库根目录」 row opens the very same menu.
     await window
       .getByRole("button", { name: "资源库根目录", exact: true })
       .click({ button: "right" });
@@ -479,7 +479,7 @@ test("folder-section blank area returns to the root and accepts folder drops", a
         }),
       )
       .toBe("0px|0px");
-    // Serpent-374266: dropping a folder back onto its own row changes nothing,
+    // dropping a folder back onto its own row changes nothing,
     // so it must not highlight and must not answer with a notice.
     const noticeText = () =>
       window

@@ -1,5 +1,5 @@
 /**
- * Trash restore UX (Serpent-0hnx): silent restore when the original path is
+ * Trash restore UX: silent restore when the original path is
  * free; open the existing restore dialog only when a name conflict exists.
  */
 

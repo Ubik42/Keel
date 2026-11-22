@@ -11,7 +11,7 @@ import {
 } from '../../src/renderer/3d-viewer/error-messages';
 import { fbxConvertErrorCodeSchema } from '../../src/shared/fbx-conversion';
 
-describe('error-messages (Serpent-qvc6 / 3D-15)', () => {
+describe('error-messages (3D-15)', () => {
   it('maps every FBX conversion error code to a translation key (exhaustive)', () => {
     const allCodes = [...fbxConvertErrorCodeSchema.options];
     expect(allCodes.length).toBeGreaterThan(0);

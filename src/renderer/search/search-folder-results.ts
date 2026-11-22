@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// Search folder results (Serpent-f74e48)
+// Search folder results
 //
 // Global text search surfaces a "Folders" section alongside asset results.
 // Folders are matched renderer-side over the already-loaded navigation tree

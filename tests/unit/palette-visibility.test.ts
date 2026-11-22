@@ -5,7 +5,7 @@ import {
   shouldShowAutoPaletteSection,
 } from "../../src/shared/palette-visibility";
 
-describe("palette-visibility (Serpent-uz1)", () => {
+describe("palette-visibility", () => {
   it("allows visual media, models, and browser-previewable documents", () => {
     expect(mediaTypeSupportsAutoPalette("image")).toBe(true);
     expect(mediaTypeSupportsAutoPalette("video")).toBe(true);

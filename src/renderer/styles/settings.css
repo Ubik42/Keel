@@ -122,7 +122,7 @@
   cursor: default;
 }
 
-/* Serpent-485aeb：字体查看器。字形由 Renderer 自己用 FontFace 渲染（不是
+/* 字体查看器。字形由 Renderer 自己用 FontFace 渲染（不是
    iframe），设置面板沿用图片查看器底部 toolbar 的 chrome（可换行的浮动条）。 */
 
 .font-viewer {
@@ -1326,7 +1326,7 @@ select.ai-config-input {
   line-height: 1.35;
 }
 
-/* Serpent-zcyg: compact 0–3 elevation control; ticks inset to match thumb travel. */
+/* compact 0–3 elevation control; ticks inset to match thumb travel. */
 
 .app-settings-elevation-scale {
   --elev-thumb: 12px;

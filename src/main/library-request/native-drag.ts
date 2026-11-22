@@ -26,12 +26,12 @@ export type NativeDragPrimeRuntime = {
  * instead of replacing avoids an auxiliary count query evicting the cards
  * visible in a concurrent search request.
  *
- * Serpent-v4jf: only the visible first screen (the sorted list head, i.e.
+ * only the visible first screen (the sorted list head, i.e.
  * what the user actually sees and can drag immediately) is primed. The rest
  * of a large result is no longer primed at all — a card resolves on demand
  * when a drag actually starts.
  *
- * Serpent-8ee170: the browse result must reach the Renderer without waiting
+ * the browse result must reach the Renderer without waiting
  * for any drag-cache work. `media.get-asset-drag-infos` shares the
  * background-primary lane with reconciliation, so awaiting it here would
  * stall the response behind maintenance. Priming is fire-and-forget.

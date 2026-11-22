@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { invertSelection } from "../../src/renderer/workbench/selection/invert-selection";
 
-describe("invertSelection (Serpent-5fq)", () => {
+describe("invertSelection", () => {
   it("selects all when nothing is selected", () => {
     expect(invertSelection(["a", "b", "c"], [])).toEqual(["a", "b", "c"]);
   });

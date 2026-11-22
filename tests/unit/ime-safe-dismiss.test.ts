@@ -9,7 +9,7 @@ import {
   shouldHoldDismissForIme,
 } from "../../src/renderer/workbench/overlay/ime-safe-dismiss";
 
-describe("ime-safe-dismiss (Serpent-fb30ca)", () => {
+describe("ime-safe-dismiss", () => {
   it("treats composing / Process / keyCode 229 as IME key events", () => {
     expect(isImeKeyboardEvent({ isComposing: true, key: "Escape", keyCode: 27 })).toBe(true);
     expect(isImeKeyboardEvent({ isComposing: false, key: "Process", keyCode: 229 })).toBe(true);

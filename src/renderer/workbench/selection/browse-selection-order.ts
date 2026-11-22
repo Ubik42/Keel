@@ -1,5 +1,5 @@
 /**
- * Unified browse canvas selection order (Serpent-qi05).
+ * Unified browse canvas selection order.
  *
  * Folder cards render before the asset grid; Shift+click range selection must
  * follow that visual order across both kinds instead of slicing each list alone.

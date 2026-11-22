@@ -288,7 +288,7 @@ export interface AssetContextMenuActions {
   onCreateSubfolder: (folderId: string) => void;
   onExpandFolderTree: (folderId: string) => void;
   onCollapseFolderTree: (folderId: string) => void;
-  /** Serpent-316493: 导入链接文件夹 as a child of this managed folder. */
+  /** 导入链接文件夹 as a child of this managed folder. */
   onImportLinkedFolderInto: (folderId: string) => void;
   onSetIgnore: (args: {
     locationKind: "managed" | "linked";

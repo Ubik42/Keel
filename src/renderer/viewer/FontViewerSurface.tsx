@@ -57,7 +57,7 @@ function languageLabelKey(language: FontPreviewLanguage): string {
 }
 
 /**
- * Serpent-485aeb: font viewer.
+ * font viewer.
  *
  * The glyphs are rendered by the Renderer itself through a `FontFace` loaded
  * from the `keel://source` route (a same-scheme request the CSP already

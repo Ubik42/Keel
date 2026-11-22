@@ -1,7 +1,7 @@
-// Serpent-5xbg: failed derived artifacts (thumbnail/video_poster/contact_sheet/
+// failed derived artifacts (thumbnail/video_poster/contact_sheet/
 // audio_proxy) are re-opened for regeneration when the asset surfaces —
 // throttled, permanent failures excluded — instead of blocking forever.
-// Video webm_proxy is intentionally excluded: Serpent-cljb only creates it
+// Video webm_proxy is intentionally excluded: only creates it
 // after the viewer reports a real source-playback failure.
 import { createRequire } from 'node:module';
 import { mkdtempSync, rmSync, statSync, writeFileSync } from 'node:fs';
@@ -170,7 +170,7 @@ afterEach(() => {
   }
 });
 
-describe('retryable failed derived artifacts (Serpent-5xbg)', () => {
+describe('retryable failed derived artifacts', () => {
   it('does not auto-reenqueue a video proxy failure', () => {
     const root = temporaryRoot();
     const service = newService();
@@ -191,7 +191,7 @@ describe('retryable failed derived artifacts (Serpent-5xbg)', () => {
     expect(invalidatedArtifactCount(dbPath)).toBe(0);
   });
 
-  it('keeps failed contact sheets terminal — AI analysis regenerates on demand (Serpent-140fe2)', () => {
+  it('keeps failed contact sheets terminal — AI analysis regenerates on demand', () => {
     const root = temporaryRoot();
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: '联系表重试库', selectedParentPath: root });
@@ -207,7 +207,7 @@ describe('retryable failed derived artifacts (Serpent-5xbg)', () => {
     service.openLibrary(created.libraryPath);
     service.enqueueThumbnailJobs(created.libraryId, { retryFailed: true });
 
-    // Serpent-140fe2: contact sheets are generated lazily at AI-analysis time
+    // contact sheets are generated lazily at AI-analysis time
     // (ensureVideoContactSheet). Open/refresh sweeps must not resurrect the
     // doomed batches that flooded converted libraries.
     expect(queuedJobCount(dbPath, 'generate_contact_sheet')).toBe(0);

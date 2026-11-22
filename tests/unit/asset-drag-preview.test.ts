@@ -37,7 +37,7 @@ describe('assetDragPreviewModel (REQ-DND-003)', () => {
     ).toBeNull();
   });
 
-  it('shows the copy "+" badge when Option/Alt copy mode is active (Serpent-aa3)', () => {
+  it('shows the copy "+" badge when Option/Alt copy mode is active', () => {
     expect(
       assetDragPreviewModel({
         thumbnailUrl: null,

@@ -1,5 +1,5 @@
 /**
- * Application-window fullscreen chords (Serpent-692279).
+ * Application-window fullscreen chords.
  *
  * This is BrowserWindow fullscreen, not the viewer's element fullscreen.
  * Windows uses F11 (browser / VS Code). macOS uses Control+Command+F

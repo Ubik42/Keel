@@ -19,7 +19,7 @@ describe("panel-auto-hide", () => {
     expect(resolvePanelIntentWidth("inspector", 268, 100)).toBe(168);
   });
 
-  // REQ-SHELL-011 复验（Serpent-bhv）：隐藏死区与拖出死区必须共用同一幅度，
+  // REQ-SHELL-011 复验：隐藏死区与拖出死区必须共用同一幅度，
   // 双向手感才一致（"双向都要有段落感"）——不能各自维护互不相关的魔数。
   it("shares one dead-zone magnitude between the hide and restore directions", () => {
     expect(PANEL_EDGE_RESTORE_PX).toBe(PANEL_AUTO_HIDE_DEAD_ZONE_PX);

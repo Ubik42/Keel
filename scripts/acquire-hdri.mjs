@@ -46,7 +46,7 @@ function sha256Hex(buffer) {
 async function download(url) {
   const response = await fetch(url, {
     redirect: 'follow',
-    headers: { 'user-agent': 'Serpent-acquire-hdri/1.0' },
+    headers: { 'user-agent': 'Keel-acquire-hdri/1.0' },
   });
   if (!response.ok) {
     throw new Error(`GET ${url} -> HTTP ${response.status}`);

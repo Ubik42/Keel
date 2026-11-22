@@ -7,7 +7,7 @@ import {
 } from 'node:fs';
 
 /**
- * Serpent-65d837: UserData store of library roots that were renamed aside
+ * UserData store of library roots that were renamed aside
  * (`.del-*`) but could not be deleted while a Windows handle (Chromium
  * `keel://` stream, Defender scan, Explorer) was still open. Main owns this
  * store; the Library Worker owns the actual file deletion via

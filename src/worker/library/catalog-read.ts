@@ -282,7 +282,7 @@ export function isDefaultCatalogBrowseIndexRequest(input: {
 /**
  * Pixel media (image + video, GIF included) whose width/height is a real
  * resolution. Used by the resolution filter; keep in sync with `detectMediaType`
- * and the renderer's `mediaTypeHasPixelResolution` (Serpent-b1b0f2).
+ * and the renderer's `mediaTypeHasPixelResolution`.
  */
 const PIXEL_MEDIA_EXTENSIONS: readonly string[] = [
   ...IMAGE_EXTENSIONS,
@@ -328,7 +328,7 @@ export function buildCatalogFilterWhere(
               // Resolution buckets read the longer edge of pixel media only.
               ? `NULLIF(MAX(COALESCE(${width}, 0), COALESCE(${height}, 0)), 0)`
               : `(CAST(${width} AS REAL) / NULLIF(${height}, 0))`;
-      // Resolution buckets are pixel media only (Serpent-b1b0f2): a 3D model's
+      // Resolution buckets are pixel media only: a 3D model's
       // bounding box (or a document page size) must not land in a 1K/2K/4K
       // bucket. Media type is derived from the extension, so the gate mirrors
       // `detectMediaType`. It is a separate condition rather than a CASE around

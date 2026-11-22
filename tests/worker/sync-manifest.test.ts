@@ -23,7 +23,7 @@ function entry(overrides: Partial<SyncManifestEntry>): SyncManifestEntry {
   };
 }
 
-describe('sync manifest (Serpent-xffq)', () => {
+describe('sync manifest', () => {
   it('round-trips through serialize/parse', () => {
     const manifest = createEmptyManifest({ libraryId: 'lib-1', displayName: '参考库', directoryName: '参考库' });
     manifest.entries.a1 = entry({ path: '概念/机甲.psd', contentHash: 'deadbeef' });

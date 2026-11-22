@@ -49,7 +49,7 @@ export async function executeSyncWorkerCommand(
 ): Promise<WorkerResult | undefined> {
   switch (request.command.type) {
     case 'sync.probe': {
-      // Serpent-xffq：连接级能力探测（不触碰库）。
+      // 连接级能力探测（不触碰库）。
       const driver = syncWebDAVDriver({
         baseUrl: request.command.baseUrl,
         username: request.command.username,
@@ -139,9 +139,9 @@ export async function executeSyncWorkerCommand(
       }
     }
     case 'sync.poll-remote': {
-      // 自动同步轮询（Serpent-bfsb 后续）：轻量检测远端 manifest 变化，
+      // 自动同步轮询（后续）：轻量检测远端 manifest 变化，
       // 不做本地全量 hash，供 Main 定时调度器决定是否触发完整同步。
-      // Serpent-140fe2/308675: pollRemoteChange 先打一轮 WebDAV 网络请求、
+      // pollRemoteChange 先打一轮 WebDAV 网络请求、
       // 之后才读本地缓存（需要库已打开）。对未打开的库必须快速跳过——
       // 否则每个轮询周期都用一次网络往返占用单线程 Worker，交互命令
       // （翻页/缩略图路径解析）在其后排队，表现为数秒级浏览卡顿。

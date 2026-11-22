@@ -1,5 +1,5 @@
 /**
- * IME-safe dismiss helpers (Serpent-fb30ca).
+ * IME-safe dismiss helpers.
  *
  * Microsoft Pinyin (and other IMEs) fire Escape / focusout / outside-looking
  * pointer events while the composition window is open. App chrome that closes

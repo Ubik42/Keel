@@ -359,7 +359,7 @@ export function AppDialogs({ updateImageSequenceFps, createSelectedImageSequence
               if (aiSaveVerifying) return;
               setAiApiKey("");
               // Keep global connection state for heartbeat / context menu
-              // (Serpent-rsbt); re-sync from stored credentials after draft edits.
+              //; re-sync from stored credentials after draft edits.
               void probeStoredAiConnection();
             }}
             onSave={() => void saveAiConfig()}

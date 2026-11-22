@@ -24,7 +24,7 @@ afterEach(() => {
   for (const value of roots.splice(0)) rmSync(value, { force: true, recursive: true });
 });
 
-describe('managed asset copy and one-shot undo (Serpent-2vn)', () => {
+describe('managed asset copy and one-shot undo', () => {
   it('copies into another folder with a new identity, clones human metadata, then undoes', () => {
     const temp = root();
     const service = new LibraryService();

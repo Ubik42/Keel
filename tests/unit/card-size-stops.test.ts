@@ -18,7 +18,7 @@ import {
 } from "../../src/renderer/browse/card-size-stops";
 import { CARD_SIZE_MAX, CARD_SIZE_MIN } from "../../src/renderer/browse/canvas-preferences";
 
-describe("enumerateDiscreteCardSizes (Serpent-7ny)", () => {
+describe("enumerateDiscreteCardSizes", () => {
   it("returns ascending unique stops that pack flush for each column count", () => {
     const width = 1200;
     const stops = enumerateDiscreteCardSizes(width);
@@ -99,7 +99,7 @@ describe("nextDiscreteCardSizeFromPinchDelta", () => {
   });
 });
 
-describe("Ctrl+wheel mouse notch vs trackpad pinch (Serpent-fvpi)", () => {
+describe("Ctrl+wheel mouse notch vs trackpad pinch", () => {
   const stops = enumerateDiscreteCardSizes(1200);
 
   it("classifies Windows-style mouse deltas as notches", () => {

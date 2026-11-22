@@ -22,7 +22,7 @@ describe("asset-card-badges", () => {
     expect(assetTypeBadgeLabel("other", "notes.bin")).toBeNull();
   });
 
-  it("shows extension badges for non-images only (Serpent-i07)", () => {
+  it("shows extension badges for non-images only", () => {
     expect(shouldShowExtensionBadge("image")).toBe(false);
     expect(shouldShowExtensionBadge("audio")).toBe(true);
     expect(shouldShowExtensionBadge("video")).toBe(true);
@@ -51,7 +51,7 @@ describe("asset-card-badges", () => {
     expect(formatSequenceDuration(1_800, 30)).toBe("1:00");
   });
 
-  it("hides corner badges when the card preview is too small (Serpent-7zt)", () => {
+  it("hides corner badges when the card preview is too small", () => {
     expect(shouldShowAssetCardBadges(ASSET_CARD_BADGE_MIN_SIZE)).toBe(true);
     expect(shouldShowAssetCardBadges(ASSET_CARD_BADGE_MIN_SIZE - 1)).toBe(false);
     expect(shouldShowAssetCardBadges(96)).toBe(false);

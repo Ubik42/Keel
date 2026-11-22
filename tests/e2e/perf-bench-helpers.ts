@@ -11,7 +11,7 @@ import {
 
 /**
  * Shared instrumentation for the operator-run navigation benchmarks
- * (Serpent-217028). Everything here is measurement-only: the app under test is
+ *. Everything here is measurement-only: the app under test is
  * launched exactly as `npm run test:e2e` launches it, and all extra detail
  * comes from log gates and in-page probes that already exist or are gated by
  * an environment variable, so a benchmark run never changes product behaviour.
@@ -487,7 +487,7 @@ type CommandAggregate = {
 /**
  * One end-to-end browse navigation, assembled from the `performance.navigation`
  * spans Main already emits plus the Worker's `worker.cmd` line for the same
- * navigation id. Serpent-217028 asks for exactly this chain:
+ * navigation id. asks for exactly this chain:
  * click -> Main -> Worker browse -> Main post-processing -> IPC/commit.
  *
  * The raw navigation id never reaches the report: entries carry an ordinal
@@ -534,7 +534,7 @@ export type BenchLogSummary = {
   commands: CommandAggregate[];
   navigations: NavigationSummary;
   /**
-   * Serpent-e97c00: how often the media job status summary was served from
+   * how often the media job status summary was served from
    * cache versus recomputed. A browsing journey with the task panel closed
    * should show hits/stale-hits and very few rebuilds.
    */
@@ -546,7 +546,7 @@ export type BenchLogSummary = {
     lastTotalJobs: number;
   };
   /**
-   * Serpent-288cd9: RAW metadata backfill admission. `drainedProbes` counts
+   * RAW metadata backfill admission. `drainedProbes` counts
    * probes that found nothing left to do — after the first one the gate must
    * stop rescanning until the validation token changes.
    */
@@ -672,7 +672,7 @@ function stableDiagnosticLabel(value: unknown): string {
 /**
  * Count how the media job status summary was served: cache hit, bounded stale
  * hit (validated token changed but inside the stale window) or a rebuild that
- * re-scanned the job history. Serpent-e97c00's acceptance needs this because
+ * re-scanned the job history.'s acceptance needs this because
  * the latency of `media.list-jobs` only proves the symptom, not the algorithm.
  */
 function summarizeJobSummary(lines: Array<Record<string, unknown>>): BenchLogSummary["jobSummary"] {
@@ -827,7 +827,7 @@ export function summarizeNavigations(lines: Array<Record<string, unknown>>): Nav
 }
 
 /**
- * Aggregate the gated diagnostics into the spans Serpent-217028 asks for.
+ * Aggregate the gated diagnostics into the spans asks for.
  * `queueMs` is time to receipt, `schedulerWaitMs` is receipt to admission
  * (permission wait), `runMs` is handler time (DB + file I/O) and `roundTripMs`
  * is the Main-observed total, so the four separate "where did it wait" cases.

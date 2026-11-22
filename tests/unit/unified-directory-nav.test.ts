@@ -155,7 +155,7 @@ describe("buildUnifiedDirectoryNavEntries", () => {
     ]);
   });
 
-  // Serpent-316493: a linked root imported into a managed folder hangs under it.
+  // a linked root imported into a managed folder hangs under it.
   it("nests a linked root under its managed parent and shifts its children", () => {
     const folders = [
       managed({ folderId: "p", name: "Parent", relativePath: "Parent" }),
@@ -187,7 +187,7 @@ describe("buildUnifiedDirectoryNavEntries", () => {
       ]);
   });
 
-  // Serpent-316493: a parent that is gone (trashed / deleted from disk) must not
+  // a parent that is gone (trashed / deleted from disk) must not
   // hide the link — it falls back to the library root and re-nests on restore.
   it("falls back to the library root when the managed parent is not visible", () => {
     const entries = buildUnifiedDirectoryNavEntries([], [
@@ -310,7 +310,7 @@ describe("sortManagedTreeEntries", () => {
       parentFolderId,
     });
 
-  // Serpent-316493: a linked root under a managed folder is emitted after that
+  // a linked root under a managed folder is emitted after that
   // folder's own subtree, followed by its virtual children.
   it("emits a nested linked root after its managed parent's subtree", () => {
     const nested = linked({

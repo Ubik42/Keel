@@ -1035,7 +1035,7 @@ test("fourth-stop random scrollbar jumps measure progressive visible decode", as
     bodyError = error;
   }
   await application.close();
-  // Serpent-140fe2: no-unsafe-finally — cleanup runs outside try/finally so
+  // no-unsafe-finally — cleanup runs outside try/finally so
   // its throws never mask the body error; the body error is rethrown after
   // cleanup completes either way.
   let cleanupError: unknown = undefined;

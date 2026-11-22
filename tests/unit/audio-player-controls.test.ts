@@ -31,7 +31,7 @@ import { AudioPlayerControls } from "../../src/renderer/viewer/AudioPlayerContro
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT =
   true;
 
-describe("AudioPlayerControls trail pump (Serpent-mrsm)", () => {
+describe("AudioPlayerControls trail pump", () => {
   let root: Root | undefined;
   let container: HTMLDivElement | undefined;
   let rafCallback: FrameRequestCallback | null = null;

@@ -1,5 +1,5 @@
 /**
- * 手动 WebDAV 端点探测（Serpent-xffq）。
+ * 手动 WebDAV 端点探测。
  *
  * 运行方式（URL 不写进本文件，仅供开发者手动连接测试）：
  *   $env:KEEL_WEBDAV_PROBE_URL='https://<host>/'; `

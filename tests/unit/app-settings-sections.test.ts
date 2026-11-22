@@ -13,13 +13,13 @@ import {
   type AppSettingsCanvasFieldOption,
 } from "../../src/renderer/settings/app-settings-sections";
 
-describe("app-settings-sections (Serpent-97l / Serpent-9es / Serpent-i07)", () => {
+describe("app-settings-sections ()", () => {
   it("theme and locale option lists are non-empty", () => {
     expect(APP_SETTINGS_THEME_OPTIONS.length).toBe(3);
     expect(APP_SETTINGS_LOCALE_OPTIONS.length).toBe(3);
   });
 
-  it("lists system theme first (Serpent-svc default policy)", () => {
+  it("lists system theme first (default policy)", () => {
     expect(APP_SETTINGS_THEME_OPTIONS.map((o) => o.value)).toEqual([
       "system",
       "light",

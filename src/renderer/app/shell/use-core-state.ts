@@ -77,11 +77,11 @@ export function useCoreState() {
     folderIds: string[];
     assetId: string;
   } | null>(null);
-  // Serpent-d0nv: bump to re-fetch folder browse entries when a cover
+  // bump to re-fetch folder browse entries when a cover
   // candidate's thumbnail becomes ready (progressive cover refresh).
   const [folderBrowseRefreshToken, setFolderBrowseRefreshToken] = useBrowseField("folderBrowseRefreshToken");
   const folderCoverCandidateAssetIdsRef = useRef<ReadonlySet<string>>(new Set());
-  /** Full trash tombstone list for hierarchy browse (Serpent-6pcd). */
+  /** Full trash tombstone list for hierarchy browse. */
   const [trashedFolders, setTrashedFolders] = useNavigationField("trashedFolders");
   const [trashBrowseTombstoneId, setTrashBrowseTombstoneId] = useBrowseField("trashBrowseTombstoneId");
   const [masonryGridWidth, setMasonryGridWidth] = useState(0);

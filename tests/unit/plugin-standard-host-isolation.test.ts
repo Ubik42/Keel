@@ -59,7 +59,7 @@ async function activateGuest(entryJavaScript: string, sandboxLimits?: {
   });
 }
 
-describe('standard plugin Host isolation (Serpent-upsn.3)', () => {
+describe('standard plugin Host isolation', () => {
   it('does not expose process, require, env, filesystem, or network to activate()', async () => {
     const result = await activateGuest(`
       async function setup() {

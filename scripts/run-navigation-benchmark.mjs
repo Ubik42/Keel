@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 
 /**
- * Runs the navigation benchmark (Serpent-217028) against real libraries.
+ * Runs the navigation benchmark against real libraries.
  *
  *   npm run test:perf:navigation -- <library> [second-library]
  *

@@ -1,5 +1,5 @@
 /**
- * Import conflict dialog orchestration (Serpent-zp8q).
+ * Import conflict dialog orchestration.
  * Name conflicts and content duplicates are separate phases.
  */
 

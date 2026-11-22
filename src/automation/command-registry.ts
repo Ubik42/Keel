@@ -1513,7 +1513,7 @@ export interface AutomationCommandDescriptor<Id extends AutomationCommandId = Au
   history?: AutomationHistoryDescriptor;
   atomicity: AutomationAtomicity;
   approvalPolicy: AutomationApprovalPolicy;
-  /** Serpent-8b5b.2: the command is dangerous — MCP calls require the two-phase agent challenge. */
+  /** the command is dangerous — MCP calls require the two-phase agent challenge. */
   criticalOperation?: boolean;
   mcp: AutomationMcpMetadata;
   libraryContext?: AutomationLibraryContext;
@@ -2130,7 +2130,7 @@ export const automationCommandRegistry = [
     },
   },
   {
-    // Serpent-8b5b.2: the first MCP-exposed dangerous command. It is MCP-only
+    // the first MCP-exposed dangerous command. It is MCP-only
     // (Desktop uses its own red-confirmation flow), requires explicit target
     // IDs, and every call is gated by the two-phase agent challenge — the
     // first call only returns a risk report bound to the exact call.
@@ -3156,7 +3156,7 @@ export interface AutomationCommandPermissionMetadata {
 export function getAutomationCommandPermissionMetadata(
   descriptor: AutomationCommandDescriptor,
 ): AutomationCommandPermissionMetadata {
-  // Serpent-8b5b.2: critical commands are gated by the two-phase agent
+  // critical commands are gated by the two-phase agent
   // challenge instead of requestable capabilities or runtime prompts.
   const riskTier: AutomationRiskTier = descriptor.criticalOperation === true
     ? 'critical'

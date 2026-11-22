@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Serpent-tluf/q0b1: in dev mode macOS shows "Electron" in the Dock and the
+// in dev mode macOS shows "Electron" in the Dock and the
 // application menu's first item, because the OS reads the name from the
 // prebuilt Electron.app's Info.plist — app.setName() only changes the
 // internal name. Patch the dev bundle's plist (superset's approach) and

@@ -238,7 +238,7 @@ export function useAiAndPreviewState({ setError, t, api, library, selectedAssetI
   useLayoutEffect(() => {
     previewAssetRef.current = previewAsset;
   }, [previewAsset]);
-  // Serpent-njoy: owned here (not inside AssetPreviewModal, which remounts
+  // owned here (not inside AssetPreviewModal, which remounts
   // per-asset via `key`) so switching assets never resets idle by itself.
   // While preview is open, any keyboard/pointer/wheel input wakes chrome;
   // `wakeViewerChrome` also runs when the viewer first opens.
@@ -289,7 +289,7 @@ export function useAiAndPreviewState({ setError, t, api, library, selectedAssetI
     () => enumerateDiscreteCardSizes(canvasWidthPx),
     [canvasWidthPx],
   );
-  // Serpent-l67w: folder cards share the flush masonry column width so the
+  // folder cards share the flush masonry column width so the
   // folder row lines up with waterfall columns (raw slider size can leave
   // leftover that `1fr` columns absorb).
   const folderCardWidthPx = useMemo(
@@ -381,7 +381,7 @@ export function useAiAndPreviewState({ setError, t, api, library, selectedAssetI
   const viewportScrollTopRef = useRef<number | undefined>(undefined);
   const viewportGenerationRef = useRef(0);
   const interactionGenerationRef = useRef(0);
-  // Serpent-wgl2: the marquee box div is always mounted and moved directly
+  // the marquee box div is always mounted and moved directly
   // through this ref — never through React state (per-frame state re-renders
   // the whole non-memoized grid).
   const marqueeBoxRef = useRef<HTMLDivElement>(null);

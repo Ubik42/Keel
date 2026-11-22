@@ -301,7 +301,7 @@ describe('parseAiAnalysisResult', () => {
     expect(() => parseAiAnalysisResult({})).toThrow();
   });
 
-  it('coerces comma-separated tags string (Serpent-iokf)', () => {
+  it('coerces comma-separated tags string', () => {
     const result = parseAiAnalysisResult({
       tags: '城市场景, 科幻',
       modelVersion: 'v1',

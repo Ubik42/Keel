@@ -1,5 +1,5 @@
 /**
- * Golden migration checksum snapshot (Serpent-033e/ADR-0028 强化)。
+ * Golden migration checksum snapshot (/ADR-0028 强化)。
  *
  * 2026-08-15 事故：两条开发线并行各自把迁移注册为 v37（sync vs
  * auto-analysis suppression）。一条线先打开了真实库，使该库的
@@ -83,7 +83,7 @@ const GOLDEN_CHECKSUMS: Record<number, string> = {
   66: 'cd0bbb5bff2e7fb1fed4d4078d0a32b75210bb14327cde8df2dfe246e6b3bcd8',
 };
 
-describe('golden migration checksum snapshot (Serpent-033e)', () => {
+describe('golden migration checksum snapshot', () => {
   it('every released migration keeps its exact checksum', () => {
     const snapshotVersions = Object.keys(GOLDEN_CHECKSUMS).map(Number).sort((a, b) => a - b);
     const migrationVersions = MIGRATIONS.map((migration) => migration.version);
@@ -95,7 +95,7 @@ describe('golden migration checksum snapshot (Serpent-033e)', () => {
     if (missingVersions.length > 0) {
       throw new Error(
         `GOLDEN_CHECKSUMS 缺少 v${missingVersions.join('、v')}：新增迁移必须在同一改动里追加其 `
-        + 'checksum（发布后即不可变，见 Serpent-033e）。直接跑本测试会打印实际值，'
+        + 'checksum（发布后即不可变，见）。直接跑本测试会打印实际值，'
         + '不要把已发布版本的 checksum 改成新值。',
       );
     }

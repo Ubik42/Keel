@@ -1,5 +1,5 @@
 /**
- * Serpent-485aeb: the generated font specimen sheet served at
+ * the generated font specimen sheet served at
  * `keel://source/<libraryId>/<assetId>?revision=…&sample=font`.
  *
  * Main renders this page in the offscreen capture window to produce the font

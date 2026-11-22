@@ -279,7 +279,7 @@ export function listAssets(this: LibraryService, input: {
   if (!byIds && input.folderId && !managedFolder && !linkedScope) {
     throw new LibraryServiceError('FOLDER_NOT_FOUND');
   }
-  // Serpent-verg.2 — lenient read (0031 §1): display/derived columns added
+  // lenient read (0031 §1): display/derived columns added
   // after the earliest supported schema are whitelisted per table; columns
   // missing on an older library are omitted from the query and filled with
   // degraded defaults instead of failing. Core identity columns below are
@@ -354,7 +354,7 @@ export function listAssets(this: LibraryService, input: {
       connection.prepare(listAssetSql(sql)).all(...params) as ListAssetRow[])
     : connection.prepare(listAssetSql('1')).all() as ListAssetRow[];
 
-  // Serpent-verg.2 — fill degraded defaults for whitelisted columns that
+  // fill degraded defaults for whitelisted columns that
   // an older library does not have (0031 §1.1): the feature degrades
   // (size/metadata/thumbnail not shown) instead of the query failing.
   // Column-name defaults come from the shared registry; the thumbnail row
@@ -473,7 +473,7 @@ export function queryPluginDerivedFields(this: LibraryService, input: {
 }
 
 /**
-* Serpent-4bdd26: pull the hot browse/sort index pages into the SQLite page
+* pull the hot browse/sort index pages into the SQLite page
 * cache after open. On SMB/NAS each cold page is a network round trip —
 * without warm-up the user's first sort-by-date or deep pagination pays
 * seconds of latency that a background scan can absorb invisibly.
@@ -557,7 +557,7 @@ export function createBrowseSession(this: LibraryService, input: {
     showIgnored: input.showIgnored === true,
     showMissingLinked: this._showMissingLinkedFiles,
   };
-  // PERF2-04 / Serpent-52eed4: paint the bounded first window before enumerating
+  // PERF2-04: paint the bounded first window before enumerating
   // every id. Full-scope idsOnly on a network library occupied the only
   // interactive slot for seconds, so folder clicks looked dead until it finished.
   const page = this.searchAssets({
@@ -814,10 +814,10 @@ export function searchAssets(this: LibraryService, input: {
     sort?: SortDefinition | null;
     limit?: number | null;
     offset?: number | null;
-    /** Serpent-6w7n: fetch entire browse scope (lightweight rows, capped). */
+    /** fetch entire browse scope (lightweight rows, capped). */
     scopeMode?: boolean | null;
     /**
-     * Serpent-ws4k: fetch only asset ids for the whole scope (select-all /
+     * fetch only asset ids for the whole scope (select-all /
      * invert). Skips the thumbnail/sequence enrichment and returns `items: []`
      * plus `assetIds` (capped at the browse-scope cap like scopeMode).
      */
@@ -839,7 +839,7 @@ export function searchAssets(this: LibraryService, input: {
   } {
   const openLibrary = this.requireOpenLibrary(input.libraryId);
   const connection = openLibrary.connection;
-  // Serpent-verg.2 — lenient read (0031 §1): display/derived columns and
+  // lenient read (0031 §1): display/derived columns and
   // auxiliary tables added after the earliest supported schema are
   // whitelisted; missing ones degrade the query instead of failing.
   const assetColumns = columnsFor(connection, 'assets');
@@ -893,7 +893,7 @@ export function searchAssets(this: LibraryService, input: {
   const hasPositiveQuery = searchExpression
     ? expressionHasPositiveText(searchExpression)
     : hasPositiveSearchClause(searchGroups);
-  // Serpent-verg.2 — lenient read: the trigram FTS path requires the FTS
+  // lenient read: the trigram FTS path requires the FTS
   // tables to exist; older libraries fall back to the contextual substring
   // search instead of referencing a missing MATCH table.
   const expressionFtsCandidate = searchExpression
@@ -1069,7 +1069,7 @@ export function searchAssets(this: LibraryService, input: {
     whereParts.length > 0 ? `WHERE ${whereParts.join(' AND ')}` : '';
 
   // Columns for data query. Display/derived columns are whitelisted per
-  // table (Serpent-verg.2): missing columns on older libraries are omitted
+  // table: missing columns on older libraries are omitted
   // here and filled with degraded defaults on the result rows.
   const dataColumns = [
     'a.asset_id',
@@ -1109,7 +1109,7 @@ export function searchAssets(this: LibraryService, input: {
         return countRow.total;
       })();
 
-  // Data query. ids-only mode (Serpent-ws4k) fetches just the stable id
+  // Data query. ids-only mode fetches just the stable id
   // column so select-all/invert can cover the whole scope without shipping
   // AssetSummary rows over three process hops.
   const layoutColumns = hasLayoutDimensions
@@ -1210,7 +1210,7 @@ export function searchAssets(this: LibraryService, input: {
   }
 
   if (layoutOnly) {
-    // Serpent-4bdd26: per-row conditional spreads allocate a throwaway
+    // per-row conditional spreads allocate a throwaway
     // object each; direct assignment measured ~2x faster over 20k rows.
     const layout = new Array<object>(rows.length);
     for (let index = 0; index < rows.length; index++) {
@@ -1245,7 +1245,7 @@ export function searchAssets(this: LibraryService, input: {
     };
   }
 
-  // Serpent-verg.2 — fill degraded defaults for whitelisted columns that
+  // fill degraded defaults for whitelisted columns that
   // an older library does not have (0031 §1.1); defaults come from the
   // shared registry.
   const degradedFill: Record<string, unknown> = {

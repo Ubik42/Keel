@@ -17,7 +17,7 @@ export type TabStripWheelSample = {
  * Convert a wheel/trackpad gesture over the tab strip into a horizontal
  * scroll delta. Vertical mouse notches and two-finger pans both move the
  * strip sideways. Ctrl/Cmd+wheel (pinch) is left alone unless Chromium
- * tagged a horizontal two-finger slide with ctrlKey (Serpent-4kg3).
+ * tagged a horizontal two-finger slide with ctrlKey.
  */
 export function horizontalScrollDeltaFromWheel(
   sample: TabStripWheelSample,

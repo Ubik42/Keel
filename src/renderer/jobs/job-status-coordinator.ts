@@ -6,7 +6,7 @@
  * open library, unconditionally, and started a second identical stream while
  * the Background Tasks panel was open. Nothing coalesced them, so a Worker that
  * was blocked for 30 seconds accumulated 30 overlapping requests per kind on
- * top of an already deep queue (Serpent-e97c00 / Serpent-52eed4).
+ * top of an already deep queue.
  *
  * Invariants this class is responsible for:
  *  - at most one in-flight request per kind, per library generation;
@@ -240,7 +240,7 @@ export class JobStatusCoordinator {
 
   #nextDelayMs(): number {
     if (this.#panelOpen) return this.#activeIntervalMs;
-    // Serpent-e97c00 (third round): with the tasks panel closed the badge is
+    // (third round): with the tasks panel closed the badge is
     // decoration — a media completion event does not change what the user sees
     // on the canvas. Polling on those events produced 2.71 `media.list-jobs`
     // calls per second and ~206 s of Worker execution in a 344 s profile, which

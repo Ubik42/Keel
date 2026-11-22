@@ -1,5 +1,5 @@
 /**
- * Browse-canvas F2 / Delete / Shift+Delete (Serpent-g8u9).
+ * Browse-canvas F2 / Delete / Shift+Delete.
  *
  * Windows frameless shell has no application menu, so these keys must be
  * matched from Main `before-input-event` / hidden accelerators as well as

@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { AiConnectionFailureDialog } from "../../src/renderer/ai/AiConnectionFailureDialog";
 import { LocaleProvider } from "../../src/renderer/i18n";
 
-describe("AiConnectionFailureDialog (Serpent-c7d64e)", () => {
+describe("AiConnectionFailureDialog", () => {
   let root: Root | undefined;
   let container: HTMLDivElement | undefined;
 

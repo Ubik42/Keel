@@ -121,7 +121,7 @@ export interface KeelShellApi {
   /** 打开外部 HTTP(S) 链接；失败时返回公开错误码（不含 URL）。 */
   openExternalUrl(url: string): Promise<OpenExternalUrlResult>;
   /**
-   * Reveal the main-process log file in the OS file manager (Serpent-iokf).
+   * Reveal the main-process log file in the OS file manager.
    * Does not expose the path string to the renderer.
    */
   revealAppLog(): Promise<RevealAppLogResult>;
@@ -131,7 +131,7 @@ export interface KeelShellApi {
    */
   readAppLog(automationCorrelationId?: AppLogAutomationCorrelationId): Promise<ReadAppLogResult>;
   /**
-   * Sync the effective UI locale to Main for native file dialogs (Serpent-bwb).
+   * Sync the effective UI locale to Main for native file dialogs.
    * Only `zh-CN` | `en` are accepted; malformed payloads are dropped in Main.
    */
   setAppLocale(locale: 'zh-CN' | 'en'): void;
@@ -144,7 +144,7 @@ export interface KeelShellApi {
     y: number;
   }): Promise<ShowEditContextMenuResult>;
   /**
-   * Windows frameless caption actions (Serpent-znex).
+   * Windows frameless caption actions.
    * minimize / maximize-toggle / fullscreen-toggle / close / get-state /
    * steal-focus.
    */
@@ -165,23 +165,23 @@ export interface KeelShellApi {
   }): Promise<WindowSetBoundsResult>;
   /** True when the shell needs client-drawn window edge resize hit targets. */
   needsClientWindowEdgeResize(): boolean;
-  /** Windows maximize/restore state pushes (Serpent-znex). */
+  /** Windows maximize/restore state pushes. */
   onWindowMaximizedChanged(
     listener: (maximized: boolean) => void,
   ): () => void;
   /** macOS 触控板三指轻扫（Electron webContents swipe）。 */
   onSwipe(listener: (direction: ShellSwipeDirection) => void): () => void;
-  /** BrowserWindow 聚焦态（Serpent-oy07）；macOS 原生红绿灯失焦变灰由系统负责。 */
+  /** BrowserWindow 聚焦态；macOS 原生红绿灯失焦变灰由系统负责。 */
   onWindowFocusChanged(listener: (focused: boolean) => void): () => void;
-  /** macOS Edit 菜单反选（Serpent-te8p）；与 ⌘I / Ctrl+I 等价。 */
+  /** macOS Edit 菜单反选；与 ⌘I / Ctrl+I 等价。 */
   onInvertSelection(listener: () => void): () => void;
   /** Main → Renderer: script/MCP/plugin toast or blocking dialog (`ui.notify`). */
   onShellNotify(listener: (payload: ShellNotifyPayload) => void): () => void;
   /** Main → Renderer: a successful automation (MCP) write command finished
-   * (Serpent-fmbr). The renderer shows the same toast as the manual
+   *. The renderer shows the same toast as the manual
    * operation — not a separate MCP notification. */
   onCommandCompleted(listener: (payload: CommandCompletedPayload) => void): () => void;
-  /** macOS Edit 菜单「复制」（Serpent-166q）。有选中资产时复制文件到系统剪贴板；
+  /** macOS Edit 菜单「复制」。有选中资产时复制文件到系统剪贴板；
    * 否则回退为原生文本复制。
    */
   onCopySelection(listener: () => void): () => void;
@@ -189,7 +189,7 @@ export interface KeelShellApi {
   onApplicationMenuCommand(
     listener: (event: ApplicationMenuCommandEvent) => void,
   ): () => void;
-  /** Renderer → Main: sync a native menu item's enabled state (Serpent-q0b1,
+  /** Renderer → Main: sync a native menu item's enabled state (
    * e.g. business undo is only enabled while an undoable operation exists). */
   setApplicationMenuCommandEnabled(
     command: ApplicationMenuCommand,
@@ -223,7 +223,7 @@ export interface KeelShellApi {
   /** Renderer → Main: pause capture while Host modals are open. */
   setInputCaptureSystemModalActive(active: boolean): void;
   /**
-   * Windows hidden F2 / Delete accelerators (Serpent-g8u9). Disable while an
+   * Windows hidden F2 / Delete accelerators. Disable while an
    * input, dialog, or preview owns those keys.
    */
   setBrowseShortcutAcceleratorsEnabled?(enabled: boolean): void;

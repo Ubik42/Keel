@@ -134,7 +134,7 @@ describe.runIf(canRun)('real common audio/video format matrix', () => {
             status: 'ready',
             playbackMode: 'source',
           });
-          // Serpent-c8a1a3: 无 proxy 时 hover 保持 source——浏览器可解码的
+          // 无 proxy 时 hover 保持 source——浏览器可解码的
           // 容器（如 mp4）hover 播放原视频，行为与之前一致。
           expect(service.getPreviewArtifact(library.libraryId, asset.assetId, 'hover')).toMatchObject({
             mediaType: 'video',
@@ -159,7 +159,7 @@ describe.runIf(canRun)('real common audio/video format matrix', () => {
           playbackMode: 'source',
         });
       }
-      // Serpent-c8a1a3: 代理生成后 hover 意图返回 proxy（无法解码容器的
+      // 代理生成后 hover 意图返回 proxy（无法解码容器的
       // hover 预览依赖这条路径；循环内已先验证所有视频无 proxy）。
       if (firstVideoAssetId !== null) {
         service.enqueueArtifactRetry({

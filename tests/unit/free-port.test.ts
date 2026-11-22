@@ -32,7 +32,7 @@ function listen(port: number): Promise<number> {
   });
 }
 
-describe("findFreeTcpPort (Serpent-i6xg)", () => {
+describe("findFreeTcpPort", () => {
   it("returns the preferred port when free", async () => {
     const preferred = await findFreeTcpPort(45_000, 20);
     expect(preferred).toBeGreaterThanOrEqual(45_000);

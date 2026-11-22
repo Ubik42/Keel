@@ -60,7 +60,7 @@ function CaptionIcon({ kind }: { kind: "minimize" | "maximize" | "restore" | "cl
 }
 
 /**
- * Windows frameless caption buttons (Serpent-znex).
+ * Windows frameless caption buttons.
  * Lives outside App.tsx to keep the shell chrome modular (acceptance #8).
  */
 export function WindowsWindowControls({
@@ -96,7 +96,7 @@ export function WindowsWindowControls({
     });
   };
 
-  // Serpent-52a9b4: caption buttons are window-level chrome and must never be
+  // caption buttons are window-level chrome and must never be
   // trapped inside a stacking context (`.app-shell` uses `isolation: isolate`,
   // so children z-index never compares against the modal backdrop). Portaling
   // to body (same pattern as PortaledPopover) puts them above

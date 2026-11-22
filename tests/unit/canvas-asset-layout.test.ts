@@ -109,7 +109,7 @@ describe("canvas asset layout", () => {
     expect(stackItemHeights([100, 100, 100])).toEqual([114, 114, 100]);
   });
 
-  it("shrinks only the waterfall cards that have no resolution (Serpent-b1b0f2)", () => {
+  it("shrinks only the waterfall cards that have no resolution", () => {
     const resolver = createCaptionBandResolver({
       mode: "masonry",
       fields: { name: true, size: true, date: true, dimensions: true },
@@ -130,7 +130,7 @@ describe("canvas asset layout", () => {
     );
   });
 
-  it("sizes a tiled row by the tallest caption in that row (Serpent-b1b0f2)", () => {
+  it("sizes a tiled row by the tallest caption in that row", () => {
     const resolver = createCaptionBandResolver({
       mode: "justified",
       fields: { name: true, size: true, date: true, dimensions: true },
@@ -157,7 +157,7 @@ describe("canvas asset layout", () => {
     );
   });
 
-  it("shrinks a tiled row whose assets all lack resolution (Serpent-b1b0f2)", () => {
+  it("shrinks a tiled row whose assets all lack resolution", () => {
     const resolver = createCaptionBandResolver({
       mode: "justified",
       fields: { name: true, size: true, date: true, dimensions: true },
@@ -183,7 +183,7 @@ describe("canvas asset layout", () => {
     expect(withoutSize[0]!.height).toBeLessThan(withSize[0]!.height);
   });
 
-  it("overlays live asset dimensions onto a stale browse-layout snapshot (Serpent-9c9f97)", () => {
+  it("overlays live asset dimensions onto a stale browse-layout snapshot", () => {
     const layout = [
       { assetId: "video", width: null, height: null },
       { assetId: "still", width: 800, height: 600 },

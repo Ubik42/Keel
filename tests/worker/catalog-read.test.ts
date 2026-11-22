@@ -179,7 +179,7 @@ describe('shared pure catalog reads', () => {
     expect(result.sql.match(/\?/g)).toHaveLength(result.params.length);
   });
 
-  it('keeps resolution buckets to pixel media (Serpent-b1b0f2)', () => {
+  it('keeps resolution buckets to pixel media', () => {
     const result = buildCatalogFilterWhere([
       { field: 'long_edge', ranges: [{ min: 2240, max: 4480 }], exclude: false },
     ]);

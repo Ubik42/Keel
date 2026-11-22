@@ -247,7 +247,7 @@ export function getAiContent(this: LibraryService, libraryId: string, assetId: s
     generatedAt: string;
   }> {
   const openLibrary = this.requireOpenLibrary(libraryId);
-  // Serpent-verg.2 — lenient read (0031 §1): libraries predating ai_content
+  // lenient read (0031 §1): libraries predating ai_content
   // have no AI content; the whitelisted columns fill with empty strings.
   const connection = openLibrary.connection;
   const present = hasTable(connection, 'ai_content')
@@ -558,7 +558,7 @@ export function enqueueAiAnalysisJobs(this: LibraryService, input: {
         skippedAssetIds.push(assetId);
         continue;
       }
-      // Serpent-140fe2: videos no longer require a pre-existing contact
+      // videos no longer require a pre-existing contact
       // sheet here. The analysis lane materializes it lazily via
       // ensureVideoContactSheet when the job executes, so converted
       // libraries whose sheets never existed can finally be analysed.
@@ -678,7 +678,7 @@ export function failAiJob(this: LibraryService, libraryId: string, jobId: string
       errorCode: string;
       retryable: boolean;
       maxAttempts?: number;
-      /** Redacted user/developer-facing detail (Serpent-iokf). */
+      /** Redacted user/developer-facing detail. */
       errorDetail?: string | null;
     }): { status: 'queued' | 'failed' } {
   const openLibrary = this.requireOpenLibrary(libraryId);

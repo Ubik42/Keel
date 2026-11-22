@@ -75,9 +75,9 @@ export type LibrarySwitcherProps = {
   onOpenLibrary: () => void;
   /** @deprecated Kept for callers while the library menu is consolidated. */
   onCloseLibrary: () => void;
-  /** Soft remove: close + drop from recents; disk untouched (Serpent-ucx). */
+  /** Soft remove: close + drop from recents; disk untouched. */
   onRemoveLibrary?: () => void;
-  /** Irreversible delete of the currently open library root (Serpent-9i8). */
+  /** Irreversible delete of the currently open library root. */
   onDeleteLibraryFromDisk?: () => void;
   onOpenLibrarySettings?: () => void;
   onOpenRecent?: (path: string) => void;
@@ -280,7 +280,7 @@ export function LibrarySwitcher({
               </div>
               {recentLibraries.map((entry) => (
                 <div className="library-switcher-recent-row" key={entry.path}>
-                  {/* Serpent-s0oq: hovering a recent library reveals its full
+                  {/* hovering a recent library reveals its full
                       path via the standard document-level hover tip (420ms,
                       themed) — no inline path line. */}
                   <Tooltip label={entry.path}>

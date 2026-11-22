@@ -1,5 +1,5 @@
 /**
- * WebDAV 存储驱动（Serpent-xffq）——RemoteStorageDriver 的第一个实现。
+ * WebDAV 存储驱动——RemoteStorageDriver 的第一个实现。
  *
  * 基于 Node 原生 http/https（Worker 内可用），支持：
  * - Basic / Digest 认证（401 WWW-Authenticate 自动协商，Digest 按 RFC 2617）
@@ -44,7 +44,7 @@ export interface WebDAVDriverConfig {
   /**
    * 仅能力探测（probe）使用的单请求超时。数据传输（read/write/delete/
    * mkdir/move）不做墙钟超时：慢机器或大文件下载一天也要跑完
-   * （Serpent-4s8b 用户决定），只依赖 TCP 层行为与用户取消。
+   * （用户决定），只依赖 TCP 层行为与用户取消。
    */
   timeoutMs?: number;
 }

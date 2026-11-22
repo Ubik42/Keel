@@ -60,7 +60,7 @@ export interface MediaJobsDialogProps {
     action: "pause" | "resume" | "cancel" | "retry",
     jobIds?: string[],
   ) => void;
-  /** Reveal main-process log (Serpent-iokf). */
+  /** Reveal main-process log. */
   onRevealAppLog?: () => void;
   /** Open the in-app, recent diagnostics view. */
   onViewAppLog?: () => void;

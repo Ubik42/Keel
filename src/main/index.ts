@@ -146,7 +146,7 @@ if (process.env.KEEL_E2E === "1") {
   );
 }
 
-// Dev multi-instance (Serpent-i6xg): isolate userData so SingletonLock / prefs
+// Dev multi-instance: isolate userData so SingletonLock / prefs
 // do not collide. Prefer `npm run start:multi`. Do not open the same library
 // for writes from two GUIs — SQLite write coordination is CLI/desktop lease
 // territory (ADR-0021), not dual-GUI.
@@ -159,7 +159,7 @@ if (allowMultiInstance && process.env.KEEL_E2E !== "1") {
 }
 
 // Before app.ready: stream privilege is required for seekable <video>/<audio>
-// over keel:// Range responses (Serpent-jh2).
+// over keel:// Range responses.
 protocol.registerSchemesAsPrivileged([...keelProtocolSchemes(), ...legacyProtocolSchemes()]);
 
 // E2E（本地/CI）：虚拟化 runner 的 GPU 不可靠，白屏会让所有交互测试
@@ -234,7 +234,7 @@ function releaseLoopbackListeners(): Promise<void> {
 }
 
 async function startApplication(): Promise<void> {
-  // Serpent-tluf: the macOS About panel is customized here (ready-late is
+  // the macOS About panel is customized here (ready-late is
   // fine for it); app.setName lives at module top level so the application
   // menu's first item shows "Keel" from the very first frame.
   if (process.platform === "darwin") {
@@ -260,7 +260,7 @@ async function startApplication(): Promise<void> {
   state.logger = new AppLogger(state.appLogPath);
   bindRendererKeyboardFocusLogger(state.logger);
   void sweepOrphanExternalLibraryStagingOnStartup();
-  // Serpent-wgmy: 会话日志最多保留最近 100 份，启动时清理最旧；
+  // 会话日志最多保留最近 100 份，启动时清理最旧；
   // 清理失败不得阻断启动。
   try {
     pruneSessionLogs(app.getPath("logs"));
@@ -324,7 +324,7 @@ async function startApplication(): Promise<void> {
   );
   await state.workerClient.start();
   state.workerClient.publishShowMissingLinkedFiles(state.showMissingLinkedFiles);
-  // Serpent-65d837: remove any `.del-*` aside roots that could not be deleted
+  // remove any `.del-*` aside roots that could not be deleted
   // during a previous session (deferred-cleanup store, backoff loop).
   retryPendingLibraryCleanups();
   const activeWorkerClient = state.workerClient;
@@ -398,12 +398,12 @@ async function startApplication(): Promise<void> {
       });
     }, 0);
   });
-  // Slice E (Serpent-hnmg): Main owns the shared offscreen window that renders
+  // Slice E: Main owns the shared offscreen window that renders
   // model thumbnails. The worker enqueues model jobs and asks Main to render;
   // Main replies with PNG bytes (or a typed failure) that the worker persists
   // as the standard `thumbnail` artifact.
   registerOffscreenRendering();
-  // Serpent-8ca259: HTML document thumbnails capture the source in a fresh
+  // HTML document thumbnails capture the source in a fresh
   // offscreen window in Main; the Worker persists the artifact bytes.
   state.workerClient.onDocumentThumbnailRenderRequest((request) =>
     renderDocumentThumbnail(request, state.logger!),
@@ -458,7 +458,7 @@ async function startApplication(): Promise<void> {
     void enqueueAutoAnalyzeAfterImport(event.libraryId, [event.assetId]);
   });
 
-  // Serpent-bfsb 后续：自动同步调度器。打开同步资源库后自动绑定并开启
+  // 后续：自动同步调度器。打开同步资源库后自动绑定并开启
   // （见 handleLibraryRequest 的 sync.open-remote-library.request 成功分支）；
   // 本地资产变更 5 秒防抖后自动同步；轮询间隔只用于检查云端。
   state.syncAutoScheduler = new SyncAutoScheduler({
@@ -472,7 +472,7 @@ async function startApplication(): Promise<void> {
   });
   state.syncAutoScheduler.start();
 
-  // Serpent-85a9b0：生产启动自动打开上次使用的资源库（记住上次打开的库与
+  // 生产启动自动打开上次使用的资源库（记住上次打开的库与
   // 文件夹——库打开后 renderer 的 browser-session 会恢复上次浏览的文件夹）。
   // 打开失败（丢失/断开/不兼容）只记日志、回退 idle，不阻塞用户从切换器
   // 另选库；E2E 隔离重启测试由 recentLibraryAutoOpenEnabled 显式门控。
@@ -526,7 +526,7 @@ async function startApplication(): Promise<void> {
       event.type === "asset.thumbnail.ready" ||
       event.type === "asset.thumbnail.failed"
     ) {
-      // Serpent-8ee170（第三轮纠偏）: a ready/failed thumbnail does not change a
+      // 第三轮纠偏：a ready/failed thumbnail does not change a
       // source path, so it must not re-resolve drag descriptors. Re-priming on
       // every completion produced 304 background `media.get-asset-drag-infos`
       // requests in a pure browse profile; the first screen is warmed by the
@@ -673,8 +673,8 @@ async function startApplication(): Promise<void> {
   registerShellIpc();
 
   // Install before the first window so macOS does not keep Electron's default
-  // View→Zoom accelerators that steal Cmd+=/-/0 (Serpent-46i9).
-  // Windows: hides menu bar for frameless shell (Serpent-znex).
+  // View→Zoom accelerators that steal Cmd+=/-/0.
+  // Windows: hides menu bar for frameless shell.
   installApplicationMenu({
     locale: state.appLocale,
     recentLibraries: nativeMenuRecentLibraries(),
@@ -749,7 +749,7 @@ async function startApplication(): Promise<void> {
   state.startupComplete = true;
 }
 
-// Serpent-tluf: must run before app ready — the macOS application menu's
+// must run before app ready — the macOS application menu's
 // first item always displays the application name, and a ready-late
 // setName is too late for it (dev otherwise shows "Electron").
 app.setName("Keel");

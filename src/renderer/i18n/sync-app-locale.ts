@@ -1,5 +1,5 @@
 /**
- * Push the effective Renderer locale to Main for native dialogs (Serpent-bwb).
+ * Push the effective Renderer locale to Main for native dialogs.
  * Fire-and-forget; Main validates with Zod and ignores unauthorized senders.
  */
 

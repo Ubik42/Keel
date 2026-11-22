@@ -228,7 +228,7 @@ describe("LibrarySwitcher external library action", () => {
     expect(labels.some((text) => text.includes("打开同步资源库"))).toBe(false);
   });
 
-  it("opens the export-library dialog from the library-name menu (Serpent-27e1fc)", async () => {
+  it("opens the export-library dialog from the library-name menu", async () => {
     const onExportLibrary = vi.fn();
     container = document.createElement("div");
     document.body.append(container);

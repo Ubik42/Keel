@@ -1,5 +1,5 @@
 /**
- * AI connection-class failure gate (Serpent-kdnm).
+ * AI connection-class failure gate.
  *
  * Worker already requeues network/timeout/rate_limit up to 3 attempts.
  * After jobs become terminal `failed` with connection-class codes, the
@@ -75,7 +75,7 @@ export type AiConnectionFailureBodyKey =
   | "bodyRateLimit"
   | "bodyAuth";
 
-/** Dialog body key for the observed failure class (Serpent-c7d64e). */
+/** Dialog body key for the observed failure class. */
 export function aiConnectionFailureBodyKey(
   code: string | null | undefined,
 ): AiConnectionFailureBodyKey {

@@ -436,7 +436,7 @@ test("plays a direct MP4 and a generated WebM fallback through the asset viewer"
         }),
       )
       .toBe(true);
-    // Video zoom/pan/fit mirrors the image viewer (Serpent-190): the mouse
+    // Video zoom/pan/fit mirrors the image viewer: the mouse
     // wheel zooms, a drag pans while zoomed, and Fit restores fit-to-window.
     const videoFitBox = await directVideo.boundingBox();
     expect(videoFitBox).not.toBeNull();

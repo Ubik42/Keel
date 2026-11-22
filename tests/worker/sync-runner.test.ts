@@ -105,7 +105,7 @@ function buildContext(driver: MemoryDriver, local: Map<string, Buffer>): {
   return { context, writtenLocal, recycled, conflictCopies };
 }
 
-describe('runSyncActions end-to-end (Serpent-xffq)', () => {
+describe('runSyncActions end-to-end', () => {
   it('uploads a new asset, writes manifest entries and stores remote content', async () => {
     const driver = new MemoryDriver();
     const manifest = createEmptyManifest({ libraryId: 'lib-1', displayName: '参考库', directoryName: '参考库' });
@@ -245,7 +245,7 @@ describe('runSyncActions end-to-end (Serpent-xffq)', () => {
     expect(recycled).toEqual(['a1']);
   });
 
-  it('MOVEs a remote file into a new folder and drops the old path (Serpent-038ecf)', async () => {
+  it('MOVEs a remote file into a new folder and drops the old path', async () => {
     const driver = new MemoryDriver();
     driver.files.set('参考库/assets/cd.png', Buffer.from('cover'));
     const remoteManifest = createEmptyManifest({ libraryId: 'lib-1', displayName: '参考库', directoryName: '参考库' });

@@ -4,7 +4,7 @@ import { translateForLocale } from "../i18n";
 export function importSummaryMessage(
   value: {
     importedCount: number;
-    /** Logical asset units: a detected image sequence counts as 1 (Serpent-1y9r). */
+    /** Logical asset units: a detected image sequence counts as 1. */
     assetCount?: number;
     skippedCount: number;
     replacedCount: number;

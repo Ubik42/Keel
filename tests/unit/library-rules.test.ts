@@ -53,7 +53,7 @@ describe('library path rules', () => {
     );
   });
 
-  it('strips trailing separators so Windows folder-picker paths still join (Serpent-sq4i)', () => {
+  it('strips trailing separators so Windows folder-picker paths still join', () => {
     const parentPath = path.resolve('/tmp', 'Keel tests');
     const withTrailing = `${parentPath}${path.sep}`;
     expect(stripTrailingPathSeparators(withTrailing)).toBe(parentPath);
@@ -63,7 +63,7 @@ describe('library path rules', () => {
     );
   });
 
-  it('allows a filesystem root as the library parent (Serpent-qn6k)', () => {
+  it('allows a filesystem root as the library parent', () => {
     const root = path.parse(process.cwd()).root;
     expect(targetLibraryPath(root, 'Concept Art')).toBe(path.join(root, 'Concept Art'));
   });

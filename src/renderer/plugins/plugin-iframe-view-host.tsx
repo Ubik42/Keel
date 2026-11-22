@@ -139,7 +139,7 @@ function postPluginThemeToIframe(
 }
 
 /**
- * Host-managed plugin view frame (Serpent-ex46.7).
+ * Host-managed plugin view frame.
  *
  * Lifecycle contract: the Host announces mount on document load, the plugin
  * confirms with `plugin-ui.ready` (with optional viewType/scope check), and
@@ -169,7 +169,7 @@ export function PluginIframeViewHost({
   /** Host-side view context (selection, filters, …) announced on mount and pushed on change. */
   state?: unknown;
   /**
-   * Dialog-only (Serpent-a3de58): payload handed to the frame right after the
+   * Dialog-only: payload handed to the frame right after the
    * ready handshake, and completion sink for `plugin-ui.dialog-complete`.
    */
   initialPayload?: unknown;

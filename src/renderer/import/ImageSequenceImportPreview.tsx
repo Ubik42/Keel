@@ -22,7 +22,7 @@ export interface ImageSequenceImportPreviewProps {
 }
 
 /**
- * Serpent-866c20：确认面板里的序列预览。改范围或帧率都会立刻重排/换档，
+ * 确认面板里的序列预览。改范围或帧率都会立刻重排/换档，
  * 不用等确认导入；预览只在当前范围里循环，不把隐藏帧写进主浏览队列。
  */
 export function ImageSequenceImportPreview({

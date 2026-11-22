@@ -157,7 +157,7 @@ describe('Automation Command Registry', () => {
       expect(registryIds).toContain(commandId);
     }
     const descriptor = (commandId: string) => automationCommandRegistry.find((command) => command.commandId === commandId)!;
-    // Serpent-10lo: folder parent ids are strict UUIDs — non-UUID
+    // folder parent ids are strict UUIDs — non-UUID
     // values are rejected by the schema (this is the intended contract).
     const PARENT_FOLDER_ID = '00000000-0000-4000-8000-0000000000f1';
     expect(descriptor('folder.create').toWorkerCommand('library-1', descriptor('folder.create').inputSchema.parse({
@@ -202,7 +202,7 @@ describe('Automation Command Registry', () => {
         expect(command.approvalPolicy).toBe('plan');
         expect(command.mcp.public).toBe(false);
       } else if (command.commandId === 'asset.delete-permanent') {
-        // Serpent-8b5b.2: the dangerous command is a write with no plan
+        // the dangerous command is a write with no plan
         // approval — the two-phase challenge replaces it.
         expect(command.impact).toBe('destructive');
         expect(command.approvalPolicy).toBe('none');
@@ -373,7 +373,7 @@ describe('Automation Command Registry', () => {
 
     for (const command of automationCommandRegistry) {
       const metadata = getAutomationCommandPermissionMetadata(command);
-      // Serpent-8b5b.2: the single MCP-exposed dangerous command is critical.
+      // the single MCP-exposed dangerous command is critical.
       const expectedTier = command.criticalOperation === true
         ? 'critical'
         : command.impact === 'read' ? 'safe' : 'controlled';
@@ -585,7 +585,7 @@ describe('Automation Command Gateway', () => {
     }]);
   });
 
-  it('fires the import-completed hook for a successful automation import (Serpent-ihpx)', async () => {
+  it('fires the import-completed hook for a successful automation import', async () => {
     const plan = {
       planHash: 'a'.repeat(64),
       expectedChangeSequence: 0,
@@ -2304,7 +2304,7 @@ describe('AutomationLibraryWorkerAdapter', () => {
   });
 });
 
-describe('file.import VERSION_CONFLICT auto re-plan (Serpent-xdt8)', () => {
+describe('file.import VERSION_CONFLICT auto re-plan', () => {
   it('re-plans once and retries when the worker reports a stale plan', async () => {
     const plan = {
       planHash: 'a'.repeat(64),
@@ -2402,7 +2402,7 @@ describe('file.import VERSION_CONFLICT auto re-plan (Serpent-xdt8)', () => {
   });
 });
 
-describe('file.import VERSION_CONFLICT retry negative paths (Serpent-xdt8)', () => {
+describe('file.import VERSION_CONFLICT retry negative paths', () => {
   const plan = {
     planHash: 'a'.repeat(64),
     expectedChangeSequence: 0,

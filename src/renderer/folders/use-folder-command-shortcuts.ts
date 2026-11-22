@@ -79,13 +79,13 @@ export type UseFolderCommandShortcutsArgs = {
   readonly renameFolder: (folderId: string, currentName: string) => void;
   readonly trashManagedFolder: (folderId: string, name: string) => void;
   readonly deleteFolderFromDisk: (folderId: string, name: string) => void;
-  /** Serpent-d7acfa：多选文件夹卡片的批量目标。 */
+  /** 多选文件夹卡片的批量目标。 */
   readonly trashFolders?: (folderIds: readonly string[]) => void;
   readonly deleteFolders?: (folderIds: readonly string[]) => void;
 };
 
 /**
- * Document-level folder shortcuts (Serpent-vf8x). Skips editable targets,
+ * Document-level folder shortcuts. Skips editable targets,
  * open modals, and asset preview; defers rename/trash when assets are selected.
  */
 export function useFolderCommandShortcuts(

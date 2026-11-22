@@ -4,7 +4,7 @@
  *
  * 1. Picks a free loopback port and pins Vite to it with strictPort so the
  *    renderer URL injected into Main always matches the real server
- *    (avoids black screen when 5173 is occupied — Serpent-i6xg / Forge#3198).
+ *    (avoids black screen when 5173 is occupied — Forge#3198).
  * 2. Uses <repo>/.local-profile as userData unless KEEL_USER_DATA_PATH is
  *    set, so the dev build never touches the installed release's profile.
  * 3. Optionally enables multi-instance via KEEL_ALLOW_MULTI_INSTANCE=1

@@ -28,7 +28,7 @@ describe('pathIsWithin', () => {
   it.runIf(process.platform === 'win32')(
     'rejects destinations on a different drive letter (path.relative yields an absolute path)',
     () => {
-      // Regression for Serpent-59f: exporting a library on E: to
+      // Regression: exporting a library on E: to
       // C:\Users\...\Downloads was rejected as "inside the library" because
       // path.relative across drives returns the absolute target.
       expect(pathIsWithin('E:\\Libraries\\Foo', 'C:\\Users\\test\\Downloads')).toBe(false);

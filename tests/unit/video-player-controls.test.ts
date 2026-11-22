@@ -171,7 +171,7 @@ describe("shouldHandleVideoSpaceKey", () => {
   });
 });
 
-describe("matchVideoPlaybackSeekKey / videoSeekDeltaSeconds (Serpent-sk1)", () => {
+describe("matchVideoPlaybackSeekKey / videoSeekDeltaSeconds", () => {
   const base = {
     ctrlKey: false,
     metaKey: false,
@@ -179,7 +179,7 @@ describe("matchVideoPlaybackSeekKey / videoSeekDeltaSeconds (Serpent-sk1)", () =
     target: { tagName: "DIV" } as const,
   };
 
-  it("maps D/F to previous/next frame (Serpent-soii)", () => {
+  it("maps D/F to previous/next frame", () => {
     expect(matchVideoPlaybackSeekKey({ ...base, key: "d" })).toEqual({
       kind: "frame",
       direction: -1,
@@ -297,7 +297,7 @@ describe("matchVideoPlaybackSeekKey / videoSeekDeltaSeconds (Serpent-sk1)", () =
   });
 });
 
-describe("matchVideoPlaybackRateKey / stepVideoPlaybackRate (Serpent-soii)", () => {
+describe("matchVideoPlaybackRateKey / stepVideoPlaybackRate", () => {
   const base = {
     ctrlKey: false,
     metaKey: false,

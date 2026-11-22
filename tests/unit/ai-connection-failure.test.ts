@@ -9,7 +9,7 @@ import {
   reduceConnectionFailureGate,
 } from "../../src/renderer/ai/ai-connection-failure";
 
-describe("isAiConnectionFailureCode (Serpent-kdnm)", () => {
+describe("isAiConnectionFailureCode", () => {
   it("accepts network / timeout / rate_limit / auth", () => {
     expect(isAiConnectionFailureCode("AI_NETWORK")).toBe(true);
     expect(isAiConnectionFailureCode("AI_TIMEOUT")).toBe(true);
@@ -24,7 +24,7 @@ describe("isAiConnectionFailureCode (Serpent-kdnm)", () => {
   });
 });
 
-describe("listConnectionFailedJobIds (Serpent-kdnm)", () => {
+describe("listConnectionFailedJobIds", () => {
   it("returns only terminal connection-class failures", () => {
     expect(
       listConnectionFailedJobIds([
@@ -37,7 +37,7 @@ describe("listConnectionFailedJobIds (Serpent-kdnm)", () => {
   });
 });
 
-describe("dominantConnectionFailureCode / body key (Serpent-c7d64e)", () => {
+describe("dominantConnectionFailureCode / body key", () => {
   it("picks the most common code and keeps first-seen ties", () => {
     expect(
       dominantConnectionFailureCode([
@@ -64,7 +64,7 @@ describe("dominantConnectionFailureCode / body key (Serpent-c7d64e)", () => {
   });
 });
 
-describe("reduceConnectionFailureGate (Serpent-kdnm)", () => {
+describe("reduceConnectionFailureGate", () => {
   it("does not open before a batch is armed", () => {
     const state = reduceConnectionFailureGate(INITIAL_CONNECTION_FAILURE_GATE, {
       type: "jobs_snapshot",

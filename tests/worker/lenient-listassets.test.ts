@@ -1,4 +1,4 @@
-// Serpent-verg.2: the browse main query (listAssets) must keep working on an
+// the browse main query (listAssets) must keep working on an
 // older library whose whitelisted columns are missing — degraded defaults
 // fill the result instead of the query failing (0031 §1).
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
@@ -102,7 +102,7 @@ function dropColumns(dbPath: string, drops: Array<[string, string[]]>): void {
   db.close();
 }
 
-describe('listAssets lenient read (Serpent-verg.2)', () => {
+describe('listAssets lenient read', () => {
   it('returns full fields on a current library (baseline)', () => {
     const root = temporaryRoot();
     const { service, libraryId, assetId } = libraryWithOneAsset(root, 'Baseline');

@@ -24,7 +24,7 @@ function memoryStorage() {
 }
 
 describe('theme preferences', () => {
-  it('defaults to system (clarification #11 / Serpent-svc)', () => {
+  it('defaults to system (clarification #11)', () => {
     const storage = memoryStorage();
     expect(loadThemePreferences(storage).theme).toBe(DEFAULT_THEME_PREFERENCE);
     expect(DEFAULT_THEME_PREFERENCE).toBe('system');

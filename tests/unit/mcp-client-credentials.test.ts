@@ -14,7 +14,7 @@ import {
   readExistingPepper,
 } from '../../src/main/mcp/mcp-client-credentials';
 
-describe('MCP credential pepper ACL hardening (Serpent-8b5b.7)', () => {
+describe('MCP credential pepper ACL hardening', () => {
   it('builds an inheritance-free, current-user-only icacls command shape', () => {
     const sid = 'S-1-5-18';
     expect(buildPepperFileAclArgs('pepper', sid)).toEqual([

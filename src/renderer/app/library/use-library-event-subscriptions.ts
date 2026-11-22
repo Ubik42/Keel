@@ -349,7 +349,7 @@ export function useLibraryEventSubscriptions({ api, setWorkerRecoveryState, setW
       if (frame !== 0) return;
       frame = window.requestAnimationFrame(flush);
     };
-    // Serpent-d0nv: a burst of cover thumbnail.ready events collapses into a
+    // a burst of cover thumbnail.ready events collapses into a
     // single folder-browse-entries re-fetch (one IPC for the current parent).
     let folderBrowseRefreshFrame = 0;
     const scheduleFolderBrowseRefresh = () => {

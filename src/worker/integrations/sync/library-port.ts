@@ -1,5 +1,5 @@
 /**
- * LibraryService → SyncLibraryPort 适配（Serpent-xffq）。
+ * LibraryService → SyncLibraryPort 适配。
  *
  * SyncEngine 依赖的窄端口由这里绑定到真实 LibraryService 的方法，
  * 使同步编排层保持可单测而生产实现复用既有导入/修订/回收站管线。

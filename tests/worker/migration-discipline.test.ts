@@ -1,4 +1,4 @@
-// Serpent-verg.7 — migration discipline static gate (ADR-0028 / CLAUDE.md
+// migration discipline static gate (ADR-0028 / CLAUDE.md
 // "数据兼容性纪律"): schema migrations are add-only. Every migration is
 // checked for structural violations — dropping/renaming existing tables,
 // columns, indexes or triggers, changing column types/semantics, or adding
@@ -82,7 +82,7 @@ export function checkMigrationDiscipline(
   return violations;
 }
 
-describe('migration discipline static gate (Serpent-verg.7)', () => {
+describe('migration discipline static gate', () => {
   it('every migration passes the add-only discipline', () => {
     const allViolations = MIGRATIONS.flatMap((migration) =>
       checkMigrationDiscipline(migration.version, migration.sql),

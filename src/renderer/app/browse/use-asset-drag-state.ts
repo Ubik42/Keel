@@ -120,7 +120,7 @@ export function useAssetDragState({ cancelPreviewViewRestoreRef, previewRestoreF
         : null,
     [],
   );
-  // Serpent-374266: the same snapshot for managed-folder drags started from the
+  // the same snapshot for managed-folder drags started from the
   // browse canvas. The sidebar needs it to tell whether a folder drop target
   // would change anything; the HTML5 payload itself cannot be read during
   // dragover (protected mode).
@@ -337,7 +337,7 @@ export function useAssetDragState({ cancelPreviewViewRestoreRef, previewRestoreF
   const controlAiJobsRef = useRef<
     (action: "pause" | "resume" | "cancel" | "retry", jobIds?: string[]) => Promise<void>
   >(async () => undefined);
-  /** Serpent-e97c00: bounded fallback status polling for the open library. */
+  /** bounded fallback status polling for the open library. */
   const jobStatusCoordinatorRef = useRef<JobStatusCoordinator | null>(null);
   const {
     gate: aiConnectionFailureGate,
@@ -479,7 +479,7 @@ export function useAssetDragState({ cancelPreviewViewRestoreRef, previewRestoreF
     }),
   );
 
-  // Serpent-b963a9: masonry/justified canvases use the full-scope layout index
+  // masonry/justified canvases use the full-scope layout index
   // for geometry, so shuffling only the loaded summaries leaves the cards in
   // the original order whenever a filter is active. Keep the API rank index
   // unchanged for pagination, but use the same client shuffle for rendering.

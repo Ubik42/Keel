@@ -17,7 +17,7 @@ export const AI_CLEARED_CHANNEL = 'keel:ai:cleared' as const;
 export const EXTENSION_SAVE_COMPLETED_CHANNEL =
   'keel:extension:save-completed' as const;
 export const ACTIVE_CONTEXT_CHANNEL = 'keel:active-context' as const;
-/** Renderer → Main: effective UI locale for native dialogs (Serpent-bwb). */
+/** Renderer → Main: effective UI locale for native dialogs. */
 export const APP_LOCALE_CHANNEL = 'keel:app-locale' as const;
 export const OPEN_EXTERNAL_URL_CHANNEL = 'keel:shell:open-external-url' as const;
 /** Renderer → Main: read launch-at-login preferences. */
@@ -38,7 +38,7 @@ export const OPEN_WITH_CHOOSE_PROGRAM_CHANNEL = 'keel:open-with:choose-program' 
 export const SHELL_NOTIFY_CHANNEL = 'keel:shell:notify' as const;
 /**
  * Main → Renderer: an automation (MCP) command finished executing with a
- * structured result (Serpent-fmbr); the renderer shows the same toast as the
+ * structured result; the renderer shows the same toast as the
  * equivalent manual operation. Read-only and failed commands are not emitted.
  */
 export const COMMAND_COMPLETED_CHANNEL = 'keel:command:completed' as const;
@@ -54,14 +54,14 @@ export const WINDOW_EDGE_RESIZE_CHANNEL = 'keel:shell:window-edge-resize' as con
 export const WINDOW_SET_BOUNDS_CHANNEL = 'keel:shell:window-set-bounds' as const;
 /** Renderer → Main: read current window bounds (Linux edge-resize fallback). */
 export const WINDOW_GET_BOUNDS_CHANNEL = 'keel:shell:window-get-bounds' as const;
-/** Main → Renderer: trigger invert selection (macOS Edit menu, Serpent-te8p). */
+/** Main → Renderer: trigger invert selection (macOS Edit menu). */
 export const INVERT_SELECTION_CHANNEL = 'keel:shell:invert-selection' as const;
-/** Main → Renderer: Edit Copy (⌘C) — file copy when assets selected (Serpent-166q). */
+/** Main → Renderer: Edit Copy (⌘C) — file copy when assets selected. */
 export const COPY_SELECTION_CHANNEL = 'keel:shell:copy-selection' as const;
 /** Main → Renderer: dispatch a native menu command through the app menu model. */
 export const APPLICATION_MENU_COMMAND_CHANNEL =
   'keel:shell:application-menu-command' as const;
-/** Renderer → Main: sync a native menu item's enabled state (Serpent-q0b1). */
+/** Renderer → Main: sync a native menu item's enabled state. */
 export const APPLICATION_MENU_ITEM_STATE_CHANNEL =
   'keel:shell:application-menu-item-state' as const;
 /** Renderer → Main: whether linked-folder browse includes missing source files. */
@@ -80,7 +80,7 @@ export const VIEWER_VIDEO_SHORTCUTS_ACTIVE_CHANNEL =
 /** Main → Renderer: video letter shortcut (D/F/X/C) after before-input. */
 export const VIEWER_VIDEO_SHORTCUT_CHANNEL =
   'keel:viewer:video-shortcut' as const;
-/** Main → Renderer: Windows F2 / Delete / Shift+Delete (Serpent-g8u9). */
+/** Main → Renderer: Windows F2 / Delete / Shift+Delete. */
 export const BROWSE_SHORTCUT_CHANNEL =
   'keel:shell:browse-shortcut' as const;
 /** Renderer → Main: disable hidden F2/Delete accelerators in text fields. */
@@ -133,7 +133,7 @@ export const PLUGIN_INPUT_CAPTURE_SYSTEM_MODAL_CHANNEL =
   'keel:plugin:input-capture-system-modal' as const;
 
 /**
- * Offscreen model-thumbnail renderer channels (slice E, Serpent-hnmg).
+ * Offscreen model-thumbnail renderer channels (slice E).
  * Main → offscreen window: a render job (payload = model-thumbnail.render-request).
  * Offscreen window → Main: the rendered frame (payload = model-thumbnail.render-response).
  */

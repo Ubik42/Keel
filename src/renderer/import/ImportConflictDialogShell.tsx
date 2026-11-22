@@ -25,7 +25,7 @@ export type ImportConflictDialogShellProps = {
 
 /**
  * Shared compact chrome for name-conflict / content-duplicate import dialogs
- * (Serpent-79c7). Keeps both flows visually identical.
+ *. Keeps both flows visually identical.
  */
 export function ImportConflictDialogShell({
   titleId,

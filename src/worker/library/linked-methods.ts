@@ -1100,7 +1100,7 @@ export function linkedFolderDisplayName(this: LibraryService, openLibrary: OpenL
 }
 
 /**
-* Serpent-a9vh: virtual child folders for a linked root or linked subdir.
+* virtual child folders for a linked root or linked subdir.
 * Returns null when `parentFolderId` is not a linked scope.
 */
 export function listLinkedFolderBrowseEntries(this: LibraryService, openLibrary: OpenLibrary, input: { parentFolderId: string | null; showIgnored?: boolean }, preparedPaths?: ReadonlyMap<string, string[]>): FolderBrowseEntry[] | null {
@@ -1154,7 +1154,7 @@ export function listLinkedFolderBrowseEntries(this: LibraryService, openLibrary:
         input.showIgnored === true,
         pureChildDirs,
       ),
-      // Serpent-d0nv: cover candidates as asset ids (cover scene scheduling
+      // cover candidates as asset ids (cover scene scheduling
       // + progressive refresh on thumbnail.ready). Candidates do NOT require
       // a ready thumbnail — ungenerated assets get enqueued by the cover
       // scene; display covers stay ready-gated in coverArtifactIds.
@@ -1288,7 +1288,7 @@ export function readLinkedAssetPaths(this: LibraryService, openLibrary: OpenLibr
 }
 
 /**
-* Serpent-d0nv: linked-directory cover scheduling candidates — the top-4
+* linked-directory cover scheduling candidates — the top-4
 * direct linked assets by path, with NO ready-thumbnail requirement (see
 * folderCoverCandidateAssetMap).
 */
@@ -1326,7 +1326,7 @@ export function linkedDirectoryCoverCandidateAssetIds(this: LibraryService, open
     return scopedRows.slice(0, 3).map((row) => row.asset_id);
   }
 
-  // Serpent-9021d1: Pure linked folder — round-robin across direct child directories
+  // Pure linked folder — round-robin across direct child directories
   const childPrefixes = childDirs.map((d) => (d === '' ? '' : `${d}/`));
   const byChild: string[][] = childDirs.map(() => []);
   for (const row of rows) {
@@ -1420,7 +1420,7 @@ export function listLinkedFolders(this: LibraryService, libraryId: string, prepa
         absoluteRootPath: row.absolute_root_path,
         linkedFolderId: row.folder_id,
         relativePath: '',
-        // Serpent-316493: a linked root may hang under a managed folder.
+        // a linked root may hang under a managed folder.
         parentFolderId: row.parent_folder_id ?? null,
         createdAt: row.created_at,
         appearance: sanitizeEntityAppearance({
@@ -1898,7 +1898,7 @@ export function convertLinkedFolderToManaged(this: LibraryService, input: {
 }
 
 /**
-* Serpent-4bc4ac: drop asset ids the user explicitly ignored so scheduling
+* drop asset ids the user explicitly ignored so scheduling
 * and visible-window reporting never touch them (v6m3: ignored = not
 * indexed, not operated on).
 */
@@ -1971,7 +1971,7 @@ export function explicitIgnoreSql(this: LibraryService, connection: DatabaseConn
       hasGitignoreIgnoredPaths: false,
     });
   }
-  // Serpent-verg.2 — lenient read (0031 §1): libraries predating the
+  // lenient read (0031 §1): libraries predating the
   // ignore-rule tables have no ignored paths to exclude; skip the
   // subqueries instead of failing on the missing tables.
   return buildCatalogExplicitIgnoreSql({
@@ -1986,7 +1986,7 @@ export function explicitFolderIgnored(this: LibraryService, openLibrary: OpenLib
   if (gitignoreMatchesPath(openLibrary.gitignoreMatcher, relativePath, 'folder', locationKind)) {
     return true;
   }
-  // Serpent-verg review fix: libraries predating the ignore-rule table
+  // review fix: libraries predating the ignore-rule table
   // have no explicit ignores.
   if (!hasTable(openLibrary.connection, 'explicit_ignored_paths')) return false;
   const normalized = this.normalizeExplicitIgnorePath(relativePath, locationKind === 'linked');
@@ -2024,7 +2024,7 @@ export function isExplicitlyIgnored(this: LibraryService, openLibrary: OpenLibra
     relativePath,
     false,
   );
-  // Serpent-4bdd26: this runs once per enumerated file on every refresh;
+  // this runs once per enumerated file on every refresh;
   // a per-call .prepare() recompiled the 4-way UNION each time (measured
   // ~410ms of pure compile time per 20k files vs 54ms cached).
   const row = this.prepareCached<{ get(...parameters: unknown[]): unknown }>(
@@ -2473,7 +2473,7 @@ export function enumerateLinkedSources(this: LibraryService, rootPath: string, l
       const childPath = path.join(directoryPath, child.name);
       let stat: BigIntStats | Stats;
       try {
-        // Serpent-4bdd26: honor the assetLstat test seam so injected stat
+        // honor the assetLstat test seam so injected stat
         // failures surface during enumeration, before the comparison loop
         // can shortcut via the snapshot.
         stat = this.options.assetLstat

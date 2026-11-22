@@ -14,7 +14,7 @@ afterEach(() => {
   unblockLibraryMediaReads(LIBRARY_ID);
 });
 
-describe('library media reads (Serpent-dfgg)', () => {
+describe('library media reads', () => {
   it('aborts live library streams when deletion starts', () => {
     const signal = bindLibraryMediaReadSignal(LIBRARY_ID);
     expect(signal.aborted).toBe(false);

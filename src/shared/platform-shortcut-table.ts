@@ -1,5 +1,5 @@
 /**
- * Shared platform shortcut chords (Serpent-4ojz / Serpent-vf8x).
+ * Shared platform shortcut chords.
  *
  * Pure data: documents the Cmd (mac) ↔ Ctrl (windows) mappings used by
  * asset and folder command definitions. Folder keyboard dispatch reads the

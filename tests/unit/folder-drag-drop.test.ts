@@ -15,7 +15,7 @@ const folders = [
   { folderId: "c", parentFolderId: "b" },
 ] as const;
 
-describe("resolveDraggedFolderIds (Serpent-nno6)", () => {
+describe("resolveDraggedFolderIds", () => {
   it("drags the full folder selection when the handle is selected", () => {
     expect(resolveDraggedFolderIds("a", ["a", "b"])).toEqual(["a", "b"]);
   });
@@ -82,7 +82,7 @@ describe("resolveFolderOntoFolderDrop", () => {
     });
   });
 
-  // Serpent-b29bc4: the pane background is the library-root target.
+  // the pane background is the library-root target.
   it("moves a nested folder to the library root", () => {
     expect(
       resolveFolderOntoFolderDrop({

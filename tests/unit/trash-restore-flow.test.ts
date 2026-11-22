@@ -5,7 +5,7 @@ import {
   silentTrashRestoreRequest,
 } from '../../src/renderer/trash/trash-restore-flow';
 
-describe('trash-restore-flow (Serpent-0hnx)', () => {
+describe('trash-restore-flow', () => {
   it('opens the dialog only when preview reports name conflicts', () => {
     expect(shouldOpenTrashRestoreDialog(false)).toBe(false);
     expect(shouldOpenTrashRestoreDialog(true)).toBe(true);

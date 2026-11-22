@@ -19,9 +19,9 @@ export function createViewerChromeIdleScheduler(
 
 /**
  * Sources of viewer activity that can interrupt idle-faded chrome
- * (Serpent-njoy). Product rule (2026-07-25): **any** keyboard / pointer /
+ *. Product rule (2026-07-25): **any** keyboard / pointer /
  * wheel input wakes chrome and restarts the idle timer. Supersedes
- * VIEWER-010 / Serpent-ayf (keyboard nav / clicks used to leave chrome
+ * VIEWER-010 (keyboard nav / clicks used to leave chrome
  * hidden).
  */
 export type ViewerChromeActivitySource =

@@ -4,7 +4,7 @@ import type { LocalePreference } from "../i18n";
 import type { ThemePreference } from "../theme";
 
 /**
- * Declarative copy/keys for REQ-PREF-001 / Serpent-97l / Serpent-9es / Serpent-i07.
+ * Declarative copy/keys for REQ-PREF-001.
  * Caption fields and corner badges are separate checkbox groups so the settings
  * panel does not dump unrelated toggles into one pile.
  */
@@ -176,7 +176,7 @@ export const APP_SETTINGS_CANVAS_BADGE_FIELD_OPTIONS: readonly AppSettingsCanvas
     { field: "badgeSync", labelKey: "toolbar.showBadgeSync" },
   ];
 
-/** @deprecated Prefer caption + badge option lists (Serpent-i07). */
+/** @deprecated Prefer caption + badge option lists. */
 export const APP_SETTINGS_CANVAS_FIELD_OPTIONS: readonly AppSettingsCanvasFieldOption[] =
   [
     ...APP_SETTINGS_CANVAS_CAPTION_FIELD_OPTIONS,
@@ -185,7 +185,7 @@ export const APP_SETTINGS_CANVAS_FIELD_OPTIONS: readonly AppSettingsCanvasFieldO
 
 /**
  * Caption field toggles must be label-only; explanatory copy lives on the
- * group heading (Serpent-9es).
+ * group heading.
  */
 export function canvasFieldOptionsUseSharedHint(
   options: readonly AppSettingsCanvasFieldOption[] = APP_SETTINGS_CANVAS_CAPTION_FIELD_OPTIONS,

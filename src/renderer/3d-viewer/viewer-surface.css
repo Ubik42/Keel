@@ -1,5 +1,5 @@
 /*
- * 3D viewer surface chrome (slice C, Serpent-qvc6).
+ * 3D viewer surface chrome (slice C).
  *
  * The canvas fills the preview area; overlays (toolbar, stats, notices,
  * states) float above it using the same token vocabulary as the rest of the
@@ -307,7 +307,7 @@
   box-shadow: 0 8px 24px rgb(0 0 0 / 28%);
 }
 
-/* Portaled to document.body so it escapes `.workspace` isolation (Serpent-iihv). */
+/* Portaled to document.body so it escapes `.workspace` isolation. */
 .model-viewer-hdri-picker.is-ported {
   position: fixed;
   left: auto;

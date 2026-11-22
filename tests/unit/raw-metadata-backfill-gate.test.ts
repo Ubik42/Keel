@@ -32,7 +32,7 @@ describe('RawMetadataBackfillAdmissionGate', () => {
     const gate = new RawMetadataBackfillAdmissionGate();
     gate.noteResult('alpha', '7:9', EMPTY, 0);
 
-    // Serpent-288cd9 acceptance: no timer-driven rescan after an empty probe.
+    // acceptance: no timer-driven rescan after an empty probe.
     for (let turn = 0; turn < 100; turn += 1) {
       expect(gate.shouldAttempt('alpha', '7:9', 60_000 + turn * 1_000)).toBe(false);
     }

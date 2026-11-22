@@ -67,7 +67,7 @@ describe('import-conflict-preferences', () => {
     expect(storage.getItem(IMPORT_CONFLICT_PREF_KEY)).toContain('"create-copy"');
   });
 
-  it('migrates stored merge preference to create-copy on load (Serpent-9h01)', () => {
+  it('migrates stored merge preference to create-copy on load', () => {
     const storage = memoryStorage({
       [IMPORT_CONFLICT_PREF_KEY]: JSON.stringify({
         version: 1,
@@ -78,7 +78,7 @@ describe('import-conflict-preferences', () => {
     expect(loadImportConflictPreferences(storage).duplicate).toBe('create-copy');
   });
 
-  it('clears remembered decisions (Serpent-gf8n)', () => {
+  it('clears remembered decisions', () => {
     const storage = memoryStorage();
     rememberNameConflictDecision('skip', storage);
     rememberDuplicateDecision('create-copy', storage);
@@ -120,7 +120,7 @@ describe('import-conflict-flow', () => {
     expect(presentation.phase).toBe('duplicate');
   });
 
-  it('auto-resolves when both decisions are remembered (Serpent-gf8n)', () => {
+  it('auto-resolves when both decisions are remembered', () => {
     const presentation = resolveImportConflictPresentation(
       plan({ nameConflictCount: 1, suspectedDuplicateCount: 1 }),
       { version: 1, nameConflict: 'replace', duplicate: 'merge' },

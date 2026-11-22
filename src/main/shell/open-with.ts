@@ -1,5 +1,5 @@
 /**
- * Open a resolved absolute path with a non-default application (Serpent-w29).
+ * Open a resolved absolute path with a non-default application.
  *
  * Renderer only sends asset/folder ids (REQ-COMMAND-003). Main receives the
  * Worker-resolved absolute path and:

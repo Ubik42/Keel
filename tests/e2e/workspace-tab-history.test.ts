@@ -13,7 +13,7 @@ import path from "node:path";
 import { resolveElectronExecutablePath } from "./electron-test-helpers";
 
 // ---------------------------------------------------------------------------
-// Serpent-b8a853 unified Back/Forward timeline: switching tabs is a step, and
+// unified Back/Forward timeline: switching tabs is a step, and
 // Back/Forward cross tab switches (activate the entry's tab, restore its
 // location).
 // ---------------------------------------------------------------------------

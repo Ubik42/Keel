@@ -20,7 +20,7 @@ const sample = (overrides: Partial<Parameters<typeof classifyViewerWheel>[0]>) =
   ...overrides,
 });
 
-describe('isPrimarilyHorizontalWheel (Serpent-4kg3)', () => {
+describe('isPrimarilyHorizontalWheel', () => {
   it('is true when |deltaX| exceeds |deltaY| by the dominance ratio', () => {
     expect(isPrimarilyHorizontalWheel({ deltaX: 40, deltaY: 10 })).toBe(true);
     expect(
@@ -51,7 +51,7 @@ describe('isPrimarilyHorizontalWheel (Serpent-4kg3)', () => {
   });
 });
 
-describe('classifyViewerWheel (Serpent-yo0n)', () => {
+describe('classifyViewerWheel', () => {
   it('treats ctrlKey as zoom (Chromium reports trackpad pinch with ctrlKey)', () => {
     expect(classifyViewerWheel(sample({ ctrlKey: true, deltaY: 8 }))).toBe('zoom');
   });
@@ -60,7 +60,7 @@ describe('classifyViewerWheel (Serpent-yo0n)', () => {
     expect(classifyViewerWheel(sample({ metaKey: true, deltaY: 8 }))).toBe('zoom');
   });
 
-  it('pans on ctrlKey when the delta is primarily horizontal (Serpent-4kg3)', () => {
+  it('pans on ctrlKey when the delta is primarily horizontal', () => {
     // Chromium sometimes tags a two-finger horizontal slide with ctrlKey.
     expect(
       classifyViewerWheel(sample({ ctrlKey: true, deltaX: 48, deltaY: 8 })),
@@ -146,7 +146,7 @@ describe('classifyViewerWheel (Serpent-yo0n)', () => {
   });
 });
 
-describe('resolveWheelGestureAnchor (Serpent-yo0n gesture-start anchor)', () => {
+describe('resolveWheelGestureAnchor (gesture-start anchor)', () => {
   it('anchors at the pointer position of the first event in a gesture', () => {
     const anchor = resolveWheelGestureAnchor(null, 100, 80, 1_000);
     expect(anchor).toEqual({ clientX: 100, clientY: 80, lastEventAt: 1_000 });

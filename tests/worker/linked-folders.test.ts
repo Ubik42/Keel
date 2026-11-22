@@ -193,7 +193,7 @@ describe('Linked folder import', () => {
     service.closeAll();
   });
 
-  it('Serpent-a9vh: exposes virtual child folders and non-recursive browse', () => {
+  it('exposes virtual child folders and non-recursive browse', () => {
     const root = temporaryRoot();
     const sourceRoot = path.join(root, 'source');
     mkdirSync(sourceRoot);
@@ -258,7 +258,7 @@ describe('Linked folder import', () => {
     service.closeAll();
   });
 
-  it('Serpent-c643c2: linked directories support create, rename, nested import and copy', () => {
+  it('linked directories support create, rename, nested import and copy', () => {
     const root = temporaryRoot();
     const sourceRoot = path.join(root, 'source');
     const incomingRoot = path.join(root, 'incoming');
@@ -351,7 +351,7 @@ describe('Linked folder import', () => {
     service.closeAll();
   });
 
-  it('Serpent-l1oi: header-probed image dimensions are available before thumbnails', () => {
+  it('header-probed image dimensions are available before thumbnails', () => {
     const root = temporaryRoot();
     const sourceRoot = path.join(root, 'source');
     mkdirSync(sourceRoot);
@@ -731,7 +731,7 @@ describe('Linked folder import', () => {
     service.closeAll();
   });
 
-  // Serpent-50c466 audit §5.2: an unusable rule pattern is a bad name, not an
+  // audit §5.2: an unusable rule pattern is a bad name, not an
   // import decision — the dialog lets the user type any text.
   it('rejects an unusable linked-folder rule pattern with a name error', () => {
     const root = temporaryRoot();
@@ -937,7 +937,7 @@ describe('Linked folder import', () => {
     service.closeAll();
   });
 
-  it('TEXT-001: refresh discovers a new .txt under a linked subdirectory (Serpent-4l7)', () => {
+  it('TEXT-001: refresh discovers a new .txt under a linked subdirectory', () => {
     const root = temporaryRoot();
     const sourceRoot = path.join(root, 'source');
     mkdirSync(sourceRoot);
@@ -1059,7 +1059,7 @@ describe('Linked folder import', () => {
     service.closeAll();
   });
 
-  it('imports external files into an existing linked folder root (Serpent-d3h)', () => {
+  it('imports external files into an existing linked folder root', () => {
     const root = temporaryRoot();
     const linkedRoot = path.join(root, 'linked-target');
     const incoming = path.join(root, 'incoming');
@@ -1299,7 +1299,7 @@ describe('Linked folder sync diagnostics', () => {
     service.closeAll();
   });
 
-  it('Serpent-9cfc8c: recursive linked browse session pages past the first 100 assets', () => {
+  it('recursive linked browse session pages past the first 100 assets', () => {
     const root = temporaryRoot();
     const sourceRoot = path.join(root, 'source');
     mkdirSync(path.join(sourceRoot, 'nested'), { recursive: true });
@@ -1361,9 +1361,9 @@ describe('Linked folder sync diagnostics', () => {
   });
 });
 
-// Serpent-316493: a linked root can hang under a managed folder (folder context
+// a linked root can hang under a managed folder (folder context
 // menu → 导入链接文件夹), with the rejection rules that keep the index honest.
-describe('Nested linked folders (Serpent-316493)', () => {
+describe('Nested linked folders', () => {
   function createManagedFolder(service: LibraryService, libraryId: string, name: string, parentFolderId?: string) {
     return service.createManagedFolder({ libraryId, name, parentFolderId });
   }

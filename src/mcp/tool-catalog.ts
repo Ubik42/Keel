@@ -113,7 +113,7 @@ function withExplicitLibraryTarget(
 }
 
 /**
- * Serpent-8b5b.2: dangerous tools accept the agent's second-phase confirmation
+ * dangerous tools accept the agent's second-phase confirmation
  * on the SAME tool call. The gateway strips these fields after the challenge
  * is consumed, so they never reach the worker schema.
  */

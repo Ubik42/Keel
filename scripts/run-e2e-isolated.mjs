@@ -19,7 +19,7 @@
  * the primary display and can steal foreground focus. This script logs
  * that fallback clearly instead of pretending isolation happened; a
  * dedicated CI runner or virtual-display setup is tracked as a follow-up
- * to Serpent-a1b rather than solved here.
+ * to rather than solved here.
  *
  * On Linux, this script additionally detects `xvfb-run` and, when present,
  * wraps the whole invocation in a virtual X display. That gives Electron an

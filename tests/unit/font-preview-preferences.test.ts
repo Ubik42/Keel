@@ -7,7 +7,7 @@ import {
   saveFontPreviewText,
 } from "../../src/renderer/viewer/font-preview-preferences";
 
-// Serpent-485aeb：预览文字按语言持久化（浏览别的字体也沿用），可撤回。
+// 预览文字按语言持久化（浏览别的字体也沿用），可撤回。
 function memoryStorage(initial?: string) {
   const map = new Map<string, string>();
   if (initial !== undefined) map.set(FONT_PREVIEW_TEXT_PREF_KEY, initial);

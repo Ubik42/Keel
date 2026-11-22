@@ -223,7 +223,7 @@ export function buildAiAnalysisSystemPrompt(input: {
   prompt += `未启用的字段请输出 null 或空数组（tags 用 []）。\n\n`;
   prompt += `你必须严格遵守：\n`;
   prompt += `+ 以「${STYLE_LABEL[settings.outputStyle]}」风格输出所有内容\n`;
-  prompt += `+ 目标语言：${language}。description 与 tags[] 中每一个标签都必须使用该语言书写（Serpent-sbnt）\n`;
+  prompt += `+ 目标语言：${language}。description 与 tags[] 中每一个标签都必须使用该语言书写\n`;
   prompt += `+ ${languageRule}\n`;
   prompt += `+ 只输出纯 JSON 对象，不要 Markdown 代码围栏，不要 XML/HTML 标签（例如不要写 </description>）\n`;
 
@@ -243,7 +243,7 @@ export function buildAiAnalysisSystemPrompt(input: {
   return prompt;
 }
 
-/** Hard language constraint for tags (and descriptions) — Serpent-sbnt. */
+/** Hard language constraint for tags (and descriptions). */
 export function buildTagLanguageRule(language: string): string {
   const lower = language.toLowerCase();
   if (lower.includes('zh-cn') || lower.includes('chinese')) {

@@ -249,7 +249,7 @@ test("restores the recent library and focuses the last browsed asset after a ful
       )
       .toBe(restoredAssetId);
 
-    // Serpent-2b30bb: the visual browser session may restore the nested folder,
+    // the visual browser session may restore the nested folder,
     // but a fresh import must still target the library root. Use a new source
     // file after restart and verify its durable managedFolderId is null.
     await importFilesThroughBridge(window);

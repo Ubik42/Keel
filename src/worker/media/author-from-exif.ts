@@ -1,6 +1,6 @@
 /**
  * Best-effort author/creator extraction from an image's embedded EXIF,
- * IPTC, and XMP metadata (Serpent-7x0).
+ * IPTC, and XMP metadata.
  *
  * This module only reads file bytes already resolved by the Worker (the
  * sole owner of filesystem access, per ADR process invariants); it never

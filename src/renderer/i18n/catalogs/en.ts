@@ -589,7 +589,7 @@ export const en = {
       aiAnalyzeMissing: "AI analyze missing ({count})",
       aiAnalyze: "AI analyze ({count})",
       copy: "Copy ({count})",
-      // Serpent-d7acfa: batch items that act on selected folder cards.
+      // batch items that act on selected folder cards.
       appearance: "Set icon & color… ({count})",
       ignore: "Ignore ({count})"
     },
@@ -706,7 +706,7 @@ export const en = {
     batchAssetOps: "Batch asset actions: {count}",
     assetOps: "Asset actions: {name}",
     folderOps: "Folder actions: {name}",
-    /** Serpent-a6c516: subject name for the folder panel's blank area / root row. */
+    /** subject name for the folder panel's blank area / root row. */
     libraryRoot: "Library root",
     restoreTrashedFolder: "Restore folder",
     skipReportLine: "{action}: process {process} / skip {skip} ({reasons})",
@@ -1301,7 +1301,7 @@ export const en = {
     autoAnalyze: "Automatically run AI analysis on new assets",
     save: "Save settings"
   },
-  /** REQ-PREF-001 / Serpent-9es: file name / size / date share one cardFieldsHint. */
+  /** REQ-PREF-001: file name / size / date share one cardFieldsHint. */
   plugin: {
     viewLoadFailed: "Plugin view failed to load",
     dialogSubmit: "Start",

@@ -5,7 +5,7 @@
  */
 
 /**
- * Serpent-azf6: probe budget halved 24 → 12 — the still preview must be FAST.
+ * probe budget halved 24 → 12 — the still preview must be FAST.
  * The probe decodes a separate Sharp pass per sampled page, so this caps the
  * worst-case GIF thumbnail cost at ~12 decodes; the early-exit below usually
  * stops far earlier on bright meme GIFs, and dark GIFs still get a spread

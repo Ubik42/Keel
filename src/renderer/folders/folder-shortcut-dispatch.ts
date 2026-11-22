@@ -1,5 +1,5 @@
 /**
- * Pure folder keyboard target resolution (Serpent-vf8x).
+ * Pure folder keyboard target resolution.
  *
  * Sidebar focus (data-nav-folder-*) wins for rename/trash; create also falls
  * back to the current managed browse scope (same as the sidebar "+" button).
@@ -42,7 +42,7 @@ export type FolderShortcutAction =
       readonly folderId: string;
       readonly name: string;
     }
-  /** Serpent-d7acfa：多选文件夹卡片时，快捷键对全部选中项生效。 */
+  /** 多选文件夹卡片时，快捷键对全部选中项生效。 */
   | { readonly type: "trash-folders"; readonly folderIds: readonly string[] }
   | { readonly type: "delete-folders"; readonly folderIds: readonly string[] }
   | { readonly type: "none" };
@@ -88,7 +88,7 @@ export function readFocusedNavFolder(
 }
 
 /**
- * 画布文件夹卡片目标。多选时返回全部有名字的托管文件夹（Serpent-d7acfa）；
+ * 画布文件夹卡片目标。多选时返回全部有名字的托管文件夹；
  * 重命名仍然只对单个目标生效，由调用方判断长度。
  */
 function managedCardTargets(
@@ -157,7 +157,7 @@ export function resolveFolderShortcutAction(
   // Rename / trash: assets keep priority when any asset is selected.
   if (selectedAssetCount > 0) return { type: "none" };
 
-  // Serpent-d7acfa: a multi-folder selection (canvas cards or sidebar tree rows)
+  // a multi-folder selection (canvas cards or sidebar tree rows)
   // outranks the focused row — Delete / Shift+Delete then act on every selected
   // folder instead of only the one under focus.
   const selection = managedCardTargets(
@@ -171,7 +171,7 @@ export function resolveFolderShortcutAction(
   }
 
   // Linked and managed folders use the same F2 / Delete / Shift+Delete
-  // targeting. Delete goes to trash with no confirmation (Serpent-g8u9).
+  // targeting. Delete goes to trash with no confirmation.
   if (focusedNav) {
     const name = resolveManagedFolderName(focusedNav.folderId);
     if (name === undefined) return { type: "none" };
@@ -235,7 +235,7 @@ export function resolveFolderShortcutAction(
       : { type: "trash-folders", folderIds: cards.map((card) => card.folderId) };
   }
 
-  // Fallback: rename/trash the folder currently open in browse (Serpent-l0ow).
+  // Fallback: rename/trash the folder currently open in browse.
   // Context menus steal DOM focus, so F2 after a right-click often has no
   // focused nav row — the open folder is still a clear rename target.
   if (browseManagedFolderId) {

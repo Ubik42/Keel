@@ -40,7 +40,7 @@ function fakePmrem() {
   return { pmrem, result };
 }
 
-describe('environment pipeline (Serpent-v363 / 3D-09/3D-10)', () => {
+describe('environment pipeline (3D-09/3D-10)', () => {
   it('confirms the r185 tone mapping constant', () => {
     // NeutralToneMapping = 7 in three r185 (constants.js).
     expect(HDRI_TONE_MAPPING).toBe(7);

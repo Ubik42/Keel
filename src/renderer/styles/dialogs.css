@@ -14,7 +14,7 @@
   gap: 2px;
   margin: 0;
   padding: 0;
-  /* Serpent-s0oq: at most five rows visible; the rest scroll. */
+  /* at most five rows visible; the rest scroll. */
   max-height: 210px;
   overflow-y: auto;
 }
@@ -25,8 +25,8 @@
   gap: 4px;
 }
 
-/* Serpent-kipk: recent rows are plain list items — no card chrome. The
-   Serpent-kqgy follow-up puts the forget x INSIDE the full-width row button. */
+/* recent rows are plain list items — no card chrome. The
+   follow-up puts the forget x INSIDE the full-width row button. */
 
 .create-dialog-recent-open {
   display: flex;
@@ -121,10 +121,10 @@
   position: fixed;
   z-index: var(--ui-layer-modal-backdrop);
   display: flex;
-  /* Theme-aware scrim (follow-up from Serpent-5vex audit). */
+  /* Theme-aware scrim (follow-up audit). */
   background: color-mix(in srgb, var(--ui-content-inverse) 45%, transparent);
   inset: 0;
-  /* Serpent-q3qu: dialog box center === window center (no optical bias). */
+  /* dialog box center === window center (no optical bias). */
   align-items: center;
   justify-content: center;
   padding: 24px;
@@ -841,7 +841,7 @@
 
 /* Dense summary/examples chrome: still used by RelinkPreview.
    Import name/content conflict dialogs use conflict-summary-line /
-   conflict-examples-line instead (Serpent-79c7 / a22y). */
+   conflict-examples-line instead (a22y). */
 
 .conflict-summary {
   display: grid;
@@ -886,7 +886,7 @@
 }
 
 .decision-field select {
-  /* Serpent-4ojz / Serpent-p1rm: shell rhythm + de-native chrome (no OS
+  /* shell rhythm + de-native chrome (no OS
      select bevel/arrow; custom chevron via theme tertiary stroke). */
   appearance: none;
   -webkit-appearance: none;

@@ -17,7 +17,7 @@ export type LibraryReconciliationTask<TOpenLibrary = unknown> = {
   /** Existing linked source paths proven by precise native file-change events. */
   linkedFilePathsByFolder?: Map<string, Set<string>>;
   /**
-   * Serpent-be29a9: release the scheduler's background admission at a safe
+   * release the scheduler's background admission at a safe
    * point and take it back before the next batch. Supplied by the Worker, which
    * owns the scheduler; absent for reconciliations the Worker did not schedule.
    */

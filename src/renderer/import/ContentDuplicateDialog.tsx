@@ -18,7 +18,7 @@ export interface ContentDuplicateDialogProps {
   submitting?: boolean;
 }
 
-/** Library / content duplicates only (Serpent-glua / zp8q / 79c7 / thuy). */
+/** Library / content duplicates only (zp8q / 79c7 / thuy). */
 export function ContentDuplicateDialog({
   conflicts,
   libraryId,

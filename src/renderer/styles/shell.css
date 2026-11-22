@@ -99,7 +99,7 @@
   position: relative;
 }
 
-/* Serpent-zcyg: elev shadows only when level > 0 (skip paint at 0). */
+/* elev shadows only when level > 0 (skip paint at 0). */
 
 :root:not([data-elevation="0"]) .app-toolbar {
   box-shadow: var(--ui-shadow-toolbar);
@@ -124,7 +124,7 @@
   overflow: visible;
 }
 
-/* Serpent-4ze: leave room for hiddenInset traffic lights on macOS. */
+/* leave room for hiddenInset traffic lights on macOS. */
 
 body.platform-darwin .toolbar-nav-cluster {
   padding-left: 78px;
@@ -237,7 +237,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   );
 }
 
-/* Serpent-znex: reserve space for custom Windows caption buttons.
+/* reserve space for custom Windows caption buttons.
    Extra 14px keeps search / inspector chrome from crowding the captions. */
 
 :root[data-platform="windows"] .toolbar-inspector-cluster {
@@ -245,7 +245,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 }
 
 .windows-window-controls {
-  /* Serpent-52a9b4: portaled to document.body — position: fixed and the
+  /* portaled to document.body — position: fixed and the
      window-caption layer so minimize/maximize/close stay above every modal
      backdrop (see ui/0007). The toolbar reserves the same 3-caption width, so
      layout is unchanged. macOS native traffic lights are window-level by
@@ -396,7 +396,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 /* Toggle state reads as a quiet accent tint, not a raised button — the
    current mode is identifiable without adding chrome (Eagle convention). */
 
-/* CU-U4 / Serpent-zlj: disabled chrome must read as unavailable, not merely
+/* CU-U4: disabled chrome must read as unavailable, not merely
    non-interactive. Opacity + tertiary ink + not-allowed cursor. */
 
 .tool-button:disabled {
@@ -656,7 +656,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   color: var(--ui-content-accent);
 }
 
-/* Serpent-b8a853: feature-hint attention highlight. Applies to any affordance
+/* feature-hint attention highlight. Applies to any affordance
    that teaches a hidden feature (include-subfolders icon, the sidebar
    "导入链接文件夹" button), always visible and pulsing. Functional cue, not
    decorative motion: it keeps pulsing even under prefers-reduced-motion (the
@@ -756,7 +756,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   grid-template-columns: minmax(0, 1fr);
   min-height: 0;
   flex: 1;
-  /* Serpent-itr: classic Windows scrollbars consume layout width. Keep
+  /* classic Windows scrollbars consume layout width. Keep
      vertical scrolling, but never grow a meaningless horizontal bar when
      the vertical gutter appears; grid children measure against clientWidth. */
   overflow-x: hidden;
@@ -853,7 +853,7 @@ body.keel-modal-open .app-shell {
   height: 100%;
 }
 
-/* Fullscreen viewer: hide the system cursor when chrome is idle (Serpent-c3lf). */
+/* Fullscreen viewer: hide the system cursor when chrome is idle. */
 
 .workspace-viewer:fullscreen.is-chrome-idle,
 .workspace-viewer-transition:fullscreen.is-chrome-idle,
@@ -996,7 +996,7 @@ body.keel-modal-open .app-shell {
   margin-top: 2px;
 }
 
-/* Serpent-xffq: 同步连接/同步状态指示（复用 AI 连接指示的视觉语言）。 */
+/* 同步连接/同步状态指示（复用 AI 连接指示的视觉语言）。 */
 
 .sync-status-indicator {
   display: inline-flex;
@@ -1043,7 +1043,7 @@ body.keel-modal-open .app-shell {
   pointer-events: none;
 }
 
-/* Serpent-yl67: host owns flex growth; activity strips overlay the scrollport
+/* host owns flex growth; activity strips overlay the scrollport
    instead of living inside the scrolling canvas content. */
 
 .workspace-canvas-host {
@@ -1107,12 +1107,12 @@ body.keel-modal-open .app-shell {
   pointer-events: none;
   /* Transparent wait cursor only. Capturing pointer here made the canvas look
      frozen (cards ignored clicks) while sidebar CSS hover still worked —
-     Serpent-52eed4. Folder selection now updates on click; this layer must not
+ Folder selection now updates on click; this layer must not
      eat the next click. */
   background: transparent;
 }
 
-/* Serpent-0k52: notices share one viewport-level stack so entries cannot
+/* notices share one viewport-level stack so entries cannot
    occupy the same fixed coordinates when several arrive together. */
 
 .workspace-notice-stack {
@@ -1128,7 +1128,7 @@ body.keel-modal-open .app-shell {
   left: 50%;
   display: flex;
   flex-direction: column;
-  /* Serpent-37y8: center each toast in the stack so mixed widths stay
+  /* center each toast in the stack so mixed widths stay
      horizontally aligned to the viewport midpoint (not left-packed). */
   align-items: center;
   gap: 8px;
@@ -1157,7 +1157,7 @@ body.keel-modal-open .app-shell {
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   column-gap: 8px;
-  /* Serpent-fvto: tighter trailing pad — X sat in a wide empty gutter. */
+  /* tighter trailing pad — X sat in a wide empty gutter. */
   padding: 7px 6px 7px 10px;
   border: var(--ui-border-width-hairline) solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
@@ -1210,7 +1210,7 @@ body.keel-modal-open .app-shell {
   color: inherit;
 }
 
-/* Serpent-2wu4 / fvto: dismiss is a glyph, vertically centered with text. */
+/* fvto: dismiss is a glyph, vertically centered with text. */
 
 .workspace-notice-undo {
   display: inline-flex;
@@ -1259,7 +1259,7 @@ body.keel-modal-open .app-shell {
 }
 
 .toast {
-  /* Viewport-fixed (Serpent-qpy8): must not live inside .workspace-canvas
+  /* Viewport-fixed: must not live inside .workspace-canvas
      scrollport or use absolute against that scrolling ancestor. */
   position: fixed;
   z-index: var(--ui-layer-notice);
@@ -1291,9 +1291,9 @@ body.keel-modal-open .app-shell {
 
 .toast.is-error,
 .toast.is-warning {
-  /* Serpent-4ojz: warning + error share one amber family (icon/text/close).
+  /* warning + error share one amber family (icon/text/close).
      Do not tint warnings with --accent blue — that recreates the beige+blue+
-     orange clash fixed for error toasts in Serpent-k9g. */
+     orange clash fixed for error toasts. */
   background: var(--ui-status-warning-surface);
   color: var(--ui-status-warning-content);
   border: 1px solid color-mix(in srgb, var(--ui-status-warning) 28%, transparent);
@@ -1961,7 +1961,7 @@ html.keel-window-square {
 }
 
 /* ==== a84: macOS traffic lights in islands layout ==========================
-   dev (Serpent-4ze) reserves 78px via `body.platform-darwin
+   dev reserves 78px via `body.platform-darwin
    .toolbar-nav-cluster { padding-left: 78px }`, but the islands rules
    (`.app-shell[islands] .toolbar-nav-cluster { padding-left: outer-gap }`)
    outrank it, so the sidebar toggle sat under the traffic lights.

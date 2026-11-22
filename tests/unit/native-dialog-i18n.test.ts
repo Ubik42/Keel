@@ -8,7 +8,7 @@ import {
   tryParseAppLocaleSync,
 } from "../../src/shared/native-dialog-i18n";
 
-describe("native dialog i18n (Serpent-bwb)", () => {
+describe("native dialog i18n", () => {
   it("parses locale sync payloads and rejects junk", () => {
     expect(tryParseAppLocaleSync({ locale: "en" })).toEqual({
       ok: true,

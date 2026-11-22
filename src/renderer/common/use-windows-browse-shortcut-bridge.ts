@@ -1,5 +1,5 @@
 /**
- * Windows Main → Renderer bridge for F2 / Delete (Serpent-g8u9).
+ * Windows Main → Renderer bridge for F2 / Delete.
  *
  * Hidden menu accelerators and before-input both arrive here. Re-dispatch as
  * a document keydown so folder, collection, and browse handlers share one

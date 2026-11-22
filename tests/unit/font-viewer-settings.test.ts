@@ -17,7 +17,7 @@ import {
   variableWeightOptions,
 } from "../../src/renderer/viewer/font-viewer-settings";
 
-// Serpent-485aeb：字体查看器的预览设置（语言 / 文字 / 字号 / 字重 / B-I-U）。
+// 字体查看器的预览设置（语言 / 文字 / 字号 / 字重 / B-I-U）。
 describe("font viewer settings", () => {
   it("supports the common languages with a sentence and the shared symbols", () => {
     expect(FONT_PREVIEW_LANGUAGES.length).toBeGreaterThanOrEqual(15);

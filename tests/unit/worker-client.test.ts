@@ -208,7 +208,7 @@ describe('requestTimeoutForCommand', () => {
     expect(requestTimeoutForCommand('media.get-asset-drag-infos')).toBeNull();
   });
 
-  it('does not impose a wall-clock timeout on disk-bound library transfers (Serpent-4s8b)', () => {
+  it('does not impose a wall-clock timeout on disk-bound library transfers', () => {
     expect(requestTimeoutForCommand('library.create')).toBeNull();
     expect(requestTimeoutForCommand('library.open')).toBeNull();
     expect(requestTimeoutForCommand('library.open-eagle')).toBeNull();
@@ -253,14 +253,14 @@ describe('requestTimeoutForCommand', () => {
     })).toBeNull();
   });
 
-  it('names worker timeouts so Main can map them to a public reason (Serpent-sq4i)', () => {
+  it('names worker timeouts so Main can map them to a public reason', () => {
     const error = new WorkerRequestTimeoutError('req-1', 'library.open-eagle');
     expect(error).toBeInstanceOf(Error);
     expect(error.code).toBe('WORKER_REQUEST_TIMEOUT');
     expect(error.commandType).toBe('library.open-eagle');
   });
 
-  it('lets an unbounded Eagle conversion finish after the old 30-minute deadline (Serpent-4s8b)', async () => {
+  it('lets an unbounded Eagle conversion finish after the old 30-minute deadline', async () => {
     vi.useFakeTimers();
     const previousFfmpegPath = process.env.KEEL_FFMPEG_PATH;
     const previousOiioPath = process.env.KEEL_OIIO_PATH;
@@ -355,7 +355,7 @@ describe('requestTimeoutForCommand', () => {
     }
   });
 
-  it('gives AI queue processing a long timeout (Serpent-iokf)', () => {
+  it('gives AI queue processing a long timeout', () => {
     expect(requestTimeoutForCommand('ai.process-queue')).toBe(10 * 60_000);
     expect(requestTimeoutForCommand('asset.analyze')).toBe(10 * 60_000);
   });

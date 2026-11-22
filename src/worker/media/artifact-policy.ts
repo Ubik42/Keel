@@ -305,7 +305,7 @@ export function artifactPolicyForMediaType(mediaType: ArtifactMediaType): Artifa
         paletteEligible: true,
       };
     case 'font':
-      // Serpent-485aeb: the card sample is produced offscreen (like documents);
+      // the card sample is produced offscreen (like documents);
       // the viewer reads the source font directly.
       return {
         mediaType,

@@ -66,7 +66,7 @@ export const managedFolderSummarySchema = z.strictObject({
   /** Immediate child managed folders. */
   childFolderCount: z.number().int().nonnegative(),
   /**
-   * Row creation time (ISO-8601), for sidebar folder sorting (Serpent-db1835).
+   * Row creation time (ISO-8601), for sidebar folder sorting.
    * Optional so rows summarized off non-navigation queries stay forward-compatible.
    */
   createdAt: z.string().min(1).optional(),
@@ -89,10 +89,10 @@ export const folderBrowseEntrySchema = z.strictObject({
   status: z.enum(['available', 'offline']),
   /** Direct-child assets only (covers / layout helpers). */
   directAssetCount: z.number().int().nonnegative(),
-  /** All descendant assets (REQ-FOLDER-003 / Serpent-toh). */
+  /** All descendant assets (REQ-FOLDER-003). */
   recursiveAssetCount: z.number().int().nonnegative(),
   childFolderCount: z.number().int().nonnegative(),
-  /** Up to 4 ready thumbnail/poster artifact ids for the folder cover deck / collage (Serpent-9021d1). */
+  /** Up to 4 ready thumbnail/poster artifact ids for the folder cover deck / collage. */
   coverArtifactIds: z.array(nonBlankString).max(4),
   /** User-chosen image stored with the library. Wins over the automatic cover. */
   hasCustomCover: z.boolean().optional(),
@@ -116,7 +116,7 @@ export const folderBrowseEntrySchema = z.strictObject({
     revisionId: nonBlankString,
   })).max(4).optional(),
   /**
-   * Up to 4 cover candidate asset ids (Serpent-d0nv / Serpent-9021d1). The Worker
+   * Up to 4 cover candidate asset ids. The Worker
    * schedules these at the `cover` thumbnail scene so folder-card covers generate
    * before the rest of the library; the Renderer refreshes browse entries
    * when a thumbnail.ready event hits one of these assets.
@@ -148,7 +148,7 @@ export const linkedFolderSummarySchema = z.strictObject({
   displayName: nonBlankString,
   status: z.enum(['available', 'offline']),
   assetCount: z.number().int().nonnegative(),
-  /** Absolute linked root for hover affordance (Serpent-rc9). */
+  /** Absolute linked root for hover affordance. */
   absoluteRootPath: z.string().min(1).max(4096),
   /** Linked-root id; equals folderId for the import root itself. */
   linkedFolderId: nonBlankString.optional(),
@@ -269,7 +269,7 @@ export const assetSummarySchema = z.strictObject({
   favorite: z.boolean(),
   deletedAt: nonBlankString.nullable(),
   trashedFromPath: portableRelativePathSchema.nullable(),
-  /** Tombstone that owned this asset when its folder was trashed (Serpent-whvm). */
+  /** Tombstone that owned this asset when its folder was trashed. */
   trashedFromTombstoneId: nonBlankString.nullable().optional().default(null),
   remainingDays: z.number().int().nullable(),
   thumbnailStatus: z.enum(['ready', 'pending', 'failed']).nullable(),
@@ -296,7 +296,7 @@ export const browseLayoutEntrySchema = z.strictObject({
   /** Bounded source-direct card preview for small native raster images. */
   previewKind: z.enum(['source']).nullable().optional(),
   previewRevisionId: nonBlankString.nullable().optional(),
-  /** Caption fields so layout slots are not blank while AssetSummary pages stream in (Serpent-l2at). */
+  /** Caption fields so layout slots are not blank while AssetSummary pages stream in. */
   displayName: nonBlankString.optional(),
   relativeFilePath: portableRelativePathSchema.optional(),
   byteSize: z.number().int().nonnegative().optional(),
@@ -361,7 +361,7 @@ export const assetMetadataResultSchema = z.strictObject({
   effectivePalette: z.array(nonBlankString).max(20).optional().default([]),
   paletteSource: z.enum(['manual', 'automatic']).nullable().optional().default(null),
   sourcePageUrl: nonBlankString.nullable(),
-  // Author/creator (Serpent-7x0): user-editable, auto-extracted from
+  // Author/creator: user-editable, auto-extracted from
   // EXIF/IPTC/XMP on first thumbnail generation when left empty.
   author: nonBlankString.nullable(),
   // Assets created before metadata is first written use version 0 as the
@@ -455,7 +455,7 @@ export const extractedVideoMetadataSchema = z.strictObject({
     value: z.string().min(1).max(255),
   })).max(32).optional(),
   /**
-   * Serpent-485aeb: font facts read from the font file itself (`name`, `head`,
+   * font facts read from the font file itself (`name`, `head`,
    * `OS/2`, `maxp`). Only present for `font` assets; the Worker derives them on
    * demand instead of persisting an `extracted_metadata` artifact.
    */
@@ -484,7 +484,7 @@ export const extractedVideoMetadataSchema = z.strictObject({
   /**
    * Weights a variable font actually offers (`fvar` `wght` axis / named
    * instances). Null/absent for static fonts — the viewer must not offer a
-   * fake 100–900 list for a single-weight file (Serpent-485aeb feedback).
+   * fake 100–900 list for a single-weight file.
    */
   fontVariableWeights: z
     .array(z.number().finite().positive())

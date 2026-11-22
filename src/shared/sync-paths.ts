@@ -1,5 +1,5 @@
 /**
- * Keel 同步共享工具（Serpent-xffq）。
+ * Keel 同步共享工具。
  *
  * 远端库目录名 = 库显示名的安全化结果：WebDAV 服务端与常见文件系统
  * （含 SMB 共享）对目录名有字符与保留名限制，直接使用库显示名可能在
@@ -65,7 +65,7 @@ export type WebDAVUrlNormalization =
 const PROTOCOL_PREFIX = /^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//;
 
 /**
- * 规范化 WebDAV 服务器地址（Serpent-fatf）。
+ * 规范化 WebDAV 服务器地址。
  * - 去除首尾空白
  * - 无协议前缀时自动补 http://（浏览器式输入习惯：`10.0.0.1:5005/dav/`
  *   直接可连，避免 new URL 抛 ERR_INVALID_URL 落到笼统的 INTERNAL_ERROR）

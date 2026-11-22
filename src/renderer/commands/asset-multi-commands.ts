@@ -30,7 +30,7 @@ export interface AssetMultiCommandActions {
     assetIds: string[],
     folderIds?: readonly string[],
   ) => void;
-  /** Assets + managed folder cards that trash can process (Serpent-koy). */
+  /** Assets + managed folder cards that trash can process. */
   readonly moveToTrash: (
     assetIds: string[],
     folderIds?: readonly string[],
@@ -45,7 +45,7 @@ export interface AssetMultiCommandActions {
   readonly aiAnalyze?: (assetIds: string[]) => void;
   readonly clearAiContent?: (assetIds: string[]) => void;
   /**
-   * Serpent-d7acfa：多选里的文件夹「设置图标」与「忽略」。外观由菜单里的
+   * 多选里的文件夹「设置图标」与「忽略」。外观由菜单里的
    * 取色/图标面板给出，注册表只决定可见性、计数与禁用原因。
    */
   readonly setFolderAppearance?: (
@@ -91,7 +91,7 @@ export interface AssetMultiCommandContext extends CommandContext {
    */
   readonly pasteTargetFolderId: string | null | undefined;
   /**
-   * Serpent-d7acfa：本次选中里「能设置图标 / 能忽略」的文件夹（托管文件夹与
+   * 本次选中里「能设置图标 / 能忽略」的文件夹（托管文件夹与
    * 链接根；链接子目录与失效 id 已被跳过）。计数与禁用原因取这里的长度。
    */
   readonly appearanceFolderTargets: readonly FolderBatchTarget[];
@@ -229,7 +229,7 @@ export const assetMultiCommandDefinitions: readonly AssetMultiCommandDefinition[
           [...ctx.processFolderIds],
         ),
     },
-    // Serpent-d7acfa：多选文件夹的「设置图标」与「忽略」。计数只算真正能做的
+    // 多选文件夹的「设置图标」与「忽略」。计数只算真正能做的
     // 文件夹（链接子目录、资源库根等由 folder-batch-actions 跳过并给出原因）。
     {
       id: 'assets.appearance',

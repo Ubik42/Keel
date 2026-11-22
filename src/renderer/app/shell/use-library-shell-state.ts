@@ -41,7 +41,7 @@ export interface UseLibraryShellStateDeps {
 
 /** Extracted from AppInner (P4); the statements run in the same order as before. */
 export function useLibraryShellState({ library, t, setFatalAlertAlreadyOpen, setFatalDialogTitle, pendingAlreadyOpenPathRef, setLibraryRecoveryDialogOpen, linkedFolders, assetScope }: UseLibraryShellStateDeps) {
-  // Toast + fatal alert (REQ-SHELL-010 / Serpent-99lv): controller owns
+  // Toast + fatal alert (REQ-SHELL-010): controller owns
   // auto-dismiss, stack ordering, and the toast closing lifecycle.
   const {
     renderedStack: renderedToastStack,
@@ -142,7 +142,7 @@ export function useLibraryShellState({ library, t, setFatalAlertAlreadyOpen, set
   }, [imageSequenceImportOffer, setImageSequenceImportIndex]);
 
   /**
-   * Serpent-866c20：确认面板的预览来源。导入后成组时帧已经是库内资产（走 source
+   * 确认面板的预览来源。导入后成组时帧已经是库内资产（走 source
    * 通道）；导入前的候选帧只交给 Main 的 offerId + 帧号解析，Renderer 不经手路径。
    */
   const imageSequencePreviewSource = useMemo((): SequencePreviewSource | null => {
@@ -262,7 +262,7 @@ export function useLibraryShellState({ library, t, setFatalAlertAlreadyOpen, set
   const [folderRecursive, setFolderRecursive] = useNavigationField("folderRecursive");
   const [folderRecursivePrefs] = useNavigationField("folderRecursivePrefs");
   const [showFolderCardsWhenRecursive, setShowFolderCardsWhenRecursive] = useNavigationField("showFolderCardsWhenRecursive");
-  // Serpent-b8a853: one-time feature hints for hidden UI affordances share a
+  // one-time feature hints for hidden UI affordances share a
   // global switch (Settings → Feature hints) and per-key "seen" marks.
   const [featureHintPrefs, setFeatureHintPrefs] = useNavigationField("featureHintPrefs");
   // Linked-folder "new user" hint: after adding a normal folder, briefly pulse
@@ -316,7 +316,7 @@ export function useLibraryShellState({ library, t, setFatalAlertAlreadyOpen, set
     };
   }, [setShowFolderCardsWhenRecursive]);
   // Hovering a highlighted affordance for >0.5s dismisses that hint
-  // permanently (shared "all highlights" rule, Serpent-b8a853).
+  // permanently (shared "all highlights" rule).
   const linkedFolderHintShow =
     linkedFolderHintActive && linkedFolderAddHintEligible;
   const beginLinkedFolderHintHover = (): void => {
@@ -374,7 +374,7 @@ export function useLibraryShellState({ library, t, setFatalAlertAlreadyOpen, set
   const [excludeTagFilter, setExcludeTagFilter] = useQueryField("excludeTagFilter");
   const [excludedTagFilter, setExcludedTagFilter] = useQueryField("excludedTagFilter");
   const [includeAiTagFilter, setIncludeAiTagFilter] = useQueryField("includeAiTagFilter");
-  // Serpent-eaxs: tag-management AND search ("包含 N 个标签") splits the tag
+  // tag-management AND search ("包含 N 个标签") splits the tag
   // names into separate clauses (clauses are ANDed; values within one clause
   // are ORed). Any explicit filter-bar edit resets this to "any".
   const [tagFilterMatch, setTagFilterMatch] = useQueryField("tagFilterMatch");
@@ -388,20 +388,20 @@ export function useLibraryShellState({ library, t, setFatalAlertAlreadyOpen, set
   const [widthRange, setWidthRange] = useQueryField("widthRange");
   const [heightRange, setHeightRange] = useQueryField("heightRange");
   const [aspectRatioRange, setAspectRatioRange] = useQueryField("aspectRatioRange");
-  /** Shape/aspect preset OR ranges (Serpent-gp4). */
+  /** Shape/aspect preset OR ranges. */
   const [aspectRatioRanges, setAspectRatioRanges] = useQueryField("aspectRatioRanges");
   // REQ-FILTER-010: resolution buckets filter on the longer edge (long_edge).
   const [longEdgeRange, setLongEdgeRange] = useQueryField("longEdgeRange");
   const [durationRange, setDurationRange] = useQueryField("durationRange");
   const [sortField, setSortField] = useQueryField("sortField");
   const [sortOrder, setSortOrder] = useQueryField("sortOrder");
-  /** Serpent-hm28: null = normal sort; otherwise client shuffle seed. */
+  /** null = normal sort; otherwise client shuffle seed. */
   const [shuffleSeed, setShuffleSeed] = useQueryField("shuffleSeed");
   const [searchOffset, setSearchOffset] = useBrowseField("searchOffset");
   const [searchTotal, setSearchTotal] = useBrowseField("searchTotal");
   const [filteredFolderCountRefreshToken, setFilteredFolderCountRefreshToken] = useBrowseField("filteredFolderCountRefreshToken");
   const [searchSnippets, setSearchSnippets] = useBrowseField("searchSnippets");
-  // Serpent-b8a853: one-time hint for the include-subfolders icon. The hint
+  // one-time hint for the include-subfolders icon. The hint
   // key is per (library, folder scope); the actual flash decision needs the
   // browse canvas mode (folders-only = child-folder cards but zero direct
   // assets) which is computed below with browseCanvasBodyLayout.

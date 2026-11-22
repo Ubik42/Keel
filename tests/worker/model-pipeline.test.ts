@@ -81,7 +81,7 @@ function createSourceFile(root: string, relativePath: string, content = 'model-b
   return abs;
 }
 
-describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
+describe('model asset pipeline (slice A)', () => {
   it('classifies imported T1 model formats as model with no thumbnail artifact', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
@@ -175,7 +175,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
     service.closeAll();
   });
 
-  // Slice E migration (Serpent-hnmg): model extensions joined the thumbnail
+  // Slice E migration: model extensions joined the thumbnail
   // queue because the offscreen GPU renderer now generates their thumbnails.
   // The job kind stays `generate_thumbnail`; the queue routes model jobs to
   // the injected modelThumbnailRenderer instead of sharp/OIIO/FFmpeg.
@@ -209,7 +209,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
     service.closeAll();
   });
 
-  describe('offscreen model thumbnail queue (slice E, Serpent-hnmg)', () => {
+  describe('offscreen model thumbnail queue (slice E)', () => {
     const PNG_BYTES = new Uint8Array([
       0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
       // A minimal valid-ish payload; the signature check only inspects the
@@ -432,7 +432,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
   });
 
 
-  describe('model AI four-view sheet (Serpent-6w40)', () => {
+  describe('model AI four-view sheet', () => {
     const PNG_BYTES = new Uint8Array(VALID_1X1_PNG);
 
     it('renders four views and tiles them into a sheet', async () => {
@@ -603,7 +603,7 @@ describe('model asset pipeline (slice A, Serpent-fu2i)', () => {
       }
       expect(caught).toBeInstanceOf(LibraryServiceError);
       expect((caught as LibraryServiceError).code).toBe('UNSUPPORTED_MEDIA_TYPE');
-      // Serpent-50c466 review F6: the code copy already states the cause, so no
+      // review F6: the code copy already states the cause, so no
       // redundant UNSUPPORTED_FORMAT reason is attached.
       expect((caught as LibraryServiceError).reason).toBeUndefined();
 

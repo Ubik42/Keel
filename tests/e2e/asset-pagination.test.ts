@@ -597,7 +597,7 @@ test("ordinary browsing continuously appends every asset without page controls",
   }
 });
 
-test("bottom-scroll appends assets beyond the first page (Serpent-ws4k)", async () => {
+test("bottom-scroll appends assets beyond the first page", async () => {
   const temporaryRoot = mkdtempSync(
     path.join(tmpdir(), "serpent-pagination-beyond-e2e-"),
   );

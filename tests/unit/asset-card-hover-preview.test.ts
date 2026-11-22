@@ -148,7 +148,7 @@ describe("assetCardKey", () => {
   });
 });
 
-describe("resolveLivePreviewMedia (Serpent-a9n)", () => {
+describe("resolveLivePreviewMedia", () => {
   it("plays a ready GIF (image mediaType) as 'gif' when active", () => {
     expect(
       resolveLivePreviewMedia(true, {

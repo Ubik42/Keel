@@ -5,7 +5,7 @@ import {
   LIBRARY_TRANSFER_MENU_ORDER,
 } from '../../src/renderer/library/library-transfer-menu';
 
-describe('library transfer menu (Serpent-qm6w)', () => {
+describe('library transfer menu', () => {
   it('orders imports before export and library import before library export', () => {
     const items = buildLibraryTransferMenuItems({
       handlers: {

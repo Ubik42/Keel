@@ -101,7 +101,7 @@
   cursor: pointer;
 }
 
-/* Serpent-49f / FILTER-025: hover + open settings = neutral wash only.
+/* FILTER-025: hover + open settings = neutral wash only.
    Accent-soft is reserved for is-active (filter actually enabled). */
 
 .dimension-filter-btn:hover:not(:disabled):not(.is-active),
@@ -153,7 +153,7 @@
   width: min(360px, 78vw);
 }
 
-/* REQ-FILTER-020 / Serpent-77c919: the tag picker has two visible sections
+/* REQ-FILTER-020: the tag picker has two visible sections
    and two fixed footer rows. Only the complete tag collection scrolls; the
    recent shortcuts and footer remain readable while the list moves. */
 
@@ -485,7 +485,7 @@
   cursor: pointer;
 }
 
-/* Serpent-xwi1: breadcrumb hover must use the same hover token as every other
+/* breadcrumb hover must use the same hover token as every other
    clickable shell control (.nav-row, .tool-button, .scope-history-button,
    .nav-disclosure all use --hover). Using --raised painted a solid panel
    surface (opaque white in the light theme) under the crumb, which read as a
@@ -811,7 +811,7 @@
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ui-content-inverse) 18%, transparent);
 }
 
-/* Serpent-aj6: modest selection ring (retest: slightly thicker), no scale. */
+/* modest selection ring (retest: slightly thicker), no scale. */
 
 .dimension-color-swatch.is-active:not(:disabled) {
   border-color: transparent;
@@ -1190,7 +1190,7 @@
 
 /* REQ-FILTER-009/010: dimension preset chips beside the custom range inputs. */
 
-/* FILTER-001 / Serpent-yc9n: category checkboxes + aligned chip rows. */
+/* FILTER-001: category checkboxes + aligned chip rows. */
 
 .format-filter-popover {
   width: min(480px, 90vw);

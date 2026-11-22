@@ -105,7 +105,7 @@ interface GltfJson {
 }
 
 /**
- * Serpent-a5ic: composite separate metalness/roughness maps into the single
+ * composite separate metalness/roughness maps into the single
  * glTF metallicRoughness texture (B = metalness, G = roughness, R/A = 255).
  * Both source maps are expected to be grayscale; they are resized to the
  * metalness map's dimensions. Returns null on any decode/encode failure so the
@@ -194,7 +194,7 @@ export async function buildGlb(input: GlbBuildInput): Promise<GlbBuildOutput> {
     return accessors.length - 1;
   };
 
-  // -- Serpent-a5ic: composite separate metalness/roughness maps ------------
+  //: composite separate metalness/roughness maps ------------
   // The bridge only fills metallicRoughnessTexture when both maps share one
   // file; separate files (common in Max/Maya exports) arrive as
   // metalnessTexture/roughnessTexture indices and are pixel-merged here into

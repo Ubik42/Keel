@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// Asset drag & drop (REQ-DND-001/002 + Serpent-aa3 copy mode)
+// Asset drag & drop (REQ-DND-001/002 copy mode)
 //
 // Pure decision logic for dragging asset cards onto directory-tree targets.
 // The drag payload carries ALL selected asset ids as JSON under
@@ -9,7 +9,7 @@
 // unit-testable without React or the DOM.
 //
 // Copy mode (Option/Alt held): dropEffect is "copy". Folder drops duplicate
-// managed files via copyAssets (Serpent-2vn).
+// managed files via copyAssets.
 // ---------------------------------------------------------------------------
 
 export const MANAGED_ASSETS_DRAG_TYPE = 'application/x-keel-managed-assets';
@@ -25,7 +25,7 @@ export interface DragAssetFact {
 /** Finder/Eagle-style modifier: Option (macOS) / Alt (Windows) = copy. */
 export type DragDropMode = 'move' | 'copy';
 
-/** Platform-correct modifier name for copy-mode toasts (Serpent-2vn). */
+/** Platform-correct modifier name for copy-mode toasts. */
 export function dragCopyModifierLabel(
   platform: 'mac' | 'windows',
 ): 'Option' | 'Alt' {

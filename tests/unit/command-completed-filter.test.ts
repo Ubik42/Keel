@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { shouldEmitCommandCompleted } from '../../src/mcp/command-completed-filter';
 
-describe('shouldEmitCommandCompleted (Serpent-fmbr)', () => {
+describe('shouldEmitCommandCompleted', () => {
   it('emits executed non-read commands', () => {
     expect(shouldEmitCommandCompleted('asset.trash', { trashedCount: 1, operationId: 'op' })).toBe(true);
     expect(shouldEmitCommandCompleted('file.import', { status: 'completed', completion: {} })).toBe(true);

@@ -1,6 +1,6 @@
 /**
  * Model-asset preview resolution and companion-texture mapping (slice A,
- * Serpent-fu2i).
+ *).
  *
  * This module owns every `model` pipeline decision the Worker makes:
  * - preview resolution: a model always resolves to its original source via

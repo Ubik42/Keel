@@ -555,7 +555,7 @@ export function useImageSequenceOperations({ api, library, imageSequenceDialog, 
   // Paste-into-folder entry shared by the keyboard shortcut, Edit menu, and
   // context menus: the clipboard may hold a bitmap image (invisible to the
   // paste event on Windows) or OS file paths — try the image first and fall
-  // back to OS file paste. Serpent-a3de58.
+  // back to OS file paste.
   const dispatchClipboardPaste = useCallback(
     (destination: string | null) => {
       void pasteClipboardImage({

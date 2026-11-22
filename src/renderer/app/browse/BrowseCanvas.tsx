@@ -198,7 +198,7 @@ export function BrowseCanvas({ externalDropActive, handleExternalDragEnter, hand
           }}
           ref={workspaceCanvasRef}
         >
-          {/* Serpent-wgl2: rendered once, mutated directly via ref — a
+          {/* rendered once, mutated directly via ref — a
               per-frame React state would re-render the whole grid. */}
           <div
             className="marquee-selection-box"
@@ -351,8 +351,8 @@ export function BrowseCanvas({ externalDropActive, handleExternalDragEnter, hand
                   })()}
                   </div>
                 )}
-                {/* Serpent-87pd: invisible tail probe. A jump to the end fills
-                    the last window, not pages 0 → 100 → 200. Serpent-6z5r:
+                {/* invisible tail probe. A jump to the end fills
+                    the last window, not pages 0 → 100 → 200. 
                     no spinner or "loading more" copy. */}
                 {browsePagination.hasMorePages && (
                   <div

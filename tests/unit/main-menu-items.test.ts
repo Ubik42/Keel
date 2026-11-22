@@ -64,7 +64,7 @@ function build(overrides?: Partial<Parameters<typeof buildMainMenuSections>[0]>)
   return { actions, sections };
 }
 
-describe("main-menu-items (Serpent-bnah)", () => {
+describe("main-menu-items", () => {
   it("splits the menu bar into stable Windows sections", () => {
     const { sections } = build();
     expect(sections.map((section) => section.id)).toEqual([
@@ -231,7 +231,7 @@ describe("main-menu-items (Serpent-bnah)", () => {
     expect(library?.items?.some((item) => item.id === "library.rename")).toBe(false);
   });
 
-  it("routes paste-image in the File menu to the clipboard-image action (Serpent-a3de58)", () => {
+  it("routes paste-image in the File menu to the clipboard-image action", () => {
     const { actions, sections } = build();
     const file = sections.find((section) => section.id === "file");
     const item = file?.items?.find((candidate) => candidate.id === "file.paste-image");

@@ -167,7 +167,7 @@ export function useVirtualBrowseSession({
       registerSummaryPages(input.firstPage.offset, input.firstPage.items.length);
     }
     virtualLayoutRef.current = nextVirtualLayout;
-    // Serpent-9cfc8c: a first window of 100 is not the full geometry index.
+    // a first window of 100 is not the full geometry index.
     // Publishing it as layout made Masonry/Justified clip the canvas to those
     // 100 cards. Scopes that fit in one page keep that compact array; larger
     // sessions use VirtualBrowseLayout.total for scrollbar height until the

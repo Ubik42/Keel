@@ -152,7 +152,7 @@ export default defineConfig({
   assetsInclude: ['**/*.hdr'],
   build: {
     rollupOptions: {
-      // Multi-page renderer build (slice E, Serpent-hnmg): the main window
+      // Multi-page renderer build (slice E): the main window
       // app plus the minimal offscreen thumbnail page. Both html files land
       // in `.vite/renderer/main_window/`; Main loads the offscreen page by
       // name in dev (Vite multi-page serve) and packaged (loadFile).

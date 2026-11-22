@@ -917,7 +917,7 @@ describe("image sequence persistence", () => {
     expect(trash[0]!.sequence?.frameCount).toBe(3);
   });
 
-  // Serpent-50c466 audit §5.2/§5.3: the sequence guards used to report an
+  // audit §5.2/§5.3: the sequence guards used to report an
   // "invalid import decision"; they are selection/state problems, not imports.
   it("reports a selection error when the frames span folders", async () => {
     const { library, root, service } = fixture();

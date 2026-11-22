@@ -19,12 +19,12 @@ export function toRendererResult(
         displayName: result.library.displayName,
         storageLayout: result.library.storageLayout,
         displayPath: result.library.libraryPath,
-        // Serpent-033e: read-only degrade for newer-schema libraries.
+        // read-only degrade for newer-schema libraries.
         readOnly: result.library.readOnly,
         networkStorage: result.library.networkStorage,
         libraryVersion: result.library.libraryVersion,
         supportedSchemaVersion: result.library.supportedSchemaVersion,
-        // Serpent-verg.5: read-only because the migration is stuck.
+        // read-only because the migration is stuck.
         migrationStuck: result.library.migrationStuck,
         metaDirMigration: result.library.metaDirMigration,
         metaDirMigrationReason: result.library.metaDirMigrationReason,
@@ -103,7 +103,7 @@ export function toRendererResult(
       type: "library.deleted",
       libraryId: result.libraryId,
       displayName: result.displayName,
-      // Serpent-65d837: the library root is gone, but a `.del-*` aside may
+      // the library root is gone, but a `.del-*` aside may
       // still exist; the Renderer shows a deferred-cleanup notice.
       ...(result.pendingAsidePath ? { pendingCleanup: true } : {}),
     });

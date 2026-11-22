@@ -7,7 +7,7 @@ import {
 } from "../../src/renderer/inspector/font-inspector-rows";
 import { extractedVideoMetadataSchema } from "../../src/shared/asset-types";
 
-// Serpent-485aeb：字体 Inspector 的元信息行。
+// 字体 Inspector 的元信息行。
 const scriptLabels = {
   ja: "日文",
   "zh-Hans": "简体中文",

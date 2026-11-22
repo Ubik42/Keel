@@ -50,7 +50,7 @@ function createLibraryWithAsset(service: LibraryService, name: string): {
   };
 }
 
-describe('library sync integration (Serpent-xffq)', () => {
+describe('library sync integration', () => {
   it('builds a snapshot with stable syncIds and content hashes', () => {
     const service = new LibraryService();
     const { libraryId, assetId } = createLibraryWithAsset(service, '同步库');
@@ -117,7 +117,7 @@ describe('library sync integration (Serpent-xffq)', () => {
     service.closeAll();
   });
 
-  it('emits source=sync so the UI can refresh nested folders without another auto-sync (Serpent-7043e1)', () => {
+  it('emits source=sync so the UI can refresh nested folders without another auto-sync', () => {
     const events: Array<{ source?: string; changedCount: number }> = [];
     const service = new LibraryService({
       onAssetsChanged: (event) => events.push(event),
@@ -202,7 +202,7 @@ describe('library sync integration (Serpent-xffq)', () => {
     service.closeAll();
   });
 
-  it('relocates a managed asset into a new folder without rewriting content (Serpent-038ecf)', () => {
+  it('relocates a managed asset into a new folder without rewriting content', () => {
     const service = new LibraryService();
     const { libraryId, assetId } = createLibraryWithAsset(service, '搬路径库');
     const snapshot = service.syncSnapshot(libraryId);
@@ -219,7 +219,7 @@ describe('library sync integration (Serpent-xffq)', () => {
     service.closeAll();
   });
 
-  it('prunes empty source folders after relocating a nested directory to the root (Serpent-546f1a)', () => {
+  it('prunes empty source folders after relocating a nested directory to the root', () => {
     const service = new LibraryService();
     const { libraryId, libraryPath, assetId } = createLibraryWithAsset(service, '空目录残留库');
     const syncId = service.syncSnapshot(libraryId).assets[0]!.syncId;

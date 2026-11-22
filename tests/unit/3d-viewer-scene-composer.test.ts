@@ -29,7 +29,7 @@ function fakeRenderer() {
   } as unknown as WebGLRenderer;
 }
 
-describe('scene-composer (Serpent-qvc6 / shared render core)', () => {
+describe('scene-composer (shared render core)', () => {
   it('applies neutral tone mapping with tone-mapping exposure pinned neutral', () => {
     const renderer = fakeRenderer();
     createSceneComposer({ renderer });

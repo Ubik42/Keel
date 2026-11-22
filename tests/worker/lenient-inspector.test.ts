@@ -1,4 +1,4 @@
-// Serpent-verg.2: inspector-side read paths (tags/metadata/AI
+// inspector-side read paths (tags/metadata/AI
 // content) must keep working on an older library whose tables or columns are
 // missing — degraded to empty/default shapes instead of failing (0031 §1).
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
@@ -93,7 +93,7 @@ function reopenAfterMutating(
   service.openLibrary(libraryPath);
 }
 
-describe('inspector read paths lenient read (Serpent-verg.2)', () => {
+describe('inspector read paths lenient read', () => {
   it('tags degrade to empty on pre-tag libraries', () => {
     const root = temporaryRoot();
     const { service, libraryId, libraryPath } = libraryWithOneAsset(root, 'InspectorNoTags');

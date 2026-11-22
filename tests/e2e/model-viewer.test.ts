@@ -9,7 +9,7 @@ import { resolveElectronExecutablePath } from "./electron-test-helpers";
 test.describe.configure({ timeout: 120_000 });
 
 /**
- * 3D model viewer journeys (0030 slice C, Serpent-qvc6).
+ * 3D model viewer journeys (0030 slice C).
  *
  * Decode proof per the core-journey gate: stats are computed from the loaded
  * BufferGeometry after a successful parse, so "三角面 12" for a cube is
@@ -144,7 +144,7 @@ test("opens an FBX model through the conversion pipeline", async () => {
 
     // Conversion succeeded: no fallback notice and real geometry stats.
     // Non-blocking 3D notices now go through the workspace Info stack
-    // (MODEL-004 / Serpent-osr0), not a viewer-bottom hang banner.
+    // (MODEL-004), not a viewer-bottom hang banner.
     const fallbackNotice = window.locator(".workspace-notice-stack");
     if ((await fallbackNotice.count()) > 0) {
       console.log(`[fbx-notice] ${await fallbackNotice.allInnerTexts()}`);

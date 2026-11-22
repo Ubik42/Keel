@@ -21,15 +21,15 @@ export interface CanvasPreferences {
     readonly name: boolean;
     readonly size: boolean;
     readonly date: boolean;
-    /** Grid tile captions: width × height when metadata exists (Serpent-rzqj). */
+    /** Grid tile captions: width × height when metadata exists. */
     readonly dimensions: boolean;
-    /** GIF / VIDEO / TEXT type chip (Serpent-cs1). */
+    /** GIF / VIDEO / TEXT type chip. */
     readonly badgeType: boolean;
     readonly badgeDuration: boolean;
     readonly badgeSource: boolean;
-    /** Non-image extension chip, bottom-left (Serpent-cs1). */
+    /** Non-image extension chip, bottom-left. */
     readonly badgeExtension: boolean;
-    /** WebDAV sync mark on the thumbnail corner (Serpent-871f34). */
+    /** WebDAV sync mark on the thumbnail corner. */
     readonly badgeSync: boolean;
   };
   /** Audio assets play in-place on hover (Keel hover 音频). */
@@ -48,7 +48,7 @@ export const CARD_SIZE_MIN = 96;
 // 1800 keeps two columns on a 3840-wide canvas: (3840 + 14) / (1800 + 14) > 2.
 // 1920 collapses to one column because that ratio falls just under 2.
 export const CARD_SIZE_MAX = 1800;
-// Serpent-akz originally used this as the range-input step (2px). Serpent-7ny
+// originally used this as the range-input step (2px).
 // moved the browse slider onto width-aligned discrete column stops
 // (`card-size-stops.ts`); keep the helper for clamp math / legacy tests.
 export const CARD_SIZE_STEP = 2;
@@ -141,7 +141,7 @@ function clampCardSize(value: number): number {
 
 /**
  * Number of distinct stops the card-size slider offers across its full
- * range at a given step (Serpent-akz). Exported so a regression test can
+ * range at a given step. Exported so a regression test can
  * assert the slider actually got finer, not just that the constant changed.
  */
 export function cardSizeSliderStepCount(
@@ -314,7 +314,7 @@ export function shouldShowGridDimensions(
   // preference gate so loaded cards and layout placeholders cannot drift:
   // PDF/HTML/text/audio metadata must never turn into a fake pixel caption, and
   // a 3D model's bounding-box size is not a resolution users read off a card
-  // (Serpent-b1b0f2).
+  //.
   if (media.mediaType != null) {
     return mediaTypeHasPixelResolution(media.mediaType);
   }

@@ -1,6 +1,6 @@
 /**
  * Persist browse scope + selection across app restarts (localStorage).
- * Extracted from App.tsx for Serpent-uye — pure read/write/build helpers.
+ * Extracted from App.tsx — pure read/write/build helpers.
  */
 
 import {

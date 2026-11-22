@@ -2,7 +2,7 @@
  * Caption band sizing constants for justified (flat/tiled) cards.
  *
  * Historically used to reserve row height so flex did not shrink the preview
- * (Serpent-omn / CANVAS-026). Serpent-5p45 locks preview height via
+ * (CANVAS-026). locks preview height via
  * `--justified-preview-height` instead; this helper remains for measurements
  * and regression tests.
  *
@@ -51,7 +51,7 @@ export function scaleCaptionBandPx(
 
 /**
  * Estimated caption band height for the given visible lines.
- * Not used to drive preview geometry after Serpent-5p45.
+ * Not used to drive preview geometry.
  */
 export function resolveJustifiedCaptionBandPx(
   lines: JustifiedCaptionLines,

@@ -2,7 +2,7 @@
 
 .inspector-pane {
   /* overflow on scroll children so pane box-shadow is not clipped
-     (Serpent-zcyg hierarchical elevation). */
+     (hierarchical elevation). */
   position: relative;
   z-index: 2;
   display: flex;
@@ -195,10 +195,10 @@
   outline-offset: -2px;
 }
 
-/* Compact hero — preview centered; title/meta full-width below (Serpent-hhy0).
+/* Compact hero — preview centered; title/meta full-width below.
    Must not shrink inside `.inspector-content` flex column: tech-bar uses
    margin-top:auto and would otherwise crush the hero so the filename paints
-   over the tags header (Serpent-6uyp / INSPECT-012). */
+   over the tags header (INSPECT-012). */
 
 .inspector-hero-compact {
   display: flex;
@@ -209,7 +209,7 @@
   padding: 4px 0 12px;
   border-bottom: 1px solid var(--ui-border-subtle);
   min-height: min-content;
-  /* Allow hero preview card shadow to paint (Serpent-zcyg). */
+  /* Allow hero preview card shadow to paint. */
   overflow: visible;
 }
 
@@ -222,7 +222,7 @@
   max-height: min(360px, 45vh);
   align-items: center;
   justify-content: center;
-  /* Visible so hero image elevation shadow is not clipped (Serpent-zcyg). */
+  /* Visible so hero image elevation shadow is not clipped. */
   overflow: visible;
   border: 0;
   border-radius: 0;
@@ -603,7 +603,7 @@
   color: var(--ui-content-tertiary);
 }
 
-/* Serpent-ijfm: middle card centered; front top-right, back bottom-left. */
+/* middle card centered; front top-right, back bottom-left. */
 
 .inspector-hero-stack-layer[data-depth="0"] {
   transform: translate(7px, -7px);
@@ -887,7 +887,7 @@
 
 /* Inspector 内的小标签统一使用次要色；accent 留给真正可点的控件。 */
 
-/* Serpent-qto / Serpent-goe: empty/single-line height matches .inspector-input
+/* empty/single-line height matches .inspector-input
    (28px); grows toward max-height once content wraps. */
 
 .inspector-textarea {

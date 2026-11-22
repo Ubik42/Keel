@@ -1,5 +1,5 @@
 /**
- * Serpent-noz: classify local image luminance so viewer chrome (<prev/next>)
+ * classify local image luminance so viewer chrome (<prev/next>)
  * can flip to light-on-dark or dark-on-light for readability.
  *
  * Sampling prefers edge strips where those controls sit (left / right).

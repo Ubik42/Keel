@@ -90,7 +90,7 @@ export interface CreateArtifactResponseOptions {
 /**
  * Build a seekable protocol response while reading only the requested video byte range.
  *
- * Serpent-140fe2 follow-up: opened asynchronously on the libuv threadpool.
+ * opened asynchronously on the libuv threadpool.
  * The previous synchronous openSync/fstatSync ran on the Main thread and
  * serialized entire thumbnail bursts behind cold metadata reads — visible as
  * multi-second asset.search resolution delays during fast scrolling on large

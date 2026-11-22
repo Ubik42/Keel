@@ -6,7 +6,7 @@ import {
 export type ResizablePanel = "nav" | "inspector";
 
 /**
- * REQ-SHELL-011 复验（Serpent-bhv）：段落感死区/hysteresis 的唯一幅度来源。
+ * REQ-SHELL-011 复验：段落感死区/hysteresis 的唯一幅度来源。
  * 拖小方向（越过最小宽度后还要再拖这么多才触发隐藏）与拖出方向（隐藏态往外拖
  * 这么多才重新出现）共用同一个幅度，保证双向手感一致，而不是两个互不相关的
  * 魔数（历史实现中隐藏死区是 40、边缘拖出死区是 48，彼此无关联）。

@@ -25,7 +25,7 @@ const MINIMAL_PDF = Buffer.from(
   'latin1',
 );
 
-/** Multi-page PDF (hand-assembled, correct xref offsets) — Serpent-8ca259. */
+/** Multi-page PDF (hand-assembled, correct xref offsets). */
 function buildMultiPagePdf(pageCount: number): Buffer {
   const parts: string[] = ["%PDF-1.4\n"];
   const offsets: number[] = [0];
@@ -60,7 +60,7 @@ function buildMultiPagePdf(pageCount: number): Buffer {
   return Buffer.from(parts.join("") + xref, "latin1");
 }
 
-test("opens a multi-page PDF with one rendered wrap per page, no placeholder leftovers (Serpent-8ca259)", async () => {
+test("opens a multi-page PDF with one rendered wrap per page, no placeholder leftovers", async () => {
   const temporaryRoot = mkdtempSync(path.join(tmpdir(), "serpent-pdf-multipage-e2e-"));
   const libraryName = "PDF 多页验收";
   const libraryPath = path.join(temporaryRoot, libraryName);
@@ -330,7 +330,7 @@ test("zooms the PDF viewer via toolbar and Ctrl+wheel, pans by drag (Keel P2 工
   }
 });
 
-test("opens a PDF asset in the scrollable page viewer (Serpent-8ca259)", async () => {
+test("opens a PDF asset in the scrollable page viewer", async () => {
   const temporaryRoot = mkdtempSync(path.join(tmpdir(), "serpent-pdf-viewer-e2e-"));
   const libraryName = "PDF 查看验收";
   const libraryPath = path.join(temporaryRoot, libraryName);
@@ -389,7 +389,7 @@ test("opens a PDF asset in the scrollable page viewer (Serpent-8ca259)", async (
   }
 });
 
-test("opens an HTML asset in the embedded browser viewer (Serpent-8ca259)", async () => {
+test("opens an HTML asset in the embedded browser viewer", async () => {
   const temporaryRoot = mkdtempSync(path.join(tmpdir(), "serpent-html-viewer-e2e-"));
   const libraryName = "HTML 查看验收";
   const libraryPath = path.join(temporaryRoot, libraryName);

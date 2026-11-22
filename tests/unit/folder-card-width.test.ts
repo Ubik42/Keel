@@ -4,7 +4,7 @@ import { ASSET_GRID_GAP_PX } from "../../src/renderer/workbench/collection/asset
 import { cardSizeFillingColumns } from "../../src/renderer/browse/card-size-stops";
 import { masonryAlignedFolderWidthPx } from "../../src/renderer/browse/folder-card-width";
 
-describe("masonryAlignedFolderWidthPx (Serpent-l67w)", () => {
+describe("masonryAlignedFolderWidthPx", () => {
   it("matches the flush masonry column width for the preferred card size", () => {
     const available = 900;
     const preferred = 160;

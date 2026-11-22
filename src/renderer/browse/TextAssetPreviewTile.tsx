@@ -101,7 +101,7 @@ export function TextAssetPreviewTile({
     // Worker read for every mounted card; only cards entering the viewport
     // need a snippet. The Inspector hero is visible immediately and follows
     // the same path. This keeps text previews from competing with thumbnails,
-    // search and viewer requests in the shared Worker queue (Serpent-29125f).
+    // search and viewer requests in the shared Worker queue.
     const observer = new IntersectionObserver(
       (entries) => {
         if (!entries.some((entry) => entry.isIntersecting)) return;

@@ -8,7 +8,7 @@ export type ImportNoConflictDecisions = {
 
 /**
  * Worker-test helper: execute an import even when library-level content
- * duplicates or name conflicts appear (Serpent-liyu / library dedup).
+ * duplicates or name conflicts appear (library dedup).
  *
  * Default decisions create a second managed copy so fixtures that need N
  * distinct assets with identical bytes still land on disk. Product UI still

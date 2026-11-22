@@ -85,7 +85,7 @@ function applyWindowControl(
 
 /**
  * Register frameless Windows caption IPC and wire maximize state events
- * onto the given main window (Serpent-znex).
+ * onto the given main window.
  */
 export function registerWindowControls(options: {
   getMainWindow: () => BrowserWindow | undefined;

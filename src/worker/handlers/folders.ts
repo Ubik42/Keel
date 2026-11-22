@@ -171,12 +171,12 @@ export async function executeFolderWorkerCommand(
         parentFolderId: request.command.parentFolderId,
         showIgnored: request.command.showIgnored === true,
       });
-      // Serpent-d0nv: folder covers are direct assets of child folders —
+      // folder covers are direct assets of child folders —
       // outside the current view's visible wave (asset.list only schedules
       // the current folder's assets). Schedule the cover candidates at the
       // cover tier (400 > visible 350) so folder cards get covers before the
       // rest of the library's p50 path-alphabetical backfill. maxIds = up to
-      // 4 candidates per child folder (Serpent-9021d1).
+      // 4 candidates per child folder.
       const coverAssetIds = entries.flatMap((entry) => entry.coverAssetIds);
       if (coverAssetIds.length > 0) {
         hooks.scheduleCoverThumbnails(
@@ -206,7 +206,7 @@ export async function executeFolderWorkerCommand(
         refs: request.command.refs,
       });
       // Mirror the browse-entries behavior: schedule cover candidates so
-      // search-result folder cards get their previews too (Serpent-f74e48).
+      // search-result folder cards get their previews too.
       const coverAssetIds = entries.flatMap((entry) => entry.coverAssetIds);
       if (coverAssetIds.length > 0) {
         hooks.scheduleCoverThumbnails(

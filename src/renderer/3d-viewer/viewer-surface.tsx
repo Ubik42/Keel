@@ -1,5 +1,5 @@
 /**
- * ModelViewerSurface — the interactive 3D viewport (slice C, Serpent-qvc6).
+ * ModelViewerSurface — the interactive 3D viewport (slice C).
  *
  * Spec coverage: 3D-01 orbit controls (LMB rotate / wheel zoom / RMB pan /
  * dblclick reset, damping), 3D-02 auto-fit on open, 3D-03 polar + distance
@@ -253,7 +253,7 @@ export function ModelViewerSurface(props: ModelViewerSurfaceProps) {
     // 3D-01: wheel zoom keeps the cursor's world point under the cursor.
     controls.zoomToCursor = true;
     // Right-drag and Ctrl+left-drag rotate the HDRI light source
-    // (Serpent-v4jt / Serpent-xjcy), so the right mouse button is not a camera
+    //, so the right mouse button is not a camera
     // control and Ctrl+left is reserved for the trackpad gesture.
     controls.mouseButtons = {
       LEFT: MOUSE.ROTATE,
@@ -478,13 +478,13 @@ export function ModelViewerSurface(props: ModelViewerSurfaceProps) {
     composerRef.current?.setLightIntensity(lightIntensity);
   }, [lightIntensity, loadEpoch]);
 
-  // Right-drag environment rotation (Serpent-v4jt): rotates the light source
+  // Right-drag environment rotation: rotates the light source
   // around the model; re-applied after a retry rebuilds the composer.
   useEffect(() => {
     composerRef.current?.setEnvironmentRotation(environmentYaw);
   }, [environmentYaw, loadEpoch]);
 
-  // Display mode (Serpent-fkhe): applied to the live scene; re-applied after
+  // Display mode: applied to the live scene; re-applied after
   // a retry rebuilds the composer.
   useEffect(() => {
     composerRef.current?.setDisplayMode(displayMode);
@@ -551,7 +551,7 @@ export function ModelViewerSurface(props: ModelViewerSurfaceProps) {
       )
     : null;
 
-  // MODEL-004 / Serpent-osr0: route non-blocking notices to the shell Info
+  // MODEL-004: route non-blocking notices to the shell Info
   // stack once per message per load, instead of hanging under the viewport.
   const emittedInfoRef = useRef(new Set<string>());
   useEffect(() => {

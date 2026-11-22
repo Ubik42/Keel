@@ -53,7 +53,7 @@ export function dominantColorMetrics(hex: string): DominantColorMetrics {
  * no randomness means identical content always produces identical JSON.
  *
  * The histogram lives in flat typed arrays instead of a per-pixel `Map`
- * (Serpent-3a9f1c). The previous shape paid one hash lookup plus a bucket
+ *. The previous shape paid one hash lookup plus a bucket
  * object per pixel, so extraction time tracked the decoded pixel count even
  * though only 4096 quantized bins can ever exist. Output is unchanged: the
  * same bins, the same count/key ordering and the same k-means updates, only

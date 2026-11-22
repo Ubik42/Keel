@@ -5,7 +5,7 @@ import {
   resolvePendingImportFrame,
 } from "../../src/main/ingestion/pending-import-frame";
 
-// Serpent-866c20：导入前预览的候选帧解析（Renderer 只给 offerId + 帧号）。
+// 导入前预览的候选帧解析（Renderer 只给 offerId + 帧号）。
 describe("pending import frame resolution", () => {
   const sequences = [
     { firstFrame: 1, framePaths: ["/tmp/a/frame_001.png", "/tmp/a/frame_002.png"] },

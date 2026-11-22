@@ -32,7 +32,7 @@ const companionMap = new Map<string, ModelCompanionAsset>([
   ['props/robot/tex/normal.png', companion('props/robot/tex/normal.png', 'asset-normal-subdir')],
 ]);
 
-describe('url-remap (Serpent-qvc6 / 3D-12)', () => {
+describe('url-remap (3D-12)', () => {
   it('builds keel://preview and keel://source URLs', () => {
     expect(keelPreviewUrl('lib-1', 'art-9')).toBe(
       'keel://preview/lib-1/art-9',

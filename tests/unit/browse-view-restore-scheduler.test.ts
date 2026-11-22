@@ -82,7 +82,7 @@ function createScrollElement(initial: {
   return element as unknown as HTMLElement & typeof element;
 }
 
-describe("scheduleBrowseViewRestore (VIEWER-001 / Serpent-bd481f)", () => {
+describe("scheduleBrowseViewRestore (VIEWER-001)", () => {
   it("does not finish at the top when the first frames still have a collapsed scroll extent", () => {
     const frames = installAnimationFrameQueue();
     const canvas = createScrollElement({ clientHeight: 0, scrollHeight: 0 });

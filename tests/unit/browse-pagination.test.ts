@@ -63,7 +63,7 @@ const rankedDefinition: BrowsePageDefinition = {
   rankedAssetIds: ["rank-1", "rank-2", "rank-3", "rank-4"],
 };
 
-describe("fetchBrowseScopeIds (Serpent-ws4k select-all id set)", () => {
+describe("fetchBrowseScopeIds (select-all id set)", () => {
   it("uses the complete semantic ranking snapshot for scope selection", async () => {
     const searchAssets = vi.fn();
     const api = { searchAssets } as unknown as KeelLibraryApi;
@@ -106,7 +106,7 @@ describe("fetchBrowseScopeIds (Serpent-ws4k select-all id set)", () => {
   });
 });
 
-describe("fetchBrowseLayout (Serpent-sa65 compact geometry index)", () => {
+describe("fetchBrowseLayout (compact geometry index)", () => {
   it("does not replace semantic order with an ordinary search layout", async () => {
     const searchAssets = vi.fn();
     const api = { searchAssets } as unknown as KeelLibraryApi;
@@ -294,7 +294,7 @@ describe("browse tail sentinel (Serpent-performance)", () => {
   });
 });
 
-describe("fetchBrowseScopeAssetIdsGuarded (Serpent-ws4k select-all race)", () => {
+describe("fetchBrowseScopeAssetIdsGuarded (select-all race)", () => {
   it("discards the id set when the generation changes during await", async () => {
     let generation = 1;
     const fetch = vi.fn(async () => ["stale-a", "stale-b"]);
@@ -344,7 +344,7 @@ describe("fetchBrowseScopeAssetIdsGuarded (Serpent-ws4k select-all race)", () =>
   });
 });
 
-describe("registerBrowseSearchPage (Serpent-ws4k)", () => {
+describe("registerBrowseSearchPage", () => {
   it("registers the semantic ID snapshot as the page source", () => {
     const beginPage = vi.fn();
     registerBrowseSearchPage(beginPage, {
@@ -425,7 +425,7 @@ describe("registerBrowseSearchPage (Serpent-ws4k)", () => {
   });
 });
 
-describe("discarded browse-window pages (Serpent-87pd)", () => {
+describe("discarded browse-window pages", () => {
   it("ignores an empty total-0 response that would otherwise shrink a known scope", () => {
     expect(
       isDiscardedBrowseWindowPage({ items: [], total: 0 }, 500, 7000),

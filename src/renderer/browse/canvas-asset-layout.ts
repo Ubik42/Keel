@@ -35,7 +35,7 @@ const DEFAULT_JUSTIFIED_CAPTION_BAND_PX = resolveJustifiedCaptionBandPx({
 /**
  * Browse-session geometry is a snapshot. Live AssetSummary patches (image
  * header probe, video ffprobe) must win so cards reflow without a full reload
- * (Serpent-9c9f97).
+ *.
  */
 export function overlayLiveAssetGeometry(
   layout: readonly BrowseLayoutEntry[],
@@ -192,7 +192,7 @@ export function layoutMasonryAssetRects(
 
 /**
  * Tiled (justified) rows reserve one caption band per row: the tallest band any
- * card in that row needs (Serpent-b1b0f2). A row whose assets all lack a
+ * card in that row needs. A row whose assets all lack a
  * resolution line therefore shrinks, while a row containing one card with
  * resolution still keeps every card in it aligned.
  */

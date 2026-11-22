@@ -86,7 +86,7 @@ describe('Library Worker public error boundary', () => {
     }
   });
 
-  it('maps sync connection failures to a readable reason (Serpent-xffq)', () => {
+  it('maps sync connection failures to a readable reason', () => {
     expect(publicErrorForWorkerFailure(
       new RemoteStorageError('AUTH_FAILED', '认证失败：用户名或密码不正确。'),
     )).toEqual({

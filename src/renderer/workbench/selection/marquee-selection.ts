@@ -1,7 +1,7 @@
 /**
  * Pure set-operation helpers for blank-drag marquee selection (REQ-SELECT-001).
  *
- * Modifier semantics are platform-aware (Serpent-b44c): macOS uses ⌘ only for
+ * Modifier semantics are platform-aware: macOS uses ⌘ only for
  * toggle; Windows uses Ctrl. Shift always unions.
  */
 

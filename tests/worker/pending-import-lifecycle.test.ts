@@ -120,7 +120,7 @@ describe('pending import lifecycle', () => {
     service.closeAll();
   });
 
-  it('treats cancelImport of a pending conflict plan as abandon (Serpent-224ac8)', () => {
+  it('treats cancelImport of a pending conflict plan as abandon', () => {
     const root = temporaryRoot();
     const source = path.join(root, 'same.png');
     writeFileSync(source, 'incoming');

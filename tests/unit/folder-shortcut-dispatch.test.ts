@@ -13,7 +13,7 @@ const names = new Map([
 
 const resolveName = (id: string) => names.get(id);
 
-describe("resolveFolderShortcutAction (Serpent-vf8x)", () => {
+describe("resolveFolderShortcutAction", () => {
   it("create-subfolder uses focused managed nav folder", () => {
     expect(
       resolveFolderShortcutAction({
@@ -123,7 +123,7 @@ describe("resolveFolderShortcutAction (Serpent-vf8x)", () => {
       currentName: "Beta",
     });
 
-    // 2026-09-19（Serpent-d7acfa）：多选文件夹卡片的回收站不再被忽略，
+    // 2026-09-19：多选文件夹卡片的回收站不再被忽略，
     // 而是返回批量目标（旧行为是 none）。
     expect(
       resolveFolderShortcutAction({
@@ -185,7 +185,7 @@ describe("resolveFolderShortcutAction (Serpent-vf8x)", () => {
     ).toEqual({ type: "none" });
   });
 
-  // Serpent-d7acfa：多选文件夹卡片时，回收站 / 硬盘删除对全部选中项生效；
+  // 多选文件夹卡片时，回收站 / 硬盘删除对全部选中项生效；
   // 重命名仍然只对单个目标生效（不猜改哪个名字）。
   it("targets every selected folder card for trash and disk delete", () => {
     const base = {

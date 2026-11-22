@@ -7,7 +7,7 @@ function trashHierarchyKey(
   return `${trashedAt}\0${relativePath ?? ''}`;
 }
 
-/** Map worker tombstones to browse canvas folder cards (Serpent-l4nl / 6pcd / whvm). */
+/** Map worker tombstones to browse canvas folder cards (6pcd / whvm). */
 export function trashedFoldersToBrowseEntries(
   folders: readonly TrashedFolderSummary[],
 ): FolderBrowseEntry[] {
@@ -48,7 +48,7 @@ export function trashedFoldersToBrowseEntries(
         trashHierarchyKey(folder.trashedAt, folder.relativePath),
       ) ?? 0,
     coverArtifactIds: folder.coverArtifactIds ?? [],
-    // Serpent-d0nv: trashed covers are never scheduled for generation, so the
+    // trashed covers are never scheduled for generation, so the
     // cover-candidate asset set stays empty for trash cards.
     coverAssetIds: [],
   }));

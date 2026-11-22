@@ -6,7 +6,7 @@ import { HDRI_PRESETS } from '../../shared/hdri-presets';
 
 /**
  * Bundled renderer asset serving for the `keel://app-assets` route
- * (slice C, Serpent-qvc6).
+ * (slice C).
  *
  * Why this exists: three r185 loaders use `fetch`, and in the packaged app
  * the renderer runs from `file://` where fetch is blocked — so `.hdr`

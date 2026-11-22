@@ -1,4 +1,4 @@
-/** Serpent-sa65: page math and real-summary merging for virtualized browse. */
+/** page math and real-summary merging for virtualized browse. */
 
 import type { AssetSummary, BrowseLayoutEntry } from "../../shared/asset-types";
 import {
@@ -141,7 +141,7 @@ export function mergeRankedBrowseLayoutPage(input: {
 }
 
 /**
- * First-paint card copy from the compact layout index (Serpent-l2at / Serpent-joz6).
+ * First-paint card copy from the compact layout index.
  *
  * Returns undefined for a geometry placeholder: a slot whose identity the index
  * has not resolved yet must not become a card at all. Rendering a shadow card
@@ -247,7 +247,7 @@ export function compactBrowseLayoutIsComplete(
 
 /**
  * Next page to fetch when the compact layout index is still incomplete
- * (Serpent-9cfc8c). Tail-jump pagination assumes full scrollbar geometry;
+ *. Tail-jump pagination assumes full scrollbar geometry;
  * without it, only sequential windows can grow the visible canvas.
  */
 export function nextUnfilledBrowsePageOffset(

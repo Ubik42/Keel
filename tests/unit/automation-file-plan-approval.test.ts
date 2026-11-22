@@ -473,7 +473,7 @@ describe('Desktop automation file-plan approval', () => {
   });
 });
 
-describe('MCP plan auto-approval (Serpent-8b5b.8 regression: asset_trash/file_import hang)', () => {
+describe('MCP plan auto-approval (asset_trash/file_import hang)', () => {
   it('skips the desktop confirm and still builds the plan proof for MCP source', async () => {
     const worker = new RecordingWorker(plannedResult);
     let confirmCalls = 0;

@@ -1,5 +1,5 @@
 /**
- * Serpent-485aeb: read font metadata from a file on disk.
+ * read font metadata from a file on disk.
  *
  * `font-metadata.ts` is a pure byte parser; this wrapper owns the filesystem
  * side (size guard + read) so both the font thumbnail pipeline and the
@@ -54,7 +54,7 @@ export function fontSampleQuerySuffix(metadata: FontMetadata | null): string {
   return `&${params.toString()}`;
 }
 
-/** Inspector fields derived from a parsed font (Serpent-485aeb). */
+/** Inspector fields derived from a parsed font. */
 export interface ExtractedFontMetadataFields {
   readonly fontFamily: string | null;
   readonly fontSubfamily: string | null;

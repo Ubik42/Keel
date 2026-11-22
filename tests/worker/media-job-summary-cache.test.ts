@@ -1,4 +1,4 @@
-// Serpent-e97c00: the task panel reads media job counts on every tick and on
+// the task panel reads media job counts on every tick and on
 // every completion event. That count query walks the whole media job history
 // (about 110 ms on a 43k-asset library), so the service serves it from a summary
 // cache validated by the durable change sequences. These tests pin the wiring:
@@ -59,7 +59,7 @@ afterEach(() => {
   }
 });
 
-describe('media job status summary cache (Serpent-e97c00)', () => {
+describe('media job status summary cache', () => {
   it('serves repeated reads from the summary and agrees with the SQL path', () => {
     const root = temporaryRoot();
     const service = newService();

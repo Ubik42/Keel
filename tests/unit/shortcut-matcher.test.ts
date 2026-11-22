@@ -252,7 +252,7 @@ describe('注册表定义：标签与匹配同源（REQ-COMMAND-002 不漂移）
     ).toBe(false);
   });
 
-  it('asset.rename：Windows 上 code/keyCode 回退命中 F2（Serpent-g8u9）', () => {
+  it('asset.rename：Windows 上 code/keyCode 回退命中 F2', () => {
     const spec = specOf('asset.rename');
     expect(
       matchesShortcut(

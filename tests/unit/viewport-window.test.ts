@@ -105,7 +105,7 @@ describe("columnWindow", () => {
   });
 });
 
-describe("quantizeCanvasViewportOffsetPx (Serpent-oq86)", () => {
+describe("quantizeCanvasViewportOffsetPx", () => {
   it("snaps fractional layout edges to whole CSS pixels", () => {
     expect(quantizeCanvasViewportOffsetPx(10.4)).toBe(10);
     expect(quantizeCanvasViewportOffsetPx(10.5)).toBe(11);
@@ -113,7 +113,7 @@ describe("quantizeCanvasViewportOffsetPx (Serpent-oq86)", () => {
   });
 });
 
-describe("viewportOverscanPx (Serpent-1s3d)", () => {
+describe("viewportOverscanPx", () => {
   it("keeps at least five viewports of runway so a fast flick cannot outrun the window", () => {
     expect(viewportOverscanPx(900)).toBeGreaterThanOrEqual(4500);
     expect(viewportOverscanPx(1200)).toBeGreaterThanOrEqual(6000);
@@ -130,7 +130,7 @@ describe("viewportOverscanPx (Serpent-1s3d)", () => {
 /**
  * Coverage of [viewStart, viewEnd] by the cards a stale `columnWindow`
  * still has mounted. A positive gap is the truncated white band after a
- * fast flick (Serpent-1s3d).
+ * fast flick.
  */
 function coverageGapForSlice(
   heights: readonly number[],
@@ -158,7 +158,7 @@ function coverageGapForSlice(
   return Math.max(0, visibleStart - viewStart) + Math.max(0, viewEnd - visibleEnd);
 }
 
-describe("windowed viewport coverage (Serpent-1s3d)", () => {
+describe("windowed viewport coverage", () => {
   it("leaves a truncated white band when a 1200px overscan window lags a fast flick", () => {
     const heights = Array.from({ length: 80 }, () => 230);
     const previousScroll = 2000;
@@ -194,7 +194,7 @@ describe("windowed viewport coverage (Serpent-1s3d)", () => {
   });
 });
 
-describe("itemIntersectsVisibleRange (Serpent-614293)", () => {
+describe("itemIntersectsVisibleRange", () => {
   it("keeps a row that is clipping off the viewport top as visible media", () => {
     expect(itemIntersectsVisibleRange(400, 250, 500, 1300)).toBe(true);
   });

@@ -98,7 +98,7 @@ function formatBytes(bytes: number) {
   return `${(bytes / 1024 ** 3).toFixed(1)} GB`;
 }
 
-// Serpent-4bdd26 收编：Inspector 每次渲染格式化多个日期，缓存 formatter。
+// 收编：Inspector 每次渲染格式化多个日期，缓存 formatter。
 const inspectorDateFormatter = new Intl.DateTimeFormat("zh-CN", {
   year: "numeric",
   month: "2-digit",
@@ -227,7 +227,7 @@ function InspectorHeroSinglePreview({
 }: {
   asset: AssetSummary;
   library: RendererLibrarySummary | null;
-  /** Ready GIF/video resolution to loop-play (Serpent-a9n); null = static only. */
+  /** Ready GIF/video resolution to loop-play; null = static only. */
   livePreview?: PreviewResolution | null;
   api?: KeelLibraryApi | null;
   cardFeelEnabled?: boolean;
@@ -508,7 +508,7 @@ function InspectorHero({
   infoParts: string[];
   library: RendererLibrarySummary | null;
   selectionCount: number;
-  /** Serpent-a9n: only ever passed/used for single selection. */
+  /** only ever passed/used for single selection. */
   livePreview?: PreviewResolution | null;
   api?: KeelLibraryApi | null;
   cardFeelEnabled?: boolean;
@@ -567,7 +567,7 @@ function InspectorHero({
       <strong className="inspector-hero-title" data-hover-tip={title}>
         {isMulti ? (
           <>
-            {/* Serpent-poly1: name 可缩略、计数后缀不缩略，保证「等 N 个文件」始终可见。 */}
+            {/* name 可缩略、计数后缀不缩略，保证「等 N 个文件」始终可见。 */}
             <span className="inspector-multi-name">{asset.displayName}</span>
             <span className="inspector-multi-count">
               {t("inspector.multiSelectionCount", { count: selectionCount })}
@@ -676,7 +676,7 @@ export const InspectorPanel = memo(function InspectorPanel(props: InspectorPanel
     });
   }, [library?.libraryId, libraryId, selectedAsset, selectedAssets]);
 
-  // Serpent-a9n: single-selection GIF/video loops in the Inspector hero;
+  // single-selection GIF/video loops in the Inspector hero;
   // multi-selection never plays (isPreviewable is gated on selectionCount < 2,
   // independent of the canvas's own hover-preview so hovering an unrelated
   // card elsewhere never interrupts this asset's Inspector preview).
@@ -742,7 +742,7 @@ export const InspectorPanel = memo(function InspectorPanel(props: InspectorPanel
     }
   }, [showTagInput]);
 
-  // REQ-VIEW-003 / CU-D8 / Serpent-i07: fetch extracted metadata for video /
+  // REQ-VIEW-003 / CU-D8: fetch extracted metadata for video /
   // audio tech lines, GIF frames, and embedded image details. Display is derived
   // from cache identity so selection changes do not sync-setState.
   useEffect(() => {
@@ -755,7 +755,7 @@ export const InspectorPanel = memo(function InspectorPanel(props: InspectorPanel
     const isEmbeddedImage =
       selectedAsset?.mediaType === "image"
       && isEmbeddedImageMetadataExtension(selectedAsset.relativeFilePath);
-    // Serpent-485aeb: font facts are read on demand from the font file itself.
+    // font facts are read on demand from the font file itself.
     const isFont = selectedAsset?.mediaType === "font";
     const shouldFetch =
       Boolean(
@@ -963,7 +963,7 @@ export const InspectorPanel = memo(function InspectorPanel(props: InspectorPanel
 
   const canOpenSourceUrl = toOpenableExternalUrl(displaySourceUrl) !== null;
 
-  // 描述输入框高度自动包裹内容（Serpent-qto）：默认单行，受控值变化（输入/
+  // 描述输入框高度自动包裹内容：默认单行，受控值变化（输入/
   // 切换资产）后重新量高，超过一行才增高。CSS 侧的 min-height/max-height 是
   // 同一对边界的可视化兜底（resize:none + 超出后内部滚动）；这里的常量与其
   // 保持一致，避免两处漂移。
@@ -1040,7 +1040,7 @@ export const InspectorPanel = memo(function InspectorPanel(props: InspectorPanel
       }));
     }
     // Only pixel media (image / video / GIF) show a resolution here; a 3D
-    // model's bounding box is not one (Serpent-b1b0f2).
+    // model's bounding box is not one.
     if (
       selectedAsset.width !== null
       && selectedAsset.height !== null
@@ -1080,7 +1080,7 @@ export const InspectorPanel = memo(function InspectorPanel(props: InspectorPanel
       const techLine = formatAudioTechnicalLine(audioTechMetadata);
       if (techLine) parts.push(techLine);
     }
-    // Serpent-485aeb：字体只写能从文件本身确定的格式；字重/样式无法可靠读取时
+    // 字体只写能从文件本身确定的格式；字重/样式无法可靠读取时
     // 一律省略，不编造（读得到的字段留给后续解析器补）。
     if (selectedAsset.mediaType === "font") {
       const extension = selectedAsset.relativeFilePath.split(".").pop();
@@ -1098,7 +1098,7 @@ export const InspectorPanel = memo(function InspectorPanel(props: InspectorPanel
     gifExtractedMetadata,
   ]);
 
-  // Serpent-485aeb：字体元信息行（家族/样式/版本/字重/字形数/字符集/厂商）。
+  // 字体元信息行（家族/样式/版本/字重/字形数/字符集/厂商）。
   const fontMetadataRows = useMemo(
     () =>
       buildFontInspectorRows(fontExtractedMetadata, {
@@ -1520,7 +1520,7 @@ export const InspectorPanel = memo(function InspectorPanel(props: InspectorPanel
               })()}
 
               {(() => {
-                // Serpent-uz1: palette chrome is image/video only — never show
+                // palette chrome is image/video only — never show
                 // pending extract UI for audio/text/other (e.g. waveform covers).
                 const paletteMediaTypes = (
                   selectedAssets.length > 0
@@ -1534,7 +1534,7 @@ export const InspectorPanel = memo(function InspectorPanel(props: InspectorPanel
                 }
                 return (
               <div className="editor-field editor-field-palette">
-                {/* Serpent-l79c: no「色卡 · 自动」label — swatches alone. */}
+                {/* no「色卡 · 自动」label — swatches alone. */}
                 {displayedPalette.length > 0 ? (
                   <div
                     aria-label={t("inspector.palettePreviewAuto")}

@@ -124,7 +124,7 @@ export async function setUpPluginHost() {
       input: commandInput,
     });
     if (!result.ok) {
-      // Serpent-8b5b.2: plugin host commands are never critical; a challenge
+      // plugin host commands are never critical; a challenge
       // outcome is mapped defensively to a gateway failure.
       const failure = 'challenge' in result && result.challenge !== undefined
         ? { code: 'AUTOMATION_CHALLENGE_REQUIRED', message: 'Dangerous operation requires agent confirmation.' }
@@ -629,7 +629,7 @@ export async function setUpPluginHost() {
       getHostTools: () => ruleMcpTools,
       permissionPolicyStore: state.mcpPermissionPolicyStore,
       permissionBroker: state.mcpPermissionBroker,
-      // Serpent-fmbr: MCP operations speak through the SAME human-facing toasts
+      // MCP operations speak through the SAME human-facing toasts
       // as manual operations — the renderer composes them from the structured
       // result. No separate "MCP client completed X" notification system.
       onCommandCompleted: ({ commandId, result }) => {

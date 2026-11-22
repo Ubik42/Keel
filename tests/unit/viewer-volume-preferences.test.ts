@@ -8,7 +8,7 @@ import {
   VIEWER_VOLUME_STEP,
 } from "../../src/renderer/viewer/viewer-volume-preferences";
 
-describe("viewer volume preferences (Serpent-8w6x)", () => {
+describe("viewer volume preferences", () => {
   it("steps volume up and down in fixed increments", () => {
     expect(stepViewerVolumeLevel(0.5, "up")).toBeCloseTo(0.5 + VIEWER_VOLUME_STEP);
     expect(stepViewerVolumeLevel(0.02, "down")).toBe(0);

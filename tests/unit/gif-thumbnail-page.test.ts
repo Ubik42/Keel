@@ -17,7 +17,7 @@ describe("gif-thumbnail-page", () => {
     expect(sampleGifPageIndices(208, 24)).toHaveLength(24);
   });
 
-  it("caps the default probe spread at the fast-preview budget (Serpent-azf6)", () => {
+  it("caps the default probe spread at the fast-preview budget", () => {
     expect(GIF_THUMBNAIL_MAX_PAGE_SAMPLES).toBe(12);
     expect(sampleGifPageIndices(200)).toHaveLength(12);
     expect(sampleGifPageIndices(200)[0]).toBe(0);
@@ -34,7 +34,7 @@ describe("gif-thumbnail-page", () => {
     expect(scoreRawRgbFrame(bright, 3)).toBeGreaterThan(100);
   });
 
-  it("keeps the early-exit threshold conservative enough for dark GIFs (Serpent-azf6)", () => {
+  it("keeps the early-exit threshold conservative enough for dark GIFs", () => {
     expect(GIF_GOOD_PAGE_SCORE_THRESHOLD).toBe(50);
     // A dim-but-visible frame stays below the threshold so the probe keeps
     // looking; a recognizable bright frame passes and stops the probe.

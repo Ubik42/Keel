@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// "New to linked folders" add-folder hint (Serpent-b8a853 follow-up)
+// "New to linked folders" add-folder hint
 //
 // While a library has never used linked folders, adding an ordinary folder
 // pulses the sidebar "导入链接文件夹" entry so the user learns the linked

@@ -75,7 +75,7 @@ export async function tryBuildIngestionCommand(
       }
       const e2eAutoExpand =
         runtime.isUnpackagedE2e() &&
-        // Serpent-866c20：序列帧确认面板（含导入前预览）只能在确认流程里跑，
+        // 序列帧确认面板（含导入前预览）只能在确认流程里跑，
         // 需要一条 E2E 保持真实交互，而不是被 E2E 自动展开吞掉。
         runtime.e2eEnv("KEEL_E2E_SEQUENCE_PROMPT") !== "1";
       const disableSequenceCreate =
@@ -420,7 +420,7 @@ export async function maybeProbeImportSequences(
     // Clipboard paste into a folder must keep ordinary conflict flows
     // (name-conflict / content-duplicate). Sequence probing here wrongly
     // offered a sequence dialog when pasting a single copied image
-    // (PASTE-001 / Serpent-el2g).
+    // (PASTE-001).
     request.type === "folder.paste.request" ||
     runtime.isUnpackagedE2e()
   ) {

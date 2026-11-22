@@ -168,7 +168,7 @@ export function registerShellIpc() {
     },
   );
 
-  // Serpent-166q: text-field ⌘C fallback when Edit menu routes through renderer.
+  // text-field ⌘C fallback when Edit menu routes through renderer.
   ipcMain.handle(NATIVE_EDIT_COPY_CHANNEL, (event): void => {
     if (!state.mainWindow || event.sender !== state.mainWindow.webContents) return;
     event.sender.copy();
@@ -179,7 +179,7 @@ export function registerShellIpc() {
     if (input === "select-all") event.sender.selectAll();
   });
 
-  // Bootstrap dialog locale from OS before Renderer syncs (Serpent-bwb).
+  // Bootstrap dialog locale from OS before Renderer syncs.
   state.appLocale = mapSystemLocaleToAppLocale(app.getLocale());
 
   ipcMain.on(APP_LOCALE_CHANNEL, (event, input: unknown) => {
@@ -206,7 +206,7 @@ export function registerShellIpc() {
     state.windowsTray?.updateLocale(state.appLocale);
   });
 
-  // Serpent-q0b1: the renderer syncs native menu item enabled-state (business
+  // the renderer syncs native menu item enabled-state (business
   // undo/redo availability). Only commands from the real window are accepted.
   ipcMain.handle(LINKED_MISSING_VISIBILITY_CHANNEL, (event, input: unknown) => {
     if (!state.mainWindow || event.sender !== state.mainWindow.webContents) return;

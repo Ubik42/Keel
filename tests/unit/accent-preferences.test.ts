@@ -27,7 +27,7 @@ function memoryStorage(
   };
 }
 
-describe('accent-preferences (Serpent-qw6x / THEME-018)', () => {
+describe('accent-preferences (THEME-018)', () => {
   it('normalizes hex colors', () => {
     expect(normalizeAccentHex('3b82f6')).toBe('#3b82f6');
     expect(normalizeAccentHex('#ABC123')).toBe('#abc123');
@@ -49,7 +49,7 @@ describe('accent-preferences (Serpent-qw6x / THEME-018)', () => {
   });
 });
 
-describe('accent CSS derivation (Serpent-gnus)', () => {
+describe('accent CSS derivation', () => {
   const css = readRendererStyles();
   const foundationCss = readFileSync(
     resolve(__dirname, '../../src/renderer/workbench/ui/tokens.css'),

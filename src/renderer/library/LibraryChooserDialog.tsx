@@ -115,7 +115,7 @@ function useChooserExpanded(open: boolean): {
 }
 
 /**
- * Menu 「打开资源库」chooser (Serpent-pte2 / Serpent-7zp0): existing Keel
+ * Menu 「打开资源库」chooser: existing Keel
  * library, synced library, plus a collapsed third-party open path.
  */
 export function OpenLibraryChooserDialog({

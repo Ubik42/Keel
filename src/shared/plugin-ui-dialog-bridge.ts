@@ -7,7 +7,7 @@ import {
 } from './plugin-widget-ir';
 
 /**
- * Plugin modal dialog bridge (Serpent-a3de58).
+ * Plugin modal dialog bridge.
  *
  * Main resolves a `serpent.ui.openDialog` call by asking the focused window to
  * host either a widget tree (Host primitives) or a plugin dialog iframe. The

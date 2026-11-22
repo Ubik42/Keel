@@ -1,5 +1,5 @@
 /**
- * Serpent-316493 follow-up: the folder panel's blank area is the library root,
+ * the folder panel's blank area is the library root,
  * so its context menu acts on the root folder.
  *
  * The root has no managed_folders row, so callers that need a folder id for it

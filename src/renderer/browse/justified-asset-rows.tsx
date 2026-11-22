@@ -45,7 +45,7 @@ export {
   type JustifiedCaptionLines,
 } from "./justified-caption-band";
 
-/** @deprecated Caption no longer flex-couples to preview height (Serpent-5p45). */
+/** @deprecated Caption no longer flex-couples to preview height. */
 export const JUSTIFIED_CAPTION_BAND_PX = resolveJustifiedCaptionBandPx({
   dimensions: true,
   name: true,
@@ -55,7 +55,7 @@ export const JUSTIFIED_CAPTION_BAND_PX = resolveJustifiedCaptionBandPx({
 /**
  * Slot geometry for one justified placement.
  * Preview height is an explicit CSS variable so caption text can never
- * flex-shrink the media box (Serpent-omn / Serpent-5p45).
+ * flex-shrink the media box.
  */
 export function justifiedSlotStyle(
   placement: JustifiedPlacement,
@@ -71,7 +71,7 @@ type JustifiedAssetRowsProps = {
   layout: BrowseLayoutEntry[];
   virtualLayout?: VirtualBrowseLayout | null;
   cardSize: number;
-  /** Caption toggles; each row resolves the tallest band its cards need (Serpent-b1b0f2). */
+  /** Caption toggles; each row resolves the tallest band its cards need. */
   captionFields: CardCaptionFields;
   /** A content-search snippet occupies the secondary caption line. */
   snippetLine?: boolean;

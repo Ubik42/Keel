@@ -22,9 +22,9 @@ import {
 import { bindVerticalWheelSteps } from "./viewer-wheel-intent";
 
 /**
- * Viewer transport rate picker (Serpent-1a846c).
+ * Viewer transport rate picker.
  *
- * Native `<select>` was rejected (VIEWER-023 / Serpent-gplm): the OS popup
+ * Native `<select>` was rejected (VIEWER-023): the OS popup
  * ignores theme tokens. Cycling only "faster" then made slow-motion
  * unreachable. This control reuses `ui-menu-surface` options, opens upward
  * so the bottom chrome does not clip it, and keeps X/C stepping on the same

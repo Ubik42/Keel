@@ -113,7 +113,7 @@ export function shouldSuppressClipboardPasteFeedback(error: unknown): boolean {
 
 /**
  * Same-catalog identity via another path is a prompt, not an open failure.
- * Serpent-79b839: do not title this “Couldn't open library”.
+ * do not title this “Couldn't open library”.
  */
 export function libraryOpenBlockingTitleKey(
   code: PublicErrorCode | undefined,

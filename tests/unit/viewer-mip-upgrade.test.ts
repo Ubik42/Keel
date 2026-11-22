@@ -21,7 +21,7 @@ const readyDocument = {
   thumbnailArtifactId: "pdf-art-1",
 };
 
-describe("viewer mip upgrade (Serpent-eh07)", () => {
+describe("viewer mip upgrade", () => {
   it("builds preview URLs for ready image and document thumbnails", () => {
     expect(resolveViewerPlaceholderUrl(readyImage, "lib-1")).toBe(
       "keel://preview/lib-1/art-1",

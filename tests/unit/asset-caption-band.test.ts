@@ -23,7 +23,7 @@ const ALL_FIELDS: CardCaptionFields = {
 const VISUAL_WITH_SIZE = { mediaType: "image", width: 1920, height: 1080 } as const;
 const VISUAL_WITHOUT_SIZE = { mediaType: "image", width: null, height: null } as const;
 
-describe("resolveCardCaptionLines (Serpent-b1b0f2)", () => {
+describe("resolveCardCaptionLines", () => {
   it("keeps the resolution line only when the asset really renders one", () => {
     expect(resolveCardCaptionLines(ALL_FIELDS, VISUAL_WITH_SIZE).dimensions).toBe(true);
     expect(resolveCardCaptionLines(ALL_FIELDS, VISUAL_WITHOUT_SIZE).dimensions).toBe(false);
@@ -72,7 +72,7 @@ describe("resolveCardCaptionLines (Serpent-b1b0f2)", () => {
   });
 });
 
-describe("masonry caption band (Serpent-b1b0f2)", () => {
+describe("masonry caption band", () => {
   it("reproduces the audited two- and three-line constants", () => {
     expect(
       resolveMasonryCaptionBandPx({ dimensions: false, name: true, secondary: true }),
@@ -101,7 +101,7 @@ describe("masonry caption band (Serpent-b1b0f2)", () => {
   });
 });
 
-describe("createCaptionBandResolver (Serpent-b1b0f2)", () => {
+describe("createCaptionBandResolver", () => {
   it("gives a waterfall card without resolution a shorter band", () => {
     const resolver = createCaptionBandResolver({ mode: "masonry", fields: ALL_FIELDS });
     const withSize = resolver(VISUAL_WITH_SIZE);

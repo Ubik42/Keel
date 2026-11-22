@@ -1,8 +1,8 @@
 /**
  * Grid corner badges (type / duration / source folder / extension).
- * Tiny cards hide all badges (Serpent-7zt).
+ * Tiny cards hide all badges.
  *
- * Layout (Serpent-i07 / CANVAS-025):
+ * Layout (CANVAS-025):
  * - Bottom-left: duration
  * - Bottom-right: extension (non-images); type chip only when no extension
  *   (e.g. GIF). Still images never show an extension chip.
@@ -25,7 +25,7 @@ export function fileExtensionLabel(displayName: string): string {
  * Bottom-right type chip when extension is not shown: GIF / VIDEO / TEXT / 3D.
  * Audio uses the extension chip (MP3) at bottom-right instead of "AUDIO".
  * Still images stay unmarked so the grid does not fill with JPG/PNG noise.
- * Model cards carry the "3D" chip exactly like VIDEO/TEXT (Serpent-fu2i);
+ * Model cards carry the "3D" chip exactly like VIDEO/TEXT;
  * when the extension chip (FBX…) is enabled the extension wins, same as video.
  */
 export function assetTypeBadgeLabel(
@@ -41,7 +41,7 @@ export function assetTypeBadgeLabel(
 }
 
 /**
- * Bottom-right extension chip for non-image assets (Serpent-i07).
+ * Bottom-right extension chip for non-image assets.
  * Images never show an extension corner badge.
  */
 export function shouldShowExtensionBadge(

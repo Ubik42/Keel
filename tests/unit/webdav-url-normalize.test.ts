@@ -4,7 +4,7 @@ import { normalizeWebDAVBaseUrl } from '../../src/shared/sync-paths';
 import { RemoteStorageError } from '../../src/worker/integrations/sync/remote-storage';
 import { publicErrorForWorkerFailure } from '../../src/worker/public-error';
 
-describe('normalizeWebDAVBaseUrl (Serpent-fatf)', () => {
+describe('normalizeWebDAVBaseUrl', () => {
   it('keeps valid http/https URLs unchanged', () => {
     expect(normalizeWebDAVBaseUrl('http://10.96.192.48:5005/Share/Serpent')).toEqual({
       ok: true,
@@ -52,7 +52,7 @@ describe('normalizeWebDAVBaseUrl (Serpent-fatf)', () => {
   });
 });
 
-describe('publicErrorForWorkerFailure INVALID_URL mapping (Serpent-fatf)', () => {
+describe('publicErrorForWorkerFailure INVALID_URL mapping', () => {
   it('maps RemoteStorageError INVALID_URL to SYNC_CONNECTION_FAILED with a SYNC_INVALID_URL reason', () => {
     const error = new RemoteStorageError('INVALID_URL', '服务器地址无效，请以 http:// 或 https:// 开头。');
     const publicError = publicErrorForWorkerFailure(error);

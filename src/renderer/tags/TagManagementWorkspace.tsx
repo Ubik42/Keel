@@ -1,8 +1,8 @@
 import { AppearanceGlyph } from '../appearance/AppearanceGlyph';
 import { TAG_DRAG_TYPE } from './tag-drag-drop';
 /**
- * Chip-grid tag management workspace (Serpent-eaxs / REQ-TAG-010–013 redo;
- * supersedes the rolled-back Serpent-36il attempt).
+ * Chip-grid tag management workspace (REQ-TAG-010–013 redo;
+ * supersedes the rolled-back attempt).
  *
  * Replaces the asset canvas while open. Tags render as a flow of chips (the
  * same visual language as asset tag chips), sortable by name or asset count.

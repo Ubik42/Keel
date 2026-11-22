@@ -11,7 +11,7 @@ import {
   pdfViewerContentWidth,
 } from "../../src/renderer/viewer/pdf-viewer-layout";
 
-describe("pdf viewer layout (Serpent-8ca259)", () => {
+describe("pdf viewer layout", () => {
   it("lets each page span the host content width", () => {
     expect(pdfViewerContentWidth(1428, 32)).toBe(1396);
   });

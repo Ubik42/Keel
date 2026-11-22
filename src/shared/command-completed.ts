@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 /**
  * Main → Renderer: an automation (MCP) command finished executing
- * (Serpent-fmbr). The renderer maps the structured result onto the SAME
+ *. The renderer maps the structured result onto the SAME
  * human-facing toast a user gets for the equivalent manual operation —
  * there is deliberately no separate "MCP notification" system.
  *

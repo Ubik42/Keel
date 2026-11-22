@@ -63,7 +63,7 @@ afterEach(() => {
   for (const root of roots.splice(0)) rmSync(root, { force: true, recursive: true });
 });
 
-describe('database damage recovery (Serpent-dw9a)', () => {
+describe('database damage recovery', () => {
   it('keeps at most two verified rotating backup slots', async () => {
     const service = newService();
     const library = service.createLibrary({ storageLayout: 'assets',

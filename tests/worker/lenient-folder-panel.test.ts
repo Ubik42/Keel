@@ -1,4 +1,4 @@
-// Serpent-verg review fix: the folder panel read paths (folder counts,
+// review fix: the folder panel read paths (folder counts,
 // cover artifacts, explicit-folder-ignored checks) must keep working on an
 // older library whose auxiliary tables or artifact columns are missing.
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
@@ -90,7 +90,7 @@ function dropTablesAndReopen(
   service.openLibrary(libraryPath);
 }
 
-describe('folder panel lenient read (Serpent-verg review fix)', () => {
+describe('folder panel lenient read (review fix)', () => {
   it('folder counts and covers survive missing ignore/sequence tables', () => {
     const root = temporaryRoot();
     const { service, libraryId, folderId, libraryPath } = libraryWithFolderAndAsset(

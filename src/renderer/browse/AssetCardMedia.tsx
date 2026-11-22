@@ -38,7 +38,7 @@ interface AssetCardMediaProps {
   preview: PreviewResolution | null;
   libraryId?: string;
   sequence?: ImageSequenceSummary | null;
-  /** Serpent-2ajm: generation failed — show the cracked-file icon fallback. */
+  /** generation failed — show the cracked-file icon fallback. */
   failed?: boolean;
   /** Audio assets play in-place on hover (Keel hover 音频工单). */
   hoverAudioPlay?: boolean;
@@ -49,7 +49,7 @@ interface AssetCardMediaProps {
   /** Muted flag carried over from the viewer volume preference. */
   mediaMuted?: boolean;
   /**
-   * Live video failed to play in-place (Serpent-c8a1a3). The card calls this
+   * Live video failed to play in-place. The card calls this
    * so the hover controller can request a WebM proxy fallback; the failed
    * source stays mounted with its poster until the next hover resolves.
    */
@@ -106,7 +106,7 @@ export function AssetCardMedia({
       </div>
     ) : null;
   const [sequenceFrame, setSequenceFrame] = useState(0);
-  // Serpent-2ajm: a failed image load must never paint the browser's broken
+  // a failed image load must never paint the browser's broken
   // image glyph — fall back to the themed file/cracked icon instead.
   const [errored, setErrored] = useState(false);
   const [coverAttempt, setCoverAttempt] = useState(0);

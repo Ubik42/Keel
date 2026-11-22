@@ -1,5 +1,5 @@
 /**
- * Pure helpers for trash folder hierarchy browse (Serpent-6pcd / jcur / whvm).
+ * Pure helpers for trash folder hierarchy browse (jcur / whvm).
  * Navigate by tombstone id — never by display name or bare relativePath alone,
  * so two same-named folders stay distinct.
  */

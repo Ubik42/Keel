@@ -315,7 +315,7 @@ test('organizes, finds, trashes, and restores an imported asset through the UI',
     await window.getByRole('textbox', { name: '标签过滤' }).fill('临时');
     await window.getByRole("option", { name: /临时/ }).click();
     // Search auto-runs on debounce (no 「搜索」 button since c60d890); the
-    // auto-search is intentionally silent (Serpent-huvw), so assert on results.
+    // auto-search is intentionally silent, so assert on results.
     await expect(locateAssetCard(window, 'hero.png')).toBeVisible();
     await expect(window.locator('.search-snippet')).toBeVisible();
     await expect(window.locator('.search-snippet mark').first()).toBeVisible();
@@ -329,7 +329,7 @@ test('organizes, finds, trashes, and restores an imported asset through the UI',
       { timeout: 10_000 },
     ).catch(() => undefined);
     await locateAssetCard(window, 'hero.png').click({ button: 'right' });
-    // Serpent-a711e8: Main delays the real asset.trash IPC request in this
+    // Main delays the real asset.trash IPC request in this
     // E2E-only launch, proving that the visible card disappears before the
     // durable Worker mutation resolves. The frozen preload API is never
     // mutated by the test.

@@ -160,7 +160,7 @@ describe('recent libraries store (main)', () => {
     ]);
   });
 
-  it('removes a deleted library from the recent list and clears activePath (Serpent-9i8)', () => {
+  it('removes a deleted library from the recent list and clears activePath', () => {
     rememberRecentLibrary(storePath, { path: '/libraries/a', name: 'A' });
     rememberRecentLibrary(storePath, { path: '/libraries/b', name: 'B' });
     expect(readActiveLibraryPath(storePath)).toBe('/libraries/b');
@@ -189,7 +189,7 @@ describe('recent libraries store (main)', () => {
   });
 
   it('auto-opens the recent library in production and opt-in isolated restart tests', () => {
-    // Serpent-85a9b0：生产默认自动打开上次的资源库。
+    // 生产默认自动打开上次的资源库。
     expect(recentLibraryAutoOpenEnabled()).toBe(true);
 
     process.env.KEEL_E2E = '1';

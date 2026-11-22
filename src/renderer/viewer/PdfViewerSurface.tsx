@@ -61,7 +61,7 @@ function clampZoom(zoom: number): number {
 }
 
 /**
- * Serpent-8ca259: PDF viewer that renders every page into a vertical,
+ * PDF viewer that renders every page into a vertical,
  * scrollable column with pdfjs-dist (browser build). Pages keep their
  * aspect ratio, span the viewer width, and never flex-shrink into strips.
  *

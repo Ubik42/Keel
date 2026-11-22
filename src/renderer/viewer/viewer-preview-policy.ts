@@ -60,7 +60,7 @@ export function resolveViewerPrimarySurface(input: {
   readonly resolution: PreviewPollSnapshot | null;
   readonly directApproved: boolean;
   readonly requireDirectApproval?: boolean;
-  /** Ready thumbnail available for mip-style first paint (Serpent-eh07). */
+  /** Ready thumbnail available for mip-style first paint. */
   readonly hasPlaceholder?: boolean;
 }): ViewerPrimarySurface {
   const { loading, resolution, directApproved } = input;
@@ -74,7 +74,7 @@ export function resolveViewerPrimarySurface(input: {
   // Image navigation: show thumbnail immediately while full source resolves.
   if (input.hasPlaceholder) return "media";
   if (loading && !resolution) return "loading";
-  // Model assets (slice A, Serpent-fu2i) resolve to a ready source URL, so
+  // Model assets (slice A) resolve to a ready source URL, so
   // they take the "media" branch above; they never classify as `other` and
   // therefore never land in "unsupported". The 3D surface itself is slice C.
   if (

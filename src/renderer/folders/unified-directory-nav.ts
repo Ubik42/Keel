@@ -15,7 +15,7 @@ export type UnifiedDirectoryNavEntry =
       parentFolderId: string | null;
       /** Direct (non-recursive) managed assets, shown as the row count badge. */
       directAssetCount: number;
-      /** Row creation time (ISO-8601) for sidebar folder sorting (Serpent-db1835). */
+      /** Row creation time (ISO-8601) for sidebar folder sorting. */
       createdAt?: string;
       appearance?: EntityAppearance | null;
     }
@@ -86,7 +86,7 @@ export function buildUnifiedDirectoryNavEntries(
     });
 
   /**
-   * Serpent-316493: a linked root can hang under a managed folder (folder
+   * a linked root can hang under a managed folder (folder
    * context menu → 导入链接文件夹). Its depth follows that parent; a parent
    * that is no longer visible (trashed, or deleted from disk) falls back to the
    * library root so the link never disappears from the tree — a restore puts it
@@ -103,7 +103,7 @@ export function buildUnifiedDirectoryNavEntries(
         ? undefined
         : managedDepthById.get(parentFolderId);
     const nested = parentFolderId !== null && parentDepth !== undefined;
-    // Serpent-81e416: linkedFolderDepth is 0-based like managed relativePathDepth.
+    // linkedFolderDepth is 0-based like managed relativePathDepth.
     // Children add that depth onto the root's resolved depth (including a
     // managed parent). Do not subtract 1 — that compensated for the old
     // empty-path depth of 1.
@@ -255,7 +255,7 @@ export function filterCollapsedDirectoryEntries(
 }
 
 // ---------------------------------------------------------------------------
-// Sidebar folder tree sorting (Serpent-db1835)
+// Sidebar folder tree sorting
 // ---------------------------------------------------------------------------
 
 export type FolderTreeSortMode = "name" | "created" | "count" | "custom";

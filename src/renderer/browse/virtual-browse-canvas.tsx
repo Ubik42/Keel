@@ -90,12 +90,12 @@ export function virtualJustifiedSlotStyle(input: {
  * Lock the justified row's used height to the geometry body. Caption/font
  * overflow must not grow the row, or loadImmediately offsets drift above the
  * real viewport and the top visible cards lose their thumbnails
- * (Serpent-614293). Masonry already does this with an explicit slot height.
+ *. Masonry already does this with an explicit slot height.
  * Do not clip overflow here: the selection ring is an outward 2px box-shadow
- * that must paint into the 14px row gap (REQ-SELECT-003 / Serpent-ebff32).
+ * that must paint into the 14px row gap (REQ-SELECT-003).
  *
  * `captionBandPx` publishes the row's own caption band so its cards reserve
- * exactly the tallest band the row needs (Serpent-b1b0f2).
+ * exactly the tallest band the row needs.
  */
 export function virtualJustifiedRowStyle(input: {
   bodyHeightPx: number;
@@ -512,7 +512,7 @@ export function makeMasonryLayoutIndex(input: {
 type JustifiedRowGeometry = {
   previewHeight: number;
   bodyHeight: number;
-  /** Tallest caption band this row's own cards need (Serpent-b1b0f2). */
+  /** Tallest caption band this row's own cards need. */
   captionBand: number;
   widths: number[];
   offset: number;
@@ -876,7 +876,7 @@ export function VirtualMasonryColumns({
   layout: VirtualBrowseLayout;
   cardSize: number;
   showCaption: boolean;
-  /** Every card resolves its own caption band (Serpent-b1b0f2). */
+  /** Every card resolves its own caption band. */
   captionBandForAsset: (asset: CaptionBandAsset) => number;
   renderCard: (
     asset: AssetSummary,
@@ -1029,7 +1029,7 @@ export function VirtualJustifiedAssetRows({
   assets: AssetSummary[];
   layout: VirtualBrowseLayout;
   cardSize: number;
-  /** Each row resolves the tallest band its own cards need (Serpent-b1b0f2). */
+  /** Each row resolves the tallest band its own cards need. */
   captionBandForAsset: (asset: CaptionBandAsset) => number;
   renderCard: (
     asset: AssetSummary,

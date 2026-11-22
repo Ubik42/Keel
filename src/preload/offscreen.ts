@@ -1,5 +1,5 @@
 /**
- * Minimal preload for the offscreen thumbnail page (slice E, Serpent-hnmg).
+ * Minimal preload for the offscreen thumbnail page (slice E).
  *
  * Exposes exactly two operations to the hidden renderer window — receive one
  * render job, send one frame back — over dedicated channels. No library API,

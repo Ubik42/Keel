@@ -504,7 +504,7 @@ describe('tag assignment', () => {
     service.closeAll();
   });
 
-  it('removeTags also clears AI-authored tag links (Serpent-h2i2)', () => {
+  it('removeTags also clears AI-authored tag links', () => {
     const { service, libraryId, libraryPath, assetId } = createLibraryWithAsset();
     const tag = service.createTag({ libraryId, name: 'AiOnly' });
     const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));
@@ -766,7 +766,7 @@ describe('asset metadata', () => {
   it('ignores palette writes and leaves stored palette unchanged', () => {
     const { service, libraryId, assetId } = createLibraryWithAsset();
 
-    // Serpent-7pg: any palette payload is a no-op for the column / effective view.
+    // any palette payload is a no-op for the column / effective view.
     const palette20 = Array.from({ length: 20 }, (_, i) => `#${String(i).padStart(6, '0')}`);
     const first = service.setAssetMetadata({
       libraryId,

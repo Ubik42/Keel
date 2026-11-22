@@ -58,7 +58,7 @@ export function recentLibraryPersistenceEnabled(): boolean {
 }
 
 /**
- * 自动打开上次使用的资源库（Serpent-85a9b0）：生产环境默认开启；打开失败
+ * 自动打开上次使用的资源库：生产环境默认开启；打开失败
  * （丢失/断开/不兼容）走优雅回退（只记日志、停留 idle，用户仍可从切换器
  * 选择其他库），不会阻塞启动表面。E2E 隔离重启测试仍需
  * KEEL_E2E_RESTORE_RECENT=1 显式开启。
@@ -236,7 +236,7 @@ export function clearActiveRecentLibrary(
 }
 
 /**
- * Removes a library path from the recent list after disk deletion (Serpent-9i8).
+ * Removes a library path from the recent list after disk deletion.
  * Also clears activePath when it pointed at the deleted library.
  */
 export function removeRecentLibrary(

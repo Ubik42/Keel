@@ -52,7 +52,7 @@ export type SortModeControlProps = {
   setSortField: (value: SortFieldOption) => void;
   sortOrder: SortDefinition["order"];
   setSortOrder: (value: SortDefinition["order"]) => void;
-  /** Serpent-hm28: client-side shuffle mode (not a SortDefinition field). */
+  /** client-side shuffle mode (not a SortDefinition field). */
   shuffleActive?: boolean;
   onShuffle?: () => void;
 };

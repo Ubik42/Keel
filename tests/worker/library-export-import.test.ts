@@ -80,7 +80,7 @@ afterEach(async () => {
 
 // Windows-only helper: libraries and export destinations can live on
 // different drive letters, where path.relative cannot express a traversal
-// and returns an absolute path (Serpent-59f). Probe for a writable drive
+// and returns an absolute path. Probe for a writable drive
 // other than the temp drive and return a fresh directory on it.
 function createForeignDriveRoot(): string | null {
   const tempDrive = path.parse(path.resolve(tmpdir())).root.toUpperCase();
@@ -286,7 +286,7 @@ describe('LibraryService export', () => {
     service.closeAll();
   });
 
-  it('includes .keel/artifacts so import keeps ready thumbnails (Serpent-pxd)', async () => {
+  it('includes .keel/artifacts so import keeps ready thumbnails', async () => {
     const root = temporaryRoot();
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets',
@@ -347,7 +347,7 @@ describe('LibraryService export', () => {
     service2.closeAll();
   });
 
-  it('invalidates ready artifacts missing on disk so thumbnails requeue (Serpent-pxd)', async () => {
+  it('invalidates ready artifacts missing on disk so thumbnails requeue', async () => {
     const root = temporaryRoot();
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets',
@@ -382,7 +382,7 @@ describe('LibraryService export', () => {
     expect(existsSync(artifactPath)).toBe(true);
     rmSync(artifactPath);
 
-    // Serpent-tumv: re-open delivers immediately; the missing-artifact sweep
+    // re-open delivers immediately; the missing-artifact sweep
     // now runs in the background reconciliation step.
     service.closeAll();
     const service2 = newService();
@@ -426,7 +426,7 @@ describe('LibraryService export', () => {
   });
 
   it.runIf(process.platform === 'win32')(
-    'accepts a folder destination on a different drive letter (Serpent-59f)',
+    'accepts a folder destination on a different drive letter',
     async (ctx) => {
       const foreignRoot = createForeignDriveRoot();
       if (!foreignRoot) {

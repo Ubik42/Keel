@@ -110,7 +110,7 @@ describe('removePathWithSyncRetry (operation-directory cleanup)', () => {
   });
 });
 
-describe('removeLibraryRootWithRetry (Serpent-dfgg)', () => {
+describe('removeLibraryRootWithRetry', () => {
   it('retries EPERM then deletes the original path', () => {
     const rmFn = vi
       .fn()
@@ -172,7 +172,7 @@ describe('removeLibraryRootWithRetry (Serpent-dfgg)', () => {
     ).toThrow(busy);
   });
 
-  it('reports the aside path when the aside removal still fails (Serpent-65d837)', () => {
+  it('reports the aside path when the aside removal still fails', () => {
     const busy = Object.assign(new Error('not empty'), { code: 'ENOTEMPTY' });
     const rmFn = vi.fn(() => {
       throw busy;

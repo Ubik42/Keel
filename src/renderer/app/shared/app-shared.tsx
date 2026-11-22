@@ -27,7 +27,7 @@ export const SHORTCUT_PLATFORM: CommandPlatform = IS_MAC_PLATFORM ? "mac" : "win
  * Minimum spacing between full browse reloads triggered by a remote library's
  * change sequence.
  *
- * Serpent-yti0 established that `revision_artifacts` / `jobs` writes bump the
+ * established that `revision_artifacts` / `jobs` writes bump the
  * shared change sequence, and that a full `searchAssets` per bump freezes the
  * canvas. Non-network libraries were fixed by ignoring those bumps; network
  * libraries still re-read, because another computer's asset changes genuinely

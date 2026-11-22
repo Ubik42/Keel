@@ -14,7 +14,7 @@ import {
 const DEFAULT_IDLE_MS = 2_000;
 
 /**
- * Fade viewer chrome after input idle (Serpent-627 / Serpent-njoy).
+ * Fade viewer chrome after input idle.
  *
  * Callers own the hook instance across asset navigation: mount this once at
  * a component that does not remount when the viewed asset changes (e.g. the

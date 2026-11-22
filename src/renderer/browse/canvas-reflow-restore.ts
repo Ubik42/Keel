@@ -1,5 +1,5 @@
 /**
- * REQ-CANVAS-019 / Serpent-32p: schedule scroll compensation after a canvas
+ * REQ-CANVAS-019: schedule scroll compensation after a canvas
  * width reflow so the previously visible asset set stays on screen.
  *
  * Pure scheduling + DOM measure helpers live here so the restore policy

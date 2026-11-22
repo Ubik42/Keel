@@ -14,7 +14,7 @@ export interface AiConnectionFailureDialogProps {
 
 /**
  * Blocking Retry/Abort after AI connection-class errors exhaust worker retries
- * (Serpent-kdnm / Serpent-c7d64e). Same surface as other blocking alerts.
+ *. Same surface as other blocking alerts.
  */
 export function AiConnectionFailureDialog({
   open,

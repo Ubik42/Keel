@@ -38,7 +38,7 @@ function historyEntryIdOf(record: Record<string, unknown>): string | undefined {
 
 /**
  * Maps one completed automation (MCP) command onto the SAME human-facing
- * toast a manual operation would show (Serpent-fmbr). Commands without a
+ * toast a manual operation would show. Commands without a
  * manual toast — reads, metadata writes, library navigation — produce none,
  * and a phase-1 two-phase challenge report is an ok result that executed
  * nothing, so it stays quiet too. There is deliberately no separate MCP
@@ -66,7 +66,7 @@ export function automationCommandToast(
       return withHistory(
         importSummaryMessage({
           importedCount,
-          // Serpent-1y9r: prefer logical asset units (a detected image
+          // prefer logical asset units (a detected image
           // sequence counts as 1) when the completion carries them.
           ...(assetCount !== undefined ? { assetCount } : {}),
           skippedCount,

@@ -87,7 +87,7 @@ export const ZoomableImage = forwardRef<
     isAnimated?: boolean;
     /**
      * Optional ready thumbnail / preview. Shown immediately; full `src`
-     * upgrades quietly after decode (Serpent-eh07).
+     * upgrades quietly after decode.
      */
     placeholderSrc?: string;
     /** Suppress animated full-source playback while this surface preloads. */
@@ -171,7 +171,7 @@ export const ZoomableImage = forwardRef<
         image.naturalHeight,
         displayTransform.quarterTurns,
       );
-      // Serpent-esuj: preserve the user's zoom/pan when the placeholder
+      // preserve the user's zoom/pan when the placeholder
       // upgrades to the decoded original (mode "preserve" keeps the relative
       // scale and pan); first measurement and rotations reset to fit. With no
       // interaction the preserve ratio is 1, so behavior equals reset.

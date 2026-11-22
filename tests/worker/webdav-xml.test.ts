@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { parseWebDAVMultistatus } from '../../src/worker/integrations/sync/webdav-xml';
 
-describe('WebDAV multistatus parsing (Serpent-xffq)', () => {
+describe('WebDAV multistatus parsing', () => {
   it('detects collections whose resourcetype carries an xmlns attribute (real-server shape)', () => {
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <D:multistatus xmlns:D="DAV:">

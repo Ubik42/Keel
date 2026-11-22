@@ -131,7 +131,7 @@ export interface RemoveLibraryRootOptions extends RemoveWithRetryOptions {
  *
  * Returns `{ asidePath: null }` when the root folder is fully removed, or
  * `{ asidePath }` when the root was renamed aside but the aside copy could not
- * be removed yet (Serpent-65d837). The original path is gone either way, but a
+ * be removed yet. The original path is gone either way, but a
  * non-null `asidePath` means the caller must schedule cleanup and tell the
  * user; never treat a leftover aside as a successful deletion.
  */

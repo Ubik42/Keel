@@ -12,7 +12,7 @@ describe("estimateMasonryPreviewHeightPx", () => {
     );
   });
 
-  it("keeps the natural height for a portrait column (Serpent-5p45)", () => {
+  it("keeps the natural height for a portrait column", () => {
     // A fixed max-height with the same full column width creates horizontal
     // letterboxing in the contain-fit preview.
     expect(estimateMasonryPreviewHeightPx(230, 512, 200)).toBeCloseTo(

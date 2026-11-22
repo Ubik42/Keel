@@ -9,7 +9,7 @@ import { shouldHideApplicationMenuBar } from '../../src/shared/window-controls';
 const require = createRequire(path.resolve('package.json'));
 
 /**
- * Serpent-wgmy: 日志按会话拆分（keel-<时间戳>.log）。返回 logs 目录下
+ * 日志按会话拆分（keel-<时间戳>.log）。返回 logs 目录下
  * 最新的会话日志路径（mtime 优先，同名则按名称降序）；目录为空时返回
  * 固定的 serpent.log 占位（调用方按不存在处理）。
  */

@@ -1,5 +1,5 @@
 /**
- * Offscreen document-thumbnail render protocol (Serpent-8ca259).
+ * Offscreen document-thumbnail render protocol.
  *
  * Same role split as the model-thumbnail protocol: the Library Worker owns the
  * queue and artifact storage but has no browser engine; Main owns an offscreen
@@ -23,13 +23,13 @@ export const DOCUMENT_THUMBNAIL_WIDTH = 1024;
 /** generator_version tag for document thumbnail artifacts. */
 export const DOCUMENT_THUMBNAIL_GENERATOR_VERSION = 'offscreen-web-1';
 /**
- * Serpent-485aeb: font sample cards use the same offscreen pipeline, but Main
+ * font sample cards use the same offscreen pipeline, but Main
  * serves a generated sample sheet (`keel://source/...&sample=font`). A
  * distinct tag keeps font cards from being invalidated by the document check;
  * `-2` re-renders them at 16:9 with a larger sample line.
  */
 export const FONT_THUMBNAIL_GENERATOR_VERSION = 'offscreen-font-2';
-/** Font sample sheets are captured 16:9 (Serpent-485aeb feedback). */
+/** Font sample sheets are captured 16:9. */
 export const FONT_THUMBNAIL_HEIGHT = 576;
 /** Typed render failure codes (benign suppression in thumbnail-support.ts). */
 export const documentThumbnailErrorCodeSchema = z.enum([

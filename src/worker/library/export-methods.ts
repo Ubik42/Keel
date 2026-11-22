@@ -313,7 +313,7 @@ export async function exportLibraryToFolder(this: LibraryService, input: {
       await walkDir(trashDir, '.keel/trash');
     }
 
-    // Serpent-pxd: include ready thumbnails/proxies so import does not show
+    // include ready thumbnails/proxies so import does not show
     // broken images while DB still says status=ready. Legacy `.keel/previews`
     // remains excluded (regenerable / unused by current protocol).
     const artifactsDir = libraryMetaDir(libPath, 'artifacts');
@@ -702,7 +702,7 @@ export async function exportLibraryToZip(this: LibraryService, input: {
       await walkDir(trashDir, '.keel/trash');
     }
 
-    // Serpent-pxd: same artifacts contract as folder export.
+    // same artifacts contract as folder export.
     const artifactsDir = libraryMetaDir(libPath, 'artifacts');
     if (directoryExists(artifactsDir)) {
       await walkDir(artifactsDir, '.keel/artifacts');

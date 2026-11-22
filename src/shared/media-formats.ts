@@ -62,7 +62,7 @@ export const DOCUMENT_EXTENSIONS = [
 ] as const;
 
 /**
- * Serpent-485aeb: font formats with a card sample + viewer preview.
+ * font formats with a card sample + viewer preview.
  * TTC (collection) can be loaded by Chromium when it exposes a usable face;
  * otherwise the surface reports a calm "cannot preview this collection".
  */
@@ -127,7 +127,7 @@ export function isSupportedVideoExtension(extensionOrFilename: string): boolean 
 }
 
 /**
- * Media whose decoded width/height is a real pixel resolution (Serpent-b1b0f2).
+ * Media whose decoded width/height is a real pixel resolution.
  *
  * Only images (including GIF) and videos qualify. Documents carry page sizes and
  * 3D models carry bounding-box sizes; users do not read those as a resolution,
@@ -165,7 +165,7 @@ export function isSupportedDocumentExtension(extensionOrFilename: string): boole
   return documentExtensions.has(normalizedExtension(extensionOrFilename));
 }
 
-/** Serpent-485aeb: TTF / OTF / WOFF / WOFF2 / TTC are font assets. */
+/** TTF / OTF / WOFF / WOFF2 / TTC are font assets. */
 export function isSupportedFontExtension(extensionOrFilename: string): boolean {
   return fontExtensions.has(normalizedExtension(extensionOrFilename));
 }

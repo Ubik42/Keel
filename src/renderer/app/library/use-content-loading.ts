@@ -292,9 +292,9 @@ export function useContentLoading({ api, showMissingLinkedPublishRef, showIgnore
       // sidebar later. A library replacement is different: blockingNavigation
       // was read before this point, while the loading overlay still covers
       // every state update, so no partial library identity can be shown.
-      // Serpent-sa65: beginPage owns the first summaries and starts the compact
+      // beginPage owns the first summaries and starts the compact
       // real-asset layout fetch that gives the virtual canvas full geometry.
-      // Serpent-2oga: drop stale failure badges when the list already has ready thumbs.
+      // drop stale failure badges when the list already has ready thumbs.
       setThumbnailFailures((current) => {
         if (current.size === 0) return current;
         const next = new Map(current);
@@ -315,7 +315,7 @@ export function useContentLoading({ api, showMissingLinkedPublishRef, showIgnore
           (assetResult.value.snippets ?? []).map((snippet) => [snippet.assetId, snippet.text]),
         ),
       );
-      // Serpent-ws4k: register the paginated query so the scroll sentinel can
+      // register the paginated query so the scroll sentinel can
       // append the next page with the exact same scope/sort/filters.
       registerBrowseSearchPage(beginBrowsePageClearingSimilar, {
         libraryId: activeLibrary.libraryId,
@@ -449,14 +449,14 @@ export function useContentLoading({ api, showMissingLinkedPublishRef, showIgnore
     chooseFolderRef,
     pendingRevealRef,
   });
-  // Serpent-y0au: keep recent libraries warm on the no-library start surface.
+  // keep recent libraries warm on the no-library start surface.
   useEffect(() => {
     if (!api || library) return;
     void refreshRecentLibraries(null);
     // refreshRecentLibraries closes over library; null path is intentional.
     // eslint-disable-next-line react-hooks/exhaustive-deps -- refresh when api/library identity changes
   }, [api, library]);
-  // Serpent-kipk: no-library surface is the shared create dialog (start phase),
+  // no-library surface is the shared create dialog (start phase),
   // full-window centered with backdrop — not a card inside the canvas.
   useEffect(() => {
     if (library) return;
@@ -465,7 +465,7 @@ export function useContentLoading({ api, showMissingLinkedPublishRef, showIgnore
     // foreground. The native ZIP picker can take long enough for the chooser
     // to close before its progress event arrives; without this guard the
     // no-library effect immediately remounts CreateDialog over the picker or
-    // import progress (Serpent-o5j3).
+    // import progress.
     if (importLibraryChooserOpen || openLibraryChooserOpen || importValidated || importProgress || appSettingsOpen || busy) return;
     if (dialog === "library") return;
     queueMicrotask(() => {

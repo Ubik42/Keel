@@ -139,12 +139,12 @@ export interface LivePreviewMedia {
 /**
  * Decide which live media (if any) a hover/selection preview should render,
  * shared by the canvas card (`AssetCardMedia`) and the Inspector hero
- * (Serpent-a9n) so both use one tested rule: only an active, ready
+ * so both use one tested rule: only an active, ready
  * resolution with a URL plays, and only images (GIFs) or videos are eligible
  * — anything else (including no active target, e.g. multi-selection) falls
  * back to the static cover/thumbnail.
  *
- * Serpent-43d32f: animated GIFs no longer resolve through a WebM proxy; the
+ * animated GIFs no longer resolve through a WebM proxy; the
  * image branch plays the source GIF natively in `<img>`.
  */
 export function resolveLivePreviewMedia(

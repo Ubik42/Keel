@@ -76,7 +76,7 @@ async function closeAppServerAndCleanTemp(
 }
 
 /**
- * Serpent-c9r3 / REQ-INSPECT-006 regression: after an AI analysis completes
+ * REQ-INSPECT-006 regression: after an AI analysis completes
  * (tags/description/rating written), the Inspector must show the new content
  * immediately — without a reselect or any manual refresh.
  *

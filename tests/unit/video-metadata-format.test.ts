@@ -158,7 +158,7 @@ describe("video-metadata-format", () => {
     })).toBeNull();
   });
 
-  it("builds the compact audio technical line (Serpent-i07)", () => {
+  it("builds the compact audio technical line", () => {
     expect(formatAudioTechnicalLine({
       ...EMPTY_RAW_IMAGE_METADATA,
       container: "mp3",

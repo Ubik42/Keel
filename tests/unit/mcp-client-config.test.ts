@@ -5,7 +5,7 @@ import { buildMcpAgentConnectionText, buildMcpClientConfigText } from '../../src
 const ENDPOINT = 'http://127.0.0.1:47342/mcp';
 const TOKEN = 'abc123token';
 
-describe('MCP client config formatters (Serpent-8b5b.5)', () => {
+describe('MCP client config formatters', () => {
   it('renders the generic JSON config with the bearer header', () => {
     const text = buildMcpClientConfigText('generic-json', ENDPOINT, TOKEN);
     const parsed = JSON.parse(text) as {

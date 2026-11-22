@@ -155,7 +155,7 @@ const VISIBLE_DRAG_PRIME_LIMIT = 60;
 const VISIBLE_DRAG_PRIME_CHUNK_SIZE = 8;
 
 /**
- * Serpent-8ee170: Main used to issue one `media.get-asset-drag-infos` request
+ * Main used to issue one `media.get-asset-drag-infos` request
  * per finished thumbnail, so a 2,000-job wave produced 2,000 background
  * requests on top of the queue they were competing with. Every completion now
  * joins a per-library, deduplicated, chunked queue instead: the number of

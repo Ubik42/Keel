@@ -179,7 +179,7 @@ export async function executeAiWorkerCommand(
       let requestMime: string;
 
       if (isVideo) {
-        // Serpent-140fe2: contact sheets are generated lazily at analysis time
+        // contact sheets are generated lazily at analysis time
         // (never proactively scheduled), so materialize it for this video now.
         try {
           await runExternal(() => libraryService.ensureVideoContactSheet(libraryId, assetId, {
@@ -237,7 +237,7 @@ export async function executeAiWorkerCommand(
           });
         }
       } else if (isModelFileFormat(filePath)) {
-        // Serpent-6w40: 3D models get an AI four-view sheet — render the
+        // 3D models get an AI four-view sheet — render the
         // views offscreen, tile them, then analyze the strip.
         try {
           const sheet = await runExternal(() => libraryService.renderModelViewsSheet(

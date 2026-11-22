@@ -13,7 +13,7 @@ export type UseShellFileActionsParams = {
 };
 
 /**
- * Shell open/reveal/copy actions for assets and managed folders (Serpent-uye).
+ * Shell open/reveal/copy actions for assets and managed folders.
  * Locale/`t` live inside the hook so App.tsx callers stay free of exhaustive-deps churn.
  */
 export function useShellFileActions({

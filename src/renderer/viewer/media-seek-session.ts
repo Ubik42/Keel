@@ -3,7 +3,7 @@
  *
  * Scrub UIs that assign `HTMLMediaElement.currentTime` on every pointermove
  * cancel in-flight Range fetches. Under `keel://` that race frequently
- * ends in MEDIA_ERR_NETWORK and a fatal viewer error overlay (Serpent-jh2).
+ * ends in MEDIA_ERR_NETWORK and a fatal viewer error overlay.
  *
  * This session:
  * - coalesces requests to one apply per animation frame

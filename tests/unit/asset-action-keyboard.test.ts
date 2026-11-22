@@ -28,7 +28,7 @@ function event(
 
 const registry = createCommandRegistry(assetCommandDefinitions);
 
-describe("asset action keyboard chords (Serpent-uye)", () => {
+describe("asset action keyboard chords", () => {
   it("shares shortcut specs with the asset command registry", () => {
     expect(formatShortcut(registry.get("asset.open-external")!.shortcut!, "mac")).toBe(
       "⌘O",
@@ -120,7 +120,7 @@ describe("asset action keyboard chords (Serpent-uye)", () => {
     ).toBe(false);
   });
 
-  it("matches F2 rename via code/keyCode when key is IME-noisy (Serpent-g8u9)", () => {
+  it("matches F2 rename via code/keyCode when key is IME-noisy", () => {
     expect(
       matchAssetActionKeyboardCommand(
         "asset.rename",

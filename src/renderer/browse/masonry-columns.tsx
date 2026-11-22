@@ -60,7 +60,7 @@ type MasonryColumnsProps = {
   layout: BrowseLayoutEntry[];
   virtualLayout?: VirtualBrowseLayout | null;
   cardSize: number;
-  /** Caption toggles; every card resolves its own band from them (Serpent-b1b0f2). */
+  /** Caption toggles; every card resolves its own band from them. */
   captionFields: CardCaptionFields;
   /** A content-search snippet occupies the secondary caption line. */
   snippetLine?: boolean;

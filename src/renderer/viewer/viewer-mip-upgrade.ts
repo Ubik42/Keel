@@ -1,5 +1,5 @@
 /**
- * Viewer mip-style placeholder → full-image upgrade (Serpent-eh07).
+ * Viewer mip-style placeholder → full-image upgrade.
  *
  * When left/right switching, IO for the original may lag. If a ready thumbnail
  * exists, present it immediately, then quietly swap once the full source has

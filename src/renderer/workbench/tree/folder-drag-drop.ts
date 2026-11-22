@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// Managed folder drag & drop (Serpent-nno6)
+// Managed folder drag & drop
 //
 // Drag folder cards / sidebar rows onto another managed folder to reparent.
 // Worker enforces disk/DB rules; renderer rejects obvious invalid targets

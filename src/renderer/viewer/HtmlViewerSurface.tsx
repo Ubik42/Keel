@@ -10,7 +10,7 @@ export type HtmlViewerSurfaceProps = {
 };
 
 /**
- * Serpent-8ca259: HTML viewer that embeds the source in a sandboxed iframe.
+ * HTML viewer that embeds the source in a sandboxed iframe.
  * keel:// custom protocol is registered with Electron and accessible from
  * the sandboxed renderer via standard navigation.
  * The component is keyed by asset in the parent, and the iframe is keyed by

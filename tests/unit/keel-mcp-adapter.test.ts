@@ -460,7 +460,7 @@ describe('Keel MCP tools/call → Gateway', () => {
   });
 });
 
-describe('Keel MCP dangerous two-phase challenge (Serpent-8b5b.2)', () => {
+describe('Keel MCP dangerous two-phase challenge', () => {
   function dangerousGateway(worker: RecordingWorker) {
     return createAutomationCommandGateway(worker, resolver(), {
       permissionBroker: createTestPermissionBroker(),
@@ -568,7 +568,7 @@ describe('Keel MCP dangerous two-phase challenge (Serpent-8b5b.2)', () => {
   });
 });
 
-describe('Keel MCP permission profiles through the gateway (Serpent-8b5b.8)', () => {
+describe('Keel MCP permission profiles through the gateway', () => {
   function profileGateway(worker: RecordingWorker, mode: 'auto' | 'full-access') {
     const index = mode === 'auto' ? 0 : 2;
     const credentialId = profileCredentials[index]!;
@@ -639,7 +639,7 @@ function writeResolver(extraCapabilities: readonly AutomationCapability[]): Auto
   };
 }
 
-describe('Keel MCP jobs, idempotency and reconnect (Serpent-8b5b.4)', () => {
+describe('Keel MCP jobs, idempotency and reconnect', () => {
   it('cancels media jobs by id and reports the cancelled count', async () => {
     const worker = new RecordingWorker({
       ok: true,

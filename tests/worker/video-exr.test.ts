@@ -521,7 +521,7 @@ describe('video (ffprobe + ffmpeg)', () => {
     service.closeAll();
   });
 
-  it('keeps AI contact-sheet preparation independent from poster work (Serpent-140fe2)', async () => {
+  it('keeps AI contact-sheet preparation independent from poster work', async () => {
     process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const service = new LibraryService({
@@ -546,7 +546,7 @@ describe('video (ffprobe + ffmpeg)', () => {
     expect(service.getCurrentArtifact(created.libraryId, assetId, 'extracted_metadata'))
       .toMatchObject({ status: 'ready' });
     expect(service.getCurrentArtifact(created.libraryId, assetId, 'video_poster')).toBeNull();
-    // Serpent-140fe2: nothing schedules a contact sheet proactively any more.
+    // nothing schedules a contact sheet proactively any more.
     expect(service.listMediaJobs(created.libraryId).jobs).not.toEqual(
       expect.arrayContaining([
         expect.objectContaining({ kind: 'generate_contact_sheet' }),
@@ -658,7 +658,7 @@ describe('video (ffprobe + ffmpeg)', () => {
     service.closeAll();
   });
 
-  it('publishes source dimensions when extract_metadata finishes (Serpent-9c9f97)', async () => {
+  it('publishes source dimensions when extract_metadata finishes', async () => {
     process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const derived: Array<{
@@ -888,7 +888,7 @@ describe('video (ffprobe + ffmpeg)', () => {
     service.enqueueThumbnailJobs(created.libraryId);
     await service.processThumbnailQueue(created.libraryId);
 
-    // Serpent-140fe2: sheets materialize at analysis time via lazy ensure.
+    // sheets materialize at analysis time via lazy ensure.
     const ensured = await service.ensureVideoContactSheet(created.libraryId, assetId);
     expect(ensured).toBe(true);
 
@@ -915,7 +915,7 @@ describe('video (ffprobe + ffmpeg)', () => {
     const vfValue2 = sheetCall!.args[vfIdx2 + 1] as string;
     expect(vfValue2).toContain('fps=');
     expect(vfValue2).toContain('scale=');
-    // Serpent-6w40: the AI contact sheet stamps a timestamp (HH:MM:SS.mmm)
+    // the AI contact sheet stamps a timestamp (HH:MM:SS.mmm)
     // on every frame using the bundled DejaVu Sans font.
     expect(vfValue2).toContain('drawtext=');
     expect(vfValue2).toContain('%{pts\\:hms}');
@@ -2798,7 +2798,7 @@ describe('EXR/TGA (oiiotool)', () => {
     db.prepare('UPDATE jobs SET updated_at = ? WHERE job_id = ?')
       .run(new Date(Date.now() - 31_000).toISOString(), failedJob.jobId);
     db.close();
-    // Serpent-288cd9: due RAW retries are admitted by the idle-only requeue
+    // due RAW retries are admitted by the idle-only requeue
     // path, not by the exhausted catalog cursor.
     expect(service.requeueRawImageMetadataBackfillRetries(created.libraryId)).toBe(1);
     await service.processThumbnailQueue(created.libraryId, {
@@ -3668,7 +3668,7 @@ describe('enqueueThumbnailJobs handles all media types', () => {
     service.closeAll();
   });
 
-  it('enqueues jobs for audio assets (Serpent-13v)', () => {
+  it('enqueues jobs for audio assets', () => {
     process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const service = new LibraryService({
@@ -3689,7 +3689,7 @@ describe('enqueueThumbnailJobs handles all media types', () => {
     service.closeAll();
   });
 
-  it('enqueues audio when only the viewer strip exists (Serpent-051)', async () => {
+  it('enqueues audio when only the viewer strip exists', async () => {
     process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
     const service = new LibraryService({
@@ -3757,7 +3757,7 @@ describe('enqueueThumbnailJobs handles all media types', () => {
   });
 });
 
-describe('audio waveform thumbnail (Serpent-13v)', () => {
+describe('audio waveform thumbnail', () => {
   it('dispatches audio assets to ffmpeg waveform + opaque cover', async () => {
     process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const root = temporaryRoot();
@@ -3819,7 +3819,7 @@ describe('audio waveform thumbnail (Serpent-13v)', () => {
     service.closeAll();
   });
 
-  it('uses attached album art as the grid thumbnail (Serpent-690060)', async () => {
+  it('uses attached album art as the grid thumbnail', async () => {
     process.env['KEEL_FFMPEG_PATH'] = '/fake/ffmpeg';
     const sharp = require('sharp') as (input: unknown) => {
       png(): { toBuffer(): Promise<Buffer> };

@@ -1,5 +1,5 @@
 /**
- * Serpent-verg.6 — schema regression helpers (0031 §3).
+ * schema regression helpers (0031 §3).
  *
  * Downgrade chain: a v33 library (with seed data) is structurally rewound to
  * a key version by reversing every object the later migrations added

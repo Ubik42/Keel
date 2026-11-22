@@ -103,7 +103,7 @@ export const sourcePageUrlSchema = z.union([
     message: 'Source-page URLs must not include surrounding whitespace.',
   }),
 ]);
-// Author/creator (Serpent-7x0) mirrors sourcePageUrl's clear-with-empty-string
+// Author/creator mirrors sourcePageUrl's clear-with-empty-string
 // contract, without the URL-shape constraint.
 export const assetAuthorSchema = z.union([
   z.literal(''),
@@ -188,7 +188,7 @@ export const rendererRequestSchema = z.discriminatedUnion('type', [
     /**
      * When provided, the location dialog is skipped — the caller already ran
      * `library.choose-path.request`. This keeps the open loading UI (and its
-     * timer) from covering the native picker (Serpent-565785 feedback).
+     * timer) from covering the native picker.
      */
     libraryPath: selectedPathSchema.optional(),
     /**
@@ -236,7 +236,7 @@ export const rendererRequestSchema = z.discriminatedUnion('type', [
     libraryId: identifierSchema,
     displayName: displayNameSchema,
   }),
-  // Irreversible: close then delete the library root on disk (Serpent-9i8).
+  // Irreversible: close then delete the library root on disk.
   z.strictObject({
     type: z.literal('library.delete-from-disk.request'),
     libraryId: identifierSchema,
@@ -267,7 +267,7 @@ export const rendererRequestSchema = z.discriminatedUnion('type', [
     type: z.literal('library.open-recent.request'),
     libraryPath: selectedPathSchema,
   }),
-  // Soft-forget: drop from recent list only; disk untouched (Serpent-ucx).
+  // Soft-forget: drop from recent list only; disk untouched.
   z.strictObject({
     type: z.literal('library.forget-recent.request'),
     libraryPath: selectedPathSchema,
@@ -327,7 +327,7 @@ export const rendererRequestSchema = z.discriminatedUnion('type', [
     libraryId: identifierSchema,
     folderId: folderScopeIdSchema,
   }),
-  // Clarification #5 / Serpent-vgp: OS file clipboard (Finder/Explorer).
+  // Clarification #5: OS file clipboard (Finder/Explorer).
   z.strictObject({
     type: z.literal('folder.copy.request'),
     libraryId: identifierSchema,
@@ -368,7 +368,7 @@ export const rendererRequestSchema = z.discriminatedUnion('type', [
     filters: z.array(filterClauseSchema).max(100).optional(),
     showIgnored: z.boolean().optional(),
   }),
-  // Serpent-f74e48: real FolderBrowseEntry (covers + counts) for concrete
+  // real FolderBrowseEntry (covers + counts) for concrete
   // folder refs matched by text search, so search results reuse the exact
   // asset-browser folder cards.
   z.strictObject({
@@ -397,7 +397,7 @@ export const rendererRequestSchema = z.discriminatedUnion('type', [
       .min(1)
       .max(32),
   }),
-  // Clarification #7 / Serpent-ekj: managed folder trash / permanent disk delete.
+  // Clarification #7: managed folder trash / permanent disk delete.
   z.strictObject({
     type: z.literal('folder.trash.request'),
     libraryId: identifierSchema,
@@ -580,7 +580,7 @@ export const rendererRequestSchema = z.discriminatedUnion('type', [
     type: z.literal('asset.import-linked.request'),
     libraryId: identifierSchema,
     displayName: optionalIdentifierSchema,
-    /** Serpent-316493: managed folder to hang the linked root under. */
+    /** managed folder to hang the linked root under. */
     parentFolderId: identifierSchema.nullable().optional(),
   }),
   z.strictObject({
@@ -769,9 +769,9 @@ export const rendererRequestSchema = z.discriminatedUnion('type', [
     sort: sortDefinitionSchema.optional(),
     /** When true, return the full browse scope (up to browse-scope cap); limit/offset ignored. */
     scopeMode: z.boolean().optional(),
-    /** Serpent-ws4k: return only `assetIds` for the whole scope (select-all); limit/offset ignored. */
+    /** return only `assetIds` for the whole scope (select-all); limit/offset ignored. */
     idsOnly: z.boolean().optional(),
-    /** Serpent-sa65: compact full-scope real-asset geometry index. */
+    /** compact full-scope real-asset geometry index. */
     layoutOnly: z.boolean().optional(),
     limit: z.number().int().positive().max(500).optional(),
     offset: z.number().int().nonnegative().optional(),
@@ -1128,7 +1128,7 @@ export const rendererRequestSchema = z.discriminatedUnion('type', [
     libraryId: identifierSchema,
     serverId: nonBlankString,
     directoryName: z.string().optional(),
-    /** 自动同步开关（Serpent-bfsb 后续：打开远程库后默认开启）。 */
+    /** 自动同步开关（后续：打开远程库后默认开启）。 */
     enabled: z.boolean().optional(),
     /** 云端变化轮询间隔（毫秒；缺省 5000）。 */
     pollIntervalMs: z.number().int().min(1000).max(3_600_000).optional(),
@@ -1165,7 +1165,7 @@ export const rendererRequestSchema = z.discriminatedUnion('type', [
     libraryId: identifierSchema,
     assetId: identifierSchema,
   }),
-  // Slice C (Serpent-qvc6): renderer request surface for the 3D viewer. The
+  // Slice C: renderer request surface for the 3D viewer. The
   // Worker commands (model.resolve-companions / model.convert-fbx) already
   // exist; these entries let the preload bridge reach them.
   z.strictObject({
@@ -1212,7 +1212,7 @@ export const rendererRequestSchema = z.discriminatedUnion('type', [
     libraryId: identifierSchema,
     assetId: identifierSchema,
   }),
-  // Clarification #5 / Serpent-bkef: OS file clipboard for asset files.
+  // Clarification #5: OS file clipboard for asset files.
   z.strictObject({
     type: z.literal('asset.copy-files.request'),
     libraryId: identifierSchema,
@@ -1306,7 +1306,7 @@ export const rendererRequestSchema = z.discriminatedUnion('type', [
       folderId: identifierSchema.optional(),
     }),
     confirm: z.boolean(),
-    /** When set, only these AI layers are cleared (Serpent-u7hz). Omit = all. */
+    /** When set, only these AI layers are cleared. Omit = all. */
     fields: z
       .array(z.enum(['description', 'rating', 'tags']))
       .min(1)
@@ -1849,7 +1849,7 @@ export const workerCommandSchema = z.discriminatedUnion('type', [
     libraryId: identifierSchema,
     displayName: optionalIdentifierSchema,
     sourceRootPath: selectedPathSchema,
-    /** Serpent-316493: managed folder to hang the linked root under. */
+    /** managed folder to hang the linked root under. */
     parentFolderId: identifierSchema.nullable().optional(),
   }),
   z.strictObject({
@@ -2312,7 +2312,7 @@ export const workerCommandSchema = z.discriminatedUnion('type', [
     expectedRevisionId: identifierSchema.optional(),
     createRevision: z.boolean().optional(),
   }),
-  // Slice A (Serpent-fu2i): companion-texture index for model assets. The
+  // Slice A: companion-texture index for model assets. The
   // Worker returns relative paths + asset ids for the model's directory
   // (recursive); only the renderer 3D loader consumes it. Read-only, no
   // absolute paths cross this boundary.

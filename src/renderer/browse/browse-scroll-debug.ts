@@ -1,5 +1,5 @@
 /**
- * VIEWER-001 / Serpent-bd481f: after the viewer closes, other restore loops
+ * VIEWER-001: after the viewer closes, other restore loops
  * (canvas width reflow, leftover workspace viewport, virtual geometry
  * anchors) can still write scrollTop about half a second later and yank the
  * browse canvas to the top. Hold the captured offset until those loops

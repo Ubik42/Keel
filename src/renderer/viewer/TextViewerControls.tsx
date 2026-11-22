@@ -39,7 +39,7 @@ export type TextViewerControlsHandle = {
 };
 
 /**
- * Numbered text viewer/editor (Serpent-sh7). Content is loaded via capped Worker
+ * Numbered text viewer/editor. Content is loaded via capped Worker
  * IPC — never via unbounded keel://source fetch.
  */
 let persistTextViewerWrap = true;

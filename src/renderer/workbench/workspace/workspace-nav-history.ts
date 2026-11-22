@@ -5,7 +5,7 @@ export type WorkspaceNavLocation =
   | { kind: "tag"; tagId: string }
   | { kind: "trash"; tombstoneId: string | null }
   /**
-   * 资产查看器：打开资产 = 一个历史状态（Serpent-b7e173）。查看器内
+   * 资产查看器：打开资产 = 一个历史状态。查看器内
    * next/prev 用 replaceCurrent 原地更新 assetId，不新增历史条目。
    */
   | { kind: "preview"; assetId: string }
@@ -56,7 +56,7 @@ export type WorkspaceNavHistory = {
   back: () => WorkspaceNavLocation | null;
   forward: () => WorkspaceNavLocation | null;
   clear: (initial?: WorkspaceNavLocation, tabId?: string) => void;
-  /** Drops every entry that belongs to a closed tab (Serpent-b8a853). */
+  /** Drops every entry that belongs to a closed tab. */
   removeTab: (tabId: string) => void;
   peek: (delta: number) => WorkspaceNavLocation | null;
   peekViewport: (delta: number) => WorkspaceNavViewport | null;
@@ -103,7 +103,7 @@ export function workspaceNavLocationsEqual(
 }
 
 /**
- * 会话恢复的叶子位置种子（Serpent-ada7ad）：恢复进非 all scope 时以
+ * 会话恢复的叶子位置种子：恢复进非 all scope 时以
  * {kind:"all"} 作为历史基底再 push 叶子，使「后退到全部资产」从第一帧即可用；
  * 恢复为 all 本身则保持单条、canBack=false。返回恢复后 canBack 是否应为 true。
  */

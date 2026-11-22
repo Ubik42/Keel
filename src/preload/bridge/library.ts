@@ -1967,7 +1967,7 @@ export const library: KeelLibraryApi = Object.freeze({
     };
   },
 
-  // Serpent-visible-window: fire-and-forget report of the viewport assets —
+  // fire-and-forget report of the viewport assets —
   // worker queue-jumps their thumbnail jobs and header-probes dimensions.
   async reportVisibleWindow({
     libraryId,
@@ -2011,7 +2011,7 @@ export const library: KeelLibraryApi = Object.freeze({
     });
   },
 
-  // Serpent-xffq: 同步服务器（全局）与库绑定（Main 本地，密码 safeStorage）。
+  // 同步服务器（全局）与库绑定（Main 本地，密码 safeStorage）。
   async syncListServers(): Promise<LibraryApiResult<Array<{ id: string; baseUrl: string; username?: string; hasPassword: boolean; allowInsecureTls: boolean }>>> {
     const result = await request({ type: 'sync.servers.list.request' });
     if (!result.ok) return failure(result);
@@ -2266,7 +2266,7 @@ export const library: KeelLibraryApi = Object.freeze({
     return { ok: true, value: result.statuses };
   },
 
-  // Serpent-xffq: 同步探测/预览/执行（Main 按 serverId 解析 URL 与凭据）。
+  // 同步探测/预览/执行（Main 按 serverId 解析 URL 与凭据）。
   async syncProbe({ serverId }: { serverId: string }): Promise<LibraryApiResult<SyncCapabilities>> {
     const result = await request({ type: 'sync.probe.request', serverId });
     if (!result.ok) return failure(result);
@@ -2298,7 +2298,7 @@ export const library: KeelLibraryApi = Object.freeze({
     return { ok: true, value: { report: result.report, conflicts: result.conflicts } };
   },
 
-  // Slice C (Serpent-qvc6): 3D viewer renderer request surface. Both requests
+  // Slice C: 3D viewer renderer request surface. Both requests
   // bridge straight to Worker commands (slices A/B); errors come back as
   // typed protocol error codes.
   async resolveModelCompanions({ libraryId, assetId }: { libraryId: string; assetId: string }): Promise<LibraryApiResult<ModelCompanionAsset[]>> {

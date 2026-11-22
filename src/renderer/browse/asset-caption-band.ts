@@ -1,5 +1,5 @@
 /**
- * Per-card caption band sizing (Serpent-b1b0f2).
+ * Per-card caption band sizing.
  *
  * A card must only reserve the caption lines it really renders. A file whose
  * pixel size was never decoded (undecoded raw, documents, audio) shows

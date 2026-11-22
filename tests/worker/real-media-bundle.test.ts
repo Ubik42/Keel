@@ -201,7 +201,7 @@ describe.runIf(hasRealBundle || requireRealMedia)('installed media bundle real-f
         .toMatchObject({ status: 'ready', mimeType: 'image/jpeg' });
     }
 
-    // Serpent-cljb: importing/browsing never eagerly creates video proxies,
+    // importing/browsing never eagerly creates video proxies,
     // including for AVI/WMV. The real player decides whether a specific source
     // needs a proxy after it reports a decode failure.
     for (const asset of videoAssets) {

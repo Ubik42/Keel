@@ -1,5 +1,5 @@
 /**
- * Offscreen thumbnail renderer smoke test (slice E, Serpent-hnmg).
+ * Offscreen thumbnail renderer smoke test (slice E).
  *
  * Platform measurement item (research §4.8-3/5): verifies that an offscreen
  * BrowserWindow on THIS machine can create a WebGL context, render one frame

@@ -61,7 +61,7 @@ describe("dialog-escape-stack", () => {
     })).toEqual({ kind: "close-image-sequence-dialog" });
   });
 
-  it("prefers fatal alert over AI connection failure and other layers (Serpent-99lv)", () => {
+  it("prefers fatal alert over AI connection failure and other layers", () => {
     expect(
       resolveDialogEscapeAction({
         ...empty,
@@ -73,7 +73,7 @@ describe("dialog-escape-stack", () => {
     ).toEqual({ kind: "dismiss-fatal-alert" });
   });
 
-  it("prefers AI connection failure over other layers (Serpent-kdnm)", () => {
+  it("prefers AI connection failure over other layers", () => {
     expect(
       resolveDialogEscapeAction({
         ...empty,
@@ -148,7 +148,7 @@ describe("dialog-escape-stack", () => {
     ).toBe(true);
   });
 
-  it("holds Escape on an in-flight import decision instead of abandoning (Serpent-85e60c)", () => {
+  it("holds Escape on an in-flight import decision instead of abandoning", () => {
     expect(
       resolveDialogEscapeAction({
         ...empty,
@@ -174,7 +174,7 @@ describe("dialog-escape-stack", () => {
     ).toEqual({ kind: "abandon-import", importId: "imp_sf" });
   });
 
-  it("lets import decision dialogs beat the progress overlay (Serpent-224ac8)", () => {
+  it("lets import decision dialogs beat the progress overlay", () => {
     expect(
       resolveDialogEscapeAction({
         ...empty,

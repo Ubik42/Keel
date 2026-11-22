@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { resolveAutoGrowHeight } from "../../src/renderer/inspector/inspector-description-autogrow";
 
-describe("resolveAutoGrowHeight (Serpent-qto)", () => {
+describe("resolveAutoGrowHeight", () => {
   it("floors to the single-line minimum for empty/short content", () => {
     expect(resolveAutoGrowHeight(20, 32, 180)).toBe(32);
     expect(resolveAutoGrowHeight(0, 32, 180)).toBe(32);

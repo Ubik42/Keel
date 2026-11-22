@@ -7,7 +7,7 @@ import {
 } from "../../src/main/media/font-sample-page";
 import type { FontLanguage } from "../../src/shared/font-metadata";
 
-// Serpent-485aeb：字体卡片封面样张页。
+// 字体卡片封面样张页。
 describe("font sample page", () => {
   const fontUrl = "keel://source/lib-1/asset-1?revision=rev-1";
 

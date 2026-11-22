@@ -14,7 +14,7 @@ import {
   sphereFromBounds,
 } from '../../src/renderer/3d-viewer/camera-policy';
 
-describe('camera-policy (Serpent-qvc6 / 3D-02/3D-03)', () => {
+describe('camera-policy (3D-02/3D-03)', () => {
   it('fits a sphere of radius r at the frustum-limiting FOV with margin', () => {
     // Vertical FOV 45°, square viewport → both FOVs equal; distance =
     // r / sin(22.5°) * margin.

@@ -1,5 +1,5 @@
 /**
- * Pure helpers for audio asset detection (Serpent-0x5).
+ * Pure helpers for audio asset detection.
  * Worker `detectMediaType` and MIME maps stay the single runtime authority;
  * these helpers keep extension lists consistent across unit tests and call sites.
  */
@@ -21,7 +21,7 @@ export const AUDIO_EXTENSIONS = [
 /**
  * Grid / Inspector waveform cover geometry (≈4:3).
  * Viewer uses a separate wide strip artifact (`video_poster` for audio) —
- * do not reuse this 4:3 cover in the inspect/view surface (Serpent-vlx).
+ * do not reuse this 4:3 cover in the inspect/view surface.
  */
 export const AUDIO_WAVEFORM_COVER_WIDTH = 640;
 export const AUDIO_WAVEFORM_COVER_HEIGHT = 480;
@@ -58,7 +58,7 @@ export const LIGHT_CANVAS_BACKGROUND = {
 } as const;
 
 /**
- * Preview/grid cover stage — charcoal grey-black (Serpent-vlx).
+ * Preview/grid cover stage — charcoal grey-black.
  * Shared PNG across themes; viewer shell uses theme `--ui-pane` separately.
  */
 export const AUDIO_WAVEFORM_COVER_BACKGROUND = {
@@ -114,7 +114,7 @@ export function isNearFourByThreeAspect(
 
 /**
  * True when the cover stage is a charcoal / grey-black suitable for grid
- * preview (Serpent-vlx). Rejects near-white and pure black.
+ * preview. Rejects near-white and pure black.
  */
 export function isDarkWaveformCoverBackground(rgb: {
   r: number;
@@ -129,7 +129,7 @@ export function isDarkWaveformCoverBackground(rgb: {
 }
 
 /**
- * @deprecated Prefer `isDarkWaveformCoverBackground` (Serpent-vlx). Kept as an
+ * @deprecated Prefer `isDarkWaveformCoverBackground`. Kept as an
  * alias so older call sites that still expect a boolean gate keep compiling
  * during the tag bump window.
  */

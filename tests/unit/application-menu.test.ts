@@ -26,7 +26,7 @@ function findMenuItem(
   return undefined;
 }
 
-describe("shouldInstallApplicationMenu (Serpent-r7gu)", () => {
+describe("shouldInstallApplicationMenu", () => {
   it("keeps the macOS application menu and hides Windows", () => {
     expect(shouldInstallApplicationMenu("darwin")).toBe(true);
     expect(shouldInstallApplicationMenu("win32")).toBe(false);
@@ -35,7 +35,7 @@ describe("shouldInstallApplicationMenu (Serpent-r7gu)", () => {
   });
 });
 
-describe("buildApplicationMenuTemplate (Serpent-46i9)", () => {
+describe("buildApplicationMenuTemplate", () => {
   it("omits Electron page-zoom roles that steal Cmd/Ctrl+=,-,0", () => {
     for (const platform of ["darwin", "win32", "linux"] as const) {
       const template = buildApplicationMenuTemplate({
@@ -54,7 +54,7 @@ describe("buildApplicationMenuTemplate (Serpent-46i9)", () => {
       expect(roles).toContain("toggleDevTools");
       if (platform === "darwin") {
         expect(roles).not.toContain("editMenu");
-        // Serpent-q0b1: undo/redo are business commands, not text-editing roles.
+        // undo/redo are business commands, not text-editing roles.
         expect(roles).not.toContain("undo");
         expect(roles).not.toContain("redo");
       } else {
@@ -108,7 +108,7 @@ describe("buildApplicationMenuTemplate (Serpent-46i9)", () => {
     expect(nonMac).not.toContain("about");
   });
 
-  it("adds macOS Edit invert selection via i18n label key (Serpent-te8p/q0b1)", () => {
+  it("adds macOS Edit invert selection via i18n label key", () => {
     function findCommand(
       items: readonly ApplicationMenuItemTemplate[],
       command: "invert-selection" | "copy-selection",
@@ -141,7 +141,7 @@ describe("buildApplicationMenuTemplate (Serpent-46i9)", () => {
     expect(zh?.labelKey).toBe("shell.mainMenuInvertSelection");
     expect(enCmd?.labelKey).toBe("shell.mainMenuInvertSelection");
 
-    // Serpent-166q: Copy is a custom command (not role:copy) so ⌘C can copy files.
+    // Copy is a custom command (not role:copy) so ⌘C can copy files.
     const zhCopy = findCommand(
       buildApplicationMenuTemplate({
         platform: "darwin",
@@ -238,7 +238,7 @@ describe("buildApplicationMenuTemplate (Serpent-46i9)", () => {
   });
 });
 
-describe("macOS product menu mirror (Serpent-q0b1)", () => {
+describe("macOS product menu mirror", () => {
   function commandsOf(items: readonly ApplicationMenuItemTemplate[]): string[] {
     const commands: string[] = [];
     for (const item of items) {
@@ -362,7 +362,7 @@ describe("macOS product menu mirror (Serpent-q0b1)", () => {
   });
 });
 
-describe("shouldHideApplicationMenuBar (Serpent-znex)", () => {
+describe("shouldHideApplicationMenuBar", () => {
   it("hides the Windows menu bar for frameless shell unity", async () => {
     const { shouldHideApplicationMenuBar } = await import(
       "../../src/shared/window-controls"

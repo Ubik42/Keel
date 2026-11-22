@@ -1,5 +1,5 @@
 /**
- * 同步编排服务（Serpent-xffq）——SyncEngine 的高层入口。
+ * 同步编排服务——SyncEngine 的高层入口。
  *
  * 职责：连接配置 → 能力探测 → 快照/远端 manifest/墓碑收集 → plan →
  * runner 执行 → 写回远端 manifest + 本地缓存。库副作用经 SyncLibraryPort
@@ -101,7 +101,7 @@ export interface SyncEngineOptions {
   deviceId: string;
   now?(): string;
   /**
-   * 传输进度回调（Serpent-xffq 增量）：done/total 为已处理动作数，
+   * 传输进度回调：done/total 为已处理动作数，
    * bytesDone/bytesTotal 为已传输与总字节（含上传与下载）。供日志
    * 显示进度条与传输速度；数据传输本身无墙钟超时（用户决定）。
    */
@@ -113,7 +113,7 @@ export class SyncEngine {
   constructor(private readonly library: SyncLibraryPort, private readonly options: SyncEngineOptions) {}
 
   buildDriver(root: SyncRootConfig): RemoteStorageDriver {
-    // Serpent-fatf: 纵深防御 —— 命令入口已规范化，但 engine 可能被直接
+    // 纵深防御 —— 命令入口已规范化，但 engine 可能被直接
     // 调用（后台定时同步等）；非法地址在这里给可读错误而非 TypeError。
     const normalized = normalizeWebDAVBaseUrl(root.baseUrl);
     if (!normalized.ok) {

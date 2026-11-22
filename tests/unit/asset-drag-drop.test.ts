@@ -57,7 +57,7 @@ describe('drag payload helpers', () => {
   });
 });
 
-describe('resolveDragDropMode / resolveManagedDropEffect (Serpent-aa3)', () => {
+describe('resolveDragDropMode / resolveManagedDropEffect', () => {
   it('maps Option/Alt to copy and the matching dropEffect', () => {
     expect(resolveDragDropMode({ altKey: true })).toBe('copy');
     expect(resolveDragDropMode({ altKey: false })).toBe('move');
@@ -73,7 +73,7 @@ describe('resolveDragDropMode / resolveManagedDropEffect (Serpent-aa3)', () => {
     expect(resolveManagedDropEffect('move', 'none')).toBeNull();
   });
 
-  it('uses platform-correct modifier labels (Serpent-2vn)', () => {
+  it('uses platform-correct modifier labels', () => {
     expect(dragCopyModifierLabel('mac')).toBe('Option');
     expect(dragCopyModifierLabel('windows')).toBe('Alt');
   });

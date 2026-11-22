@@ -1,5 +1,5 @@
 /**
- * Serpent-verg.5 — migration failure diagnosis and retry (0031 §2.2).
+ * migration failure diagnosis and retry (0031 §2.2).
  *
  * A failed migration rolls back (per-migration transaction) leaving the
  * library intact at its previous version, but blindly retrying forever would

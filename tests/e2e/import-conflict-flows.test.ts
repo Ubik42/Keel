@@ -12,7 +12,7 @@ import {
 test.describe.configure({ timeout: 120_000 });
 
 /**
- * Import conflict vs content duplicate are two DIFFERENT flows (Serpent-7gvd):
+ * Import conflict vs content duplicate are two DIFFERENT flows:
  * - same-name files → "同名冲突" dialog with THREE options
  *   (自动重命名 / 覆盖 / 跳过);
  * - same-content files → "内容重复" dialog with TWO options

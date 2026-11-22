@@ -82,7 +82,7 @@ export async function handleListFolders(): Promise<ListFoldersDisposition> {
 
   // 链接文件夹与 managed 文件夹并列作为扩展保存目标：worker 的 folder.list
   // 只列 managed，这里额外取 linked-folder.list 并按链接根 displayName 做
-  // 命名空间前缀，避免与 managed 的 relativePath 撞树（Serpent-f6f779）。
+  // 命名空间前缀，避免与 managed 的 relativePath 撞树。
   let linkedExtensionFolders: Array<{
     folderId: string;
     name: string;

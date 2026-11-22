@@ -1,5 +1,5 @@
 /**
- * AI connection heartbeat (Serpent-rsbt).
+ * AI connection heartbeat.
  *
  * Reuses the existing `testAiConnection` / probe path on a ~60s cadence and
  * keeps one global connection state for the config title indicator and the

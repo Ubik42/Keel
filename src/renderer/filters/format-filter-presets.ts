@@ -1,9 +1,9 @@
-// REQ-FILTER-025 follow-up (Serpent-1d4w): the format filter quick-chips are
+// REQ-FILTER-025 follow-up: the format filter quick-chips are
 // derived from the product format registries instead of a hardcoded list, so
 // every supported format (images incl. RAW, video, audio, documents, 3D models) is
 // clickable without touching this module when the registry grows.
 //
-// The special `text` token (Serpent-4l7) is NOT an extension — the worker
+// The special `text` token is NOT an extension — the worker
 // expands it to TEXT_EXTENSIONS when building the query — so it stays a
 // standalone chip rendered after the registry groups.
 import {
@@ -55,7 +55,7 @@ export const FORMAT_FILTER_GROUPS: readonly FormatFilterGroup[] = [
     extensions: documentFilterExtensions,
   },
   {
-    // Serpent-485aeb: fonts are their own category instead of falling into 其他.
+    // fonts are their own category instead of falling into 其他.
     labelKey: "filter.formatGroupFont",
     extensions: dotless(FONT_EXTENSIONS),
   },

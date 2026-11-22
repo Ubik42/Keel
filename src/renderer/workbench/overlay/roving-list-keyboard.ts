@@ -1,7 +1,7 @@
 /**
  * Shared Arrow/Home/End/Escape navigation for menus and listboxes that use a
  * single focused item (`tabIndex={-1}` roving). Extracted from context-menu
- * patterns for LibrarySwitcher / SortModeControl (Serpent-vvn).
+ * patterns for LibrarySwitcher / SortModeControl.
  */
 
 export function queryEnabledRovingItems(

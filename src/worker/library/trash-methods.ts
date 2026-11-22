@@ -408,7 +408,7 @@ export function applyManagedFolderDeleteHistorySnapshot(this: LibraryService, op
 }
 
 /**
-* Clarification #7 / Serpent-ekj: trash a managed folder (empty or not).
+* Clarification #7: trash a managed folder (empty or not).
 * All active managed assets in the subtree move to the app trash; folder
 * rows and the real Assets/ directory tree are then removed. Restoring
 * assets falls back to the library root when the original folder is gone.
@@ -696,7 +696,7 @@ export async function trashSelectionAsync(this: LibraryService, input: Parameter
 }
 
 /**
-* Clarification #7 / Serpent-ekj: permanently delete a managed folder and
+* Clarification #7: permanently delete a managed folder and
 * every active managed asset in its subtree from disk. Irreversible.
 */
 export function deleteManagedFolderFromDisk(this: LibraryService, input: {
@@ -2178,7 +2178,7 @@ export function trashAssets(this: LibraryService, input: {
 
     openLibrary.connection.transaction(() => {
       // Keep sequence membership so trash lists one sequence card and restore
-      // can bring the whole run back intact (Serpent-vijg).
+      // can bring the whole run back intact.
       const manifest: OperationManifest = {
         version: 1,
         files: rows.map((row) => ({
@@ -3094,7 +3094,7 @@ export function restoreAssetsIfOriginalVacant(this: LibraryService, input: {
 }
 
 /**
-* Clarification #7 / Serpent-9zc: permanently delete active managed assets
+* Clarification #7: permanently delete active managed assets
 * from disk (not via app trash). Irreversible; shares confirm preference
 * with folder disk-delete.
 */
@@ -3357,7 +3357,7 @@ export function deleteAssetsPermanent(this: LibraryService, input: {
 
 /**
 * Recreate managed folder rows (and disk paths) from trash tombstones, then
-* restore trashed assets that belonged to the subtree (Serpent-qufh).
+* restore trashed assets that belonged to the subtree.
 */
 export function restoreTrashedManagedFolder(this: LibraryService, input: {
     libraryId: string;
@@ -3414,7 +3414,7 @@ export function restoreTrashedManagedFolder(this: LibraryService, input: {
   const folderIds = tombstones.map((row) => row.folder_id);
   const tombstoneIds = tombstones.map((row) => row.tombstone_id);
 
-  // Serpent-gz4y / whvm: bind by tombstone id first so same-path tombstones
+  // whvm: bind by tombstone id first so same-path tombstones
   // never steal each other's assets. folder_id is a secondary match for
   // rows that still retain the FK; path is a last-resort legacy fallback
   // only when that relative_path has a single competing tombstone.
@@ -3797,7 +3797,7 @@ export function emptyTrash(this: LibraryService, libraryId: string): {
     });
   }
 
-  // Serpent-b3kf: never wipe all tombstones when some assets remain in trash.
+  // never wipe all tombstones when some assets remain in trash.
   if (result.skippedCount === 0) {
     openLibrary.connection.prepare('DELETE FROM trashed_managed_folders').run();
   } else {
@@ -4886,11 +4886,11 @@ export function cancelDiskDelete(this: LibraryService, operationId: string): voi
 }
 
 /**
-* Serpent-9i8: close the open library, then permanently delete its root
+* close the open library, then permanently delete its root
 * directory (Assets / metadata directory / managed content). Linked-folder *source*
 * trees live outside the library root and are not touched.
 *
-* Serpent-dfgg: Windows cannot rm a tree while Chromium/ffmpeg/fs.watch still
+* Windows cannot rm a tree while Chromium/ffmpeg/fs.watch still
 * hold children. Callers must drainLibraryMedia first; this method then
 * retries and will rename the root aside if a lingering lock remains.
 */
@@ -4922,7 +4922,7 @@ export function deleteLibraryFromDisk(this: LibraryService, libraryId: string): 
     pendingAsidePath = removeLibraryRootWithRetry(libraryPath).asidePath;
   } catch (error) {
     this.diagnose('library.delete-from-disk', error, { libraryPath });
-    // Serpent-qgm1: the library was closed before rm — if the deletion
+    // the library was closed before rm — if the deletion
     // fails the user must not be left with a half-open state. Reopen so the
     // library stays fully usable and the renderer can keep browsing.
     try {
@@ -4961,7 +4961,7 @@ export function deleteLibraryFromDisk(this: LibraryService, libraryId: string): 
 }
 
 /**
-* Serpent-65d837: remove library roots that were renamed aside (`.del-*`)
+* remove library roots that were renamed aside (`.del-*`)
 * after a previous deletion could not fully remove them while a Windows
 * handle was still open. Idempotent — missing paths are harmless because
 * `removePathWithSyncRetry` uses `rmSync(..., { force: true })`. Returns the

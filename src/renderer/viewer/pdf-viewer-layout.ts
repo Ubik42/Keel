@@ -1,5 +1,5 @@
 /**
- * PDF viewer page geometry (Serpent-8ca259).
+ * PDF viewer page geometry.
  *
  * The page column is a vertical flex container. Default `flex-shrink: 1`
  * squeezed every page into the viewport as thin rounded strips ("venetian

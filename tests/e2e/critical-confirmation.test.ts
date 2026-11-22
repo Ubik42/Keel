@@ -107,7 +107,7 @@ test("uses the in-app dialog for library disk deletion", async () => {
   }
 });
 
-// Serpent-bcaf4a：危险操作确认窗点「取消」是用户主动停下，不是失败。
+// 危险操作确认窗点「取消」是用户主动停下，不是失败。
 // 界面必须给一句点名操作的 info 提示，绝不能落到红色错误条。
 test("cancelling a folder disk delete reports an info notice instead of an error", async () => {
   const temporaryRoot = mkdtempSync(

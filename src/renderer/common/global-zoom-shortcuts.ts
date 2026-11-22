@@ -1,5 +1,5 @@
 /**
- * Global Cmd/Ctrl+= / - / 0 zoom chords (Serpent-46i9).
+ * Global Cmd/Ctrl+= / - / 0 zoom chords.
  *
  * Pure helpers so matching and step math stay unit-testable outside Electron.
  * Viewer surfaces zoom at the viewport center (0 = fit); browse canvas uses the

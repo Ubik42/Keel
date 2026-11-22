@@ -26,7 +26,7 @@ export type UseAssetDragDropHandlersParams = {
 };
 
 /**
- * Internal canvas DnD executors (Serpent-uye). Pure drop decisions stay in
+ * Internal canvas DnD executors. Pure drop decisions stay in
  * `asset-drag-drop.ts`; this hook only resolves asset facts and runs commands.
  */
 export function useAssetDragDropHandlers({
@@ -72,7 +72,7 @@ export function useAssetDragDropHandlers({
       });
       if (resolution.kind === "reject") {
         if (resolution.reason === "same-folder") {
-          // Serpent-374266: the asset is already in that folder — nothing
+          // the asset is already in that folder — nothing
           // changed, so the drop stays silent instead of explaining a no-op.
           return;
         }

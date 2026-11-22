@@ -20,7 +20,7 @@ function memoryStorage(
   };
 }
 
-describe("ai-ui-preferences (Serpent-t8sw)", () => {
+describe("ai-ui-preferences", () => {
   it("returns defaults when nothing is stored", () => {
     expect(loadAiUiPreferences(memoryStorage())).toEqual(
       DEFAULT_AI_UI_PREFERENCES,

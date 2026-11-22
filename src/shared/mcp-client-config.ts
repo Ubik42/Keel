@@ -1,7 +1,7 @@
 import type { McpConfigFormat } from './mcp';
 
 /**
- * Pure client-config formatters (Serpent-8b5b.5). One canonical connection
+ * Pure client-config formatters. One canonical connection
  * description is rendered for each supported client; the config never
  * contains command/args/cwd/Node paths (ADR-0029 §8).
  */

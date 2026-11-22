@@ -5,7 +5,7 @@ import { referenceExtractRepresentativePalette } from '../helpers/palette-extrac
 
 /**
  * The histogram moved from a per-pixel `Map` to flat typed arrays
- * (Serpent-3a9f1c). That is only acceptable while the emitted palette stays
+ *. That is only acceptable while the emitted palette stays
  * byte-for-byte identical, so the pre-optimization implementation (kept in
  * `tests/helpers/palette-extractor-reference.ts`) is compared over a
  * deterministic pixel corpus.

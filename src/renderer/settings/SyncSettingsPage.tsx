@@ -29,7 +29,7 @@ function ConnectionDot({ state }: { state: ServerConnectionState | "idle" }): Re
 }
 
 /**
- * Global sync-server management (Serpent-xffq). Servers configured here are
+ * Global sync-server management. Servers configured here are
  * available to every library; each library selects a server + subpath in
  * LibrarySettings. Passwords are persisted encrypted in the Main process
  * (safeStorage) and never sent back to the renderer in full.

@@ -190,7 +190,7 @@ export function useDialogEscapeAndFocus({ api, library, reloadCurrentContentRef,
         ids: new Map(),
       });
       void refreshOperationHistory();
-      // Serpent-yqrl: while a user import is applying, each committed asset
+      // while a user import is applying, each committed asset
       // triggers a silent canvas refresh so cards appear one-by-one.
       if (sessionFields.get("uiState") === "importing" || transfersFields.get("importProgress")) {
         scheduleSilentReload();
@@ -274,7 +274,7 @@ export function useDialogEscapeAndFocus({ api, library, reloadCurrentContentRef,
       }
       // revision_artifacts / jobs writes also bump change-sequence. The grid
       // is patched by onThumbnailEvent; a full searchAssets here freezes the
-      // canvas after large imports (Serpent-yti0). Asset-set mutations still
+      // canvas after large imports. Asset-set mutations still
       // arrive on asset.changed. NAS/SMB libraries are the exception: their
       // database change sequence is the cross-instance signal because the
       // other computer's asset.changed event cannot reach this renderer.
@@ -499,7 +499,7 @@ export function useDialogEscapeAndFocus({ api, library, reloadCurrentContentRef,
       setConvertLinkedDialog({ folderId: "", name: "", targetFolderId: "" });
     },
     setDialog: (value) => {
-      // Serpent-kipk: required no-library surface cannot dismiss; Escape returns
+      // required no-library surface cannot dismiss; Escape returns
       // to the start phase instead of leaving an empty canvas.
       if (value === null && !library) {
         setCreateLibraryPhase("start");

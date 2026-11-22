@@ -111,7 +111,7 @@ export function stripWindowsExtendedPathPrefix(normalized: string): string {
 /**
  * Windows folder pickers often return `E:\设计\`. `path.dirname(join(parent, name))`
  * then disagrees with the trailing-separator parent and every create/open
- * destination is rejected as INVALID_LIBRARY_PATH (Serpent-sq4i).
+ * destination is rejected as INVALID_LIBRARY_PATH.
  */
 export function stripTrailingPathSeparators(input: string): string {
   const { root } = path.parse(input);

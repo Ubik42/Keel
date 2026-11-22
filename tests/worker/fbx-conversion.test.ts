@@ -377,7 +377,7 @@ describe('fbx converter — hand-written ASCII fixture', () => {
     expect(alphaTests).toContain(0.5);
   });
 
-  it('composites separate metalness/roughness maps into metallicRoughnessTexture (Serpent-a5ic)', async () => {
+  it('composites separate metalness/roughness maps into metallicRoughnessTexture', async () => {
     const { default: sharp } = await import('sharp');
     const metalPng = await sharp(Buffer.from([0]), {
       raw: { width: 1, height: 1, channels: 1 },

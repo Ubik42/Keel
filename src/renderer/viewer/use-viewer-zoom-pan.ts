@@ -42,7 +42,7 @@ interface UseViewerZoomPanOptions {
 
 /**
  * Shared fit/pan/zoom state machine for viewer media surfaces (image, GIF,
- * video — Serpent-yo0n / Serpent-190). Owns the viewport ref, the wheel
+ * video). Owns the viewport ref, the wheel
  * listener (mouse wheel zooms at the pointer, trackpad scroll pans, pinch /
  * Ctrl+wheel zooms — see viewer-wheel-intent.ts), drag-to-pan pointer
  * handlers (left or middle mouse — Photoshop-style middle-button pan),
@@ -183,7 +183,7 @@ export function useViewerZoomPan({
     [commitView],
   );
 
-  // Cmd/Ctrl+=|-|0: zoom at viewport center; 0 = fit (Serpent-46i9).
+  // Cmd/Ctrl+=|-|0: zoom at viewport center; 0 = fit.
   useEffect(() => {
     if (keyboardShortcutsDisabled) return;
     const platform = isMacPlatform(navigator.userAgent) ? "mac" : "windows";
@@ -253,7 +253,7 @@ export function useViewerZoomPan({
       ) {
         if (deltaY === 0) return;
         // The zoom center is frozen at the gesture-start pointer position
-        // (Serpent-yo0n): mid-gesture pointer drift must not move it.
+        //: mid-gesture pointer drift must not move it.
         const anchor = resolveWheelGestureAnchor(
           wheelAnchorRef.current,
           event.clientX,

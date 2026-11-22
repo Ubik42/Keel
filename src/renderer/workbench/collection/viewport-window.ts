@@ -14,7 +14,7 @@ const canvasLocalViewportSnapshots = new WeakMap<HTMLElement, CanvasLocalViewpor
  * screens before the compositor's scroll event reaches React. Keep five
  * viewport heights (and twelve card heights for large stops) mounted so the
  * previous slice still covers the new viewport during that hand-off
- * (Serpent-1s3d).
+ *.
  */
 export function viewportOverscanPx(
   viewportHeightPx: number,
@@ -149,7 +149,7 @@ export function canvasViewportIsMeasurable(
 }
 
 /** Whole CSS pixels. Fractional getBoundingClientRect edges retrigger
- *  windowing every frame on Windows DPI (Serpent-oq86). */
+ *  windowing every frame on Windows DPI. */
 export function quantizeCanvasViewportOffsetPx(value: number): number {
   if (!Number.isFinite(value)) return 0;
   return Math.round(value);

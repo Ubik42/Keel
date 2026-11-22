@@ -319,7 +319,7 @@ export function sqliteConnectionIsRegisteredPrimary(this: LibraryService, connec
 }
 
 /**
-* Serpent-4bdd26: prepared statement memoized per (library, SQL text).
+* prepared statement memoized per (library, SQL text).
 * Statements live as long as the connection; the cache entry is dropped
 * when the library closes. Use only for hot per-row queries — one-off
 * DDL/DML stays on plain `.prepare()`.
@@ -1096,7 +1096,7 @@ export async function ensureOiiOViewerImage(this: LibraryService, input: { libra
 * source files, and so on) remain terminal until the user explicitly retries.
 */
 export function availableAutoRepairComponents(this: LibraryService, openLibrary: OpenLibrary): Set<MediaAutoRepairComponent> {
-  // Serpent-verg.2 — lenient open: libraries predating the artifact status
+  // lenient open: libraries predating the artifact status
   // columns have no component failures to repair.
   if (!columnsFor(openLibrary.connection, 'revision_artifacts').has('status')) {
     return new Set();
@@ -1248,7 +1248,7 @@ export function enumerateManagedSources(this: LibraryService, assetsRootPath: st
       const childPath = path.join(directoryPath, child.name);
       let stat: BigIntStats | Stats;
       try {
-        // Serpent-4bdd26: honor the assetLstat test seam so injected stat
+        // honor the assetLstat test seam so injected stat
         // failures surface during enumeration, before the comparison loop
         // can shortcut via the snapshot.
         stat = this.options.assetLstat

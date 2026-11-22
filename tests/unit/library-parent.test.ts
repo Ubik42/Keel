@@ -23,7 +23,7 @@ afterEach(() => {
   }
 });
 
-describe('resolveWritableLibraryParent (Serpent-sq4i)', () => {
+describe('resolveWritableLibraryParent', () => {
   it('creates a missing parent folder when asked', () => {
     const root = mkdtempSync(path.join(tmpdir(), 'serpent-parent-'));
     roots.push(root);
@@ -69,7 +69,7 @@ describe('resolveWritableLibraryParent (Serpent-sq4i)', () => {
     }
   });
 
-  it('accepts a filesystem root as a parent when it is writable (Serpent-qn6k)', () => {
+  it('accepts a filesystem root as a parent when it is writable', () => {
     const root = path.parse(process.cwd()).root;
     try {
       const resolved = resolveWritableLibraryParent({

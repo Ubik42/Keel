@@ -108,7 +108,7 @@ function queuedCountFor(fixture: IgnoreFixture, assetId: string): number {
 }
 
 /**
- * Serpent-4bc4ac: background media scheduling must respect ignore rules.
+ * background media scheduling must respect ignore rules.
  * Before this fix, hidden folders kept generating/running thumbnail jobs and
  * resolveAssetPath threw ASSET_NOT_FOUND for them, looping failed→repair
  * forever (28k+ failed rows on a converted library).

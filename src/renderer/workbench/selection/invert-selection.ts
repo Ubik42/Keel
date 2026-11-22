@@ -1,5 +1,5 @@
 /**
- * Invert selection among the currently visible id set (Serpent-5fq).
+ * Invert selection among the currently visible id set.
  *
  * Product: complement of selected ∩ visible within visible — not set XOR
  * across hidden items. Order follows `visibleIds` so the primary/anchor

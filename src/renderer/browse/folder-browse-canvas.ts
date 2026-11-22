@@ -12,7 +12,7 @@ export interface FolderBrowseCanvasContext {
 
 /**
  * How the open-library browse canvas should pack folder cards vs the asset
- * grid (CANVAS-022 / Serpent-an1).
+ * grid (CANVAS-022).
  *
  * When a folder has only child folders (recursive browse off → zero assets),
  * mounting an empty `.asset-grid` with `min-height: 100%` reserves a full

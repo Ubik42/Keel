@@ -1,5 +1,5 @@
 /**
- * Serpent-485aeb: state for the font viewer's specimen toolbar.
+ * state for the font viewer's specimen toolbar.
  *
  * The Renderer renders the glyphs itself (`FontFace` + `keel://source`), so
  * the viewer controls are plain view-only state: language, preview text, size,

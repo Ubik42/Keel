@@ -58,7 +58,7 @@ function writeEagleFixture(eagleRoot: string): void {
   writeFileSync(path.join(nestedItem, 'nested-item.txt'), 'nested bytes');
 }
 
-describe('Eagle external-library opening (Serpent-768x.1)', () => {
+describe('Eagle external-library opening', () => {
   it('converts root files and nested folders into a Keel library at the chosen parent', async () => {
     const root = mkdtempSync(path.join(tmpdir(), 'serpent-eagle-open-'));
     roots.push(root);
@@ -178,7 +178,7 @@ describe('Eagle external-library opening (Serpent-768x.1)', () => {
     expect(converted.libraryPath).toBe(path.join(realpathSync(missingParent), 'Reference'));
   });
 
-  it('accepts a trailing separator on the destination parent (Serpent-sq4i)', async () => {
+  it('accepts a trailing separator on the destination parent', async () => {
     const root = mkdtempSync(path.join(tmpdir(), 'serpent-eagle-open-trail-'));
     roots.push(root);
     const eagleRoot = path.join(root, 'Reference.library');

@@ -461,7 +461,7 @@ describe('pending import plans', () => {
     writeFileSync(path.join(library.libraryPath, 'Assets', 'same.png'), 'same');
 
     // Same destination basename wins as name-conflict even when bytes match
-    // (IMPORT-007 / Serpent-12ae). Content-duplicate is only for free names.
+    // (IMPORT-007). Content-duplicate is only for free names.
     const sameNameSameContent = prepareConflict(service, {
       libraryId: library.libraryId,
       sourceKind: 'files',
@@ -488,7 +488,7 @@ describe('pending import plans', () => {
     service.closeAll();
   });
 
-  it('surfaces the colliding asset name + thumbnail in name-conflict examples (Serpent-793k)', () => {
+  it('surfaces the colliding asset name + thumbnail in name-conflict examples', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
     const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Library', selectedParentPath: root });
@@ -498,7 +498,7 @@ describe('pending import plans', () => {
     writeFileSync(path.join(secondSource, 'model.fbx'), 'bbb');
 
     // Import the first file so the library holds a real asset row with a
-    // thumbnail artifact (Serpent-793k: name-conflict examples must carry the
+    // thumbnail artifact (name-conflict examples must carry the
     // colliding asset's display name + preview, like content duplicates).
     const imported = service.prepareOrExecuteImport({
       libraryId: library.libraryId,
@@ -522,7 +522,7 @@ describe('pending import plans', () => {
     service.closeAll();
   });
 
-  it('detects content duplicates for 3D files under a different name (Serpent-vqg9)', () => {
+  it('detects content duplicates for 3D files under a different name', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
     const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Library', selectedParentPath: root });
@@ -631,7 +631,7 @@ describe('pending import plans', () => {
     service.closeAll();
   });
 
-  it('carries the existing asset thumbnail in name-conflict examples when ready (Serpent-793k)', async () => {
+  it('carries the existing asset thumbnail in name-conflict examples when ready', async () => {
     const root = temporaryRoot();
     const service = new LibraryService();
     const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Library', selectedParentPath: root });
@@ -768,7 +768,7 @@ describe('pending import plans', () => {
       sourcePaths: [sourceB],
       targetFolderId: folderB.folderId,
     });
-    // Serpent-1syi: cross-folder content match is library-scoped (not path collision).
+    // cross-folder content match is library-scoped (not path collision).
     expect(plan).toMatchObject({
       suspectedDuplicateCount: 1,
       libraryDuplicateCount: 1,
@@ -776,7 +776,7 @@ describe('pending import plans', () => {
       examples: [{ displayName: 'b.png', kind: 'library-duplicate' }],
     });
 
-    // Serpent-hy1n: create-copy keeps free destination basename for library scope.
+    // create-copy keeps free destination basename for library scope.
     const completion = service.resolveImport({
       importId: plan.importId,
       suspectedDuplicate: 'create-copy',
@@ -815,7 +815,7 @@ describe('pending import plans', () => {
     service.closeAll();
   });
 
-  it('offers to skip unreadable files when a folder also has valid files (Serpent-7d1ba2)', () => {
+  it('offers to skip unreadable files when a folder also has valid files', () => {
     const root = temporaryRoot();
     const source = path.join(root, 'Source');
     const outside = path.join(root, 'outside.png');
@@ -1545,7 +1545,7 @@ describe('managed asset refresh', () => {
 
     const statOnlyTime = new Date(acceptedTime.getTime() + 20_000);
     utimesSync(managedPath, statOnlyTime, statOnlyTime);
-    // Serpent-1tio: a pure mtime touch with identical content (portable
+    // a pure mtime touch with identical content (portable
     // library copy / utimes) is NOT a content change — the content
     // fingerprint matches, so the revision and its artifacts survive.
     const statOnly = service.refreshManagedAssets(library.libraryId, { includeAssets: true });
@@ -1653,7 +1653,7 @@ describe('managed asset refresh', () => {
   });
 });
 
-describe('explicit path boundaries (Serpent-8b5b.3)', () => {
+describe('explicit path boundaries', () => {
   it('rejects importing a filesystem root as a folder source', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
@@ -1695,7 +1695,7 @@ describe('explicit path boundaries (Serpent-8b5b.3)', () => {
     service.closeAll();
   });
 
-  // Serpent-8b5b.3: Windows-only evidence — drive roots and UNC roots must be
+  // Windows-only evidence — drive roots and UNC roots must be
   // rejected the same way; executed on the Windows runner, skipped elsewhere.
   it.skipIf(process.platform !== 'win32')('rejects Windows drive and UNC roots as import sources', () => {
     const root = temporaryRoot();
@@ -1714,7 +1714,7 @@ describe('explicit path boundaries (Serpent-8b5b.3)', () => {
   });
 });
 
-describe('Windows path hardening (Serpent-8b5b.7 review)', () => {
+describe('Windows path hardening (review)', () => {
   it('rejects an over-long library parent path', () => {
     const service = new LibraryService();
     const longParent = path.join(temporaryRoot(), 'x'.repeat(260));

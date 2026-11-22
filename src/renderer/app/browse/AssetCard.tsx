@@ -296,7 +296,7 @@ export const AssetCard = memo(function AssetCard(props: AssetCardProps): JSX.Ele
         MANAGED_ASSETS_DRAG_TYPE,
         JSON.stringify(ids),
       );
-      // Serpent-aa3: Option/Alt during dragover selects copy
+      // Option/Alt during dragover selects copy
       // vs move via dropEffect; both must be allowed here.
       event.dataTransfer.effectAllowed = "copyMove";
       // REQ-DND-003: replace Chromium's full-card ghost with
@@ -465,7 +465,7 @@ export const AssetCard = memo(function AssetCard(props: AssetCardProps): JSX.Ele
             );
           }
         } else if (thumbCover) {
-          // Serpent-2ajm: unify with AssetCardMedia so a
+          // unify with AssetCardMedia so a
           // failed load shows the themed fallback icon
           // instead of the browser's broken-image glyph.
           return (

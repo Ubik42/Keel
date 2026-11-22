@@ -214,7 +214,7 @@ describe("virtual browse canvas geometry", () => {
     expect(geometry.offsetAt(12_501)).toBeGreaterThan(geometry.offsetAt(12_500));
   });
 
-  it("locks justified row used height to the geometry body (Serpent-614293)", () => {
+  it("locks justified row used height to the geometry body", () => {
     const style = virtualJustifiedRowStyle({ bodyHeightPx: 258, isLast: false });
     expect(style.height).toBe(258);
     expect(style.flexShrink).toBe(0);
@@ -224,7 +224,7 @@ describe("virtual browse canvas geometry", () => {
       .toBeUndefined();
   });
 
-  it("publishes the row's own caption band on the row style (Serpent-b1b0f2)", () => {
+  it("publishes the row's own caption band on the row style", () => {
     const style = virtualJustifiedRowStyle({
       bodyHeightPx: 258,
       isLast: false,
@@ -238,7 +238,7 @@ describe("virtual browse canvas geometry", () => {
     expect(withoutBand["--justified-caption-band"]).toBeUndefined();
   });
 
-  it("gives each waterfall card its own caption band (Serpent-b1b0f2)", () => {
+  it("gives each waterfall card its own caption band", () => {
     const resolver = createCaptionBandResolver({
       mode: "masonry",
       fields: CAPTION_FIELDS,
@@ -267,7 +267,7 @@ describe("virtual browse canvas geometry", () => {
     );
   });
 
-  it("sizes a virtual tiled row by its tallest caption (Serpent-b1b0f2)", () => {
+  it("sizes a virtual tiled row by its tallest caption", () => {
     const resolver = createCaptionBandResolver({
       mode: "justified",
       fields: CAPTION_FIELDS,

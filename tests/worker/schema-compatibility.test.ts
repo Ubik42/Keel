@@ -1,4 +1,4 @@
-// Serpent-verg.4 — migration atomicity (0031 §2.1): every migration must run
+// migration atomicity (0031 §2.1): every migration must run
 // inside a transaction so a mid-migration failure leaves user_version
 // unchanged, no half-applied schema, and a library that can be reopened and
 // retried.
@@ -303,10 +303,10 @@ describe('mid-migration failure injection', () => {
   });
 });
 
-describe('sync-first v37/v38 migration fork (Serpent-e0dw)', () => {
+describe('sync-first v37/v38 migration fork', () => {
   const autoChecksum = MIGRATIONS.find((migration) => migration.version === 37)!.checksum;
   const syncChecksum = MIGRATIONS.find((migration) => migration.version === 38)!.checksum;
-  // v40+ (Serpent-4bdd26): additive index migrations appended after v39. The
+  // v40+: additive index migrations appended after v39. The
   // fork tests roll the library back to the v38 divergence point, so every
   // migration after v38 must be removed/restored dynamically instead of
   // hard-coding the tail version.

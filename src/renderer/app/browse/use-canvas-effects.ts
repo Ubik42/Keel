@@ -211,7 +211,7 @@ export function useCanvasEffects({ workspaceCanvasRef, setFolderCanvasContentWid
         deltaMode: event.deltaMode,
       };
       // Mouse notches: sign-only (one stop). Trackpad pinch: normalize LINE/PAGE
-      // into pixels for the continuous high-gain path (Serpent-fvpi / Serpent-7ny).
+      // into pixels for the continuous high-gain path.
       const delta =
         event.deltaMode === WheelEvent.DOM_DELTA_LINE
           ? event.deltaY * 16
@@ -232,7 +232,7 @@ export function useCanvasEffects({ workspaceCanvasRef, setFolderCanvasContentWid
   }, [assetCardSize, previewAsset, resizeAssetCards, workspaceCanvasRef]);
 
   // Browse canvas Cmd/Ctrl+=|-|0 — discrete card stops; 0 = default size
-  // (Serpent-46i9 / Serpent-7ny). Viewer owns the chord while preview is open.
+  //. Viewer owns the chord while preview is open.
   useEffect(() => {
     if (previewAsset) return;
     const applyZoomAction = (action: GlobalZoomAction) => {
@@ -307,7 +307,7 @@ export function useCanvasEffects({ workspaceCanvasRef, setFolderCanvasContentWid
     ) {
       saveCurrentWorkspaceHistoryViewport();
     }
-    // Serpent-ayf: entering the viewer always shows chrome, regardless of
+    // entering the viewer always shows chrome, regardless of
     // whatever idle state accumulated while browsing; only opening (not
     // navigateAssetPreview) wakes it.
     wakeViewerChrome();
@@ -364,7 +364,7 @@ export function useCanvasEffects({ workspaceCanvasRef, setFolderCanvasContentWid
     setSelectedAssetId(asset.assetId);
     selectionAnchorRef.current = asset.assetId;
     setPreviewAsset(asset);
-    // Serpent-b7e173：打开查看器注册一个历史状态。已是 preview（重复打开）则
+    // 打开查看器注册一个历史状态。已是 preview（重复打开）则
     // 原地替换，避免叠层 preview；applyWorkspaceLocation 回放时 suppress 不重复记。
     if (options?.recordHistory !== false) {
       const previewLocation: WorkspaceNavLocation = {
@@ -408,7 +408,7 @@ export function useCanvasEffects({ workspaceCanvasRef, setFolderCanvasContentWid
     selectionAnchorRef.current = asset.assetId;
     previewFocusReturnRef.current = asset.assetId;
     setPreviewAsset(asset);
-    // Serpent-b7e173：查看器内切资产只更新当前 preview 条目的 assetId，不新增历史。
+    // 查看器内切资产只更新当前 preview 条目的 assetId，不新增历史。
     if (options?.recordHistory !== false) {
       navHistoryRef.current.replaceCurrent({
         kind: "preview",

@@ -296,7 +296,7 @@ export function useFolderOperations({ api, library, visibleAssets, reloadCurrent
     });
   }
 
-  // Serpent-vf8x: folder create/rename/trash chords (mac ⌘ / Windows Ctrl).
+  // folder create/rename/trash chords (mac ⌘ / Windows Ctrl).
   useFolderCommandShortcuts({
     enabled: Boolean(library) && !showTrash,
     platform: SHORTCUT_PLATFORM,
@@ -339,7 +339,7 @@ export function useFolderOperations({ api, library, visibleAssets, reloadCurrent
     trashManagedFolder: (folderId, name) => {
       requestTrashFolder(folderId, name);
     },
-    // Serpent-d7acfa：多选文件夹卡片时快捷键对全部选中项生效（复用既有的
+    // 多选文件夹卡片时快捷键对全部选中项生效（复用既有的
     // 混合选择入口，托管/链接/根目录的跳过规则保持一致）。
     trashFolders: (folderIds) => {
       void trashMixedSelection([], folderIds);
@@ -397,7 +397,7 @@ export function useFolderOperations({ api, library, visibleAssets, reloadCurrent
       filters: definition.filters,
       scope: searchScope,
       sort: definition.sort,
-      // Serpent-87pd: first window only; scrollbar jumps fetch other offsets.
+      // first window only; scrollbar jumps fetch other offsets.
       limit: BROWSE_PAGE_SIZE,
       showIgnored: includeIgnored,
     });
@@ -435,7 +435,7 @@ export function useFolderOperations({ api, library, visibleAssets, reloadCurrent
       }
     }
     applySearchResult(result.value);
-    // Serpent-ws4k: subsequent pages must reuse the same query/scope/sort.
+    // subsequent pages must reuse the same query/scope/sort.
     registerBrowseSearchPage(beginBrowsePageClearingSimilar, {
       libraryId: targetLibraryId,
       query: definition.search ?? null,

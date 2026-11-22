@@ -16,7 +16,7 @@ export function shouldShowProxyPlaybackNotice(input: {
 export function ProxyPlaybackNotice({ onHide }: ProxyPlaybackNoticeProps) {
   const t = useT();
   return (
-    // preview-chrome-fade: 随查看器 UI 一起在鼠标停驻时渐隐（Serpent-d259bc）。
+    // preview-chrome-fade: 随查看器 UI 一起在鼠标停驻时渐隐。
     <div className="preview-proxy-notice preview-chrome-fade" role="status">
       <span>{t("preview.proxyPlaybackNotice")}</span>
       <button

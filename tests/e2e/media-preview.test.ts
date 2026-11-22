@@ -463,7 +463,7 @@ test("generates a decoded thumbnail and keeps asset viewer context coherent", as
     const viewportCenterY = viewportBox!.y + viewportBox!.height / 2;
     expect(Math.abs(imageCenterX - viewportCenterX)).toBeLessThanOrEqual(2);
     expect(Math.abs(imageCenterY - viewportCenterY)).toBeLessThanOrEqual(2);
-    // Plain mouse wheel zooms anchored at the pointer (Serpent-yo0n). Hover
+    // Plain mouse wheel zooms anchored at the pointer. Hover
     // off-center along the axis that fills the viewport — that axis always
     // has pan room once zoomed, so pan clamping cannot override the anchor.
     const slackX = Math.abs(fitBox!.width - viewportBox!.width);
@@ -490,7 +490,7 @@ test("generates a decoded thumbnail and keeps asset viewer context coherent", as
       Math.abs(wheelBox!.y - (pointerY - (pointerY - fitBox!.y) * wheelRatio)),
     ).toBeLessThanOrEqual(2);
     // The anchor is frozen at the gesture start: drifting the pointer
-    // mid-gesture does not move the zoom center (Serpent-yo0n, user ruling).
+    // mid-gesture does not move the zoom center (user ruling).
     const driftOffsetX = viewportBox!.width * 0.15;
     const driftOffsetY = viewportBox!.height * 0.15;
     await viewportLocator.hover({

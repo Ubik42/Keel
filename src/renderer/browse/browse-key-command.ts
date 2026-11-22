@@ -1,5 +1,5 @@
 /**
- * Eligibility for browse F2 / Delete (Serpent-g8u9).
+ * Eligibility for browse F2 / Delete.
  *
  * Command registry already allows rename on any available non-deleted asset
  * (managed or linked). Keyboard dispatch must match that — gating F2/Delete to

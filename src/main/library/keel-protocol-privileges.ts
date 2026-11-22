@@ -5,7 +5,7 @@
  * `app.ready`. `stream: true` is required so `<video>` / `<audio>` treat
  * Range responses as a streaming transport; without it Chromium buffers as if
  * the body were a single download, and seek/scrub against `createArtifactResponse`
- * frequently surfaces MEDIA_ERR_NETWORK / decode failures (Serpent-jh2).
+ * frequently surfaces MEDIA_ERR_NETWORK / decode failures.
  */
 export const KEEL_PROTOCOL_SCHEME = "keel" as const;
 export const KEEL_PLUGIN_PROTOCOL_SCHEME = "keel-plugin" as const;

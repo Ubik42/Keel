@@ -17,7 +17,7 @@ afterEach(() => {
   }
 });
 
-describe('importNoConflict helper (Serpent-op48 / library dedup)', () => {
+describe('importNoConflict helper (library dedup)', () => {
   it('imports two same-byte files under different names as two assets', () => {
     const root = mkdtempSync(path.join(tmpdir(), 'serpent-import-helper-'));
     roots.push(root);

@@ -1,4 +1,4 @@
-// Serpent-5xbg: derived-artifact repair for assets that failed generation.
+// derived-artifact repair for assets that failed generation.
 //
 // The thumbnail/video-poster/contact-sheet/audio-proxy queues only ever enqueue
 // assets with NO terminal artifact; a failed artifact (e.g. transient FFmpeg
@@ -56,8 +56,8 @@ export interface RetryFailedOptions {
 // A failed video proxy is not an automatic repair candidate. Its existence is
 // evidence only that some previous path asked for it; it does not prove that
 // the source failed direct playback. The viewer owns the explicit retry after
-// a real media-element error (Serpent-cljb).
-// Serpent-140fe2: contact_sheet is excluded — failed sheets stay terminal and
+// a real media-element error.
+// contact_sheet is excluded — failed sheets stay terminal and
 // regenerate lazily at AI-analysis time (ensureVideoContactSheet).
 const DERIVED_KINDS = "'thumbnail', 'video_poster', 'audio_proxy'";
 
@@ -76,7 +76,7 @@ export function requeueRetryableFailedArtifacts(
   connection: RetryFailedConnection,
   options: RetryFailedOptions = {},
 ): number {
-  // Serpent-verg.2 — lenient open (0031 §1): libraries predating the
+  // lenient open (0031 §1): libraries predating the
   // artifact status columns have no failed artifacts to repair; skip instead
   // of failing to open.
   if (!columnsFor(connection, 'revision_artifacts').has('status')) return 0;

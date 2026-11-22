@@ -670,7 +670,7 @@ describe('restoreAssets', () => {
     service.closeAll();
   });
 
-  it('previewRestoreAssets reports no conflicts when the original path is free (Serpent-0hnx)', () => {
+  it('previewRestoreAssets reports no conflicts when the original path is free', () => {
     const root = temporaryRoot();
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Preview Free', selectedParentPath: root });
@@ -685,7 +685,7 @@ describe('restoreAssets', () => {
     service.closeAll();
   });
 
-  it('previewRestoreAssets reports conflicts when the original path is occupied (Serpent-0hnx)', () => {
+  it('previewRestoreAssets reports conflicts when the original path is occupied', () => {
     const root = temporaryRoot();
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Preview Conflict', selectedParentPath: root });
@@ -701,7 +701,7 @@ describe('restoreAssets', () => {
     service.closeAll();
   });
 
-  it('readTextAsset reads trashed text from the trash store (Serpent-hv6n)', () => {
+  it('readTextAsset reads trashed text from the trash store', () => {
     const root = temporaryRoot();
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Trash Text', selectedParentPath: root });
@@ -721,7 +721,7 @@ describe('restoreAssets', () => {
     service.closeAll();
   });
 
-  it('reuses text previews by revision and invalidates them after save (Serpent-29125f)', () => {
+  it('reuses text previews by revision and invalidates them after save', () => {
     const root = temporaryRoot();
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets', displayName: 'Text Preview Cache', selectedParentPath: root });
@@ -1361,7 +1361,7 @@ describe('emptyTrash', () => {
     service.closeAll();
   });
 
-  it('keeps folder tombstones when some assets fail to purge (Serpent-b3kf)', () => {
+  it('keeps folder tombstones when some assets fail to purge', () => {
     const root = temporaryRoot();
     let busyAssetId = '';
     const service = newService({

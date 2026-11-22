@@ -74,7 +74,7 @@ export function volumeAfterWheelSteps(current: number, steps: number): number {
 }
 
 /**
- * ↑ / ↓ adjust global viewer volume (Serpent-8w6x). Capture-phase callers
+ * ↑ / ↓ adjust global viewer volume. Capture-phase callers
  * should stopPropagation so browse shortcuts do not fire underneath.
  */
 export function matchViewerVolumeKey(event: ShortcutEventLike & {

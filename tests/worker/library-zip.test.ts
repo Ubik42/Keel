@@ -96,7 +96,7 @@ afterEach(() => {
 
 // Windows-only helper: libraries and export destinations can live on
 // different drive letters, where path.relative cannot express a traversal
-// and returns an absolute path (Serpent-59f). Probe for a writable drive
+// and returns an absolute path. Probe for a writable drive
 // other than the temp drive and return a fresh directory on it.
 function createForeignDriveRoot(): string | null {
   const tempDrive = path.parse(path.resolve(tmpdir())).root.toUpperCase();
@@ -147,7 +147,7 @@ describe('LibraryService ZIP export', () => {
   });
 
   it.runIf(process.platform === 'win32')(
-    'accepts a ZIP destination on a different drive letter (Serpent-59f)',
+    'accepts a ZIP destination on a different drive letter',
     async (ctx) => {
       const foreignRoot = createForeignDriveRoot();
       if (!foreignRoot) {
@@ -292,7 +292,7 @@ describe('LibraryService ZIP export', () => {
     service.closeAll();
   });
 
-  it('includes .keel/artifacts in ZIP export (Serpent-pxd)', async () => {
+  it('includes .keel/artifacts in ZIP export', async () => {
     const root = temporaryRoot();
     const service = newService();
     const created = service.createLibrary({ storageLayout: 'assets',

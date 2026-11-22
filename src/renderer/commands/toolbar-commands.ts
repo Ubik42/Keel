@@ -1,8 +1,8 @@
 // ---------------------------------------------------------------------------
-// 工作区工具栏命令定义（REQ-COMMAND-001 收尾，Serpent-2rk）
+// 工作区工具栏命令定义（REQ-COMMAND-001 收尾）
 //
 // canvas 视图切换、字段开关、刷新与「更多工具」溢出项接入统一注册表。
-// 导入/导出类动作已由 Serpent-2d0 迁入资源库菜单，不在此注册。
+// 导入/导出类动作已由 迁入资源库菜单，不在此注册。
 // run 经 ToolbarCommandContext.actions 回调包委托给 App 层，本模块不
 // import App.tsx，避免循环依赖；node 环境可测。
 // ---------------------------------------------------------------------------
@@ -135,7 +135,7 @@ export const toolbarCommandDefinitions: readonly ToolbarCommandDefinition[] = [
     run: (ctx) => ctx.actions.openAiSettings(),
   },
   {
-    // REQ-PREF-001 / Serpent-97l: app-level prefs. UI entry is the gear
+    // REQ-PREF-001: app-level prefs. UI entry is the gear
     // beside the library switcher (not the canvas toolbar); this command
     // remains for command-palette / keyboard paths.
     id: 'workspace.app-settings',

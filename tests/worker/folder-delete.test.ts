@@ -46,7 +46,7 @@ afterEach(() => {
   for (const value of roots.splice(0)) rmSync(value, { force: true, recursive: true });
 });
 
-describe('trashManagedFolder (clarification #7 / Serpent-ekj)', () => {
+describe('trashManagedFolder (clarification #7)', () => {
   it('trashes assets in an empty and non-empty managed folder the same way', () => {
     const temp = root();
     const service = newService();
@@ -179,7 +179,7 @@ describe('trashManagedFolder (clarification #7 / Serpent-ekj)', () => {
   });
 });
 
-describe('deleteAssetsFromDisk (clarification #7 / Serpent-9zc)', () => {
+describe('deleteAssetsFromDisk (clarification #7)', () => {
   it('permanently removes managed asset bytes and DB rows without trash', () => {
     const temp = root();
     const service = newService();
@@ -235,7 +235,7 @@ describe('deleteAssetsFromDisk (clarification #7 / Serpent-9zc)', () => {
   });
 });
 
-describe('deleteManagedFolderFromDisk (clarification #7 / Serpent-ekj)', () => {
+describe('deleteManagedFolderFromDisk (clarification #7)', () => {
   it('permanently removes the folder tree and assets without leaving trash rows', () => {
     const temp = root();
     const service = newService();
@@ -310,7 +310,7 @@ describe('deleteManagedFolderFromDisk (clarification #7 / Serpent-ekj)', () => {
   });
 });
 
-describe('removeLinkedFolder (clarification #7 / Serpent-ekj)', () => {
+describe('removeLinkedFolder (clarification #7)', () => {
   it('removes the linked root index and keeps the external source directory', async () => {
     const temp = root();
     const external = path.join(temp, 'external-root');
@@ -346,7 +346,7 @@ describe('removeLinkedFolder (clarification #7 / Serpent-ekj)', () => {
   });
 });
 
-describe('deleteLinkedFolderSubtree (clarification #7 / Serpent-ekj)', () => {
+describe('deleteLinkedFolderSubtree (clarification #7)', () => {
   it('removes a linked child from the index only and never touches its sources', async () => {
     const temp = root();
     const external = path.join(temp, 'linked-tree');
@@ -470,7 +470,7 @@ describe('deleteLinkedFolderSubtree (clarification #7 / Serpent-ekj)', () => {
   });
 });
 
-describe('restoreTrashedManagedFolder (Serpent-qufh)', () => {
+describe('restoreTrashedManagedFolder', () => {
   it('recreates folder rows and restores trashed assets in the subtree', () => {
     const temp = root();
     const service = newService();
@@ -539,7 +539,7 @@ describe('restoreTrashedManagedFolder (Serpent-qufh)', () => {
     }
   });
 
-  it('restores assets matched by path when folder id is null (Serpent-gz4y)', () => {
+  it('restores assets matched by path when folder id is null', () => {
     const temp = root();
     const service = newService();
     const library = service.createLibrary({ storageLayout: 'assets',
@@ -644,7 +644,7 @@ describe('restoreTrashedManagedFolder (Serpent-qufh)', () => {
   });
 });
 
-describe('syncTrashedFolderTombstones (Serpent-kqqy)', () => {
+describe('syncTrashedFolderTombstones', () => {
   it('removes folder tombstones after permanent delete empties them', () => {
     const temp = root();
     const service = newService();
@@ -675,7 +675,7 @@ describe('syncTrashedFolderTombstones (Serpent-kqqy)', () => {
   });
 });
 
-describe('same-name trash folders (Serpent-whvm)', () => {
+describe('same-name trash folders', () => {
   it('binds assets to distinct tombstones and restores only one subtree', () => {
     const temp = root();
     const service = newService();

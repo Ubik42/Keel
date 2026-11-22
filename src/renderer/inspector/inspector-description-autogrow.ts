@@ -1,5 +1,5 @@
 /**
- * Height (px) to apply to the Inspector description textarea (Serpent-qto):
+ * Height (px) to apply to the Inspector description textarea:
  * default single-line height, growing only as far as `scrollHeight` demands
  * once content wraps past one line, clamped to a maximum so very long
  * descriptions scroll internally instead of pushing the rest of the

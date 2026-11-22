@@ -21,7 +21,7 @@ function memoryStorage(initial: Record<string, string> = {}): Viewer3dPreference
   };
 }
 
-describe('viewer3d preferences (Serpent-qvc6 / 3D-09/3D-10 persistence)', () => {
+describe('viewer3d preferences (3D-09/3D-10 persistence)', () => {
   it('defaults to the studio preset with light intensity 1.0', () => {
     expect(DEFAULT_VIEWER3D_PREFERENCES).toEqual({
       presetId: DEFAULT_HDRI_PRESET_ID,

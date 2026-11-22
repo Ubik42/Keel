@@ -1,4 +1,4 @@
-// Serpent-288cd9: the secondary pump decides "the RAW catalogue is drained" from
+// the secondary pump decides "the RAW catalogue is drained" from
 // the admission outcome, so that signal has to be exact. A drained probe must
 // report `budgetCapped: false`; a probe that was stopped by the global admission
 // cap must NOT, otherwise the gate would stop rescanning while RAW assets still
@@ -42,7 +42,7 @@ afterEach(() => {
   }
 });
 
-describe('RAW metadata backfill admission (Serpent-288cd9)', () => {
+describe('RAW metadata backfill admission', () => {
   it('reports a drained catalogue instead of a capped probe', () => {
     const service = new LibraryService();
     services.push(service);

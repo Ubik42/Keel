@@ -117,7 +117,7 @@ describe('文件夹分支：可见性矩阵（与历史内联 JSX 条件一致�
     ]);
   });
 
-  // Serpent-316493 follow-up: the folder panel's blank area is the library root,
+  // the folder panel's blank area is the library root,
   // so its menu offers only the root-appropriate entries.
   it('库根（文件夹面板空白处）：只提供打开/新建/导入链接/粘贴/复制路径', () => {
     const { ctx } = makeCtx({ isLibraryRoot: true });
@@ -284,7 +284,7 @@ describe('文件夹分支：可见性矩阵（与历史内联 JSX 条件一致�
   });
 });
 
-describe('文件夹分支：快捷键展示（Serpent-vf8x）', () => {
+describe('文件夹分支：快捷键展示', () => {
   it('managed 菜单显示新建/重命名/回收站平台标签', () => {
     const mac = makeCtx({ platform: 'mac' });
     const macMenu = registry.resolveMenu(mac.ctx);
@@ -375,7 +375,7 @@ describe('文件夹分支：平台条件标题', () => {
     expect(findItem(registry.resolveMenu(ctx), id).label).toBe(expected);
   });
 
-  it('folder.move-to 保留注册但已从菜单隐藏（Serpent-nno6）', () => {
+  it('folder.move-to 保留注册但已从菜单隐藏', () => {
     const { ctx } = makeCtx();
     const def = registry.get('folder.move-to');
     const title =

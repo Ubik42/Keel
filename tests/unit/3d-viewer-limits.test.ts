@@ -6,7 +6,7 @@ import {
   checkModelRenderWarnings,
 } from '../../src/renderer/3d-viewer/limits';
 
-describe('limits (Serpent-qvc6 / 3D-14)', () => {
+describe('limits (3D-14)', () => {
 
   it('warns above the triangle threshold', () => {
     const warnings = checkModelRenderWarnings({

@@ -21,7 +21,7 @@ export interface OpenSyncLibraryCallbacks {
 }
 
 /**
- * 打开同步资源库（Serpent-xffq）：选择服务器 → 列出远端库 → 拉取并创建本地库。
+ * 打开同步资源库：选择服务器 → 列出远端库 → 拉取并创建本地库。
  * 保存位置由 Main 弹出原生目录选择器。
  */
 export function OpenSyncLibraryDialog({

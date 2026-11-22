@@ -50,7 +50,7 @@ export function MultiAssetMenuItems({ activeContextMenu, assets, linkedFolders, 
             const targetAssets = assets.filter((asset) =>
               targetIdSet.has(asset.assetId),
             );
-            // REQ-MENU-004 / Serpent-koy: process/skip counts + reasons from a
+            // REQ-MENU-004: process/skip counts + reasons from a
             // pure module (folders join trash/disk-delete; move skips them).
             const skipReport = buildMultiAssetMenuSkipReport(
               targetAssetIds,
@@ -85,7 +85,7 @@ export function MultiAssetMenuItems({ activeContextMenu, assets, linkedFolders, 
             ];
             const processFolderIds = [...skipReport.trash.processFolderIds];
             const moveFolderIds = [...skipReport.move.processFolderIds];
-            // Serpent-d7acfa：多选文件夹的「设置图标 / 忽略」资格与跳过原因由
+            // 多选文件夹的「设置图标 / 忽略」资格与跳过原因由
             // folder-batch-actions 统一计算（链接子目录、资源库根等会被跳过）。
             const linkedRootFolders = linkedFolders.map((folder) => ({
               folderId: folder.folderId,
@@ -346,7 +346,7 @@ export function MultiAssetMenuItems({ activeContextMenu, assets, linkedFolders, 
                 onRun={(item) => runPluginCommand(item, { assetIds: targetAssetIds })}
               />
             )}
-            {/* Serpent-d7acfa：只选文件夹卡片时同样要有组织区（移动到文件夹 /
+            {/* 只选文件夹卡片时同样要有组织区（移动到文件夹 /
                 设置图标 / 忽略）；资产专属项（复制、粘贴、标签、合集、AI）各自
                 另有闸门，不会因为放宽这一层而冒出来。 */}
             {(targetAssetIds.length > 0 || targetFolderIds.length > 0) && (

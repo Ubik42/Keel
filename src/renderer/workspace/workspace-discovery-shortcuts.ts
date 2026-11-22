@@ -1,5 +1,5 @@
 /**
- * Discovery toolbar chords (Serpent-x78x / REQ-COMMAND-004).
+ * Discovery toolbar chords (REQ-COMMAND-004).
  *
  * Pure match helpers — useBrowseCommandKeyboard owns the DOM listener.
  */

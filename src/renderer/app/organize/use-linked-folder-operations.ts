@@ -117,7 +117,7 @@ export function useLinkedFolderOperations({ api, library, setUiState, reloadCurr
         api.importFolderAsLinked({
           libraryId: library.libraryId,
           displayName: undefined,
-          // Serpent-316493: null = library root (folder-section link button);
+          // null = library root (folder-section link button);
           // a managed folder id hangs the link under that folder.
           parentFolderId,
         }),
@@ -382,7 +382,7 @@ export function useLinkedFolderOperations({ api, library, setUiState, reloadCurr
       let toreDown = false;
       try {
       await closeAssetPreview(false);
-      // Serpent-dfgg: Chromium keeps keel:// thumbnail/source files mapped
+      // Chromium keeps keel:// thumbnail/source files mapped
       // until <img> unmounts. Drop the browse canvas before asking the Worker
       // to rm the library root, then wait one paint so handles actually close.
       flushSync(() => {
@@ -411,7 +411,7 @@ export function useLinkedFolderOperations({ api, library, setUiState, reloadCurr
       toreDown = true;
       applyClosedLibraryUi();
       await refreshRecentLibraries(null);
-      // Serpent-65d837: the library root is gone but a `.del-*` aside may still
+      // the library root is gone but a `.del-*` aside may still
       // be draining; never let the user believe the disk is fully clean.
       if (result.ok && result.value.pendingCleanup) {
         setNotice(t("toast.libraryDeletedCleanupPending", { name: deletedName }));
@@ -421,7 +421,7 @@ export function useLinkedFolderOperations({ api, library, setUiState, reloadCurr
       playTaskCompletionSound(startedAt);
     } catch (caught) {
       clearLibraryClosePending(openLibrary.libraryId, closeGeneration);
-      // Serpent-qgm1: a failed disk deletion must NOT masquerade as success.
+      // a failed disk deletion must NOT masquerade as success.
       // The worker reopens a still-valid library; a half-deleted tree comes
       // back as LIBRARY_NOT_FOUND and the UI must close.
       const cancelled =

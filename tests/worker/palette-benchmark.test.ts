@@ -192,7 +192,7 @@ function decodePreview(sharp: SharpLike, sourcePath: string): Promise<{ data: Ui
     .toBuffer({ resolveWithObject: true });
 }
 
-/** The pre-Serpent-3a9f1c chain, kept to attribute the `ensureAlpha` removal. */
+/** The pre-chain, kept to attribute the `ensureAlpha` removal. */
 function decodePreviewWithAlpha(sharp: SharpLike, sourcePath: string): Promise<{ data: Uint8Array; info: { channels: number; width: number; height: number } }> {
   return sharp(sourcePath)
     .rotate()
@@ -446,7 +446,7 @@ describe.skipIf(!enabled || !benchDirectory)('palette extraction benchmark (manu
     // per-call overhead that a larger claim amortizes, so they lose to the
     // shipped wave despite the same pause.
     const pumpPolicies: PumpPolicy[] = [
-      { label: 'wave=1 gap=50ms (pre-Serpent-3a9f1c)', batchSize: 1, burstSize: 1, gapMs: 50 },
+      { label: 'wave=1 gap=50ms (before batching)', batchSize: 1, burstSize: 1, gapMs: 50 },
       { label: 'burst=8 wave=1 gap=10ms (rejected: per-call overhead)', batchSize: 1, burstSize: 8, gapMs: 10 },
       { label: 'wave=2 gap=50ms', batchSize: 2, burstSize: 1, gapMs: 50 },
       { label: 'wave=4 gap=50ms', batchSize: 4, burstSize: 1, gapMs: 50 },

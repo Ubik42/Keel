@@ -460,7 +460,7 @@ export class EmbeddedMcpServer {
     this.#publish();
     const sessions = [...this.#sessions.keys()];
     await Promise.all(sessions.map((sessionId) => this.#closeSession(sessionId)));
-    // Serpent-8b5b.2: a stopped server must not leave confirmable challenges.
+    // a stopped server must not leave confirmable challenges.
     (this.#permissionBroker as McpPermissionBroker | undefined)?.clearAllChallenges();
     const server = this.#httpServer;
     this.#httpServer = undefined;
@@ -538,7 +538,7 @@ export class EmbeddedMcpServer {
     this.#credentials.revoke(credentialId);
     this.#permissionPolicyStore?.clearCredential(credentialId);
     this.#permissionBroker?.clearCredential(credentialId);
-    // Serpent-8b5b.2: revoked credentials must not be able to confirm
+    // revoked credentials must not be able to confirm
     // outstanding dangerous challenges.
     (this.#permissionBroker as McpPermissionBroker | undefined)?.clearCredentialChallenges(credentialId);
     await Promise.all([...this.#sessions.values()]

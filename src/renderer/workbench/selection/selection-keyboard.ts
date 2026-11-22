@@ -1,5 +1,5 @@
 /**
- * Browse-canvas selection chords (Serpent-5fq + Escape clear).
+ * Browse-canvas selection chords (+ Escape clear).
  *
  * Pure match helpers — App / useSelectionKeyboard own the DOM listeners.
  * Invert uses Ctrl+I (Windows) / ⌘I (mac); Edit-menu label still depends on
@@ -19,7 +19,7 @@ export const SELECT_ALL_SHORTCUT: ShortcutSpec = {
   windows: { label: "Ctrl+A", key: "a", ctrlKey: true },
 };
 
-/** Invert selection among visible assets: ⌘I / Ctrl+I (Serpent-5fq). */
+/** Invert selection among visible assets: ⌘I / Ctrl+I. */
 export const INVERT_SELECTION_SHORTCUT: ShortcutSpec = {
   mac: { label: "⌘I", key: "i", metaKey: true },
   windows: { label: "Ctrl+I", key: "i", ctrlKey: true },
@@ -41,7 +41,7 @@ export type SelectionKeyboardDispatch = {
  * Dispatch a matched selection-keyboard action against the current canvas
  * state. Returns true when the keydown was consumed (caller must
  * preventDefault). Guards preserve the synchronous pre-pagination behavior:
- * select-all/invert are no-ops on an empty scope (Serpent-ws4k — the async
+ * select-all/invert are no-ops on an empty scope (the async
  * select-all/invert callbacks must therefore also no-op on null/empty id sets
  * instead of clearing the selection), and Escape-clear is a no-op on an empty
  * selection.

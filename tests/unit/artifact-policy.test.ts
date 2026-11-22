@@ -21,7 +21,7 @@ describe('artifact policy', () => {
     expect(artifactRoleForJob('extract_metadata', 'image')).toBe('technical-metadata');
     expect(artifactKindForJob('extract_metadata', 'image')).toBe('extracted_metadata');
     expect(artifactRoleForJob('extract_palette', 'audio')).toBeNull();
-    // Serpent-485aeb：字体卡片样张也走 generate_thumbnail（offscreen 样张页）。
+    // 字体卡片样张也走 generate_thumbnail（offscreen 样张页）。
     expect(artifactRoleForJob('generate_thumbnail', 'font')).toBe('card-thumbnail');
     expect(artifactKindForJob('generate_thumbnail', 'font')).toBe('thumbnail');
   });

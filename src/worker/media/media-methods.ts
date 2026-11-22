@@ -936,7 +936,7 @@ export function linkedDirectoryCoverArtifactIds(this: LibraryService, openLibrar
     return scopedRows.slice(0, 3).map((row) => row.artifact_id);
   }
 
-  // Serpent-9021d1: Pure linked folder — round-robin across direct child directories
+  // Pure linked folder — round-robin across direct child directories
   const childPrefixes = childDirs.map((d) => (d === '' ? '' : `${d}/`));
   const byChild: string[][] = childDirs.map(() => []);
   for (const row of rows) {
@@ -1069,7 +1069,7 @@ export function withSequenceFolderCovers(this: LibraryService, openLibrary: Open
 export function folderCoverArtifactMap(this: LibraryService, openLibrary: OpenLibrary, folderIds: string[], showIgnored = false): Map<string, string[]> {
   const covers = new Map<string, string[]>();
   if (folderIds.length === 0) return covers;
-  // Serpent-verg review fix: libraries predating revision_artifacts.status
+  // review fix: libraries predating revision_artifacts.status
   // (v9) or linked_ignored_assets have no covers to map.
   if (
     !columnsFor(openLibrary.connection, 'revision_artifacts').has('status') ||
@@ -1120,7 +1120,7 @@ export function folderCoverArtifactMap(this: LibraryService, openLibrary: OpenLi
     covers.set(row.folder_id, existing);
   }
 
-  // Serpent-9021d1: For pure folders (folders with directAssetCount === 0),
+  // For pure folders (folders with directAssetCount === 0),
   // pick up to 4 covers from their child folders in round-robin order so
   // the folder card displays a 2x2 collage preview of its subfolder contents.
   const missingFolderIds = folderIds.filter((id) => (covers.get(id)?.length ?? 0) === 0);
@@ -1407,7 +1407,7 @@ export async function imageDimensionsForAssetAsync(this: LibraryService, openLib
 
 export function withImageSequenceSummaries(this: LibraryService, openLibrary: OpenLibrary, assets: readonly AssetSummary[]): AssetSummary[] {
   if (assets.length === 0) return [];
-  // Serpent-verg.2 — lenient read (0031 §1): libraries predating the
+  // lenient read (0031 §1): libraries predating the
   // sequence tables have no memberships; return assets unchanged.
   if (
     !hasTable(openLibrary.connection, 'asset_sequence_frames') ||
@@ -1624,7 +1624,7 @@ export function setImageSequenceFps(this: LibraryService, input: {
 
 export function resolvedPaletteFields(this: LibraryService, openLibrary: OpenLibrary, assetId: string): Pick<AssetMetadataResult, 'automaticPalette' | 'effectivePalette' | 'paletteSource'> {
   let automaticPalette: RepresentativeColor[] = [];
-  // Serpent-verg.2 — lenient read (0031 §1): libraries predating the
+  // lenient read (0031 §1): libraries predating the
   // artifact status column have no palette artifact to resolve.
   if (!columnsFor(openLibrary.connection, 'revision_artifacts').has('status')) {
     return { automaticPalette: [], effectivePalette: [], paletteSource: null };
@@ -1668,7 +1668,7 @@ export function resolvedPaletteFields(this: LibraryService, openLibrary: OpenLib
     }
   }
 
-  // Serpent-7pg: stored manual palette is ignored; effective palette is automatic-only.
+  // stored manual palette is ignored; effective palette is automatic-only.
   if (automaticPalette.length > 0) {
     return {
       automaticPalette,
@@ -1815,7 +1815,7 @@ export function setAssetColorSpaceOverride(this: LibraryService, input: {
 }
 
 /**
-* Best-effort EXIF/IPTC/XMP author auto-extract (Serpent-7x0). Runs after
+* Best-effort EXIF/IPTC/XMP author auto-extract. Runs after
 * the first successful thumbnail decode for an image asset. Never
 * overwrites a non-empty author (user edits and prior extractions both
 * win), and — like {@link setAssetsRating} — does not touch entity_version
@@ -1919,8 +1919,8 @@ export function recoverInterruptedThumbnailJobs(this: LibraryService, openLibrar
 }
 
 /**
-* Serpent-43d32f: cancel queued/paused WebM-proxy jobs for GIF assets that
-* older builds scheduled proactively (Serpent-azf6). Nothing consumes GIF
+* cancel queued/paused WebM-proxy jobs for GIF assets that
+* older builds scheduled proactively. Nothing consumes GIF
 * proxies anymore, so draining them after an upgrade would only burn one
 * doomed FFmpeg transcode per GIF. Runs after
 * {@link recoverInterruptedThumbnailJobs} so recovered rows are covered too;
@@ -2560,7 +2560,7 @@ export function abortActiveMediaJobs(this: LibraryService, libraryId: string, jo
 }
 
 /**
-* Serpent-4bdd26 收编 codex/large-library-performance@15f3325c：新视口使正在为
+* 收编 codex/large-library-performance@15f3325c：新视口使正在为
 * 旧视口或 startup 回填解码的任务过时。把视口外的 running 预览任务重新排队
 * （abort 让 visible 波立即抢到解码器），取消视口外的 queued 任务防止活动泵
 * 在新视口之前认领它们。后台回填会把 cancelled 行视为可调度并重建——不删除
@@ -2571,7 +2571,7 @@ export function interruptThumbnailJobsOutsideViewport(this: LibraryService, libr
   if (selectedIds.length === 0) return { interruptedCount: 0 };
   const openLibrary = this.requireOpenLibrary(libraryId);
   const placeholders = selectedIds.map(() => '?').join(',');
-  // Serpent-4bdd26 回归修正（用户报告缩略图生成巨慢）：只中断正在解码的
+  // 回归修正（用户报告缩略图生成巨慢）：只中断正在解码的
   // running 任务——这是抢占的全部收益。旧版还 cancel 视口外的 queued 任务，
   // 但后台回填会立刻把它们重建（priority 50），滚动期间形成 cancel→重建→
   // 再 cancel 的写循环，Windows 上每次取消都是一次 journal fsync，吞吐暴跌。
@@ -2659,7 +2659,7 @@ export async function cancelMediaJobsForAssets(this: LibraryService, openLibrary
 /**
 * Abort thumbnail/ffmpeg/sharp work that still holds files under the library
 * root, then wait until those jobs drop their handles. Required before
-* Windows can delete the library directory (Serpent-dfgg).
+* Windows can delete the library directory.
 */
 export async function drainLibraryMedia(this: LibraryService, libraryId: string, timeoutMs?: number): Promise<void> {
   this.abortActiveMediaJobs(libraryId);
@@ -2857,7 +2857,7 @@ export async function generateThumbnail(this: LibraryService, input: {
     return null;
   }
 
-  // Serpent-8ca259: PDF thumbnails render the first page with pdfjs-dist in
+  // PDF thumbnails render the first page with pdfjs-dist in
   // the Worker (pure JS, no offscreen window). HTML thumbnails render
   // offscreen in Main through the injected documentThumbnailRenderer.
   // Both are enqueued like any other asset — the enqueue gate must list the
@@ -2878,7 +2878,7 @@ export async function generateThumbnail(this: LibraryService, input: {
     );
   }
 
-  // Serpent-485aeb: font cards show a real sample line. Main serves a small
+  // font cards show a real sample line. Main serves a small
   // sample sheet for the font (`sample=font`) and the existing offscreen
   // capture turns it into an artifact, so the Renderer never touches paths.
   // The sheet's label follows the script the font actually covers, which the
@@ -2909,7 +2909,7 @@ export async function generateThumbnail(this: LibraryService, input: {
         'video_poster',
       ]
     : mediaType === 'audio'
-      // thumbnail = 4:3 grid cover; video_poster = wide viewer strip (Serpent-vlx)
+      // thumbnail = 4:3 grid cover; video_poster = wide viewer strip
       ? ['extracted_metadata', 'thumbnail', 'video_poster']
     : isGifAsset
       ? ['thumbnail', 'extracted_metadata']
@@ -3006,7 +3006,7 @@ export async function generateThumbnail(this: LibraryService, input: {
 }
 
 /**
-* Slice E (Serpent-hnmg): offscreen model thumbnail generation for a queue
+* Slice E: offscreen model thumbnail generation for a queue
 * job. The actual GPU render happens in Main (shared offscreen window); the
 * Worker performs the size guard (spec 3D-14), stores the returned PNG as
 * the standard `thumbnail` artifact, and records typed failures so the
@@ -3170,7 +3170,7 @@ export async function generatePdfThumbnail(this: LibraryService, input: { librar
     // unaffected when no PDFs are queued. The legacy build runs in Node.
     // Electron's bundled Node predates DOMMatrix (added in Node 24), and
     // pdfjs instantiates `new DOMMatrix` at module scope — importing it
-    // without a polyfill crashes the whole Library Worker (Serpent-8ca259).
+    // without a polyfill crashes the whole Library Worker.
     // @napi-rs/canvas ships matching geometry classes; install them as
     // globals before pdfjs loads.
     const {
@@ -3339,13 +3339,13 @@ export async function generatePdfThumbnail(this: LibraryService, input: { librar
 }
 
 /**
-* Serpent-8ca259: HTML thumbnail via the injected Main offscreen capture.
+* HTML thumbnail via the injected Main offscreen capture.
 * The PNG is downscaled with sharp and stored as a standard thumbnail
 * artifact; a null render or a failed record keeps the card on the generic
 * file icon (never `failed` for a benign missing renderer).
 */
 /**
-* Serpent-485aeb: font metadata for an asset path, or null when the file is
+* font metadata for an asset path, or null when the file is
 * unreadable/not a font. Never throws: an unparsable font only costs the
 * sample sheet its label.
 */
@@ -3837,7 +3837,7 @@ export async function generateImageThumbnail(this: LibraryService, input: { libr
   const artifactId = randomUUID();
   const artifactsDir = this.artifactsDir(openLibrary);
   mkdirSync(artifactsDir, { recursive: true });
-  // Serpent-thumb-perf: extension is decided after metadata (jpeg for
+  // extension is decided after metadata (jpeg for
   // opaque images, webp only when alpha must be preserved).
   let artifactRelPath = `${artifactId}.webp`;
   let artifactAbsPath = path.join(artifactsDir, artifactRelPath);
@@ -3861,7 +3861,7 @@ export async function generateImageThumbnail(this: LibraryService, input: { libr
       execution.lane,
       async () => {
         const s = this.options.sharpFn ?? requireSharp();
-        // Serpent-thumb-perf: random access enables libvips shrink-on-load
+        // random access enables libvips shrink-on-load
         // for JPEG (a 2400px photo decodes at half/quarter scale before the
         // 512px resize instead of full resolution). GIF keeps sequential
         // reads for animation safety; failOn stays 'none' for truncation
@@ -3913,7 +3913,7 @@ export async function generateImageThumbnail(this: LibraryService, input: { libr
               });
               const score = scoreRawRgbFrame(sample.data, sample.info.channels);
               scored.push({ page: candidate, score });
-              // Serpent-azf6: a recognizable frame ends the probe early —
+              // a recognizable frame ends the probe early —
               // bright meme GIFs usually need 1-3 decodes instead of the
               // full sample spread; dark GIFs fall through to the cap.
               if (score >= GIF_GOOD_PAGE_SCORE_THRESHOLD) break;
@@ -3951,7 +3951,7 @@ export async function generateImageThumbnail(this: LibraryService, input: { libr
         const hasAlpha =
           (finalMeta as { hasAlpha?: boolean }).hasAlpha === true ||
           (finalMeta as { channels?: number }).channels === 4;
-        // Serpent-thumb-perf: opaque images encode as JPEG (libjpeg-turbo is
+        // opaque images encode as JPEG (libjpeg-turbo is
         // several times faster than WebP and the card is a 512px preview);
         // alpha-bearing images keep WebP so transparency survives.
         artifactRelPath = hasAlpha ? `${artifactId}.webp` : `${artifactId}.jpg`;
@@ -4020,7 +4020,7 @@ export async function generateImageThumbnail(this: LibraryService, input: { libr
       .run(
         artifactId,
         revisionId,
-        // Serpent-thumb-perf: jpeg for opaque sources, webp for alpha.
+        // jpeg for opaque sources, webp for alpha.
         artifactRelPath.endsWith('.jpg') ? 'image/jpeg' : 'image/webp',
         outputStat.size,
         artifactRelPath,
@@ -4311,7 +4311,7 @@ export function backfillMissingImageDimensions(this: LibraryService, libraryId: 
 }
 
 /**
-* Serpent-visible-window: header-probe dimensions for the assets the user
+* header-probe dimensions for the assets the user
 * is currently looking at, so masonry placeholders get correct sizes before
 * their thumbnails finish (no layout reflow glitch), and returns them for
 * asset.dimensions.ready events.
@@ -4510,7 +4510,7 @@ export function persistSourceImageDimensions(this: LibraryService, openLibrary: 
 
 /**
 * Cheap header-probed width/height so masonry/sort do not wait for thumbnails
-* (Serpent-l1oi). Skips when extracted_metadata already exists.
+*. Skips when extracted_metadata already exists.
 */
 export function persistExtractedImageDimensions(this: LibraryService, openLibrary: OpenLibrary, revisionId: string, size: { width: number; height: number }): void {
   if (
@@ -4693,7 +4693,7 @@ export function setAudioPreviewPrefersCover(this: LibraryService, libraryId: str
 // ── Audio artifacts (ffprobe + waveform thumbnail) ─────────────────
 
 /**
-* Audio path (Serpent-0x5 / Serpent-690060): extract metadata, then store a
+* Audio path: extract metadata, then store a
 * grid `thumbnail` from embedded album art when present, otherwise a
 * waveform PNG. Viewer strip stays a wide waveform (`video_poster`).
 * Playback uses the native source via `keel://source` — no proxy needed.
@@ -4802,7 +4802,7 @@ export async function generateAudioArtifacts(this: LibraryService, input: { libr
 
 /**
 * Extract the attached picture stream and store it as the grid `thumbnail`
-* (Serpent-690060). Uses the same 512px-inside encode as image cards so
+*. Uses the same 512px-inside encode as image cards so
 * album art keeps its aspect instead of being flattened onto the 4:3
 * waveform stage.
 */
@@ -4920,7 +4920,7 @@ export async function generateAudioAlbumCoverThumbnail(this: LibraryService, inp
 
 /**
 * Render a mono waveform PNG for grid cover (`thumbnail`) or viewer strip
-* (`video_poster` for audio — Serpent-vlx).
+* (`video_poster` for audio).
 */
 export async function generateAudioWaveformPng(this: LibraryService, input: { libraryId: string; assetId: string }, openLibrary: OpenLibrary, assetPath: string, revisionId: string, ffmpegPath: string, artifactsDir: string, execution: MediaExecutionContext, options: {
       kind: 'thumbnail' | 'video_poster';
@@ -5332,7 +5332,7 @@ export function enqueueRawImageMetadataJobs(this: LibraryService, openLibrary: O
     : 0;
   const availableAdmissionLimit = Math.max(0, limit - pendingMetadataCount);
   // 全局上限已满：本轮 0 结果是「排队预算用尽」而不是「候选扫完」，不得据此标记
-  // exhausted（Serpent-288cd9）。
+  // exhausted。
   if (availableAdmissionLimit === 0) {
     return { admitted: 0, probed: 0, budgetCapped: true };
   }
@@ -5862,7 +5862,7 @@ export async function generateQueuedPaletteArtifact(this: LibraryService, librar
 }
 
 /**
-* Serpent-140fe2: AI contact sheets are generated lazily, only when video
+* AI contact sheets are generated lazily, only when video
 * analysis actually needs them. Proactive scheduling flooded converted
 * libraries with doomed FFmpeg batches on every open. Returns false when
 * the asset's revision changed mid-flight (caller cancels).
@@ -5881,7 +5881,7 @@ export async function ensureVideoContactSheet(this: LibraryService, libraryId: s
     )
     .get(revisionId) as { status?: string } | undefined;
   if (existing?.status === 'ready') return true;
-  // Serpent-140fe2 review fix: overlapping analysis requests for the same
+  // review fix: overlapping analysis requests for the same
   // video must share one generation, or the losers hit
   // UNIQUE(revision_id, kind) and mask the real outcome.
   const inFlightKey = `${libraryId}\u0000${revisionId}`;
@@ -5947,7 +5947,7 @@ export async function generateQueuedVideoArtifact(this: LibraryService, libraryI
     await this.generateVideoProxy({ libraryId, assetId }, openLibrary, assetPath, revisionId, ffmpegPath, artifactsDir, execution);
     return true;
   }
-  // Serpent-140fe2: Eagle/Billfish conversions can register videos with
+  // Eagle/Billfish conversions can register videos with
   // width/height-only metadata (no ffprobe ever ran), so duration is
   // unknown and contact sheets used to fail forever while every open
   // re-enqueued the whole doomed batch. Self-heal instead: probe on demand
@@ -5966,7 +5966,7 @@ export async function generateQueuedVideoArtifact(this: LibraryService, libraryI
     };
     let parsed = readParsedMetadata();
     if (!parsed || !Number.isFinite(parsed.durationMs) || (parsed.durationMs ?? 0) <= 0) {
-      // Serpent-140fe2: probeVideoAsset now replaces any prior
+      // probeVideoAsset now replaces any prior
       // extracted_metadata row transactionally AFTER a successful ffprobe,
       // so a failed probe never destroys conversion-recorded dimensions.
       const probed = await this.generateQueuedVideoMetadata(
@@ -5996,7 +5996,7 @@ export async function generateQueuedVideoArtifact(this: LibraryService, libraryI
     );
   } catch (error) {
     if (execution.signal?.aborted) throw error;
-    // Serpent-140fe2: persist the terminal failure so the terminal-artifact
+    // persist the terminal failure so the terminal-artifact
     // guard in ensureVideoContactSheet stops regenerating this sheet. The
     // next revision change resets it naturally.
     // Adversarial-review fix: generateContactSheet's own catch already
@@ -6285,7 +6285,7 @@ export async function probeVideoAsset(this: LibraryService, input: { libraryId: 
     const outputStat = statSync(artifactAbsPath);
     throwIfMediaExecutionAborted(execution.signal);
 
-    // Serpent-140fe2: replace any prior extracted_metadata row (e.g. a
+    // replace any prior extracted_metadata row (e.g. a
     // width/height-only row written by an external conversion) in the same
     // transaction as the fresh insert. Probing first and only then
     // touching the old row means a failed ffprobe never destroys the
@@ -7284,7 +7284,7 @@ export function getCurrentArtifact(this: LibraryService, libraryId: string, asse
   const changeSequence = openLibrary.changeSubscription.refresh?.()
     ?? openLibrary.changeSubscription.lastSequence;
 
-  // Serpent-verg.2 — lenient read (0031 §1): libraries predating the
+  // lenient read (0031 §1): libraries predating the
   // artifact table (or the columns needed to address an artifact) have no
   // current artifact; callers already treat null as "no artifact".
   const connection = openLibrary.connection;
@@ -7789,7 +7789,7 @@ export function getPreviewArtifact(this: LibraryService, libraryId: string, asse
     };
   }
 
-  // Serpent-485aeb: fonts open from the original source; the renderer loads
+  // fonts open from the original source; the renderer loads
   // them with @font-face and renders the sample text itself.
   if (mediaType === 'font' && asset.current_revision_id) {
     const fontMime = fontMimeForExtension(asset.relative_file_path)
@@ -7852,7 +7852,7 @@ export function getPreviewArtifact(this: LibraryService, libraryId: string, asse
     ?? nativeMimeTypes[extension]
     ?? (mediaType === 'video' ? videoMimeForExtension(extension) : null);
   // Audio: viewer uses wide `video_poster` strip; fall back to 4:3 thumbnail
-  // until cover6 regeneration lands (Serpent-vlx).
+  // until cover6 regeneration lands.
   const poster = mediaType === 'video'
     ? this.getCurrentArtifact(libraryId, assetId, 'video_poster')
     : mediaType === 'audio'
@@ -7863,17 +7863,17 @@ export function getPreviewArtifact(this: LibraryService, libraryId: string, asse
   const posterErrorCode = poster?.status === 'failed'
     ? poster.errorCode ?? 'MEDIA_PROCESSING_FAILED'
     : undefined;
-  // Serpent-43d32f: animated GIFs intentionally stay on the native image
+  // animated GIFs intentionally stay on the native image
   // path (no WebM proxy). Chromium renders animated GIFs inside <img>, so
   // hover/viewer play the source directly; the azf6 proactive per-GIF FFmpeg
   // transcode was a long-standing Windows failure point, and on-demand
   // semantics have no trigger because <img> GIF decoding never fails.
   if (mediaType === 'video' || mediaType === 'audio') {
-    // Serpent-cljb: source playback is the viewer starting point for
+    // source playback is the viewer starting point for
     // Chromium-playable containers (mp4/webm/m4v). Other containers
     // (mov/avi/wmv/mkv/flv) are not a playback guarantee; a ready proxy is
     // the viewer URL so generating a proxy actually unblocks preview.
-    // Hover (Serpent-c8a1a3): a ready proxy wins for every video so
+    // Hover: a ready proxy wins for every video so
     // undecodable containers can still preview in-place.
     if (mediaType === 'video' && intent !== 'proxy-fallback' && asset.current_revision_id) {
       const preferReadyProxy = intent === 'hover'
@@ -8107,7 +8107,7 @@ export function enqueueArtifactRetry(this: LibraryService, input: {
   // A playback failure can race a proxy that was generated by an earlier
   // session or by another viewer. Keep a valid current proxy intact and
   // let the caller resolve it immediately; retrying must never turn a
-  // successful fallback into another full encode (Serpent-cljb).
+  // successful fallback into another full encode.
   if (input.kind === 'webm_proxy' || input.kind === 'audio_proxy') {
     const currentArtifact = this.getCurrentArtifact(
       input.libraryId,
@@ -8316,7 +8316,7 @@ export function validateCachedArtifactPath(this: LibraryService, openLibrary: Op
 * The artifacts root itself must be a real directory (no symlink), the
 * resolved target must stay inside it, and the target file must exist as a
 * regular non-symlink file. Callers that already hold the artifact row skip
-* the per-artifact DB lookup (Serpent-v4jf batch drag priming).
+* the per-artifact DB lookup (batch drag priming).
 */
 export function artifactFilePathFromRow(this: LibraryService, openLibrary: OpenLibrary, relativeFilePath: string): string {
   return this.artifactFilePathFromRoot(
@@ -8589,10 +8589,10 @@ export function enqueueReadyPaletteJobs(this: LibraryService, openLibrary: OpenL
 /**
 * Invalidate ready artifacts whose files are missing under `.keel/artifacts`.
 * Used after import/open when an older export omitted the artifacts tree while
-* the DB still recorded status=ready (Serpent-pxd).
+* the DB still recorded status=ready.
 */
 export async function reconcileMissingArtifactFiles(this: LibraryService, openLibrary: OpenLibrary, yieldTurn?: () => Promise<void>, onMissingPrimaryArtifacts?: (assetIds: string[]) => void): Promise<number> {
-  // Serpent-verg.2 — lenient open (0031 §1): libraries predating
+  // lenient open (0031 §1): libraries predating
   // revision_artifacts.status skip this recovery step instead of failing
   // to open.
   if (!columnsFor(openLibrary.connection, 'revision_artifacts').has('status')) {
@@ -8635,10 +8635,10 @@ export async function reconcileMissingArtifactFiles(this: LibraryService, openLi
   // a single readdir costs one directory enumeration regardless of how the
   // entries are checked afterwards. A symlinked or subdirectory entry is
   // never treated as present, matching the old containment rules.
-  // Serpent-4bdd26 现场教训（用户 NAS 库打开 5 分钟）：21k 条目的 readdirSync
+  // 现场教训（用户 NAS 库打开 5 分钟）：21k 条目的 readdirSync
   // 是一次 ~21 秒的同步调用，期间 Worker 事件循环完全停摆——所有并发请求
   // 撞上 15s 超时。改为 opendir 异步流式构建集合，让事件循环持续可响应。
-  // Serpent-2cc492 补充实测（真实 NAS 生产库）：即便纯异步，21,508 条目的
+  // 补充实测（真实 NAS 生产库）：即便纯异步，21,508 条目的
   // 目录枚举本身也要 ~16.5s——SMB 目录元数据是海量小往返。因此：
   // ① names-only readdir（Dirent 类型判定在本目录全是常规文件的扁平结构里
   //    没有额外价值；路径逃逸防护仍由 artifactFilePresent 的 containment
@@ -8682,9 +8682,9 @@ export async function reconcileMissingArtifactFiles(this: LibraryService, openLi
     return presentArtifactPaths.has(targetPath.slice(artifactsRoot.length + path.sep.length));
   };
 
-  // Serpent-tumv: sweep in batches and yield between batches so a large
+  // sweep in batches and yield between batches so a large
   // artifact store does not stall the Worker event loop for seconds.
-  // Serpent-4bdd26: each batch is one multi-row UPDATE instead of a
+  // each batch is one multi-row UPDATE instead of a
   // per-row transaction. Network libraries run under a rollback journal,
   // where any open write blocks concurrent reads — collapsing 400
   // statements into one keeps that write window (and the user-visible
@@ -8781,7 +8781,7 @@ export async function reconcileOrphanArtifactFiles(this: LibraryService, openLib
       // leave temporary files to the existing job cleanup path.
       if (entry.name.startsWith('.') || entry.name.endsWith('.tmp')) continue;
       const candidatePath = path.join(artifactsRoot, entry.name);
-      // Serpent-26f22b: consult the reference set *before* the filesystem.
+      // consult the reference set *before* the filesystem.
       // This directory holds tens of thousands of artifacts and nearly every
       // one is still referenced, so probing first spent the whole scan on
       // paths the database already accounted for (measured on a 44k-asset
@@ -9007,7 +9007,7 @@ export function primaryArtifactGeneratorIsCurrent(this: LibraryService, relative
       return generatorVersion === DOCUMENT_THUMBNAIL_GENERATOR_VERSION
         || generatorVersion.startsWith('pdfjs@');
     case 'font':
-      // Serpent-485aeb：字体样张由 offscreen 样张页生成，版本标签独立。
+      // 字体样张由 offscreen 样张页生成，版本标签独立。
       return generatorVersion === FONT_THUMBNAIL_GENERATOR_VERSION;
     default:
       return true;
@@ -9217,13 +9217,13 @@ export function enqueueThumbnailJobs(this: LibraryService, libraryId: string, op
       limit?: number;
       priority?: number;
       repairFailed?: boolean;
-      /** Serpent-5xbg: also re-open retryable failed artifacts (throttled). */
+      /** also re-open retryable failed artifacts (throttled). */
       retryFailed?: boolean;
       /** Background fill waves skip GIF/audio stale-artifact scans. */
       skipStaleRepair?: boolean;
     } = {}): number {
   const openLibrary = this.requireOpenLibrary(libraryId);
-  // Serpent-verg.2 — lenient open (0031 §1): libraries predating
+  // lenient open (0031 §1): libraries predating
   // revision_artifacts.status have no artifact state to queue against;
   // thumbnail generation degrades to off instead of failing to open.
   if (!columnsFor(openLibrary.connection, 'revision_artifacts').has('status')) {
@@ -9237,7 +9237,7 @@ export function enqueueThumbnailJobs(this: LibraryService, libraryId: string, op
     : Math.max(0, Math.min(500, Math.trunc(options.limit)));
   if (limit === 0 || (options.assetIds && selectedIds.length === 0)) return 0;
   if (options.retryFailed) {
-    // Serpent-5xbg: failures (transient decode errors, killed processes,
+    // failures (transient decode errors, killed processes,
     // cancelled imports) must not permanently block regeneration. Invalidate
     // retryable failed artifacts here so the queue SQL below re-enqueues them;
     // permanent failures (missing source, unsupported format, over-limit…)
@@ -9300,12 +9300,12 @@ export function enqueueThumbnailJobs(this: LibraryService, libraryId: string, op
       limit,
     });
   let enqueued = repairEnqueued + legacyPathRepairEnqueued + legacyRawRepairEnqueued + importedNormalizationEnqueued;
-  // Model extensions join the queue (slice E, Serpent-hnmg): the offscreen
+  // Model extensions join the queue (slice E): the offscreen
   // GPU renderer in Main produces model thumbnails, stored as the standard
   // `thumbnail` artifact. The dedupe below (terminal artifact / active job)
   // applies to models exactly like images, so no duplicate renders occur.
   // Documents (PDF first-page render in the Worker, HTML offscreen capture in
-  // Main, Serpent-8ca259) must join too — without them the enqueue gate never
+  // Main) must join too — without them the enqueue gate never
   // emits generate_thumbnail rows, so document cards stay on the generic icon
   // even though `assetSupportsThumbnail` declares them thumbnail-capable.
   const supportedExtensions = [
@@ -9314,7 +9314,7 @@ export function enqueueThumbnailJobs(this: LibraryService, libraryId: string, op
     ...AUDIO_EXTENSION_NAMES,
     ...MODEL_EXTENSIONS.map((extension) => extension.slice(1)),
     ...DOCUMENT_EXTENSIONS.map((extension) => extension.slice(1)),
-    // Serpent-485aeb: font cards render a real sample line offscreen in Main.
+    // font cards render a real sample line offscreen in Main.
     ...FONT_EXTENSIONS.map((extension) => extension.slice(1)),
   ];
   for (const extension of this._pluginThumbnailExtensions.get(libraryId) ?? []) {
@@ -9351,7 +9351,7 @@ export function enqueueThumbnailJobs(this: LibraryService, libraryId: string, op
       'billfish-thumbnail@1%',
       `${IMPORTED_THUMBNAIL_GENERATOR_PREFIX}%`,
     );
-  // Serpent-4dee67: ICO cards created before largest-page selection used
+  // ICO cards created before largest-page selection used
   // the first directory entry (often a 16px icon). Invalidate those rows so
   // the next queue wave regenerates them from the largest ICO page.
   openLibrary.connection
@@ -9370,7 +9370,7 @@ export function enqueueThumbnailJobs(this: LibraryService, libraryId: string, op
           )`,
     )
     .run(nowInvalidate);
-  // Serpent-dxk / vlx: requeue stale audio covers + missing/stale viewer strips.
+  // vlx: requeue stale audio covers + missing/stale viewer strips.
   const audioExtensionSql = AUDIO_EXTENSION_NAMES
     .map(() => 'LOWER(a.relative_file_path) LIKE ?')
     .join(' OR ');
@@ -9420,7 +9420,7 @@ export function enqueueThumbnailJobs(this: LibraryService, libraryId: string, op
           )`,
     )
     .run(nowInvalidate, ...audioExtensionParams);
-  // Serpent-051: viewer strip ready but no 4:3 grid cover → requeue.
+  // viewer strip ready but no 4:3 grid cover → requeue.
   // Do not serve video_poster in the browse grid (wide aspect).
   openLibrary.connection
     .prepare(
@@ -9481,7 +9481,7 @@ export function enqueueThumbnailJobs(this: LibraryService, libraryId: string, op
     )
     .run(nowInvalidate);
   }
-  // Serpent-azf6: scenes scheduling with explicit ids (notably the visible
+  // scenes scheduling with explicit ids (notably the visible
   // browse wave) also BOOST already-queued preview jobs of those assets —
   // the enqueue SQL below skips assets with an active job, so without this
   // the current view would stay behind a mutation flood that queued first.
@@ -9501,7 +9501,7 @@ export function enqueueThumbnailJobs(this: LibraryService, libraryId: string, op
   const selectedSql = selectedIds.length > 0
     ? `AND a.asset_id IN (${selectedIds.map(() => '?').join(',')})`
     : '';
-  // Serpent-2cc492（真实 NAS 生产库事故第二轮归因，2026-08-23）：offline
+  // 真实 NAS 生产库事故第二轮归因，2026-08-23：offline
   // linked 文件夹的源不可达，其资产的缩略图任务必然以 SOURCE_NOT_FOUND
   // 失败——在 SMB 上每个失败还是一次 journal 写事务。7,164 个这样的任务
   // 就是持续数分钟的 Worker 风暴（实测把 startup 突发拖过 15s 超时）。
@@ -9568,12 +9568,12 @@ export function enqueueThumbnailJobs(this: LibraryService, libraryId: string, op
           )`
     : '';
   const queryLimit = limit === undefined ? '' : 'LIMIT ?';
-  // Serpent-xoaz: background fill (no assetIds) drains most-recently
+  // background fill (no assetIds) drains most-recently
   // imported assets first (created_at DESC, path as a deterministic
   // tiebreaker) instead of pure path-alphabetical order — the assets the
   // user just imported surface their thumbnails first, which is what a
   // fresh large import actually wants to see.
-  // Serpent-x9xu follow-up: explicit-id waves (visible/mutation/linked)
+  // explicit-id waves (visible/mutation/linked)
   // must keep the CALLER's order — the browse list order is what the user
   // sees top-to-bottom, so re-sorting by created_at DESC made the bottom
   // of the viewport finish before the top. The SQL IN result is re-ordered
@@ -9646,7 +9646,7 @@ export function enqueueThumbnailJobs(this: LibraryService, libraryId: string, op
       source_height: number | null;
     }>;
   if (selectedIds.length > 0) {
-    // Serpent-x9xu follow-up: keep the caller's id order for explicit
+    // keep the caller's id order for explicit
     // waves so the user's top-of-viewport assets enqueue first.
     const order = new Map(selectedIds.map((id, index) => [id, index]));
     rows.sort(
@@ -9656,7 +9656,7 @@ export function enqueueThumbnailJobs(this: LibraryService, libraryId: string, op
   }
 
   const now = new Date().toISOString();
-  // Serpent-4bc4ac: ignored assets never enter the thumbnail queue.
+  // ignored assets never enter the thumbnail queue.
   const schedulableIds = new Set(this.filterIgnoredAssetIds(
     libraryId,
     rows.map((row) => row.asset_id),
@@ -9719,7 +9719,7 @@ export function enqueueThumbnailJobs(this: LibraryService, libraryId: string, op
 
   // Video AI consumes the timestamped contact sheet, not the browsing
   // poster. Probe metadata is therefore its own durable, higher-priority
-  // job (Serpent-140fe2: the contact sheet itself is generated lazily at
+  // job (the contact sheet itself is generated lazily at
   // analysis time) while poster and WebM work continue independently.
   const videoMetadataRows = openLibrary.connection
     .prepare(
@@ -9779,7 +9779,7 @@ export function enqueueThumbnailJobs(this: LibraryService, libraryId: string, op
   // not useful until the browser actually reports a source decode failure.
   // The viewer requests `audio_proxy` explicitly on that failure path.
 
-  // Serpent-140fe2: AI contact sheets are no longer proactively scheduled.
+  // AI contact sheets are no longer proactively scheduled.
   // Their only consumer is on-demand AI video analysis, which now generates
   // the sheet lazily (ensureVideoContactSheet). Proactively generating them
   // flooded converted libraries with doomed FFmpeg batches on every open.
@@ -9877,7 +9877,7 @@ export async function processThumbnailQueue(this: LibraryService, libraryId: str
        * persistent queue once those ids have no queued work.
        */
       assetIds?: readonly string[];
-      /** Serpent-4bdd26 收编：Stop claiming more jobs when a newer queue scene supersedes this pump. */
+      /** 收编：Stop claiming more jobs when a newer queue scene supersedes this pump. */
       signal?: AbortSignal;
       onResult?: (result: {
         assetId: string;
@@ -9915,7 +9915,7 @@ export async function processThumbnailQueue(this: LibraryService, libraryId: str
       }) => Promise<string | null>;
       /** Slice E: offscreen renderer for model assets (null keeps the legacy no-op). */
       modelThumbnailRenderer?: ModelThumbnailRenderer;
-      /** Serpent-6w40: renders the AI four-view sheet via the offscreen page. */
+      /** renders the AI four-view sheet via the offscreen page. */
       modelAiViewsRenderer?: (
         input: ModelThumbnailRendererInput,
       ) => Promise<ModelThumbnailRenderOutcome>;
@@ -10374,7 +10374,7 @@ export async function processThumbnailQueue(this: LibraryService, libraryId: str
   };
   options.signal?.addEventListener('abort', pauseClaimedMediaJobs, { once: true });
   const runWorker = async (): Promise<void> => {
-    // Serpent-xoaz: the per-job terminal UPDATE is the hottest write in the
+    // the per-job terminal UPDATE is the hottest write in the
     // queue loop (one statement + one WAL commit per job). Batch it: each
     // worker collects the jobs that reached the success path and flushes a
     // single multi-row UPDATE when its wave budget is exhausted. The
@@ -10641,7 +10641,7 @@ export async function processThumbnailQueue(this: LibraryService, libraryId: str
 
     let jobLease: LibraryJobLease;
     try {
-      // Serpent-308675: media jobs run under full-decoder CPU saturation.
+      // media jobs run under full-decoder CPU saturation.
       // A 15s lease expired whenever the event loop stalled, producing
       // lease-lost failures + repair retries that added MORE load. 60s
       // tolerates ~3 missed 20s heartbeats before anyone steals the job.
@@ -10666,7 +10666,7 @@ export async function processThumbnailQueue(this: LibraryService, libraryId: str
         'UPDATE jobs SET status = \'queued\', error_code = ?, updated_at = ? WHERE job_id = ? AND status = \'running\'',
       ).run(retryErrorCode, new Date().toISOString(), job.job_id);
       budget += 1;
-      // Serpent-308675 adversarial-review fix: timeoutMs:0 makes claimJob
+      // adversarial-review fix: timeoutMs:0 makes claimJob
       // throw immediately, and the reset-to-queued above means the same
       // top-priority job is re-selected on the next iteration — a hot
       // microtask spin that starves every other Worker command for as long
@@ -10862,7 +10862,7 @@ export async function processThumbnailQueue(this: LibraryService, libraryId: str
         // Native audio stays source-first after its waveform cover is ready.
         // Playback proxies are requested only by the renderer's explicit
         // source-decode failure path (`retryArtifact(audio_proxy)`).
-        // Serpent-43d32f: animated GIFs no longer chain a WebM proxy off the
+        // animated GIFs no longer chain a WebM proxy off the
         // still thumbnail; they stay on the native image path everywhere.
         this.enqueuePaletteJob(openLibrary, job.asset_id, job.revision_id, -10);
         // generated stays null when the offscreen renderer failed with a
@@ -10901,7 +10901,7 @@ export async function processThumbnailQueue(this: LibraryService, libraryId: str
           processed += 1;
           continue;
         }
-        // Serpent-140fe2: contact sheets are generated on demand by AI video
+        // contact sheets are generated on demand by AI video
         // analysis (ensureVideoContactSheet), not chained off metadata.
       } else if (job.kind === 'extract_palette') {
         if (!this.isPaletteEligibleAsset(openLibrary, job.asset_id, job.revision_id)) {
@@ -11022,7 +11022,7 @@ export async function processThumbnailQueue(this: LibraryService, libraryId: str
             }),
         });
       }
-      // Serpent-xoaz: deferred to the worker's batched flush (see
+      // deferred to the worker's batched flush (see
       // flushCompletedJobs) — one multi-row UPDATE per worker instead of
       // one statement + WAL commit per job.
       completedJobIds.push(job.job_id);
@@ -11284,7 +11284,7 @@ export function thumbnailArtifactMap(this: LibraryService, libraryId: string, as
   }> {
   const openLibrary = this.requireOpenLibrary(libraryId);
   if (assetIds.length === 0) return new Map();
-  // Serpent-verg.2 — lenient read (0031 §1): libraries predating
+  // lenient read (0031 §1): libraries predating
   // revision_artifacts.status have no thumbnail artifacts to map.
   if (!columnsFor(openLibrary.connection, 'revision_artifacts').has('status')) {
     return new Map();
@@ -11430,7 +11430,7 @@ export function probeMissingAssetRecovery(this: LibraryService, input: {
 }
 
 /**
-* Read text for a text-classified asset with a hard byte cap (Serpent-sh7).
+* Read text for a text-classified asset with a hard byte cap.
 * Managed and linked assets are editable. Trashed assets stay read-only.
 */
 export function textAssetPreviewCacheKey(this: LibraryService, libraryId: string, assetId: string, revisionId: string, maxBytes: number): string {
@@ -11603,7 +11603,7 @@ export function previewRestoreAssets(this: LibraryService, input: {
 }
 
 /**
-* Covers for trash folder cards keyed by tombstone id (Serpent-jcur / whvm).
+* Covers for trash folder cards keyed by tombstone id (whvm).
 */
 export function trashedFolderCoverArtifactMap(this: LibraryService, openLibrary: OpenLibrary, tombstoneIds: string[]): Map<string, string[]> {
   const covers = new Map<string, string[]>();
@@ -12112,7 +12112,7 @@ export async function generateContactSheet(this: LibraryService, input: { librar
   const artifactRelPath = `${artifactId}.jpg`;
   const artifactAbsPath = path.join(artifactsDir, artifactRelPath);
 
-  // Serpent-6w40: the AI contact sheet must stay within a 2048 long edge
+  // the AI contact sheet must stay within a 2048 long edge
   // while showing at least 16 frames. Large videos shrink each frame to a
   // ~509 cell (4×4 baseline); small videos keep their native size, which
   // lets the grid grow to more frames.
@@ -12260,7 +12260,7 @@ export function getExtractedMetadata(this: LibraryService, input: {
     .get(input.assetId) as { asset_id: string } | undefined;
   if (!assetRow) throw new LibraryServiceError('ASSET_NOT_FOUND');
 
-  // Serpent-485aeb: fonts have no `extracted_metadata` artifact — the facts
+  // fonts have no `extracted_metadata` artifact — the facts
   // live in the font file's own `name`/`head`/`OS-2`/`maxp` tables, so they
   // are read on demand (a header parse, not a full decode).
   const absolutePath = this.resolveAssetPath(input.libraryId, input.assetId);

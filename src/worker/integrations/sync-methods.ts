@@ -74,7 +74,7 @@ export function syncGitignore(this: LibraryService, openLibrary: OpenLibrary, te
   // Discovery can see a file before it has a database row, so it must not
   // rely on gitignore_ignored_paths alone.
   openLibrary.gitignoreMatcher = rules;
-  // Serpent-verg review fix: libraries predating the ignore-rule tables
+  // review fix: libraries predating the ignore-rule tables
   // have no gitignore state to sync.
   if (
     !hasTable(openLibrary.connection, 'explicit_ignored_paths') ||
@@ -126,13 +126,13 @@ export function syncGitignore(this: LibraryService, openLibrary: OpenLibrary, te
   // Empty linked directories (for example `1Test/.111`) have no managed_folders
   // row and no asset to write into linked_ignored_assets. Without this, the
   // navigation summary cache keeps showing those folders after `.*/` or a
-  // right-click ignore (Serpent-c6d907).
+  // right-click ignore.
   this.invalidateNavigationSummary(openLibrary);
   this.rebindCurrentNetworkMetadataCache(openLibrary);
 }
 
 /**
-* Serpent-c6d907: `.keelignore` is the single ignore file. Linked assets
+* `.keelignore` is the single ignore file. Linked assets
 * that match it are folded into `linked_ignored_assets` so browse/search SQL
 * hides them the same way linked-folder default rules already do. Default
 * `.git` / `node_modules` rules stay in `linked_folder_rules` and still win
@@ -291,7 +291,7 @@ export function syncAssetSearchContent(this: LibraryService, connection: Databas
     );
 }
 
-// ── 资源库同步（Serpent-xffq）────────────────────────────────────────
+// ── 资源库同步────────────────────────────────────────
 
 /** 读取/生成资产的跨设备稳定身份（sync_id）。 */
 export function ensureAssetSyncId(this: LibraryService, openLibrary: OpenLibrary, assetId: string): string {
@@ -902,7 +902,7 @@ export function readSyncManifestCache(this: LibraryService, libraryId: string): 
   return row?.manifest_json ?? null;
 }
 
-/** Serpent-xffq：开始一次同步会话（sync_sessions 记录，供 UI 查询状态）。 */
+/** 开始一次同步会话（sync_sessions 记录，供 UI 查询状态）。 */
 export function beginSyncSession(this: LibraryService, libraryId: string): string {
   const openLibrary = this.requireOpenLibrary(libraryId);
   // 内存级互斥：自动同步（Main 调度器）与手动同步不能同时在跑。
@@ -923,7 +923,7 @@ export function beginSyncSession(this: LibraryService, libraryId: string): strin
   return sessionId;
 }
 
-/** Serpent-xffq：结束同步会话。 */
+/** 结束同步会话。 */
 export function finishSyncSession(this: LibraryService, libraryId: string, sessionId: string, status: 'done' | 'failed' | 'cancelled', errorMessage?: string): void {
   const openLibrary = this.requireOpenLibrary(libraryId);
   if (this.activeSyncSessions.get(libraryId) === sessionId) {
@@ -939,7 +939,7 @@ export function finishSyncSession(this: LibraryService, libraryId: string, sessi
 }
 
 /**
-* Visible-card sync badges (Serpent-871f34). Compares path/size/sidecar hash
+* Visible-card sync badges. Compares path/size/sidecar hash
 * against the last local manifest cache. Does not hash file bytes or call WebDAV.
 * Linked / missing / trashed assets are omitted. Synced assets are omitted.
 */
@@ -1027,7 +1027,7 @@ export function writeSyncManifestCache(this: LibraryService, libraryId: string, 
 
 export function syncTrashedFolderTombstones(this: LibraryService, openLibrary: OpenLibrary): void {
   openLibrary.connection.transaction(() => {
-    // Prefer tombstone bind (Serpent-whvm). Path prefix only when that
+    // Prefer tombstone bind. Path prefix only when that
     // relative_path is unique among tombstones — otherwise same-name
     // folders would inflate each other's counts.
     openLibrary.connection

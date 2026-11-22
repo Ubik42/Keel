@@ -1,5 +1,5 @@
 /**
- * Serpent-485aeb: per-language font preview text, persisted app-wide.
+ * per-language font preview text, persisted app-wide.
  *
  * The user asked for the text they typed to survive browsing to other fonts:
  * it is stored per language (not per asset, not per library) so a custom

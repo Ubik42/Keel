@@ -6,7 +6,7 @@ import type {
 } from "./unified-directory-nav";
 
 // ---------------------------------------------------------------------------
-// Sidebar tree sort preference (Serpent-db1835)
+// Sidebar tree sort preference
 // ---------------------------------------------------------------------------
 
 export type FolderSortOrder = FolderTreeSortOrder;

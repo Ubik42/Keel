@@ -24,7 +24,7 @@ afterEach(() => {
   }
 });
 
-describe('formatSessionTimestamp (Serpent-wgmy)', () => {
+describe('formatSessionTimestamp', () => {
   it('formats local time to the second, zero-padded', () => {
     // 本地时间字段：2026-08-16T22:14:12
     const d = new Date(2026, 7, 16, 22, 14, 12);

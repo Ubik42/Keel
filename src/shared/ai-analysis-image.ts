@@ -1,5 +1,5 @@
 /**
- * Longest-edge cap for images sent to cloud AI analysis (Serpent-3eoo).
+ * Longest-edge cap for images sent to cloud AI analysis.
  * Worker resizes proportionally with withoutEnlargement before upload.
  */
 export const AI_ANALYSIS_IMAGE_EDGE_MIN = 512;

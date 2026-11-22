@@ -33,7 +33,7 @@ function memoryStorage(
   };
 }
 
-describe("shadow-preferences (Serpent-zcyg, a87 v4 2D)", () => {
+describe("shadow-preferences (a87 v4 2D)", () => {
   it("defaults to the former level-2 preset as continuous values", () => {
     expect(loadShadowPreferences(memoryStorage())).toEqual(
       DEFAULT_SHADOW_PREFERENCES,

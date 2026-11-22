@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 /**
- * User accent color preference (REQ-THEME-005 / Serpent-qw6x / THEME-018).
+ * User accent color preference (REQ-THEME-005 / THEME-018).
  * Writes only `--accent` on :root; CSS color-mix derives soft/ring/dark/soft-fg.
  */
 
@@ -104,7 +104,7 @@ export function setStoredAccentHex(
 
 /**
  * Apply user accent. Only `--accent` is set; never inline `--ui-accent-dark` so
- * CSS color-mix derivatives stay in sync (Serpent-gnus).
+ * CSS color-mix derivatives stay in sync.
  */
 export function applyAccentColor(accentHex: string): void {
   if (typeof document === 'undefined') return;

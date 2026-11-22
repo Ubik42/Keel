@@ -1,5 +1,5 @@
 /**
- * Apply a saved browser session after library open (Serpent-uye extract).
+ * Apply a saved browser session after library open (extract).
  * App owns bootstrapping listOpen / default "all" load; this module owns the
  * session-scope branch + selected-asset recovery loops.
  */
@@ -76,7 +76,7 @@ export type RestoreBrowserSessionDeps = {
   ) => void;
   setSearchTotal: (total: number | null) => void;
   /**
-   * Serpent-ws4k: register the restored scope with the pagination controller
+   * register the restored scope with the pagination controller
    * so the scroll sentinel appends the next page with the same query/scope.
    */
   beginBrowsePage: BeginBrowsePage;
@@ -89,7 +89,7 @@ export type RestoreBrowserSessionResult = {
 
 /**
  * Recover the saved selection from the restored scope rows, or one extra
- * scope query / filename search when the asset is missing (Serpent-6w7n).
+ * scope query / filename search when the asset is missing.
  */
 export async function findSessionSelectedAsset(args: {
   api: RestoreBrowserSessionApi;
@@ -200,7 +200,7 @@ export async function applyStoredBrowserSession(
       libraryId: library.libraryId,
       query: null,
       filters: searchFilters,
-      // Serpent-87pd: first window only; scrollbar jumps fetch other offsets.
+      // first window only; scrollbar jumps fetch other offsets.
       limit: BROWSE_PAGE_SIZE,
       offset: 0,
     });

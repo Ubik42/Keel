@@ -35,7 +35,7 @@ export type ElevationProviderProps = {
 };
 
 /**
- * Elevation prefs (Serpent-zcyg, a87): continuous size × intensity (0–100)
+ * Elevation prefs (a87): continuous size × intensity (0–100)
  * drive CSS `--elev-*` multipliers; either axis ~0 omits elevation shadows.
  */
 export function ElevationProvider({

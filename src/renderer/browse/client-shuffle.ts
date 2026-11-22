@@ -1,5 +1,5 @@
 /**
- * Client-side Fisher–Yates shuffle with a deterministic seed (Serpent-hm28).
+ * Client-side Fisher–Yates shuffle with a deterministic seed.
  * Used for browse「乱序」— no SQLite RANDOM() / protocol seed persistence.
  */
 

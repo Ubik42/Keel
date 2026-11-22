@@ -37,7 +37,7 @@ function asset(
   } as AssetSummary;
 }
 
-describe('trash-browse (Serpent-6pcd / whvm)', () => {
+describe('trash-browse (whvm)', () => {
   const folders = [
     folder({
       tombstoneId: 't-filled',

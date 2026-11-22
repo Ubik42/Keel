@@ -8,7 +8,7 @@ import {
   parseFontLanguage,
 } from '../../src/shared/font-metadata';
 
-// Serpent-485aeb：字体元信息解析（TTC/TTF/OTF/WOFF/WOFF2）+ 语言判定。
+// 字体元信息解析（TTC/TTF/OTF/WOFF/WOFF2）+ 语言判定。
 //
 // fixture 用仓库内已提交的真实字体与 node_modules 里的 Web 字体，不引入新的二进制；
 // CJK 语言判定用合成字体（真实 CJK 字体有授权与体积问题），覆盖实测得到的判据：

@@ -1,7 +1,7 @@
 import type { TagSummary } from "../../shared/asset-types";
 
 // ---------------------------------------------------------------------------
-// Tag management workspace model (Serpent-eaxs / REQ-TAG-010–013 redo)
+// Tag management workspace model (REQ-TAG-010–013 redo)
 //
 // Pure decision logic for the chip-grid tag management page: sorting,
 // name filtering, and the click-selection state machine. Kept free of React

@@ -40,7 +40,7 @@
 
 .library-switcher {
   /* Do not set overflow:hidden here — the dropdown menu is position:absolute
-     inside this box (Serpent-7fy: clipping made the menu look “completely wrong”).
+     inside this box (clipping made the menu look “completely wrong”).
      Ellipsis belongs on .library-switcher-name only. */
   position: relative;
   display: flex;
@@ -259,7 +259,7 @@
 
 .navigation-pane {
   /* overflow on scroll children so pane box-shadow is not clipped
-     (Serpent-zcyg hierarchical elevation). */
+     (hierarchical elevation). */
   position: relative;
   z-index: 2;
   display: flex;
@@ -279,7 +279,7 @@
   overflow: auto;
 }
 
-/* Serpent-6e3b10 / Serpent-b29bc4: the folder section's blank area (indentation
+/* the folder section's blank area (indentation
    gutter) returns to the library root on click and accepts managed-folder drops.
    Same accent-tinted language as .nav-row.is-drop-target and the same corner
    radius as the rows (--ui-radius-surface), with an inset ring so the list never
@@ -517,7 +517,7 @@
    edge bar, outline, or accent border on directory rows. The base transparent
    border stays so rows don't shift between states. */
 
-/* Serpent-d7acfa：侧栏 Ctrl/⌘ 多选的行。沿用与拖放目标相同的「accent 轻染」
+/* 侧栏 Ctrl/⌘ 多选的行。沿用与拖放目标相同的「accent 轻染」
    语言，但更轻，避免与当前浏览范围的 is-active 混淆。用户 2026-10-17：选中态
    不要描边，只用背景色区分。取值挂在 .navigation-pane 上：islands 布局把同一条
    高亮矩形画在行容器 .nav-tree-row（见文末 sidebar 状态矩形一节），两处必须用
@@ -804,7 +804,7 @@
 
 /* REQ-FOLDER-001/002/003/010: direct child folder cards above the asset grid.
    Width uses --folder-card-size from the masonry-aligned flush column width
-   (Serpent-l67w) so folders line up with waterfall columns. */
+ so folders line up with waterfall columns. */
 
 .folder-card-row {
   display: flex;
@@ -842,7 +842,7 @@
   filter: grayscale(0.35);
 }
 
-/* REQ-DND-006 / Serpent-12mb: external import drop target on folder cards. */
+/* REQ-DND-006: external import drop target on folder cards. */
 
 .folder-card.is-drop-target,
 .folder-card.is-drop-target:hover {
@@ -864,7 +864,7 @@
   box-shadow: var(--ui-shadow-card), 0 0 0 2px var(--accent);
 }
 
-/* Serpent-l67w / FOLDER-011: reference folder — rear rounded panel + front
+/* FOLDER-011: reference folder — rear rounded panel + front
    pocket with left tab and S-curve shelf. Edge-flush with the card; quiet
    stroke; black contact shadow from front onto the exposed rear strip. */
 
@@ -1013,7 +1013,7 @@
   font-size: 13px;
 }
 
-/* Serpent-9021d1: 2x2 four-grid collage for pure folders (subfolders only). */
+/* 2x2 four-grid collage for pure folders (subfolders only). */
 
 .folder-card-collage {
   width: 100%;

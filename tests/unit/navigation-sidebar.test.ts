@@ -609,7 +609,6 @@ describe("NavigationSidebar folder-section blank area", () => {
     return gutter!;
   }
 
-  // Serpent-6e3b10
   it("returns to the library root when the folder list itself is clicked", async () => {
     const onChooseFolder = vi.fn();
     const nav = await renderSidebar({
@@ -622,7 +621,7 @@ describe("NavigationSidebar folder-section blank area", () => {
     expect(onChooseFolder).toHaveBeenCalledWith("root");
   });
 
-  // Serpent-6e3b10 — the folder section's own empty state is inside the blank
+  // the folder section's own empty state is inside the blank
   // area.
   it("returns to the library root when the folder section's empty state is clicked", async () => {
     const onChooseFolder = vi.fn();
@@ -641,7 +640,6 @@ describe("NavigationSidebar folder-section blank area", () => {
     expect(onChooseFolder).toHaveBeenCalledWith("root");
   });
 
-  // Serpent-6e3b10
   it("returns to the library root when the indentation gutter is clicked", async () => {
     const onChooseFolder = vi.fn();
     const nav = await renderSidebar({
@@ -654,7 +652,7 @@ describe("NavigationSidebar folder-section blank area", () => {
     expect(onChooseFolder).toHaveBeenCalledWith("root");
   });
 
-  // Serpent-6e3b10 — everything outside the folder section stays inert.
+  // everything outside the folder section stays inert.
   it("does not navigate from the rest of the pane", async () => {
     const onChooseFolder = vi.fn();
     const nav = await renderSidebar({
@@ -672,7 +670,7 @@ describe("NavigationSidebar folder-section blank area", () => {
     expect(onChooseFolder).not.toHaveBeenCalled();
   });
 
-  // Serpent-316493 follow-up: right-clicking the blank area is a right-click on
+  // right-clicking the blank area is a right-click on
   // the library root.
   it("opens the root context menu when the blank area is right-clicked", async () => {
     const onOpenRootFolderContextMenu = vi.fn();
@@ -709,7 +707,7 @@ describe("NavigationSidebar folder-section blank area", () => {
     expect(onOpenRootFolderContextMenu).not.toHaveBeenCalled();
   });
 
-  // Serpent-a6c516: the 「资源库根目录」 row is the same subject as the blank area.
+  // the 「资源库根目录」 row is the same subject as the blank area.
   it("opens the root context menu from the library root row", async () => {
     const onOpenRootFolderContextMenu = vi.fn();
     const nav = await renderSidebar({ onOpenRootFolderContextMenu });
@@ -732,7 +730,6 @@ describe("NavigationSidebar folder-section blank area", () => {
     expect(onOpenRootFolderContextMenu).toHaveBeenCalledWith({ x: 7, y: 9 });
   });
 
-  // Serpent-6e3b10
   it("keeps a folder row click on that folder and never falls back to the root", async () => {
     const onChooseFolder = vi.fn();
     const nav = await renderSidebar({ onChooseFolder });
@@ -743,7 +740,6 @@ describe("NavigationSidebar folder-section blank area", () => {
     expect(onChooseFolder).not.toHaveBeenCalledWith("root");
   });
 
-  // Serpent-6e3b10
   it("ignores blank-area clicks while an inline editor owns the click", async () => {
     const onChooseFolder = vi.fn();
     const nav = await renderSidebar({
@@ -765,7 +761,6 @@ describe("NavigationSidebar folder-section blank area", () => {
     expect(onChooseFolder).not.toHaveBeenCalled();
   });
 
-  // Serpent-b29bc4
   it("moves dragged folders to the library root when dropped on the blank area", async () => {
     const onFoldersDroppedOnFolder = vi.fn();
     const nav = await renderSidebar({ onFoldersDroppedOnFolder });
@@ -798,7 +793,6 @@ describe("NavigationSidebar folder-section blank area", () => {
     ).toBe(false);
   });
 
-  // Serpent-b29bc4
   it("moves dragged folders to the root when dropped on the gutter", async () => {
     const onFoldersDroppedOnFolder = vi.fn();
     const nav = await renderSidebar({ onFoldersDroppedOnFolder });
@@ -816,7 +810,6 @@ describe("NavigationSidebar folder-section blank area", () => {
     ]);
   });
 
-  // Serpent-b29bc4
   it("keeps a folder row drop on that row instead of the blank area", async () => {
     const onFoldersDroppedOnFolder = vi.fn();
     const nav = await renderSidebar({ onFoldersDroppedOnFolder });
@@ -846,7 +839,7 @@ describe("NavigationSidebar folder-section blank area", () => {
     );
   });
 
-  // Serpent-b29bc4 — dragging off the blank area onto a row must hand the
+  // dragging off the blank area onto a row must hand the
   // highlight over instead of leaving both lit.
   it("clears the blank-area highlight once the drag hovers a folder row", async () => {
     const onFoldersDroppedOnFolder = vi.fn();
@@ -870,7 +863,7 @@ describe("NavigationSidebar folder-section blank area", () => {
     expect(row.classList.contains("is-drop-target")).toBe(true);
   });
 
-  // Serpent-374266: a target that would change nothing is not a target — it must
+  // a target that would change nothing is not a target — it must
   // not highlight (and therefore never shows the "cannot move" notice).
   it("does not highlight folder targets that would change nothing", async () => {
     const nav = await renderSidebar();
@@ -896,7 +889,7 @@ describe("NavigationSidebar folder-section blank area", () => {
     expect(childRow.classList.contains("is-drop-target")).toBe(false);
   });
 
-  // Serpent-374266 — the counterpart: a real reparent still highlights.
+  // the counterpart: a real reparent still highlights.
   it("still highlights a folder target that would change the parent", async () => {
     const nav = await renderSidebar();
     const childRow = folderRow(nav, childFolder.folderId);
@@ -912,7 +905,7 @@ describe("NavigationSidebar folder-section blank area", () => {
     expect(siblingRow.classList.contains("is-drop-target")).toBe(true);
   });
 
-  // Serpent-374266 — folders that already live at the root have nowhere to go.
+  // folders that already live at the root have nowhere to go.
   it("does not highlight the blank area for folders already at the root", async () => {
     const nav = await renderSidebar();
     const parentRow = folderRow(nav, parentFolder.folderId);
@@ -928,7 +921,7 @@ describe("NavigationSidebar folder-section blank area", () => {
     expect(list.classList.contains("is-root-drop-target")).toBe(false);
   });
 
-  // Serpent-b29bc4 — one more time: no folder drag, no root move.
+  // one more time: no folder drag, no root move.
   it("moves nothing when a folder is dropped outside the folder section", async () => {    const onFoldersDroppedOnFolder = vi.fn();
     const nav = await renderSidebar({ onFoldersDroppedOnFolder });
     // The pane itself (outside the folder list) is not a drop target.
@@ -944,7 +937,7 @@ describe("NavigationSidebar folder-section blank area", () => {
     expect(onFoldersDroppedOnFolder).not.toHaveBeenCalled();
   });
 
-  // Serpent-b29bc4 — blank space must not become a new asset/file target.
+  // blank space must not become a new asset/file target.
   it("leaves asset and native-file drags over the blank area untouched", async () => {
     const onFoldersDroppedOnFolder = vi.fn();
     const onExternalDrop = vi.fn();

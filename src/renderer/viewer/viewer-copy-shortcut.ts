@@ -1,5 +1,5 @@
 /**
- * Viewer Ctrl/Cmd+C copy decision (Serpent-f8e175).
+ * Viewer Ctrl/Cmd+C copy decision.
  *
  * 查看器聚焦时 Ctrl/Cmd+C 复制当前资产（与右键「复制」一致）。判定规则：
  * - 文本查看器让渡给原生（用户的期望是复制选中文本，不拦截）。

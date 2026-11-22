@@ -4,7 +4,7 @@ import { resolveFolderCardClickIntent } from "../../src/renderer/browse/folder-c
 
 const folders = ["a", "b", "c", "d"] as const;
 
-describe("resolveFolderCardClickIntent (Serpent-829)", () => {
+describe("resolveFolderCardClickIntent", () => {
   it("ignores non-left-button clicks", () => {
     expect(
       resolveFolderCardClickIntent({

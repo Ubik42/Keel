@@ -12,7 +12,7 @@ import {
   matchesShortcut,
 } from "../../src/renderer/workbench/menu/command-types";
 
-describe("PLATFORM_SHORTCUT_TABLE (Serpent-4ojz / Serpent-vf8x)", () => {
+describe("PLATFORM_SHORTCUT_TABLE ()", () => {
   it("gives every mac meta chord a windows Ctrl twin", () => {
     for (const row of PLATFORM_SHORTCUT_TABLE) {
       expect(windowsUsesCtrlForMacMeta(row), row.id).toBe(true);

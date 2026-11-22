@@ -1,5 +1,5 @@
 /**
- * Serpent-485aeb: Inspector rows for a font asset.
+ * Inspector rows for a font asset.
  *
  * The Worker reads the metadata straight from the font file (see
  * `src/worker/font-file-metadata.ts`); this module only decides which facts are

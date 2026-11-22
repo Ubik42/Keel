@@ -378,7 +378,7 @@ export function useBrowsePluginContext({ api, library, workspaceCanvasRef, repor
     [selectedAssetIds, visibleAssets],
   );
 
-  // Serpent-6pcd: assets at the current trash hop only (no source-folder grouping).
+  // assets at the current trash hop only (no source-folder grouping).
   const assetRenderSections = useMemo(
     () => [{ key: "", label: null as string | null, assets: visibleAssets }],
     [visibleAssets],
@@ -516,7 +516,7 @@ export function useBrowsePluginContext({ api, library, workspaceCanvasRef, repor
     canvasFolderBrowseEntries.length,
   );
 
-  // Serpent-b8a853: the include-subfolders hint pulses only for the folder-scope
+  // the include-subfolders hint pulses only for the folder-scope
   // button, in a folder browsing mode that shows
   // child-folder cards but zero direct assets, while the recursive toggle is
   // off, the global feature-hint switch is on, and the hint is not yet

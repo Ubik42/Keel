@@ -9,7 +9,7 @@ export type TrashFolderGroup = {
 };
 
 /**
- * Group trashed assets by their original parent folder path (Serpent-09xd).
+ * Group trashed assets by their original parent folder path.
  * Uses `trashedFromPath` dirname; root-level assets share one unlabeled group.
  */
 export function groupTrashedAssetsBySourceFolder(

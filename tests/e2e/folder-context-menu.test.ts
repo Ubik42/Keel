@@ -547,7 +547,7 @@ test("shows inline invalid-name errors for illegal folder names and cancels with
 
 // ---------------------------------------------------------------------------
 // Test 5 — Nested create from the folder menu; Escape cancels; blur commits.
-// Section 「+」 always creates at the library root (Serpent-186547).
+// Section 「+」 always creates at the library root.
 // ---------------------------------------------------------------------------
 
 test("creates a nested folder from the context menu, cancels with Escape, and commits on blur", async () => {

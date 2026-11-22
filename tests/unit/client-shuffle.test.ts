@@ -6,7 +6,7 @@ import {
   shuffledIndexOrder,
 } from "../../src/renderer/browse/client-shuffle";
 
-describe("shuffleArray (Serpent-hm28)", () => {
+describe("shuffleArray", () => {
   it("is deterministic for a seed and reshuffles with another", () => {
     const input = ["a", "b", "c", "d", "e", "f"];
     const once = shuffleArray(input, 42);

@@ -188,7 +188,7 @@ export function registerAutomationScriptIpc(options: AutomationScriptIpcOptions)
       input: commandInput,
     });
     if (!result.ok) {
-      // Serpent-8b5b.2: critical operations are MCP-only by registry
+      // critical operations are MCP-only by registry
       // declaration, so scripts cannot receive a challenge outcome; map any
       // such outcome defensively instead of dereferencing a missing error.
       let error: unknown;

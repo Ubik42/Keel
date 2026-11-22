@@ -1,6 +1,6 @@
 /**
  * Resolve which browse-canvas context menu to open when right-clicking a
- * folder card or asset card under multi/mixed selection (Serpent-koy).
+ * folder card or asset card under multi/mixed selection.
  *
  * Selection is preserved when the click target is already selected and the
  * combined selection has 2+ items; otherwise the click replaces selection

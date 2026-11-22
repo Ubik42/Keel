@@ -182,7 +182,7 @@ const MAX_STALL_REPORT_MS = 30_000;
 export class InteractiveScheduler {
   readonly #queue: QueueEntry<unknown>[] = [];
   readonly #active = new Set<ActiveEntry>();
-  /** Serpent-be29a9: active owners that released their admission at a safe point. */
+  /** active owners that released their admission at a safe point. */
   readonly #yielded = new Set<ActiveEntry>();
   /** Owners doing external async work without occupying a scheduler lane. */
   readonly #released = new Map<ActiveEntry, ReleasedEntry>();
@@ -337,7 +337,7 @@ export class InteractiveScheduler {
   }
 
   /**
-   * Serpent-be29a9: release a long background owner's admission at a safe point
+   * release a long background owner's admission at a safe point
    * so a queued interactive request or mutation can start, then take the
    * admission back before continuing.
    *
@@ -706,7 +706,7 @@ export class InteractiveScheduler {
       .filter((entry) => isInteractivePerformanceLane(entry.request.lane));
     const activeInteractive = activeInteractiveEntries.length;
     /**
-     * Serpent-52eed4（真实实例日志 2026-09-14）：`media.get-preview-artifact` 是
+     * 真实实例日志 2026-09-14：`media.get-preview-artifact` 是
      * viewer-upgrade，单次可跑 5.6–15.7 秒（冷预览/RAW/OIIO 解码或插件）。它占着
      * 唯一交互槽时，`browse.session.open` / `folder.browse-entries` /
      * `asset.thumbnail.visible-window` 全部排队——用户看到的就是「切一个文件夹卡 20 秒」。
@@ -737,7 +737,7 @@ export class InteractiveScheduler {
       && activeBackgroundPrimary <= 1
       && activeBackgroundEntries.length
         === 1 + activeBackgroundPrimary + activeMaintenanceStatusReads.length;
-    // Serpent-52eed4（实测 2026-09-14）：开库对账是 30 秒级的 maintenance owner，
+    // 实测 2026-09-14：开库对账是 30 秒级的 maintenance owner，
     // 而缩略图泵与可见卡 artifact 路径解析是 background-primary。「同时只允许一个
     // 后台任务」让用户切文件夹后等 34.6 秒才看到 15 张缩略图（schedulerWaitMs
     // 34,897 ms）。只放行一个服务可见内容的 background-primary 与 maintenance

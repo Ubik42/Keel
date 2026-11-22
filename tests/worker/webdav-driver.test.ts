@@ -10,7 +10,7 @@ afterEach(async () => {
   await Promise.all(servers.splice(0).map((server) => server.close()));
 });
 
-describe('WebDAVDriver against mock server (Serpent-xffq)', () => {
+describe('WebDAVDriver against mock server', () => {
   it('writes, reads, lists, moves and deletes files with proper URL encoding', async () => {
     const server = await startMockWebDAVServer();
     servers.push(server);

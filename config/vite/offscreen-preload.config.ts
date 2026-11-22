@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 
 /**
- * Offscreen thumbnail preload (slice E, Serpent-hnmg): a second preload entry
+ * Offscreen thumbnail preload (slice E): a second preload entry
  * next to the main window preload. Forge's Vite plugin merges this with its
  * preload template (`rollupOptions.input` wins over `lib.entry`), so the
  * bundle is emitted as `.vite/build/offscreen.js` — the name Main resolves as

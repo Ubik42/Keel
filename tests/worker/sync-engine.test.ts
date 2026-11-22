@@ -157,7 +157,7 @@ class FakeLibrary implements SyncLibraryPort {
 
 const root: SyncRootConfig = { id: 'root-1', baseUrl: 'https://mock/' };
 
-describe('SyncEngine end-to-end (Serpent-xffq)', () => {
+describe('SyncEngine end-to-end', () => {
   it('performs a first full upload and persists the manifest', async () => {
     const driver = new MemoryDriver();
     const library = new FakeLibrary();
@@ -433,7 +433,7 @@ describe('SyncEngine end-to-end (Serpent-xffq)', () => {
     await expect(emptyEngine.pollRemoteChange('lib-1', root)).resolves.toBe(true);
   });
 
-  it('reports byte progress for uploads and downloads (Serpent-bfsb 后续)', async () => {
+  it('reports byte progress for uploads and downloads (后续)', async () => {
     const driver = new MemoryDriver();
     const library = new FakeLibrary();
     library.assets.set('s1', { syncId: 's1', relativePath: 'a.png', body: Buffer.from('aaaa') });
@@ -482,7 +482,7 @@ describe('SyncEngine end-to-end (Serpent-xffq)', () => {
     expect([...driver.files.keys()].some((key) => key.includes('metadata/entries/s1.json'))).toBe(true);
   });
 
-  it('moves a remote file when only the local folder path changed (Serpent-038ecf)', async () => {
+  it('moves a remote file when only the local folder path changed', async () => {
     const driver = new MemoryDriver();
     const library = new FakeLibrary();
     library.assets.set('s1', { syncId: 's1', relativePath: 'cd.png', body: Buffer.from('cover') });

@@ -1,5 +1,5 @@
 /**
- * Serpent-485aeb：字体文件元信息解析（纯函数，不碰 fs）。
+ * 字体文件元信息解析（纯函数，不碰 fs）。
  *
  * 支持 sfnt（TTF/OTF）、TTC 集合（取第一个字体）、WOFF1（按需 inflate 表）、
  * WOFF2（brotli 解压后按目录顺序重建 sfnt）。

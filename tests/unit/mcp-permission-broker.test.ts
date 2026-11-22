@@ -151,7 +151,7 @@ describe('MCP permission broker', () => {
   });
 });
 
-describe('MCP dangerous operation challenge (Serpent-8b5b.2)', () => {
+describe('MCP dangerous operation challenge', () => {
   const credentialId = '00000000-0000-4000-8000-000000000001';
 
   function criticalContext(overrides: Partial<AutomationExecutionContext> = {}): AutomationExecutionContext {

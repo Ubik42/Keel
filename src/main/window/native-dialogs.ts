@@ -1,5 +1,5 @@
 /**
- * Main-process native open/save dialog helpers (Serpent-bwb).
+ * Main-process native open/save dialog helpers.
  *
  * Resolves localized title/buttonLabel from the shared catalog and keeps E2E
  * path injection keyed by dialog id (not English title strings).

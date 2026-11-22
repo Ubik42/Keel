@@ -11,7 +11,7 @@ interface FolderCardProps {
   entry: FolderBrowseEntry;
   libraryId: string;
   selected: boolean;
-  /** REQ-DND-006 / Serpent-12mb: external file drop target highlight. */
+  /** REQ-DND-006: external file drop target highlight. */
   dropActive?: boolean;
   onClick: (folderId: string, event: React.MouseEvent) => void;
   onDoubleClick: (folderId: string) => void;
@@ -24,14 +24,14 @@ interface FolderCardProps {
   onDrop?: (event: React.DragEvent<HTMLButtonElement>) => void;
   draggable?: boolean;
   onDragStart?: (event: React.DragEvent<HTMLButtonElement>) => void;
-  /** Trash tombstone card; double-click enters hierarchy (Serpent-6pcd). */
+  /** Trash tombstone card; double-click enters hierarchy. */
   trashed?: boolean;
   /** Matches inside this folder while a discovery filter is active. */
   filteredCount?: number;
 }
 
 /**
- * Direct child folder card on the browse canvas (REQ-FOLDER-001/010 / Serpent-l67w).
+ * Direct child folder card on the browse canvas (REQ-FOLDER-001/010).
  * Plain click selects; double-click enters. Chrome matches the reference: rear
  * rounded panel + front pocket with a left tab and soft S-curve shelf. Pocket
  * shows a single cover thumbnail (first child asset), not a stacked deck.
@@ -182,7 +182,7 @@ export function FolderCard({
                 <img
                   alt=""
                   className="folder-card-cover-image"
-                  // Serpent-d0nv: the folder-card row is a bounded, first-screen
+                  // the folder-card row is a bounded, first-screen
                   // horizontal strip (unlike the virtualized vertical asset
                   // grid) — eager so covers paint as soon as they are ready.
                   loading="eager"

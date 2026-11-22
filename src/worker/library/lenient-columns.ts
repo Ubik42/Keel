@@ -1,5 +1,5 @@
 /**
- * Serpent-verg.1 — lenient-read infrastructure (0031 §1).
+ * lenient-read infrastructure (0031 §1).
  *
  * Read paths must tolerate structural drift between library schema versions:
  * a column a newer build added (or an older build removed) must not make the

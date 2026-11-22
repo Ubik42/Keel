@@ -10,7 +10,7 @@ import { LibraryWriteCoordinatorError } from './library/library-write-coordinato
 import { HistoryTransitionError } from './library/operation-history';
 import { RemoteStorageError } from './integrations/sync/remote-storage';
 
-/** Serpent-033e: SQLite rejected a write because the file or connection is read-only. */
+/** SQLite rejected a write because the file or connection is read-only. */
 function isSqliteReadonlyFailure(error: unknown): boolean {
   return (
     typeof error === 'object' &&
@@ -21,7 +21,7 @@ function isSqliteReadonlyFailure(error: unknown): boolean {
 }
 
 /**
- * Serpent-verg.8 (0031 §1.3): a write referencing a column the library
+ * (0031 §1.3): a write referencing a column the library
  * structure does not have (lenient read tolerates it; writes stay strict)
  * surfaces as an actionable structure error instead of an opaque failure.
  */
@@ -79,7 +79,7 @@ export function publicErrorForWorkerFailure(error: unknown): PublicError {
     return createPublicError(error.code);
   }
   if (error instanceof RemoteStorageError) {
-    // Serpent-fatf: URL 无法解析/协议不受支持 → SYNC_CONNECTION_FAILED
+    // URL 无法解析/协议不受支持 → SYNC_CONNECTION_FAILED
     // + SYNC_INVALID_URL reason（可读提示），而不是落到 INTERNAL_ERROR。
     return createPublicError(
       'SYNC_CONNECTION_FAILED',

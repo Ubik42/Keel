@@ -20,7 +20,7 @@ const event = (overrides: Partial<ShortcutEvent>): ShortcutEvent => ({
   ...overrides,
 });
 
-describe("workspace-discovery-shortcuts (Serpent-x78x)", () => {
+describe("workspace-discovery-shortcuts", () => {
   it("matches Ctrl+F / ⌘F for search focus", () => {
     expect(
       matchFocusSearchShortcut(

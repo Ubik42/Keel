@@ -33,7 +33,7 @@ function createMockEntry(overrides?: Partial<FolderBrowseEntry>): FolderBrowseEn
 
 const noop = () => {};
 
-describe('FolderCard collage rendering (Serpent-9021d1)', () => {
+describe('FolderCard collage rendering', () => {
   it('renders standard single cover photo when directAssetCount > 0', () => {
     const entry = createMockEntry({
       directAssetCount: 5,

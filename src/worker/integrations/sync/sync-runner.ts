@@ -1,5 +1,5 @@
 /**
- * 同步动作执行器（Serpent-xffq）。
+ * 同步动作执行器。
  *
  * 将 planSyncActions 的产物执行到 RemoteStorageDriver 上，并通过
  * RunnerContext 与应用层交换文件内容（读本地资产/写入下载内容/回收站/

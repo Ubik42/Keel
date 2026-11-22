@@ -1,6 +1,6 @@
 /**
  * Single-asset Inspector metadata load / versioned save + AI content hydrate
- * (Serpent-uye wave 6 extract from App.tsx).
+ * (wave 6 extract from App.tsx).
  *
  * Multi-select editing stays in useInspectorMultiEdit; both share the App-owned
  * metadata cache / conflict set refs.

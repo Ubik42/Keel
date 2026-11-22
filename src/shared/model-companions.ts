@@ -1,5 +1,5 @@
 /**
- * Companion-texture index contract for model previews (slice C, Serpent-qvc6).
+ * Companion-texture index contract for model previews (slice C).
  *
  * The Worker (`model.resolve-companions` command) returns the assets in the
  * model's directory as relative-path entries; the renderer 3D loaders rewrite

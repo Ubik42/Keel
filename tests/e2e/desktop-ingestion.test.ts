@@ -117,7 +117,7 @@ test('pastes a Main-owned clipboard image into the current folder', async () => 
   }
 });
 
-test('pastes a clipboard image through the File menu into the library (Serpent-a3de58)', async () => {
+test('pastes a clipboard image through the File menu into the library', async () => {
   const temporaryRoot = mkdtempSync(path.join(tmpdir(), 'serpent-menu-paste-e2e-'));
   const clipboardSource = path.join(temporaryRoot, 'clipboard.png');
   writeFileSync(clipboardSource, Buffer.from(
@@ -149,7 +149,7 @@ test('pastes a clipboard image through the File menu into the library (Serpent-a
     await waitForLibraryLoadingToFinish(window);
 
     // The File menu must remain a discoverable entry point for clipboard-image
-    // paste even when the browse canvas is not empty (Serpent-a3de58).
+    // paste even when the browse canvas is not empty.
     await pasteClipboardImageThroughFileMenu(application, window);
 
     await expect(
@@ -166,7 +166,7 @@ test('pastes a clipboard image through the File menu into the library (Serpent-a
   }
 });
 
-test('creates an asset when an image is pasted via Ctrl+V with no clipboardData image item (Serpent-a3de58)', async () => {
+test('creates an asset when an image is pasted via Ctrl+V with no clipboardData image item', async () => {
   test.skip(process.platform !== 'win32', 'Windows-only: CF_DIB clipboard images bypass renderer clipboardData.');
   const temporaryRoot = mkdtempSync(path.join(tmpdir(), 'serpent-ctrl-v-paste-e2e-'));
   const clipboardSource = path.join(temporaryRoot, 'clipboard.png');
@@ -221,7 +221,7 @@ await window.keyboard.press('Control+V');
   }
 });
 
-test('creates an asset when an image is pasted via Cmd+V on macOS (Serpent-a3de58)', async () => {
+test('creates an asset when an image is pasted via Cmd+V on macOS', async () => {
   test.skip(process.platform !== 'darwin', 'macOS keyboard paste delegates to Main clipboard read.');
   const temporaryRoot = mkdtempSync(path.join(tmpdir(), 'serpent-cmd-v-paste-e2e-'));
   const clipboardSource = path.join(temporaryRoot, 'clipboard.png');

@@ -62,10 +62,10 @@ export interface SceneComposer {
   /**
    * Horizontal environment rotation (radians, around Y): right-drag or
    * Ctrl+left-drag in the viewer rotates the light source without moving the
-   * model (Serpent-v4jt / Serpent-xjcy).
+   * model.
    */
   setEnvironmentRotation(yaw: number): void;
-  /** Display mode (PBR / wireframe / gray-shaded…, Serpent-fkhe). */
+  /** Display mode (PBR / wireframe / gray-shaded…). */
   setDisplayMode(mode: ModelDisplayMode): void;
   /** Draw both faces of the current display mode. */
   setDoubleSided(enabled: boolean): void;

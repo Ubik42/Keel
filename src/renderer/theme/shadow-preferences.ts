@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /**
- * Hierarchical elevation (Serpent-zcyg, a87).
+ * Hierarchical elevation (a87).
  *
  * v4: two continuous axes picked on a 2D pad in Settings —
  *   size      0–100 (X)  → CSS `--ui-elev-size`      = size / 50

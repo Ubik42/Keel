@@ -9,7 +9,7 @@ import {
 } from 'three';
 
 /**
- * Model display modes (Serpent-fkhe): PBR / PBR+wireframe / gray-shaded /
+ * Model display modes: PBR / PBR+wireframe / gray-shaded /
  * gray-shaded+wireframe / pure wireframe.
  *
  * Pure function over a three Scene so it is unit-testable without a renderer:

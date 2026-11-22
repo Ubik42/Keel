@@ -155,7 +155,7 @@ describe("createWorkspaceNavHistory", () => {
     expect(history.current).toEqual({ kind: "folder", folderId: "a" });
   });
 
-  it("seedRestoreLeafLocation bases a nested restore on all (Serpent-ada7ad)", () => {
+  it("seedRestoreLeafLocation bases a nested restore on all", () => {
     const restored: WorkspaceNavLocation = { kind: "folder", folderId: "f1" };
     const history = createWorkspaceNavHistory();
     expect(seedRestoreLeafLocation(history, restored)).toEqual({ canBack: true });
@@ -193,7 +193,7 @@ describe("createWorkspaceNavHistory", () => {
     expect(history.canForward).toBe(false);
   });
 
-  it("tracks the asset viewer as a preview history entry (Serpent-b7e173)", () => {
+  it("tracks the asset viewer as a preview history entry", () => {
     const history = createWorkspaceNavHistory();
     history.push({ kind: "folder", folderId: "a" });
     history.push({ kind: "preview", assetId: "c" });
@@ -287,7 +287,7 @@ describe("createWorkspaceNavHistory", () => {
   });
 });
 
-describe("shared timeline across tabs (Serpent-b8a853)", () => {
+describe("shared timeline across tabs", () => {
   it("stamps pushes with the active tab; Back/Forward span tab switches", () => {
     const history = createWorkspaceNavHistory({ kind: "all" }, "tab-a");
     history.setActiveTab("tab-a");

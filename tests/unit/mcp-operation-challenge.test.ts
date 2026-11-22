@@ -42,7 +42,7 @@ function consume(
   });
 }
 
-describe('MCP operation challenge store (Serpent-8b5b.2)', () => {
+describe('MCP operation challenge store', () => {
   it('requires every confirmation field and rejects acknowledged-only bypasses', () => {
     const base = {
       challengeId: 'challenge-1',

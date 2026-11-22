@@ -1,7 +1,7 @@
 /**
  * Import decision dialogs (name conflict, content duplicate, source failure)
  * must ignore extra confirms while the Worker is still applying the first one
- * (Serpent-85e60c).
+ *.
  */
 
 export function canBeginImportDecisionSubmit(inFlight: boolean): boolean {

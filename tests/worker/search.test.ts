@@ -1161,7 +1161,7 @@ describe('search filters', () => {
     service.closeAll();
   });
 
-  it('filters by AI tags as well as human tags (Serpent-5cvr)', () => {
+  it('filters by AI tags as well as human tags', () => {
     const { service, libraryId, assetId } = createLibraryWithAssetAndTags();
     service.writeAiAnalysisResult({
       libraryId,
@@ -1225,7 +1225,7 @@ describe('search filters', () => {
     service.closeAll();
   });
 
-  it('filters AI ratings by default while allowing human-only filtering (Serpent-450a22)', () => {
+  it('filters AI ratings by default while allowing human-only filtering', () => {
     const { service, libraryId, assetId, libraryPath } = createLibraryWithAssetAndTags();
     const aiOnlyAssetId = createSecondAsset(service, libraryId, libraryPath, 'AI only');
     service.writeAiAnalysisResult({
@@ -1290,7 +1290,7 @@ describe('search filters', () => {
     service.closeAll();
   });
 
-  it('ANDs separate single-value tag clauses (Serpent-eaxs tag-management AND search)', () => {
+  it('ANDs separate single-value tag clauses (tag-management AND search)', () => {
     const { service, libraryId, assetId } = createLibraryWithAssetAndTags();
     const character = service.createTag({ libraryId, name: 'Character' });
     const environment = service.createTag({ libraryId, name: 'Environment' });
@@ -1515,7 +1515,7 @@ describe('search filters', () => {
     const portraitId = createSecondAsset(service, libraryId, libraryPath, 'Portrait');
     const unknownId = createSecondAsset(service, libraryId, libraryPath, 'Unknown');
     // A 3D model with its own bounding-box metadata: it owns no resolution, so
-    // no bucket may claim it (Serpent-b1b0f2).
+    // no bucket may claim it.
     const modelId = createSecondAsset(
       service,
       libraryId,
@@ -1620,7 +1620,7 @@ describe('sort', () => {
     service.closeAll();
   });
 
-  it('sorts by effective rating including AI ratings (Serpent-450a22)', () => {
+  it('sorts by effective rating including AI ratings', () => {
     const { service, libraryId, assetId, libraryPath } = createLibraryWithAssetAndTags();
     const assetId2 = createSecondAsset(service, libraryId, libraryPath, 'AI rated');
     service.writeAiAnalysisResult({
@@ -1891,7 +1891,7 @@ describe('pagination', () => {
     service.closeAll();
   });
 
-  it('returns the full scope ids only when idsOnly is true (Serpent-ws4k)', () => {
+  it('returns the full scope ids only when idsOnly is true', () => {
     const { service, libraryId, libraryPath } = createLibraryWithAssetAndTags();
     const secondAssetId = createSecondAsset(service, libraryId, libraryPath, 'Second');
 
@@ -1916,7 +1916,7 @@ describe('pagination', () => {
     service.closeAll();
   });
 
-  it('returns a compact real-asset geometry index when layoutOnly is true (Serpent-sa65)', () => {
+  it('returns a compact real-asset geometry index when layoutOnly is true', () => {
     const { service, libraryId, libraryPath, assetId } = createLibraryWithAssetAndTags();
     const secondAssetId = createSecondAsset(service, libraryId, libraryPath, 'Second');
     const db = new TestDatabase(path.join(libraryPath, '.keel', 'library.db'));

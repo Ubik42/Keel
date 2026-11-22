@@ -1,6 +1,6 @@
 /**
  * Classify a wheel event on the viewer stage as a zoom or a pan intent
- * (Serpent-yo0n / Serpent-4kg3).
+ *.
  *
  * A physical mouse wheel should zoom (anchored at the pointer); a trackpad
  * two-finger scroll should keep panning, and a trackpad pinch should zoom.
@@ -9,7 +9,7 @@
  *
  * - ctrlKey/metaKey: Chromium reports trackpad pinch gestures as wheel
  *   events with ctrlKey set; Ctrl+wheel is also the explicit zoom chord.
- *   Exception (Serpent-4kg3): when the delta is primarily horizontal,
+ *   Exception: when the delta is primarily horizontal,
  *   Chromium sometimes still sets ctrlKey during a two-finger slide.
  *   Those events must pan/swipe, not zoom — real pinch and Ctrl+wheel
  *   produce a dominant vertical delta.
@@ -40,7 +40,7 @@ export const VIEWER_WHEEL_MOUSE_NOTCH_THRESHOLD = 40;
 
 /**
  * |deltaX| must exceed |deltaY| by this factor to count as a horizontal
- * slide rather than a pinch / vertical zoom chord (Serpent-4kg3).
+ * slide rather than a pinch / vertical zoom chord.
  * Matches the viewer flick dominance used for prev/next at fit scale.
  */
 export const VIEWER_WHEEL_HORIZONTAL_DOMINANCE_RATIO = 2;
@@ -64,7 +64,7 @@ export function classifyViewerWheel(
 ): ViewerWheelIntent {
   if (sample.ctrlKey || sample.metaKey) {
     // Pinch / Ctrl|Cmd+wheel zoom — but not when Chromium tagged a
-    // horizontal two-finger slide with ctrlKey (Serpent-4kg3).
+    // horizontal two-finger slide with ctrlKey.
     if (isPrimarilyHorizontalWheel(sample)) return "pan";
     return "zoom";
   }
@@ -78,7 +78,7 @@ export function classifyViewerWheel(
 }
 
 /**
- * Zoom anchor for one wheel gesture (Serpent-yo0n, 2026-07-20 user ruling):
+ * Zoom anchor for one wheel gesture (2026-07-20 user ruling):
  * the zoom center is the pointer position captured when the scroll gesture
  * STARTS. Every wheel event in the same burst reuses it, so the image point
  * under the gesture-start cursor stays fixed for the whole gesture even if

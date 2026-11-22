@@ -151,10 +151,10 @@ function NavRow({
   title?: string;
   /** CU-D2: optional disclosure control rendered beside the row. */
   disclosure?: ReactNode;
-  /** Serpent-vf8x: focus target for folder keyboard shortcuts. */
+  /** focus target for folder keyboard shortcuts. */
   navFolderId?: string;
   navFolderKind?: "managed" | "linked";
-  /** Serpent-d7acfa: row participates in the sidebar multi-folder selection. */
+  /** row participates in the sidebar multi-folder selection. */
   multiSelected?: boolean;
   /** Custom-order drop insertion edge (Keel: folder 自定义 sort). */
   insertEdge?: FolderDropEdge | null;
@@ -667,7 +667,7 @@ export interface NavigationSidebarProps {
     byFolderId: ReadonlyMap<string, number>;
   } | null;
   folderTreeActionsRef?: MutableRefObject<FolderTreeExpandActions | null>;
-  /** Serpent-b8a853: pulse the sidebar "导入链接文件夹" entry as a feature hint. */
+  /** pulse the sidebar "导入链接文件夹" entry as a feature hint. */
   linkedFolderHintActive?: boolean;
 
   // --- Inline folder edit (REQ-FOLDER-007) ---
@@ -695,13 +695,13 @@ export interface NavigationSidebarActions {
   /** Renderer-only fallback for a native drag whose custom payload was lost. */
   getManagedAssetDragIds?: () => readonly string[] | null;
   /**
-   * Serpent-374266: dragged managed-folder ids from the browse canvas (sidebar
+   * dragged managed-folder ids from the browse canvas (sidebar
    * rows record their own). Used to decide whether a folder drop target would
    * actually change anything; the HTML5 payload cannot be read during dragover.
    */
   getManagedFolderDragIds?: () => readonly string[] | null;
   /**
-   * Serpent-316493 follow-up: right-click on the folder panel's blank area,
+   * right-click on the folder panel's blank area,
    * i.e. on the library root.
    */
   onOpenRootFolderContextMenu?: (position: { x: number; y: number }) => void;
@@ -710,7 +710,7 @@ export interface NavigationSidebarActions {
   /** True only while Keel is completing a drag it started from an asset card. */
   isInternalAssetDrag?: () => boolean;
 
-  // --- Internal asset drag/drop (REQ-DND-001/002 + Serpent-aa3 copy mode) ---
+  // --- Internal asset drag/drop (REQ-DND-001/002 copy mode) ---
   onAssetsDroppedOnFolder: (
     folderId: string | null,
     assetIds: string[],
@@ -722,7 +722,7 @@ export interface NavigationSidebarActions {
     options?: { blockingUi?: boolean },
   ) => void;
   /**
-   * Serpent-d7acfa：Ctrl/⌘+点击侧栏文件夹行时切换它是否加入多选（不导航）。
+   * Ctrl/⌘+点击侧栏文件夹行时切换它是否加入多选（不导航）。
    */
   onToggleFolderSelection: (folderId: string) => void;
   onAssetsDroppedOnTrash: (assetIds: string[]) => void;
@@ -779,7 +779,7 @@ function useNavigationSidebarActions(): NavigationSidebarActions {
 // NavigationSidebar — component
 // ---------------------------------------------------------------------------
 
-/** Serpent-d7acfa：侧栏多选与画布选择共用同一套平台修饰键（mac ⌘ / Windows Ctrl）。 */
+/** 侧栏多选与画布选择共用同一套平台修饰键（mac ⌘ / Windows Ctrl）。 */
 const SIDEBAR_SELECTION_PLATFORM = resolveSelectionPlatform(
   typeof navigator === "undefined" ? "" : navigator.userAgent,
 );
@@ -832,10 +832,10 @@ export const NavigationSidebar = memo(function NavigationSidebar(props: Navigati
   // Cleared on leave/drop, and defensively on window dragend/drop so a drop
   // outside any row never leaves a stale highlight.
   const [assetDropTarget, setAssetDropTarget] = useState<string | null>(null);
-  // Serpent-b29bc4: a managed-folder drag hovering the folder section's blank
+  // a managed-folder drag hovering the folder section's blank
   // area (indentation gutter / space below the last row) targets the root.
   const [folderListDropActive, setFolderListDropActive] = useState(false);
-  // Serpent-374266: ids of the folder drag started from this sidebar. The HTML5
+  // ids of the folder drag started from this sidebar. The HTML5
   // payload is unreadable during dragover, so the drop-target validity check
   // needs its own copy (cleared on every dragend/drop).
   const draggedFolderIdsRef = useRef<string[] | null>(null);
@@ -897,7 +897,7 @@ export const NavigationSidebar = memo(function NavigationSidebar(props: Navigati
     };
   }, [assetDropTarget, folderListDropActive]);
 
-  // Serpent-374266: the folder-drag snapshot must not outlive its gesture, even
+  // the folder-drag snapshot must not outlive its gesture, even
   // when the drag ends without ever highlighting a target (e.g. dropped back on
   // its own row).
   useEffect(() => {
@@ -1055,7 +1055,7 @@ export const NavigationSidebar = memo(function NavigationSidebar(props: Navigati
   }
 
   /**
-   * Serpent-374266: a folder drop that would not change the tree is not a
+   * a folder drop that would not change the tree is not a
    * target — no highlight, no accept, no drop, no notice. The dragged ids come
    * from this component's own dragstart (browse folder cards report theirs via
    * `getManagedFolderDragIds`). When neither knows, fail open so drag sources
@@ -1280,7 +1280,7 @@ export const NavigationSidebar = memo(function NavigationSidebar(props: Navigati
   }
 
   /**
-   * Serpent-6e3b10 / Serpent-b29bc4: the blank area **of the folder section** —
+   * the blank area **of the folder section** —
    * the indentation gutter left of the rows and the empty strip below the last
    * row — is a real target. Clicking it returns to the library root; dropping
    * dragged managed folders on it moves them to the root.
@@ -1336,7 +1336,7 @@ export const NavigationSidebar = memo(function NavigationSidebar(props: Navigati
         if (!isFolderListBlankTarget(event)) return;
         void onChooseFolder("root");
       },
-      // Serpent-316493 follow-up: the blank area *is* the library root, so its
+      // the blank area *is* the library root, so its
       // context menu is the root folder menu (open in file manager, new folder,
       // import linked folder, paste, copy path).
       onContextMenu: (event: React.MouseEvent<HTMLElement>) => {
@@ -1348,7 +1348,7 @@ export const NavigationSidebar = memo(function NavigationSidebar(props: Navigati
       onDragEnter: (event: React.DragEvent<HTMLElement>) => {
         if (!library || !supportsManagedFolderDrag(event.dataTransfer)) return;
         if (!isFolderListBlankTarget(event)) return;
-        // Serpent-374266: folders already at the root would not move anywhere.
+        // folders already at the root would not move anywhere.
         if (!acceptsFolderDrop(null)) return;
         setFolderListDropActive(true);
       },
@@ -1528,7 +1528,7 @@ export const NavigationSidebar = memo(function NavigationSidebar(props: Navigati
                 : null
             }
             onClick={(event) => {
-              // Serpent-d7acfa：侧栏树里的文件夹也能 Ctrl/⌘ 多选，复用画布卡片的
+              // 侧栏树里的文件夹也能 Ctrl/⌘ 多选，复用画布卡片的
               // 同一份选择状态与同一个批量菜单入口（普通点击仍然进文件夹）。
               if (isFolderMultiSelectClick(event)) {
                 onToggleFolderSelection(entry.folderId);
@@ -1542,7 +1542,7 @@ export const NavigationSidebar = memo(function NavigationSidebar(props: Navigati
                 entry.folderId,
                 selectedFolderIds,
               );
-              // Serpent-374266: remember the ids for drop-target validation
+              // remember the ids for drop-target validation
               // (the payload is unreadable during dragover).
               draggedFolderIdsRef.current = [...ids];
               event.dataTransfer.setData(
@@ -1553,7 +1553,7 @@ export const NavigationSidebar = memo(function NavigationSidebar(props: Navigati
             }}
             onContextMenu={(event) => {
               event.preventDefault();
-              // Serpent-d7acfa：右键的行属于多选时，直接开批量菜单（回收站/硬盘
+              // 右键的行属于多选时，直接开批量菜单（回收站/硬盘
               // 删除/设置图标/忽略一次作用于全部选中文件夹）。
               if (
                 selectedFolderIds.length > 1 &&
@@ -1654,7 +1654,7 @@ export const NavigationSidebar = memo(function NavigationSidebar(props: Navigati
             offline
               ? () => void onRelinkFolder(entry.folderId)
               : (event) => {
-                  // Serpent-d7acfa：链接根同样支持 Ctrl/⌘ 多选（离线时仍走重新指定）。
+                  // 链接根同样支持 Ctrl/⌘ 多选（离线时仍走重新指定）。
                   if (isFolderMultiSelectClick(event)) {
                     onToggleFolderSelection(entry.folderId);
                     return;
@@ -1675,7 +1675,7 @@ export const NavigationSidebar = memo(function NavigationSidebar(props: Navigati
               });
               return;
             }
-            // Serpent-d7acfa：多选中的行开批量菜单（链接根也支持外观/忽略）。
+            // 多选中的行开批量菜单（链接根也支持外观/忽略）。
             if (
               selectedFolderIds.length > 1 &&
               selectedFolderIds.includes(entry.folderId)
@@ -1726,7 +1726,7 @@ export const NavigationSidebar = memo(function NavigationSidebar(props: Navigati
               )
             ) {
               // 与 managed 文件夹一致：普通拖=移动、Option 拖=复制
-              // （Serpent-f6f779，链接文件夹不再强制复制）。
+              // （链接文件夹不再强制复制）。
               applyManagedAssetDragOver(event);
               return;
             }
@@ -1752,7 +1752,7 @@ export const NavigationSidebar = memo(function NavigationSidebar(props: Navigati
                 void onCopyManagedToLinked(lf, ids);
               } else {
                 // 普通拖：与 managed 文件夹一致，走 moveAssets 的链接目标
-                // 分支（复制进链接目录 + 删除 managed 源），Serpent-f6f779。
+                // 分支（复制进链接目录 + 删除 managed 源）。
                 void onAssetsDroppedOnFolder(entry.folderId, ids, "move");
               }
               return;
@@ -1860,7 +1860,7 @@ export const NavigationSidebar = memo(function NavigationSidebar(props: Navigati
           icon="folder"
           label={t("scope.rootFolder")}
           onClick={() => void onChooseFolder("root")}
-          // Serpent-a6c516: the root row opens the same library-root menu as the
+          // the root row opens the same library-root menu as the
           // folder panel's blank area.
           onContextMenu={(event) => {
             if (!library) return;

@@ -6,7 +6,7 @@ import { PUBLIC_ERROR_MESSAGES_ZH, messageForPublicError } from '../../src/rende
 import { en as enCatalog } from '../../src/renderer/i18n/catalogs/en';
 
 /**
- * Serpent-50c466: the trash / restore / delete state conflicts used to fall back
+ * the trash / restore / delete state conflicts used to fall back
  * to INVALID_IMPORT_DECISION, so the user read 「导入冲突处理选项无效」 for actions
  * that had nothing to do with imports. Each situation now has its own code, and
  * this suite pins the copy for both locales.
@@ -16,11 +16,11 @@ const STATE_CONFLICT_CODES = [
   'ASSET_NOT_TRASHED',
   'ASSET_NOT_MANAGED',
   'INVALID_STATE_TRANSITION',
-  // Serpent-50c466 audit (2026-09-12): argument/selection guards got their own
+  // audit (2026-09-12): argument/selection guards got their own
   // code instead of borrowing the "state race" copy.
   'INVALID_SELECTION',
   'ASSET_STATE_CONFLICT',
-  // Serpent-50c466 review (2026-09-12): content-level and settings-level causes.
+  // review (2026-09-12): content-level and settings-level causes.
   'ASSET_CONTENT_INVALID',
   'IMPORT_AWAITING_DECISION',
   'AI_SETTINGS_INCOMPLETE',
@@ -53,7 +53,7 @@ const enFor = (code: PublicErrorCode): string => {
   return catalog!;
 };
 
-describe('state-conflict error copy (Serpent-50c466)', () => {
+describe('state-conflict error copy', () => {
   it.each(STATE_CONFLICT_CODES)('%s has English and zh-CN copy', (code) => {
     const english = PUBLIC_ERROR_MESSAGES[code];
     expect(english.length).toBeGreaterThan(0);
@@ -80,7 +80,7 @@ describe('state-conflict error copy (Serpent-50c466)', () => {
     },
   );
 
-  // Serpent-50c466 audit §5.3: the user sees code + reason composed by
+  // audit §5.3: the user sees code + reason composed by
   // error.withReason — pin the whole sentence, not just the code.
   it('composes the image-sequence reason into the sentence the user reads', () => {
     expect(

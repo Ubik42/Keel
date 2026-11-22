@@ -11,7 +11,7 @@ export type CreateLibraryPhase = "start" | "form" | "eagle" | "billfish";
 export interface CreateDialogProps {
   open: boolean;
   /**
-   * Serpent-kipk: `start` is the no-library surface; `form` is the name
+   * `start` is the no-library surface; `form` is the name
    * prompt for creating a Keel library; `eagle`/`billfish` are the same
    * name prompt after a validated external source, before choosing the save
    * location.
@@ -25,13 +25,13 @@ export interface CreateDialogProps {
   onBeginCreate: () => void;
   /** Return from the name form to start CTAs (required/no-library only). */
   onBackToStart: () => void;
-  /** Open an existing library via the native folder picker (Serpent-y0au). */
+  /** Open an existing library via the native folder picker. */
   onOpenExisting: () => void;
   /** Import a library folder/ZIP (same entry as the former empty-state CTA). */
   onImportLibrary: () => void;
   /** One-click open from the recent list. */
   onOpenRecent: (path: string) => void;
-  /** Serpent-kqgy: remove a library from the recent list (not from disk). */
+  /** remove a library from the recent list (not from disk). */
   onForgetRecent?: (path: string) => void;
   busy?: boolean;
   /**
@@ -42,11 +42,11 @@ export interface CreateDialogProps {
 }
 
 /**
- * Unified create / no-library start dialog (Serpent-kipk / y0au).
+ * Unified create / no-library start dialog (y0au).
  *
  * Renders as a full-window centered modal with backdrop blur so shell chrome
  * and canvas content are defocused. The no-library start surface keeps open /
- * import CTAs. Menu 「新建资源库」 opens the name form only (Serpent-pte2).
+ * import CTAs. Menu 「新建资源库」 opens the name form only.
  */
 export function CreateDialog({
   open,
@@ -72,7 +72,7 @@ export function CreateDialog({
 
   const showRecents =
     required && phase === "start" && recentLibraries.length > 0;
-  // Serpent-s0oq: the create dialog shows at most five most-recent libraries;
+  // the create dialog shows at most five most-recent libraries;
   // the list container scrolls when the store holds more (cap is 8). Rows
   // always show name + full path (the dialog's original layout).
   const visibleRecents = showRecents ? recentLibraries.slice(0, 5) : [];
@@ -249,7 +249,7 @@ export function CreateDialog({
             <ul className="create-dialog-recent-list">
               {visibleRecents.map((entry) => (
                 <li className="create-dialog-recent-row" key={entry.path}>
-                  {/* Serpent-kqgy follow-up: the forget affordance lives inside
+                  {/* the forget affordance lives inside
                       the full-width row button (far right), not as a separate
                       button — one row, one button. */}
                   <button

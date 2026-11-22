@@ -105,7 +105,7 @@ export function formatVideoTechnicalLine(
 }
 
 /**
- * Compact Inspector line for audio assets (Serpent-i07), e.g.
+ * Compact Inspector line for audio assets, e.g.
  * `mp3 · 320 kbps · 44.1 kHz · stereo`
  */
 export function formatAudioTechnicalLine(

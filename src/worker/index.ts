@@ -912,7 +912,7 @@ const handleLibraryWorkerMessage = async (event: { data: unknown }): Promise<voi
   }
 
   try {
-    // Serpent-8ca259: Main's offscreen document capture result.
+    // Main's offscreen document capture result.
     const documentResponse = parseDocumentThumbnailRenderResponse(input);
     const pendingDocument = pendingDocumentThumbnailRenders.get(documentResponse.requestId);
     if (pendingDocument) {
@@ -973,14 +973,14 @@ const handleLibraryWorkerMessage = async (event: { data: unknown }): Promise<voi
   const requestId = requestIdFrom(input);
   if (!requestId) return;
 
-  // Serpent-onch/9e1d8d: KEEL_WORKER_CMD_LOG=1 emits one JSON line per
+  // KEEL_WORKER_CMD_LOG=1 emits one JSON line per
   // command with event-loop wait (message → dispatch) and service time, so
   // browse-latency attribution can see what the single Worker thread was
   // doing while the renderer waited.
   const cmdLogReceivedAt = WORKER_CMD_LOG ? performance.now() : 0;
 
   let response: WorkerResponse;
-  // Serpent-2cc492: track in-flight commands so the open-reconciliation gate
+  // track in-flight commands so the open-reconciliation gate
   // can tell "startup burst drained" apart from "gap between burst waves".
   const responseCommandType =
     typeof input === 'object' && input !== null && 'command' in input &&
@@ -993,7 +993,7 @@ const handleLibraryWorkerMessage = async (event: { data: unknown }): Promise<voi
   try {
     const request = parseWorkerRequest(input);
     const performanceEnvelope = performanceEnvelopeForRequest(request);
-    // Serpent-217028: the renderer already stamps browse commands with a
+    // the renderer already stamps browse commands with a
     // navigation id. Carry it onto the command diagnostic line so the benchmark
     // can join this command's queue / admission / run spans to the click that
     // caused it instead of guessing from time windows. Diagnostics only.
@@ -1237,7 +1237,7 @@ const handleLibraryWorkerMessage = async (event: { data: unknown }): Promise<voi
   }
 
   workerPort.postMessage(response);
-  // Serpent-2cc492: settle the open-reconciliation startup gate only after the
+  // settle the open-reconciliation startup gate only after the
   // response has actually been posted to Main — "served" must mean delivered.
   if (startupResponseGate !== undefined) {
     startupBurstGates.finishOpenResponse(startupResponseGate);

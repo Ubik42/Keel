@@ -1,5 +1,5 @@
 /**
- * WebDAV 交换格式的资产元数据 sidecar（GitHub #39 / Serpent-b20a7f / Serpent-4ffae8）。
+ * WebDAV 交换格式的资产元数据 sidecar（GitHub #39）。
  *
  * 文件内容仍走 assets/；人标签、描述、评分、收藏与 AI 标签/简介/评分
  * 走 metadata/entries/<syncId>.json。不上传 SQLite。合集成员不在本通道。

@@ -50,7 +50,7 @@ export function leftoverWidthPx(
  * packing. A round-robin split preserves array order in the columns, but
  * mixed portrait/landscape media can make one column several screens shorter
  * than its neighbours; at the bottom of the viewport that appears as a large
- * white slice (Serpent-1s3d). Stable shortest-column packing keeps the
+ * white slice. Stable shortest-column packing keeps the
  * columns visually balanced while the original asset array remains the
  * browse/keyboard-focus order. Pointer Shift ranges read published geometry.
  *
@@ -138,7 +138,7 @@ export const JUSTIFIED_MIN_SLOT_ASPECT = 0.66;
  * Pack aspect-ratio widths into integer CSS pixels that sum exactly to
  * `usableWidthPx` (Hamilton / largest-remainder). Fractional justified
  * slots jitter on Windows: Chromium re-snaps object-fit and glyph
- * baselines every frame at 125%/150% DPI (Serpent-oq86).
+ * baselines every frame at 125%/150% DPI.
  */
 export function distributeIntegerRowWidths(
   aspectRatios: readonly number[],
@@ -207,7 +207,7 @@ export function aspectRatioForAsset(
 
 /**
  * Justified contact-sheet rows: equal height within a row, preserve aspect
- * ratios, fill the container width (REQ-CANVAS-004 / Serpent-8nj).
+ * ratios, fill the container width (REQ-CANVAS-004).
  */
 export function layoutJustifiedRows(
   items: readonly JustifiedLayoutItem[],

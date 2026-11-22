@@ -58,7 +58,7 @@ export function useCloseAssetPreview({ cancelPreviewViewRestoreRef, previewResto
     const closingAsset = previewAsset;
     if (!closingAsset) return;
     if (closingPreviewRef.current === closingAsset.assetId) return;
-    // Serpent-b7e173：查看器被关闭时（无论 X/Esc 显式关还是导航触发），若当前
+    // 查看器被关闭时（无论 X/Esc 显式关还是导航触发），若当前
     // 历史条目仍是 preview 则硬移除——否则「从预览导航到别处」会残留一个已关闭
     // 的 preview，导致 back 回到它。back()/forward() 已移 index（当前非 preview）
     // 或导航 push 会截断，不在此重复处理。
@@ -159,7 +159,7 @@ export function useCloseAssetPreview({ cancelPreviewViewRestoreRef, previewResto
         logBrowseScrollWrite("closeAssetPreview.restore", canvas, {
           snapshotTop: Math.round(scrollSnapshot.scrollTop),
         });
-        // REQ-VIEW-008 / Serpent-bd481f: wait until the live extent can hold
+        // REQ-VIEW-008: wait until the live extent can hold
         // the captured offset. Two frames used to clamp a collapsed canvas
         // to scrollTop 0 and treat that as done.
         cancelPreviewViewRestoreRef.current = scheduleBrowseViewRestore({

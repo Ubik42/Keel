@@ -76,7 +76,7 @@ export interface AudioPlayerControlsProps {
 const SCRUB_STEP_SECONDS = 5;
 
 /**
- * Viewer chrome for audio (Serpent-0x5 / 13v / vlx / r8a):
+ * Viewer chrome for audio (13v / vlx / r8a):
  * full-bleed waveform; full-height star-yellow playhead; particle trail that
  * deposits samples while playing and fades in place (pause → trail dissipates;
  * faster rate → longer trail span).
@@ -310,7 +310,7 @@ export function AudioPlayerControls({
   }, [autoPlay, src]);
 
   // Particle trail pump: emit while playing; always prune/fade (incl. pause).
-  // Serpent-mrsm: the pump only runs while there is something to draw — the
+  // the pump only runs while there is something to draw — the
   // audio is active (playing, even while scrubbing) or trail particles are
   // still fading out. Once paused AND the trail has fully dissipated the
   // loop stops scheduling frames (no more per-frame setState); playback

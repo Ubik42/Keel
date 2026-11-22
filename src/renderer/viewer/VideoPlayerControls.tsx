@@ -96,17 +96,17 @@ function waitForVideoSeeked(video: HTMLVideoElement): Promise<void> {
 }
 
 /**
- * Fully custom chrome around `HTMLVideoElement` (REQ-VIEW-005 / Serpent-60k):
+ * Fully custom chrome around `HTMLVideoElement` (REQ-VIEW-005):
  * - Space play/pause when the viewer is focused (not in text fields)
- * - D / F frame step (D=back, F=forward) and Ctrl+←/→ ±2s skip (Serpent-sk1 / soii)
- * - X / C step playback rate within VIDEO_PLAYBACK_RATES (Serpent-soii)
+ * - D / F frame step (D=back, F=forward) and Ctrl+←/→ ±2s skip (soii)
+ * - X / C step playback rate within VIDEO_PLAYBACK_RATES
  * - scrubbable progress track (mousedown / drag / click / arrow keys)
  * - playback rate dropdown (0.25–4; themed listbox, not native select)
  *
  * See `video-player-controls.ts` for why this replaced native
  * `<video controls>` rather than layering on top of it.
  * Seek/scrub uses `createMediaSeekSession` so Range fetches are not cancelled
- * on every pointermove (Serpent-jh2).
+ * on every pointermove.
  */
 export function VideoPlayerControls({
   frameRateFps = null,

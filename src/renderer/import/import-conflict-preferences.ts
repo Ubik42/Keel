@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 /**
- * Remembered import conflict decisions (Serpent-9iyi / gf8n / zp8q).
+ * Remembered import conflict decisions (gf8n / zp8q).
  * Separate prefs for same-folder name conflicts vs content duplicates.
  */
 
@@ -58,7 +58,7 @@ export function loadImportConflictPreferences(
   try {
     const parsed = importConflictPreferencesSchema.safeParse(JSON.parse(raw));
     if (!parsed.success) return DEFAULT_IMPORT_CONFLICT_PREFERENCES;
-    // Serpent-9h01: merge removed from UI — treat remembered merge as create-copy.
+    // merge removed from UI — treat remembered merge as create-copy.
     if (parsed.data.duplicate === 'merge') {
       return { ...parsed.data, duplicate: 'create-copy' };
     }

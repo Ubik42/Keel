@@ -546,7 +546,7 @@ export function AppView({ setPluginUiDialogOpen, pluginManagerApi, libraryLoadin
         getManagedAssetDragIds,
         getManagedFolderDragIds,
         onOpenRootFolderContextMenu: ({ x, y }) =>
-          // Serpent-a6c516: the folder panel's blank area and the 「资源库根目录」
+          // the folder panel's blank area and the 「资源库根目录」
           // row are both the library root, so they share this menu.
           openContextMenu(
             {
@@ -565,7 +565,7 @@ export function AppView({ setPluginUiDialogOpen, pluginManagerApi, libraryLoadin
           handleAssetsDroppedOnFolder(folderId, assetIds, mode),
         onFoldersDroppedOnFolder: handleFoldersDroppedOnFolder,
         onToggleFolderSelection: (folderId) => {
-          // Serpent-d7acfa：侧栏 Ctrl/⌘+点击切换多选，与画布文件夹卡片共用状态。
+          // 侧栏 Ctrl/⌘+点击切换多选，与画布文件夹卡片共用状态。
           // 正在浏览的文件夹是「隐式选中」的：第一次 Ctrl+点击应得到 {当前, 点击}。
           const openFolderId =
             assetScope === "all" || assetScope === "root" ? null : assetScope;
@@ -590,7 +590,7 @@ export function AppView({ setPluginUiDialogOpen, pluginManagerApi, libraryLoadin
         onLinkedFolderHintHoverEnd: endLinkedFolderHintHover,
         onRelinkFolder: (folderId) => void relinkFolder(folderId),
         onAddFolder: () => {
-          // Serpent-b8a853: while the user has never used linked folders,
+          // while the user has never used linked folders,
           // adding an ordinary folder pulses the 导入链接文件夹 entry.
           if (linkedFolderAddHintEligible) {
             setLinkedFolderHintActive(true);
@@ -602,7 +602,7 @@ export function AppView({ setPluginUiDialogOpen, pluginManagerApi, libraryLoadin
               setLinkedFolderHintActive(false);
             }, 8000);
           }
-          // Serpent-186547: the folder-section 「+」 always creates at the
+          // the folder-section 「+」 always creates at the
           // library root, independent of the folder currently in scope.
           // Subfolders are created from the folder's context menu (新建子文件夹).
           openInlineFolderCreate(null);
@@ -697,7 +697,7 @@ export function AppView({ setPluginUiDialogOpen, pluginManagerApi, libraryLoadin
       />
     ) : null}
     {/* Import decision dialogs must sit outside .app-shell (isolation:isolate)
-        and after the progress overlay so they remain clickable (Serpent-224ac8). */}
+        and after the progress overlay so they remain clickable. */}
     <ImageSequenceImportDialog
       error={imageSequenceImportError}
       offer={imageSequenceImportOffer}
@@ -963,7 +963,7 @@ export function AppView({ setPluginUiDialogOpen, pluginManagerApi, libraryLoadin
           pasteClipboardImage={pasteClipboardImage}
         />
         {/* Drop overlay lives outside the scrollable canvas so it stays put
-            while the browse grid scrolls (Serpent-ns3r). */}
+            while the browse grid scrolls. */}
         {externalDropActive && (
           <div className="external-drop-overlay" role="status">
             <div className="external-drop-overlay-content">

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { LibraryService } from "../../src/worker/library-service";
 
-describe("LibraryService.toSummaryMediaType (Serpent-671)", () => {
+describe("LibraryService.toSummaryMediaType", () => {
   it("preserves audio and text instead of collapsing to other", () => {
     expect(LibraryService.toSummaryMediaType("audio")).toBe("audio");
     expect(LibraryService.toSummaryMediaType("text")).toBe("text");
@@ -52,7 +52,7 @@ describe("LibraryService.toSummaryMediaType (Serpent-671)", () => {
     expect(LibraryService.detectMediaType("readme.obj.txt")).toBe("text");
   });
 
-  // Serpent-485aeb：字体不再落到 other，也不再和纯文本抢分类。
+  // 字体不再落到 other，也不再和纯文本抢分类。
   it("classifies font formats as font", () => {
     for (const filename of [
       "Inter.ttf",

@@ -1,5 +1,5 @@
 /**
- * Windows hidden Menu accelerators (VIEWER-018 + Serpent-g8u9).
+ * Windows hidden Menu accelerators (VIEWER-018).
  *
  * Electron documents Menu accelerators as the reliable *local* shortcut path.
  * On Windows we hide the bar for the frameless shell; Chromium then has no
@@ -7,13 +7,13 @@
  * keys (same class of bug as video D/F/X/C under a CJK IME).
  *
  * Hidden items:
- * - always: F11 window fullscreen (Serpent-692279)
+ * - always: F11 window fullscreen
  * - always: F2 / Delete / Shift+Delete (browse rename / trash / disk-delete)
  * - while the video viewer is armed: D / F / X / C
  *
  * Disarming video must NOT restore `Menu.setApplicationMenu(null)` — that
  * would drop F2/Delete again and reintroduce View→Zoom roles
- * (Serpent-46i9 / znex). Browse items are disabled while the renderer reports
+ * (znex). Browse items are disabled while the renderer reports
  * an editable field or modal so search-box Delete still edits text.
  */
 

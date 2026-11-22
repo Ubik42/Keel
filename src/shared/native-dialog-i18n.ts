@@ -1,5 +1,5 @@
 /**
- * Native file-dialog / Main-process copy by app locale (Serpent-bwb).
+ * Native file-dialog / Main-process copy by app locale.
  *
  * Renderer UI catalogs stay in `src/renderer/i18n`. This module is shared so
  * Main can resolve dialog titles/buttons without importing Renderer code, and
@@ -65,7 +65,7 @@ export type NativeDialogId =
   | "importCopyDestination"
   | "openAutomationScript"
   | "saveAutomationScript"
-  /** macOS application picker for "Open With…" (Serpent-w29). */
+  /** macOS application picker for "Open With…". */
   | "chooseApplication"
   /** Local plugin ZIP (GitHub #19). Never combined with openDirectory. */
   | "installPluginZip"

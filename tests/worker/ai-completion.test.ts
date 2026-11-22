@@ -466,7 +466,7 @@ describe('clearAiContent', () => {
     });
 
     expect(result.clearedCount).toBe(1);
-    // Serpent-c9r3: the cleared IDs ride out so the renderer can refresh the
+    // the cleared IDs ride out so the renderer can refresh the
     // Inspector of a selected asset that was among the cleared set.
     expect(result.affectedAssetIds).toEqual([assetId]);
 
@@ -481,7 +481,7 @@ describe('clearAiContent', () => {
     service.closeAll();
   });
 
-  it('clears only the requested AI field and keeps other AI layers (Serpent-u7hz)', () => {
+  it('clears only the requested AI field and keeps other AI layers', () => {
     const { service, libraryId, assetId } = setupLibraryWithAiContent();
 
     service.writeAiAnalysisResult({
@@ -1114,7 +1114,7 @@ describe('AI job queue management', () => {
     service.closeAll();
   });
 
-  it('persists redacted error_detail on permanent failure (Serpent-iokf)', () => {
+  it('persists redacted error_detail on permanent failure', () => {
     const { service, libraryId, jobId } = setupWithJob('queued');
     service.claimNextAiJob(libraryId);
 

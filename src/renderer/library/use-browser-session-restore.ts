@@ -1,5 +1,5 @@
 /**
- * Workspace browser-session restore / persist / focus (Serpent-uye).
+ * Workspace browser-session restore / persist / focus.
  * Keeps App.tsx free of the session-scope apply + selection recovery body.
  */
 
@@ -53,7 +53,7 @@ export type UseBrowserSessionRestoreArgs = {
   setTagFilter: Dispatch<SetStateAction<string>>;
   setAssets: Dispatch<SetStateAction<AssetSummary[]>>;
   setSearchTotal: Dispatch<SetStateAction<number | null>>;
-  /** Serpent-ws4k: register the restored scope for paginated appends. */
+  /** register the restored scope for paginated appends. */
   beginBrowsePage: BeginBrowsePage;
   setSelectedAssetId: Dispatch<SetStateAction<string | undefined>>;
   setSelectedAssetIds: Dispatch<SetStateAction<string[]>>;
@@ -202,7 +202,7 @@ export function useBrowserSessionRestore(
         // import into the last folder the user happened to browse.
         resetImportTargetFolderRef.current = undefined;
         // 恢复进非 all scope 时以 {kind:"all"} 为历史基底压入，使「后退到全部」
-        // 从第一帧即可用（Serpent-ada7ad：否则首次打开/重启恢复的会话只有单条
+        // 从第一帧即可用（否则首次打开/重启恢复的会话只有单条
         // 历史，未切文件夹时后退按钮被禁、无法返回）。
         const seeded = seedRestoreLeafLocation(
           navHistoryRef.current,

@@ -1,5 +1,5 @@
 /**
- * Serpent-ws4k / Serpent-sa65: virtualized browse/search loading controller.
+ * virtualized browse/search loading controller.
  *
  * First page paints immediately; a compact full-scope identity/geometry index
  * owns scrollbar layout. Scroll jumps fetch only the contiguous real-summary
@@ -280,7 +280,7 @@ export async function fetchBrowseLayout(options: {
 }
 
 /**
- * Guard a scope-id fetch against a superseded browse definition (Serpent-ws4k
+ * Guard a scope-id fetch against a superseded browse definition (
  * review). The captured generation is compared again after the await: switching
  * folder/scope while the ids query is in flight bumps the controller
  * generation, so the stale id set is discarded instead of being applied to the
@@ -329,7 +329,7 @@ export type BrowseSearchPageRegistration = {
   similaritySourceAssetId?: string;
 };
 
-/** Shared registration for every search-shaped first page (Serpent-ws4k). */
+/** Shared registration for every search-shaped first page. */
 export function registerBrowseSearchPage(
   beginPage: BeginBrowsePage,
   input: BrowseSearchPageRegistration,
@@ -555,7 +555,7 @@ export function useBrowsePagination(
       layoutRef.current = getLoadedBrowseLayout();
       // Compact scopes paginate from the first window. Blocking the sentinel
       // until layout-only hydration used to freeze folders >100 on page 0
-      // when that fetch lagged or failed (Serpent-9cfc8c). Virtual sessions
+      // when that fetch lagged or failed. Virtual sessions
       // (first page smaller than COUNT) already carry full-range COUNT geometry,
       // so a tail probe is safe.
       layoutHydrationCompleteRef.current = true;
@@ -665,7 +665,7 @@ export function useBrowsePagination(
       if (coveredOffsets.some((covered) => inFlightOffsetsRef.current.has(covered))) return;
       for (const covered of coveredOffsets) inFlightOffsetsRef.current.add(covered);
       if (browseDiagnosticsEnabled) {
-        // Serpent-9e1d8d: issue-time marker. The existing -result/-page events
+        // issue-time marker. The existing -result/-page events
         // only fire on resolution/apply, so jump-latency attribution could not
         // separate renderer decision delay from worker query cost.
         window.dispatchEvent(new CustomEvent("keel:e2e-browse-request", {
@@ -955,7 +955,7 @@ export function useBrowsePagination(
     if (total <= 0) return;
     // Full geometry (virtual placeholders or a complete compact index) can
     // jump to the tail. An incomplete first-page layout must append the next
-    // window in order or cards 101+ never appear (Serpent-9cfc8c).
+    // window in order or cards 101+ never appear.
     if (
       isVirtualBrowseSession()
       || compactBrowseLayoutIsComplete(layoutRef.current.length, total)

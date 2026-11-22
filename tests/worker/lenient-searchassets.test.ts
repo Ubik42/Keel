@@ -1,4 +1,4 @@
-// Serpent-verg.2: the search main query (searchAssets) must keep working on
+// the search main query (searchAssets) must keep working on
 // an older library whose whitelisted columns or auxiliary tables are
 // missing — degraded defaults and conditional joins/subqueries instead of
 // failing (0031 §1).
@@ -90,7 +90,7 @@ function reopenAfterMutating(
   service.openLibrary(libraryPath);
 }
 
-describe('searchAssets lenient read (Serpent-verg.2)', () => {
+describe('searchAssets lenient read', () => {
   it('returns assets on a current library (baseline)', () => {
     const root = temporaryRoot();
     const { service, libraryId } = libraryWithOneAsset(root, 'SearchBaseline');

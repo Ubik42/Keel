@@ -1,5 +1,5 @@
 /**
- * Offscreen model-thumbnail renderer (slice E, Serpent-hnmg).
+ * Offscreen model-thumbnail renderer (slice E).
  *
  * Main owns the ONE shared offscreen BrowserWindow every model thumbnail is
  * rendered in (research §4.5/§4.7: Chromium caps live WebGL contexts at ~16,
@@ -330,7 +330,7 @@ export function createOffscreenThumbnailRenderer(
     }
 
     if (message.frames && message.frames.length > 0) {
-      // Serpent-6w40: multi-view render — validate every frame and hand the
+      // multi-view render — validate every frame and hand the
       // packed bytes to the worker (it tiles them into the AI sheet).
       const frames: Array<{
         view: [number, number, number];

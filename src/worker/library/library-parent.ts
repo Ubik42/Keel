@@ -15,8 +15,8 @@ import { pathIsWithin } from './path-utils';
  * Destination-parent failures for create / open-Eagle / open-Billfish.
  * These must stay distinct from the generic INVALID_LIBRARY_PATH copy so a
  * user who picked `E:\设计` is not left with "invalid path" and a stuck
- * validating spinner (Serpent-sq4i). A filesystem root is a valid parent
- * (Serpent-qn6k); unwritable roots fail as PERMISSION_DENIED.
+ * validating spinner. A filesystem root is a valid parent
+ *; unwritable roots fail as PERMISSION_DENIED.
  */
 export class LibraryParentError extends Error {
   readonly code = 'INVALID_LIBRARY_PATH' as const;

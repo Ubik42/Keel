@@ -5,10 +5,10 @@ import { zhCN } from "../../src/renderer/i18n/catalogs/zh-CN";
 import { buildRecentLibraryMenuEntries } from "../../src/renderer/library/LibrarySwitcher";
 
 /**
- * Serpent-y0au / REQ-LIB-002: no-library start + create dialog must expose
+ * REQ-LIB-002: no-library start + create dialog must expose
  * open-existing copy and list all recents when nothing is open.
  */
-describe("no-library open-existing affordances (Serpent-y0au / Serpent-kipk)", () => {
+describe("no-library open-existing affordances ()", () => {
   it("ships zh/en copy for empty-state recents and create-dialog open existing", () => {
     expect(zhCN.empty.recentLibraries.length).toBeGreaterThan(0);
     expect(en.empty.recentLibraries.length).toBeGreaterThan(0);

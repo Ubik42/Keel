@@ -133,7 +133,7 @@ export function AppToolbar({ leftOpen, t, setLeftOpen, busy, api, importMenuCopy
           <div className="toolbar-workspace-main">
             <div className="toolbar-workspace-leading">
               <ScopeHistoryButtons
-                // Serpent-b7e173：预览已是历史条目（打开查看器必压在某浏览 scope 上），
+                // 预览已是历史条目（打开查看器必压在某浏览 scope 上），
                 // 所以后退/前进由纯历史驱动即可，无需对预览做任何特判。
                 canBack={navHistoryUi.canBack}
                 canForward={navHistoryUi.canForward}

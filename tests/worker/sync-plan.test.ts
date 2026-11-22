@@ -24,7 +24,7 @@ function asset(hash = 'hash-1', size = 10): LocalAssetSnapshotEntry {
   return { contentHash: hash, size, modifiedAt: '2026-08-15T10:00:00Z', path: 'a/b.png' };
 }
 
-describe('planSyncActions (Serpent-xffq)', () => {
+describe('planSyncActions', () => {
   it('plans upload for a brand-new local asset', () => {
     const localManifest = manifest();
     const remoteManifest = manifest();
@@ -227,7 +227,7 @@ describe('planSyncActions (Serpent-xffq)', () => {
     expect(actions).toEqual([]);
   });
 
-  it('plans a remote MOVE when only the local path changed (Serpent-038ecf)', () => {
+  it('plans a remote MOVE when only the local path changed', () => {
     const localManifest = manifest();
     localManifest.entries.a1 = entry({ path: 'cd.png' });
     const remoteManifest = manifest();

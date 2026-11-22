@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { sanitizeSyncDirectoryName } from '../../src/shared/sync-paths';
 
-describe('sanitizeSyncDirectoryName (Serpent-xffq)', () => {
+describe('sanitizeSyncDirectoryName', () => {
   it('keeps ordinary names unchanged', () => {
     expect(sanitizeSyncDirectoryName('测试资源库', 'lib-1')).toBe('测试资源库');
     expect(sanitizeSyncDirectoryName('My Library', 'lib-2')).toBe('My Library');

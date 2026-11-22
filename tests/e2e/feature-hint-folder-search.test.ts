@@ -9,7 +9,7 @@ import {
 } from "./electron-test-helpers";
 
 // ---------------------------------------------------------------------------
-// Serpent-b8a853 include-subfolders pulse hint + Serpent-f74e48 folder search
+// include-subfolders pulse hint folder search
 // results. Both features are renderer-only and verified here with the same
 // library/folder helpers as folder-recursive-scope.test.ts. Search-result
 // folder cards reuse the ordinary folder-card-row; their cover thumbnails are

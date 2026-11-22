@@ -1,12 +1,12 @@
 /**
  * Document-level select-all / invert / Escape-clear for the browse canvas
- * (Serpent-5fq; Escape extract from App for Serpent-uye wave).
+ * (Escape extract from App wave).
  *
  * Asset open/trash/rename chords live in useBrowseCommandKeyboard.
  * This hook only owns selection set mutations so Escape/metadata/restore
  * can keep splitting independently.
  *
- * Serpent-ws4k: select-all / invert cover the *whole* browse scope, not just
+ * select-all / invert cover the *whole* browse scope, not just
  * the loaded page, so they resolve the full id set on demand (idsOnly) through
  * the onSelectAll / onInvert callbacks. The dispatch logic itself lives in
  * `dispatchSelectionKeyboardAction` (pure, unit-tested); this hook only wires
@@ -28,13 +28,13 @@ export type UseSelectionKeyboardArgs = {
   readonly enabled: boolean;
   readonly platform: CommandPlatform;
   readonly previewOpen: boolean;
-  /** Loaded browse-scope asset ids (Serpent-6w7n); gates select-all/invert on a non-empty scope. */
+  /** Loaded browse-scope asset ids; gates select-all/invert on a non-empty scope. */
   readonly browseScopeAssetIds: readonly string[];
   readonly selectedAssetIds: readonly string[];
   readonly clearAssetSelection: () => void;
-  /** Serpent-ws4k: async select-all covering the whole browse scope (idsOnly). */
+  /** async select-all covering the whole browse scope (idsOnly). */
   readonly onSelectAll?: () => void;
-  /** Serpent-ws4k: async invert covering the whole browse scope (idsOnly). */
+  /** async invert covering the whole browse scope (idsOnly). */
   readonly onInvert?: () => void;
 };
 

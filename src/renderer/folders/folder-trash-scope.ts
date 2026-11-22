@@ -1,6 +1,6 @@
 /**
  * Detect whether the current browse scope is removed or orphaned by trashing
- * one or more managed folders (Serpent-yvch).
+ * one or more managed folders.
  */
 
 export type FolderParentNode = {

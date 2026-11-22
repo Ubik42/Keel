@@ -7,7 +7,7 @@ import {
   resolveSearchTotalAfterAppend,
 } from "../../src/renderer/browse/asset-browse-load-more";
 
-describe("resolveSearchTotalAfterAppend (Serpent-r94b)", () => {
+describe("resolveSearchTotalAfterAppend", () => {
   it("keeps the server total when the page adds new rows", () => {
     expect(
       resolveSearchTotalAfterAppend({
@@ -53,7 +53,7 @@ describe("countNewlyAddedAssets", () => {
   });
 });
 
-describe("appendAssetPage (Serpent-ws4k)", () => {
+describe("appendAssetPage", () => {
   it("appends the page in worker order at the tail", () => {
     expect(
       appendAssetPage(

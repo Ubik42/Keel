@@ -8,7 +8,7 @@ import {
   parseLightIntensity,
 } from '../../src/renderer/3d-viewer/light-intensity';
 
-describe('light intensity (Serpent-26qz / 3D-10)', () => {
+describe('light intensity (3D-10)', () => {
   it('exposes the spec defaults', () => {
     expect(DEFAULT_LIGHT_INTENSITY).toBe(1.0);
     expect(LIGHT_INTENSITY_MIN).toBe(0.1);

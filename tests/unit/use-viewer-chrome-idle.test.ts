@@ -46,7 +46,7 @@ describe("createViewerChromeIdleScheduler", () => {
   });
 });
 
-describe("shouldWakeViewerChrome (Serpent-njoy)", () => {
+describe("shouldWakeViewerChrome", () => {
   it("wakes on pointer movement", () => {
     expect(shouldWakeViewerChrome("pointermove")).toBe(true);
   });

@@ -31,7 +31,7 @@ export interface UseToastNotificationsReturn extends ToastSnapshot {
  * Binds the toast notification controller (toast-notifications.ts) to React.
  * The closing lifecycle — exit transition first, unmount only after it ends —
  * lives in the controller; this hook only exposes the snapshot and stable
- * callbacks (REQ-SHELL-010 / Serpent-99lv).
+ * callbacks (REQ-SHELL-010).
  */
 export function useToastNotifications(): UseToastNotificationsReturn {
   const [controller] = useState<ToastNotifications>(() =>

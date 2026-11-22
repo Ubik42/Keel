@@ -81,7 +81,7 @@ export type UseExternalImportHandlersParams = {
 
 /**
  * Desktop drop + clipboard paste import executors and canvas drop chrome
- * (Serpent-uye). Dialog/file-picker import stays in App.
+ *. Dialog/file-picker import stays in App.
  */
 export function useExternalImportHandlers({
   api,
@@ -391,7 +391,7 @@ export function useExternalImportHandlers({
         setFolderCardDropTarget(null);
         return;
       }
-      // Serpent-pagf: resolve folder-card under pointer from the canvas
+      // resolve folder-card under pointer from the canvas
       // dragover (incl. capture). Unfocused Finder→Electron may skip a
       // stable card dragenter; canvas over + closest() still warms highlight
       // when any over event reaches the renderer.
@@ -545,7 +545,7 @@ export function useExternalImportHandlers({
         }
       },
       onDragLeave: (event: DragEvent<HTMLButtonElement>) => {
-        // Serpent-4gyr: cross-app drags often report relatedTarget=null while
+        // cross-app drags often report relatedTarget=null while
         // still hovering; clearing here kills the highlight when unfocused.
         if (event.relatedTarget == null) return;
         if (event.currentTarget.contains(event.relatedTarget as Node)) {
@@ -556,7 +556,7 @@ export function useExternalImportHandlers({
         );
       },
       onDragOver: (event: DragEvent<HTMLButtonElement>) => {
-        // Serpent-4gyr: keep target warm on dragover — unfocused windows may
+        // keep target warm on dragover — unfocused windows may
         // skip a stable dragenter or only deliver over events.
         if (supportsManagedFolderDrag(event.dataTransfer)) {
           event.preventDefault();

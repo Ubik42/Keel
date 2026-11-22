@@ -40,7 +40,7 @@ export interface FbxMaterialDescriptor {
   metallic: number;
   roughness: number;
   metallicRoughnessTexture: number;
-  /** Serpent-a5ic: scene indices of the separate metalness/roughness maps. */
+  /** scene indices of the separate metalness/roughness maps. */
   metalnessTexture: number;
   roughnessTexture: number;
   hasMetalnessTexture: boolean;

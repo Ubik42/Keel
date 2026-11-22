@@ -19,7 +19,7 @@ export type SyncBindingRecord = {
   serverId: string;
   /** 同步文件夹名称（远端目录名，默认库名）。 */
   directoryName?: string;
-  /** 旧格式字段：subPath 曾是同步文件夹名（Serpent-xffq 早期）；读取时兼容。 */
+  /** 旧格式字段：subPath 曾是同步文件夹名（早期）；读取时兼容。 */
   subPath?: string;
   /** 上次成功同步时间（ISO 字符串）。 */
   lastSyncedAt?: string;
@@ -27,7 +27,7 @@ export type SyncBindingRecord = {
   enabled?: boolean;
   /** 云端变化轮询间隔（毫秒，用户可设置；缺省 5000）。 */
   pollIntervalMs?: number;
-  /** 卡片右下角同步状态；缺省 true（Serpent-871f34）。 */
+  /** 卡片右下角同步状态；缺省 true。 */
   showCardSyncStatus?: boolean;
 };
 
@@ -78,7 +78,7 @@ export async function tryHandleSyncOwnedRequest(
     case "sync.servers.upsert.request": {
       const servers = runtime.readSyncServers();
       const id = request.id ?? randomUUID();
-      // Serpent-fatf: 保存时即校验/规范化 URL（缺协议自动补 http://），
+      // 保存时即校验/规范化 URL（缺协议自动补 http://），
       // 让非法地址在保存瞬间给出可读提示，而不是等到连接时才报笼统错误。
       // 远端码体系已删除 INVALID_SYNC_URL，用 SYNC_CONNECTION_FAILED +
       // SYNC_INVALID_URL reason 表达同一语义。
@@ -122,7 +122,7 @@ export async function tryHandleSyncOwnedRequest(
         showCardSyncStatus: request.showCardSyncStatus ?? previous?.showCardSyncStatus ?? true,
       };
       runtime.writeSyncBindings(bindings);
-      // Serpent-7405ef: 保存绑定（含开启自动同步）后立即触发一次同步，
+      // 保存绑定（含开启自动同步）后立即触发一次同步，
       // 用户不需要等下一个 5s 轮询周期（更不会等不到同步）。
       const savedBinding = bindings[request.libraryId];
       if (savedBinding?.enabled) {

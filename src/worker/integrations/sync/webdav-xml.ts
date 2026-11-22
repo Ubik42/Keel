@@ -1,5 +1,5 @@
 /**
- * 最小 WebDAV multistatus XML 解析（Serpent-xffq）。
+ * 最小 WebDAV multistatus XML 解析。
  *
  * 只为解析 PROPFIND 的 207 响应：response 块 + href + 200 propstat 内的
  * 常用属性（getetag/getcontentlength/getlastmodified/resourcetype/

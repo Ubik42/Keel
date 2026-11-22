@@ -1,5 +1,5 @@
 /**
- * Per-session diagnostic logs (Serpent-wgmy).
+ * Per-session diagnostic logs.
  *
  * 每次启动写入 `keel-<本地时间戳>.log`（如 keel-20260816T221412.log），
  * 不再向单一 serpent.log 无限追加；磁盘上最多保留最近 MAX_SESSION_LOGS 份，

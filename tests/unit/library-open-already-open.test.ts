@@ -7,7 +7,7 @@ import {
 } from '../../src/renderer/common/error-utils';
 import { PUBLIC_ERROR_MESSAGES } from '../../src/shared/protocol/errors';
 
-describe('library already-open prompt (Serpent-79b839)', () => {
+describe('library already-open prompt', () => {
   it('uses a prompt title instead of an open-failure title', () => {
     expect(libraryOpenBlockingTitleKey('LIBRARY_ALREADY_OPEN')).toBe(
       'dialog.blockingError.libraryAlreadyOpen',

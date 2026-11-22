@@ -10,7 +10,7 @@ import {
   resolveJustifiedCaptionBandPx,
 } from "../../src/renderer/browse/justified-caption-band";
 
-describe("resolveJustifiedCaptionBandPx (Serpent-omn)", () => {
+describe("resolveJustifiedCaptionBandPx", () => {
   it("returns 0 when no caption lines are shown", () => {
     expect(
       resolveJustifiedCaptionBandPx({

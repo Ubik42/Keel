@@ -140,7 +140,7 @@ export function formatTokensHas(formatFilter: string, ext: string): boolean {
  * OR-accumulates it case-insensitively (matching the field's existing
  * case-insensitive dedupe).
  *
- * The special `text` token (Serpent-4l7) is stored as-is and expanded to
+ * The special `text` token is stored as-is and expanded to
  * TEXT_EXTENSIONS only when building the worker query.
  */
 function parseFormatTokens(formatFilter: string): string[] {

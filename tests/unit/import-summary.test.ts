@@ -4,7 +4,7 @@ import { importSummaryMessage } from '../../src/renderer/import/import-summary';
 
 const zh = 'zh-CN';
 
-describe('importSummaryMessage (Serpent-1y9r)', () => {
+describe('importSummaryMessage', () => {
   it('counts a detected image sequence as one logical asset in the toast', () => {
     // 151 frame files collapse into 1 sequence asset: the toast must say
     // "新增 1 项", not "新增 151 项".

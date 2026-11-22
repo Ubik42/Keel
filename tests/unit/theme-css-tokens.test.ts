@@ -26,7 +26,7 @@ describe('theme CSS tokens (REQ-THEME-002)', () => {
     }
   });
 
-  it('keeps theme-specific exclude filter reds (Serpent-jfi / FILTER-022)', () => {
+  it('keeps theme-specific exclude filter reds (FILTER-022)', () => {
     // Exclude chips use the status danger token; each theme defines its own red.
     const tokens = readFileSync(resolve(process.cwd(), 'src/renderer/workbench/ui/tokens.css'), 'utf8');
     const reds = [...tokens.matchAll(/--ui-status-danger:\s*([^;]+);/g)].map((match) => match[1]!.trim());

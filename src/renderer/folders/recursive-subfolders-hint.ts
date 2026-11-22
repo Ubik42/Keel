@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// One-time "recursive subfolders" hint decision (Serpent-b8a853)
+// One-time "recursive subfolders" hint decision
 //
 // Pure helpers so the browse canvas can flash the include-subfolders icon a
 // single, faint time when the user lands on a folder that has children but no

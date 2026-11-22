@@ -115,7 +115,7 @@ export function WorkspaceHeader({ showPluginSidebarView, recursiveHintActive, in
               // Discovery tag filters overlay the current folder/collection
               // scope. Do not set activeTagId — that is "browse by tag" mode
               // (chooseTag) and would clear folder nav highlight + folder cards
-              // (Serpent-w9c6 / resolveFolderBrowseParentId).
+              // (resolveFolderBrowseParentId).
               setTagFilter(names.join(", "));
               setActiveTagId(null);
             },
@@ -229,7 +229,7 @@ export function WorkspaceHeader({ showPluginSidebarView, recursiveHintActive, in
                     setFolderRecursivePrefs(nextPrefs);
                     saveFolderRecursivePreferences(nextPrefs);
                     // Once the user has expanded this folder's children, the
-                    // hint is moot and must never pulse again (Serpent-b8a853).
+                    // hint is moot and must never pulse again.
                     if (next && recursiveHintKey) {
                       const hintedPrefs = withFeatureHintShown(
                         featureHintPrefs,

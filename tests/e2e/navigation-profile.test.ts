@@ -58,7 +58,7 @@ const minScopeAssets = Math.max(1, Number(process.env.KEEL_PROFILE_MIN_SCOPE_ASS
 const minVisibleImages = Math.max(1, Number(process.env.KEEL_PROFILE_MIN_VISIBLE_IMAGES ?? 6));
 const repeatSwitchesForWarmCache = process.env.KEEL_PROFILE_REPEAT_SWITCHES !== "0";
 /**
- * Serpent-e97c00: how many task-status reads to issue through the real bridge
+ * how many task-status reads to issue through the real bridge
  * after the navigation journey. The task panel polls at about 1 Hz, so a series
  * of reads is the only way to A/B a summary cache without opening the panel.
  */
@@ -1007,7 +1007,7 @@ test("profile navigation hotspots on a real library", async () => {
       }
     }
     if (scopes.length === 0) skipped.folderSwitch = switches;
-    // Serpent-e97c00: a burst of task-status reads reproduces the panel's ~1 Hz
+    // a burst of task-status reads reproduces the panel's ~1 Hz
     // polling without opening the panel, so the summary cache can be A/B'd on
     // the exact command the panel uses.
     if (statusSamples > 0) {
@@ -1221,7 +1221,7 @@ test("profile navigation hotspots on a real library", async () => {
       : [];
     const sessionLog = readSessionLog(userDataPath);
     const log = summarizeBenchLog(sessionLog);
-    // Serpent-217028: join each measured click to the navigation Main and the
+    // join each measured click to the navigation Main and the
     // Worker actually ran. Both sides now log the same navigation id, so the
     // renderer start is derived from Main's own clock stamp minus the measured
     // renderer -> Main hop rather than assuming synchronised clocks.
@@ -1356,7 +1356,7 @@ test("profile navigation hotspots on a real library", async () => {
     if (log.navigations.count > 0) {
       expect(
         navigationChainMisses,
-        "Every measured switch must be attributable to a Main/Worker navigation span (Serpent-217028 navigationId join)",
+        "Every measured switch must be attributable to a Main/Worker navigation span (navigationId join)",
       ).toBe(0);
     }
     if (includeJumps && jumpsScrollable) {
@@ -1368,7 +1368,7 @@ test("profile navigation hotspots on a real library", async () => {
     if (statusCountsCached !== null && statusCountsFromSql !== null && statusCountsComparable) {
       expect(
         statusCountsCached,
-        "The cached task summary must equal the counts the full SQL path reports (Serpent-e97c00)",
+        "The cached task summary must equal the counts the full SQL path reports",
       ).toEqual(statusCountsFromSql);
     }
     if (switches > 0) {

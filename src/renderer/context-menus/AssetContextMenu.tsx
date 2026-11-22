@@ -35,14 +35,14 @@ interface AssetContextMenuProps {
   busy?: boolean;
   assets: AssetSummary[];
   canAnalyze: boolean;
-  /** Serpent-rsbt: show link-off on AI analyze when connection is unavailable. */
+  /** show link-off on AI analyze when connection is unavailable. */
   aiDisconnected: boolean;
   /**
    * Managed folder that receives OS clipboard paste from asset menus.
    * Typically the current browse folder; null hides paste.
    */
   pasteTargetFolderId: string | null | undefined;
-  /** Folder tombstones in trash (Serpent-b3kf / empty-trash enablement). */
+  /** Folder tombstones in trash (empty-trash enablement). */
 }
 
 // Memoized: the app shell re-renders often; this panel renders only when its

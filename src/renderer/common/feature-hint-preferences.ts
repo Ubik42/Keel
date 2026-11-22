@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 // ---------------------------------------------------------------------------
-// Global "feature hints" preference (Serpent-b8a853)
+// Global "feature hints" preference
 //
 // One-time UI hints (a faint accent flash on the recursive-subfolders icon,
 // and future hints) are gated by a single global switch plus a per-hint

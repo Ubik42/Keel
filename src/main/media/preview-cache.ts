@@ -29,7 +29,7 @@ export interface PreviewCacheOptions {
 }
 
 /**
- * Serpent-1e3d4f: Chromium does not persist custom-protocol responses in its
+ * Chromium does not persist custom-protocol responses in its
  * disk cache (verified 2026-08-22: two sessions sharing one userData
  * re-fetched every preview byte), so remote-library browsing re-pays network
  * or cold-disk costs on every launch. This cache mirrors served preview

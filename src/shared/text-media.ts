@@ -1,5 +1,5 @@
 /**
- * Pure helpers for text asset detection (Serpent-sh7 / Serpent-4l7).
+ * Pure helpers for text asset detection.
  */
 
 export const TEXT_EXTENSIONS = [

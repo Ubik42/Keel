@@ -7,7 +7,7 @@ import {
   shouldRunAiConnectionHeartbeat,
 } from "../../src/renderer/ai/ai-connection-heartbeat";
 
-describe("ai-connection-heartbeat (Serpent-rsbt)", () => {
+describe("ai-connection-heartbeat", () => {
   it("uses a ~60s interval", () => {
     expect(AI_CONNECTION_HEARTBEAT_MS).toBe(60_000);
   });

@@ -238,7 +238,7 @@ const iconPaths: Record<IconName, ReactNode> = {
       <path d="M14 3v5h5" />
     </>
   ),
-  // Serpent-2ajm: corrupt/unreadable asset — a file with a crack through it,
+  // corrupt/unreadable asset — a file with a crack through it,
   // visually distinct from the plain default file icon (pending/no thumbnail).
   "broken-file": (
     <>
@@ -535,7 +535,7 @@ const iconPaths: Record<IconName, ReactNode> = {
     </>
   ),
   // Lucide `type` (https://lucide.dev/icons/type): the font viewer's preview
-  // text control (Serpent-485aeb — labels there are icons, not words).
+  // text control (labels there are icons, not words).
   type: (
     <>
       <path d="M4 7V4h16v3" />

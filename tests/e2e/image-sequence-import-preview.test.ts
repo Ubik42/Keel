@@ -25,7 +25,7 @@ async function expectDecodedPreview(image: Locator): Promise<void> {
     .toBe(true);
 }
 
-// Serpent-866c20：确认面板改成陈述式标题，并在面板里按当前范围/帧率循环预览序列帧。
+// 确认面板改成陈述式标题，并在面板里按当前范围/帧率循环预览序列帧。
 test("the image sequence confirm panel shows a statement title and a live frame preview", async () => {
   const temporaryRoot = mkdtempSync(
     path.join(tmpdir(), "serpent-image-sequence-preview-e2e-"),
@@ -82,7 +82,7 @@ test("the image sequence confirm panel shows a statement title and a live frame 
     await window.getByRole("button", { name: "创建资源库" }).click();
     await window.getByRole("textbox", { name: "名称" }).fill(libraryName);
     await window.getByRole("button", { name: "创建", exact: true }).click();
-    // 建库后的 transition 未结束就导入会撞上 Serpent-283094（导入失败 / transition in progress）；
+    // 建库后的 transition 未结束就导入会撞上（导入失败 / transition in progress）；
     // 等 loading 结束后再给转换一个稳定窗口（与其它 E2E 的既有做法一致）。
     await waitForLibraryLoadingToFinish(window);
     await window.waitForTimeout(2500);

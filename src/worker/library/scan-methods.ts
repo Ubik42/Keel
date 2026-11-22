@@ -46,7 +46,7 @@ export function shouldEmitWatcherAssetChange(this: LibraryService): boolean {
 * cannot monopolize the Worker event loop. Discovery of new files remains a
 * final pass, preserving normal refresh semantics without holding the
 * connection in one long transaction.
-* Serpent-4bdd26 收编 codex/large-library-performance@15f3325c。
+* 收编 codex/large-library-performance@15f3325c。
 */
 export async function refreshManagedAssetsOnOpen(this: LibraryService, libraryId: string, task: OpenReconciliationTask, diagnosticScope = 'open.refresh-managed-assets'): Promise<void> {
   // 分阶段计时（KEEL_REFRESH_STAGE_LOG=1）：打开路径里整段对账会堵住 Worker
@@ -771,7 +771,7 @@ export async function refreshNetworkMetadataCache(this: LibraryService, openLibr
 }
 
 /**
-* Serpent-tumv (LIB-018, deferred open maintenance): the disk-heavy post-open
+* (LIB-018, deferred open maintenance): the disk-heavy post-open
 * reconciliation that used to run inside the synchronous library.open —
 * artifact-file sweep, expired-trash purge, and the whole Assets-directory
 * rescan. The Worker runtime starts this after the library.opened response
@@ -1034,7 +1034,7 @@ export async function yieldReconciliation(this: LibraryService, task: OpenReconc
   this.assertReconciliationActive(task);
   await new Promise<void>((resolve) => setImmediate(resolve));
   this.assertReconciliationActive(task);
-  // Serpent-be29a9: hand the background admission back before parking. The
+  // hand the background admission back before parking. The
   // scheduler admits a queued interactive request or mutation immediately
   // instead of waiting for this pass to finish (measured: 28.3 s of
   // navigation wait behind one open reconciliation that ran up to 25.8 s as a
@@ -1059,7 +1059,7 @@ export function refreshManagedAssets(this: LibraryService, libraryId: string, op
 export function refreshManagedAssets(this: LibraryService, libraryId: string, options?: RefreshManagedAssetsOptions): AssetRefreshResult;
 export function refreshManagedAssets(this: LibraryService, libraryId: string, options?: RefreshManagedAssetsOptions): AssetRefreshResult {
   const openLibrary = this.requireOpenLibrary(libraryId);
-  // Serpent-4bdd26 收编 codex/large-library-performance@15f3325c：
+  // 收编 codex/large-library-performance@15f3325c：
   // assetIds 限定已有资产的 stat/revision 对账范围；空列表仍表示“只发现
   // 新文件”，而带 discovery 的非空列表还可以复用同一批异步文件快照来
   // 对账已有资产。discoverSources=false 跳过文件系统枚举（仅缺失资产
@@ -1097,8 +1097,8 @@ export function refreshManagedAssets(this: LibraryService, libraryId: string, op
     ? options?.discovery ?? this.collectManagedAssetDiscovery(openLibrary)
     : undefined;
   if (discovery) this.reconcileMovedLinkedAssets(openLibrary, discovery);
-  // Serpent-onch 风格分阶段计时：KEEL_REFRESH_STAGE_LOG=1 时输出各阶段耗时，
-  // 用于大库全量对账的归因（Serpent-4bdd26）。生产默认关闭。
+  // 风格分阶段计时：KEEL_REFRESH_STAGE_LOG=1 时输出各阶段耗时，
+  // 用于大库全量对账的归因。生产默认关闭。
   const stageLog = process.env.KEEL_REFRESH_STAGE_LOG === '1';
   const stageStartedAt = stageLog ? performance.now() : 0;
   let stageMark = stageStartedAt;
@@ -1231,7 +1231,7 @@ export function refreshManagedAssets(this: LibraryService, libraryId: string, op
   let changedCount = 0;
   let missingCount = 0;
   const discoveredAssetIds: string[] = [];
-  // Serpent-4bdd26: per-file stats gathered once by the enumerations below
+  // per-file stats gathered once by the enumerations below
   // and consumed by the comparison loop, so a full refresh costs one lstat
   // per file instead of two (measured ~10ms per round trip on SMB).
   const linkedSnapshot = new Map<string, DiscoveredSourceEntry>();
@@ -1291,7 +1291,7 @@ export function refreshManagedAssets(this: LibraryService, libraryId: string, op
         'UPDATE assets SET current_revision_id = ?, updated_at = ? WHERE asset_id = ?',
       );
       for (const entry of discovery?.linkedEntriesByFolder.get(folder.folder_id) ?? []) {
-        // Serpent-4bdd26: the enumeration already lstat'ed every file; keep
+        // the enumeration already lstat'ed every file; keep
         // its size/mtime so the comparison loop below reuses one stat per
         // file instead of issuing a second network round trip per asset.
         linkedSnapshot.set(
@@ -1343,7 +1343,7 @@ export function refreshManagedAssets(this: LibraryService, libraryId: string, op
       );
     const managedEntries = discovery?.managedEntries ?? [];
     markStage('enumerate-managed');
-    // Serpent-4bdd26: reuse the enumeration stats for the comparison loop —
+    // reuse the enumeration stats for the comparison loop —
     // one lstat per file instead of two on the whole-library refresh.
     const managedSnapshot = new Map(
       managedEntries.map((entry) => [
@@ -1453,7 +1453,7 @@ export function refreshManagedAssets(this: LibraryService, libraryId: string, op
 
     // 离线链接根（root 目录不可用）已由 reconcileLinkedFolderStatuses 置为
     // offline；其资产的缺失属于「目录整体离线」，status-changed 日志已覆盖，
-    // 不做逐资产 asset-missing 刷屏（Serpent-c2d052）。
+    // 不做逐资产 asset-missing 刷屏。
     const offlineLinkedFolderIds = new Set(
       (openLibrary.connection
         .prepare("SELECT folder_id FROM linked_folders WHERE status = 'offline'")
@@ -1468,7 +1468,7 @@ export function refreshManagedAssets(this: LibraryService, libraryId: string, op
       ) {
         continue;
       }
-      // Serpent-4bdd26: the enumerations above already lstat'ed every
+      // the enumerations above already lstat'ed every
       // source file; consult that snapshot first and only fall back to a
       // direct lstat for rows it cannot cover (e.g. an offline linked root
       // skipped by its enumeration, or ignore-rule edge cases).
@@ -1486,7 +1486,7 @@ export function refreshManagedAssets(this: LibraryService, libraryId: string, op
       const preflightSource = preflightSourceByAssetId.get(asset.asset_id);
       let snapshotByteSize: number | null = null;
       let snapshotModifiedAt: string | null = null;
-      // Serpent-4bdd26: only the fallback path needs a fully validated
+      // only the fallback path needs a fully validated
       // absolute path. folderPath()/linkedAssetPath() lstat every path
       // component (symlink-escape guard) — ~290ms per 20k rows — which is
       // pure waste when the enumeration just walked that exact tree with
@@ -1534,7 +1534,7 @@ export function refreshManagedAssets(this: LibraryService, libraryId: string, op
           missingCount += 1;
           // 仅对「链接资产 + 文件夹未离线」的逐文件缺失打日志：managed 资产
           // 不属链接磁盘同步；文件夹整体离线由 status-changed 覆盖，避免
-          // 整目录 N 条刷屏（Serpent-c2d052）。
+          // 整目录 N 条刷屏。
           if (
             asset.location_kind === 'linked'
             && !offlineLinkedFolderIds.has(asset.linked_folder_id ?? '')
@@ -1646,7 +1646,7 @@ export function refreshManagedAssets(this: LibraryService, libraryId: string, op
       const timestampEquivalent = Math.abs(Date.parse(modifiedAt) - Date.parse(previousModifiedAt)) <= 1;
       const byteChanged = byteSize !== previousByteSize;
       const mtimeChanged = modifiedAt !== previousModifiedAt && !timestampEquivalent;
-      // Serpent-1tio: a library copied to another platform (zip export →
+      // a library copied to another platform (zip export →
       // extraction) rewrites every file mtime while the bytes stay identical.
       // mtime alone would re-import the whole library and orphan the exported
       // artifacts. When only the mtime moved and the size matches, verify the
@@ -1794,7 +1794,7 @@ export function refreshManagedAssets(this: LibraryService, libraryId: string, op
   markStage(options?.includeAssets ? 'list-assets' : 'return');
   if (changedCount > 0 || missingCount > 0) {
     // refreshManagedAssets 同时对账 managed 与 linked，摘要用中性 scope，
-    // 避免纯 managed 变更被误标为链接磁盘同步（Serpent-c2d052）。
+    // 避免纯 managed 变更被误标为链接磁盘同步。
     this.diagnose('assets.sync.reconciled', 'Disk reconciliation applied changes', {
       libraryId,
       changedCount,

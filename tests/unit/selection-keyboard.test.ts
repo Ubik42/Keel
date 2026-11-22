@@ -28,7 +28,7 @@ function event(
   };
 }
 
-describe("selection keyboard chords (Serpent-5fq)", () => {
+describe("selection keyboard chords", () => {
   it("labels invert as ⌘I / Ctrl+I", () => {
     expect(formatShortcut(INVERT_SELECTION_SHORTCUT, "mac")).toBe("⌘I");
     expect(formatShortcut(INVERT_SELECTION_SHORTCUT, "windows")).toBe("Ctrl+I");
@@ -92,7 +92,7 @@ describe("selection keyboard chords (Serpent-5fq)", () => {
   });
 });
 
-describe("dispatchSelectionKeyboardAction (Serpent-ws4k async select-all/invert)", () => {
+describe("dispatchSelectionKeyboardAction (async select-all/invert)", () => {
   it("invokes select-all only on a non-empty scope and consumes the keydown", () => {
     const onSelectAll = vi.fn();
     expect(

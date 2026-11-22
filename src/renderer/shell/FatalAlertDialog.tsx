@@ -6,7 +6,7 @@ import { useT } from "../i18n";
 export interface FatalAlertDialogProps {
   /** Body text; dialog is closed when null/empty. */
   message: string | null;
-  /** Optional title override (Serpent-4sw0: AI uses plain wording). */
+  /** Optional title override (AI uses plain wording). */
   title?: string | null;
   onDismiss: () => void;
   /** Keeps a failed library open recoverable without requiring a relaunch. */
@@ -20,7 +20,7 @@ export interface FatalAlertDialogProps {
 }
 
 /**
- * Blocking error alert (Serpent-99lv). Not a toast — user must acknowledge
+ * Blocking error alert. Not a toast — user must acknowledge
  * before continuing. Title names the operation (import, open library, etc.).
  */
 export function FatalAlertDialog({

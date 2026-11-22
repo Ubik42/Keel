@@ -40,7 +40,7 @@ function importNoConflict(
   sharedImportNoConflict(service, libraryId, filePath);
 }
 
-// Serpent-485aeb：字体卡片走 offscreen 样张页（sample=font），产物单独打版本标签。
+// 字体卡片走 offscreen 样张页（sample=font），产物单独打版本标签。
 describe('font thumbnail generation', () => {
   it('captures the offscreen font sample page and stores it as a thumbnail artifact', async () => {
     const root = temporaryRoot();
@@ -113,7 +113,7 @@ describe('font thumbnail generation', () => {
     service.closeAll();
   });
 
-  // Serpent-485aeb：样张页要带上真实字体解析出的家族名与语言标签。
+  // 样张页要带上真实字体解析出的家族名与语言标签。
   it('passes the parsed family and language to the sample page', async () => {
     const root = temporaryRoot();
     const capturedUrls: string[] = [];
@@ -162,7 +162,7 @@ describe('font thumbnail generation', () => {
     service.closeAll();
   });
 
-  // Serpent-485aeb 回归：含假名的中文字体必须判成简体中文，而不是日文；
+  // 含假名的中文字体必须判成简体中文，而不是日文；
   // 判定不出来的字体不能写语言标签（封面走中性文案）。
   it('labels CJK fonts from their code page bits and omits an unknown language', async () => {
     const root = temporaryRoot();

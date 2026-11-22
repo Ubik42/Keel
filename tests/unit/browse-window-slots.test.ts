@@ -42,7 +42,7 @@ function asset(assetId: string): AssetSummary {
   };
 }
 
-describe("browse window virtualization (Serpent-sa65)", () => {
+describe("browse window virtualization", () => {
   it("aligns an index to its page offset", () => {
     expect(browsePageOffset(0, 100)).toBe(0);
     expect(browsePageOffset(99, 100)).toBe(0);
@@ -124,7 +124,7 @@ describe("browse window virtualization (Serpent-sa65)", () => {
     ]).map((entry) => entry.assetId)).toEqual(rankedAssetIds);
   });
 
-  it("builds a first-paint AssetSummary from layout caption fields (Serpent-l2at)", () => {
+  it("builds a first-paint AssetSummary from layout caption fields", () => {
     const summary = assetSummaryFromLayoutEntry({
       assetId: "hero",
       width: 1920,
@@ -182,7 +182,7 @@ describe("browse window virtualization (Serpent-sa65)", () => {
     expect(virtualSlotAsset(new Map([["hero", loaded]]), entry)).toBe(loaded);
   });
 
-  it("does not treat a first page of 100 as a complete compact layout (Serpent-9cfc8c)", () => {
+  it("does not treat a first page of 100 as a complete compact layout", () => {
     expect(compactBrowseLayoutIsComplete(100, 398)).toBe(false);
     expect(compactBrowseLayoutIsComplete(398, 398)).toBe(true);
     expect(compactBrowseLayoutIsComplete(0, 398)).toBe(false);

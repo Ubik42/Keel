@@ -1,5 +1,5 @@
 /**
- * Application menu template without Electron page-zoom roles (Serpent-46i9).
+ * Application menu template without Electron page-zoom roles.
  *
  * Electron's default View menu registers zoomIn / zoomOut / resetZoom with
  * Cmd/Ctrl+=,-,0. Those accelerators steal the chords from Keel's own
@@ -7,10 +7,10 @@
  * template keeps Edit/File/Window roles (copy/paste, quit, …) and a View
  * submenu that intentionally omits page-zoom roles.
  *
- * Serpent-r7gu: Windows has no native menu bar — capabilities live in-app
+ * Windows has no native menu bar — capabilities live in-app
  * (library menu, context menus, commands). macOS keeps the system menu.
  *
- * Serpent-q0b1: the macOS menu mirrors the Windows in-app MainMenu commands
+ * the macOS menu mirrors the Windows in-app MainMenu commands
  * and every custom label is an i18n catalog key (`labelKey`) resolved by Main
  * at install time — the shared layer never inlines locale strings.
  *
@@ -112,7 +112,7 @@ export type ApplicationMenuItemTemplate = {
   /**
    * i18n catalog key (renderer/i18n/catalogs) resolved to the display label
    * by Main at install time using the effective app locale — the shared layer
-   * never inlines locale strings (Serpent-q0b1).
+   * never inlines locale strings.
    */
   readonly labelKey?: string;
   readonly submenu?: readonly ApplicationMenuItemTemplate[];
@@ -135,7 +135,7 @@ export type ApplicationMenuTemplateOptions = {
   readonly platform: ApplicationMenuPlatform;
   /** DevTools toggle — keep for unpackaged / E2E builds. */
   readonly showDevTools: boolean;
-  /** App UI locale for custom menu labels (Serpent-te8p). */
+  /** App UI locale for custom menu labels. */
   readonly locale?: "zh-CN" | "en";
   /** Current app version for the native About submenu. */
   readonly version?: string;
@@ -151,7 +151,7 @@ export type ApplicationMenuTemplateOptions = {
 const PAGE_ZOOM_ROLES = new Set(["zoomIn", "zoomOut", "resetZoom"]);
 
 /**
- * Windows: hide the native top menu bar (Serpent-r7gu / Serpent-j5x).
+ * Windows: hide the native top menu bar.
  * macOS: keep a real application menu (system convention).
  * linux: keep a menu for now (not in the Windows product ask).
  */
@@ -219,7 +219,7 @@ export function buildApplicationMenuTemplate(
           { type: "separator" } as const,
         ]
       : []),
-    // Serpent-46i9: do NOT include Electron zoomIn / zoomOut / resetZoom roles.
+    // do NOT include Electron zoomIn / zoomOut / resetZoom roles.
     shortcutItem(
       "window.toggle-fullscreen",
       "shell.mainMenuToggleFullscreen",
@@ -261,14 +261,14 @@ export function buildApplicationMenuTemplate(
 
   const editSubmenu: ApplicationMenuItemTemplate[] = isMac
     ? [
-        // Serpent-q0b1: business undo/redo (not the always-available text
+        // business undo/redo (not the always-available text
         // editing roles) — enabled state mirrors the renderer's undoable
         // operation state, including the redo stack.
         shortcutItem("edit.undo", "shell.mainMenuUndo", "edit.undo"),
         shortcutItem("edit.redo", "shell.mainMenuRedo", "edit.redo"),
         { type: "separator" },
         { role: "cut", labelKey: "shell.mainMenuCut" },
-        // Serpent-166q: do not use role:copy — it steals ⌘C from asset file copy.
+        // do not use role:copy — it steals ⌘C from asset file copy.
         shortcutItem("asset.copy", "shell.mainMenuCopySelection", "copy-selection"),
         shortcutItem("asset.paste", "shell.mainMenuPaste", "edit.paste"),
         { role: "pasteAndMatchStyle", labelKey: "shell.mainMenuPasteMatchStyle" },
@@ -279,7 +279,7 @@ export function buildApplicationMenuTemplate(
       ]
     : [{ role: "editMenu" }];
 
-  // Serpent-q0b1: macOS keeps a real application menu, so the product
+  // macOS keeps a real application menu, so the product
   // functionality the Windows in-app MainMenu button carries must be mirrored
   // here — same command ids, routed to the same renderer actions. Every label
   // is an i18n catalog key resolved by Main at install time; the shared layer

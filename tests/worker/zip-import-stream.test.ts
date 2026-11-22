@@ -109,7 +109,7 @@ afterEach(() => {
 });
 
 describe('extractZipStream', () => {
-  it('protects against zip bombs without capping library size (Serpent-4s8b)', () => {
+  it('protects against zip bombs without capping library size', () => {
     expect(zipBombProtectionLimits()).toEqual({
       maxEntries: Number.MAX_SAFE_INTEGER,
       maxUncompressedBytes: Number.MAX_SAFE_INTEGER,

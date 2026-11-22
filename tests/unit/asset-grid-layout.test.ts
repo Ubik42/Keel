@@ -143,7 +143,7 @@ describe("distributed masonry", () => {
   });
 });
 
-describe("distributeIntegerRowWidths (Serpent-oq86)", () => {
+describe("distributeIntegerRowWidths", () => {
   it("emits whole pixels that sum exactly to the usable width", () => {
     const widths = distributeIntegerRowWidths([16 / 9, 1, 9 / 16], 180, 872);
     expect(widths.every((width) => Number.isInteger(width) && width >= 1)).toBe(

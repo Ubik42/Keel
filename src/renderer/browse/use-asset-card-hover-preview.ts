@@ -29,7 +29,7 @@ export function useAssetCardHoverPreview(input: {
   activeResolution: PreviewResolution | null;
   /**
    * Live video failed to play in-place; request a WebM proxy fallback
-   * (Serpent-c8a1a3). Same rule as the viewer: a proxy is only created after
+   *. Same rule as the viewer: a proxy is only created after
    * a real source-playback failure. Once requested, the asset is not retried
    * this session; the next hover picks up a ready proxy via the normal path.
    */

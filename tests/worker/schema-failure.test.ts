@@ -1,4 +1,4 @@
-// Serpent-verg.5 — migration failure diagnosis and retry (0031 §2.2):
+// migration failure diagnosis and retry (0031 §2.2):
 // a rolled-back migration failure is recorded to .keel/migration-failed.json,
 // retried on the next open, capped at MAX_MIGRATION_ATTEMPTS, and then the
 // library opens writable at the last good schema version instead of failing
@@ -110,7 +110,7 @@ describe('migration failure record (unit)', () => {
   });
 });
 
-describe('migration failure integration (Serpent-verg.5)', () => {
+describe('migration failure integration', () => {
   it('records the failure on open and retries up to the cap, then opens writable', () => {
     const root = temporaryRoot();
     const libraryPath = buildV23Library(root);

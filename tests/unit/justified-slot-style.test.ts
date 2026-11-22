@@ -6,7 +6,7 @@ function previewHeight(style: ReturnType<typeof justifiedSlotStyle>) {
   return (style as Record<string, unknown>)["--justified-preview-height"];
 }
 
-describe("justifiedSlotStyle (Serpent-5p45)", () => {
+describe("justifiedSlotStyle", () => {
   it("locks preview height to placement height via CSS variable", () => {
     const style = justifiedSlotStyle({
       id: "portrait",

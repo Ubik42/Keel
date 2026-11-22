@@ -375,7 +375,7 @@ export class AnthropicVendorAdapter implements VendorAdapter {
           );
         }
       }
-      // Serpent-iokf: some Anthropic-compatible proxies return plain text JSON
+      // some Anthropic-compatible proxies return plain text JSON
       // instead of tool_use — accept that when it parses.
       const textFallback = this.#tryParseTextContentAsResult(body);
       if (textFallback) return textFallback;

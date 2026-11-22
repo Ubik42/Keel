@@ -19,7 +19,7 @@ import { zhCN } from "../../renderer/i18n/catalogs/zh-CN";
 import { en } from "../../renderer/i18n/catalogs/en";
 
 /**
- * Serpent-q0b1: the template carries i18n catalog keys; the effective app
+ * the template carries i18n catalog keys; the effective app
  * locale resolves them here (English fallback, then the raw key) — the menu
  * text lives in the same catalogs as the renderer UI, never inline ternaries.
  */
@@ -34,7 +34,7 @@ function resolveLabelKey(
 }
 
 /**
- * Serpent-q0b1: the renderer drives item enabled-state (e.g. business undo is
+ * the renderer drives item enabled-state (e.g. business undo is
  * only enabled while an undoable operation exists). Menu items are addressed
  * by their command id, set at install time in enrichMenuTemplate.
  */
@@ -76,7 +76,7 @@ export function setApplicationMenuCommandChecked(
  * Every template item with a `command` is wired here: the focused window's
  * renderer receives the command over APPLICATION_MENU_COMMAND_CHANNEL and
  * runs the SAME canonical action the Windows in-app MainMenu button uses
- * (Serpent-q0b1). Commands with an explicit native accelerator retain it;
+ *. Commands with an explicit native accelerator retain it;
  * all commands are routed to the same renderer action.
  */
 function enrichMenuTemplate(
@@ -86,7 +86,7 @@ function enrichMenuTemplate(
   return items.map((item) => {
     const resolvedLabel = resolveLabelKey(item.labelKey, locale);
     if (item.command === "invert-selection" || item.command === "copy-selection") {
-      // Serpent-166q/te8p: invert/copy keep their dedicated channels and
+      // invert/copy keep their dedicated channels and
       // renderer handlers (asset file copy must not be stolen by role:copy).
       const channel =
         item.command === "invert-selection"
@@ -163,10 +163,10 @@ function enrichMenuTemplate(
 /**
  * Install Keel's application menu (no page-zoom accelerator roles).
  * Call once during app ready so macOS defaults cannot steal
- * Cmd/Ctrl+=,-,0 from renderer zoom shortcuts (Serpent-46i9).
+ * Cmd/Ctrl+=,-,0 from renderer zoom shortcuts.
  *
- * Windows (Serpent-znex / Serpent-r7gu): hide the menu bar for frameless
- * shell unity, but keep a hidden accelerator menu for F2/Delete (Serpent-g8u9)
+ * Windows: hide the menu bar for frameless
+ * shell unity, but keep a hidden accelerator menu for F2/Delete
  * so Chromium still has a local shortcut path. Do not use a bare `null` menu:
  * that also drops those accelerators and can reintroduce View zoom roles.
  */

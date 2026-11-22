@@ -1,7 +1,7 @@
 /**
  * Portals dimension/toolbar popovers to document.body so they escape the
  * workspace stacking context (z-index:0 + isolation) and are not painted
- * under the inspector/navigation panes (MENU-015 / Serpent-iihv).
+ * under the inspector/navigation panes (MENU-015).
  */
 
 import {

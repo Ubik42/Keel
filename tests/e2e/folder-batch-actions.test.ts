@@ -30,7 +30,7 @@ function folderCard(window: Page, folderName: string) {
   });
 }
 
-// Serpent-d7acfa 验收补充：侧栏文件夹树也要能 Ctrl/⌘ 多选，并从同一个批量菜单操作。
+// 验收补充：侧栏文件夹树也要能 Ctrl/⌘ 多选，并从同一个批量菜单操作。
 test("ctrl-click multi-selects sidebar folder rows and batches the action", async () => {
   const temporaryRoot = mkdtempSync(
     path.join(tmpdir(), "serpent-folder-sidebar-batch-e2e-"),
@@ -99,7 +99,7 @@ test("ctrl-click multi-selects sidebar folder rows and batches the action", asyn
   }
 });
 
-// Serpent-d7acfa（用户口径）：正在浏览的文件夹是隐式选中的——当前文件夹是 A 时
+// 用户口径：正在浏览的文件夹是隐式选中的——当前文件夹是 A 时
 // Ctrl 点 B，应当 A 与 B 同时被选中。
 test("ctrl-click includes the folder currently being browsed", async () => {
   const temporaryRoot = mkdtempSync(
@@ -219,7 +219,7 @@ test("ctrl-click includes the folder currently being browsed", async () => {
   }
 });
 
-// Serpent-d7acfa：多选画布文件夹卡片后，批量回收站与忽略对全部选中项生效。
+// 多选画布文件夹卡片后，批量回收站与忽略对全部选中项生效。
 test("multi-selected folder cards trash and ignore every selected folder", async () => {
   const temporaryRoot = mkdtempSync(
     path.join(tmpdir(), "serpent-folder-batch-e2e-"),

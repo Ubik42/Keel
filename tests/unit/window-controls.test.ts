@@ -9,7 +9,7 @@ import {
   shouldUseFramelessTitleBar,
 } from "../../src/shared/window-controls";
 
-describe("window-controls protocol (Serpent-znex)", () => {
+describe("window-controls protocol", () => {
   it("parses known caption actions and rejects junk", () => {
     expect(parseWindowControlRequest({ action: "minimize" })).toEqual({
       action: "minimize",

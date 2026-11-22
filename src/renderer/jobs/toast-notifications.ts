@@ -1,6 +1,6 @@
 /**
  * Toast notification state machine for the workspace notice stack, plus a
- * blocking fatal channel (Serpent-99lv).
+ * blocking fatal channel.
  *
  * Severities: info(notice) < warning < error < fatal.
  * - Toast channels (`notice` / `warning` / `error`) retain each message until

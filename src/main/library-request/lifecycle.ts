@@ -375,7 +375,7 @@ export function applyLibraryRendererLifecycle(
         operation,
         error: result.error,
       });
-      // Serpent-s0oq: an invalid recent library (folder gone, corrupt, or
+      // an invalid recent library (folder gone, corrupt, or
       // unmigratable) must disappear from every recent list — the switcher
       // menu and the no-library create dialog share the same store. Only
       // deterministic invalid-open codes remove the entry; transient

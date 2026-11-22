@@ -56,7 +56,7 @@ function openLibraryDb<T>(libraryPath: string, fn: (db: TestDbHandle) => T): T {
 }
 
 /**
- * Serpent-140fe2 regression: Eagle/Billfish conversions register videos with
+ * Eagle/Billfish conversions register videos with
  * width/height-only extracted_metadata (no ffprobe), so contact sheets failed
  * forever and every open re-enqueued the doomed batch. The generation path
  * must self-heal by probing duration on demand, invalidate the superseded
@@ -207,7 +207,7 @@ describe('contact sheet self-heal for conversion-registered videos', () => {
     const asset = service.listAssets({ libraryId: created.libraryId, recursive: true })
       .find((entry) => entry.assetId)!;
 
-    // Serpent-140fe2 blocker fix: analysis enqueue must NOT gate on a
+    // blocker fix: analysis enqueue must NOT gate on a
     // pre-existing contact sheet — the lane materializes it at execution.
     const analysis = service.enqueueAiAnalysisJobs({
       libraryId: created.libraryId,

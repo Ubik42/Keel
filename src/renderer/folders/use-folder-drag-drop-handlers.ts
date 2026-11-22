@@ -66,7 +66,7 @@ export function useFolderDragDropHandlers({
         folders: folderFacts(),
       });
       if (resolution.kind === 'reject') {
-        // Serpent-374266: a drop that leaves the tree unchanged must stay silent.
+        // a drop that leaves the tree unchanged must stay silent.
         // Dropping a folder onto itself, onto its current parent, or onto its own
         // descendant changes nothing the user can see, and the sidebar does not
         // highlight those targets either, so the gesture is simply absorbed

@@ -7,7 +7,7 @@ import {
   type FolderBatchManagedFolder,
 } from "../../src/renderer/folders/folder-batch-actions";
 
-// Serpent-d7acfa：多选文件夹批量动作的资格与跳过原因。
+// 多选文件夹批量动作的资格与跳过原因。
 describe("folder batch planning", () => {
   const managedFolders: FolderBatchManagedFolder[] = [
     { folderId: "m-1", name: "Alpha", relativePath: "Alpha" },

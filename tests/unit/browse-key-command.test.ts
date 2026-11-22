@@ -34,7 +34,7 @@ function asset(
   };
 }
 
-describe("browse-key-command (Serpent-g8u9)", () => {
+describe("browse-key-command", () => {
   it("renames linked assets the same as managed", () => {
     expect(
       canRenameAssetWithShortcut(

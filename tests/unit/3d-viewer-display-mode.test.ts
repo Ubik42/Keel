@@ -24,7 +24,7 @@ function sceneWithMaterials(): { scene: Scene; material: MeshStandardMaterial } 
   return { scene, material };
 }
 
-describe('model display modes (Serpent-fkhe)', () => {
+describe('model display modes', () => {
   it('defaults to PBR and lists all five modes', () => {
     expect(DEFAULT_DISPLAY_MODE).toBe('pbr');
     expect(MODEL_DISPLAY_MODES).toEqual([

@@ -213,7 +213,7 @@ export function createDesktopAutomationFilePlanApprovalHandler(
           undoSupported: false,
         };
         const summaryKey = JSON.stringify(summary);
-        // Serpent-8b5b.8: MCP runs plan commands directly (zero dialog);
+        // MCP runs plan commands directly (zero dialog);
         // the Worker still validates the plan fence at write time.
         if (source === 'mcp') {
           options.audit?.info?.('mcp.plan-auto-approved', 'MCP library.create plan approved without a desktop prompt.', {

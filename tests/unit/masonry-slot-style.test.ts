@@ -10,7 +10,7 @@ function cssVar(
   return (style as Record<string, unknown>)[name];
 }
 
-describe("masonryCardSlotStyle (Serpent-1s3d)", () => {
+describe("masonryCardSlotStyle", () => {
   it("locks the slot to the same body height the column window uses", () => {
     const style = masonryCardSlotStyle({
       previewHeightPx: 210,

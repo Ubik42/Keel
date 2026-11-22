@@ -1,5 +1,5 @@
 /**
- * Offscreen model-thumbnail render protocol (slice E, Serpent-hnmg).
+ * Offscreen model-thumbnail render protocol (slice E).
  *
  * Role split (per the process architecture invariant): the Library Worker is
  * the queue/state owner (job claim, thumbnailStatus, artifact storage) but has

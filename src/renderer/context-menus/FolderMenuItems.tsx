@@ -126,7 +126,7 @@ export function FolderMenuItems({ activeContextMenu, linkedFolders, locale, plug
           const removeFromLibraryItem = resolvedById.get(
             "folder.remove-from-library",
           );
-          // Serpent-316493 follow-up: the library root has no managed_folders
+          // the library root has no managed_folders
           // row, so plugin folder commands (which receive a folder id) are not
           // offered for the blank-area menu.
           const folderPluginItems = (
@@ -138,7 +138,7 @@ export function FolderMenuItems({ activeContextMenu, linkedFolders, locale, plug
               : pluginItemsForHostGroup(pluginFolderMenuPlacement, group, placement);
           return (
             <>
-              {/* Serpent-a6c516: name the subject — the root has no row of its
+              {/* name the subject — the root has no row of its
                   own in the menu, so the panel's blank area / root row menu
                   starts by saying what it acts on. Quiet caption weight: the
                   shared summary class is the emphasized multi-select style. */}
@@ -306,7 +306,7 @@ export function FolderMenuItems({ activeContextMenu, linkedFolders, locale, plug
                   items={folderPluginItems("organize", "after")}
                   onRun={(item) => runPluginCommand(item, { folderIds: [desc.folderId] })}
                 />
-                {/* Serpent-a6c516: the library root cannot be ignored — it has
+                {/* the library root cannot be ignored — it has
                     no managed folder row, so this entry would build an ignore
                     rule from the menu's own label instead of a real path. */}
                 {!desc.isLibraryRoot && (

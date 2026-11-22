@@ -17,7 +17,7 @@ describe("sort mode primary fields", () => {
   });
 });
 
-describe("sort mode panel order options (Serpent-v78)", () => {
+describe("sort mode panel order options", () => {
   it("exposes asc/desc for the in-panel direction section", () => {
     expect(SORT_ORDER_OPTIONS).toEqual(["asc", "desc"]);
   });
@@ -30,7 +30,7 @@ describe("sort mode panel order options (Serpent-v78)", () => {
   });
 });
 
-describe("sort mode trigger aria-label (Serpent-2lq6)", () => {
+describe("sort mode trigger aria-label", () => {
   it("does not embed the active field label in the trigger aria-label", () => {
     // Mirrors SortModeControl trigger: mode + optional order only, not "名称".
     const triggerAriaLabel = (modeLabel: string, orderLabel: string, shuffle: boolean) =>

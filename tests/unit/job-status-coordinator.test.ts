@@ -7,7 +7,7 @@ import {
 } from '../../src/renderer/jobs/job-status-coordinator';
 
 /**
- * Serpent-e97c00: the fallback status queries must stay bounded while the
+ * the fallback status queries must stay bounded while the
  * Worker is blocked. These tests are the contract for that bound: one
  * in-flight request per kind, a burst that collapses into exactly one
  * follow-up, dropped stale results across a library change, and a backoff that

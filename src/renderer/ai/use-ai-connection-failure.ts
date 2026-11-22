@@ -40,7 +40,7 @@ export interface UseAiConnectionFailureResult {
 
 /**
  * Surfaces one connection-lost dialog after terminal AI network/auth failures
- * (Serpent-kdnm). Fetches job details when the failed counter grows.
+ *. Fetches job details when the failed counter grows.
  */
 export function useAiConnectionFailure({
   api,

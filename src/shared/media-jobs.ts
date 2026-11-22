@@ -1,4 +1,4 @@
-/** Bounded media-task list pages for Serpent-e97c00. */
+/** Bounded media-task list pages. */
 export const MEDIA_JOB_LIST_PAGE_SIZE = 100;
 export const MEDIA_JOB_LIST_PAGE_MAX = 500;
 /** Omitted `limit` keeps the historic first-page size so older callers still see a full window. */

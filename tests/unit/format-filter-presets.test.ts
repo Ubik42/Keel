@@ -1,4 +1,4 @@
-// Serpent-1d4w: the format filter quick-chips derive from the product format
+// the format filter quick-chips derive from the product format
 // registries. These tests pin that every registered extension has a chip and
 // that tokens are dotless (they live in a comma field alongside free text).
 import { describe, expect, it } from "vitest";
@@ -41,7 +41,7 @@ describe("format-filter-presets", () => {
       ...DOCUMENT_EXTENSIONS.map((extension) => extension.slice(1)).filter(
         (extension) => !otherFormatSet.has(extension),
       ),
-      // Serpent-485aeb: fonts have their own group, no longer 其他.
+      // fonts have their own group, no longer 其他.
       ...FONT_EXTENSIONS.map((extension) => extension.slice(1)),
       ...OTHER_FORMAT_EXTENSIONS,
     ];

@@ -16,7 +16,7 @@ export function elementHasScrollbar(el: HTMLElement): boolean {
 
 /**
  * True when the pointer is over the vertical and/or horizontal scrollbar
- * gutter — not merely anywhere inside the scrollport (Serpent-62wm).
+ * gutter — not merely anywhere inside the scrollport.
  */
 export function isPointerNearScrollbarTrack(
   el: HTMLElement,

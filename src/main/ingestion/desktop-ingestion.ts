@@ -101,7 +101,7 @@ export function cleanupStaleClipboardImages(temporaryRoot: string): number {
 }
 
 // ---------------------------------------------------------------------------
-// Windows clipboard image extraction (Serpent-a3de58)
+// Windows clipboard image extraction
 // ---------------------------------------------------------------------------
 
 export interface ClipboardImageReaderDeps {

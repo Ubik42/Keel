@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 /**
- * Library-owned appearance for folders (Serpent-df3049).
+ * Library-owned appearance for folders.
  * Unknown stored values must degrade to the default chrome icon, not fail open.
  */
 

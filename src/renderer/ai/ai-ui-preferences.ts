@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 // ---------------------------------------------------------------------------
-// AI UI preferences (Serpent-t8sw)
+// AI UI preferences
 //
 // Controls whether Inspector shows AI source badges. Does not delete AI data.
 // ---------------------------------------------------------------------------

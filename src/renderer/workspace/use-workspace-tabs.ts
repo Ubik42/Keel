@@ -79,7 +79,7 @@ export interface SelectWorkspaceTabOptions {
 /**
  * Owns tab lifetimes. There is a single shared Back/Forward timeline
  * (`historyRef`): every tab keeps only its current location, and switching tabs
- * records a step so Back/Forward can cross tab switches (Serpent-b8a853).
+ * records a step so Back/Forward can cross tab switches.
  */
 export function useWorkspaceTabsController(options: UseWorkspaceTabsControllerOptions) {
   const [state, setState] = useState(createWorkspaceTabs);

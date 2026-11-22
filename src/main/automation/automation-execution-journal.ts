@@ -874,7 +874,7 @@ export class AutomationExecutionJournal implements AutomationExecutionResolver {
     const executionId = nonBlankString.parse(input.executionId);
     const libraryId = automationLibraryIdSchema.parse(input.libraryId);
     const execution = this.#find(executionId);
-    // Serpent-8b5b.8: stateless MCP executions bind the library per call, not
+    // stateless MCP executions bind the library per call, not
     // on the journal record (libraryId stays null) — the undo group belongs
     // to the library named by the call itself.
     if (!execution || (execution.libraryId !== libraryId && execution.source !== 'mcp')) {

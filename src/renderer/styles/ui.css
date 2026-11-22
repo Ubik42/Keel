@@ -509,7 +509,7 @@
   margin-bottom: 4px;
 }
 
-/* F1 (Serpent-lqof): eye toggle overlaid inside a credential input's right
+/* F1: eye toggle overlaid inside a credential input's right
    side — an inline affordance, not a separate button beside the field.
    通用类：AI Key（AiConfigDialog）与同步服务器密码（SyncSettingsPage）共用。 */
 
@@ -858,7 +858,7 @@
 }
 
 .decision-field .ui-select-trigger {
-  /* Serpent-4ojz / Serpent-p1rm: shell rhythm + de-native chrome (no OS
+  /* shell rhythm + de-native chrome (no OS
      select bevel/arrow; custom chevron via theme tertiary stroke). */
   appearance: none;
   -webkit-appearance: none;

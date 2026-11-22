@@ -114,7 +114,7 @@ describe('media format registry', () => {
     expect(modelMimeForExtension('.zip')).toBeNull();
   });
 
-  it('limits pixel resolution to image and video media (Serpent-b1b0f2)', () => {
+  it('limits pixel resolution to image and video media', () => {
     // Cards, the Inspector summary row and the resolution filter all read this
     // one predicate: images (GIF included) and videos own a resolution.
     expect(mediaTypeHasPixelResolution('image')).toBe(true);

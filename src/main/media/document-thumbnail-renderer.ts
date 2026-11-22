@@ -1,5 +1,5 @@
 /**
- * Offscreen HTML document thumbnail renderer (Serpent-8ca259).
+ * Offscreen HTML document thumbnail renderer.
  *
  * Main owns a short-lived offscreen BrowserWindow that loads the HTML source
  * via keel://source and captures a screenshot with webContents.capturePage().

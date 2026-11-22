@@ -27,7 +27,7 @@ async function expectDecodedImage(locator: Locator): Promise<void> {
     .toBe(true);
 }
 
-// Serpent-485aeb：字体资产的卡片样张与查看器预览都要证明「真的解码出字」。
+// 字体资产的卡片样张与查看器预览都要证明「真的解码出字」。
 test("a font asset renders a card sample and a viewer preview with real glyphs", async () => {
   const temporaryRoot = mkdtempSync(path.join(tmpdir(), "serpent-font-e2e-"));
   const libraryName = "字体预览验收";
@@ -267,7 +267,7 @@ test("a font asset renders a card sample and a viewer preview with real glyphs",
     await expect(specimenRows.first()).toContainText("AaBbCc");
     await expect(resetButton).toBeDisabled();
 
-    // Serpent-485aeb 回归：点进查看界面之后 Esc 仍要能退出（iframe 焦点曾吞掉 Esc）。
+    // 点进查看界面之后 Esc 仍要能退出（iframe 焦点曾吞掉 Esc）。
     await specimenRows.first().click();
     await window.keyboard.press("Escape");
     await expect(window.locator(".workspace-viewer")).toBeHidden({ timeout: 15_000 });

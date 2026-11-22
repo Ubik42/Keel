@@ -201,7 +201,7 @@ export function getAssetMetadata(this: LibraryService, input: { libraryId: strin
     .get(input.assetId) as { asset_id: string } | undefined;
   if (!assetRow) throw new LibraryServiceError('ASSET_NOT_FOUND');
 
-  // Serpent-verg.2 — lenient read (0031 §1): libraries predating
+  // lenient read (0031 §1): libraries predating
   // asset_metadata (or missing individual metadata columns) degrade to the
   // empty-metadata shape instead of failing.
   const connection = openLibrary.connection;
@@ -301,7 +301,7 @@ export function setAssetMetadata(this: LibraryService, input: {
     throw new LibraryServiceError('INVALID_ASSET_METADATA');
   }
 
-  // Serpent-7pg: ignore palette writes; column retained for older libraries.
+  // ignore palette writes; column retained for older libraries.
   if (input.palette !== undefined) {
     // no-op: manual palette entry removed from product surface
   }
@@ -316,7 +316,7 @@ export function setAssetMetadata(this: LibraryService, input: {
   }
 
   // Author mirrors sourcePageUrl's clear-with-empty-string contract, without
-  // the URL-shape constraint (Serpent-7x0).
+  // the URL-shape constraint.
   if (
     input.author !== undefined &&
     !assetAuthorSchema.safeParse(input.author).success
@@ -804,7 +804,7 @@ export function isModelAsset(this: LibraryService, libraryId: string, assetId: s
 }
 
 /**
-* Batched native-drag priming entries (Serpent-v4jf).
+* Batched native-drag priming entries.
 *
 * The legacy per-asset loop cost 3-4 point queries per asset (resolveAssetPath,
 * getThumbnailArtifact, getArtifactAbsolutePath plus their internal lookups);
@@ -991,7 +991,7 @@ export function copyAssets(this: LibraryService, input: {
   }
   // 目标是链接文件夹（链接根或其虚拟子目录）：与 moveAssets 的链接分支对称，
   // 复制进链接外部目录并注册为链接资产（copyAssetsToLinkedFolder 支持 managed
-  // 与 linked 源，Serpent-f6f779）。此分支需先于 linked 源分支判定，否则
+  // 与 linked 源）。此分支需先于 linked 源分支判定，否则
   // 链接目标会落到 copyLinkedAssetsToManagedFolder 上。
   const copyLinkedTarget = input.targetFolderId === null
     ? null
@@ -2164,7 +2164,7 @@ export function findActiveManagedAssetByContent(this: LibraryService, openLibrar
 }
 
 /**
-* Serpent-793k: find the managed asset occupying a destination path (a
+* find the managed asset occupying a destination path (a
 * name-conflict collision target) so the conflict UI can show its real
 * display name and thumbnail. Path matching is case-insensitive (Windows).
 */
@@ -2455,7 +2455,7 @@ export async function saveAssetFromUrl(this: LibraryService, input: {
 }
 
 /**
-* Import media already fetched by the browser extension (Serpent-1jyi).
+* Import media already fetched by the browser extension.
 * Main stages the bytes under a temp directory; Worker copies into the
 * library operation stage and reuses the URL-import commit path.
 */

@@ -128,7 +128,7 @@ export function useBrowseSelection({ assetViewMode, visibleAssets, masonryGridWi
     return () => observer.disconnect();
   }, [assetViewMode, visibleAssets.length, canvasFolderBrowseEntries.length, assetGridRef, setMasonryGridWidth]);
 
-  // REQ-FOLDER-010 / Serpent-nu6o: selection order must match the canvas,
+  // REQ-FOLDER-010: selection order must match the canvas,
   // including trash tombstone cards (folderBrowseEntries is empty in trash).
   const visibleFolderIds = useMemo(
     () => canvasFolderBrowseEntries.map((entry) => entry.folderId),
@@ -254,7 +254,7 @@ export function useBrowseSelection({ assetViewMode, visibleAssets, masonryGridWi
     trashedAssets.length,
     visibleAssets.length,
   ]);
-  // Serpent-ws4k: select-all / invert cover the *whole* browse scope, not just
+  // select-all / invert cover the *whole* browse scope, not just
   // the loaded page, so they resolve the full id set on demand (idsOnly).
   // A stale id set (scope switched mid-fetch) and a null/empty resolve are
   // both no-ops — matching the pre-pagination synchronous guards, they never
@@ -338,7 +338,7 @@ export function useBrowseSelection({ assetViewMode, visibleAssets, masonryGridWi
   useEffect(() => {
     if (!shellApi) return;
     return shellApi.onCommandCompleted((payload) => {
-      // Serpent-fmbr: MCP operations show the same toasts as manual ones —
+      // MCP operations show the same toasts as manual ones —
       // composed here from the structured result, never MCP-specific wording.
       const toast = automationCommandToast(payload, locale);
       if (toast !== undefined) setNotice(toast.message, toast.historyEntryId);
@@ -370,7 +370,7 @@ export function useBrowseSelection({ assetViewMode, visibleAssets, masonryGridWi
         return;
       }
       // Recursive browse still shows direct child folder cards unless the
-      // Settings switch turns that off (Serpent-4e9caa).
+      // Settings switch turns that off.
       if (
         !shouldShowFolderBrowseCards(
           assetScope,
@@ -413,11 +413,11 @@ export function useBrowseSelection({ assetViewMode, visibleAssets, masonryGridWi
     showFolderCardsWhenRecursive,
     ensureLibraryView,
     isCurrentLibraryView,
-    // Serpent-d0nv: a cover candidate's thumbnail.ready bumps this token so
+    // a cover candidate's thumbnail.ready bumps this token so
     // the row re-fetches and the generated cover appears without navigation.
     folderBrowseRefreshToken, setFolderBrowseEntries]);
 
-  // Serpent-d0nv: keep the cover-candidate asset set (from the last browse
+  // keep the cover-candidate asset set (from the last browse
   // entries response) visible to the thumbnail event subscriber so a ready
   // cover refreshes the folder-card row without a full reload.
 
@@ -534,7 +534,7 @@ export function useBrowseSelection({ assetViewMode, visibleAssets, masonryGridWi
         root.classList.add("is-reflow-restoring");
       }
       setCanvasPrefs((p) => ({ ...p, cardSize: nextSize }));
-      // Serpent-32p: always re-anchor after settle; width/size reflow may reset
+      // always re-anchor after settle; width/size reflow may reset
       // scrollTop mid-wait, and bailing left the visible set wrong.
       scheduleAnchorRestore(
         root,

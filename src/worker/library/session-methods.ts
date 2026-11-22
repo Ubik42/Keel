@@ -137,7 +137,7 @@ export function isLibraryOpen(this: LibraryService, libraryId: string): boolean 
   }
 }
 
-/** Serpent-2cc492: open-state probe for the worker-runtime startup gate. */
+/** open-state probe for the worker-runtime startup gate. */
 export function hasOpenLibrary(this: LibraryService, libraryId: string): boolean {
   return this.openById.has(libraryId);
 }
@@ -1082,7 +1082,7 @@ export function adoptWritableOpenLibrary(this: LibraryService, input: {
   this.recoverInterruptedAiJobs(openLibrary);
   markAdoptStage('recover-ai');
   this.recoverInterruptedThumbnailJobs(openLibrary);
-  // Serpent-4bdd26: retireLegacyGifProxyJobs moved to the background
+  // retireLegacyGifProxyJobs moved to the background
   // reconciliation — its GIF LIKE subquery scans all assets (~180ms on SMB)
   // and only cancels doomed legacy transcodes, which can wait seconds.
   interruptUnfinishedPluginJobs(
@@ -1091,7 +1091,7 @@ export function adoptWritableOpenLibrary(this: LibraryService, input: {
     this.applicationSessionId,
   );
   markAdoptStage('recovery-jobs');
-  // Serpent-4bdd26: reconcileDefaultIgnoredAssets moved to the background
+  // reconcileDefaultIgnoredAssets moved to the background
   // reconciliation — its full active-asset scan costs ~2.8s on SMB even
   // through the covering index (one round trip per index page), and the
   // rows it removes are always-ignored junk files whose delayed cleanup is
@@ -1134,12 +1134,12 @@ export function adoptWritableOpenLibrary(this: LibraryService, input: {
       }
     }
   }
-  // Serpent-tumv (LIB-018, deferred open maintenance): the disk-heavy reconciliation
+  // (LIB-018, deferred open maintenance): the disk-heavy reconciliation
   // steps moved out of the synchronous open path and run in the background
   // (runOpenBackgroundReconciliation). Opening a large library used to
   // block on a full artifact-file lstat sweep + expired-trash purge + a
   // whole Assets-directory rescan before the first frame rendered.
-  // Serpent-4bdd26：startup 缩略图入队（limit:50 + repairFailed + retryFailed，
+  // startup 缩略图入队（limit:50 + repairFailed + retryFailed，
   // 实测 ~230ms 全库扫描）已由 Worker 的 deferStartupThumbnailScene 在
   // 首个真实视口后以相同参数调度——同步路径重复执行只拖慢 library.open 响应，
   // 不改变最终队列状态。
@@ -1147,7 +1147,7 @@ export function adoptWritableOpenLibrary(this: LibraryService, input: {
 }
 
 export function openLibraryPrimary(this: LibraryService, selectedLibraryPath: string, options?: { replaceExisting?: boolean }): InternalLibrarySummary {
-  // Serpent-4bdd26：开库阶段计时（KEEL_OPEN_STAGE_LOG=1），用于大库打开
+  // 开库阶段计时（KEEL_OPEN_STAGE_LOG=1），用于大库打开
   // 的归因。生产默认关闭。
   const openStageLog = process.env.KEEL_OPEN_STAGE_LOG === '1';
   let stageMark = openStageLog ? performance.now() : 0;
@@ -1290,7 +1290,7 @@ export function openLibraryPrimary(this: LibraryService, selectedLibraryPath: st
     markStage('clear-failure');
     backfillTrashedFromTombstoneIds(connection);
     markStage('tombstone-backfill');
-    // Serpent-4bdd26: the full quick_check moved to the background
+    // the full quick_check moved to the background
     // reconciliation — it scans every B-tree and dominated this path.
     const library = verifyDatabase(connection, { skipQuickCheck: true });
     markStage('verify');
@@ -1493,7 +1493,7 @@ export function closeLibrary(this: LibraryService, libraryId: string): void {
   }
 
   if (openLibrary.readOnly) {
-    // Serpent-033e: a read-only (newer-schema) library never queued jobs,
+    // a read-only (newer-schema) library never queued jobs,
     // started watchers, or held pending imports — every close-time write
     // below would fail with SQLITE_READONLY. Just release the handle.
     openLibrary.changeSubscription.stop();

@@ -83,7 +83,7 @@ export function mediaBinaryWorkerEnv(
 
 /**
  * Resolves the host's FFmpeg/ffprobe pair for plugin consumption
- * (Serpent-c32ce6). Same resolution chain as the Library Worker: env override
+ *. Same resolution chain as the Library Worker: env override
  * first, then bundled resources, then PATH. `undefined` when neither exists.
  */
 export function resolveHostMediaBinaries(): {

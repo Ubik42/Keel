@@ -38,7 +38,7 @@ describe("buildScopeBreadcrumbSegments", () => {
     ).toEqual([{ kind: "static", id: "all", label: "所有资产" }]);
   });
 
-  it("builds trash hierarchy crumbs (Serpent-6pcd)", () => {
+  it("builds trash hierarchy crumbs", () => {
     expect(
       buildScopeBreadcrumbSegments(
         {

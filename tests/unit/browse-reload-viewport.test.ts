@@ -11,7 +11,7 @@ import {
 } from "../../src/renderer/workbench/workspace/workspace-scroll-position";
 
 /**
- * VIEWER-001 / Serpent-bd481f — session log 2026-09-16:
+ * VIEWER-001 — session log 2026-09-16:
  * `runSearch` → `executeSearchDefinition` → `finishWorkspaceNavigation(request)`
  * with the omitted-viewport default `{ scrollTop: 0 }` wrote the canvas from
  * 4805 to 0 about one second after opening the viewer.

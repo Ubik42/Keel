@@ -16,7 +16,7 @@ export type ViewerVolumeControlsProps = {
   onInteract?: () => void;
 };
 
-/** Mute toggle + slider shared by video/audio viewer chrome (Serpent-8w6x). */
+/** Mute toggle + slider shared by video/audio viewer chrome. */
 export function ViewerVolumeControls({
   volume,
   muted,

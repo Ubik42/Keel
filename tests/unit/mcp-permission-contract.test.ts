@@ -36,7 +36,7 @@ describe('MCP permission contract', () => {
       expect(descriptor).toBeDefined();
       expect(tool.requiredCapabilities).toEqual(descriptor?.requiredCapabilities);
     }
-    // Serpent-8b5b.2: dangerous operations are exposed only through the
+    // dangerous operations are exposed only through the
     // two-phase challenge — exactly one critical tool exists, gated by the
     // challenge confirmation fields, and no other critical operation leaks.
     const dangerousTool = tools.find((tool) => tool.commandId === 'asset.delete-permanent');

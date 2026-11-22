@@ -86,7 +86,7 @@ describe('shell-preferences (REQ-SHELL-007)', () => {
     expect(clampInspectorPanelWidth(9999)).toBe(INSPECTOR_PANEL_WIDTH_MAX);
   });
 
-  // Serpent-y941: Inspector min matches nav so users can free canvas width.
+  // Inspector min matches nav so users can free canvas width.
   it('allows inspector widths down to 200px (same floor as nav)', () => {
     expect(INSPECTOR_PANEL_WIDTH_MIN).toBe(200);
     expect(clampInspectorPanelWidth(200)).toBe(200);

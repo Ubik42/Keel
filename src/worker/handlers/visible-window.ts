@@ -37,7 +37,7 @@ export function executeVisibleWindowWorkerCommand(
 ): WorkerResult | undefined {
   if (request.command.type !== 'asset.thumbnail.visible-window') return undefined;
 
-  // Serpent-visible-window: the renderer reports what the user is actually
+  // the renderer reports what the user is actually
   // looking at after scrolling. Two effects, both cheap:
   // 1) queue-jump — the visible wave (350, light) boosts these assets'
   //    and restricts the next queue claim to them, so the current viewport
@@ -50,7 +50,7 @@ export function executeVisibleWindowWorkerCommand(
   if (deferredGeneration !== undefined) {
     runtime.startDeferredStartupThumbnailScene(libraryId, deferredGeneration);
   }
-  // Serpent-4bc4ac: ignored assets are not indexed or operated on —
+  // ignored assets are not indexed or operated on —
   // drop them before dimension probes and thumbnail scheduling.
   const focusedRaw = request.command.focusedAssetIds ?? [];
   const nearForwardRaw = request.command.nearForwardAssetIds ?? [];

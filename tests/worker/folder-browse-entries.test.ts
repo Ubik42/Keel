@@ -109,10 +109,10 @@ describe('folder browse entries', () => {
       locationKind: 'managed',
       name: 'Parent',
       directAssetCount: 0,
-      // Serpent-toh: parent badge includes assets under ChildA.
+      // parent badge includes assets under ChildA.
       recursiveAssetCount: 1,
       childFolderCount: 2,
-      // Serpent-9021d1: pure folders (no direct assets) pick up covers from child folders.
+      // pure folders (no direct assets) pick up covers from child folders.
       coverArtifactIds: [artifactId],
       coverAssetIds: [asset.assetId],
     });
@@ -128,7 +128,7 @@ describe('folder browse entries', () => {
     expect(entryA.recursiveAssetCount).toBe(1);
     expect(entryA.childFolderCount).toBe(1);
     expect(entryA.coverArtifactIds).toEqual([artifactId]);
-    // Serpent-d0nv: the cover candidate asset id rides alongside the artifact
+    // the cover candidate asset id rides alongside the artifact
     // id so the worker can schedule the cover thumbnail scene for it.
     expect(entryA.coverAssetIds).toEqual([asset.assetId]);
     expect(entryB.directAssetCount).toBe(0);
@@ -150,7 +150,7 @@ describe('folder browse entries', () => {
     service.closeAll();
   });
 
-  it('caps cover candidates at three per folder and maps them to asset ids (Serpent-d0nv)', () => {
+  it('caps cover candidates at three per folder and maps them to asset ids', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
     const library = service.createLibrary({ storageLayout: 'assets', displayName: 'BrowseCovers', selectedParentPath: root });
@@ -213,7 +213,7 @@ describe('folder browse entries', () => {
     service.closeAll();
   });
 
-  it('returns cover candidates without ready thumbnails and the cover scene enqueues them (Serpent-d0nv)', () => {
+  it('returns cover candidates without ready thumbnails and the cover scene enqueues them', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
     const library = service.createLibrary({ storageLayout: 'assets', displayName: 'BrowseCoverCandidates', selectedParentPath: root });
@@ -330,7 +330,7 @@ describe('folder browse entries', () => {
     service.closeAll();
   });
 
-  it('folderEntriesByRefs resolves real entries with covers for managed and linked folders (Serpent-f74e48)', () => {
+  it('folderEntriesByRefs resolves real entries with covers for managed and linked folders', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
     const library = service.createLibrary({ storageLayout: 'assets', displayName: 'BrowseRefs', selectedParentPath: root });
@@ -402,7 +402,7 @@ describe('folder browse entries', () => {
     service.closeAll();
   });
 
-  it('pure folders pick up to 4 covers from child folders in round-robin order (Serpent-9021d1)', () => {
+  it('pure folders pick up to 4 covers from child folders in round-robin order', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
     const library = service.createLibrary({ storageLayout: 'assets', displayName: 'CollageCovers', selectedParentPath: root });
@@ -461,7 +461,7 @@ describe('folder browse entries', () => {
     service.closeAll();
   });
 
-  it('pure folders with 2 child folders round-robin pick 4 covers (Serpent-9021d1)', () => {
+  it('pure folders with 2 child folders round-robin pick 4 covers', () => {
     const root = temporaryRoot();
     const service = new LibraryService();
     const library = service.createLibrary({ storageLayout: 'assets', displayName: 'TwoChildCollage', selectedParentPath: root });

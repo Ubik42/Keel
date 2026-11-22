@@ -41,7 +41,7 @@ function storeWith(presetFiles: Record<string, Buffer>): AppAssetFs {
   });
 }
 
-describe('app-assets (Serpent-qvc6 / packaged .hdr route)', () => {
+describe('app-assets (packaged .hdr route)', () => {
   it('resolves dev-mode files straight from src/renderer/assets/hdri', () => {
     const preset = HDRI_PRESETS[0]!;
     const fs = fakeFs({ fileExists: () => true });

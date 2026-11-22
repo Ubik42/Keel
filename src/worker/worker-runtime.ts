@@ -87,7 +87,7 @@ export const activeThumbnailQueues = new Set<string>();
 
 export const rescheduledThumbnailQueues = new Set<string>();
 
-// Serpent-4bdd26 收编 codex/large-library-performance@15f3325c：视口抢占机制。
+// 收编 codex/large-library-performance@15f3325c：视口抢占机制。
 export const activeThumbnailQueueControllers = new Map<string, AbortController>();
 
 /**
@@ -215,7 +215,7 @@ if (!parentPort) {
   throw new Error('Library Worker must be started by the Electron main process.');
 }
 
-// Serpent-8ca259: Electron's UtilityProcess sets process.type = 'utility'.
+// Electron's UtilityProcess sets process.type = 'utility'.
 // pdfjs-dist's isNodeJS detection explicitly excludes Electron processes with
 // a non-browser process.type, so pdfjs would take its browser code paths
 // (DOM canvas factory, FontFace font loading, real Worker construction) —
@@ -247,7 +247,7 @@ export const libraryService = new LibraryService({
     parentPort.postMessage(event);
   },
   onProgress: (event) => parentPort.postMessage(event),
-  // Serpent-8ca259: HTML document thumbnails capture offscreen in Main.
+  // HTML document thumbnails capture offscreen in Main.
   documentThumbnailRenderer: (input) => renderDocumentThumbnailViaMain(input),
   ...(e2eTerminateProcessAt === undefined
     ? {}
@@ -309,7 +309,7 @@ export function requestPluginMediaProvider(input: Omit<PluginMediaProviderReques
   });
 }
 
-// ── Slice E: offscreen model-thumbnail render client (Serpent-hnmg) ────
+// ── Slice E: offscreen model-thumbnail render client ────
 
 export const pendingModelThumbnailRenders = new Map<string, {
   resolve: (result: ModelThumbnailRenderResult) => void;
@@ -363,7 +363,7 @@ export function requestModelThumbnailRender(
 export let modelRenderTail: Promise<void> = Promise.resolve();
 
 /**
- * Serpent-8ca259: ask Main to capture an HTML document thumbnail in a fresh
+ * ask Main to capture an HTML document thumbnail in a fresh
  * offscreen window. Resolves with the typed result (never rejects except on
  * abort). Content size and load time are not converted into an arbitrary
  * failure; lifecycle cancellation remains available.
@@ -803,9 +803,9 @@ export function scheduleThumbnailQueue(
     priority?: number;
     repairFailed?: boolean;
     retryFailed?: boolean;
-    /** Serpent-x9xu light scenes skip stale-artifact invalidation sweeps. */
+    /** light scenes skip stale-artifact invalidation sweeps. */
     skipStaleRepair?: boolean;
-    /** Serpent-4bdd26: cap in-flight decodes for this scene (startup backfill). */
+    /** cap in-flight decodes for this scene (startup backfill). */
     processMaxJobs?: number;
     /**
      * A visible-window destination change may preempt the active queue. When
@@ -1059,7 +1059,7 @@ export function scheduleThumbnailQueue(
             ...(asset === undefined ? {} : { asset }),
           }))?.artifactId ?? null;
         },
-        // Slice E (Serpent-hnmg): model jobs render offscreen in Main; the
+        // Slice E: model jobs render offscreen in Main; the
         // shared-window gate inside renderModelThumbnailViaMain keeps at
         // most one render in flight process-wide.
         modelThumbnailRenderer: (input) => renderModelThumbnailViaMain(input),
@@ -1412,10 +1412,10 @@ export function scheduleReconciledMissingPrimaryQueue(
   drainPendingReconciledPrimaryQueue(libraryId);
 }
 
-// Serpent-onch/9e1d8d: per-command timing log, off by default.
+// per-command timing log, off by default.
 export const WORKER_CMD_LOG = process.env.KEEL_WORKER_CMD_LOG === '1';
 
-// Serpent-288cd9: RAW metadata 回填的「扫完即停」游标。置 0 即回到「只按 2 秒节流重扫」
+// RAW metadata 回填的「扫完即停」游标。置 0 即回到「只按 2 秒节流重扫」
 // 的旧行为，用于同树 A/B 归因（生产不设即启用）。
 export const RAW_METADATA_EXHAUSTION_ENABLED = process.env.KEEL_RAW_METADATA_EXHAUSTION !== '0';
 
@@ -1476,7 +1476,7 @@ if (process.env.KEEL_LAG_LOG === '1') {
   lagTimer.unref?.();
 }
 
-// Serpent-2cc492（真实 NAS 生产库事故，2026-08-23）：开库后台对账若与渲染端
+// 真实 NAS 生产库事故，2026-08-23：开库后台对账若与渲染端
 // startup 请求风暴同时运行，SMB 上 21,508 条目的 artifact 枚举实测 ~16.5s，
 // 加上各同步 SQL 步骤，startup 突发曾经撞上主进程的固定请求 deadline，late
 // 响应被丢弃（一次 E2E 记录到 462 条）——画布永远等不到第一页数据。因此
@@ -1509,7 +1509,7 @@ export function scheduleOpenBackgroundReconciliation(
         async () => {
           const missingPrimaryArtifactIds = new Set<string>();
           await libraryService.runOpenBackgroundReconciliation(libraryId, {
-            // Serpent-be29a9: this pass runs in 60-asset batches for many seconds.
+            // this pass runs in 60-asset batches for many seconds.
             // Release the single background admission between batches whenever an
             // interactive request or mutation is waiting.
             admissionYield: () => interactiveScheduler.yieldAdmission(
@@ -1579,13 +1579,13 @@ export function deferStartupThumbnailScene(
   deferredStartupThumbnailGenerations.set(libraryId, libraryGeneration);
   startupThumbnailVisibleWindows.delete(libraryId);
 
-  // Serpent-140fe2 direction (user, 2026-08-22): thumbnails must be queued
+  // direction (user, 2026-08-22): thumbnails must be queued
   // for the WHOLE library right after open, not lazily per viewport. The
   // queue itself provides ordering — visible-window waves boost the current
   // viewport above the low-priority backfill — so interactive activity no
   // longer postpones the enqueue (it only ever postponed it forever during
   // continuous browsing).
-  // Serpent-4bdd26: a cold library can take arbitrarily long to produce its
+  // a cold library can take arbitrarily long to produce its
   // first viewport on a slow local or network volume. Keep startup work
   // event-driven instead of polling for a fixed number of seconds; the first
   // visible-window report starts this scene, and close/open cancellation
@@ -1636,7 +1636,7 @@ export function startDeferredStartupThumbnailScene(
 ): void {
   if (deferredStartupThumbnailGenerations.get(libraryId) !== libraryGeneration) return;
   deferredStartupThumbnailGenerations.delete(libraryId);
-  // Serpent-2cc492: startup enqueue/processing still waits for the first
+  // startup enqueue/processing still waits for the first
   // browse response and in-flight commands to drain, but it no longer has a
   // time-based viewport wait before this gate is reached.
   const token = { libraryId, generation: libraryGeneration };
@@ -1808,7 +1808,7 @@ export function noteInteractiveMediaRequest(
   libraryId: string,
   options: { abortSecondary?: boolean } = {},
 ): void {
-  // Serpent-4bdd26 收编 codex/large-library-performance@15f3325c：冷可见波包含
+  // 收编 codex/large-library-performance@15f3325c：冷可见波包含
   // 解码 + artifact 发布 + 渲染协议投递。1 秒的空闲窗允许开库对账在该波仍在
   // 填充视口时恢复（NAS 上尤其明显）。磁盘维护让出接下来 2 秒的交互；
   // 另一次 search/viewport 请求会继续延长窗口。
@@ -1999,7 +1999,7 @@ export function scheduleSecondaryMediaQueue(
           // libraries; a missing durable state must not stop the pump.
         }
       }
-      // Serpent-288cd9：RAW backfill 的 catalog token 只使用 browse 序号。它覆盖
+      // RAW backfill 的 catalog token 只使用 browse 序号。它覆盖
       // 新增资产、revision 与忽略规则变化，但不被 jobs/artifacts 后台写入噪声重置；
       // 到期 failed RAW retry 在 exhausted gate 之前走独立的有界 requeue 路径。
       // 取不到 token（老库缺表等）时退化为纯节流。
@@ -2034,7 +2034,7 @@ export function scheduleSecondaryMediaQueue(
             rawMetadataBackfillToken,
             rawMetadataAdmission,
           );
-          // Serpent-288cd9：候选探测的准入结果必须可观测，否则「扫完之后不再重扫」
+          // 候选探测的准入结果必须可观测，否则「扫完之后不再重扫」
           // 只能靠代码阅读而不是证据。
           if (WORKER_CMD_LOG) {
             console.error(JSON.stringify({
@@ -2193,7 +2193,7 @@ export function scheduleSecondaryMediaQueue(
 export type ThumbnailScheduleScene = 'startup' | 'refresh' | 'visible' | 'linked' | 'restore' | 'mutation' | 'cover';
 
 /**
- * Serpent-x9xu redesign: scenes that fire on every browse/search response are
+ * redesign: scenes that fire on every browse/search response are
  * "light" — they boost priorities without running the expensive auto-repair /
  * stale-artifact scans, which belong to the explicit refresh wave. Keeps the
  * per-page scheduling cheap enough that appending a page never stalls the
@@ -2207,17 +2207,17 @@ export function scheduleThumbnailScene(
   options: { light?: boolean; preemptVisible?: boolean } = {},
 ): void {
   const configs: Record<ThumbnailScheduleScene, { limit?: number; priority: number; maxIds?: number; processMaxJobs?: number }> = {
-    // Serpent-4bdd26 回归修正：processMaxJobs 1→2。用户报告 Windows 上缩略图
+    // 回归修正：processMaxJobs 1→2。用户报告 Windows 上缩略图
     // 生成巨慢——单任务在飞让 startup 波在慢盘/杀毒环境下串行拖到数十秒。
     // 可见波抢占的主要手段是 interruptThumbnailJobsOutsideViewport（只中断
     // running），双任务在飞的可浪费上限是可接受的。
     startup: { limit: 50, priority: 100, processMaxJobs: 2 },
     refresh: { limit: 50, priority: 150 },
-    // Serpent-azf6: the CURRENT VIEW must outrank the import flood — browsing
+    // the CURRENT VIEW must outrank the import flood — browsing
     // a freshly imported library otherwise waits behind hundreds of priority-300
     // mutation jobs. visible is the highest tier so the user always sees the
     // assets in front of them appear first; the import wave fills in behind.
-    // Serpent-x9xu / Serpent-87pd: the visible wave covers the current
+    // the visible wave covers the current
     // browse/search window (BROWSE_PAGE_SIZE = 100), not a stale larger
     // page. Unbrowsed assets are never included (callers pass only the
     // returned page ids), so visible slots stay reserved for what the
@@ -2230,7 +2230,7 @@ export function scheduleThumbnailScene(
     linked: { limit: 50, priority: 250, maxIds: 50 },
     restore: { priority: 250, maxIds: 500 },
     mutation: { priority: 300, maxIds: 500 },
-    // Serpent-d0nv: folder-card covers are direct assets of child folders,
+    // folder-card covers are direct assets of child folders,
     // outside the current view's visible wave — generate them before the
     // assets below the fold. maxIds defaults to 3 per child folder; the
     // folder.browse-entries handler passes its exact child count × 3.
@@ -2251,7 +2251,7 @@ export function scheduleThumbnailScene(
       priority: config.priority,
       ...(config.processMaxJobs === undefined ? {} : { processMaxJobs: config.processMaxJobs }),
       repairFailed: !options.light,
-      // Serpent-5xbg: every browse/refresh wave re-opens retryable failed
+      // every browse/refresh wave re-opens retryable failed
       // artifacts (throttled) — generation failures are healed in the
       // background whenever the asset surfaces, no periodic scan needed.
       retryFailed: true,

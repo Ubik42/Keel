@@ -11,7 +11,7 @@ import { registerModelThumbnailSourceAuthorizations, clearModelThumbnailSourceAu
  */
 export function registerOffscreenRendering() {
   if (!state.workerClient) throw new Error('The library worker must start before offscreen rendering.');
-  // Slice E (Serpent-hnmg): Main owns the shared offscreen window that renders
+  // Slice E: Main owns the shared offscreen window that renders
   // model thumbnails. The worker enqueues model jobs and asks Main to render;
   // Main replies with PNG bytes (or a typed failure) that the worker persists
   // as the standard `thumbnail` artifact.

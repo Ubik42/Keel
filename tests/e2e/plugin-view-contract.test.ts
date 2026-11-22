@@ -9,7 +9,7 @@ import { chooseStandardOption, electronLaunchEnv, openAppSettingsDialog, openPlu
 test.describe.configure({ timeout: 120_000 });
 
 /**
- * Host-managed plugin view contract E2E (Serpent-ex46.7):
+ * Host-managed plugin view contract E2E:
  *  - the host announces view-mounted on document load and the plugin confirms
  *    ready with viewType/scope;
  *  - theme changes propagate as theme-changed WITHOUT reloading (ready stays 1);

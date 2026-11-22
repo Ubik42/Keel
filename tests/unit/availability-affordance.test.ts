@@ -9,7 +9,7 @@ import {
   shouldShowMissingAssetOverlay,
 } from '../../src/renderer/inspector/availability-affordance';
 
-describe('availability affordance (Serpent-rc9)', () => {
+describe('availability affordance', () => {
   it('uses a link icon for available linked folders', () => {
     expect(linkedFolderNavAffordance('available')).toEqual({
       icon: 'link',

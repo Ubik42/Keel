@@ -379,7 +379,7 @@ export function useSearchOperations({ api, library, previewAssetRef, previewRest
         request,
         reloadViewport,
       );
-      // Serpent-huvw: discovery debounce / reload must not toast "搜索完成"
+      // discovery debounce / reload must not toast "搜索完成"
       // and wipe AI completion / error toasts.
       if (result && !opts?.silent) {
         setNotice(t("toast.searchDone", { total: result.total }));
@@ -440,7 +440,7 @@ export function useSearchOperations({ api, library, previewAssetRef, previewRest
     if (
       !library ||
       showTrash ||
-      // Serpent-eaxs: entering tag management clears discovery controls; the
+      // entering tag management clears discovery controls; the
       // debounced "clear filters → show all" reload must not fire behind the
       // management page — its response handler closes the page and dumps the
       // user back on 所有资产. Explicit submit (runSearch) still exits.
@@ -510,7 +510,7 @@ export function useSearchOperations({ api, library, previewAssetRef, previewRest
     // Multi-selection: the batch-edit Inspector reads the multiEdit model
     // built from per-asset metadata (intersection), so every selected
     // asset's metadata must be fresh before the model is rebuilt — the
-    // primary alone was refreshed above (Serpent-c9r3 regression: batch AI
+    // primary alone was refreshed above (batch AI
     // analysis completed but the Inspector stayed stale until a reselect).
     if (selectionFields.get("selectedAssetIds").length >= 2) {
       const ids = [...new Set(selectionFields.get("selectedAssetIds"))];

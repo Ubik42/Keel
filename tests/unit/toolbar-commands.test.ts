@@ -13,7 +13,7 @@ import {
   type ToolbarCommandContext,
 } from '../../src/renderer/commands/toolbar-commands';
 
-// REQ-COMMAND-001 / Serpent-2rk：工作区工具栏视图/字段/溢出工具接入注册表。
+// REQ-COMMAND-001：工作区工具栏视图/字段/溢出工具接入注册表。
 
 const registry = createCommandRegistry(toolbarCommandDefinitions);
 

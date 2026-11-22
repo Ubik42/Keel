@@ -1,4 +1,4 @@
-// Serpent-verg.1: lenient-read infrastructure — column probing with a
+// lenient-read infrastructure — column probing with a
 // per-connection cache, whitelist intersection and degraded defaults.
 import { rmSync } from 'node:fs';
 import { mkdtempSync } from 'node:fs';

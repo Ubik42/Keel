@@ -7,7 +7,7 @@ import {
   resolveSelectionPlatform,
 } from "../../src/renderer/workbench/selection/selection-modifiers";
 
-describe("resolveSelectionPlatform (Serpent-b44c)", () => {
+describe("resolveSelectionPlatform", () => {
   it("detects mac vs windows from user agent", () => {
     expect(resolveSelectionPlatform("Mozilla/5.0 (Macintosh; Intel Mac OS X)")).toBe(
       "mac",

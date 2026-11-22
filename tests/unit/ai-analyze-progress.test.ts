@@ -8,7 +8,7 @@ import {
   progressFromAiProgressEvent,
 } from "../../src/renderer/ai/ai-analyze-progress";
 
-describe("computeAiBatchProgress (Serpent-k3dw)", () => {
+describe("computeAiBatchProgress", () => {
   it("computes determinate ratio from batch baseline deltas", () => {
     const snapshot = computeAiBatchProgress(
       4,
@@ -93,7 +93,7 @@ describe("computeAiBatchProgress (Serpent-k3dw)", () => {
   });
 });
 
-describe("progressFromAiProgressEvent (Serpent-f01d8e)", () => {
+describe("progressFromAiProgressEvent", () => {
   it("advances done from progress-event job updates without a status snapshot", () => {
     const first = progressFromAiProgressEvent({
       jobIds: ["job-1", "job-2", "job-3"],
@@ -136,7 +136,7 @@ describe("cancellationAffectsAiBatch", () => {
   });
 });
 
-describe("collectRecentAiFailureCodes (Serpent-iokf)", () => {
+describe("collectRecentAiFailureCodes", () => {
   it("returns distinct failed codes in encounter order", () => {
     expect(
       collectRecentAiFailureCodes([

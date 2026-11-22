@@ -54,7 +54,7 @@ export type ContextMenuDescriptor =
        */
       linkedRelativePath?: string;
       /**
-       * Serpent-316493: the subject is the library root (folder panel blank
+       * the subject is the library root (folder panel blank
        * area). Only the root-appropriate entries are offered.
        */
       isLibraryRoot?: boolean;
@@ -62,7 +62,7 @@ export type ContextMenuDescriptor =
   | {
       type: "multi-asset";
       assetIds: string[];
-      /** Canvas folder cards in the same multi/mixed selection (Serpent-koy). */
+      /** Canvas folder cards in the same multi/mixed selection. */
       folderIds?: string[];
       count: number;
     }
@@ -85,11 +85,11 @@ export type ContextMenuDescriptor =
       canCloseOthers: boolean;
     }
   | {
-      /** Sidebar trash row context menu (Serpent-gaoi). */
+      /** Sidebar trash row context menu. */
       type: "trash";
     }
   | {
-      /** Deleted managed-folder tombstone in trash browse (Serpent-qufh). */
+      /** Deleted managed-folder tombstone in trash browse. */
       type: "trashed-folder";
       tombstoneId: string;
       name: string;

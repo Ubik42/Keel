@@ -105,7 +105,7 @@ export function pluginViewerMimeType(mediaType: AssetSummary["mediaType"]): stri
     case "text": return "text/*";
     case "model": return "model/*";
     case "document": return "application/pdf";
-    // Serpent-485aeb: fonts are their own media type; plugins get a font MIME.
+    // fonts are their own media type; plugins get a font MIME.
     case "font": return "font/ttf";
     case "other": return "application/octet-stream";
   }

@@ -10,7 +10,7 @@ function payload(commandId: string, result: unknown): CommandCompletedPayload {
   return { commandId, result };
 }
 
-describe('automationCommandToast (Serpent-fmbr)', () => {
+describe('automationCommandToast', () => {
   it('shows the same import summary toast as a manual import', () => {
     const toast = automationCommandToast(payload('file.import', {
       status: 'completed',
@@ -31,7 +31,7 @@ describe('automationCommandToast (Serpent-fmbr)', () => {
     expect(toast!.message).toContain('replaced');
   });
 
-  it('counts a detected image sequence as one logical asset (Serpent-1y9r)', () => {
+  it('counts a detected image sequence as one logical asset', () => {
     const toast = automationCommandToast(payload('file.import', {
       status: 'completed',
       completion: { importedCount: 151, skippedCount: 0, replacedCount: 0, assetCount: 1, fileCount: 151, assets: [] },

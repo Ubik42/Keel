@@ -36,11 +36,11 @@ export type UseDialogEscapeDismissParams = {
   setConflicts: (value: ImportConflictPlan | null) => void;
   setSourceFailurePlan?: (value: null) => void;
   setError: (message: string | null) => void;
-  /** Serpent-c2rm: Escape dismisses the pending library-plugin trust prompt as Later. */
+  /** Escape dismisses the pending library-plugin trust prompt as Later. */
   onDismissPluginTrustPrompt?: () => void;
-  /** Serpent-99lv: Escape dismisses the blocking fatal alert. */
+  /** Escape dismisses the blocking fatal alert. */
   onDismissFatalAlert?: () => void;
-  /** Serpent-kdnm: Escape on connection-failure dialog aborts remaining AI jobs. */
+  /** Escape on connection-failure dialog aborts remaining AI jobs. */
   onAbortAiConnectionFailure?: () => void;
   onCancelBlockingImport?: () => void;
   onDismissBlockingImport?: () => void;
@@ -48,7 +48,7 @@ export type UseDialogEscapeDismissParams = {
 };
 
 /**
- * Document-level Escape dismiss for stacked App dialogs (Serpent-uye).
+ * Document-level Escape dismiss for stacked App dialogs.
  * Priority lives in `dialog-escape-stack.ts`.
  */
 export function useDialogEscapeDismiss({

@@ -1,5 +1,5 @@
 /**
- * Library switcher «添加与传输» section: stable item order (Serpent-qm6w).
+ * Library switcher «添加与传输» section: stable item order.
  *
  * Asset-level imports (folder / linked folder) precede whole-library
  * import/export. Import always precedes export for the same subject.

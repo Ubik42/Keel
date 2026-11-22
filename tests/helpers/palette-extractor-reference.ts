@@ -1,5 +1,5 @@
 /**
- * The pre-Serpent-3a9f1c palette extractor, kept verbatim as a reference so the
+ * The pre-palette extractor, kept verbatim as a reference so the
  * optimized implementation can be proven byte-for-byte equivalent and timed
  * against the same decoded buffers.
  *

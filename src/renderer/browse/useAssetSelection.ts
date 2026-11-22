@@ -41,12 +41,12 @@ export interface UseAssetSelectionParams {
   previewAsset: AssetSummary | null;
   /** Ref to the scrollable workspace canvas element */
   workspaceCanvasRef: React.RefObject<HTMLDivElement | null>;
-  /** Serpent-wgl2: the always-mounted marquee box div, mutated directly via ref. */
+  /** the always-mounted marquee box div, mutated directly via ref. */
   marqueeBoxRef: React.RefObject<HTMLDivElement | null>;
   /** Visible folder-card ids (REQ-FOLDER-010), used for Shift+click range and marquee. */
   folderIds?: string[];
   /**
-   * Optional stable asset id order for Shift ranges (Serpent-oz1t). When
+   * Optional stable asset id order for Shift ranges. When
    * omitted, uses `assets` array order. Masonry uses it as a fallback and
    * reads the current published geometry independently when available.
    */
@@ -83,7 +83,7 @@ export interface UseAssetSelectionReturn {
   /** Attach to individual asset cards: onMouseDown sets the button, onClick calls this */
   handleCardClick: (assetId: string, event: React.MouseEvent) => void;
   /**
-   * Attach to folder cards' onClick. Plain click selects (Serpent-829);
+   * Attach to folder cards' onClick. Plain click selects;
    * Cmd/Ctrl toggles; Shift extends a range. Entering the folder is
    * `onDoubleClick` in the caller — this handler never navigates.
    */
@@ -156,7 +156,7 @@ export function useAssetSelection({
   const autoScrollRef = useRef<{ direction: number; speed: number }>({ direction: 0, speed: 0 });
   const autoScrollRafRef = useRef<number | null>(null);
   const marqueeModifiersRef = useRef<{ metaKey: boolean; ctrlKey: boolean; shiftKey: boolean }>({ metaKey: false, ctrlKey: false, shiftKey: false });
-  // Serpent-wgl2: the marquee must not run per pointermove (~120Hz) — the
+  // the marquee must not run per pointermove (~120Hz) — the
   // per-card getBoundingClientRect reads force a layout pass every frame.
   // Pointer coordinates are parked in a ref and the marquee (box update +
   // hit scan + selection diff) runs once per animation frame instead.
@@ -174,7 +174,7 @@ export function useAssetSelection({
   // changes — most frames move the box without crossing a new card.
   const marqueeLastHitsKeyRef = useRef('');
 
-  // Serpent-wgl2: direct-DOM marquee box writer. Keep the callback stable so
+  // direct-DOM marquee box writer. Keep the callback stable so
   // the mousedown handler does not capture a new function on every render.
   const applyMarqueeBoxStyle = useCallback((rect: {
     left: number; top: number; width: number; height: number;
@@ -197,7 +197,7 @@ export function useAssetSelection({
   // are cleared together on Esc / empty-canvas click / scope changes.
   // Discovery filter refreshes may pass `{ preserveFolders: true }` so a
   // folder multi-select is not wiped when only the asset grid reloads
-  // (Serpent-w9c6).
+  //.
   function clearAssetSelection(options?: { preserveFolders?: boolean }) {
     setSelectedAssetId(undefined);
     setSelectedAssetIds([]);
@@ -437,10 +437,10 @@ export function useAssetSelection({
         width: 0,
         height: 0,
       });
-      // Serpent-wgl2: the hits diff key must not leak across marquees — a
+      // the hits diff key must not leak across marquees — a
       // second drag over the same region would otherwise skip every update.
       marqueeLastHitsKeyRef.current = "";
-      // Serpent-wgl2: suppress the per-card selection transition while a
+      // suppress the per-card selection transition while a
       // marquee is active — a large hit set otherwise animates hundreds of
       // box-shadows at once and drags the frame rate down.
       document.body.classList.add("is-marquee-active");
@@ -495,7 +495,7 @@ export function useAssetSelection({
         "[data-asset-id], [data-folder-id]",
       );
       const mountedAssetIds = new Set<string>();
-      // Serpent-wgl2: cache card rects in canvas-content coordinates — they
+      // cache card rects in canvas-content coordinates — they
       // stay valid while scrolling and are only dropped when the canvas
       // layout size changes (window resize / column reflow). Scrolling the
       // grid therefore costs one viewport read instead of N forced reflows.
@@ -556,7 +556,7 @@ export function useAssetSelection({
       marqueeHitIdsRef.current = hits.assetHitIds;
       marqueeFolderHitIdsRef.current = hits.folderHitIds;
 
-      // Serpent-wgl2: only push to React when the hit set actually changed —
+      // only push to React when the hit set actually changed —
       // most frames move the box without crossing a card boundary, and the
       // previous per-frame setState re-rendered the whole selection grid.
       const hitsKey = `${hits.assetHitIds.join("\u0001")}\u0000${hits.folderHitIds.join("\u0001")}`;
@@ -628,14 +628,14 @@ export function useAssetSelection({
 
       const pointer = { x: e.clientX, y: e.clientY };
       marqueePointerClientRef.current = pointer;
-      // Serpent-wgl2: park the pointer and run the marquee once per animation
+      // park the pointer and run the marquee once per animation
       // frame — the raw pointermove stream (~120Hz on high-refresh displays)
       // would otherwise force a layout pass (getBoundingClientRect per card)
       // on every event.
       if (marqueeRafRef.current === null) {
         marqueeRafRef.current = requestAnimationFrame(() => {
           marqueeRafRef.current = null;
-          // Serpent-wgl2: a mouseup between pointermove and this frame must
+          // a mouseup between pointermove and this frame must
           // not resurrect the marquee box.
           if (!marqueeActiveRef.current) return;
           updateMarquee(marqueePointerClientRef.current);

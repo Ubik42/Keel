@@ -10,7 +10,7 @@ import {
   userCancellationNoticeKey,
 } from "../../src/renderer/common/user-cancellation";
 
-// Serpent-bcaf4a：用户主动停下（确认窗取消 / 进度取消）不是失败，必须走 info 通知。
+// 用户主动停下（确认窗取消 / 进度取消）不是失败，必须走 info 通知。
 describe("user cancellation", () => {
   it("treats only CANCELLED as a user stop", () => {
     expect(

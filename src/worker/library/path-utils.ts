@@ -8,7 +8,7 @@ import path from 'node:path';
  * C:\Users\...), `path.relative` cannot express a relative traversal and
  * returns the absolute target instead. Without the guard that absolute result
  * is misread as "inside the root" and legitimate cross-drive destinations are
- * rejected (Serpent-59f).
+ * rejected.
  */
 export function pathIsWithin(rootPath: string, candidatePath: string): boolean {
   const relative = path.relative(rootPath, candidatePath);

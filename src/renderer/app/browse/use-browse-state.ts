@@ -128,7 +128,7 @@ export function useBrowseState({ pendingLibraryCloseFencesRef, setTrashBrowseTom
   const [trashedAssets, setTrashedAssets] = useBrowseField("trashedAssets");
   const [trashedAssetCount, setTrashedAssetCount] = useBrowseField("trashedAssetCount");
 
-  // Serpent-ws4k: paginated browse/search loading. First pages render
+  // paginated browse/search loading. First pages render
   // immediately; a scroll sentinel appends the next page; select-all/invert
   // resolve the full scope id set on demand (idsOnly).
   const browsePagination = useBrowsePagination({
@@ -190,7 +190,7 @@ export function useBrowseState({ pendingLibraryCloseFencesRef, setTrashBrowseTom
     setError,
     syncBrowseFilterMembershipRef,
   });
-  // Serpent-c9r3: bridge the multi-edit rebuilder into the ai.content.cleared
+  // bridge the multi-edit rebuilder into the ai.content.cleared
   // event effect (whose deps intentionally exclude it) via a ref, matching the
   // reloadCurrentContentRef / refreshAfterAiRef pattern.
   const rebuildAndApplyMultiEditRef = useRef<(ids: string[]) => void>(
@@ -382,7 +382,7 @@ export function useBrowseState({ pendingLibraryCloseFencesRef, setTrashBrowseTom
   const cancelWorkspaceViewportRestoreRef = useRef<(() => void) | null>(null);
   // True while a Back/Forward replay is being applied. Suppresses viewport
   // saving and tab-context capture so the replay neither records a new history
-  // step nor overwrites the target's saved viewport (Serpent-b8a853 shared
+  // step nor overwrites the target's saved viewport (shared
   // timeline; previously this was a per-tab history identity comparison).
   const workspaceHistoryReplayActiveRef = useRef(false);
   const {
@@ -423,7 +423,7 @@ export function useBrowseState({ pendingLibraryCloseFencesRef, setTrashBrowseTom
       );
     },
   });
-  // Serpent-f74e48: while a text term is present, surface matching folders
+  // while a text term is present, surface matching folders
   // (name or relative path) as a "Folders" section above the asset grid.
   const searchFolderResults = useMemo(() => {
     if (searchValue.trim() === "") return [];
@@ -441,7 +441,7 @@ export function useBrowseState({ pendingLibraryCloseFencesRef, setTrashBrowseTom
       linkedFolders,
     });
   }, [searchValue, folders, linkedFolders, library?.libraryId, workspaceTabsState.activeTabId, lastValidFolderSearchQueryRef]);
-  // Serpent-f74e48: fetch the real FolderBrowseEntry (cover previews + counts)
+  // fetch the real FolderBrowseEntry (cover previews + counts)
   // for search-matched folders so the reused asset-browser folder cards show
   // the same previews as normal browsing. Enrichment is keyed by the matched
   // ref set so a slow older response never overwrites a newer search.

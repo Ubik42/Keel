@@ -1,5 +1,5 @@
 /**
- * Masonry card preview sizing for portrait assets (Serpent-woa / Serpent-5p45).
+ * Masonry card preview sizing for portrait assets.
  *
  * A masonry card owns the full width of its column. The preview must therefore
  * grow to the natural aspect-ratio height. Applying a fixed max-height while
@@ -34,7 +34,7 @@ export function estimateMasonryPreviewHeightPx(
 /** Inline style for `.asset-preview` in masonry with usable dimensions.
  *  Do not apply this on windowed masonry cards: the slot owns height via
  *  `--masonry-preview-height`. An inline aspect-ratio would beat that lock
- *  and leave a truncated empty band (Serpent-1s3d).
+ *  and leave a truncated empty band.
  */
 export function resolveMasonryPreviewStyle(
   width: number | null | undefined,

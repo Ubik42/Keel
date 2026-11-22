@@ -90,7 +90,7 @@ describe('managed folders', () => {
   });
 });
 
-describe('deleteEmptyManagedFolders (Serpent-dcb1 / MCP 接管)', () => {
+describe('deleteEmptyManagedFolders (MCP 接管)', () => {
   it('deletes empty folders on disk and DB, and rejects non-empty batches wholesale', () => {
     const root = temporaryRoot();
     const service = new LibraryService();

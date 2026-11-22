@@ -350,7 +350,7 @@ describe('saveCanvasPreferences', () => {
 });
 
 describe('DEFAULT_CANVAS_PREFERENCES', () => {
-  it('fills missing badge field toggles when loading older v1 prefs (Serpent-cs1)', () => {
+  it('fills missing badge field toggles when loading older v1 prefs', () => {
     const storage = createStorageStub({
       [PREF_KEY]: JSON.stringify({
         version: 1,
@@ -420,7 +420,7 @@ describe('DEFAULT_CANVAS_PREFERENCES', () => {
   });
 });
 
-describe('CARD_SIZE_STEP / cardSizeSliderStepCount (legacy Serpent-akz helpers)', () => {
+describe('CARD_SIZE_STEP / cardSizeSliderStepCount (legacy helpers)', () => {
   it('still exposes a positive integer step that divides the range', () => {
     expect(CARD_SIZE_STEP).toBeGreaterThan(0);
     expect((CARD_SIZE_MAX - CARD_SIZE_MIN) % CARD_SIZE_STEP).toBe(0);
@@ -447,7 +447,7 @@ describe('canvas resolution caption visibility', () => {
 
   it('never shows a 3D model bounding box as a resolution caption', () => {
     // Models carry width/height as well, but that is a bounding-box size, not a
-    // pixel resolution users read off a card (Serpent-b1b0f2).
+    // pixel resolution users read off a card.
     expect(shouldShowGridDimensions(fields, 'grid', 1920, 1080, { mediaType: 'model' })).toBe(false);
     expect(shouldShowGridDimensions(fields, 'masonry', 100, 100, { sourceName: 'scene.fbx' })).toBe(false);
     expect(shouldShowGridDimensions(fields, 'grid', 100, 100, { sourceName: 'scene.obj' })).toBe(false);

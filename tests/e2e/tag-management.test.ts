@@ -13,7 +13,7 @@ const VALID_PNG = Buffer.from(
   "base64",
 );
 
-// Serpent-eaxs / REQ-TAG-010–013: chip-grid tag management workspace —
+// REQ-TAG-010–013: chip-grid tag management workspace —
 // chips (not a row list), name/count sorting, canvas-style selection with a
 // right-click management menu, merge dialog, and the delete flow that
 // regressed in TAG-003.
@@ -55,7 +55,7 @@ test("tag management chip grid: create, sort, select, menu, merge, delete", asyn
       window.getByRole("button", { name: `当前资源库 ${libraryName}` }),
     ).toBeVisible({ timeout: 15_000 });
 
-    // Serpent-eaxs regression: entering management while a discovery input is
+    // entering management while a discovery input is
     // active must not let the debounced "clear filters → show all" reload
     // close the page and dump the user back on 所有资产.
     await window.getByLabel("搜索资源库").focus();

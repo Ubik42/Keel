@@ -367,7 +367,7 @@ static void emit_material(serpent_buf *j, const ufbx_material *mat, const ufbx_s
 	jappend_double(j, rough);
 	jappend(j, ",\"metallicRoughnessTexture\":");
 	jappend_int(j, mr_tex);
-	/* Serpent-a5ic: separate-file metalness/roughness maps cannot ride the
+	/* separate-file metalness/roughness maps cannot ride the
 	 * single glTF metallicRoughness slot; expose both scene indices so the
 	 * JS converter can composite them (B = metalness, G = roughness). */
 	jappend(j, ",\"metalnessTexture\":");
@@ -611,7 +611,7 @@ int serpent_parse(const uint8_t *fbx_data, size_t fbx_size, const char *opts_jso
 			for (size_t c = 0; c < corner_count; c++) {
 				ufbx_vec2 v = uv->values.data[uv->indices.data[c]];
 				attr[c * 2 + 0] = (float)v.x;
-				/* Serpent-a5ic: FBX UV origin is bottom-left, glTF is
+				/* FBX UV origin is bottom-left, glTF is
 				 * top-left (GLTFLoader sets flipY=false). Flip V (v -> 1-v)
 				 * or textures render upside-down and normal maps sample
 				 * wrong — the "fragmented" look. Matches the FBX2glTF
@@ -641,7 +641,7 @@ int serpent_parse(const uint8_t *fbx_data, size_t fbx_size, const char *opts_jso
 		for (size_t p = 0; p < num_parts; p++) {
 			const ufbx_mesh_part *part = &mesh->material_parts.data[p];
 			size_t emit = 0;
-			/* Serpent-a5ic: use ufbx's real triangulator instead of a hand
+			/* use ufbx's real triangulator instead of a hand
 			 * written fan. The fan is wrong for concave polygons (complex DCC
 			 * meshes inevitably contain them) which rendered textures
 			 * "fragmented". ufbx_triangulate_face splits quads along the

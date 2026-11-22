@@ -40,7 +40,7 @@ export function executeMediaPathMainCommand(
           : { scopeWarmAssetIds: request.scopeWarmAssetIds }),
       };
     case "model.resolve-companions.request":
-      // Slice C (Serpent-qvc6): 3D viewer companion-texture index. The worker
+      // Slice C: 3D viewer companion-texture index. The worker
       // command already exists (slice A); this is the renderer request bridge.
       return {
         type: "model.resolve-companions",

@@ -42,7 +42,7 @@ test("does not display the metadata concurrency token as a file version", async 
       .first()
       .click();
 
-    // Serpent-4rr4: locate the card by its stable data-asset-id instead of the
+    // locate the card by its stable data-asset-id instead of the
     // accessible name — a narrow card can wrap the long file name
     // ("metadata-vers ion .txt"), which breaks the continuous regex, and TXT
     // cards carry no thumbnail img to key an alt attribute on.

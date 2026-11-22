@@ -45,7 +45,7 @@ export type KeelMcpServerOptions = {
   serverName?: string;
   serverVersion?: string;
   /**
-   * Desktop feedback for MCP tool results (Serpent-fmbr): fired only when a
+   * Desktop feedback for MCP tool results: fired only when a
    * non-read command actually executed (two-phase challenge reports excluded),
    * with the structured result so the renderer can show the same toast as the
    * manual operation. Read-only and failed calls deliberately emit nothing.
@@ -189,7 +189,7 @@ export function createKeelMcpServer(options: KeelMcpServerOptions): Server {
     });
     await reportProgress?.(1, 1, result.ok ? 'Keel completed the tool.' : 'Keel rejected the tool call.');
     if (result.ok && result.commandId !== undefined && result.plugin === undefined) {
-      // Serpent-fmbr: only executed non-read commands surface on the desktop;
+      // only executed non-read commands surface on the desktop;
       // read calls and phase-1 challenge reports (nothing executed yet) stay quiet.
       if (shouldEmitCommandCompleted(result.commandId, result.result)) {
         const completedResult = result.result !== null

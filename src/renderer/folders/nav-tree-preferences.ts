@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 // ---------------------------------------------------------------------------
-// Nav tree collapse preferences (CU-D2 / Serpent-5n5)
+// Nav tree collapse preferences (CU-D2)
 // ---------------------------------------------------------------------------
 
 export interface NavTreePreferences {
