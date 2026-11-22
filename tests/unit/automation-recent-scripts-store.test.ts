@@ -7,7 +7,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import {
   AUTOMATION_RECENT_SCRIPTS_LIMIT,
   createJsonFileAutomationRecentScriptsStore,
-} from '../../src/main/automation-recent-scripts-store';
+} from '../../src/main/automation/automation-recent-scripts-store';
 
 const roots: string[] = [];
 const handleA = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';

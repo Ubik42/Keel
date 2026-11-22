@@ -7,7 +7,7 @@ import {
   saveFolderRecursivePreferences,
   withFolderRecursiveEnabled,
   type FolderRecursivePreferencesStorage,
-} from '../../src/renderer/folder-recursive-preferences';
+} from '../../src/renderer/folders/folder-recursive-preferences';
 
 function memoryStorage(
   initial: Record<string, string> = {},

@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
 import { createPluginContributionContext } from '../../src/plugins/plugin-context';
-import { buildPluginInspectorSectionDescriptors } from '../../src/renderer/plugin-inspector-sections';
-import { buildPluginShortcutDescriptors } from '../../src/renderer/plugin-shortcut-contributions';
-import { buildPluginToolbarDescriptors } from '../../src/renderer/plugin-toolbar-contributions';
-import { buildPluginViewerActionDescriptors } from '../../src/renderer/plugin-viewer-actions';
+import { buildPluginInspectorSectionDescriptors } from '../../src/renderer/plugins/plugin-inspector-sections';
+import { buildPluginShortcutDescriptors } from '../../src/renderer/plugins/plugin-shortcut-contributions';
+import { buildPluginToolbarDescriptors } from '../../src/renderer/plugins/plugin-toolbar-contributions';
+import { buildPluginViewerActionDescriptors } from '../../src/renderer/plugins/plugin-viewer-actions';
 
 function context() {
   return createPluginContributionContext({

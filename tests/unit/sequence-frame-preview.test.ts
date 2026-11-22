@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { resolveSequenceFrameUrl } from "../../src/renderer/sequence-frame-preview";
+import { resolveSequenceFrameUrl } from "../../src/renderer/browse/sequence-frame-preview";
 
 describe("resolveSequenceFrameUrl", () => {
   it("prefers a ready artifact over source-direct metadata", () => {

@@ -7,7 +7,7 @@ import {
   saveFolderSortPreferences,
   withFolderSort,
   type FolderSortPreferencesStorage,
-} from "../../src/renderer/folder-sort-preferences";
+} from "../../src/renderer/folders/folder-sort-preferences";
 
 function memoryStorage(initial: Record<string, string> = {}): FolderSortPreferencesStorage & {
   dump(): Record<string, string>;

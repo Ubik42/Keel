@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   buildLibraryTransferMenuItems,
   LIBRARY_TRANSFER_MENU_ORDER,
-} from '../../src/renderer/library-transfer-menu';
+} from '../../src/renderer/library/library-transfer-menu';
 
 describe('library transfer menu (Serpent-qm6w)', () => {
   it('orders imports before export and library import before library export', () => {

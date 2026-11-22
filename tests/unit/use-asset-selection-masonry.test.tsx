@@ -7,8 +7,8 @@ import type { AssetSummary } from "../../src/shared/asset-types";
 import {
   publishCanvasAssetLayout,
   type CanvasAssetLayoutRect,
-} from "../../src/renderer/canvas-asset-layout";
-import { useAssetSelection } from "../../src/renderer/useAssetSelection";
+} from "../../src/renderer/browse/canvas-asset-layout";
+import { useAssetSelection } from "../../src/renderer/browse/useAssetSelection";
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 

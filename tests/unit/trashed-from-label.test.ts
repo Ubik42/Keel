@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { trashedFromLabel } from '../../src/renderer/trashed-from-label';
+import { trashedFromLabel } from '../../src/renderer/trash/trashed-from-label';
 
 describe('trashedFromLabel (Wave-3 audit P3)', () => {
   it('shows 资源库根目录 for root-level assets instead of duplicating the file name', () => {

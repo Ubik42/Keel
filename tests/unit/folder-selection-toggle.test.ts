@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { toggleFolderMultiSelection } from "../../src/renderer/folder-selection-toggle";
+import { toggleFolderMultiSelection } from "../../src/renderer/folders/folder-selection-toggle";
 
 // Serpent-d7acfa：Ctrl/⌘ 点击文件夹时的选区（当前打开的文件夹是隐式选中的）。
 describe("toggle folder multi selection", () => {

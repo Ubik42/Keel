@@ -12,10 +12,10 @@ import {
   AutomationExecutionJournal,
   createJsonFileAutomationExecutionStore,
   type AutomationExecutionAuditLogger,
-} from '../../src/main/automation-execution-journal';
-import { EmbeddedMcpServer, type EmbeddedMcpWorkerClient } from '../../src/main/embedded-mcp-server';
-import { McpClientCredentialStore } from '../../src/main/mcp-client-credentials';
-import { McpSettingsStore } from '../../src/main/mcp-settings-store';
+} from '../../src/main/automation/automation-execution-journal';
+import { EmbeddedMcpServer, type EmbeddedMcpWorkerClient } from '../../src/main/mcp/embedded-mcp-server';
+import { McpClientCredentialStore } from '../../src/main/mcp/mcp-client-credentials';
+import { McpSettingsStore } from '../../src/main/mcp/mcp-settings-store';
 
 const roots: string[] = [];
 const logger: AutomationExecutionAuditLogger = {

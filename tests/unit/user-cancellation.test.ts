@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { LibraryOperationError } from "../../src/renderer/error-utils";
+import { LibraryOperationError } from "../../src/renderer/common/error-utils";
 import { en } from "../../src/renderer/i18n/catalogs/en";
 import { zhCN } from "../../src/renderer/i18n/catalogs/zh-CN";
 import { lookupMessage } from "../../src/renderer/i18n/types";
@@ -8,7 +8,7 @@ import {
   USER_CANCELLATION_NOTICE_KEYS,
   isUserCancellation,
   userCancellationNoticeKey,
-} from "../../src/renderer/user-cancellation";
+} from "../../src/renderer/common/user-cancellation";
 
 // Serpent-bcaf4a：用户主动停下（确认窗取消 / 进度取消）不是失败，必须走 info 通知。
 describe("user cancellation", () => {

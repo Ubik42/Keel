@@ -3,12 +3,12 @@ import { describe, expect, it } from 'vitest';
 import {
   createScriptSandboxPreviewController,
   type ScriptSandboxPreviewWorker,
-} from '../../src/renderer/script-sandbox-preview-controller';
+} from '../../src/renderer/rules/script-sandbox-preview-controller';
 import type {
   ScriptSandboxPreviewWorkerRequest,
   ScriptSandboxPreviewWorkerResponse,
-} from '../../src/renderer/script-sandbox-preview-protocol';
-import { isScriptSandboxPreviewWorkerResponse } from '../../src/renderer/script-sandbox-preview-protocol';
+} from '../../src/renderer/rules/script-sandbox-preview-protocol';
+import { isScriptSandboxPreviewWorkerResponse } from '../../src/renderer/rules/script-sandbox-preview-protocol';
 
 class FakePreviewWorker implements ScriptSandboxPreviewWorker {
   public onerror: ((event: { message: string }) => void) | null = null;

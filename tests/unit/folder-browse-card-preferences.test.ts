@@ -6,7 +6,7 @@ import {
   loadFolderBrowseCardPreferences,
   saveFolderBrowseCardPreferences,
   type FolderBrowseCardPreferencesStorage,
-} from "../../src/renderer/folder-browse-card-preferences";
+} from "../../src/renderer/browse/folder-browse-card-preferences";
 
 function memoryStorage(
   initial?: Record<string, string>,

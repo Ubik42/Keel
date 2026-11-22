@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { folderInspectorPathLabel } from "../../src/renderer/folder-inspector";
+import { folderInspectorPathLabel } from "../../src/renderer/inspector/folder-inspector";
 
 describe("folder inspector", () => {
   it("shows one path and hides paths that differ", () => {

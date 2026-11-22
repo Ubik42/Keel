@@ -9,7 +9,7 @@ import {
   resolveTagFilterSets,
   toggleFormatGroup,
   toggleFormatToken,
-} from "../../src/renderer/dimension-filter-selection";
+} from "../../src/renderer/filters/dimension-filter-selection";
 
 describe("applyDimensionSelectionClick (REQ-FILTER-025)", () => {
   it("default click on an empty selection selects only the clicked value", () => {

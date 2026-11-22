@@ -7,7 +7,7 @@ import {
   readShortcutBindings,
   shortcutBindingsFilePath,
   writeShortcutBindings,
-} from "../../src/main/shortcut-bindings-store";
+} from "../../src/main/preferences/shortcut-bindings-store";
 import {
   DEFAULT_SHORTCUT_BINDINGS,
   setShortcutOverride,

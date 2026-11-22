@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   resolveFolderBrowseParentId,
   type FolderBrowseCanvasContext,
-} from "../../src/renderer/folder-browse-canvas";
+} from "../../src/renderer/browse/folder-browse-canvas";
 import type { LinkedFolderSummary, ManagedFolderSummary } from "../../src/shared/asset-types";
 
 const managedFolder = (folderId: string): ManagedFolderSummary => ({

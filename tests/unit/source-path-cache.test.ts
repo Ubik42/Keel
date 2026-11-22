@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { SourcePathCache, type SourcePathResolution } from '../../src/main/source-path-cache';
+import { SourcePathCache, type SourcePathResolution } from '../../src/main/media/source-path-cache';
 
 const source: SourcePathResolution = {
   libraryId: 'library-1',

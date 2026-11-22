@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   workspaceTabOutlineFillPath,
   workspaceTabOutlinePath,
-} from "../../src/renderer/workspace-tab-outline-path";
+} from "../../src/renderer/workspace/workspace-tab-outline-path";
 
 describe("workspaceTabOutlinePath", () => {
   it("emits an open path with concave scoop arcs and top radii", () => {

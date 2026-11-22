@@ -22,9 +22,9 @@ import {
   summarizeEmbeddingServices,
   EmbeddingServiceRegistryError,
   type EmbeddingServiceCredentialStore,
-} from "../../src/main/embedding-service-registry";
-import { loadSemanticSearchPreferences } from "../../src/renderer/semantic-search-preferences";
-import { postEmbeddingHttp } from "../../src/main/embedding-http";
+} from "../../src/main/embedding/embedding-service-registry";
+import { loadSemanticSearchPreferences } from "../../src/renderer/ai/semantic-search-preferences";
+import { postEmbeddingHttp } from "../../src/main/embedding/embedding-http";
 import { parseRendererRequest } from "../../src/shared/protocol/requests";
 import { parseRendererResult } from "../../src/shared/protocol/responses";
 

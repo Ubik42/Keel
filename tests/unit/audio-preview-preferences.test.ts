@@ -10,7 +10,7 @@ import {
   loadAudioPreviewPreferences,
   saveAudioPreviewPreferences,
   type AudioPreviewPreferencesStorage,
-} from "../../src/renderer/audio-preview-preferences";
+} from "../../src/renderer/viewer/audio-preview-preferences";
 
 function memoryStorage(): AudioPreviewPreferencesStorage & { raw: Map<string, string> } {
   const raw = new Map<string, string>();

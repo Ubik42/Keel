@@ -1,25 +1,25 @@
 import type { Dispatch, RefObject, SetStateAction } from "react";
 import type { KeelLibraryApi } from "../../../shared/library-api";
 import type { SearchQuery } from "../../../shared/asset-types";
-import type { BrowseFirstPage } from "../../use-browse-pagination";
+import type { BrowseFirstPage } from "../../browse/use-browse-pagination";
 import type { TranslateFn } from "../../i18n/LocaleProvider";
 import type { AppLocale } from "../../i18n/types";
 import { type AssetSummary, type FilterClause, type SearchScope, type SortDefinition, type TagSummary } from "../../../shared/asset-types";
-import { type BrowseMembershipChange } from "../../browse-filter-membership";
-import { LibraryOperationError, toMessage } from "../../error-utils";
-import { type LibraryViewSessionToken } from "../../library-view-session";
-import { type SemanticSearchPageSize } from "../../semantic-search-preferences";
+import { type BrowseMembershipChange } from "../../filters/browse-filter-membership";
+import { LibraryOperationError, toMessage } from "../../common/error-utils";
+import { type LibraryViewSessionToken } from "../../library/library-view-session";
+import { type SemanticSearchPageSize } from "../../ai/semantic-search-preferences";
 import { type BrowseState } from "../../stores/browse-store";
 import { type NavigationState } from "../../stores/navigation-store";
 import { type QueryState } from "../../stores/query-store";
 import { type SelectionState } from "../../stores/selection-store";
 import { type SessionState } from "../../stores/session-store";
-import { tagBrowseDefinition } from "../../tag-browse-definition";
-import { descendantTagIds } from "../../tag-tree-model";
-import { BROWSE_PAGE_SIZE, registerBrowseSearchPage } from "../../use-browse-pagination";
+import { tagBrowseDefinition } from "../../tags/tag-browse-definition";
+import { descendantTagIds } from "../../tags/tag-tree-model";
+import { BROWSE_PAGE_SIZE, registerBrowseSearchPage } from "../../browse/use-browse-pagination";
 import { type WorkspaceNavLocation, type WorkspaceNavViewport } from "../../workbench/workspace/workspace-nav-history";
 import { type WorkspaceNavigationHistoryMode } from "../../workbench/workspace/workspace-navigation-coordinator";
-import { type WorkspaceTabBrowseState } from "../../workspace-tabs";
+import { type WorkspaceTabBrowseState } from "../../workspace/workspace-tabs";
 import { type QueryFilterSnapshot, type SearchDefinition, type WorkspaceNavigationRequest } from "../shared/app-shared";
 
 export interface UseTagOperationsDeps {

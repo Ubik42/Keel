@@ -1,10 +1,10 @@
 import type { Dispatch, DragEvent, MutableRefObject, RefObject, SetStateAction } from "react";
-import type { BrowseCanvasBodyLayout } from "../../folder-browse-canvas";
+import type { BrowseCanvasBodyLayout } from "../../browse/folder-browse-canvas";
 import type { ResizablePanel } from "../../workbench/shell/panel-auto-hide";
-import type { FilteredFolderCounts } from "../../use-filtered-folder-counts";
+import type { FilteredFolderCounts } from "../../filters/use-filtered-folder-counts";
 import type { ContextMenuDescriptor } from "../../workbench/menu/context-menu";
-import { resolveBrowseContextMenuIntent } from "../../browse-selection-menu";
-import { FolderCard } from "../../FolderCard";
+import { resolveBrowseContextMenuIntent } from "../../browse/browse-selection-menu";
+import { FolderCard } from "../../browse/FolderCard";
 import { type AssetScope, type NavigationState } from "../../stores/navigation-store";
 import { type SelectionState } from "../../stores/selection-store";
 import { type SessionState } from "../../stores/session-store";

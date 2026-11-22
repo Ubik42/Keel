@@ -4,7 +4,7 @@ import {
   LibraryOperationError,
   shouldSuppressClipboardPasteFeedback,
   toMessage,
-} from '../../src/renderer/error-utils';
+} from '../../src/renderer/common/error-utils';
 
 describe('shouldSuppressClipboardPasteFeedback', () => {
   it('suppresses empty clipboard and invalid drop selection', () => {

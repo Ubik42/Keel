@@ -4,8 +4,8 @@ import { translateForLocale } from "../../src/renderer/i18n";
 import {
   folderTabHoverPath,
   presentWorkspaceTab,
-} from "../../src/renderer/workspace-tab-presentation";
-import { createWorkspaceTabs } from "../../src/renderer/workspace-tabs";
+} from "../../src/renderer/workspace/workspace-tab-presentation";
+import { createWorkspaceTabs } from "../../src/renderer/workspace/workspace-tabs";
 
 describe("workspace tab presentation", () => {
   it("keeps a cached viewer title after another tab replaces the shared asset list", () => {

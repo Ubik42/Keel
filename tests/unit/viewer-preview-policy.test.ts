@@ -4,7 +4,7 @@ import {
   canPresentPreviewMedia,
   resolveViewerPrimarySurface,
   shouldBlockOnPreviewGeneration,
-} from '../../src/renderer/viewer-preview-policy';
+} from '../../src/renderer/viewer/viewer-preview-policy';
 
 const nativeImage = {
   status: 'ready' as const,

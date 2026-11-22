@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { McpPermissionPolicyStore } from '../../src/main/mcp-permission-policy-store';
+import { McpPermissionPolicyStore } from '../../src/main/mcp/mcp-permission-policy-store';
 
 const roots: string[] = [];
 

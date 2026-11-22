@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   readShowMissingLinkedFiles,
   writeShowMissingLinkedFiles,
-} from '../../src/renderer/linked-missing-preference';
+} from '../../src/renderer/folders/linked-missing-preference';
 
 function memoryStorage() {
   const values = new Map<string, string>();

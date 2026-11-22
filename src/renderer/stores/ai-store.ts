@@ -1,8 +1,8 @@
 import { createFieldStore } from './create-field-store';
 import { type AiAnalysisSettingsWire, DEFAULT_AI_ANALYSIS_SETTINGS, toWireAiAnalysisSettings } from '../../shared/ai-analysis-settings';
 import { type AiApiFormat, DEFAULT_AI_API_FORMAT, DEFAULT_AI_MODELS } from '../../shared/ai-endpoints';
-import { type AiConnectionState } from '../AiConfigDialog';
-import { type AiBatchProgressSnapshot } from '../ai-analyze-progress';
+import { type AiConnectionState } from '../ai/AiConfigDialog';
+import { type AiBatchProgressSnapshot } from '../ai/ai-analyze-progress';
 
 export interface AiState {
   aiApiFormat: AiApiFormat;

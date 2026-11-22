@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { createPluginMenuContributionContext } from '../../src/renderer/plugin-contribution-context';
+import { createPluginMenuContributionContext } from '../../src/renderer/plugins/plugin-contribution-context';
 
 type MenuAsset = Parameters<typeof createPluginMenuContributionContext>[0]['assets'][number];
 

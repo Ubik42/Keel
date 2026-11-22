@@ -4,14 +4,14 @@ import {
   resolveLocalSimilarModelId,
   semanticBackgroundWorkActive,
   semanticToolbarReady,
-} from "../../src/renderer/semantic-work";
-import { embeddingIndexCopyKey, embeddingIndexJobsVisible } from "../../src/renderer/semantic-index-copy";
+} from "../../src/renderer/ai/semantic-work";
+import { embeddingIndexCopyKey, embeddingIndexJobsVisible } from "../../src/renderer/ai/semantic-index-copy";
 import {
   mergeKeywordAndSemanticRanks,
   semanticBrowseRegistration,
-} from "../../src/renderer/semantic-browse";
+} from "../../src/renderer/ai/semantic-browse";
 import { embeddingServiceTextOnly } from "../../src/shared/embedding/modalities";
-import { encodeModalitiesForAdapter } from "../../src/main/embedding-http-index";
+import { encodeModalitiesForAdapter } from "../../src/main/embedding/embedding-http-index";
 
 describe("semantic readiness", () => {
   it("offers the toolbar only when the library model can search text", () => {

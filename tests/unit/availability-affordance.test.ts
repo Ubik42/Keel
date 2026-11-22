@@ -7,7 +7,7 @@ import {
   linkedFolderNavAffordance,
   missingAssetAffordance,
   shouldShowMissingAssetOverlay,
-} from '../../src/renderer/availability-affordance';
+} from '../../src/renderer/inspector/availability-affordance';
 
 describe('availability affordance (Serpent-rc9)', () => {
   it('uses a link icon for available linked folders', () => {

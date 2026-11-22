@@ -1635,11 +1635,8 @@
 
 @media (prefers-reduced-motion: reduce) { .tag-tree-disclosure svg { transition: none; } }
 
-.tag-tree-appearance { margin: 8px 0; padding: 9px; border: 1px solid var(--ui-border-subtle); border-radius: calc(8px * var(--ui-radius-scale, 1)); font-size: 12px; }
 
-.tag-tree-appearance-picker { max-height: 300px; overflow: auto; margin-top: 8px; }
 
-.tag-tree-appearance .tag-tree-edit-actions { flex-wrap: wrap; }
 
 .automatic-tasks-dialog { width: min(780px, calc(100vw - 48px)); max-height: calc(100vh - 64px); overflow: auto; }
 

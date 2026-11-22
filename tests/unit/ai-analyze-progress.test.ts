@@ -6,7 +6,7 @@ import {
   computeAiBatchProgressForJobs,
   computeAiBatchProgress,
   progressFromAiProgressEvent,
-} from "../../src/renderer/ai-analyze-progress";
+} from "../../src/renderer/ai/ai-analyze-progress";
 
 describe("computeAiBatchProgress (Serpent-k3dw)", () => {
   it("computes determinate ratio from batch baseline deltas", () => {

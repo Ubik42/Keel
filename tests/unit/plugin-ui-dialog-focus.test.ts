@@ -8,7 +8,7 @@ import {
   focusPluginWidgetDialogEditable,
   restoreDocumentKeyboardFocus,
   usePluginWidgetDialogKeyboardFocus,
-} from "../../src/renderer/plugin-ui-dialog-focus";
+} from "../../src/renderer/plugins/plugin-ui-dialog-focus";
 import {
   hasActiveModalDialog,
   useDialogFocusTrap,

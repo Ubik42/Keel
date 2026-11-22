@@ -13,7 +13,7 @@ import {
   type ExtensionServerOptions,
   type SaveIntent,
   type SaveUploadRequest,
-} from '../../src/main/extension-server';
+} from '../../src/main/ingestion/extension-server';
 
 const TEST_PORT = 30_000 + (process.pid % 10_000);
 

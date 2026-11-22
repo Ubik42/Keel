@@ -4,7 +4,7 @@ import {
   buildPluginBrowseFilter,
   pluginViewerExtension,
   pluginViewerMimeType,
-} from "../../src/renderer/plugin-context-state";
+} from "../../src/renderer/plugins/plugin-context-state";
 
 const range = (min = "", max = "", exclude = false) => ({ min, max, exclude });
 

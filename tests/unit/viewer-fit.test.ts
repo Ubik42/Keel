@@ -7,7 +7,7 @@ import {
   isAtFitScale,
   VIEWER_MAX_SCALE,
   VIEWER_MIN_SCALE,
-} from '../../src/renderer/viewer-fit';
+} from '../../src/renderer/viewer/viewer-fit';
 
 describe('fitContainScale (REQ-VIEW-006)', () => {
   it('fits a landscape image by width when that is the constraining edge', () => {

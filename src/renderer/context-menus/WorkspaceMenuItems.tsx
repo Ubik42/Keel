@@ -1,6 +1,6 @@
 import type { ContextMenuDescriptor } from "../workbench/menu/context-menu";
 import type { TranslateFn } from "../i18n/LocaleProvider";
-import { type PluginMenuDescriptor } from "../plugin-menu-contributions";
+import { type PluginMenuDescriptor } from "../plugins/plugin-menu-contributions";
 import { PluginMenuCommandsSection } from "./menu-shared";
 
 export interface WorkspaceMenuItemsProps {

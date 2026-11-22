@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { createGitHubPluginClient } from '../../src/main/plugin-github-client';
+import { createGitHubPluginClient } from '../../src/main/plugins/plugin-github-client';
 
 describe('GitHub plugin client downloads', () => {
   it('streams release bytes and reports progress without exposing a path', async () => {

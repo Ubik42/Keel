@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { resolveExtensionActiveContextTarget } from "../../src/renderer/extension-active-context";
+import { resolveExtensionActiveContextTarget } from "../../src/renderer/import/extension-active-context";
 
 describe("resolveExtensionActiveContextTarget", () => {
   it("clears context when no library is open", () => {

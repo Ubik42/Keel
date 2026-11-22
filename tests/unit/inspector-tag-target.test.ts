@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { resolveInspectorTagTarget } from "../../src/renderer/inspector-tag-target";
+import { resolveInspectorTagTarget } from "../../src/renderer/inspector/inspector-tag-target";
 
 describe("resolveInspectorTagTarget", () => {
   it("routes to the batch path when two or more assets are selected", () => {

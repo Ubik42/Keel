@@ -12,8 +12,8 @@ vi.mock("../../src/renderer/i18n", () => ({
   },
 }));
 
-import { VideoPlaybackRateSelect } from "../../src/renderer/VideoPlaybackRateSelect";
-import { VIDEO_PLAYBACK_RATES } from "../../src/renderer/video-player-controls";
+import { VideoPlaybackRateSelect } from "../../src/renderer/viewer/VideoPlaybackRateSelect";
+import { VIDEO_PLAYBACK_RATES } from "../../src/renderer/viewer/video-player-controls";
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT =
   true;

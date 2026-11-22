@@ -18,10 +18,10 @@ import {
  * (public domain — no attribution, no registration), bundled with the app:
  * one studio softbox set, one sunny outdoor set. Files live in
  * `src/renderer/assets/hdri/` and are emitted as build assets via
- * `import.meta.glob` (`?url`); see `vite.renderer.config.ts` `assetsInclude`.
+ * `import.meta.glob` (`?url`); see `config/vite/renderer.config.ts` `assetsInclude`.
  * The packaged viewer does NOT fetch these Vite URLs (file:// fetch is
  * blocked); it loads the same files through `keel://app-assets/hdri/<name>`
- * (slice C, `src/main/app-assets.ts`).
+ * (slice C, `src/main/app/app-assets.ts`).
  */
 
 export { HDRI_PRESETS } from '../../shared/hdri-presets';

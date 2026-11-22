@@ -4,7 +4,7 @@ import {
   clearModelThumbnailSourceAuthorizations,
   registerModelThumbnailSourceAuthorizations,
   resolveModelThumbnailSourceAuthorization,
-} from '../../src/main/model-thumbnail-source-cache';
+} from '../../src/main/media/model-thumbnail-source-cache';
 
 describe('model thumbnail source authorization cache', () => {
   it('serves only the Worker-authorized revision tuple and clears it after render', () => {

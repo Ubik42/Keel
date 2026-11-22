@@ -22,7 +22,7 @@ import {
   type AutomationExecutionResolver,
   type AutomationWorkerClient,
 } from '../../src/automation/command-gateway';
-import { AutomationLibraryWorkerAdapter } from '../../src/main/automation-worker-adapter';
+import { AutomationLibraryWorkerAdapter } from '../../src/main/automation/automation-worker-adapter';
 import { automationScriptCommandIdSchema } from '../../src/shared/automation-script-api';
 import { createPublicError } from '../../src/shared/protocol/errors';
 import { parseWorkerRequest, type WorkerCommand } from '../../src/shared/protocol/requests';

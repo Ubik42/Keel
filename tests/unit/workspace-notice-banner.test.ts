@@ -2,7 +2,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import { WorkspaceNoticeBanner } from "../../src/renderer/WorkspaceNoticeBanner";
+import { WorkspaceNoticeBanner } from "../../src/renderer/workspace/WorkspaceNoticeBanner";
 import { LocaleProvider } from "../../src/renderer/i18n";
 
 describe("WorkspaceNoticeBanner diagnostics", () => {

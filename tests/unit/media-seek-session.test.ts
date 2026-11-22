@@ -9,7 +9,7 @@ import {
   shouldApplyMediaSeek,
   type FrameScheduler,
   type SeekableMediaLike,
-} from "../../src/renderer/media-seek-session";
+} from "../../src/renderer/viewer/media-seek-session";
 
 function media(partial: Partial<SeekableMediaLike>): SeekableMediaLike {
   return {

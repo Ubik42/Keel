@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { resolveBrowsePasteDestination } from '../../src/renderer/browse-paste-target';
+import { resolveBrowsePasteDestination } from '../../src/renderer/browse/browse-paste-target';
 
 describe('resolveBrowsePasteDestination', () => {
   it('returns folder id when browsing inside a managed folder', () => {

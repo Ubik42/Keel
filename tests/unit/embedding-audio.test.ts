@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { embeddingAudioFfmpegArgs } from "../../src/main/embedding-audio";
-import { embeddingAudioRequestBody } from "../../src/main/embedding-llama-session";
+import { embeddingAudioFfmpegArgs } from "../../src/main/embedding/embedding-audio";
+import { embeddingAudioRequestBody } from "../../src/main/embedding/embedding-llama-session";
 import {
   clipEmbeddingDocument,
   formatEmbeddingDocument,

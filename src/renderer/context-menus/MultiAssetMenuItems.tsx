@@ -1,21 +1,21 @@
 import type { AppLocale } from "../i18n/types";
 import type { ContextMenuDescriptor } from "../workbench/menu/context-menu";
-import type { PluginMenuHostPlacement } from "../plugin-menu-contributions";
+import type { PluginMenuHostPlacement } from "../plugins/plugin-menu-contributions";
 import type { TranslateFn } from "../i18n/LocaleProvider";
 import type { Dispatch, SetStateAction } from "react";
 import { useAssetContextMenuActions } from "./menu-shared";
 import { parseLinkedVirtualFolderId } from "../../shared/linked-folder-tree";
 import { type AssetMultiCommandContext } from "../commands/asset-multi-commands";
-import { EntityAppearancePicker } from "../EntityAppearancePicker";
-import { planFolderBatch } from "../folder-batch-actions";
-import { Icon } from "../Icons";
-import { canCreateImageSequenceFromSelection } from "../image-sequence-selection";
-import { buildMultiAssetMenuSkipReport, formatMultiAssetMenuSkipFooter } from "../menu-skip-report";
-import { placeMultiAssetPluginMenuItems, type PluginMenuDescriptor } from "../plugin-menu-contributions";
+import { AppearanceSubmenu } from "../appearance/AppearanceSubmenu";
+import { planFolderBatch } from "../folders/folder-batch-actions";
+import { Icon } from "../common/Icons";
+import { canCreateImageSequenceFromSelection } from "../import/image-sequence-selection";
+import { buildMultiAssetMenuSkipReport, formatMultiAssetMenuSkipFooter } from "../jobs/menu-skip-report";
+import { placeMultiAssetPluginMenuItems, type PluginMenuDescriptor } from "../plugins/plugin-menu-contributions";
 import { type BrowseState } from "../stores/browse-store";
 import { type NavigationState } from "../stores/navigation-store";
-import { TagPickerEntry, TagPickerMenu } from "../TagPickerMenu";
-import { ContextMenuItem, ContextMenuSection, ContextMenuSubmenu } from "../workbench/menu/context-menu";
+import { TagPickerEntry, TagPickerMenu } from "../tags/TagPickerMenu";
+import { ContextMenuItem, ContextMenuSection } from "../workbench/menu/context-menu";
 import { FolderCoverMenuItems, PluginMenuCommandsSection, PluginMenuItems, assetMultiCommandRegistry, isMac, pluginItemsOutsideHostGroups, type TagPickerState } from "./menu-shared";
 
 export interface MultiAssetMenuItemsProps {
@@ -408,20 +408,16 @@ export function MultiAssetMenuItems({ activeContextMenu, assets, linkedFolders, 
                 />
               )}
               {appearanceItem && (
-                <ContextMenuSubmenu
-                  icon={<Icon name="palette" size={14} />}
+                <AppearanceSubmenu
                   label={appearanceItem.label}
-                >
-                  <EntityAppearancePicker
-                    value={null}
-                    onChange={(appearance) =>
-                      commandContext.actions.setFolderAppearance?.(
-                        commandContext.appearanceFolderTargets,
-                        appearance,
-                      )
-                    }
-                  />
-                </ContextMenuSubmenu>
+                  value={null}
+                  onChange={(appearance) =>
+                    commandContext.actions.setFolderAppearance?.(
+                      commandContext.appearanceFolderTargets,
+                      appearance,
+                    )
+                  }
+                />
               )}
               {coverPlan.targets.length > 0 ? (
                 <FolderCoverMenuItems

@@ -4,7 +4,7 @@ import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { LocaleProvider } from "../../src/renderer/i18n";
-import { ViewerContextMenu } from "../../src/renderer/ViewerContextMenu";
+import { ViewerContextMenu } from "../../src/renderer/viewer/ViewerContextMenu";
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT =
   true;

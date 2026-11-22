@@ -3,7 +3,7 @@ import { act, createElement } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { LibrarySwitcher } from "../../src/renderer/LibrarySwitcher";
+import { LibrarySwitcher } from "../../src/renderer/library/LibrarySwitcher";
 import { LocaleProvider } from "../../src/renderer/i18n";
 
 describe("LibrarySwitcher external library action", () => {

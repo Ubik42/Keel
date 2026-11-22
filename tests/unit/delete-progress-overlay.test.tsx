@@ -3,7 +3,7 @@ import { createElement, type ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 
-import { DeleteProgressOverlay } from "../../src/renderer/DeleteProgressOverlay";
+import { DeleteProgressOverlay } from "../../src/renderer/jobs/DeleteProgressOverlay";
 import { LocaleProvider } from "../../src/renderer/i18n";
 
 function overlay(): ReactElement {

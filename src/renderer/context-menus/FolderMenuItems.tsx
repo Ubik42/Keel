@@ -1,16 +1,16 @@
 import type { AppLocale } from "../i18n/types";
 import type { ContextMenuDescriptor } from "../workbench/menu/context-menu";
-import type { PluginMenuHostPlacement } from "../plugin-menu-contributions";
+import type { PluginMenuHostPlacement } from "../plugins/plugin-menu-contributions";
 import type { TranslateFn } from "../i18n/LocaleProvider";
 import { useAssetContextMenuActions } from "./menu-shared";
 import { linkedRevealFolderId, parseLinkedVirtualFolderId } from "../../shared/linked-folder-tree";
 import { type SidebarCommandContext } from "../commands/sidebar-commands";
-import { EntityAppearancePicker } from "../EntityAppearancePicker";
-import { Icon } from "../Icons";
-import { type PluginMenuDescriptor } from "../plugin-menu-contributions";
+import { AppearanceSubmenu } from "../appearance/AppearanceSubmenu";
+import { Icon } from "../common/Icons";
+import { type PluginMenuDescriptor } from "../plugins/plugin-menu-contributions";
 import { type BrowseState } from "../stores/browse-store";
 import { type NavigationState } from "../stores/navigation-store";
-import { ContextMenuItem, ContextMenuSection, ContextMenuSubmenu } from "../workbench/menu/context-menu";
+import { ContextMenuItem, ContextMenuSection } from "../workbench/menu/context-menu";
 import { FolderCoverMenuItems, PluginMenuCommandsSection, PluginMenuItems, isMac, pluginItemsAtHostAnchor, pluginItemsForHostGroup, pluginItemsOutsideHostGroups, sidebarCommandRegistry } from "./menu-shared";
 
 export interface FolderMenuItemsProps {
@@ -222,12 +222,9 @@ export function FolderMenuItems({ activeContextMenu, linkedFolders, locale, plug
                     {(!desc.isLibraryRoot &&
                       (desc.locationKind === "managed" ||
                         (desc.locationKind === "linked" && !desc.linkedRelativePath))) && (
-                      <ContextMenuSubmenu
-                        icon={<Icon name="palette" size={14} />}
+                      <AppearanceSubmenu
                         label={t("command.folder.appearance")}
-                      >
-                        <EntityAppearancePicker
-                          value={
+                        value={
                             desc.locationKind === "linked"
                               ? linkedFolders.find((folder) => folder.folderId === desc.folderId)
                                   ?.appearance ?? null
@@ -246,8 +243,7 @@ export function FolderMenuItems({ activeContextMenu, linkedFolders, locale, plug
                               appearance,
                             )
                           }
-                        />
-                      </ContextMenuSubmenu>
+                      />
                     )}
                     {!desc.isLibraryRoot ? (
                       <FolderCoverMenuItems

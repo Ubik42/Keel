@@ -4,7 +4,7 @@ import {
   resolveAssetRenameCommit,
   splitAssetFileName,
   type AssetRenameDialogState,
-} from "../../src/renderer/useAssetRename";
+} from "../../src/renderer/browse/useAssetRename";
 
 function renameSession(
   overrides: Partial<AssetRenameDialogState> = {},

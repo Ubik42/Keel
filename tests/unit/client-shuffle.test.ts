@@ -4,7 +4,7 @@ import {
   shuffleArray,
   shuffleBrowseItems,
   shuffledIndexOrder,
-} from "../../src/renderer/client-shuffle";
+} from "../../src/renderer/browse/client-shuffle";
 
 describe("shuffleArray (Serpent-hm28)", () => {
   it("is deterministic for a seed and reshuffles with another", () => {

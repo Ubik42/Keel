@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { PluginInstallOperation } from '../../src/main/plugin-install-operation';
+import { PluginInstallOperation } from '../../src/main/plugins/plugin-install-operation';
 
 describe('PluginInstallOperation', () => {
   it('reports download progress and pauses until resumed', async () => {

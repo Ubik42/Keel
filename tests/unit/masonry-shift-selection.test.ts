@@ -4,11 +4,11 @@ import { describe, expect, it } from "vitest";
 import type {
   CanvasAssetLayoutIndex,
   CanvasAssetLayoutRect,
-} from "../../src/renderer/canvas-asset-layout";
+} from "../../src/renderer/browse/canvas-asset-layout";
 import {
   collectPublishedMasonryAssetRects,
   publishCanvasAssetLayoutIndex,
-} from "../../src/renderer/canvas-asset-layout";
+} from "../../src/renderer/browse/canvas-asset-layout";
 import {
   buildBrowseSelectionOrder,
   resolveShiftBrowseRange,
@@ -16,7 +16,7 @@ import {
 import {
   orderMasonryShiftAssetIds,
   readMasonryShiftAssetOrder,
-} from "../../src/renderer/masonry-shift-selection";
+} from "../../src/renderer/browse/masonry-shift-selection";
 
 function rect(
   id: string,

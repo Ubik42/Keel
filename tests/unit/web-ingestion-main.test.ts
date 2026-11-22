@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { createWebImportCommand } from '../../src/main/web-ingestion';
+import { createWebImportCommand } from '../../src/main/ingestion/web-ingestion';
 import { parseRendererRequest, workerCommandSchema } from '../../src/shared/protocol/requests';
 
 describe('Main browser-media import mapping', () => {

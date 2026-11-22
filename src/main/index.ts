@@ -1,7 +1,7 @@
 import "../shared/install-legacy-env";
 import path from "node:path";
 import { tmpdir } from "node:os";
-import { copyLegacyUserData } from "./legacy-user-data";
+import { copyLegacyUserData } from "./app/legacy-user-data";
 import { randomUUID } from "node:crypto";
 import {
   mkdirSync,
@@ -19,32 +19,32 @@ import type { NativeImage } from "electron";
 
 import {
   installApplicationMenu,
-} from "./application-menu";
-import { applyDevAppIcon, appIconImage } from "./app-icon";
+} from "./window/application-menu";
+import { applyDevAppIcon, appIconImage } from "./app/app-icon";
 import {
   startNativeAssetDrag,
-} from "./native-asset-drag";
+} from "./shell/native-asset-drag";
 import {
   type SyncBindingRecord,
 } from "./library-request/sync";
 import {
   applyStartupLoginItem,
   readStartupPreferences,
-} from './startup-preferences-store';
+} from './preferences/startup-preferences-store';
 import {
   shouldHandleSecondaryLaunch,
 } from '../shared/startup-preferences';
 
 import {
   registerWindowControls,
-} from "./window-controls";
-import { sendToLiveWebContents } from "./web-contents-send";
+} from "./window/window-controls";
+import { sendToLiveWebContents } from "./window/web-contents-send";
 import {
   bindRendererKeyboardFocusLogger,
-} from "./renderer-keyboard-focus";
+} from "./window/renderer-keyboard-focus";
 import {
   createWindowsTray,
-} from "./windows-tray";
+} from "./window/windows-tray";
 import {
   ASSET_NATIVE_DRAG_CHANNEL,
   ASSET_NATIVE_DRAG_PRIME_CHANNEL,
@@ -52,22 +52,22 @@ import {
   LIBRARY_REQUEST_CHANNEL,
   PLUGIN_MANAGER_CHANNEL,
 } from "../shared/protocol/channels";
-import { AutomationLibraryWorkerAdapter } from './automation-worker-adapter';
+import { AutomationLibraryWorkerAdapter } from './automation/automation-worker-adapter';
 import {
   AutomationExecutionJournal,
   createJsonFileAutomationExecutionStore,
-} from './automation-execution-journal';
-import { createJsonFileAutomationIdempotencyStore } from './automation-idempotency-store';
-import { McpPermissionBroker } from './mcp-permission-broker';
-import { McpPermissionPolicyStore } from './mcp-permission-policy-store';
-import { McpOperationChallengeStore } from './mcp-operation-challenge';
-import { CriticalConfirmationWindowManager } from './critical-confirmation-window';
-import { RendererCriticalConfirmationBroker } from './critical-confirmation-prompt';
-import { registerAutomationScriptIpc } from './automation-script-ipc';
-import { AutomationScriptFileService } from './automation-script-file-service';
+} from './automation/automation-execution-journal';
+import { createJsonFileAutomationIdempotencyStore } from './automation/automation-idempotency-store';
+import { McpPermissionBroker } from './mcp/mcp-permission-broker';
+import { McpPermissionPolicyStore } from './mcp/mcp-permission-policy-store';
+import { McpOperationChallengeStore } from './mcp/mcp-operation-challenge';
+import { CriticalConfirmationWindowManager } from './window/critical-confirmation-window';
+import { RendererCriticalConfirmationBroker } from './window/critical-confirmation-prompt';
+import { registerAutomationScriptIpc } from './automation/automation-script-ipc';
+import { AutomationScriptFileService } from './automation/automation-script-file-service';
 import {
   createJsonFileAutomationRecentScriptsStore,
-} from './automation-recent-scripts-store';
+} from './automation/automation-recent-scripts-store';
 import {
   createPublicError,
   toPublicError,
@@ -78,30 +78,30 @@ import {
 import {
   type RendererResult,
 } from "../shared/protocol/responses";
-import { LibraryWorkerClient } from "./worker-client";
+import { LibraryWorkerClient } from "./library/worker-client";
 import { performanceConsumerIdForWindow } from "../shared/performance-contract";
-import { SyncAutoScheduler, type SyncBindingLike } from "./sync-auto-scheduler";
-import { AppLogger } from "./app-logger";
-import { chooseUniqueSessionLogPath, pruneSessionLogs } from "./session-log";
+import { SyncAutoScheduler, type SyncBindingLike } from "./library/sync-auto-scheduler";
+import { AppLogger } from "./app/app-logger";
+import { chooseUniqueSessionLogPath, pruneSessionLogs } from "./app/session-log";
 import {
   logRendererChildProcessGone,
-} from "./renderer-diagnostics";
+} from "./window/renderer-diagnostics";
 import {
   recentLibraryAutoOpenEnabled,
   readActiveLibraryPath,
-} from "./recent-libraries";
-import { PreviewCache } from "./preview-cache";
-import { renderDocumentThumbnail } from "./document-thumbnail-renderer";
+} from "./library/recent-libraries";
+import { PreviewCache } from "./media/preview-cache";
+import { renderDocumentThumbnail } from "./media/document-thumbnail-renderer";
 import {
   createExtensionServer,
-} from "./extension-server";
+} from "./ingestion/extension-server";
 import {
   cleanupStaleClipboardImages,
-} from "./desktop-ingestion";
+} from "./ingestion/desktop-ingestion";
 import {
   legacyProtocolSchemes,
   keelProtocolSchemes,
-} from "./keel-protocol-privileges";
+} from "./library/keel-protocol-privileges";
 
 // Headless E2E hosts may expose no hardware WebGL implementation. Opt those
 // tests into Chromium's explicitly acknowledged software path; production
@@ -195,28 +195,28 @@ function initializePreviewCache(): void {
   });
   void state.previewCache.evictToBudget();
 }
-import { readSyncBindings, resolveSyncServerCredentials, writeSyncBindings } from './ai-settings-files';
-import { cleanupAllExternalSources, recentLibraryPath, sweepOrphanExternalLibraryStagingOnStartup } from './external-library-staging';
-import { nativeMenuRecentLibraries, readShortcutBindingsSnapshot, startupPreferencesPath } from './app-preference-files';
-import { clearArtifactPathCache, clearNativeAssetDragCache, nativeAssetDragCache, nativeAssetDragPrimer, sourcePathCache } from './asset-path-caches';
-import { confirmDesktopAutomationWrite } from './desktop-confirmations';
-import { scheduleLibraryChangeRules } from './rule-triggers';
-import { aiQueueScheduler, enqueueAutoAnalyzeAfterImport, processAiQueue } from './ai-queue';
-import { selectAutomationScriptToOpen, selectAutomationScriptToSave } from './main-dialogs';
-import { publishAiCleared, publishAiCompleted, publishAiProgress, publishAssetChange, publishLibraryChanged, publishLifecycle, publishProgress } from './renderer-events';
-import { handleListFolders, handleSaveIntent, handleSaveUpload } from './extension-save';
-import { notifyLibraryOpenedSideEffects, pluginThumbnailExtensionsFor } from './library-opened';
-import { createMainWindow, focusMainWindow, handleSecondInstance, launchedForMcp, startMcpForLauncher } from './main-window';
-import { handleLibraryRequest, manualSyncRuns, retryPendingLibraryCleanups, syncDeviceId } from './library-ipc';
-import { registerShellIpc } from './shell-ipc';
-import { registerRuleIpc } from './rule-ipc';
-import { registerPreferenceIpc } from './preference-ipc';
-import { registerKeelProtocol } from './keel-protocol';
-import { registerMcpSettingsIpc } from './mcp-settings-ipc';
-import { registerOffscreenRendering } from './offscreen-rendering';
-import { setUpPluginHost } from './plugin-host-setup';
-import { setUpAutomationGateway } from './automation-gateway-setup';
-import { setUpPluginPackageRequests } from './plugin-package-setup';
+import { readSyncBindings, resolveSyncServerCredentials, writeSyncBindings } from './ai/ai-settings-files';
+import { cleanupAllExternalSources, recentLibraryPath, sweepOrphanExternalLibraryStagingOnStartup } from './library/external-library-staging';
+import { nativeMenuRecentLibraries, readShortcutBindingsSnapshot, startupPreferencesPath } from './preferences/app-preference-files';
+import { clearArtifactPathCache, clearNativeAssetDragCache, nativeAssetDragCache, nativeAssetDragPrimer, sourcePathCache } from './media/asset-path-caches';
+import { confirmDesktopAutomationWrite } from './window/desktop-confirmations';
+import { scheduleLibraryChangeRules } from './automation/rule-triggers';
+import { aiQueueScheduler, enqueueAutoAnalyzeAfterImport, processAiQueue } from './ai/ai-queue';
+import { selectAutomationScriptToOpen, selectAutomationScriptToSave } from './window/main-dialogs';
+import { publishAiCleared, publishAiCompleted, publishAiProgress, publishAssetChange, publishLibraryChanged, publishLifecycle, publishProgress } from './window/renderer-events';
+import { handleListFolders, handleSaveIntent, handleSaveUpload } from './ingestion/extension-save';
+import { notifyLibraryOpenedSideEffects, pluginThumbnailExtensionsFor } from './library/library-opened';
+import { createMainWindow, focusMainWindow, handleSecondInstance, launchedForMcp, startMcpForLauncher } from './window/main-window';
+import { handleLibraryRequest, manualSyncRuns, retryPendingLibraryCleanups, syncDeviceId } from './library/library-ipc';
+import { registerShellIpc } from './shell/shell-ipc';
+import { registerRuleIpc } from './automation/rule-ipc';
+import { registerPreferenceIpc } from './preferences/preference-ipc';
+import { registerKeelProtocol } from './library/keel-protocol';
+import { registerMcpSettingsIpc } from './mcp/mcp-settings-ipc';
+import { registerOffscreenRendering } from './media/offscreen-rendering';
+import { setUpPluginHost } from './plugins/plugin-host-setup';
+import { setUpAutomationGateway } from './automation/automation-gateway-setup';
+import { setUpPluginPackageRequests } from './plugins/plugin-package-setup';
 
 function releaseLoopbackListeners(): Promise<void> {
   if (state.loopbackRelease !== undefined) return state.loopbackRelease;

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { catalogs } from '../../src/renderer/i18n/catalogs';
 import { createTranslator } from '../../src/renderer/i18n/types';
-import { formatMcpSettingsFailure } from '../../src/renderer/mcp-settings-error';
+import { formatMcpSettingsFailure } from '../../src/renderer/settings/mcp-settings-error';
 
 describe('MCP settings initialization diagnostics', () => {
   it('shows the permission error, repair result, and key file location in Chinese', () => {

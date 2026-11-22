@@ -19,8 +19,8 @@ import {
   recentLibraryPersistenceEnabled,
   rememberRecentLibrary,
   removeRecentLibrary,
-} from '../../src/main/recent-libraries';
-import { buildRecentLibraryMenuEntries } from '../../src/renderer/LibrarySwitcher';
+} from '../../src/main/library/recent-libraries';
+import { buildRecentLibraryMenuEntries } from '../../src/renderer/library/LibrarySwitcher';
 
 describe('recent libraries store (main)', () => {
   let storeDirectory = '';

@@ -5,7 +5,7 @@ import {
   invalidateLibraryViewSession,
   isCurrentLibraryViewSession,
   type LibraryViewSessionToken,
-} from "../../src/renderer/library-view-session";
+} from "../../src/renderer/library/library-view-session";
 
 describe("library view session", () => {
   it("makes every replacement a new session, including a reopen of the same id", () => {

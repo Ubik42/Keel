@@ -1,13 +1,13 @@
 import path from "node:path";
 
 import type { RendererRequest, WorkerCommand } from "../../shared/protocol/requests";
-import type { MaterializedExternalLibrarySource } from "../external-library-archive";
+import type { MaterializedExternalLibrarySource } from "../library/external-library-archive";
 import {
   selectOpenDirectory,
   selectOpenFile,
   selectOpenLibrarySource,
   type NativeDialogHost,
-} from "../native-dialogs";
+} from "../window/native-dialogs";
 
 export type LibraryCommandRuntime = {
   selectDirectory: (

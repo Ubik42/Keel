@@ -5,7 +5,7 @@ import {
   planFolderBatch,
   type FolderBatchLinkedFolder,
   type FolderBatchManagedFolder,
-} from "../../src/renderer/folder-batch-actions";
+} from "../../src/renderer/folders/folder-batch-actions";
 
 // Serpent-d7acfa：多选文件夹批量动作的资格与跳过原因。
 describe("folder batch planning", () => {

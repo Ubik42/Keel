@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildTagFilterDefaultSections,
   buildTagFilterSearchResults,
-} from "../../src/renderer/tag-filter-suggestions";
+} from "../../src/renderer/tags/tag-filter-suggestions";
 
 const tags = [
   { tagId: "warm", name: "Warm", assetCount: 10 },

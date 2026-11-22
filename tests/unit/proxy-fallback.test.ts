@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { createProxyFallbackRunGuard } from "../../src/renderer/proxy-fallback-run";
+import { createProxyFallbackRunGuard } from "../../src/renderer/viewer/proxy-fallback-run";
 
 describe("proxy fallback run guard", () => {
   it("invalidates stale polling after a newer run begins", () => {

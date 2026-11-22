@@ -1,18 +1,18 @@
 import type { Dispatch, RefObject, SetStateAction } from "react";
 import type { WorkspaceNavHistory } from "../../workbench/workspace/workspace-nav-history";
-import type { WorkspaceTabsState } from "../../workspace-tabs";
-import type { SelectWorkspaceTabOptions } from "../../use-workspace-tabs";
+import type { WorkspaceTabsState } from "../../workspace/workspace-tabs";
+import type { SelectWorkspaceTabOptions } from "../../workspace/use-workspace-tabs";
 import type { TranslateFn } from "../../i18n/LocaleProvider";
 import type { AppLocale } from "../../i18n/types";
 import { type AssetSummary, type TagSummary } from "../../../shared/asset-types";
-import { toMessage } from "../../error-utils";
+import { toMessage } from "../../common/error-utils";
 import { type BrowseState } from "../../stores/browse-store";
 import { type AssetScope } from "../../stores/navigation-store";
 import { type PreviewState } from "../../stores/preview-store";
 import { browseEntryUnderPreview, type WorkspaceNavLocation, type WorkspaceNavViewport } from "../../workbench/workspace/workspace-nav-history";
 import { type WorkspaceNavigationHistoryMode } from "../../workbench/workspace/workspace-navigation-coordinator";
 import { captureWorkspaceNavViewport } from "../../workbench/workspace/workspace-scroll-position";
-import { historyReplayClosesPreview } from "../../workspace-discovery-navigation";
+import { historyReplayClosesPreview } from "../../workspace/workspace-discovery-navigation";
 import { type WorkspaceNavigationRequest } from "../shared/app-shared";
 
 export interface UseWorkspaceHistoryReplayDeps {

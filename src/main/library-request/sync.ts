@@ -4,7 +4,7 @@ import { normalizeWebDAVBaseUrl } from "../../shared/sync-paths";
 import type { RendererRequest, WorkerCommand } from "../../shared/protocol/requests";
 import type { RendererResult, WorkerResult } from "../../shared/protocol/responses";
 import { createPublicError } from "../../shared/protocol/errors";
-import { WorkerRequestTimeoutError } from "../worker-client";
+import { WorkerRequestTimeoutError } from "../library/worker-client";
 
 export type SyncServerRecord = {
   id: string;

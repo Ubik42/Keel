@@ -4,7 +4,7 @@ import {
   LibraryOperationError,
   libraryOpenBlockingTitleKey,
   messageForPublicError,
-} from '../../src/renderer/error-utils';
+} from '../../src/renderer/common/error-utils';
 import { PUBLIC_ERROR_MESSAGES } from '../../src/shared/protocol/errors';
 
 describe('library already-open prompt (Serpent-79b839)', () => {

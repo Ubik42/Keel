@@ -7,7 +7,7 @@ import {
   rememberedDialogDirectory,
   resetDialogDirectoryMemory,
   resolveDialogDefaultPath,
-} from "../../src/main/dialog-directory-memory";
+} from "../../src/main/window/dialog-directory-memory";
 
 afterEach(() => {
   resetDialogDirectoryMemory();

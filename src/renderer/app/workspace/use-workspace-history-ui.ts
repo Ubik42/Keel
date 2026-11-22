@@ -3,8 +3,8 @@ import type { KeelLibraryApi } from "../../../shared/library-api";
 import type { TranslateFn } from "../../i18n/LocaleProvider";
 import type { AppLocale } from "../../i18n/types";
 import type { WorkspaceNavHistory } from "../../workbench/workspace/workspace-nav-history";
-import { type AiProgressJobUpdate } from "../../ai-analyze-progress";
-import type { JobStatusCoordinator } from "../../job-status-coordinator";
+import { type AiProgressJobUpdate } from "../../ai/ai-analyze-progress";
+import type { JobStatusCoordinator } from "../../jobs/job-status-coordinator";
 import { type BrowseState } from "../../stores/browse-store";
 import { type InspectorState } from "../../stores/inspector-store";
 import { type JobsState } from "../../stores/jobs-store";
@@ -13,7 +13,7 @@ import { type QueryState } from "../../stores/query-store";
 import { selectionFields } from "../../stores/selection-store";
 import { type SessionState } from "../../stores/session-store";
 import { type WorkspaceState } from "../../stores/workspace-store";
-import { type WorkspaceTabBrowseState } from "../../workspace-tabs";
+import { type WorkspaceTabBrowseState } from "../../workspace/workspace-tabs";
 import { useEffect } from "react";
 
 export interface UseWorkspaceHistoryUiDeps {

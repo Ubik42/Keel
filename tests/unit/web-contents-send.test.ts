@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { sendToLiveWebContents } from "../../src/main/web-contents-send";
+import { sendToLiveWebContents } from "../../src/main/window/web-contents-send";
 
 describe("sendToLiveWebContents", () => {
   it("does not send after the contents are destroyed", () => {

@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest';
-import { LibraryOperationError } from '../../src/renderer/error-utils';
-import { tagRenameError } from '../../src/renderer/tag-rename-error';
+import { LibraryOperationError } from '../../src/renderer/common/error-utils';
+import { tagRenameError } from '../../src/renderer/tags/tag-rename-error';
 
 it('describes a duplicate tag as a tag rather than a file or folder conflict', () => {
   const error = new LibraryOperationError({ code: 'FOLDER_ALREADY_EXISTS', message: 'duplicate' });

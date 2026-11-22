@@ -5,7 +5,7 @@ import {
   SEMANTIC_SEARCH_PREF_KEY,
   loadSemanticSearchPreferences,
   saveSemanticSearchPreferences,
-} from "../../src/renderer/semantic-search-preferences";
+} from "../../src/renderer/ai/semantic-search-preferences";
 
 function storage(initial?: string) {
   const values = new Map<string, string>();

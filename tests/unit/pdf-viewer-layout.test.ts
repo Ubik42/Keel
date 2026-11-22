@@ -9,7 +9,7 @@ import {
   pdfPageCssHeight,
   pdfPointerAnchoredScroll,
   pdfViewerContentWidth,
-} from "../../src/renderer/pdf-viewer-layout";
+} from "../../src/renderer/viewer/pdf-viewer-layout";
 
 describe("pdf viewer layout (Serpent-8ca259)", () => {
   it("lets each page span the host content width", () => {

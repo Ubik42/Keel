@@ -11,7 +11,7 @@ vi.mock('node:child_process', async (importOriginal) => {
   return { ...actual, spawn: spawnMock };
 });
 
-import { startLlamaEmbeddingSession } from '../../src/main/embedding-llama-session';
+import { startLlamaEmbeddingSession } from '../../src/main/embedding/embedding-llama-session';
 
 class FakeChild extends EventEmitter {
   exitCode: number | null = null;

@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   shouldApplyLibraryLifecycleEvent,
   shouldDetachLibraryOnOpening,
-} from "../../src/renderer/library-lifecycle-sync";
+} from "../../src/renderer/library/library-lifecycle-sync";
 
 describe("library lifecycle detach rules", () => {
   it("only detaches the current library when opening Eagle or Billfish, not when switching recents", () => {

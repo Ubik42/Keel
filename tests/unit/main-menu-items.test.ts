@@ -4,7 +4,7 @@ import {
   buildMainMenuSections,
   collectMainMenuCommandStates,
   type MainMenuActions,
-} from "../../src/renderer/main-menu-items";
+} from "../../src/renderer/shell/main-menu-items";
 import { setShortcutRuntime } from "../../src/renderer/workbench/shortcuts/shortcut-runtime";
 import { DEFAULT_SHORTCUT_BINDINGS, setShortcutOverride } from "../../src/shared/shortcut-bindings";
 

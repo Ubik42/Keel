@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { shouldCopyAssetOnShortcut } from "../../src/renderer/viewer-copy-shortcut";
+import { shouldCopyAssetOnShortcut } from "../../src/renderer/viewer/viewer-copy-shortcut";
 
 function ctx(overrides: Partial<Parameters<typeof shouldCopyAssetOnShortcut>[0]> = {}) {
   return {

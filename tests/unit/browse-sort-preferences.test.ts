@@ -5,7 +5,7 @@ import {
   DEFAULT_BROWSE_SORT_PREFERENCES,
   loadBrowseSortPreferences,
   saveBrowseSortPreferences,
-} from '../../src/renderer/browse-sort-preferences';
+} from '../../src/renderer/browse/browse-sort-preferences';
 
 function memoryStorage(): Storage {
   const map = new Map<string, string>();

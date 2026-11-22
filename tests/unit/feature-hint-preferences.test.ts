@@ -8,7 +8,7 @@ import {
   saveFeatureHintPreferences,
   withFeatureHintShown,
   type FeatureHintPreferencesStorage,
-} from "../../src/renderer/feature-hint-preferences";
+} from "../../src/renderer/common/feature-hint-preferences";
 
 function memoryStorage(
   initial?: Record<string, string>,

@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   canvasHasPreviewScrollHold,
   shouldApplyRestoredFocusScroll,
-} from "../../src/renderer/browse-scroll-debug";
+} from "../../src/renderer/browse/browse-scroll-debug";
 
 describe("canvasHasPreviewScrollHold", () => {
   it("treats the explicit hold flag and viewing/restoring classes as a hold", () => {

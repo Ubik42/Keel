@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import {
   isViewerFitShortcut,
   shouldHandleViewerFitKeyboardEvent,
-} from "../../src/renderer/viewer-fit-shortcut";
+} from "../../src/renderer/viewer/viewer-fit-shortcut";
 import { setShortcutRuntime } from "../../src/renderer/workbench/shortcuts/shortcut-runtime";
 import {
   DEFAULT_SHORTCUT_BINDINGS,

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { collectPluginSettingsNavEntries } from '../../src/renderer/plugin-settings-detail';
+import { collectPluginSettingsNavEntries } from '../../src/renderer/plugins/plugin-settings-detail';
 import type { PluginManagerPackageSummary } from '../../src/shared/plugin-manager-api';
 
 function pkg(

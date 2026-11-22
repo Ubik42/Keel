@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { DimensionEnableToggle } from "../../src/renderer/dimension-enable-toggle";
+import { DimensionEnableToggle } from "../../src/renderer/filters/dimension-enable-toggle";
 
 describe("DimensionEnableToggle (REQ-FILTER-021)", () => {
   it("clears the live value and remembers it when toggled off from active", () => {

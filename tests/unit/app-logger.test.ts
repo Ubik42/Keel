@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import { expect, test } from 'vitest';
 
-import { AppLogger } from '../../src/main/app-logger';
+import { AppLogger } from '../../src/main/app/app-logger';
 import {
   appLogFileNameSchema,
   parseReadAppLogRequest,

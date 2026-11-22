@@ -4,7 +4,7 @@ import {
   PRIMARY_SORT_FIELDS,
   SECONDARY_SORT_FIELDS,
   SORT_ORDER_OPTIONS,
-} from "../../src/renderer/SortModeControl";
+} from "../../src/renderer/browse/SortModeControl";
 
 describe("sort mode primary fields", () => {
   it("exposes ticket-required sorts including resolution (long_edge)", () => {

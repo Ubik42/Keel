@@ -1,6 +1,6 @@
 import type { RendererRequest, WorkerCommand } from "../../shared/protocol/requests";
 import { resolveNativeDialogCopy } from "../../shared/native-dialog-i18n";
-import { selectOpenFile, type NativeDialogHost } from "../native-dialogs";
+import { selectOpenFile, type NativeDialogHost } from "../window/native-dialogs";
 
 export async function executeFolderMainCommand(
   request: RendererRequest,

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { buildBrowseSelectionOrder, resolveShiftBrowseRange } from '../../src/renderer/workbench/selection/browse-selection-order';
-import { orderMasonryShiftAssetIds } from '../../src/renderer/masonry-shift-selection';
+import { orderMasonryShiftAssetIds } from '../../src/renderer/browse/masonry-shift-selection';
 import {
   assetBrowseAnchor,
   resolveShiftBrowseAnchor,

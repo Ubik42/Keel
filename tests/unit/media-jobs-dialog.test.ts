@@ -2,7 +2,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import { MediaJobsDialog } from "../../src/renderer/MediaJobsDialog";
+import { MediaJobsDialog } from "../../src/renderer/jobs/MediaJobsDialog";
 import { LocaleProvider } from "../../src/renderer/i18n";
 
 describe("MediaJobsDialog asset labels", () => {

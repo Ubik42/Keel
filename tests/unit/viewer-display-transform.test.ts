@@ -4,7 +4,7 @@ import {
   normalizeQuarterTurns,
   viewerDisplaySize,
   viewerDisplayTransformCss,
-} from "../../src/renderer/viewer-display-transform";
+} from "../../src/renderer/viewer/viewer-display-transform";
 
 describe("viewer display transforms", () => {
   it("wraps repeated clockwise rotations without losing mirror state", () => {

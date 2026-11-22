@@ -3,7 +3,7 @@ import {
   selectOpenDirectory,
   selectOpenFile,
   type NativeDialogHost,
-} from "../native-dialogs";
+} from "../window/native-dialogs";
 
 export type AssetMutationCommandRuntime = {
   createNativeDialogHost: () => NativeDialogHost;

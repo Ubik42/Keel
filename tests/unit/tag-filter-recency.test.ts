@@ -7,7 +7,7 @@ import {
   saveTagFilterRecency,
   withTagFilterUsed,
   type TagFilterRecencyStorage,
-} from "../../src/renderer/tag-filter-recency";
+} from "../../src/renderer/tags/tag-filter-recency";
 
 function memoryStorage(
   initial: Record<string, string> = {},

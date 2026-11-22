@@ -13,11 +13,11 @@ const native = vi.hoisted(() => ({
 vi.mock("electron", () => ({
   BrowserWindow: { fromWebContents: native.fromWebContents },
 }));
-vi.mock("../../src/main/windows-ime", () => ({
+vi.mock("../../src/main/window/windows-ime", () => ({
   suspendWindowsIme: native.suspend,
   restoreWindowsIme: native.restore,
 }));
-vi.mock("../../src/main/viewer-video-shortcut-menu", () => ({
+vi.mock("../../src/main/window/viewer-video-shortcut-menu", () => ({
   setViewerVideoShortcutMenuActive: native.setMenuActive,
 }));
 
@@ -27,7 +27,7 @@ import {
   resetViewerVideoShortcutCaptureForTests,
   setViewerVideoShortcutCaptureActive,
   viewerShortcutScopeForContents,
-} from "../../src/main/viewer-video-shortcut-capture";
+} from "../../src/main/window/viewer-video-shortcut-capture";
 import {
   DEFAULT_SHORTCUT_BINDINGS,
   setShortcutOverride,

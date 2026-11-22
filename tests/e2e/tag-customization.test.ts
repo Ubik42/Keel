@@ -32,12 +32,17 @@ test('tag appearance, reverse image drop and persistent interface scale', async 
     expect((await tags())[0]?.appearance?.colorId).toBeTruthy();
     expect((await tags())[0]?.appearance?.glyphValue).toBeTruthy();
     await tag.click({ button: 'right' });
-    await window.getByRole('menuitem', { name: '颜色和图标', exact: true }).click();
-    const picker = panel.getByRole('group', { name: '颜色和图标', exact: true });
+    // The picker opens as a submenu beside the menu row; each choice applies at once.
+    const appearanceRow = window.getByRole('menuitem', { name: '图标与颜色', exact: true });
+    await appearanceRow.hover();
+    const picker = window.getByRole('group', { name: '图标与颜色', exact: true });
+    await expect(picker).toBeVisible();
+    expect((await picker.boundingBox())!.x).toBeGreaterThanOrEqual((await appearanceRow.boundingBox())!.x + 40);
     await picker.getByRole('button', { name: '蓝', exact: true }).click();
+    await expect.poll(async () => (await tags())[0]?.appearance?.colorId).toBe('blue');
     await picker.getByRole('button', { name: '🎨', exact: true }).click();
-    await picker.getByRole('button', { name: '保存', exact: true }).click();
     await expect.poll(async () => (await tags())[0]?.appearance).toEqual({ colorId: 'blue', glyphKind: 'emoji', glyphValue: '🎨' });
+    await window.keyboard.press('Escape');
     writeFileSync(path.join(root, '外观测试', 'image.png'), Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+j5ZkAAAAASUVORK5CYII=', 'base64'));
     copyFileSync(path.join(root, '外观测试', 'image.png'), path.join(root, '外观测试', 'second.png'));
     const card = window.locator('.asset-card').filter({ hasText: 'image.png' }).first();
@@ -50,7 +55,8 @@ test('tag appearance, reverse image drop and persistent interface scale', async 
     await card.dispatchEvent('dragover', { dataTransfer: transfer });
     await expect(card).toHaveAttribute('data-tag-drop-target', 'true');
     await card.dispatchEvent('drop', { dataTransfer: transfer });
-    await expect.poll(async () => (await tags())[0]?.assetCount).toBe(2);
+    // A tag dropped on an image applies to that image only, not the selection.
+    await expect.poll(async () => (await tags())[0]?.assetCount).toBe(1);
     await tag.dispatchEvent('dragend', { dataTransfer: transfer });
     await tag.click(); await expect(card).toBeVisible();
     const filter = window.locator('.dimension-filter-bar');

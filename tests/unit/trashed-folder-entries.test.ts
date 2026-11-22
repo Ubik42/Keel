@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { trashedFoldersToBrowseEntries } from '../../src/renderer/trashed-folder-entries';
+import { trashedFoldersToBrowseEntries } from '../../src/renderer/trash/trashed-folder-entries';
 
 describe('trashedFoldersToBrowseEntries', () => {
   it('maps tombstones to folder browse cards using tombstone id', () => {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { viewerShowsPlaybackMenu } from "../../src/renderer/viewer-quick-settings-menu";
+import { viewerShowsPlaybackMenu } from "../../src/renderer/viewer/viewer-quick-settings-menu";
 
 describe("viewerShowsPlaybackMenu", () => {
   it("gives video and GIF seek plus speed", () => {

@@ -2,7 +2,7 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { resolveAppIconCandidates } from "../../src/main/app-icon-paths";
+import { resolveAppIconCandidates } from "../../src/main/app/app-icon-paths";
 
 describe("resolveAppIconCandidates", () => {
   it("prefers the padded Dock PNG for macOS in development", () => {

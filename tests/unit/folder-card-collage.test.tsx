@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { FolderCard } from '../../src/renderer/FolderCard';
+import { FolderCard } from '../../src/renderer/browse/FolderCard';
 import { LocaleProvider } from '../../src/renderer/i18n';
 import type { FolderBrowseEntry } from '../../src/shared/asset-types';
 

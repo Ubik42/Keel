@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   ProxyPlaybackNotice,
   shouldShowProxyPlaybackNotice,
-} from "../../src/renderer/ProxyPlaybackNotice";
+} from "../../src/renderer/viewer/ProxyPlaybackNotice";
 import { LocaleProvider } from "../../src/renderer/i18n";
 
 describe("shouldShowProxyPlaybackNotice", () => {

@@ -8,7 +8,7 @@ import { expect, it } from 'vitest';
 import {
   closeOwnedEmbeddingRuntime,
   trackOwnedEmbeddingRuntimeOwner,
-} from '../../src/main/embedding-process-owner';
+} from '../../src/main/embedding/embedding-process-owner';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 function alive(pid: number): boolean {
@@ -101,7 +101,7 @@ async function launchElectronFixture(input: {
 }): Promise<ChildProcess> {
   const main = await buildFixtureMain(input.root, `
     import { app } from 'electron';
-    import { startLlamaEmbeddingSession } from ${JSON.stringify(path.join(process.cwd(), 'src/main/embedding-llama-session.ts'))};
+    import { startLlamaEmbeddingSession } from ${JSON.stringify(path.join(process.cwd(), 'src/main/embedding/embedding-llama-session.ts'))};
     app.setPath('userData', process.env.KEEL_E2E_USER_DATA_PATH);
     app.whenReady().then(async () => {
       if (process.platform === 'darwin') app.dock.hide();
@@ -152,7 +152,7 @@ process.on('SIGTERM', () => {});
     const parent = path.join(root, 'owner.cjs');
     const parentSource = path.join(root, 'owner.ts');
     await writeFile(parentSource, `
-        import { startLlamaEmbeddingSession } from ${JSON.stringify(path.join(process.cwd(), 'src/main/embedding-llama-session.ts'))};
+        import { startLlamaEmbeddingSession } from ${JSON.stringify(path.join(process.cwd(), 'src/main/embedding/embedding-llama-session.ts'))};
         startLlamaEmbeddingSession({ executable: ${JSON.stringify(runtime)},
           files: { corePath: ${JSON.stringify(pidFile)}, projectorPath: 'fixture' },
           gpuLayers: 0, startupTimeoutMs: 10000 }).then(() => {
@@ -192,7 +192,7 @@ it.skipIf(process.platform === 'win32')('waits for normal concurrent close to re
   const pidFile = path.join(root, 'runtime.json');
   try {
     const main = await buildFixtureMain(root, `
-      import { startLlamaEmbeddingSession } from ${JSON.stringify(path.join(process.cwd(), 'src/main/embedding-llama-session.ts'))};
+      import { startLlamaEmbeddingSession } from ${JSON.stringify(path.join(process.cwd(), 'src/main/embedding/embedding-llama-session.ts'))};
       (async () => {
       const session = await startLlamaEmbeddingSession({ executable: ${JSON.stringify(runtime)},
         files: { corePath: ${JSON.stringify(pidFile)}, projectorPath: 'fixture' }, gpuLayers: 0, startupTimeoutMs: 10000 });
@@ -229,7 +229,7 @@ it.skipIf(process.platform === 'win32')('cancels a runtime that is still loading
   try {
     const main = await buildFixtureMain(root, `
       import { readFile } from 'node:fs/promises';
-      import { startLlamaEmbeddingSession } from ${JSON.stringify(path.join(process.cwd(), 'src/main/embedding-llama-session.ts'))};
+      import { startLlamaEmbeddingSession } from ${JSON.stringify(path.join(process.cwd(), 'src/main/embedding/embedding-llama-session.ts'))};
       (async () => {
       const controller = new AbortController();
       const opening = startLlamaEmbeddingSession({ executable: ${JSON.stringify(runtime)},
@@ -271,7 +271,7 @@ it.skipIf(process.platform === 'win32')('closing one runtime does not affect ano
   const secondPidFile = path.join(root, 'second.json');
   try {
     const main = await buildFixtureMain(root, `
-      import { startLlamaEmbeddingSession } from ${JSON.stringify(path.join(process.cwd(), 'src/main/embedding-llama-session.ts'))};
+      import { startLlamaEmbeddingSession } from ${JSON.stringify(path.join(process.cwd(), 'src/main/embedding/embedding-llama-session.ts'))};
       (async () => {
       const first = await startLlamaEmbeddingSession({ executable: ${JSON.stringify(runtime)},
         files: { corePath: ${JSON.stringify(firstPidFile)}, projectorPath: 'fixture' }, gpuLayers: 0, startupTimeoutMs: 10000 });

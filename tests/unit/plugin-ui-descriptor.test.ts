@@ -15,8 +15,8 @@ import {
   pluginUiDescriptorSchema,
 } from '../../src/shared/plugin-ui-descriptor';
 import { pluginManagerContributionSchema } from '../../src/shared/plugin-manager-api';
-import { PluginUiDescriptorRenderer } from '../../src/renderer/plugin-ui-descriptor-renderer';
-import { buildPluginUiMenuDescriptors } from '../../src/renderer/plugin-menu-contributions';
+import { PluginUiDescriptorRenderer } from '../../src/renderer/plugins/plugin-ui-descriptor-renderer';
+import { buildPluginUiMenuDescriptors } from '../../src/renderer/plugins/plugin-menu-contributions';
 import manifestFixture from '../fixtures/plugin-manifests/plugin-ui-descriptor.serpent-plugin.json';
 
 describe('Plugin UI Contract v1', () => {

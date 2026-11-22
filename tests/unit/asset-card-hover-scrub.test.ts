@@ -8,7 +8,7 @@ import {
   isSignificantHoverScrubMove,
   resolveCardHoverScrubIntent,
   shouldShowCardHoverPlayhead,
-} from "../../src/renderer/asset-card-hover-scrub";
+} from "../../src/renderer/browse/asset-card-hover-scrub";
 
 describe("cardHoverScrubRatioFromClientX", () => {
   it("maps 75% of the media width to 0.75", () => {

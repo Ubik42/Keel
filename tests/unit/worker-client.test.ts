@@ -2,7 +2,7 @@ import { EventEmitter } from 'node:events';
 
 import { describe, expect, it, vi } from 'vitest';
 
-import type { AppLogger } from '../../src/main/app-logger';
+import type { AppLogger } from '../../src/main/app/app-logger';
 import { createPublicError } from '../../src/shared/protocol/errors';
 
 class FakeUtilityProcess extends EventEmitter {
@@ -21,7 +21,7 @@ import {
   WorkerUnavailableError,
   WorkerRequestTimeoutError,
   requestTimeoutForCommand,
-} from '../../src/main/worker-client';
+} from '../../src/main/library/worker-client';
 
 it('restores the known library before admitting requests after a Worker exit', async () => {
   const previousFfmpegPath = process.env.KEEL_FFMPEG_PATH;

@@ -6,7 +6,7 @@ import {
   saveNavTreePreferences,
   withCollapsedFolderIds,
   type NavTreePreferencesStorage,
-} from "../../src/renderer/nav-tree-preferences";
+} from "../../src/renderer/folders/nav-tree-preferences";
 
 function memoryStorage(
   initial: Record<string, string> = {},

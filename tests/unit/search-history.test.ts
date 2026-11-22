@@ -10,7 +10,7 @@ import {
   searchHistoryNavigationDirection,
   visibleHistoryCountByOffset,
   type SearchHistoryStorage,
-} from "../../src/renderer/search-history";
+} from "../../src/renderer/search/search-history";
 
 function memoryStorage(): SearchHistoryStorage {
   const values = new Map<string, string>();

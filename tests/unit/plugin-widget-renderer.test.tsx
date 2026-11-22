@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import {
   PluginWidgetRenderer,
   usePluginWidgetForm,
-} from '../../src/renderer/plugin-widget-renderer';
+} from '../../src/renderer/plugins/plugin-widget-renderer';
 import type { PluginWidgetNode, PluginWidgetValue } from '../../src/shared/plugin-widget-ir';
 
 function Harness({

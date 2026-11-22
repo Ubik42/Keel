@@ -20,9 +20,9 @@ import {
   readExposure,
   writeExposure,
 } from './keel-mcp-test-fixtures';
-import { McpPermissionBroker } from '../../src/main/mcp-permission-broker';
-import { McpPermissionPolicyStore } from '../../src/main/mcp-permission-policy-store';
-import { McpOperationChallengeStore } from '../../src/main/mcp-operation-challenge';
+import { McpPermissionBroker } from '../../src/main/mcp/mcp-permission-broker';
+import { McpPermissionPolicyStore } from '../../src/main/mcp/mcp-permission-policy-store';
+import { McpOperationChallengeStore } from '../../src/main/mcp/mcp-operation-challenge';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';

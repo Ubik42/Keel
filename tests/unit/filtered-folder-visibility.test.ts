@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { filteredFolderBrowseEntries } from "../../src/renderer/filtered-folder-visibility";
-import { resolveBrowseCanvasBodyLayout } from "../../src/renderer/folder-browse-canvas";
+import { filteredFolderBrowseEntries } from "../../src/renderer/filters/filtered-folder-visibility";
+import { resolveBrowseCanvasBodyLayout } from "../../src/renderer/browse/folder-browse-canvas";
 
 const folders = [
   { folderId: "parent", directAssetCount: 0 },

@@ -15,8 +15,8 @@ import {
   nextDiscreteCardSizeFromPinchDelta,
   nextDiscreteCardSizeFromWheelDelta,
   stepDiscreteCardSize,
-} from "../../src/renderer/card-size-stops";
-import { CARD_SIZE_MAX, CARD_SIZE_MIN } from "../../src/renderer/canvas-preferences";
+} from "../../src/renderer/browse/card-size-stops";
+import { CARD_SIZE_MAX, CARD_SIZE_MIN } from "../../src/renderer/browse/canvas-preferences";
 
 describe("enumerateDiscreteCardSizes (Serpent-7ny)", () => {
   it("returns ascending unique stops that pack flush for each column count", () => {

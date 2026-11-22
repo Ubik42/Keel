@@ -8,7 +8,7 @@ import {
   summarizeEmbeddingModels,
   upsertEmbeddingModel,
   type EmbeddingModelCatalog,
-} from "../../src/main/embedding-model-catalog";
+} from "../../src/main/embedding/embedding-model-catalog";
 import { tryHandleEmbeddingModelRequest } from "../../src/main/library-request/embedding-models";
 import {
   channelEnabled,

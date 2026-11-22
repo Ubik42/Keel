@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import type { AssetSummary } from "../../src/shared/asset-types";
 import type { KeelLibraryApi } from "../../src/shared/library-api";
-import { nextUnfilledBrowsePageOffset } from "../../src/renderer/browse-window-slots";
+import { nextUnfilledBrowsePageOffset } from "../../src/renderer/browse/browse-window-slots";
 import {
   fetchBrowseScopeAssetIdsGuarded,
   fetchBrowseScopeIds,
@@ -19,7 +19,7 @@ import {
   registerBrowseSearchPage,
   shouldRunBrowseSentinel,
   type BrowsePageDefinition,
-} from "../../src/renderer/use-browse-pagination";
+} from "../../src/renderer/browse/use-browse-pagination";
 
 function asset(assetId: string): AssetSummary {
   return {

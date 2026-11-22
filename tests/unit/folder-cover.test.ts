@@ -4,7 +4,7 @@ import {
   folderCoverClearTargets,
   folderCoverImageSrc,
   patchFolderNavigationCoverArtifact,
-} from "../../src/renderer/folder-cover";
+} from "../../src/renderer/folders/folder-cover";
 
 describe("folderCoverClearTargets", () => {
   it("does not offer restore for folders without a custom cover", () => {

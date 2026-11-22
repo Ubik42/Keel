@@ -3,7 +3,7 @@ import { act, createElement, type ReactNode } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { FatalAlertDialog } from "../../src/renderer/FatalAlertDialog";
+import { FatalAlertDialog } from "../../src/renderer/shell/FatalAlertDialog";
 import { LocaleProvider } from "../../src/renderer/i18n";
 import { useDialogFocusTrap } from "../../src/renderer/workbench/overlay/use-dialog-focus-trap";
 

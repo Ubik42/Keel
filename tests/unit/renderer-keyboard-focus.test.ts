@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { ensureRendererKeyboardFocus } from "../../src/main/renderer-keyboard-focus";
+import { ensureRendererKeyboardFocus } from "../../src/main/window/renderer-keyboard-focus";
 
 function createWindow(overrides?: {
   readonly destroyed?: boolean;

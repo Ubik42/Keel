@@ -3,7 +3,7 @@ import {
   normalizeForSnippetCompare,
   plainSnippetText,
   resolveSearchSnippetCaption,
-} from "../../src/renderer/search-snippet-caption";
+} from "../../src/renderer/search/search-snippet-caption";
 
 describe("plainSnippetText", () => {
   it("strips highlight markers and ellipsis", () => {

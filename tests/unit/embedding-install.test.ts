@@ -16,7 +16,7 @@ import {
   semanticModelPackageBytes,
   downloadEmbeddingFile,
   uninstallSemanticModelFiles,
-} from "../../src/main/embedding-install";
+} from "../../src/main/embedding/embedding-install";
 import { EMBEDDING_GEMMA2_MODEL_REVISION } from "../../src/shared/embedding/profile";
 
 describe("embedding install lookup", () => {

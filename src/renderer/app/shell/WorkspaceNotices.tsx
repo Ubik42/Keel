@@ -2,12 +2,12 @@ import type { TransitionEvent } from "react";
 import { useNavigationField } from "../../stores/navigation-store";
 import { usePreviewField } from "../../stores/preview-store";
 import { useSessionField } from "../../stores/session-store";
-import type { ToastStackMessage } from "../../toast-notifications";
+import type { ToastStackMessage } from "../../jobs/toast-notifications";
 import type { TranslateFn } from "../../i18n/LocaleProvider";
-import type { WorkspaceTabsState } from "../../workspace-tabs";
-import { FindSimilarBanner } from "../../FindSimilarBanner";
+import type { WorkspaceTabsState } from "../../workspace/workspace-tabs";
+import { FindSimilarBanner } from "../../ai/FindSimilarBanner";
 import { Notice } from "../../workbench/ui/patterns";
-import { WorkspaceNoticeBanner } from "../../WorkspaceNoticeBanner";
+import { WorkspaceNoticeBanner } from "../../workspace/WorkspaceNoticeBanner";
 import { createPortal } from "react-dom";
 
 export interface WorkspaceNoticesProps {

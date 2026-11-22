@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   horizontalScrollDeltaFromWheel,
   nextTabStripScrollLeft,
-} from "../../src/renderer/workspace-tab-strip-scroll";
+} from "../../src/renderer/workspace/workspace-tab-strip-scroll";
 
 const sample = (
   overrides: Partial<Parameters<typeof horizontalScrollDeltaFromWheel>[0]> = {},

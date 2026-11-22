@@ -8,7 +8,7 @@ import {
   readAtomicJsonFile,
   recoverAtomicJsonFile,
   writeAtomicJsonFile,
-} from '../../src/main/atomic-json-file';
+} from '../../src/main/app/atomic-json-file';
 
 const roots: string[] = [];
 

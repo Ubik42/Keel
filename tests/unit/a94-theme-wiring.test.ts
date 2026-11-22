@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
-import { APPEARANCE_ADJUST_SETTLE_MS } from "../../src/renderer/use-appearance-adjusting";
+import { APPEARANCE_ADJUST_SETTLE_MS } from "../../src/renderer/appearance/use-appearance-adjusting";
 import { CUSTOM_THEME_EDITOR_FIELDS } from "../../src/renderer/theme/ThemeColorSettings";
 import { CUSTOM_THEME_ISLAND_TOKENS } from "../../src/renderer/theme/custom-theme";
 import { readRendererStyles } from "../support/renderer-styles";

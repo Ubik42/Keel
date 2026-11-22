@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   folderBrowseScope,
   folderSearchScope,
-} from '../../src/renderer/folder-browse-scope';
+} from '../../src/renderer/browse/folder-browse-scope';
 
 describe('folderBrowseScope (REQ-FOLDER-009)', () => {
   it('leaves all-assets without a folder scope', () => {

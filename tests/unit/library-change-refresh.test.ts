@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { shouldRefreshContentForLibraryChange } from "../../src/renderer/library-change-refresh";
+import { shouldRefreshContentForLibraryChange } from "../../src/renderer/library/library-change-refresh";
 
 describe("library change content refresh policy", () => {
   it("refreshes a NAS library when another instance commits a change", () => {

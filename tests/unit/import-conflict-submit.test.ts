@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   canBeginImportDecisionSubmit,
   shouldSuppressImportContinueError,
-} from "../../src/renderer/import-conflict-submit";
+} from "../../src/renderer/import/import-conflict-submit";
 
 describe("import-conflict-submit", () => {
   it("rejects a second confirm while the first resolve is in flight", () => {

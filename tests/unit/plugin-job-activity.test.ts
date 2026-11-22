@@ -5,7 +5,7 @@ import {
   countOtherLivePluginJobs,
   hasActivePluginJobs,
   selectPluginJobActivity,
-} from "../../src/renderer/plugin-job-activity";
+} from "../../src/renderer/plugins/plugin-job-activity";
 
 function job(
   status: PluginJobRecord["status"],

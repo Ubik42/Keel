@@ -6,7 +6,7 @@ import {
   filterTagsByQuery,
   resolveTagMenuTargetIds,
   sortTags,
-} from "../../src/renderer/tag-management-model";
+} from "../../src/renderer/tags/tag-management-model";
 
 function tag(tagId: string, name: string, assetCount: number): TagSummary {
   return { tagId, name, assetCount };

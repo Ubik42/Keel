@@ -7,7 +7,7 @@ import {
   playheadRatioFromTime,
   seekRatioFromWaveformClientX,
   seekTimeFromWaveformRatio,
-} from "../../src/renderer/audio-waveform-timeline";
+} from "../../src/renderer/viewer/audio-waveform-timeline";
 
 test("playheadRatioFromTime maps time into 0..1", () => {
   expect(playheadRatioFromTime(0, 10)).toBe(0);

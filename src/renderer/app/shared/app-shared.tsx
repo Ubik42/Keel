@@ -1,7 +1,7 @@
 import { navigationFields } from "../../stores/navigation-store";
 import type { SessionState } from "../../stores/session-store";
 import { isMacPlatform, type CommandPlatform } from "../../workbench/menu/command-types";
-import { usesWindowsStyleShell } from "../../renderer-platform";
+import { usesWindowsStyleShell } from "../../common/renderer-platform";
 import { type KeelLibraryApi } from "../../../shared/library-api";
 import { type KeelShellApi } from "../../../shared/external-url";
 import { type KeelAutomationScriptApi } from "../../../shared/automation-script-api";
@@ -9,14 +9,14 @@ import { type KeelPluginManagerApi } from "../../../shared/plugin-manager-api";
 import { type KeelMcpSettingsApi } from "../../../shared/mcp";
 import { type ReactNode, useEffect, useState } from "react";
 import { type WorkspaceNavigationHistoryMode, type WorkspaceNavigationToken } from "../../workbench/workspace/workspace-navigation-coordinator";
-import { type WorkspaceTabBrowseState } from "../../workspace-tabs";
-import { splitSearchHighlights } from "../../search-expression";
-import { splitFilenameForDisplay } from "../../filename-display";
+import { type WorkspaceTabBrowseState } from "../../workspace/workspace-tabs";
+import { splitSearchHighlights } from "../../search/search-expression";
+import { splitFilenameForDisplay } from "../../common/filename-display";
 import { type AiSearchPlan, type FilterClause, type SearchQuery, type SortDefinition } from "../../../shared/asset-types";
-import { Icon, type IconName } from "../../Icons";
-import { iconActionAttrs } from "../../icon-action-attrs";
+import { Icon, type IconName } from "../../common/Icons";
+import { iconActionAttrs } from "../../common/icon-action-attrs";
 import { type AppLocale } from "../../i18n";
-import { formatShortDate } from "../../format-file-meta";
+import { formatShortDate } from "../../inspector/format-file-meta";
 
 export const IS_MAC_PLATFORM = isMacPlatform(navigator.userAgent);
 // Windows-style shell: Windows and Linux (see usesWindowsStyleShell).

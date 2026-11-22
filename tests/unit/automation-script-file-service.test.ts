@@ -4,8 +4,8 @@ import path from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { AutomationScriptFileService } from '../../src/main/automation-script-file-service';
-import { createJsonFileAutomationRecentScriptsStore } from '../../src/main/automation-recent-scripts-store';
+import { AutomationScriptFileService } from '../../src/main/automation/automation-script-file-service';
+import { createJsonFileAutomationRecentScriptsStore } from '../../src/main/automation/automation-recent-scripts-store';
 
 const roots: string[] = [];
 const scriptId = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';

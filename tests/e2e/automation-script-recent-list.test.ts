@@ -5,7 +5,7 @@ import path from 'node:path';
 import { _electron as electron, expect, test } from '@playwright/test';
 
 import { resolveElectronExecutablePath } from './electron-test-helpers';
-import { DEFAULT_AUTOMATION_RATING_SCRIPT } from '../../src/renderer/script-sandbox-preview-default';
+import { DEFAULT_AUTOMATION_RATING_SCRIPT } from '../../src/renderer/rules/script-sandbox-preview-default';
 
 test.describe.configure({ timeout: 120_000 });
 

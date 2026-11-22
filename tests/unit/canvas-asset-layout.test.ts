@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import type { AssetSummary } from "../../src/shared/asset-types";
-import { createCaptionBandResolver } from "../../src/renderer/asset-caption-band";
+import { createCaptionBandResolver } from "../../src/renderer/browse/asset-caption-band";
 import { countFittingColumns } from "../../src/renderer/workbench/collection/asset-grid-layout";
-import { resolveJustifiedCaptionBandPx } from "../../src/renderer/justified-caption-band";
-import { estimateMasonryPreviewHeightPx } from "../../src/renderer/masonry-preview-frame";
+import { resolveJustifiedCaptionBandPx } from "../../src/renderer/browse/justified-caption-band";
+import { estimateMasonryPreviewHeightPx } from "../../src/renderer/browse/masonry-preview-frame";
 import {
   estimateMasonryCardBodyPx,
   hitTestCanvasAssetLayout,
@@ -16,7 +16,7 @@ import {
   MASONRY_DIMENSIONS_CAPTION_BAND_PX,
   overlayLiveAssetGeometry,
   stackItemHeights,
-} from "../../src/renderer/canvas-asset-layout";
+} from "../../src/renderer/browse/canvas-asset-layout";
 
 function asset(
   id: string,

@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
 import { SCRIPT_SANDBOX_PREVIEW_MAX_SOURCE_BYTES } from '../../src/shared/script-sandbox-limits';
-import { DEFAULT_AUTOMATION_RATING_SCRIPT } from '../../src/renderer/script-sandbox-preview-default';
-import { runScriptSandboxPreview } from '../../src/renderer/script-sandbox-preview-runtime';
+import { DEFAULT_AUTOMATION_RATING_SCRIPT } from '../../src/renderer/rules/script-sandbox-preview-default';
+import { runScriptSandboxPreview } from '../../src/renderer/rules/script-sandbox-preview-runtime';
 
 describe('script sandbox preview worker runtime', () => {
   it('returns stable failures at the Worker runtime boundary', async () => {

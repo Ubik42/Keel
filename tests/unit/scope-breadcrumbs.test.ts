@@ -6,8 +6,8 @@ import { LocaleProvider, createTranslator, catalogs } from "../../src/renderer/i
 import {
   ScopeBreadcrumbs,
   buildScopeBreadcrumbSegments,
-} from "../../src/renderer/ScopeBreadcrumbs";
-import { ScopeHistoryButtons } from "../../src/renderer/ScopeHistoryButtons";
+} from "../../src/renderer/search/ScopeBreadcrumbs";
+import { ScopeHistoryButtons } from "../../src/renderer/search/ScopeHistoryButtons";
 
 const t = createTranslator(catalogs["zh-CN"]);
 

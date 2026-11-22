@@ -168,53 +168,53 @@ const config: ForgeConfig = {
       build: [
         {
           entry: 'src/main/entry.ts',
-          config: 'vite.main.config.ts',
+          config: 'config/vite/main.config.ts',
           target: 'main',
         },
         {
           entry: 'src/preload/index.ts',
-          config: 'vite.preload.config.ts',
+          config: 'config/vite/preload.config.ts',
           target: 'preload',
         },
         {
           // Slice E (Serpent-hnmg): dedicated bridge for the hidden offscreen
           // thumbnail window; emitted as `.vite/build/offscreen.js`.
           entry: 'src/preload/offscreen.ts',
-          config: 'vite.offscreen-preload.config.ts',
+          config: 'config/vite/offscreen-preload.config.ts',
           target: 'preload',
         },
         {
           // Critical confirmation child windows have a deliberately narrow
           // bridge; they must not inherit the full application preload.
           entry: 'src/preload/critical-confirmation.ts',
-          config: 'vite.critical-confirmation-preload.config.ts',
+          config: 'config/vite/critical-confirmation-preload.config.ts',
           target: 'preload',
         },
         {
           entry: 'src/worker/index.ts',
-          config: 'vite.worker.config.ts',
+          config: 'config/vite/worker.config.ts',
           target: 'main',
         },
         {
           entry: 'src/scripting/script-runtime-utility-entry.ts',
-          config: 'vite.script-runtime.config.ts',
+          config: 'config/vite/script-runtime.config.ts',
           target: 'main',
         },
         {
           entry: 'src/scripting/plugin-standard-host-entry.ts',
-          config: 'vite.plugin-runtime.config.ts',
+          config: 'config/vite/plugin-runtime.config.ts',
           target: 'main',
         },
         {
           entry: 'src/scripting/plugin-trusted-host-entry.ts',
-          config: 'vite.plugin-trusted-runtime.config.ts',
+          config: 'config/vite/plugin-trusted-runtime.config.ts',
           target: 'main',
         },
       ],
       renderer: [
         {
           name: 'main_window',
-          config: 'vite.renderer.config.ts',
+          config: 'config/vite/renderer.config.ts',
         },
       ],
     }),

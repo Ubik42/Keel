@@ -7,7 +7,7 @@ import {
   folderIdsInSubtree,
   managedFolderIdsWithChildren,
   sortManagedTreeEntries,
-} from "../../src/renderer/unified-directory-nav";
+} from "../../src/renderer/folders/unified-directory-nav";
 import type {
   LinkedFolderSummary,
   ManagedFolderSummary,

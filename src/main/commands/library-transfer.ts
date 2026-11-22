@@ -7,7 +7,7 @@ import {
   selectOpenFile,
   selectSavePath,
   type NativeDialogHost,
-} from "../native-dialogs";
+} from "../window/native-dialogs";
 
 export type LibraryTransferCommandRuntime = {
   createNativeDialogHost: () => NativeDialogHost;

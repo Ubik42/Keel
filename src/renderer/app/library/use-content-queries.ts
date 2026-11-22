@@ -1,14 +1,14 @@
 import type { Dispatch, RefObject, SetStateAction } from "react";
 import { type AssetSummary, type SearchScope, type SortDefinition } from "../../../shared/asset-types";
 import { type RendererLibrarySummary } from "../../../shared/protocol/responses";
-import { decrementScopeCount, removeAssetIdsLocally } from "../../asset-local-refresh";
-import { folderBrowseScope, folderSearchScope } from "../../folder-browse-scope";
+import { decrementScopeCount, removeAssetIdsLocally } from "../../browse/asset-local-refresh";
+import { folderBrowseScope, folderSearchScope } from "../../browse/folder-browse-scope";
 import { type BrowseState } from "../../stores/browse-store";
 import { type AssetScope, type NavigationState } from "../../stores/navigation-store";
 import { type QueryState } from "../../stores/query-store";
 import { type SessionState } from "../../stores/session-store";
-import { browseStateForWorkspaceNavigation, workspaceNavigationKeepsLiveDiscovery } from "../../workspace-discovery-navigation";
-import { createDefaultWorkspaceTabBrowseState, type WorkspaceTabBrowseState } from "../../workspace-tabs";
+import { browseStateForWorkspaceNavigation, workspaceNavigationKeepsLiveDiscovery } from "../../workspace/workspace-discovery-navigation";
+import { createDefaultWorkspaceTabBrowseState, type WorkspaceTabBrowseState } from "../../workspace/workspace-tabs";
 import { type QueryFilterSnapshot, type SearchDefinition, type WorkspaceNavigationRequest, renderedLibrary } from "../shared/app-shared";
 import { useCallback, useRef } from "react";
 

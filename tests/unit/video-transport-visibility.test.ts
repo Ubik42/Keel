@@ -9,7 +9,7 @@ import {
   shouldIgnoreViewerPointerMove,
   VIDEO_TRANSPORT_APPROACH_PX,
   type ViewerDrawerState,
-} from "../../src/renderer/video-transport-visibility";
+} from "../../src/renderer/viewer/video-transport-visibility";
 
 const bounds = {
   left: 0,

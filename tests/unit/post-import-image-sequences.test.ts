@@ -5,7 +5,7 @@ import {
   isPostImportSequenceOfferId,
   postImportFrameGroupsForAction,
   postImportSequencePlanFromAssets,
-} from "../../src/renderer/post-import-image-sequences";
+} from "../../src/renderer/import/post-import-image-sequences";
 
 function asset(partial: {
   assetId: string;

@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 const css = readFileSync(
-  resolve(__dirname, "../../src/renderer/workspace-tabs.css"),
+  resolve(__dirname, "../../src/renderer/styles/workspace-tabs.css"),
   "utf8",
 );
 

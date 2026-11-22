@@ -1,5 +1,5 @@
 import type { RendererRequest } from "../../shared/protocol/requests";
-import { nativeDragAssetsForResult } from "../native-asset-drag-prime";
+import { nativeDragAssetsForResult } from "../shell/native-asset-drag-prime";
 
 /**
  * One browse page (100). Native drag can only use entries already in the

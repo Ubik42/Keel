@@ -6,7 +6,7 @@ import {
   type ReactNode,
 } from 'react';
 
-import { Icon } from '../Icons';
+import { Icon } from '../common/Icons';
 import { useT } from '../i18n';
 import { Button, Progress } from '../workbench/ui/primitives';
 import { cx } from '../workbench/ui/primitives/cx';

@@ -6,16 +6,16 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 vi.mock("../../src/renderer/i18n", () => ({
   useT: () => (key: string) => key,
 }));
-vi.mock("../../src/renderer/icon-action-attrs", () => ({
+vi.mock("../../src/renderer/common/icon-action-attrs", () => ({
   iconActionAttrs: () => ({ "aria-label": "action" }),
 }));
-vi.mock("../../src/renderer/ViewerVolumeControls", () => ({
+vi.mock("../../src/renderer/viewer/ViewerVolumeControls", () => ({
   ViewerVolumeControls: () => null,
 }));
-vi.mock("../../src/renderer/viewer-volume-preferences", () => ({
+vi.mock("../../src/renderer/viewer/viewer-volume-preferences", () => ({
   applyViewerVolumeToMedia: () => undefined,
 }));
-vi.mock("../../src/renderer/media-seek-session", () => ({
+vi.mock("../../src/renderer/viewer/media-seek-session", () => ({
   createMediaSeekSession: () => ({
     request: () => undefined,
     commit: () => undefined,
@@ -23,7 +23,7 @@ vi.mock("../../src/renderer/media-seek-session", () => ({
     onSeeked: () => undefined,
   }),
 }));
-vi.mock("../../src/renderer/use-viewer-zoom-pan", () => ({
+vi.mock("../../src/renderer/viewer/use-viewer-zoom-pan", () => ({
   useViewerZoomPan: () => ({
     fitToWindow: () => undefined,
     measureAndFit: () => undefined,
@@ -33,7 +33,7 @@ vi.mock("../../src/renderer/use-viewer-zoom-pan", () => ({
   }),
 }));
 
-import { VideoPlayerControls } from "../../src/renderer/VideoPlayerControls";
+import { VideoPlayerControls } from "../../src/renderer/viewer/VideoPlayerControls";
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT =
   true;

@@ -1,13 +1,13 @@
 import { expect, test, vi } from "vitest";
 
-import { MANAGED_ASSETS_DRAG_TYPE } from "../../src/renderer/asset-drag-drop";
+import { MANAGED_ASSETS_DRAG_TYPE } from "../../src/renderer/browse/asset-drag-drop";
 import {
   reduceInternalDragPhase,
   scheduleInternalAssetDropCleanup,
   shouldActivateExternalImportOverlay,
   shouldConsumeManagedAssetDrop,
   supportsExternalImportTypes,
-} from "../../src/renderer/external-import-transfer";
+} from "../../src/renderer/import/external-import-transfer";
 
 test("external import accepts Files / html / uri-list", () => {
   expect(supportsExternalImportTypes(["Files"])).toBe(true);

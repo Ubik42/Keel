@@ -11,7 +11,7 @@ import {
   appendMediaJobListPage,
   applyMediaJobSummary,
   replaceMediaJobListPage,
-} from "../../src/renderer/media-job-status-state";
+} from "../../src/renderer/jobs/media-job-status-state";
 import type { MediaJobStatus } from "../../src/shared/library-api";
 
 function job(id: string, createdAt: string): MediaJobStatus["jobs"][number] {

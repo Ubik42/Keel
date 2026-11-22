@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { AssetSummary } from "../../src/shared/asset-types";
-import { mergeAssetSummaries } from "../../src/renderer/merge-asset-summaries";
+import { mergeAssetSummaries } from "../../src/renderer/browse/merge-asset-summaries";
 
 function asset(id: string, availability: AssetSummary["availability"]): AssetSummary {
   return {

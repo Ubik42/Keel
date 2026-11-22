@@ -8,9 +8,9 @@ import {
   type AutomationCommandDescriptor,
 } from '../../src/automation/command-registry';
 import type { AutomationExecutionContext } from '../../src/automation/command-gateway';
-import { McpPermissionBroker } from '../../src/main/mcp-permission-broker';
-import { McpPermissionPolicyStore } from '../../src/main/mcp-permission-policy-store';
-import { McpOperationChallengeStore } from '../../src/main/mcp-operation-challenge';
+import { McpPermissionBroker } from '../../src/main/mcp/mcp-permission-broker';
+import { McpPermissionPolicyStore } from '../../src/main/mcp/mcp-permission-policy-store';
+import { McpOperationChallengeStore } from '../../src/main/mcp/mcp-operation-challenge';
 
 const roots: string[] = [];
 

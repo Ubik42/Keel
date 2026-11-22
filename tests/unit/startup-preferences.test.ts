@@ -9,7 +9,7 @@ import {
   readStartupPreferences,
   startupPreferencesFilePath,
   writeStartupPreferences,
-} from '../../src/main/startup-preferences-store';
+} from '../../src/main/preferences/startup-preferences-store';
 import {
   DEFAULT_STARTUP_PREFERENCES,
   loginItemRegistration,

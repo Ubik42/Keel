@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest';
 import {
   readExtensionBrowseFolderIds,
   recordExtensionBrowseFolder,
-} from '../../src/main/extension-recent-browse-folders';
+} from '../../src/main/ingestion/extension-recent-browse-folders';
 
 describe('extension-recent-browse-folders', () => {
   it('records and reads recent browsed folders per library', () => {

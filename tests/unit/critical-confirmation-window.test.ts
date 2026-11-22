@@ -6,7 +6,7 @@ import {
   criticalConfirmationWindowOptions,
   type CriticalConfirmationIpcHost,
   type CriticalConfirmationWindowLike,
-} from '../../src/main/critical-confirmation-window';
+} from '../../src/main/window/critical-confirmation-window';
 
 const payload = {
   title: '确认危险操作',

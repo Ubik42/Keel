@@ -3,14 +3,14 @@ import type { KeelLibraryApi } from "../../../shared/library-api";
 import type { TranslateFn } from "../../i18n/LocaleProvider";
 import type { AppLocale } from "../../i18n/types";
 import { isEditableTextTarget } from "../../../shared/edit-context-menu";
-import { LibraryOperationError, toMessage } from "../../error-utils";
+import { LibraryOperationError, toMessage } from "../../common/error-utils";
 import { translateForLocale } from "../../i18n";
-import { appendSemanticCleanupNotice } from "../../semantic-cleanup-notice";
+import { appendSemanticCleanupNotice } from "../../ai/semantic-cleanup-notice";
 import { type BrowseState } from "../../stores/browse-store";
 import { type DialogsState } from "../../stores/dialogs-store";
 import { type SessionState } from "../../stores/session-store";
-import { playTaskCompletionSound } from "../../task-completion-sound";
-import { isUserCancellation, userCancellationNoticeKey } from "../../user-cancellation";
+import { playTaskCompletionSound } from "../../jobs/task-completion-sound";
+import { isUserCancellation, userCancellationNoticeKey } from "../../common/user-cancellation";
 import { useCallback } from "react";
 
 export interface UseMoveUndoDeleteDeps {

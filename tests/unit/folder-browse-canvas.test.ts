@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   resolveBrowseCanvasBodyLayout,
   shouldShowFolderBrowseCards,
-} from "../../src/renderer/folder-browse-canvas";
+} from "../../src/renderer/browse/folder-browse-canvas";
 
 describe("resolveBrowseCanvasBodyLayout (CANVAS-022 / Serpent-an1)", () => {
   it("returns empty when there are no folders and no assets", () => {

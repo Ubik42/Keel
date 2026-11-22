@@ -4,8 +4,8 @@ import { act, createElement, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { expect, it, vi } from 'vitest';
 import { LocaleProvider } from '../../src/renderer/i18n';
-import { useInspectorFieldHandlers, type UseInspectorFieldHandlersParams } from '../../src/renderer/use-inspector-field-handlers';
-import { useInspectorMultiEdit } from '../../src/renderer/use-inspector-multi-edit';
+import { useInspectorFieldHandlers, type UseInspectorFieldHandlersParams } from '../../src/renderer/inspector/use-inspector-field-handlers';
+import { useInspectorMultiEdit } from '../../src/renderer/inspector/use-inspector-multi-edit';
 import { assetMetadataResultSchema } from '../../src/shared/asset-types';
 import type { KeelLibraryApi } from '../../src/shared/library-api';
 

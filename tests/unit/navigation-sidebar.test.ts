@@ -8,7 +8,7 @@ import {
   NavigationSidebarActionsProvider,
   type NavigationSidebarActions,
   type NavigationSidebarProps,
-} from "../../src/renderer/NavigationSidebar";
+} from "../../src/renderer/folders/NavigationSidebar";
 import { MANAGED_FOLDERS_DRAG_TYPE } from "../../src/renderer/workbench/tree/folder-drag-drop";
 import { LocaleProvider } from "../../src/renderer/i18n";
 import { browseFields } from "../../src/renderer/stores/browse-store";
@@ -16,7 +16,7 @@ import { navigationFields, type NavigationState } from "../../src/renderer/store
 import { queryFields } from "../../src/renderer/stores/query-store";
 import { selectionFields } from "../../src/renderer/stores/selection-store";
 import { sessionFields, type SessionState } from "../../src/renderer/stores/session-store";
-import { NAV_TREE_PREF_KEY } from "../../src/renderer/nav-tree-preferences";
+import { NAV_TREE_PREF_KEY } from "../../src/renderer/folders/nav-tree-preferences";
 import { readRendererStyles } from "../support/renderer-styles";
 
 function createDragTransfer(

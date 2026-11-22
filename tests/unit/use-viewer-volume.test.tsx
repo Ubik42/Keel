@@ -3,13 +3,13 @@ import { act, createElement } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { useViewerVolume } from "../../src/renderer/use-viewer-volume";
+import { useViewerVolume } from "../../src/renderer/viewer/use-viewer-volume";
 import { setShortcutRuntime } from "../../src/renderer/workbench/shortcuts/shortcut-runtime";
 import {
   DEFAULT_SHORTCUT_BINDINGS,
   setShortcutOverride,
 } from "../../src/shared/shortcut-bindings";
-import { VIEWER_VOLUME_PREF_KEY } from "../../src/renderer/viewer-volume-preferences";
+import { VIEWER_VOLUME_PREF_KEY } from "../../src/renderer/viewer/viewer-volume-preferences";
 
 let root: Root | undefined;
 let container: HTMLDivElement | undefined;

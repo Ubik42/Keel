@@ -1,25 +1,25 @@
 import type { Dispatch, RefObject, SetStateAction } from "react";
-import type { ImageSequencePreferences } from "../../image-sequence-preferences";
+import type { ImageSequencePreferences } from "../../viewer/image-sequence-preferences";
 import type { KeelLibraryApi } from "../../../shared/library-api";
 import type { TranslateFn } from "../../i18n/LocaleProvider";
 import type { AppLocale } from "../../i18n/types";
 import { type AssetSummary } from "../../../shared/asset-types";
 import { type ImportConflictPlan, type ImportSourceFailurePlan } from "../../../shared/protocol/responses";
-import { applyImportPrepareResult } from "../../apply-import-prepare-result";
-import { LibraryOperationError, toMessage } from "../../error-utils";
-import { imageSequenceImportFlags } from "../../image-sequence-preferences";
-import { nextImportConflictPhaseAfterName } from "../../import-conflict-flow";
-import { loadImportConflictPreferences, rememberDuplicateDecision, rememberNameConflictDecision, type RememberedDuplicateDecision, type RememberedNameConflictDecision } from "../../import-conflict-preferences";
-import { canBeginImportDecisionSubmit, shouldSuppressImportContinueError } from "../../import-conflict-submit";
-import { importSummaryMessage } from "../../import-summary";
-import { browseScopeForAsset, type PendingAssetReveal } from "../../pending-asset-reveal";
-import { isPostImportSequenceOfferId, postImportFrameGroupsForAction, postImportSequencePlanFromAssets, type PostImportSequencePlan } from "../../post-import-image-sequences";
+import { applyImportPrepareResult } from "../../import/apply-import-prepare-result";
+import { LibraryOperationError, toMessage } from "../../common/error-utils";
+import { imageSequenceImportFlags } from "../../viewer/image-sequence-preferences";
+import { nextImportConflictPhaseAfterName } from "../../import/import-conflict-flow";
+import { loadImportConflictPreferences, rememberDuplicateDecision, rememberNameConflictDecision, type RememberedDuplicateDecision, type RememberedNameConflictDecision } from "../../import/import-conflict-preferences";
+import { canBeginImportDecisionSubmit, shouldSuppressImportContinueError } from "../../import/import-conflict-submit";
+import { importSummaryMessage } from "../../import/import-summary";
+import { browseScopeForAsset, type PendingAssetReveal } from "../../browse/pending-asset-reveal";
+import { isPostImportSequenceOfferId, postImportFrameGroupsForAction, postImportSequencePlanFromAssets, type PostImportSequencePlan } from "../../import/post-import-image-sequences";
 import { type BrowseState } from "../../stores/browse-store";
 import { type AssetScope, type NavigationState } from "../../stores/navigation-store";
 import { type SelectionState } from "../../stores/selection-store";
 import { type SessionState } from "../../stores/session-store";
 import { transfersFields, type TransfersState } from "../../stores/transfers-store";
-import { playTaskCompletionSound } from "../../task-completion-sound";
+import { playTaskCompletionSound } from "../../jobs/task-completion-sound";
 import { type WorkspaceNavigationRequest } from "../shared/app-shared";
 
 export interface UseImportOperationsDeps {

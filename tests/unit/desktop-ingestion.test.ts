@@ -13,7 +13,7 @@ import {
   readClipboardImage,
   stageClipboardImage,
   wrapDibInBmp,
-} from '../../src/main/desktop-ingestion';
+} from '../../src/main/ingestion/desktop-ingestion';
 import { resolveDroppedFilePaths } from '../../src/preload/dropped-files';
 
 const roots: string[] = [];

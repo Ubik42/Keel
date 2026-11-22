@@ -8,7 +8,7 @@ import {
   rangesEqual,
   togglePresetRange,
   togglePresetRanges,
-} from '../../src/renderer/filter-presets';
+} from '../../src/renderer/filters/filter-presets';
 
 describe('aspect ratio presets (REQ-FILTER-009)', () => {
   it('offers the user-requested preset set in order', () => {

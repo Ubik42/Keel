@@ -59,7 +59,7 @@ await rm(buildRoot, { force: true, recursive: true });
 // This avoids coupling the tests to a Vite process or a dev-server URL baked by
 // a previous `electron-forge start` invocation.
 await build({
-  configFile: path.join(projectRoot, 'vite.main.config.ts'),
+  configFile: path.join(projectRoot, 'config/vite/main.config.ts'),
   define: {
     MAIN_WINDOW_VITE_DEV_SERVER_URL: 'undefined',
     MAIN_WINDOW_VITE_NAME: JSON.stringify('main_window'),
@@ -75,7 +75,7 @@ await build({
 });
 
 await build({
-  configFile: path.join(projectRoot, 'vite.preload.config.ts'),
+  configFile: path.join(projectRoot, 'config/vite/preload.config.ts'),
   resolve: nodeResolve,
   build: {
     emptyOutDir: false,
@@ -95,7 +95,7 @@ await build({
 // builds it through the Vite plugin, but this production-like E2E entrypoint
 // assembles the build graph manually and must emit the same bundle.
 await build({
-  configFile: path.join(projectRoot, 'vite.offscreen-preload.config.ts'),
+  configFile: path.join(projectRoot, 'config/vite/offscreen-preload.config.ts'),
   resolve: nodeResolve,
   build: {
     emptyOutDir: false,
@@ -114,7 +114,7 @@ await build({
 // Critical confirmation child windows use a separate, narrow preload bridge;
 // keep the production-like E2E build graph in lockstep with Forge.
 await build({
-  configFile: path.join(projectRoot, 'vite.critical-confirmation-preload.config.ts'),
+  configFile: path.join(projectRoot, 'config/vite/critical-confirmation-preload.config.ts'),
   resolve: nodeResolve,
   build: {
     emptyOutDir: false,
@@ -131,7 +131,7 @@ await build({
 });
 
 await build({
-  configFile: path.join(projectRoot, 'vite.worker.config.ts'),
+  configFile: path.join(projectRoot, 'config/vite/worker.config.ts'),
   resolve: nodeResolve,
   build: {
     emptyOutDir: false,
@@ -147,7 +147,7 @@ await build({
 // must be rebuilt alongside Main/Preload/Library Worker; otherwise an old
 // runtime artifact could make a current Console test exercise stale code.
 await build({
-  configFile: path.join(projectRoot, 'vite.script-runtime.config.ts'),
+  configFile: path.join(projectRoot, 'config/vite/script-runtime.config.ts'),
   resolve: nodeResolve,
   build: {
     emptyOutDir: false,
@@ -159,7 +159,7 @@ await build({
 });
 
 await build({
-  configFile: path.join(projectRoot, 'vite.plugin-runtime.config.ts'),
+  configFile: path.join(projectRoot, 'config/vite/plugin-runtime.config.ts'),
   resolve: nodeResolve,
   build: {
     emptyOutDir: false,
@@ -171,7 +171,7 @@ await build({
 });
 
 await build({
-  configFile: path.join(projectRoot, 'vite.plugin-trusted-runtime.config.ts'),
+  configFile: path.join(projectRoot, 'config/vite/plugin-trusted-runtime.config.ts'),
   resolve: nodeResolve,
   build: {
     emptyOutDir: false,
@@ -184,7 +184,7 @@ await build({
 
 await build({
   base: './',
-  configFile: path.join(projectRoot, 'vite.renderer.config.ts'),
+  configFile: path.join(projectRoot, 'config/vite/renderer.config.ts'),
   build: {
     emptyOutDir: true,
     outDir: path.join(buildRoot, 'renderer/main_window'),

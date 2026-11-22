@@ -11,7 +11,7 @@ import {
   saveRadiusPreferences,
   setStoredRadiusLevel,
   type RadiusPreferencesStorage,
-} from "../../src/renderer/radius-preferences";
+} from "../../src/renderer/theme/radius-preferences";
 
 function memoryStorage(
   initial?: Record<string, string>,

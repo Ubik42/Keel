@@ -23,7 +23,7 @@
     "src",
     "tests",
     "forge.config.ts",
-    "vite.*.config.ts",
+    "config/vite/*.config.ts",
     "vitest.config.ts",
     "eslint.config.mjs",
     "forge.env.d.ts",

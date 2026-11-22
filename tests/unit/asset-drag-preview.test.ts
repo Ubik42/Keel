@@ -4,7 +4,7 @@ import {
   ASSET_DRAG_PREVIEW_HEIGHT,
   ASSET_DRAG_PREVIEW_WIDTH,
   assetDragPreviewModel,
-} from '../../src/renderer/asset-drag-preview';
+} from '../../src/renderer/browse/asset-drag-preview';
 
 // REQ-DND-003: the ghost view model is pure and node-testable. DOM node
 // construction (createAssetDragPreview/showAssetDragPreview) runs renderer-

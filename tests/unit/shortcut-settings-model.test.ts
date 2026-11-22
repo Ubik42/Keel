@@ -6,7 +6,7 @@ import {
   filterShortcutRows,
   groupShortcutRows,
   matchesShortcutQuery,
-} from "../../src/renderer/shortcut-settings-model";
+} from "../../src/renderer/settings/shortcut-settings-model";
 import {
   DEFAULT_SHORTCUT_BINDINGS,
   setShortcutOverride,

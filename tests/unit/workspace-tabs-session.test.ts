@@ -7,13 +7,13 @@ import {
   readWorkspaceTabsSession,
   workspaceTabsSessionKey,
   writeWorkspaceTabsSession,
-} from "../../src/renderer/workspace-tabs-session";
+} from "../../src/renderer/workspace/workspace-tabs-session";
 import {
   addWorkspaceTab,
   createWorkspaceTabs,
   selectWorkspaceTab,
   setWorkspaceTabLocation,
-} from "../../src/renderer/workspace-tabs";
+} from "../../src/renderer/workspace/workspace-tabs";
 
 function fakeStorage(initial: Record<string, string> = {}): SessionStorage & {
   data: Record<string, string>;

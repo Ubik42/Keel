@@ -5,7 +5,7 @@ import {
   browseAssetsLeavingFilters,
   type BrowseDimensionAsset,
   type BrowseMembershipChange,
-} from "../../src/renderer/browse-filter-membership";
+} from "../../src/renderer/filters/browse-filter-membership";
 import type { FilterClause } from "../../src/shared/asset-types";
 
 const favoriteOnly: FilterClause = { field: "favorite", values: [], exclude: false };

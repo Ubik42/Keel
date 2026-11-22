@@ -4,11 +4,11 @@ import type { WorkspaceNavHistory } from "../../workbench/workspace/workspace-na
 import { type BrowseState } from "../../stores/browse-store";
 import { type NavigationState } from "../../stores/navigation-store";
 import { type QueryState } from "../../stores/query-store";
-import { BROWSE_PAGE_SIZE } from "../../use-browse-pagination";
+import { BROWSE_PAGE_SIZE } from "../../browse/use-browse-pagination";
 import { type WorkspaceNavLocation } from "../../workbench/workspace/workspace-nav-history";
 import { type WorkspaceNavigationHistoryMode } from "../../workbench/workspace/workspace-navigation-coordinator";
 import { captureWorkspaceNavViewport } from "../../workbench/workspace/workspace-scroll-position";
-import { type WorkspaceRenderSnapshot, type WorkspaceVirtualLayoutSnapshot } from "../../workspace-render-snapshot-cache";
+import { type WorkspaceRenderSnapshot, type WorkspaceVirtualLayoutSnapshot } from "../../workspace/workspace-render-snapshot-cache";
 import { type WorkspaceNavigationRequest } from "../shared/app-shared";
 
 export interface UseWorkspaceNavigationRequestsDeps {

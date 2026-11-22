@@ -11,19 +11,19 @@ const { fitSemanticImage } = vi.hoisted(() => ({
   })),
 }));
 
-vi.mock("../../src/main/embedding-image-fit", async () => {
-  const actual = await vi.importActual<Record<string, unknown>>("../../src/main/embedding-image-fit");
+vi.mock("../../src/main/embedding/embedding-image-fit", async () => {
+  const actual = await vi.importActual<Record<string, unknown>>("../../src/main/embedding/embedding-image-fit");
   return { ...actual, fitSemanticImage };
 });
 import { rendererResultSchema } from "../../src/shared/protocol/responses";
 import type { WorkerCommand } from "../../src/shared/protocol/requests";
 import type { WorkerResult } from "../../src/shared/protocol/responses";
-import type { startLlamaEmbeddingSession } from "../../src/main/embedding-llama-session";
+import type { startLlamaEmbeddingSession } from "../../src/main/embedding/embedding-llama-session";
 
 import {
   localEmbeddingFilesReady,
   readLocalEmbeddingTestConfig,
-} from "../../src/main/embedding-local-config";
+} from "../../src/main/embedding/embedding-local-config";
 import {
   embeddingSkipKey,
   EmbeddingTestIndex,
@@ -31,8 +31,8 @@ import {
   rankEmbeddings,
   resolveContainedPath,
   scoreEmbeddings,
-} from "../../src/main/embedding-test-index";
-import { SemanticImageLimitError } from "../../src/main/embedding-image-fit";
+} from "../../src/main/embedding/embedding-test-index";
+import { SemanticImageLimitError } from "../../src/main/embedding/embedding-image-fit";
 import {
   GEMMA_SEMANTIC_IMAGE_MAX_BYTES,
   GEMMA_SEMANTIC_IMAGE_MAX_EDGE_PX,

@@ -6,7 +6,7 @@ import {
 } from '../../src/renderer/workbench/overlay/dialog-escape-stack';
 import {
   resolvePluginInputCaptureSystemModalActive,
-} from '../../src/renderer/plugin-input-capture-modal-seam';
+} from '../../src/renderer/plugins/plugin-input-capture-modal-seam';
 import {
   captureEventKind,
   resolvePluginInputCaptureFanInTargets,

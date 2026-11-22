@@ -4,7 +4,7 @@ import {
   detectOpenWithPlatform,
   openPathWithOtherApplication,
   type OpenWithDeps,
-} from "../../src/main/open-with";
+} from "../../src/main/shell/open-with";
 
 function makeDeps(
   overrides: Partial<OpenWithDeps> & Pick<OpenWithDeps, "platform">,

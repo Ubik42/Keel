@@ -7,8 +7,8 @@ import { afterEach, describe, expect, it } from 'vitest';
 import {
   AutomationExecutionJournal,
   createJsonFileAutomationExecutionStore,
-} from '../../src/main/automation-execution-journal';
-import { registerAutomationScriptIpc } from '../../src/main/automation-script-ipc';
+} from '../../src/main/automation/automation-execution-journal';
+import { registerAutomationScriptIpc } from '../../src/main/automation/automation-script-ipc';
 import {
   AUTOMATION_SCRIPT_COMPLETE_CHANNEL,
   AUTOMATION_SCRIPT_START_CHANNEL,

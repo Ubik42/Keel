@@ -7,7 +7,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
   readExternalLibraryStagingRoots,
   writeExternalLibraryStagingRoots,
-} from '../../src/main/external-library-staging-store';
+} from '../../src/main/library/external-library-staging-store';
 
 describe('external library staging store', () => {
   let storeDirectory = '';

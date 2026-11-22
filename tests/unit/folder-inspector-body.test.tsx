@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 
 import type { FolderBrowseEntry } from "../../src/shared/asset-types";
-import { FolderInspectorBody } from "../../src/renderer/folder-inspector";
+import { FolderInspectorBody } from "../../src/renderer/inspector/folder-inspector";
 import { LocaleProvider } from "../../src/renderer/i18n";
 
 function entry(overrides?: Partial<FolderBrowseEntry>): FolderBrowseEntry {

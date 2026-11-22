@@ -4,13 +4,13 @@ import path from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { createPluginPackageRequestHandler } from '../../src/main/plugin-package-ipc';
-import { PluginPackageManager } from '../../src/main/plugin-package-manager';
-import { PluginSettingsStore } from '../../src/main/plugin-settings-store';
-import { PluginStorageStore } from '../../src/main/plugin-storage-store';
+import { createPluginPackageRequestHandler } from '../../src/main/plugins/plugin-package-ipc';
+import { PluginPackageManager } from '../../src/main/plugins/plugin-package-manager';
+import { PluginSettingsStore } from '../../src/main/plugins/plugin-settings-store';
+import { PluginStorageStore } from '../../src/main/plugins/plugin-storage-store';
 import { pluginManifestSchema } from '../../src/plugins/plugin-manifest';
 import { pluginManagerRequestSchema } from '../../src/shared/plugin-manager-api';
-import { resolvePluginSettingSelectValue } from '../../src/renderer/plugin-host-settings-fields';
+import { resolvePluginSettingSelectValue } from '../../src/renderer/plugins/plugin-host-settings-fields';
 import manifestFixture from '../fixtures/plugin-manifests/palette-tools.serpent-plugin.json';
 
 const roots: string[] = [];

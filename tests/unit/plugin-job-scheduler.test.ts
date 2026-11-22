@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import type { PluginJobComplete, PluginJobRecord } from '../../src/plugins/plugin-jobs';
-import { PluginJobScheduler } from '../../src/main/plugin-job-scheduler';
+import { PluginJobScheduler } from '../../src/main/plugins/plugin-job-scheduler';
 
 function job(overrides: Partial<PluginJobRecord> = {}): PluginJobRecord {
   return {

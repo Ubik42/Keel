@@ -1,22 +1,22 @@
 import type { OpenWithSettings } from "../../../shared/open-with";
-import type { AssetContextMenuActions } from "../../AssetContextMenu";
+import type { AssetContextMenuActions } from "../../context-menus/AssetContextMenu";
 import { useStableCallbacks } from "../shared/use-stable-callbacks";
 import { useAiField } from "../../stores/ai-store";
 import { dialogsFields } from "../../stores/dialogs-store";
 import type { Dispatch, RefObject, SetStateAction } from "react";
-import type { MenuSkipScopeOptions } from "../../menu-skip-report";
+import type { MenuSkipScopeOptions } from "../../jobs/menu-skip-report";
 import type { TranslateFn } from "../../i18n/LocaleProvider";
 import type { LinkedFolderSummary } from "../../../shared/asset-types";
-import type { FolderDiskDeleteTarget } from "../../use-folder-delete-actions";
+import type { FolderDiskDeleteTarget } from "../../folders/use-folder-delete-actions";
 import type { EntityAppearance, EntityAppearanceTarget } from "../../../shared/entity-appearance";
 import type { EmbeddingHttpServiceSummary } from "../../../shared/library-api";
-import type { BrowsePasteDestination } from "../../browse-paste-target";
+import type { BrowsePasteDestination } from "../../browse/browse-paste-target";
 import { type AssetSummary } from "../../../shared/asset-types";
 import { isLibraryRootFolderId } from "../../../shared/library-root-folder";
 import { linkedRevealFolderId } from "../../../shared/linked-folder-tree";
-import { aiAnalyzeConnectionReady, aiAnalyzeShowsDisconnectGlyph } from "../../ai-connection-heartbeat";
-import { AssetContextMenu , AssetContextMenuActionsProvider } from "../../AssetContextMenu";
-import { type FolderTreeExpandActions } from "../../NavigationSidebar";
+import { aiAnalyzeConnectionReady, aiAnalyzeShowsDisconnectGlyph } from "../../ai/ai-connection-heartbeat";
+import { AssetContextMenu , AssetContextMenuActionsProvider } from "../../context-menus/AssetContextMenu";
+import { type FolderTreeExpandActions } from "../../folders/NavigationSidebar";
 import { type WorkspaceNavigationRequest } from "../shared/app-shared";
 
 export interface AppAssetContextMenuProps {

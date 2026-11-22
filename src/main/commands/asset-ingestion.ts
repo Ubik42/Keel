@@ -1,12 +1,12 @@
 import type { RendererRequest, WorkerCommand } from "../../shared/protocol/requests";
-import type { MaterializedExternalLibrarySource } from "../external-library-archive";
+import type { MaterializedExternalLibrarySource } from "../library/external-library-archive";
 import {
   selectOpenDirectory,
   selectOpenFile,
   selectOpenLibrarySource,
   type NativeDialogHost,
-} from "../native-dialogs";
-import { createWebImportCommand } from "../web-ingestion";
+} from "../window/native-dialogs";
+import { createWebImportCommand } from "../ingestion/web-ingestion";
 
 export type AssetIngestionCommandRuntime = {
   selectImportSources: (sourceKind: "files" | "folder") => Promise<string[] | undefined>;

@@ -6,12 +6,12 @@ import {
   resolveCardCaptionLines,
   resolveMasonryCaptionBandPx,
   type CardCaptionFields,
-} from "../../src/renderer/asset-caption-band";
+} from "../../src/renderer/browse/asset-caption-band";
 import {
   MASONRY_CAPTION_BAND_PX,
   MASONRY_DIMENSIONS_CAPTION_BAND_PX,
-} from "../../src/renderer/canvas-asset-layout";
-import { resolveJustifiedCaptionBandPx } from "../../src/renderer/justified-caption-band";
+} from "../../src/renderer/browse/canvas-asset-layout";
+import { resolveJustifiedCaptionBandPx } from "../../src/renderer/browse/justified-caption-band";
 
 const ALL_FIELDS: CardCaptionFields = {
   name: true,

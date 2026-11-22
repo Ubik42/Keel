@@ -1,7 +1,7 @@
 import { useAiField } from "../../stores/ai-store";
 import { useJobsField } from "../../stores/jobs-store";
 import type { TranslateFn } from "../../i18n/LocaleProvider";
-import { PluginJobActivityBanner } from "../../PluginJobActivityBanner";
+import { PluginJobActivityBanner } from "../../plugins/PluginJobActivityBanner";
 
 export interface WorkspaceBannersProps {
   t: TranslateFn;

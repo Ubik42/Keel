@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   pickIsolatedWindowPlacement,
   type DisplayLike,
-} from '../../src/main/e2e-isolated-window';
+} from '../../src/main/window/e2e-isolated-window';
 
 const primary: DisplayLike = {
   id: 1,

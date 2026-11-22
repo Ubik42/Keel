@@ -4,7 +4,7 @@ import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LocaleProvider } from "../../src/renderer/i18n";
-import { ZoomableImage } from "../../src/renderer/zoomable-preview-image";
+import { ZoomableImage } from "../../src/renderer/viewer/zoomable-preview-image";
 
 function viewerLayer(container: HTMLElement): string | null {
   return (

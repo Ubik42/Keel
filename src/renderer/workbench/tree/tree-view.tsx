@@ -1,6 +1,6 @@
 import type { KeyboardEvent, MouseEvent, ReactNode } from "react";
 
-import { Icon, type IconName } from "../../Icons";
+import { Icon, type IconName } from "../../common/Icons";
 import { isImeKeyboardEvent } from "../overlay/ime-safe-dismiss";
 
 /**

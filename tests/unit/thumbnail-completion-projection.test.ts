@@ -5,7 +5,7 @@ import {
   projectThumbnailEvent,
   shouldProjectThumbnailCompletion,
   thumbnailEventConcernsAsset,
-} from "../../src/renderer/thumbnail-completion-projection";
+} from "../../src/renderer/browse/thumbnail-completion-projection";
 
 const subscriptions = {
   loadedAssetIds: new Set(["loaded-1"]),

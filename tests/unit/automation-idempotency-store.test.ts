@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { createJsonFileAutomationIdempotencyStore } from '../../src/main/automation-idempotency-store';
+import { createJsonFileAutomationIdempotencyStore } from '../../src/main/automation/automation-idempotency-store';
 
 const roots: string[] = [];
 

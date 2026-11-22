@@ -4,7 +4,7 @@ import {
   isBlockingImportOverlayVisible,
   runImportRpc,
   shouldApplyImportProgressEvent,
-} from "../../src/renderer/import-progress-session";
+} from "../../src/renderer/import/import-progress-session";
 import type { ImportProgressEvent } from "../../src/shared/protocol/responses";
 
 function progress(

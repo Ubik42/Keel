@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { en } from "../../src/renderer/i18n/catalogs/en";
 import { zhCN } from "../../src/renderer/i18n/catalogs/zh-CN";
-import { buildRecentLibraryMenuEntries } from "../../src/renderer/LibrarySwitcher";
+import { buildRecentLibraryMenuEntries } from "../../src/renderer/library/LibrarySwitcher";
 
 /**
  * Serpent-y0au / REQ-LIB-002: no-library start + create dialog must expose

@@ -2,7 +2,7 @@
 import { act, createElement } from 'react';
 import { createRoot } from 'react-dom/client';
 import { expect, it, vi } from 'vitest';
-import { useInspectorTagEdit } from '../../src/renderer/use-inspector-tag-edit';
+import { useInspectorTagEdit } from '../../src/renderer/inspector/use-inspector-tag-edit';
 
 it('stages removal, cancels without persistence and saves only on confirmation', async () => {
   const root = createRoot(document.createElement('div'));

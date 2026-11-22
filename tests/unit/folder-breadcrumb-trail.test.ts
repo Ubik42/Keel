@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildLinkedFolderBreadcrumbTrail,
   buildManagedFolderBreadcrumbTrail,
-} from "../../src/renderer/folder-breadcrumb-trail";
+} from "../../src/renderer/folders/folder-breadcrumb-trail";
 import type { LinkedFolderSummary, ManagedFolderSummary } from "../../src/shared/asset-types";
 
 const folder = (

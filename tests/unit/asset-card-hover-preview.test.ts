@@ -9,7 +9,7 @@ import {
   resolveLiveVideoMuted,
   shouldPlayLiveAudio,
   sourceSrc,
-} from "../../src/renderer/asset-card-hover-preview";
+} from "../../src/renderer/browse/asset-card-hover-preview";
 
 describe("isCardHoverPreviewable", () => {
   it("accepts gif, video and audio when available", () => {

@@ -7,7 +7,7 @@ import { LocaleProvider } from "../../src/renderer/i18n";
 import {
   invalidateTextAssetPreviewCache,
   TextAssetPreviewTile,
-} from "../../src/renderer/TextAssetPreviewTile";
+} from "../../src/renderer/browse/TextAssetPreviewTile";
 import type { KeelLibraryApi } from "../../src/shared/library-api";
 
 let root: Root | null = null;

@@ -12,8 +12,8 @@ import {
   readClipboardImage,
   stageClipboardImage,
   type ClipboardImageReaderDeps,
-} from "../desktop-ingestion";
-import { resolveImageSequenceImportPaths } from "../image-sequence-import";
+} from "../ingestion/desktop-ingestion";
+import { resolveImageSequenceImportPaths } from "../ingestion/image-sequence-import";
 import type { LibraryCommandBuildOutcome } from "./command-outcome";
 
 export type PendingImageSequenceOffer = {

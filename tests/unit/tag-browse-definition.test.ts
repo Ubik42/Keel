@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest';
-import { tagBrowseDefinition } from '../../src/renderer/tag-browse-definition';
+import { tagBrowseDefinition } from '../../src/renderer/tags/tag-browse-definition';
 
 it('navigates to the whole exact tag rather than combining existing discovery filters', () => {
   const name = 'forest, hills | "reference"';

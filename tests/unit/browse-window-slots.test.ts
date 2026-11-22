@@ -14,7 +14,7 @@ import {
   assetSummaryFromLayoutEntry,
   browseRankFromPublishedId,
   virtualSlotAsset,
-} from "../../src/renderer/browse-window-slots";
+} from "../../src/renderer/browse/browse-window-slots";
 
 function asset(assetId: string): AssetSummary {
   return {

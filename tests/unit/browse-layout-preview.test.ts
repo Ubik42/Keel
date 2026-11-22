@@ -3,7 +3,7 @@ import { act, createElement } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it } from "vitest";
 
-import { BrowseLayoutPreview } from "../../src/renderer/BrowseLayoutPreview";
+import { BrowseLayoutPreview } from "../../src/renderer/settings/BrowseLayoutPreview";
 import { LocaleProvider } from "../../src/renderer/i18n";
 
 describe("BrowseLayoutPreview caption (Serpent-l2at / Serpent-qc7v)", () => {

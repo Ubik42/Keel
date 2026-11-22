@@ -6,7 +6,7 @@ import {
   TOAST_EXIT_DURATION_MS,
   TOAST_NOTICE_DURATION_MS,
   TOAST_SEVERITY_RANK,
-} from '../../src/renderer/toast-notifications';
+} from '../../src/renderer/jobs/toast-notifications';
 
 /** Fallback unmount fires the exit duration plus a small margin. */
 const EXIT_FALLBACK_MS = TOAST_EXIT_DURATION_MS + 50;

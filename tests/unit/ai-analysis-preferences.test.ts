@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 
-import { normalizeAiAnalysisPreferences } from "../../src/main/ai-analysis-preferences";
+import { normalizeAiAnalysisPreferences } from "../../src/main/ai/ai-analysis-preferences";
 
 test("invalid persisted boolean strings fall back to safe defaults", () => {
   const result = normalizeAiAnalysisPreferences({

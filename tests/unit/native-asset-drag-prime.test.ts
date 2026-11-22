@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { nativeDragAssetsForResult } from "../../src/main/native-asset-drag-prime";
+import { nativeDragAssetsForResult } from "../../src/main/shell/native-asset-drag-prime";
 import type { AssetSummary } from "../../src/shared/asset-types";
 
 const asset = (assetId: string) => ({ assetId }) as AssetSummary;

@@ -4,7 +4,7 @@ import {
   fitSemanticImage,
   SemanticImageLimitError,
   type SemanticImageSharpFactory,
-} from "../../src/main/embedding-image-fit";
+} from "../../src/main/embedding/embedding-image-fit";
 
 type EncodeCall = { edge: number; quality: number };
 

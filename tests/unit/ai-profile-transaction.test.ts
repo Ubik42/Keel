@@ -5,12 +5,12 @@ import {
   recoverAiProfileTransaction,
   type AiProfileTransaction,
   type AiProfileTransactionIo,
-} from "../../src/main/ai-profile-transaction";
+} from "../../src/main/ai/ai-profile-transaction";
 import {
   deleteAiProfile,
   emptyAiProfileCatalog,
   saveAiConnectionProfile,
-} from "../../src/main/ai-profile-store";
+} from "../../src/main/ai/ai-profile-store";
 
 const profileId = "ai_000000000000000000000001";
 

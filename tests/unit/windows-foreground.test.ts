@@ -5,7 +5,7 @@ import {
   findChromeRenderWidgetHwnd,
   stealWindowsForegroundWithApi,
   type WindowsForegroundApi,
-} from "../../src/main/windows-foreground";
+} from "../../src/main/window/windows-foreground";
 
 function writeClassName(buffer: Buffer, name: string): number {
   buffer.fill(0);

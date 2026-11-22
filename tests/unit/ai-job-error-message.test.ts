@@ -1,9 +1,9 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
 
-import { messageForAiErrorCode, summarizeAiFailureCodes } from '../../src/renderer/ai-job-error-message';
+import { messageForAiErrorCode, summarizeAiFailureCodes } from '../../src/renderer/ai/ai-job-error-message';
 import { PUBLIC_ERROR_MESSAGES } from '../../src/shared/protocol/errors';
-import { PUBLIC_ERROR_MESSAGES_ZH } from '../../src/renderer/error-utils';
+import { PUBLIC_ERROR_MESSAGES_ZH } from '../../src/renderer/common/error-utils';
 
 /**
  * Serpent-50c466 review F9: `jobs.error_code` can hold a *public error code*

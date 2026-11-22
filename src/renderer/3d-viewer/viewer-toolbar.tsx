@@ -12,7 +12,7 @@ import { createShellPortal } from '../workbench/ui/ShellStyleScope';
 import { Select } from '../workbench/ui/primitives/Select';
 import { useLocale } from '../i18n';
 import { isImeKeyboardEvent } from '../workbench/overlay/ime-safe-dismiss';
-import { Icon } from '../Icons';
+import { Icon } from '../common/Icons';
 import { LIGHT_INTENSITY_MAX, LIGHT_INTENSITY_MIN } from './light-intensity';
 import {
   HDRI_PRESETS,

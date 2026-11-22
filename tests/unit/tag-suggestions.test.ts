@@ -6,7 +6,7 @@ import {
   namesFromTagInput,
   peelTagInput,
   splitTagNames,
-} from "../../src/renderer/tag-suggestions";
+} from "../../src/renderer/tags/tag-suggestions";
 
 const tags = [
   { tagId: "warm", name: "Warm", assetCount: 4 },

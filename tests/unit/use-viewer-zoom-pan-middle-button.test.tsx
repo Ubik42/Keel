@@ -6,7 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   useViewerZoomPan,
   type UseViewerZoomPanApi,
-} from "../../src/renderer/use-viewer-zoom-pan";
+} from "../../src/renderer/viewer/use-viewer-zoom-pan";
 import { DEFAULT_SHORTCUT_BINDINGS } from "../../src/shared/shortcut-bindings";
 import { setShortcutRuntime } from "../../src/renderer/workbench/shortcuts/shortcut-runtime";
 

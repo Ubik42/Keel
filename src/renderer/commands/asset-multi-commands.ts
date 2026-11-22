@@ -11,7 +11,7 @@
 
 import { translateForLocale } from '../i18n';
 import type { EntityAppearance } from '../../shared/entity-appearance';
-import type { FolderBatchTarget } from '../folder-batch-actions';
+import type { FolderBatchTarget } from '../folders/folder-batch-actions';
 import type { CommandContext, CommandDefinition } from '../workbench/menu/command-types';
 import { DELETE_FROM_DISK_SHORTCUT } from './asset-shortcuts';
 

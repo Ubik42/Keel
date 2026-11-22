@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   AutomationLibraryWorkerAdapter,
   type AutomationWorkerRequester,
-} from '../../src/main/automation-worker-adapter';
+} from '../../src/main/automation/automation-worker-adapter';
 import type { WorkerCommand } from '../../src/shared/protocol/requests';
 import type { WorkerResult } from '../../src/shared/protocol/responses';
 

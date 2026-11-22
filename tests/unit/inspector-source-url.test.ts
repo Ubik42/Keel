@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { isValidInspectorSourceUrl } from "../../src/renderer/inspector-source-url";
+import { isValidInspectorSourceUrl } from "../../src/renderer/inspector/inspector-source-url";
 
 describe("isValidInspectorSourceUrl", () => {
   it("allows empty string (clear source)", () => {

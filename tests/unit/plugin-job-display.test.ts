@@ -6,7 +6,7 @@ import {
   formatPluginJobProgressMessage,
   formatPluginJobProgressSummary,
   getPluginJobDisplayProgress,
-} from "../../src/renderer/plugin-job-display";
+} from "../../src/renderer/plugins/plugin-job-display";
 
 describe("plugin job display", () => {
   it("turns a reverse-domain plugin id into a readable fallback name", () => {

@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   createLibraryTransitionLock,
   LibraryTransitionInProgressError,
-} from "../../src/renderer/library-transition-lock";
+} from "../../src/renderer/library/library-transition-lock";
 
 function deferred() {
   let resolve!: () => void;

@@ -6,7 +6,7 @@ import {
   isX11CompositorRunning,
   linuxRoundedCornersCss,
   shouldUseLinuxRoundedCorners,
-} from "../../src/main/linux-window-corners";
+} from "../../src/main/window/linux-window-corners";
 
 describe("linux rounded window corners", () => {
   it("is Linux-only", () => {

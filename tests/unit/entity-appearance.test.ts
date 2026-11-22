@@ -7,7 +7,7 @@ import {
   parseWritableAppearance,
   sanitizeEntityAppearance,
 } from '../../src/shared/entity-appearance';
-import { APPEARANCE_ICON_PATHS } from '../../src/renderer/appearance-icon-paths';
+import { APPEARANCE_ICON_PATHS } from '../../src/renderer/appearance/appearance-icon-paths';
 
 describe('entity appearance catalog', () => {
   it('keeps unique first-batch emoji, icon, and color ids', () => {

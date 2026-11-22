@@ -16,7 +16,7 @@ import {
   updateWorkspaceTabBrowseState,
   workspaceTabBrowseStateHasDiscoveryInput,
   workspaceTabWidthScale,
-} from "../../src/renderer/workspace-tabs";
+} from "../../src/renderer/workspace/workspace-tabs";
 
 function ids(...values: string[]) {
   let index = 0;

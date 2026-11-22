@@ -5,7 +5,7 @@ import {
   performanceLaneForCommand,
   shouldPreemptAutomaticMedia,
 } from '../../src/shared/performance-contract';
-import { LibraryRequestBroker } from '../../src/main/library-request-broker';
+import { LibraryRequestBroker } from '../../src/main/library/library-request-broker';
 import { parseWorkerRequest } from '../../src/shared/protocol/requests';
 import {
   InteractiveScheduler,

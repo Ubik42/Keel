@@ -5,7 +5,7 @@ import {
   deleteOverlayTitleKey,
   isActiveDeleteProgress,
   isDeleteProgressCancelable,
-} from "../../src/renderer/delete-progress-copy";
+} from "../../src/renderer/jobs/delete-progress-copy";
 import type { DeleteProgressEvent } from "../../src/shared/protocol/responses";
 
 function progress(

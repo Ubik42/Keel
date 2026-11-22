@@ -5,7 +5,7 @@ import {
   nextDirectApprovedState,
   samePreviewPlayback,
   shouldContinuePreviewPolling,
-} from '../../src/renderer/preview-poll';
+} from '../../src/renderer/viewer/preview-poll';
 
 const directReady = {
   status: 'ready' as const,

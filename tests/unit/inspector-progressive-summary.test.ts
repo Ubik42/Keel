@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { buildInspectorSummaryMetadata } from "../../src/renderer/inspector-progressive-summary";
+import { buildInspectorSummaryMetadata } from "../../src/renderer/inspector/inspector-progressive-summary";
 
 describe("Inspector progressive summary", () => {
   it("exposes only AssetSummary fields until full metadata arrives", () => {

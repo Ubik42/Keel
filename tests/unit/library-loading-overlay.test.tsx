@@ -9,7 +9,7 @@ import { createRoot, type Root } from "react-dom/client";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { LibraryLoadingOverlay } from "../../src/renderer/LibraryLoadingOverlay";
+import { LibraryLoadingOverlay } from "../../src/renderer/library/LibraryLoadingOverlay";
 import { LocaleProvider } from "../../src/renderer/i18n";
 
 function overlay(

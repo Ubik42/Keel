@@ -20,7 +20,7 @@ Use `rg` to search for the old extensions, MIME strings, `endsWith`, `includes`,
 | Path | Main locations | What to verify |
 | --- | --- | --- |
 | Import recognition | `src/worker/library-service.ts`, import strategies | Discovery, indexing, rescans, deletion, and clear handling of corrupt/unsupported files |
-| Format filters | `src/renderer/format-filter-presets.ts` | Generated from the shared registry; add a regression test |
+| Format filters | `src/renderer/filters/format-filter-presets.ts` | Generated from the shared registry; add a regression test |
 | Thumbnails | Worker thumbnail/media decoders | Decoder, bounds, animation/multi-frame, and corrupt-file behavior |
 | Viewer | `src/shared/preview-policy.ts`, viewer components | Source passthrough vs. full-resolution derived image; never present a thumbnail as the original |
 | MIME/protocol | `src/main/index.ts`, preload, shared protocol | Correct MIME for artifacts, remote assets, and plugin context with runtime validation |

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { AiQueueScheduler } from '../../src/main/ai-queue-scheduler';
+import { AiQueueScheduler } from '../../src/main/ai/ai-queue-scheduler';
 import { AiJobAbortRegistry } from '../../src/worker/integrations/ai/job-abort-registry';
 
 describe('AiJobAbortRegistry', () => {

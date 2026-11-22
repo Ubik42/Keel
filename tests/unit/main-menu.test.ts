@@ -4,8 +4,8 @@ import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { LocaleProvider } from "../../src/renderer/i18n";
-import { MainMenu } from "../../src/renderer/MainMenu";
-import type { MainMenuSection } from "../../src/renderer/main-menu-items";
+import { MainMenu } from "../../src/renderer/shell/MainMenu";
+import type { MainMenuSection } from "../../src/renderer/shell/main-menu-items";
 
 describe("MainMenu nested submenu keyboard navigation", () => {
   let root: Root | undefined;

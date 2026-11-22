@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { EmbeddingApiFormatControl } from "../../src/renderer/EmbeddingApiFormatControl";
+import { EmbeddingApiFormatControl } from "../../src/renderer/ai/EmbeddingApiFormatControl";
 import { LocaleProvider } from "../../src/renderer/i18n";
 
 describe("embedding API format choices", () => {

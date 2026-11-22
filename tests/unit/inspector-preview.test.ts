@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { resolveInspectorPreviewSrc } from "../../src/renderer/inspector-preview";
+import { resolveInspectorPreviewSrc } from "../../src/renderer/inspector/inspector-preview";
 
 describe("resolveInspectorPreviewSrc", () => {
   it("returns a scoped custom-protocol URL only for a ready artifact", () => {

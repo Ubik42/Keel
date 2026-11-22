@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 
-import { isCurrentAiConnectionProbe } from "../../src/renderer/ai-connection-probe-guard";
+import { isCurrentAiConnectionProbe } from "../../src/renderer/ai/ai-connection-probe-guard";
 
 test("a probe result applies only to the captured active profile and latest request", () => {
   expect(isCurrentAiConnectionProbe({

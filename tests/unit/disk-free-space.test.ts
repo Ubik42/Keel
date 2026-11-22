@@ -8,7 +8,7 @@ import {
   isManagedExternalLibraryStagingPath,
   listExternalLibraryStagingParents,
   requiredStagingBytes,
-} from '../../src/main/disk-free-space';
+} from '../../src/main/app/disk-free-space';
 
 describe('external library staging disk policy', () => {
   it('adds a minimum headroom on top of the uncompressed estimate', () => {

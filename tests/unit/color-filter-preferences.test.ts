@@ -6,7 +6,7 @@ import {
   saveColorFilterPreferences,
   withCustomColorAdded,
   type ColorFilterPreferencesStorage,
-} from "../../src/renderer/color-filter-preferences";
+} from "../../src/renderer/filters/color-filter-preferences";
 
 function memoryStorage(initial: Record<string, string> = {}): ColorFilterPreferencesStorage {
   const data = { ...initial };

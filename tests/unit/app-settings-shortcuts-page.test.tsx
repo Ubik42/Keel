@@ -3,7 +3,7 @@ import { act, createElement } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { AppSettingsShortcutsPage } from "../../src/renderer/AppSettingsShortcutsPage";
+import { AppSettingsShortcutsPage } from "../../src/renderer/settings/AppSettingsShortcutsPage";
 import { LocaleProvider } from "../../src/renderer/i18n";
 import { ShortcutProvider } from "../../src/renderer/workbench/shortcuts/shortcut-provider";
 import { DEFAULT_SHORTCUT_BINDINGS } from "../../src/shared/shortcut-bindings";

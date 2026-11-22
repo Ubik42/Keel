@@ -7,7 +7,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import {
   loadOrCreatePluginDeviceId,
   PLUGIN_DEVICE_ID_FILE_NAME,
-} from '../../src/main/plugin-device-identity';
+} from '../../src/main/plugins/plugin-device-identity';
 
 const roots: string[] = [];
 

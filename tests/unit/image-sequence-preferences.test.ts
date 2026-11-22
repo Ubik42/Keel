@@ -6,7 +6,7 @@ import {
   imageSequenceImportFlags,
   loadImageSequencePreferences,
   saveImageSequencePreferences,
-} from "../../src/renderer/image-sequence-preferences";
+} from "../../src/renderer/viewer/image-sequence-preferences";
 
 function storage(initial?: string): Map<string, string> & {
   getItem: (key: string) => string | null;

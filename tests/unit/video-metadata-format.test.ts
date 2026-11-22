@@ -10,7 +10,7 @@ import {
   formatVideoTechnicalLine,
   parseFrameRateFps,
   parseProbeNumber,
-} from "../../src/renderer/video-metadata-format";
+} from "../../src/renderer/inspector/video-metadata-format";
 import {
   extractedMetadataResultSchema,
   extractedVideoMetadataSchema,

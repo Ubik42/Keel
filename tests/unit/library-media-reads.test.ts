@@ -6,7 +6,7 @@ import {
   endLibraryDeleteMediaFence,
   isLibraryMediaReadBlocked,
   unblockLibraryMediaReads,
-} from '../../src/main/library-media-reads';
+} from '../../src/main/library/library-media-reads';
 
 const LIBRARY_ID = 'lib-delete-reads';
 

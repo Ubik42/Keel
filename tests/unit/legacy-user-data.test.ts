@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { copyLegacyUserData } from '../../src/main/legacy-user-data';
+import { copyLegacyUserData } from '../../src/main/app/legacy-user-data';
 
 const roots: string[] = [];
 afterEach(() => {

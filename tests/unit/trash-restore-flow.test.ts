@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   shouldOpenTrashRestoreDialog,
   silentTrashRestoreRequest,
-} from '../../src/renderer/trash-restore-flow';
+} from '../../src/renderer/trash/trash-restore-flow';
 
 describe('trash-restore-flow (Serpent-0hnx)', () => {
   it('opens the dialog only when preview reports name conflicts', () => {

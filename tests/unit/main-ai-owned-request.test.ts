@@ -5,7 +5,7 @@ import { DEFAULT_AI_RELIABILITY_SETTINGS } from "../../src/shared/ai-reliability
 import {
   AiProfileStorageError,
   AiProfileValidationError,
-} from "../../src/main/ai-profile-store";
+} from "../../src/main/ai/ai-profile-store";
 import {
   tryHandleAiOwnedRequest,
   type AiOwnedConfig,

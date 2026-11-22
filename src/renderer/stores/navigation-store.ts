@@ -1,9 +1,9 @@
 import { createFieldStore } from './create-field-store';
-import { loadFeatureHintPreferences } from '../feature-hint-preferences';
+import { loadFeatureHintPreferences } from '../common/feature-hint-preferences';
 import { type LinkedFolderSummary, type ManagedFolderSummary, type TagSummary, type TrashedFolderSummary } from '../../shared/asset-types';
-import { type FindSimilarSource } from '../find-similar';
-import { loadFolderBrowseCardPreferences } from '../folder-browse-card-preferences';
-import { loadFolderRecursivePreferences } from '../folder-recursive-preferences';
+import { type FindSimilarSource } from '../ai/find-similar';
+import { loadFolderBrowseCardPreferences } from '../browse/folder-browse-card-preferences';
+import { loadFolderRecursivePreferences } from '../folders/folder-recursive-preferences';
 
 export type AssetScope = "all" | "root" | string;
 

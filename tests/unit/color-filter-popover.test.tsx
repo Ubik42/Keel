@@ -4,11 +4,11 @@ import { act, createElement, useState } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { ColorFilterPopover } from "../../src/renderer/ColorFilterPopover";
+import { ColorFilterPopover } from "../../src/renderer/filters/ColorFilterPopover";
 import {
   DEFAULT_COLOR_FILTER_PREFERENCES,
   type ColorFilterPreferences,
-} from "../../src/renderer/color-filter-preferences";
+} from "../../src/renderer/filters/color-filter-preferences";
 import { LocaleProvider } from "../../src/renderer/i18n";
 import { COLOR_PRESETS } from "../../src/shared/color-filter-presets";
 

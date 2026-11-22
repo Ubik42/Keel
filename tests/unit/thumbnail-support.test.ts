@@ -4,7 +4,7 @@ import {
   assetSupportsThumbnail,
   isBenignThumbnailErrorCode,
 } from "../../src/shared/thumbnail-support";
-import { shouldShowThumbnailFailureBadge } from "../../src/renderer/thumbnail-failure-badge";
+import { shouldShowThumbnailFailureBadge } from "../../src/renderer/browse/thumbnail-failure-badge";
 
 describe("assetSupportsThumbnail", () => {
   it("allows raster thumbs for image, video, and audio", () => {

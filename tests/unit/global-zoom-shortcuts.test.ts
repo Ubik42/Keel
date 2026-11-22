@@ -5,7 +5,7 @@ import {
   CARD_SIZE_MAX,
   CARD_SIZE_MIN,
   DEFAULT_CANVAS_PREFERENCES,
-} from "../../src/renderer/canvas-preferences";
+} from "../../src/renderer/browse/canvas-preferences";
 import {
   GLOBAL_KEYBOARD_ZOOM_FACTOR,
   defaultKeyboardCardSize,
@@ -14,7 +14,7 @@ import {
   nextKeyboardZoomScale,
   shouldIgnoreGlobalZoomShortcut,
   dispatchGlobalZoomMenuCommandIfAllowed,
-} from "../../src/renderer/global-zoom-shortcuts";
+} from "../../src/renderer/common/global-zoom-shortcuts";
 import type { ShortcutKeyboardEventLike } from "../../src/shared/shortcut-resolution";
 
 const event = (

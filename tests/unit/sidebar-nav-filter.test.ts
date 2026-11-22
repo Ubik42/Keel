@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   filterDirectoryEntriesByName,
   type UnifiedDirectoryNavEntry,
-} from "../../src/renderer/unified-directory-nav";
+} from "../../src/renderer/folders/unified-directory-nav";
 
 function folder(
   folderId: string,

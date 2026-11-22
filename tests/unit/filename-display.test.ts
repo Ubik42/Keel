@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { splitFilenameForDisplay } from "../../src/renderer/filename-display";
+import { splitFilenameForDisplay } from "../../src/renderer/common/filename-display";
 
 describe("splitFilenameForDisplay", () => {
   it("keeps the extension and final stem characters available for ellipsis", () => {

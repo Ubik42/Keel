@@ -1,0 +1,288 @@
+import { useDialogField } from "../stores/dialogs-store";
+import { useQueryField } from "../stores/query-store";
+import { type ReactNode, useMemo, useState } from "react";
+
+import { AppSettingsNavigation } from "./AppSettingsNavigation";
+import { useAppearanceAdjusting } from "../appearance/use-appearance-adjusting";
+import {
+  AiSettingsPage,
+  AssetsSettingsPage,
+  AppearanceSettingsPage,
+  BrowseSettingsPage,
+  GeneralSettingsPage,
+} from "./AppSettingsPages";
+import { McpSettingsPage } from "./McpSettingsPage";
+import { AppSettingsShortcutsPage } from "./AppSettingsShortcutsPage";
+import { PluginSettingsPage } from "../plugins/PluginSettingsPage";
+import { SemanticSearchSettings } from "../ai/SemanticSearchSettings";
+import type { EmbeddingCatalogApi } from "../ai/SemanticSearchSettings";
+import { SyncSettingsPage, type SyncServerSettingsCallbacks } from "./SyncSettingsPage";
+import {
+  PluginSettingsDetailPage,
+  usePluginSettingsNavEntries,
+} from "../plugins/plugin-settings-detail";
+import {
+  APP_SETTINGS_CATEGORIES,
+  type AppSettingsCategoryId,
+} from "./app-settings-sections";
+import type { AiUiPreferences } from "../ai/ai-ui-preferences";
+import type { CanvasPreferences, CanvasCaptionAlign } from "../browse/canvas-preferences";
+import { Icon } from "../common/Icons";
+import { iconActionAttrs } from "../common/icon-action-attrs";
+import { useT } from "../i18n";
+import type { KeelPluginManagerApi } from "../../shared/plugin-manager-api";
+import type { KeelMcpSettingsApi } from "../../shared/mcp";
+import { DialogShell } from "../workbench/ui/patterns";
+
+export interface AppSettingsDialogProps {
+  onClose: () => void;
+  canvasPrefs: CanvasPreferences;
+  onSetViewMode: (mode: CanvasPreferences["viewMode"]) => void;
+  onSetCaptionAlign: (align: CanvasCaptionAlign) => void;
+  onToggleField: (field: keyof CanvasPreferences["fields"]) => void;
+  onToggleHoverAudioPlay: () => void;
+  onToggleHoverVideoSound: () => void;
+  audioPreviewPrefersCover: boolean;
+  onAudioPreviewPrefersCoverChange: (preferCover: boolean) => void;
+  bakeImageRotation: boolean;
+  onBakeImageRotationChange: (bakeIntoFile: boolean) => void;
+  aiUiPrefs: AiUiPreferences;
+  aiConfigPanel: ReactNode;
+  onToggleShowAiBadges: () => void;
+  autoDetectImageSequences: boolean;
+  imageSequenceDetectionEnabled: boolean;
+  onToggleAutoDetectImageSequences: () => void;
+  onToggleImageSequenceDetection: () => void;
+  onOpenAppLog?: () => void;
+  onOpenExtensionReleases?: () => void;
+  pluginApi?: KeelPluginManagerApi;
+  pluginContributionRefreshKey?: string | null;
+  libraryId?: string;
+  mcpApi?: KeelMcpSettingsApi;
+  syncServerCallbacks: SyncServerSettingsCallbacks;
+  embeddingServicesApi?: EmbeddingCatalogApi;
+  showCardSyncStatus: boolean;
+  onShowCardSyncStatusChange: (checked: boolean) => void;
+  onToggleShowMissingLinkedFiles: () => void;
+  navArrowsOnApproach: boolean;
+  onToggleNavArrowsOnApproach: () => void;
+  videoTransportOnApproach: boolean;
+  onToggleVideoTransportOnApproach: () => void;
+}
+
+/**
+ * Consolidated application preferences. The category rail deliberately keeps
+ * stable settings discoverable without turning direct-manipulation workspace
+ * state (panel widths, tree expansion) into another configuration screen.
+ */
+export function AppSettingsDialog({
+  onClose,
+  canvasPrefs,
+  onSetViewMode,
+  onSetCaptionAlign,
+  onToggleField,
+  onToggleHoverAudioPlay,
+  onToggleHoverVideoSound,
+  audioPreviewPrefersCover,
+  onAudioPreviewPrefersCoverChange,
+  bakeImageRotation,
+  onBakeImageRotationChange,
+  aiUiPrefs,
+  aiConfigPanel,
+  onToggleShowAiBadges,
+  autoDetectImageSequences,
+  imageSequenceDetectionEnabled,
+  onToggleAutoDetectImageSequences,
+  onToggleImageSequenceDetection,
+  onOpenAppLog,
+  onOpenExtensionReleases,
+  pluginApi,
+  pluginContributionRefreshKey,
+  libraryId,
+  embeddingServicesApi,
+  mcpApi,
+  syncServerCallbacks,
+  showCardSyncStatus,
+  onShowCardSyncStatusChange,
+  onToggleShowMissingLinkedFiles,
+  navArrowsOnApproach,
+  onToggleNavArrowsOnApproach,
+  videoTransportOnApproach,
+  onToggleVideoTransportOnApproach,
+}: AppSettingsDialogProps): ReactNode {
+  const [activeCategory, onActiveCategoryChange] = useDialogField("appSettingsCategory");
+  const [showMissingLinkedFiles] = useQueryField("showMissingLinkedFiles");
+  const [open] = useDialogField("appSettingsOpen");
+  const t = useT();
+  const [pluginSettingsPluginId, setPluginSettingsPluginId] = useState<string | null>(null);
+  const [pluginSettingsRefreshKey, setPluginSettingsRefreshKey] = useState(0);
+  const pluginSettingsRefreshToken = `${pluginContributionRefreshKey ?? ''}:${pluginSettingsRefreshKey}`;
+  const pluginSettingsEntries = usePluginSettingsNavEntries(
+    pluginApi,
+    libraryId,
+    open ? pluginSettingsRefreshToken : null,
+  );
+  const activePluginEntry = useMemo(
+    () => pluginSettingsEntries.find((entry) => entry.pluginId === pluginSettingsPluginId),
+    [pluginSettingsEntries, pluginSettingsPluginId],
+  );
+  const activeCategoryDefinition = APP_SETTINGS_CATEGORIES.find(
+    (category) => category.id === activeCategory,
+  )!;
+  const showingPluginSettings = pluginSettingsPluginId !== null;
+  // Appearance-type pages preview live on the app (theme, radius, shadow, background).
+  const [appearanceAdjusting, appearanceAdjustHandlers] = useAppearanceAdjusting(
+    open && !showingPluginSettings && activeCategory === "appearance",
+  );
+
+  function handleClose() {
+    onClose();
+  }
+
+  function selectCategory(category: AppSettingsCategoryId) {
+    setPluginSettingsPluginId(null);
+    onActiveCategoryChange(category);
+  }
+
+  function openPluginSettings(pluginId: string) {
+    setPluginSettingsPluginId(pluginId);
+    setPluginSettingsRefreshKey((value) => value + 1);
+  }
+
+  if (!open) return null;
+
+  return (
+    <div
+      // While an appearance control is being adjusted, the backdrop fades
+      // its dim + blur out so the live result on the app is visible (a93).
+      className={`dialog-backdrop app-settings-backdrop${appearanceAdjusting ? " is-adjusting" : ""}`}
+      role="presentation"
+      {...appearanceAdjustHandlers}
+    >
+      <DialogShell
+        className="create-dialog app-settings-dialog"
+        contentClassName="ui-dialog-shell__content--flush"
+        dialogId="app-settings-dialog"
+        headerActions={(
+          <button
+            className="dialog-close"
+            onClick={handleClose}
+            type="button"
+            {...iconActionAttrs(t("common.close"))}
+          >
+            <Icon name="close" size={16} />
+          </button>
+        )}
+        onRequestClose={handleClose}
+        title={t("settings.title")}
+      >
+        <div className="app-settings-frame">
+          <AppSettingsNavigation
+            activeCategory={showingPluginSettings ? null : activeCategory}
+            activePluginSettingsId={pluginSettingsPluginId}
+            pluginSettingsEntries={pluginSettingsEntries}
+            onSelectCategory={selectCategory}
+            onSelectPluginSettings={openPluginSettings}
+          />
+          <main
+            aria-labelledby={showingPluginSettings
+              ? "app-settings-plugin-settings-heading"
+              : `app-settings-tab-${activeCategory}`}
+            className="app-settings-content"
+            id={showingPluginSettings
+              ? "app-settings-page-plugin-settings"
+              : `app-settings-page-${activeCategory}`}
+            role="tabpanel"
+          >
+            <div className="app-settings-page-heading">
+              <h3 id={showingPluginSettings
+                ? "app-settings-plugin-settings-heading"
+                : undefined}
+              >
+                {showingPluginSettings
+                  ? (activePluginEntry?.name ?? t("settings.categoryPluginSettings"))
+                  : t(activeCategoryDefinition.labelKey)}
+              </h3>
+            </div>
+            {showingPluginSettings && pluginSettingsPluginId !== null ? (
+              <PluginSettingsDetailPage
+                libraryId={libraryId}
+                pluginApi={pluginApi}
+                pluginId={pluginSettingsPluginId}
+                pluginName={activePluginEntry?.name ?? pluginSettingsPluginId}
+                refreshKey={pluginSettingsRefreshToken}
+              />
+            ) : null}
+            {!showingPluginSettings && activeCategory === "general" ? (
+              <GeneralSettingsPage
+                onOpenAppLog={onOpenAppLog}
+                onOpenExtensionReleases={onOpenExtensionReleases}
+              />
+            ) : null}
+            {!showingPluginSettings && activeCategory === "assets" ? (
+              <AssetsSettingsPage
+                autoDetectImageSequences={autoDetectImageSequences}
+                bakeImageRotation={bakeImageRotation}
+                imageSequenceDetectionEnabled={imageSequenceDetectionEnabled}
+                onBakeImageRotationChange={onBakeImageRotationChange}
+                onToggleAutoDetectImageSequences={onToggleAutoDetectImageSequences}
+                onToggleImageSequenceDetection={onToggleImageSequenceDetection}
+              />
+            ) : null}
+            {!showingPluginSettings && activeCategory === "appearance" ? <AppearanceSettingsPage /> : null}
+            {!showingPluginSettings && activeCategory === "shortcuts" ? (
+              <AppSettingsShortcutsPage />
+            ) : null}
+            {!showingPluginSettings && activeCategory === "browse" ? (
+              <BrowseSettingsPage
+                canvasPrefs={canvasPrefs}
+                onSetCaptionAlign={onSetCaptionAlign}
+                onSetViewMode={onSetViewMode}
+                onToggleField={onToggleField}
+                onToggleHoverAudioPlay={onToggleHoverAudioPlay}
+                onToggleHoverVideoSound={onToggleHoverVideoSound}
+                audioPreviewPrefersCover={audioPreviewPrefersCover}
+                navArrowsOnApproach={navArrowsOnApproach}
+                onAudioPreviewPrefersCoverChange={onAudioPreviewPrefersCoverChange}
+                onToggleNavArrowsOnApproach={onToggleNavArrowsOnApproach}
+                onToggleShowMissingLinkedFiles={onToggleShowMissingLinkedFiles}
+                onToggleVideoTransportOnApproach={onToggleVideoTransportOnApproach}
+                showMissingLinkedFiles={showMissingLinkedFiles}
+                videoTransportOnApproach={videoTransportOnApproach}
+              />
+            ) : null}
+            {!showingPluginSettings && activeCategory === "ai" ? (
+              <AiSettingsPage
+                aiUiPrefs={aiUiPrefs}
+                aiConfigPanel={aiConfigPanel}
+                onToggleShowAiBadges={onToggleShowAiBadges}
+              />
+            ) : null}
+            {!showingPluginSettings && activeCategory === "semantic-search" ? (
+              <SemanticSearchSettings
+                libraryId={libraryId}
+                servicesApi={embeddingServicesApi}
+              />
+            ) : null}
+            {!showingPluginSettings && activeCategory === "mcp" ? <McpSettingsPage api={mcpApi} onOpenAppLog={onOpenAppLog} /> : null}
+            {!showingPluginSettings && activeCategory === "plugins" ? (
+              <PluginSettingsPage
+                api={pluginApi}
+                libraryId={libraryId}
+                onOpenPluginSettings={openPluginSettings}
+                refreshKey={pluginSettingsRefreshToken}
+              />
+            ) : null}
+            {!showingPluginSettings && activeCategory === "sync" ? (
+              <SyncSettingsPage
+                callbacks={syncServerCallbacks}
+                onShowCardSyncStatusChange={onShowCardSyncStatusChange}
+                showCardSyncStatus={showCardSyncStatus}
+              />
+            ) : null}
+          </main>
+        </div>
+      </DialogShell>
+    </div>
+  );
+}

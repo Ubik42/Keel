@@ -5,7 +5,7 @@ import {
   assetSummarySchema,
   extractedVideoMetadataSchema,
 } from "../../src/shared/asset-types";
-import { formatAudioTechnicalLine } from "../../src/renderer/video-metadata-format";
+import { formatAudioTechnicalLine } from "../../src/renderer/inspector/video-metadata-format";
 
 describe("audio extracted metadata fixture", () => {
   it("parses and formats the library mp3 probe json", () => {

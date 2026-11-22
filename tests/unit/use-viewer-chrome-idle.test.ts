@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   createViewerChromeIdleScheduler,
   shouldWakeViewerChrome,
-} from "../../src/renderer/viewer-chrome-idle";
+} from "../../src/renderer/viewer/viewer-chrome-idle";
 
 describe("createViewerChromeIdleScheduler", () => {
   beforeEach(() => {

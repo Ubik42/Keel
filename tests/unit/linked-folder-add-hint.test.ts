@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   LINKED_FOLDER_ADD_HINT_KEY,
   shouldShowLinkedFolderAddHint,
-} from "../../src/renderer/linked-folder-add-hint";
+} from "../../src/renderer/folders/linked-folder-add-hint";
 
 describe("LINKED_FOLDER_ADD_HINT_KEY", () => {
   it("has a stable persisted key", () => {

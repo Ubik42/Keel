@@ -2,7 +2,7 @@ import type { RendererRequest, WorkerCommand } from "../../shared/protocol/reque
 import {
   selectOpenDirectory,
   type NativeDialogHost,
-} from "../native-dialogs";
+} from "../window/native-dialogs";
 
 export type LinkedFolderCommandRuntime = {
   createNativeDialogHost: () => NativeDialogHost;

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { iconActionAttrs } from '../../src/renderer/icon-action-attrs';
+import { iconActionAttrs } from '../../src/renderer/common/icon-action-attrs';
 
 describe('iconActionAttrs (REQ-SHELL-013)', () => {
   it('mirrors the label onto aria-label and data-hover-tip', () => {

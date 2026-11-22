@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildTagAssignCandidates,
   buildTagRemoveCandidates,
-} from "../../src/renderer/tag-picker-candidates";
+} from "../../src/renderer/tags/tag-picker-candidates";
 
 const tags = [
   { tagId: "warm", name: "Warm", assetCount: 4 },

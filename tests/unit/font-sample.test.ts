@@ -4,7 +4,7 @@ import {
   createFontSamplePage,
   fontSampleCoverText,
   resolveFontSampleRequest,
-} from "../../src/main/font-sample-page";
+} from "../../src/main/media/font-sample-page";
 import type { FontLanguage } from "../../src/shared/font-metadata";
 
 // Serpent-485aeb：字体卡片封面样张页。

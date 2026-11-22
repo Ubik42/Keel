@@ -9,7 +9,7 @@ import {
   DimensionFilterBarActionsProvider,
   type DimensionFilterBarActions,
   type DimensionFilterBarProps,
-} from "../../src/renderer/DimensionFilterBar";
+} from "../../src/renderer/filters/DimensionFilterBar";
 
 /** The bar with its operations provided the way WorkspaceHeader provides them. */
 function DimensionFilterBar(props: DimensionFilterBarProps) {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { buildAiModelsFetchKey } from "../../src/renderer/ai-model-fetch-key";
+import { buildAiModelsFetchKey } from "../../src/renderer/ai/ai-model-fetch-key";
 
 const baseInput = {
   profileId: "profile-a",

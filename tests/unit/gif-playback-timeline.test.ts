@@ -9,7 +9,7 @@ import {
   gifTimelineDurationMs,
   gifWrapPlaybackTimeMs,
   readGifFrameTimings,
-} from "../../src/renderer/gif-playback-timeline";
+} from "../../src/renderer/viewer/gif-playback-timeline";
 
 function gifBytes(delaysCs: number[]): Uint8Array {
   const chunks: number[] = [

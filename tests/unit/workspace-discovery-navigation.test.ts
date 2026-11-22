@@ -4,8 +4,8 @@ import {
   browseStateForWorkspaceNavigation,
   historyReplayClosesPreview,
   workspaceNavigationKeepsLiveDiscovery,
-} from "../../src/renderer/workspace-discovery-navigation";
-import { createDefaultWorkspaceTabBrowseState } from "../../src/renderer/workspace-tabs";
+} from "../../src/renderer/workspace/workspace-discovery-navigation";
+import { createDefaultWorkspaceTabBrowseState } from "../../src/renderer/workspace/workspace-tabs";
 
 describe("workspaceNavigationKeepsLiveDiscovery", () => {
   it("keeps live chips for same-tab push and history replay", () => {

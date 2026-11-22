@@ -7,9 +7,9 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   useWorkspaceTabsController,
   type UseWorkspaceTabsControllerOptions,
-} from "../../src/renderer/use-workspace-tabs";
-import { createDefaultWorkspaceTabBrowseState } from "../../src/renderer/workspace-tabs";
-import type { WorkspaceRenderSnapshot } from "../../src/renderer/workspace-render-snapshot-cache";
+} from "../../src/renderer/workspace/use-workspace-tabs";
+import { createDefaultWorkspaceTabBrowseState } from "../../src/renderer/workspace/workspace-tabs";
+import type { WorkspaceRenderSnapshot } from "../../src/renderer/workspace/workspace-render-snapshot-cache";
 
 describe("useWorkspaceTabsController", () => {
   let root: Root | undefined;

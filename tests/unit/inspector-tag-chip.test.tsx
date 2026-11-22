@@ -2,7 +2,7 @@
 import { act, createElement } from 'react';
 import { createRoot } from 'react-dom/client';
 import { expect, it, vi } from 'vitest';
-import { InspectorTagChip } from '../../src/renderer/InspectorTagChip';
+import { InspectorTagChip } from '../../src/renderer/inspector/InspectorTagChip';
 import { ContextMenuProvider } from '../../src/renderer/workbench/menu/context-menu';
 import { LocaleProvider } from '../../src/renderer/i18n';
 

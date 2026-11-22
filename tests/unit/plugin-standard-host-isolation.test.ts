@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { runPluginGuestActivate } from '../../src/scripting/plugin-guest-realm';
-import { PluginRuntimeSupervisor } from '../../src/main/plugin-runtime-supervisor';
+import { PluginRuntimeSupervisor } from '../../src/main/plugins/plugin-runtime-supervisor';
 
 type Listener = (...args: never[]) => void;
 

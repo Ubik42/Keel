@@ -4,7 +4,7 @@ import type { AssetSummary } from "../../src/shared/asset-types";
 import {
   canRenameAssetWithShortcut,
   planAssetDeleteShortcut,
-} from "../../src/renderer/browse-key-command";
+} from "../../src/renderer/browse/browse-key-command";
 
 function asset(
   partial: Pick<AssetSummary, "assetId"> & Partial<AssetSummary>,

@@ -6,7 +6,7 @@ import {
   loadTaskCompletionSoundPreferences,
   saveTaskCompletionSoundPreferences,
   type TaskCompletionSoundPreferencesStorage,
-} from "../../src/renderer/task-completion-sound-preferences";
+} from "../../src/renderer/jobs/task-completion-sound-preferences";
 
 function memoryStorage(
   initial?: Record<string, string>,

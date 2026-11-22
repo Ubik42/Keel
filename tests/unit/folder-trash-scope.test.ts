@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { isBrowseScopeAffectedByFolderTrash } from "../../src/renderer/folder-trash-scope";
+import { isBrowseScopeAffectedByFolderTrash } from "../../src/renderer/folders/folder-trash-scope";
 
 describe("isBrowseScopeAffectedByFolderTrash", () => {
   const folders = [

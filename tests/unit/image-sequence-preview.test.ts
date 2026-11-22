@@ -12,7 +12,7 @@ import {
   sequencePreviewRange,
   type SequencePreviewFrame,
   type SequencePreviewSource,
-} from "../../src/renderer/image-sequence-preview";
+} from "../../src/renderer/viewer/image-sequence-preview";
 
 // Serpent-866c20：确认面板预览的帧推进 / 范围绑定 / 帧率换档。
 describe("image sequence preview", () => {

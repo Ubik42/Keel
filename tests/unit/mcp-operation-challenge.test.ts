@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { hasMcpChallengeConfirmation } from '../../src/automation/mcp-challenge';
-import { McpOperationChallengeStore } from '../../src/main/mcp-operation-challenge';
+import { McpOperationChallengeStore } from '../../src/main/mcp/mcp-operation-challenge';
 
 const credentialId = '00000000-0000-4000-8000-000000000001';
 

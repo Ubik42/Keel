@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react';
 
-import { Icon } from '../../../Icons';
+import { Icon } from '../../../common/Icons';
 import { cx } from '../primitives/cx';
 
 export type SettingsDisclosureProps = {

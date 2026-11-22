@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   createDesktopAutomationFilePlanApprovalHandler,
   type DesktopAutomationFilePlanSummary,
-} from '../../src/main/automation-file-plan-approval';
+} from '../../src/main/automation/automation-file-plan-approval';
 import type { WorkerCommand } from '../../src/shared/protocol/requests';
 import type { WorkerResult } from '../../src/shared/protocol/responses';
 

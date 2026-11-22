@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { NativeAssetDragPrimeScheduler } from "../../src/main/native-asset-drag-prime";
+import { NativeAssetDragPrimeScheduler } from "../../src/main/shell/native-asset-drag-prime";
 
 afterEach(() => vi.useRealTimers());
 

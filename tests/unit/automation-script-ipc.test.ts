@@ -9,11 +9,11 @@ import { createAutomationCommandGateway, type AutomationWorkerClient } from '../
 import {
   AutomationExecutionJournal,
   createJsonFileAutomationExecutionStore,
-} from '../../src/main/automation-execution-journal';
-import { AutomationScriptFileService } from '../../src/main/automation-script-file-service';
-import { createJsonFileAutomationRecentScriptsStore } from '../../src/main/automation-recent-scripts-store';
-import { registerAutomationScriptIpc } from '../../src/main/automation-script-ipc';
-import type { ScriptRuntimeExecutor } from '../../src/main/script-runtime-supervisor';
+} from '../../src/main/automation/automation-execution-journal';
+import { AutomationScriptFileService } from '../../src/main/automation/automation-script-file-service';
+import { createJsonFileAutomationRecentScriptsStore } from '../../src/main/automation/automation-recent-scripts-store';
+import { registerAutomationScriptIpc } from '../../src/main/automation/automation-script-ipc';
+import type { ScriptRuntimeExecutor } from '../../src/main/automation/script-runtime-supervisor';
 import {
   AUTOMATION_SCRIPT_COMMAND_CHANNEL,
   AUTOMATION_SCRIPT_COMPLETE_CHANNEL,

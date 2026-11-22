@@ -1,7 +1,7 @@
 import { createFieldStore } from './create-field-store';
 import { type EmbeddingIndexSnapshot, type SemanticSearchModelId } from '../../shared/embedding/profile';
 import { type EmbeddingHttpServiceSummary } from '../../shared/library-api';
-import { loadSemanticSearchPreferences } from '../semantic-search-preferences';
+import { loadSemanticSearchPreferences } from '../ai/semantic-search-preferences';
 
 export interface EmbeddingState {
   semanticSearchPrefs: ReturnType<typeof loadSemanticSearchPreferences>;

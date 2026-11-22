@@ -5,7 +5,7 @@ import {
   KEEL_PROTOCOL_SCHEME,
   KEEL_PLUGIN_PROTOCOL_SCHEME,
   keelProtocolSchemes,
-} from "../../src/main/keel-protocol-privileges";
+} from "../../src/main/library/keel-protocol-privileges";
 
 describe("keel protocol privileges", () => {
   it("enables streaming media for seekable Range playback", () => {

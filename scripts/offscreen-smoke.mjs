@@ -47,7 +47,7 @@ app.whenReady().then(async () => {
       offscreen: true,
       // Throwaway script only: the page needs require('three') to draw the
       // test scene. The production window is sandboxed with a dedicated
-      // preload (src/main/offscreen-thumbnail-renderer.ts).
+      // preload (src/main/media/offscreen-thumbnail-renderer.ts).
       sandbox: false,
       contextIsolation: false,
       nodeIntegration: true,

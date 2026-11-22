@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   pendingImportFrameMime,
   resolvePendingImportFrame,
-} from "../../src/main/pending-import-frame";
+} from "../../src/main/ingestion/pending-import-frame";
 
 // Serpent-866c20：导入前预览的候选帧解析（Renderer 只给 offerId + 帧号）。
 describe("pending import frame resolution", () => {

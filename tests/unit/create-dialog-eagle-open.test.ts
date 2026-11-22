@@ -3,7 +3,7 @@ import { act, createElement } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { CreateDialog } from "../../src/renderer/CreateDialog";
+import { CreateDialog } from "../../src/renderer/common/CreateDialog";
 import { LocaleProvider } from "../../src/renderer/i18n";
 
 describe("CreateDialog Eagle open name panel", () => {

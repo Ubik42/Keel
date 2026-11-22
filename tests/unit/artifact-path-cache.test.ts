@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { ArtifactPathCache } from "../../src/main/artifact-path-cache";
+import { ArtifactPathCache } from "../../src/main/media/artifact-path-cache";
 
 describe("ArtifactPathCache", () => {
   it("promotes hits to MRU and evicts the oldest entry at the bound", () => {

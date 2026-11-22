@@ -11,7 +11,7 @@ import {
   canvasFieldOptionsUseSharedHint,
   isAppSettingsCategoryId,
   type AppSettingsCanvasFieldOption,
-} from "../../src/renderer/app-settings-sections";
+} from "../../src/renderer/settings/app-settings-sections";
 
 describe("app-settings-sections (Serpent-97l / Serpent-9es / Serpent-i07)", () => {
   it("theme and locale option lists are non-empty", () => {

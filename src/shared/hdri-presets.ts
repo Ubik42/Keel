@@ -7,7 +7,7 @@
  * 2026-08-06: product / interior / outdoor / nature):
  * - the renderer viewer toolbar (`src/renderer/3d-viewer/hdri-presets.ts`
  *   re-exports from here and adds the `import.meta.glob` runtime URL map);
- * - the Main-process `keel://app-assets` handler (`src/main/app-assets.ts`)
+ * - the Main-process `keel://app-assets` handler (`src/main/app/app-assets.ts`)
  *   whitelists file names and verifies sha256/size against this table, so a
  *   broken packaged asset fails loudly instead of rendering a corrupted sky.
  *

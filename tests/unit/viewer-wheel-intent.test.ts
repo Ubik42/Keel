@@ -9,7 +9,7 @@ import {
   VIEWER_WHEEL_HORIZONTAL_DOMINANCE_RATIO,
   VIEWER_WHEEL_MOUSE_NOTCH_THRESHOLD,
   VIEWER_WHEEL_NOTCH_PIXELS,
-} from '../../src/renderer/viewer-wheel-intent';
+} from '../../src/renderer/viewer/viewer-wheel-intent';
 
 const sample = (overrides: Partial<Parameters<typeof classifyViewerWheel>[0]>) => ({
   ctrlKey: false,

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { PluginActivationCoordinator } from '../../src/main/plugin-activation-coordinator';
+import { PluginActivationCoordinator } from '../../src/main/plugins/plugin-activation-coordinator';
 
 describe('PluginActivationCoordinator', () => {
   it('stages a library instance before setup can call back into Host state', async () => {

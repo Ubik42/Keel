@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { RADIUS_LEVEL_SCALE } from "../../src/renderer/radius-preferences";
+import { RADIUS_LEVEL_SCALE } from "../../src/renderer/theme/radius-preferences";
 import {
   CUSTOM_THEME_ISLAND_TOKENS,
   customThemeOverridesSchema,

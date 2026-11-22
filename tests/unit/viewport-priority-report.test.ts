@@ -5,7 +5,7 @@ import {
   composeBrowseViewportPriorityBands,
   orderedIdsForViewportPriorityReport,
   type ViewportPriorityCanvas,
-} from "../../src/renderer/viewport-priority-report";
+} from "../../src/renderer/browse/viewport-priority-report";
 
 function fakeSlot(input: {
   assetId?: string;

@@ -13,7 +13,7 @@ import {
   type OffscreenWebContentsLike,
   type OffscreenWindowLike,
   type PaintImageLike,
-} from '../../src/main/offscreen-thumbnail-renderer';
+} from '../../src/main/media/offscreen-thumbnail-renderer';
 import type { ModelThumbnailRenderRequest } from '../../src/shared/model-thumbnail-protocol';
 
 // A real 1×1 transparent PNG (valid signature + payload for capture tests).

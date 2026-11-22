@@ -4,7 +4,7 @@ import {
   SyncAutoScheduler,
   type SyncAutoSchedulerOptions,
   type SyncBindingLike,
-} from '../../src/main/sync-auto-scheduler';
+} from '../../src/main/library/sync-auto-scheduler';
 
 interface PostedCommand {
   type: string;

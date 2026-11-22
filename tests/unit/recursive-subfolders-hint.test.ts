@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   recursiveSubfoldersHintKey,
   shouldFlashRecursiveSubfoldersHint,
-} from "../../src/renderer/recursive-subfolders-hint";
+} from "../../src/renderer/folders/recursive-subfolders-hint";
 
 describe("recursiveSubfoldersHintKey", () => {
   it("namespaces by library and folder", () => {

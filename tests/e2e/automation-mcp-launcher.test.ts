@@ -8,7 +8,7 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import { _electron as electron, expect, test } from '@playwright/test';
 
-import { McpClientCredentialStore, parseCurrentUserSid } from '../../src/main/mcp-client-credentials';
+import { McpClientCredentialStore, parseCurrentUserSid } from '../../src/main/mcp/mcp-client-credentials';
 
 import {
   electronLaunchEnv,

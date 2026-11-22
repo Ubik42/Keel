@@ -2,7 +2,7 @@
  * Offscreen thumbnail page entry (slice E, Serpent-hnmg).
  *
  * This page is loaded ONLY inside the hidden offscreen BrowserWindow owned by
- * Main (`src/main/offscreen-thumbnail-renderer.ts`). It receives one render
+ * Main (`src/main/media/offscreen-thumbnail-renderer.ts`). It receives one render
  * job at a time over the dedicated preload bridge, renders a single frame via
  * the shared 3d-viewer core, and posts the PNG back. It never mounts the main
  * React app, never opens windows, and exposes no path/SQL capability.

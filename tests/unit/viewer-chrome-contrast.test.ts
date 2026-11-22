@@ -7,7 +7,7 @@ import {
   relativeLuminance,
   resolveViewerChromeContrasts,
   sampleImageDataRegion,
-} from "../../src/renderer/viewer-chrome-contrast";
+} from "../../src/renderer/viewer/viewer-chrome-contrast";
 
 function solidImageData(
   width: number,

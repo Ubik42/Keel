@@ -9,11 +9,11 @@ import {
   rememberDuplicateDecision,
   rememberNameConflictDecision,
   type ImportConflictPreferencesStorage,
-} from '../../src/renderer/import-conflict-preferences';
+} from '../../src/renderer/import/import-conflict-preferences';
 import {
   nextImportConflictPhaseAfterName,
   resolveImportConflictPresentation,
-} from '../../src/renderer/import-conflict-flow';
+} from '../../src/renderer/import/import-conflict-flow';
 import type { ImportConflictPlan } from '../../src/shared/protocol/responses';
 
 function memoryStorage(

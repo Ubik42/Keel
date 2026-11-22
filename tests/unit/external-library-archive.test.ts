@@ -9,8 +9,8 @@ import {
   ExternalLibraryArchiveError,
   materializeExternalLibrarySource,
   sweepOrphanExternalLibraryStaging,
-} from '../../src/main/external-library-archive';
-import { EXTERNAL_LIBRARY_STAGING_PREFIX } from '../../src/main/disk-free-space';
+} from '../../src/main/library/external-library-archive';
+import { EXTERNAL_LIBRARY_STAGING_PREFIX } from '../../src/main/app/disk-free-space';
 
 async function tempDirectory(): Promise<string> {
   return mkdtemp(path.join(os.tmpdir(), 'keel-external-library-test-'));

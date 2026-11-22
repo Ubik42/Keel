@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { missingNavigationSummaryIsFailure } from "../../src/renderer/blocking-navigation-summary";
+import { missingNavigationSummaryIsFailure } from "../../src/renderer/jobs/blocking-navigation-summary";
 
 describe("missingNavigationSummaryIsFailure", () => {
   it("fails a library-switch wait when the sidebar snapshot never arrived", () => {

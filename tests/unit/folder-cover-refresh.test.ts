@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { collectFolderCoverCandidateAssetIds } from "../../src/renderer/folder-cover-refresh";
+import { collectFolderCoverCandidateAssetIds } from "../../src/renderer/folders/folder-cover-refresh";
 import type { FolderBrowseEntry } from "../../src/shared/asset-types";
 
 function entry(folderId: string, coverAssetIds: string[]): FolderBrowseEntry {

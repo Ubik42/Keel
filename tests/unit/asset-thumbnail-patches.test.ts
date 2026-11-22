@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { applyAssetThumbnailPatches } from "../../src/renderer/asset-thumbnail-patches";
+import { applyAssetThumbnailPatches } from "../../src/renderer/browse/asset-thumbnail-patches";
 import type { AssetSummary } from "../../src/shared/asset-types";
 
 function asset(id: string, extra: Partial<AssetSummary> = {}): AssetSummary {

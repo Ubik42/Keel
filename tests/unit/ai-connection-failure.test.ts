@@ -7,7 +7,7 @@ import {
   isAiConnectionFailureCode,
   listConnectionFailedJobIds,
   reduceConnectionFailureGate,
-} from "../../src/renderer/ai-connection-failure";
+} from "../../src/renderer/ai/ai-connection-failure";
 
 describe("isAiConnectionFailureCode (Serpent-kdnm)", () => {
   it("accepts network / timeout / rate_limit / auth", () => {

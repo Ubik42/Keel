@@ -4,8 +4,8 @@ import {
   nextPluginViewState,
   buildPluginIframeViewDescriptors,
   type PluginViewLifecycleState,
-} from '../../src/renderer/plugin-iframe-view-host';
-import { shouldIgnoreInitialFrameLoad } from '../../src/renderer/plugin-ui-dialog-session';
+} from '../../src/renderer/plugins/plugin-iframe-view-host';
+import { shouldIgnoreInitialFrameLoad } from '../../src/renderer/plugins/plugin-ui-dialog-session';
 import {
   parsePluginUiHostMessage,
   parsePluginUiIframeMessage,

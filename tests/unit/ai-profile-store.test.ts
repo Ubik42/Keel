@@ -11,7 +11,7 @@ import {
   resolveAiCredential,
   saveAiConnectionProfile,
   summarizeAiProfiles,
-} from "../../src/main/ai-profile-store";
+} from "../../src/main/ai/ai-profile-store";
 
 describe("AI connection profile catalog", () => {
   it("selects a newly created profile and keeps that selection when another profile is edited", () => {

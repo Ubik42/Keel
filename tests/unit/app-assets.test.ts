@@ -8,7 +8,7 @@ import {
   resetVerifiedAppAssetPathsForTest,
   resolveAppAssetFile,
   type AppAssetFs,
-} from '../../src/main/app-assets';
+} from '../../src/main/app/app-assets';
 import { HDRI_PRESETS } from '../../src/shared/hdri-presets';
 
 beforeEach(() => {

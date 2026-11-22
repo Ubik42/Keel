@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { mcpFullAccessConfirmationCopy } from "../../src/main/mcp-full-access-confirmation-copy";
+import { mcpFullAccessConfirmationCopy } from "../../src/main/mcp/mcp-full-access-confirmation-copy";
 
 describe("MCP Full Access confirmation copy", () => {
   it("describes the actual operation scope in Chinese", () => {

@@ -4,7 +4,7 @@ import {
   buildFontInspectorRows,
   formatFontStyle,
   formatFontWeight,
-} from "../../src/renderer/font-inspector-rows";
+} from "../../src/renderer/inspector/font-inspector-rows";
 import { extractedVideoMetadataSchema } from "../../src/shared/asset-types";
 
 // Serpent-485aeb：字体 Inspector 的元信息行。

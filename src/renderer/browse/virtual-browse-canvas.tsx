@@ -8,7 +8,7 @@ import {
 } from "react";
 
 import type { AssetSummary, BrowseLayoutEntry } from "../../shared/asset-types";
-import { virtualSlotAsset } from "../browse-window-slots";
+import { virtualSlotAsset } from "./browse-window-slots";
 import {
   ASSET_GRID_GAP_PX,
   aspectRatioForAsset,
@@ -19,20 +19,20 @@ import {
   resolveCaptionBandSource,
   type CaptionBandAsset,
   type CaptionBandSource,
-} from "../asset-caption-band";
+} from "./asset-caption-band";
 import {
   estimateMasonryCardBodyPx,
   masonryColumnWidthPx,
   publishCanvasAssetLayoutIndex,
   type CanvasAssetLayoutIndex,
-} from "../canvas-asset-layout";
+} from "./canvas-asset-layout";
 import {
   itemIntersectsVisibleRange,
   readCanvasLocalViewportSnapshot,
   useCanvasLocalViewport,
 } from "../workbench/collection/viewport-window";
-import { canvasHasPreviewScrollHold, logBrowseScrollWrite } from "../browse-scroll-debug";
-import { isCanvasReflowRestorationPending } from "../canvas-reflow-restore";
+import { canvasHasPreviewScrollHold, logBrowseScrollWrite } from "./browse-scroll-debug";
+import { isCanvasReflowRestorationPending } from "./canvas-reflow-restore";
 import {
   type VirtualBrowseLayout,
   virtualLayoutEntryAt,

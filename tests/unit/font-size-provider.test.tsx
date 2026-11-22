@@ -4,8 +4,8 @@ import { act, createElement } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it } from "vitest";
 
-import { FONT_SIZE_SCALES } from "../../src/renderer/font-size-preferences";
-import { FontSizeProvider, useFontSize } from "../../src/renderer/FontSizeProvider";
+import { FONT_SIZE_SCALES } from "../../src/renderer/theme/font-size-preferences";
+import { FontSizeProvider, useFontSize } from "../../src/renderer/theme/FontSizeProvider";
 
 function Probe() {
   const { preferences, setPreference } = useFontSize();

@@ -3,13 +3,13 @@ import { describe, expect, it } from "vitest";
 import {
   FOCUS_SEARCH_SHORTCUT,
   matchFocusSearchShortcut,
-} from "../../src/renderer/workspace-discovery-shortcuts";
+} from "../../src/renderer/workspace/workspace-discovery-shortcuts";
 import {
   matchesShortcut,
   type ShortcutEvent,
 } from "../../src/renderer/workbench/menu/command-types";
 import { assetCommandDefinitions } from "../../src/renderer/commands/asset-commands";
-import { canDeleteAssetFromDiskWithShortcut } from "../../src/renderer/browse-key-command";
+import { canDeleteAssetFromDiskWithShortcut } from "../../src/renderer/browse/browse-key-command";
 
 const event = (overrides: Partial<ShortcutEvent>): ShortcutEvent => ({
   key: "",

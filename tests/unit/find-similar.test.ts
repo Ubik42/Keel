@@ -3,11 +3,11 @@ import { describe, expect, it } from "vitest";
 import {
   resolveFindSimilar,
   canFindSimilarForAsset,
-} from "../../src/renderer/find-similar";
+} from "../../src/renderer/ai/find-similar";
 import {
   rankSimilarAssetIds,
   takeNextEmbeddingTarget,
-} from "../../src/main/embedding-test-index";
+} from "../../src/main/embedding/embedding-test-index";
 import { embeddingInputModalitiesForAdapter, LOCAL_GEMMA_INPUT_MODALITIES, LOCAL_SEMANTIC_ENCODE_MODALITIES } from "../../src/shared/embedding/modalities";
 import { embeddingAudioRevision, embeddingSourceForModalities, isDamagedEmbeddingAsset } from "../../src/shared/embedding/profile";
 import { rendererResultSchema } from "../../src/shared/protocol/responses";

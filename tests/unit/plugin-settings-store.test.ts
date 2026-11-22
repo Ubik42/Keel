@@ -4,8 +4,8 @@ import path from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { PluginSettingsStore } from '../../src/main/plugin-settings-store';
-import { PluginPackageManager } from '../../src/main/plugin-package-manager';
+import { PluginSettingsStore } from '../../src/main/plugins/plugin-settings-store';
+import { PluginPackageManager } from '../../src/main/plugins/plugin-package-manager';
 import { pluginManifestSchema } from '../../src/plugins/plugin-manifest';
 import manifestFixture from '../fixtures/plugin-manifests/palette-tools.serpent-plugin.json';
 

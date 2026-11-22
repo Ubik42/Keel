@@ -10,7 +10,7 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { writeWin32FileClipboard } from "../../src/main/win32-file-clipboard";
+import { writeWin32FileClipboard } from "../../src/main/shell/win32-file-clipboard";
 
 describe("win32-file-clipboard", () => {
   it.skipIf(process.platform !== "win32")(

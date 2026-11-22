@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { justifiedSlotStyle } from "../../src/renderer/justified-asset-rows";
+import { justifiedSlotStyle } from "../../src/renderer/browse/justified-asset-rows";
 
 function previewHeight(style: ReturnType<typeof justifiedSlotStyle>) {
   return (style as Record<string, unknown>)["--justified-preview-height"];

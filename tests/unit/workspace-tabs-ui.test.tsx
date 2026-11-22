@@ -4,9 +4,9 @@ import { act, createElement } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { WorkspaceTabs } from "../../src/renderer/WorkspaceTabs";
+import { WorkspaceTabs } from "../../src/renderer/workspace/WorkspaceTabs";
 import { LocaleProvider } from "../../src/renderer/i18n";
-import { workspaceTabWidthScale } from "../../src/renderer/workspace-tabs";
+import { workspaceTabWidthScale } from "../../src/renderer/workspace/workspace-tabs";
 
 /** Minimal HTML5 drag event; happy-dom has no DataTransfer of its own. */
 function tabDragEvent(type: string, clientX: number): Event {

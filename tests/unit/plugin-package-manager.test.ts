@@ -11,7 +11,7 @@ import path from 'node:path';
 import AdmZip from 'adm-zip';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { PluginPackageManager } from '../../src/main/plugin-package-manager';
+import { PluginPackageManager } from '../../src/main/plugins/plugin-package-manager';
 import { PLUGIN_LIBRARY_LOCK_FILE } from '../../src/plugins/plugin-package';
 import manifestFixture from '../fixtures/plugin-manifests/palette-tools.serpent-plugin.json';
 

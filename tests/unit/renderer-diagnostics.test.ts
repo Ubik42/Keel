@@ -7,7 +7,7 @@ import {
   logRendererResponsive,
   logRendererUnresponsive,
   type RendererDiagnosticLogger,
-} from "../../src/main/renderer-diagnostics";
+} from "../../src/main/window/renderer-diagnostics";
 
 function createLogger(): RendererDiagnosticLogger & {
   infos: Array<{ scope: string; message: string; context?: Record<string, unknown> }>;

@@ -9,11 +9,11 @@ import type { KeelLibraryApi } from "../../src/shared/library-api";
 import type { VirtualBrowseLayout } from "../../src/renderer/browse/virtual-browse-layout";
 import {
   resolveBrowseCanvasLayout,
-} from "../../src/renderer/browse-window-slots";
+} from "../../src/renderer/browse/browse-window-slots";
 import {
   useBrowsePagination,
   type UseBrowsePaginationResult,
-} from "../../src/renderer/use-browse-pagination";
+} from "../../src/renderer/browse/use-browse-pagination";
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 

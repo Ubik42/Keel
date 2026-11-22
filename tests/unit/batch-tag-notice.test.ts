@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { formatBatchRatingNotice, formatBatchTagNotice } from "../../src/renderer/batch-tag-notice";
+import { formatBatchRatingNotice, formatBatchTagNotice } from "../../src/renderer/tags/batch-tag-notice";
 import type { TagOperationSkip } from "../../src/shared/protocol/responses";
 
 describe("formatBatchTagNotice", () => {

@@ -3,7 +3,7 @@ import { act, createElement, type ReactNode } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { CriticalConfirmationDialog } from "../../src/renderer/CriticalConfirmationDialog";
+import { CriticalConfirmationDialog } from "../../src/renderer/common/CriticalConfirmationDialog";
 import { LocaleProvider } from "../../src/renderer/i18n";
 import type { CriticalConfirmationPrompt } from "../../src/shared/critical-confirmation";
 import { useDialogFocusTrap } from "../../src/renderer/workbench/overlay/use-dialog-focus-trap";

@@ -7,7 +7,7 @@ import {
   loadInspectorCardFeelPreferences,
   setInspectorCardFeelEnabled,
   type InspectorCardFeelPreferencesStorage,
-} from "../../src/renderer/inspector-card-feel-preferences";
+} from "../../src/renderer/inspector/inspector-card-feel-preferences";
 
 function memoryStorage(
   initial: Record<string, string> = {},

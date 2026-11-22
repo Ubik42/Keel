@@ -1,6 +1,6 @@
 import { createFieldStore } from './create-field-store';
 import { type AppLogEntry } from '../../shared/app-log';
-import type { AppSettingsCategoryId } from '../app-settings-sections';
+import type { AppSettingsCategoryId } from '../settings/app-settings-sections';
 
 export type DialogKind = "library" | "tag" | null;
 

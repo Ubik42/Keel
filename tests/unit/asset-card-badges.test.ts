@@ -8,7 +8,7 @@ import {
   shouldShowDurationBadge,
   shouldShowExtensionBadge,
   shouldShowTypeBadgeAlongsideExtension,
-} from "../../src/renderer/asset-card-badges";
+} from "../../src/renderer/browse/asset-card-badges";
 
 describe("asset-card-badges", () => {
   it("labels gif, video, text, and 3D for type chips; audio uses extension instead", () => {

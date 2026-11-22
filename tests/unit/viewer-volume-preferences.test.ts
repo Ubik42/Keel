@@ -6,7 +6,7 @@ import {
   stepViewerVolumeLevel,
   volumeAfterWheelSteps,
   VIEWER_VOLUME_STEP,
-} from "../../src/renderer/viewer-volume-preferences";
+} from "../../src/renderer/viewer/viewer-volume-preferences";
 
 describe("viewer volume preferences (Serpent-8w6x)", () => {
   it("steps volume up and down in fixed increments", () => {

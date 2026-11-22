@@ -232,7 +232,7 @@ export const zhCN = {
     pinnedButton: "已固定",
     pinHelp: "固定标签过滤；切换文件夹时继续按此标签筛选",
     unpinHelp: "取消固定标签过滤",
-    appearance: "颜色和图标",
+    appearance: "图标与颜色",
     randomAppearance: "随机外观",
     appearanceSaved: "标签外观已更新",
     title: "标签",

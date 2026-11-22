@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { createArtifactResponse, parseByteRange } from '../../src/main/artifact-response';
+import { createArtifactResponse, parseByteRange } from '../../src/main/media/artifact-response';
 
 const roots: string[] = [];
 

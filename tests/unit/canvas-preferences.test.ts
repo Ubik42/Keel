@@ -12,7 +12,7 @@ import {
   shouldShowGridDimensions,
   nextCanvasCaptionAlign,
   type CanvasPreferences,
-} from '../../src/renderer/canvas-preferences';
+} from '../../src/renderer/browse/canvas-preferences';
 
 type StorageStub = {
   _data: Map<string, string>;

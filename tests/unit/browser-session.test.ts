@@ -7,11 +7,11 @@ import {
   writeBrowserSession,
   type BrowserSessionStorage,
   type StoredBrowserSession,
-} from "../../src/renderer/browser-session";
+} from "../../src/renderer/library/browser-session";
 import {
   applyStoredBrowserSession,
   findSessionSelectedAsset,
-} from "../../src/renderer/restore-browser-session";
+} from "../../src/renderer/library/restore-browser-session";
 import type { AssetSummary } from "../../src/shared/asset-types";
 
 function memoryStorage(

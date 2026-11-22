@@ -12,8 +12,8 @@ import {
   listPluginMcpTools,
   pluginMcpToolName,
 } from '../../src/mcp/plugin-tool-catalog';
-import { PluginMcpExposureStore } from '../../src/main/plugin-mcp-exposure-store';
-import { PluginMcpToolProvider } from '../../src/main/plugin-mcp-tool-provider';
+import { PluginMcpExposureStore } from '../../src/main/plugins/plugin-mcp-exposure-store';
+import { PluginMcpToolProvider } from '../../src/main/plugins/plugin-mcp-tool-provider';
 import { callKeelMcpTool } from '../../src/mcp/call-tool';
 import { mcpContext, readExposure, writeExposure } from './keel-mcp-test-fixtures';
 

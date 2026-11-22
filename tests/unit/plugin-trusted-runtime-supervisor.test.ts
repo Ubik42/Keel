@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { PluginTrustedRuntimeSupervisor } from '../../src/main/plugin-trusted-runtime-supervisor';
+import { PluginTrustedRuntimeSupervisor } from '../../src/main/plugins/plugin-trusted-runtime-supervisor';
 import { PluginHostCommandError } from '../../src/shared/plugin-host-command-error';
 import type { PluginTrustedChildMessage } from '../../src/shared/plugin-trusted-runtime-protocol';
 import type { PluginJobRecord } from '../../src/plugins/plugin-jobs';

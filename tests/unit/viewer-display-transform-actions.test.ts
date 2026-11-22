@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   applyViewerDisplayTransformAction,
   IDENTITY_VIEWER_DISPLAY_TRANSFORM,
-} from "../../src/renderer/viewer-display-transform";
+} from "../../src/renderer/viewer/viewer-display-transform";
 
 describe("viewer display transform actions", () => {
   it("rotates counter-clockwise without changing mirror state", () => {

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { WindowRouter, type RoutedWindow } from '../../src/main/window-router';
+import { WindowRouter, type RoutedWindow } from '../../src/main/window/window-router';
 
 function createWindow(id: number): RoutedWindow & { send: ReturnType<typeof vi.fn>; destroy(): void } {
   let destroyed = false;

@@ -15,7 +15,7 @@ import {
   parseFontSizePreferences,
   saveFontSizePreferences,
   setStoredFontSizePreference,
-} from "../../src/renderer/font-size-preferences";
+} from "../../src/renderer/theme/font-size-preferences";
 
 function storage(): Storage {
   const values = new Map<string, string>();

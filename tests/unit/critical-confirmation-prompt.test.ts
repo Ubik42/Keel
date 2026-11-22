@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   RendererCriticalConfirmationBroker,
   type CriticalConfirmationPromptTarget,
-} from '../../src/main/critical-confirmation-prompt';
+} from '../../src/main/window/critical-confirmation-prompt';
 import {
   criticalConfirmationInitialFocusForOperation,
   criticalDiskDeleteConfirmLabel,
@@ -12,7 +12,7 @@ import {
   CRITICAL_CONFIRMATION_PROMPT_CHANNEL,
   CRITICAL_CONFIRMATION_RESPOND_CHANNEL,
 } from '../../src/shared/protocol/channels';
-import type { CriticalConfirmationIpcHost } from '../../src/main/critical-confirmation-window';
+import type { CriticalConfirmationIpcHost } from '../../src/main/window/critical-confirmation-window';
 
 const payload = {
   title: '确认危险操作',

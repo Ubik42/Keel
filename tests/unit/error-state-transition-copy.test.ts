@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { PUBLIC_ERROR_MESSAGES, type PublicErrorCode } from '../../src/shared/protocol/errors';
-import { PUBLIC_ERROR_MESSAGES_ZH, messageForPublicError } from '../../src/renderer/error-utils';
+import { PUBLIC_ERROR_MESSAGES_ZH, messageForPublicError } from '../../src/renderer/common/error-utils';
 import { en as enCatalog } from '../../src/renderer/i18n/catalogs/en';
 
 /**

@@ -5,7 +5,7 @@ import {
   countNewlyAddedAssets,
   excludeLocallyDeletedAssets,
   resolveSearchTotalAfterAppend,
-} from "../../src/renderer/asset-browse-load-more";
+} from "../../src/renderer/browse/asset-browse-load-more";
 
 describe("resolveSearchTotalAfterAppend (Serpent-r94b)", () => {
   it("keeps the server total when the page adds new rows", () => {

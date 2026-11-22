@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildActiveFilterChips,
   type DiscoveryFilterSnapshot,
-} from "../../src/renderer/active-discovery-filters";
+} from "../../src/renderer/filters/active-discovery-filters";
 
 const empty: DiscoveryFilterSnapshot = {
   colorFilter: "",

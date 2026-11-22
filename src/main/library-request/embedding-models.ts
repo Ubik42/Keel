@@ -9,7 +9,7 @@ import {
   summarizeEmbeddingModels,
   upsertEmbeddingModel,
   type EmbeddingModelCatalog,
-} from "../embedding-model-catalog";
+} from "../embedding/embedding-model-catalog";
 import {
   EmbeddingInstallError,
   inspectManagedEmbeddingInstall,
@@ -19,14 +19,14 @@ import {
   semanticModelPackageBytes,
   uninstallSemanticModelFiles,
   type EmbeddingDownloadProgress,
-} from "../embedding-install";
+} from "../embedding/embedding-install";
 import type { EmbeddingInstallProgress } from "../../shared/embedding/install-progress";
-import { probeFreeBytes } from "../disk-free-space";
+import { probeFreeBytes } from "../app/disk-free-space";
 import {
   clearEmbeddingBinding,
   writeEmbeddingBinding,
   type EmbeddingLibraryBinding,
-} from "../embedding-library-binding";
+} from "../embedding/embedding-library-binding";
 import {
   deleteEmbeddingService,
   EmbeddingServiceRegistryError,
@@ -37,16 +37,16 @@ import {
   summarizeEmbeddingServices,
   type EmbeddingServiceCatalog,
   type EmbeddingServiceCredentialStore,
-} from "../embedding-service-registry";
-import { EmbeddingHttpRequestError, probeEmbeddingHttp } from "../embedding-http";
-import type { EmbeddingHttpIndex } from "../embedding-http-index";
+} from "../embedding/embedding-service-registry";
+import { EmbeddingHttpRequestError, probeEmbeddingHttp } from "../embedding/embedding-http";
+import type { EmbeddingHttpIndex } from "../embedding/embedding-http-index";
 import {
   isEmbeddingServiceSelectionId,
   normalizeEmbeddingServiceUrl,
   type EmbeddingProbeFailure,
 } from "../../shared/embedding/http-service";
 import { isSemanticSearchModelId, SEMANTIC_SEARCH_MODEL_IDS, type SemanticSearchModelId } from "../../shared/embedding/profile";
-import type { EmbeddingTestIndex } from "../embedding-test-index";
+import type { EmbeddingTestIndex } from "../embedding/embedding-test-index";
 import { createPublicError } from "../../shared/protocol/errors";
 import type { RendererRequest } from "../../shared/protocol/requests";
 import type { RendererResult } from "../../shared/protocol/responses";

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   estimateMasonryPreviewHeightPx,
   resolveMasonryPreviewStyle,
-} from "../../src/renderer/masonry-preview-frame";
+} from "../../src/renderer/browse/masonry-preview-frame";
 
 describe("estimateMasonryPreviewHeightPx", () => {
   it("preserves landscape natural height", () => {

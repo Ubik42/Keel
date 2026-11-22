@@ -3,8 +3,8 @@ import { act, createElement } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, expect, test, vi } from "vitest";
 
-import { LibrarySettingsDialog, type SyncSettingsCallbacks } from "../../src/renderer/LibrarySettingsDialog";
-import { SyncSettingsPage } from "../../src/renderer/SyncSettingsPage";
+import { LibrarySettingsDialog, type SyncSettingsCallbacks } from "../../src/renderer/library/LibrarySettingsDialog";
+import { SyncSettingsPage } from "../../src/renderer/settings/SyncSettingsPage";
 import { LocaleProvider } from "../../src/renderer/i18n";
 import type { RendererLibrarySummary, SyncProgressEvent } from "../../src/shared/protocol/responses";
 

@@ -12,7 +12,7 @@ import {
   parseCurrentUserSid,
   readOrCreatePepper,
   readExistingPepper,
-} from '../../src/main/mcp-client-credentials';
+} from '../../src/main/mcp/mcp-client-credentials';
 
 describe('MCP credential pepper ACL hardening (Serpent-8b5b.7)', () => {
   it('builds an inheritance-free, current-user-only icacls command shape', () => {

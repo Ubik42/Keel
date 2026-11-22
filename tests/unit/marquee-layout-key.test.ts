@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildMarqueeLayoutKey,
   type MarqueeLayoutKeyInput,
-} from "../../src/renderer/marquee-layout-key";
+} from "../../src/renderer/browse/marquee-layout-key";
 
 const baseInput: MarqueeLayoutKeyInput = {
   viewMode: "grid",

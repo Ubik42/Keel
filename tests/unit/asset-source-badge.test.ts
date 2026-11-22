@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   resolveAssetSourceBadgeLabel,
   shouldShowAssetSourceBadge,
-} from "../../src/renderer/asset-source-badge";
+} from "../../src/renderer/browse/asset-source-badge";
 
 const folders = [
   {

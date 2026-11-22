@@ -7,7 +7,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   useFilteredFolderCounts,
   type UseFilteredFolderCountsOptions,
-} from "../../src/renderer/use-filtered-folder-counts";
+} from "../../src/renderer/filters/use-filtered-folder-counts";
 import type { FilterClause } from "../../src/shared/asset-types";
 import type { KeelLibraryApi } from "../../src/shared/library-api";
 

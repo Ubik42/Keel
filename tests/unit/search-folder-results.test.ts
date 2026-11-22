@@ -5,7 +5,7 @@ import {
   folderSearchTerms,
   resolveSearchFolderResults,
   type FolderSearchResult,
-} from "../../src/renderer/search-folder-results";
+} from "../../src/renderer/search/search-folder-results";
 import type {
   LinkedFolderSummary,
   ManagedFolderSummary,

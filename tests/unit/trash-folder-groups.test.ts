@@ -4,7 +4,7 @@ import type { AssetSummary } from '../../src/shared/asset-types';
 import {
   groupTrashedAssetsBySourceFolder,
   trashGroupKey,
-} from '../../src/renderer/trash-folder-groups';
+} from '../../src/renderer/trash/trash-folder-groups';
 
 function asset(
   id: string,

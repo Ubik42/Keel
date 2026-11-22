@@ -12,8 +12,8 @@ import {
   startInlineFolderCreate,
   startInlineFolderRename,
   type InlineFolderEditState,
-} from "../../src/renderer/inline-folder-edit";
-import type { UnifiedDirectoryNavEntry } from "../../src/renderer/unified-directory-nav";
+} from "../../src/renderer/folders/inline-folder-edit";
+import type { UnifiedDirectoryNavEntry } from "../../src/renderer/folders/unified-directory-nav";
 
 const managedEntry = (
   folderId: string,

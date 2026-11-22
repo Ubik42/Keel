@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest';
-import { descendantTagIds, tagTreeRows } from '../../src/renderer/tag-tree-model';
-import { tagBrowseDefinition } from '../../src/renderer/tag-browse-definition';
+import { descendantTagIds, tagTreeRows } from '../../src/renderer/tags/tag-tree-model';
+import { tagBrowseDefinition } from '../../src/renderer/tags/tag-browse-definition';
 const tags = [{ tagId: 'p', name: '角色', assetCount: 0 }, { tagId: 'c', parentTagId: 'p', name: 'NPC', assetCount: 1 }, { tagId: 'l', parentTagId: 'c', name: '商人', assetCount: 1 }, { tagId: 'other', name: '场景', assetCount: 1 }];
 it('builds nested rows and collapses branches', () => {
   expect(tagTreeRows(tags, '', new Set()).find((row) => row.tag.tagId === 'l')?.depth).toBe(2);

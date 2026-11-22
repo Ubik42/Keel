@@ -3,10 +3,10 @@ import { usePreviewField } from "../../stores/preview-store";
 import { useSessionField } from "../../stores/session-store";
 import type { RefObject, SetStateAction } from "react";
 import type { KeelLibraryApi } from "../../../shared/library-api";
-import type { ViewerChromePreferences } from "../../viewer-chrome-preferences";
-import type { ViewerChromeActivitySource } from "../../viewer-chrome-idle";
+import type { ViewerChromePreferences } from "../../viewer/viewer-chrome-preferences";
+import type { ViewerChromeActivitySource } from "../../viewer/viewer-chrome-idle";
 import { type AssetSummary } from "../../../shared/asset-types";
-import { AssetPreviewModal, type AssetPreviewModalHandle } from "../../AssetPreviewModal";
+import { AssetPreviewModal, type AssetPreviewModalHandle } from "../../viewer/AssetPreviewModal";
 import { type RendererWindow } from "../shared/app-shared";
 
 export interface AssetPreviewHostProps {

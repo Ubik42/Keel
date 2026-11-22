@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { applyWindowBoundsFromEdgeDelta } from "../../src/main/linux-window-resize";
+import { applyWindowBoundsFromEdgeDelta } from "../../src/main/window/linux-window-resize";
 import {
   parseWindowEdgeResizeRequest,
   parseWindowResizeEdge,

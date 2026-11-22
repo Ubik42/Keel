@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   applyRendererPlatform,
   resolveRendererPlatform,
-} from "../../src/renderer/renderer-platform";
+} from "../../src/renderer/common/renderer-platform";
 
 describe("renderer platform marker", () => {
   it.each([
@@ -32,7 +32,7 @@ describe("renderer platform marker", () => {
 
 describe("windows-style shell on Linux", () => {
   it("uses the Windows-style shell for Windows and Linux, not macOS", async () => {
-    const { usesWindowsStyleShell } = await import("../../src/renderer/renderer-platform");
+    const { usesWindowsStyleShell } = await import("../../src/renderer/common/renderer-platform");
     expect(usesWindowsStyleShell("Mozilla/5.0 (Windows NT 10.0; Win64; x64)")).toBe(true);
     expect(usesWindowsStyleShell("Mozilla/5.0 (X11; Linux x86_64)")).toBe(true);
     expect(usesWindowsStyleShell("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)")).toBe(false);

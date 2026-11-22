@@ -1,11 +1,11 @@
 import { createFieldStore } from './create-field-store';
 import { type ImportValidatedResult } from '../../shared/library-api';
 import { type DeleteProgressEvent, type ExportProgressEvent, type ImageSequenceImportOffer, type ImportConflictPlan, type ImportProgressEvent, type ImportSourceFailurePlan, type SyncProgressEvent } from '../../shared/protocol/responses';
-import { type BatchRelinkPreviewSession } from '../RelinkPreview';
-import { type ImageSequenceConfirmPurpose } from '../image-sequence-import-dialog';
-import { type ImportConflictPhase } from '../import-conflict-flow';
-import { type RememberedDuplicateDecision, type RememberedNameConflictDecision } from '../import-conflict-preferences';
-import { type LibraryTransferKind } from '../library-transfer-progress';
+import { type BatchRelinkPreviewSession } from '../folders/RelinkPreview';
+import { type ImageSequenceConfirmPurpose } from '../import/image-sequence-import-dialog';
+import { type ImportConflictPhase } from '../import/import-conflict-flow';
+import { type RememberedDuplicateDecision, type RememberedNameConflictDecision } from '../import/import-conflict-preferences';
+import { type LibraryTransferKind } from '../library/library-transfer-progress';
 
 export interface TransfersState {
   conflicts: ImportConflictPlan | null;

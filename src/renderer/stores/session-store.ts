@@ -1,6 +1,6 @@
 import { createFieldStore } from './create-field-store';
 import { type HistoryStatus, type RendererLibrarySummary } from '../../shared/protocol/responses';
-import { type RecentLibraryMenuEntry } from '../LibrarySwitcher';
+import { type RecentLibraryMenuEntry } from '../library/LibrarySwitcher';
 
 export type LibraryLoadingState = {
   name: string | null;

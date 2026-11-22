@@ -3,7 +3,7 @@ import { createElement, type ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 
-import { ImportProgressOverlay } from "../../src/renderer/ImportProgressOverlay";
+import { ImportProgressOverlay } from "../../src/renderer/import/ImportProgressOverlay";
 import { LocaleProvider } from "../../src/renderer/i18n";
 
 function overlay(): ReactElement {

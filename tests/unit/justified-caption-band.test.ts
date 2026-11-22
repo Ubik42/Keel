@@ -8,7 +8,7 @@ import {
   JUSTIFIED_CAPTION_PAD_TOP_PX,
   JUSTIFIED_CAPTION_SECONDARY_LINE_PX,
   resolveJustifiedCaptionBandPx,
-} from "../../src/renderer/justified-caption-band";
+} from "../../src/renderer/browse/justified-caption-band";
 
 describe("resolveJustifiedCaptionBandPx (Serpent-omn)", () => {
   it("returns 0 when no caption lines are shown", () => {

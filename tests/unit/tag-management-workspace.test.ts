@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   TagManagementWorkspace,
   type TagManagementWorkspaceProps,
-} from "../../src/renderer/TagManagementWorkspace";
+} from "../../src/renderer/tags/TagManagementWorkspace";
 import { LocaleProvider } from "../../src/renderer/i18n";
 
 describe("TagManagementWorkspace create flow", () => {

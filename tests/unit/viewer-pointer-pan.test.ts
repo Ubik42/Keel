@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { isViewerPanPointerButton } from '../../src/renderer/viewer-pointer-pan';
+import { isViewerPanPointerButton } from '../../src/renderer/viewer/viewer-pointer-pan';
 
 describe('isViewerPanPointerButton (Serpent-16cd1e)', () => {
   it('accepts left and middle mouse buttons so either can drag the view', () => {

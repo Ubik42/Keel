@@ -4,8 +4,8 @@ import path from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { PluginPackageManager } from '../../src/main/plugin-package-manager';
-import { PluginStorageStore } from '../../src/main/plugin-storage-store';
+import { PluginPackageManager } from '../../src/main/plugins/plugin-package-manager';
+import { PluginStorageStore } from '../../src/main/plugins/plugin-storage-store';
 import { createPluginTrustedHostHandler } from '../../src/scripting/plugin-trusted-host';
 import { PLUGIN_LIBRARY_DATA_DIRECTORY } from '../../src/plugins/plugin-package';
 import type { PluginTrustedChildMessage } from '../../src/shared/plugin-trusted-runtime-protocol';

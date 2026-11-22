@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { applyTextViewerTextareaLayout } from "../../src/renderer/text-viewer-layout";
+import { applyTextViewerTextareaLayout } from "../../src/renderer/viewer/text-viewer-layout";
 
 function box(init?: {
   scrollHeight?: number;

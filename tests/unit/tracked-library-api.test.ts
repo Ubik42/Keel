@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import type { KeelLibraryApi } from "../../src/shared/library-api";
-import { createTrackedLibraryApi } from "../../src/renderer/tracked-library-api";
+import { createTrackedLibraryApi } from "../../src/renderer/library/tracked-library-api";
 
 describe("createTrackedLibraryApi", () => {
   it("tracks mutating requests until their promise settles", async () => {

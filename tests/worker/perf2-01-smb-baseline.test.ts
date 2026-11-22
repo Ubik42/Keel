@@ -5,7 +5,7 @@ import { performance } from "node:perf_hooks";
 
 import { afterEach, beforeAll, describe, expect, it } from "vitest";
 
-import { EXTRACT_HEADROOM_MIN_BYTES, probeFreeBytes } from "../../src/main/disk-free-space";
+import { EXTRACT_HEADROOM_MIN_BYTES, probeFreeBytes } from "../../src/main/app/disk-free-space";
 import { summarizeTimingSamples } from "../../src/shared/performance-contract";
 import { LibraryService } from "../../src/worker/library-service";
 

@@ -4,7 +4,7 @@ import {
   type ReactNode,
 } from 'react';
 
-import { Icon, type IconName } from '../../../Icons';
+import { Icon, type IconName } from '../../../common/Icons';
 import { cx } from './cx';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'quiet' | 'danger';

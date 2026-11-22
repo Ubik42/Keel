@@ -17,8 +17,8 @@ import {
   projectAutomationExecutionStatus,
   type AutomationExecutionAuditLogger,
   type AutomationExecutionRecord,
-} from '../../src/main/automation-execution-journal';
-import { AppLogger } from '../../src/main/app-logger';
+} from '../../src/main/automation/automation-execution-journal';
+import { AppLogger } from '../../src/main/app/app-logger';
 
 const roots: string[] = [];
 const libraryOne = '11111111-1111-4111-8111-111111111111';

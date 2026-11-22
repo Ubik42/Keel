@@ -7,13 +7,13 @@ const { fitSemanticImage } = vi.hoisted(() => ({
   })),
 }));
 
-vi.mock("../../src/main/embedding-image-fit", async () => {
-  const actual = await vi.importActual<Record<string, unknown>>("../../src/main/embedding-image-fit");
+vi.mock("../../src/main/embedding/embedding-image-fit", async () => {
+  const actual = await vi.importActual<Record<string, unknown>>("../../src/main/embedding/embedding-image-fit");
   return { ...actual, fitSemanticImage };
 });
 
-import { EmbeddingHttpIndex, type EmbeddingHttpServiceView } from "../../src/main/embedding-http-index";
-import { SemanticImageLimitError } from "../../src/main/embedding-image-fit";
+import { EmbeddingHttpIndex, type EmbeddingHttpServiceView } from "../../src/main/embedding/embedding-http-index";
+import { SemanticImageLimitError } from "../../src/main/embedding/embedding-image-fit";
 import type { WorkerCommand } from "../../src/shared/protocol/requests";
 import type { WorkerResult } from "../../src/shared/protocol/responses";
 import { SEMANTIC_IMAGE_DECODE_MAX_BYTES } from "../../src/shared/embedding/image-limits";

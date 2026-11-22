@@ -26,7 +26,7 @@ import {
   playbackRateAfterWheelSteps,
   applyMediaAutoplayIntent,
   shouldAutoStartMediaPlayback,
-} from "../../src/renderer/video-player-controls";
+} from "../../src/renderer/viewer/video-player-controls";
 
 describe("VIDEO_PLAYBACK_RATES", () => {
   it("lists 0.25x through 4x as selectable steps", () => {

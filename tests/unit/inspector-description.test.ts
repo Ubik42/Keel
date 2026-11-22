@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { resolveInspectorDescription } from "../../src/renderer/inspector-description";
+import { resolveInspectorDescription } from "../../src/renderer/inspector/inspector-description";
 
 describe("resolveInspectorDescription", () => {
   it("prefers non-empty human description", () => {

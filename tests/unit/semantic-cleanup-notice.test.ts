@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { appendSemanticCleanupNotice } from "../../src/renderer/semantic-cleanup-notice";
+import { appendSemanticCleanupNotice } from "../../src/renderer/ai/semantic-cleanup-notice";
 
 describe("semantic cleanup notice", () => {
   it("appends retry information only when sidecar cleanup is pending", () => {

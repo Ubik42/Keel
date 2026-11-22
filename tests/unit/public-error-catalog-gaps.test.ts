@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { LibraryTransitionInProgressError } from "../../src/renderer/library-transition-lock";
+import { LibraryTransitionInProgressError } from "../../src/renderer/library/library-transition-lock";
 import {
   messageForPublicError,
   toMessage,
-} from "../../src/renderer/error-utils";
+} from "../../src/renderer/common/error-utils";
 import type { PublicErrorCode } from "../../src/shared/protocol/errors";
 
 const CODES = [

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { AsyncGate } from '../../src/main/async-gate';
+import { AsyncGate } from '../../src/main/app/async-gate';
 
 describe('AsyncGate', () => {
   it('keeps at most `limit` tasks in the critical section', async () => {

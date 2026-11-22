@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { applyImportPrepareResult } from "../../src/renderer/apply-import-prepare-result";
+import { applyImportPrepareResult } from "../../src/renderer/import/apply-import-prepare-result";
 import type {
   ImportCompletion,
   ImportConflictPlan,

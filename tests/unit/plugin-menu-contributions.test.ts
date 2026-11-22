@@ -5,7 +5,7 @@ import {
   placeMultiAssetPluginMenuItems,
   placePluginMenuItemsAroundHost,
   runPluginMenuCommand,
-} from '../../src/renderer/plugin-menu-contributions';
+} from '../../src/renderer/plugins/plugin-menu-contributions';
 import { createPluginContributionContext } from '../../src/plugins/plugin-context';
 
 function createContext() {

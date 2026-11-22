@@ -1,20 +1,20 @@
 import type { SetStateAction } from 'react';
 import { create } from 'zustand';
 
-import { loadAiUiPreferences, saveAiUiPreferences, type AiUiPreferences } from '../ai-ui-preferences';
-import { loadAudioPreviewPreferences, saveAudioPreviewPreferences } from '../audio-preview-preferences';
-import { loadCanvasPreferences, saveCanvasPreferences, type CanvasPreferences } from '../canvas-preferences';
-import { loadImageRotationPreferences, saveImageRotationPreferences } from '../image-rotation-preferences';
+import { loadAiUiPreferences, saveAiUiPreferences, type AiUiPreferences } from '../ai/ai-ui-preferences';
+import { loadAudioPreviewPreferences, saveAudioPreviewPreferences } from '../viewer/audio-preview-preferences';
+import { loadCanvasPreferences, saveCanvasPreferences, type CanvasPreferences } from '../browse/canvas-preferences';
+import { loadImageRotationPreferences, saveImageRotationPreferences } from '../viewer/image-rotation-preferences';
 import {
   loadImageSequencePreferences,
   saveImageSequencePreferences,
   type ImageSequencePreferences,
-} from '../image-sequence-preferences';
+} from '../viewer/image-sequence-preferences';
 import {
   loadViewerChromePreferences,
   saveViewerChromePreferences,
   type ViewerChromePreferences,
-} from '../viewer-chrome-preferences';
+} from '../viewer/viewer-chrome-preferences';
 
 /**
  * Appearance and browse preferences (docs/进度.md 3.2 `prefs`). Each setter

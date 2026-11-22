@@ -1,15 +1,15 @@
 import type { Dispatch, SetStateAction } from "react";
 import type { TranslateFn } from "../../i18n/LocaleProvider";
 import { type KeelLibraryApi } from "../../../shared/library-api";
-import { LibraryOperationError, toMessage } from "../../error-utils";
+import { LibraryOperationError, toMessage } from "../../common/error-utils";
 import { type AppLocale } from "../../i18n";
-import { mergeAssetSummaries } from "../../merge-asset-summaries";
-import { formatRelinkExamplePath } from "../../RelinkPreview";
+import { mergeAssetSummaries } from "../../browse/merge-asset-summaries";
+import { formatRelinkExamplePath } from "../../folders/RelinkPreview";
 import { type BrowseState } from "../../stores/browse-store";
 import { type SelectionState } from "../../stores/selection-store";
 import { type SessionState } from "../../stores/session-store";
 import { type TransfersState } from "../../stores/transfers-store";
-import { playTaskCompletionSound } from "../../task-completion-sound";
+import { playTaskCompletionSound } from "../../jobs/task-completion-sound";
 import { useCallback } from "react";
 
 export interface UseRelinkOperationsDeps {

@@ -4,7 +4,7 @@ import {
   NativeAssetDragCache,
   startNativeAssetDrag,
   type NativeDragImage,
-} from '../../src/main/native-asset-drag';
+} from '../../src/main/shell/native-asset-drag';
 
 function image(
   label: string,

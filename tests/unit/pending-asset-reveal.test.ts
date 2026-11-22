@@ -8,7 +8,7 @@ import {
   pendingRevealFromAssets,
   presentIdsFromPendingReveal,
   sharedBrowseScopeForAssets,
-} from '../../src/renderer/pending-asset-reveal';
+} from '../../src/renderer/browse/pending-asset-reveal';
 
 function asset(partial: {
   assetId: string;

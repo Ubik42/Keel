@@ -5,7 +5,7 @@ import {
   shouldPlayTaskCompletionSound,
   TASK_COMPLETION_SOUND_MIN_DURATION_MS,
   TASK_COMPLETION_SOUND_VOLUME,
-} from "../../src/renderer/task-completion-sound";
+} from "../../src/renderer/jobs/task-completion-sound";
 
 describe("task completion sound", () => {
   it("reuses one quiet audio player and rewinds it for every result", async () => {

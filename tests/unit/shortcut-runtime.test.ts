@@ -11,7 +11,7 @@ import {
   DEFAULT_SHORTCUT_BINDINGS,
   setShortcutOverride,
 } from "../../src/shared/shortcut-bindings";
-import { matchVideoPlaybackSeekKey } from "../../src/renderer/video-player-controls";
+import { matchVideoPlaybackSeekKey } from "../../src/renderer/viewer/video-player-controls";
 
 const event = (key: string, code: string) => ({
   key,

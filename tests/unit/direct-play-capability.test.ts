@@ -4,7 +4,7 @@ import {
   DirectPlayCapabilityService,
   type DirectPlayCapabilityCache,
   type DirectPlayMediaDescriptor,
-} from '../../src/renderer/direct-play-capability';
+} from '../../src/renderer/viewer/direct-play-capability';
 
 const H264_MP4: DirectPlayMediaDescriptor = {
   container: 'mp4',

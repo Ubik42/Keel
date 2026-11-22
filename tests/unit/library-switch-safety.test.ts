@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { activeLibrarySwitchActivity } from "../../src/renderer/library-switch-safety";
-import { createLibraryTransitionLock } from "../../src/renderer/library-transition-lock";
+import { activeLibrarySwitchActivity } from "../../src/renderer/library/library-switch-safety";
+import { createLibraryTransitionLock } from "../../src/renderer/library/library-transition-lock";
 
 const base = {
   uiState: "ready" as const,

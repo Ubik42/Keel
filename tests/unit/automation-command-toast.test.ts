@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { automationCommandToast } from '../../src/renderer/automation-command-toast';
+import { automationCommandToast } from '../../src/renderer/rules/automation-command-toast';
 import type { CommandCompletedPayload } from '../../src/shared/command-completed';
 
 const zh = 'zh-CN';

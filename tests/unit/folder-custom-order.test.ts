@@ -8,11 +8,11 @@ import {
   moveFolderInCustomOrder,
   parseFolderCustomOrder,
   saveFolderCustomOrder,
-} from "../../src/renderer/folder-custom-order";
+} from "../../src/renderer/folders/folder-custom-order";
 import {
   buildUnifiedDirectoryNavEntries,
   sortManagedTreeEntries,
-} from "../../src/renderer/unified-directory-nav";
+} from "../../src/renderer/folders/unified-directory-nav";
 import type { ManagedFolderSummary } from "../../src/shared/asset-types";
 
 const folder = (

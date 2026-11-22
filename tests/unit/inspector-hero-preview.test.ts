@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { inspectorHeroPreviewKind } from "../../src/renderer/inspector-hero-preview";
+import { inspectorHeroPreviewKind } from "../../src/renderer/inspector/inspector-hero-preview";
 
 describe("inspectorHeroPreviewKind", () => {
   it("uses the multi-select stack when more than one asset is selected", () => {

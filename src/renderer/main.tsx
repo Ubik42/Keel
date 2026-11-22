@@ -1,9 +1,9 @@
-import './migrate-legacy-storage';
-import { applyInterfaceScale, loadInterfaceScale } from './interface-scale';
+import './library/migrate-legacy-storage';
+import { applyInterfaceScale, loadInterfaceScale } from './theme/interface-scale';
 import '@fontsource-variable/noto-sans-sc/index.css';
 // Windows-only HarmonyOS face; vite aliases this to an empty stub on macOS/Linux
 // so darwin npm start does not require harmonyos-sans-sc-webfont-splitted.
-import './harmonyos-sans-sc-windows.css';
+import './styles/fonts/harmonyos-sans-sc-windows.css';
 import '@fontsource/ibm-plex-mono/400.css';
 import '@fontsource/ibm-plex-mono/500.css';
 import { StrictMode } from 'react';
@@ -11,31 +11,31 @@ import { createRoot } from 'react-dom/client';
 
 import { App } from './App';
 import { installImeCompositionGuard } from './workbench/overlay/ime-safe-dismiss';
-import { ElevationProvider } from './ElevationProvider';
-import { FontSizeProvider } from './FontSizeProvider';
-import { InspectorCardFeelProvider } from './InspectorCardFeelProvider';
+import { ElevationProvider } from './theme/ElevationProvider';
+import { FontSizeProvider } from './theme/FontSizeProvider';
+import { InspectorCardFeelProvider } from './inspector/InspectorCardFeelProvider';
 import { LocaleProvider } from './i18n';
-import { MenuAcrylicProvider } from './MenuAcrylicProvider';
-import { RadiusProvider } from './RadiusProvider';
+import { MenuAcrylicProvider } from './theme/MenuAcrylicProvider';
+import { RadiusProvider } from './theme/RadiusProvider';
 import { ShortcutProvider } from './workbench/shortcuts/shortcut-provider';
-import { applyRendererPlatform } from './renderer-platform';
+import { applyRendererPlatform } from './common/renderer-platform';
 import {
   applyMenuAcrylicPreferences,
   loadMenuAcrylicPreferences,
-} from './menu-acrylic-preferences';
+} from './theme/menu-acrylic-preferences';
 import {
   applyRadiusPreferences,
   loadRadiusPreferences,
-} from './radius-preferences';
+} from './theme/radius-preferences';
 import {
   applyShadowPreferences,
   loadShadowPreferences,
-} from './shadow-preferences';
+} from './theme/shadow-preferences';
 import { ThemeProvider } from './theme';
 import {
   applyFontSizePreferences,
   loadFontSizePreferences,
-} from './font-size-preferences';
+} from './theme/font-size-preferences';
 import './styles/index.css';
 import './workbench/ui/tokens.css';
 import './workbench/ui/ui.css';

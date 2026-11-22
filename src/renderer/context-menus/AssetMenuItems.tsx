@@ -1,18 +1,18 @@
 import type { AppLocale } from "../i18n/types";
 import type { ContextMenuDescriptor } from "../workbench/menu/context-menu";
-import type { PluginMenuHostPlacement } from "../plugin-menu-contributions";
+import type { PluginMenuHostPlacement } from "../plugins/plugin-menu-contributions";
 import type { TranslateFn } from "../i18n/LocaleProvider";
 import { useAssetContextMenuActions } from "./menu-shared";
 import { LOCAL_SEMANTIC_ENCODE_MODALITIES, embeddingInputModalitiesForAdapter } from "../../shared/embedding/modalities";
 import { isSemanticSearchModelId } from "../../shared/embedding/profile";
 import { assetParentFolderCoverTarget } from "../../shared/folder-cover-target";
-import { ColorSpaceSubmenuItems } from "../ColorSpacePickerMenu";
+import { ColorSpaceSubmenuItems } from "../viewer/ColorSpacePickerMenu";
 import { type AssetCommandContext } from "../commands/asset-commands";
-import { canFindSimilarForAsset } from "../find-similar";
-import { Icon } from "../Icons";
-import { type PluginMenuDescriptor } from "../plugin-menu-contributions";
+import { canFindSimilarForAsset } from "../ai/find-similar";
+import { Icon } from "../common/Icons";
+import { type PluginMenuDescriptor } from "../plugins/plugin-menu-contributions";
 import { type NavigationState } from "../stores/navigation-store";
-import { TagPickerEntry, TagPickerMenu } from "../TagPickerMenu";
+import { TagPickerEntry, TagPickerMenu } from "../tags/TagPickerMenu";
 import { ContextMenuItem, ContextMenuSection, ContextMenuSubmenu } from "../workbench/menu/context-menu";
 import { PluginMenuCommandsSection, PluginMenuItems, assetCommandRegistry, isMac, pluginItemsAtHostAnchor, pluginItemsForHostGroup, pluginItemsOutsideHostGroups } from "./menu-shared";
 

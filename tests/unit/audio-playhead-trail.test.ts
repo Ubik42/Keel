@@ -5,7 +5,7 @@ import {
   shouldEmitTrailParticle,
   trailParticleOpacity,
   TRAIL_LIFETIME_MS,
-} from "../../src/renderer/audio-playhead-trail";
+} from "../../src/renderer/viewer/audio-playhead-trail";
 
 test("emits only while playing and after the emit interval", () => {
   expect(shouldEmitTrailParticle(null, 1000, false)).toBe(false);

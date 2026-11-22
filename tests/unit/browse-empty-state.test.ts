@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   resolveBrowseEmptyState,
   resolveImportMenuCopy,
-} from "../../src/renderer/browse-empty-state";
+} from "../../src/renderer/browse/browse-empty-state";
 
 describe("resolveBrowseEmptyState", () => {
   it("shows search empty without import CTAs when discovery is active", () => {

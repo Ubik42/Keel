@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { searchExpressionSchema } from '../../src/shared/asset-types';
 
 import { formatDuration, parseNumericRange } from '../../src/renderer/app/shared/app-shared';
-import { parseSearchExpression, parseSearchExpressionDetailed, splitSearchHighlights } from '../../src/renderer/search-expression';
+import { parseSearchExpression, parseSearchExpressionDetailed, splitSearchHighlights } from '../../src/renderer/search/search-expression';
 
 describe('renderer search expression parser', () => {
   it('rejects exact tag nodes that claim another field at the protocol boundary', () => {

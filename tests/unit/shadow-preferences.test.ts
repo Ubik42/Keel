@@ -19,7 +19,7 @@ import {
   shadowLevelToPreset,
   shadowPreferenceToMultiplier,
   type ShadowPreferencesStorage,
-} from "../../src/renderer/shadow-preferences";
+} from "../../src/renderer/theme/shadow-preferences";
 
 function memoryStorage(
   initial?: Record<string, string>,

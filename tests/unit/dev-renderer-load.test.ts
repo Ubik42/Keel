@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { loadRendererDevUrl } from "../../src/main/dev-renderer-load";
+import { loadRendererDevUrl } from "../../src/main/app/dev-renderer-load";
 
 const url = "http://localhost:5173";
 

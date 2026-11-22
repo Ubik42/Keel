@@ -4,8 +4,8 @@ import path from 'node:path';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { createPluginPackageRequestHandler } from '../../src/main/plugin-package-ipc';
-import { PluginPackageManager } from '../../src/main/plugin-package-manager';
+import { createPluginPackageRequestHandler } from '../../src/main/plugins/plugin-package-ipc';
+import { PluginPackageManager } from '../../src/main/plugins/plugin-package-manager';
 import {
   parsePluginManagerResponse,
   pluginManagerRequestSchema,

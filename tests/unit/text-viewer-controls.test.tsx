@@ -7,7 +7,7 @@ import { LocaleProvider } from "../../src/renderer/i18n";
 import {
   resetTextViewerModeForTests,
   TextViewerControls,
-} from "../../src/renderer/TextViewerControls";
+} from "../../src/renderer/viewer/TextViewerControls";
 import type { KeelLibraryApi } from "../../src/shared/library-api";
 
 const NOTES = [

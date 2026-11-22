@@ -8,7 +8,7 @@ import {
   saveMenuAcrylicPreferences,
   setStoredMenuAcrylicLevel,
   type MenuAcrylicPreferencesStorage,
-} from "../../src/renderer/menu-acrylic-preferences";
+} from "../../src/renderer/theme/menu-acrylic-preferences";
 
 function memoryStorage(
   initial?: Record<string, string>,

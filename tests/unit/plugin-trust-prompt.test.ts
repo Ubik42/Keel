@@ -5,7 +5,7 @@ import {
   dismissPendingLibraryPluginTrust,
   filterUndismissedPendingLibraryPlugins,
   pendingLibraryPluginTrustKey,
-} from '../../src/renderer/plugin-trust-prompt';
+} from '../../src/renderer/plugins/plugin-trust-prompt';
 import type {
   PluginManagerPackageSummary,
   PluginManagerResolutionSummary,

@@ -19,7 +19,7 @@ import {
   FORMAT_TEXT_TOKEN,
   FORMAT_UNKNOWN_TOKEN,
   OTHER_FORMAT_EXTENSIONS,
-} from "../../src/renderer/format-filter-presets";
+} from "../../src/renderer/filters/format-filter-presets";
 
 function allChipTokens(): string[] {
   return [

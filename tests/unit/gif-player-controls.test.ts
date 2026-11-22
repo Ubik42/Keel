@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { isGifDisplayName } from "../../src/renderer/gif-player-controls";
+import { isGifDisplayName } from "../../src/renderer/viewer/gif-player-controls";
 
 describe("isGifDisplayName", () => {
   it("detects gif extensions case-insensitively", () => {

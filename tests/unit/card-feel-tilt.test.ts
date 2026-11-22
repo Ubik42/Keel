@@ -4,7 +4,7 @@ import {
   CARD_FEEL_LIGHT_Z,
   cardFeelSpecularHighlight,
   cardFeelTiltFromPointer,
-} from "../../src/renderer/card-feel-tilt";
+} from "../../src/renderer/inspector/card-feel-tilt";
 
 describe("cardFeelTiltFromPointer", () => {
   const rect = { left: 0, top: 0, width: 200, height: 100 };

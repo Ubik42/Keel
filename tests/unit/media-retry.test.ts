@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   mediaJobKindForArtifact,
   waitForMediaArtifactRetry,
-} from "../../src/renderer/media-retry";
+} from "../../src/renderer/jobs/media-retry";
 
 describe("media retry", () => {
   it("maps artifact kinds to their durable media jobs", () => {

@@ -10,7 +10,7 @@ import {
   formatSessionTimestamp,
   pruneSessionLogs,
   sessionLogPathFor,
-} from '../../src/main/session-log';
+} from '../../src/main/app/session-log';
 
 const tempDirs: string[] = [];
 function tempDir(): string {

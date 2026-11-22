@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { canonicalizePluginArchiveEntryPath } from '../../src/main/plugin-package-archive';
+import { canonicalizePluginArchiveEntryPath } from '../../src/main/plugins/plugin-package-archive';
 
 describe('canonicalizePluginArchiveEntryPath', () => {
   it('keeps relative POSIX package paths', () => {

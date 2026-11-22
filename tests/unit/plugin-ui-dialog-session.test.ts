@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { createPluginUiUrl, rewritePluginUiHtmlAssetUrls } from '../../src/main/plugin-ui-assets';
+import { createPluginUiUrl, rewritePluginUiHtmlAssetUrls } from '../../src/main/plugins/plugin-ui-assets';
 import {
   parsePluginUiHostMessage,
   parsePluginUiIframeMessage,
@@ -11,7 +11,7 @@ import {
   resolvePluginUiDialogFrameSize,
   shouldIgnoreInitialFrameLoad,
   takePluginUiDialogRequest,
-} from '../../src/renderer/plugin-ui-dialog-session';
+} from '../../src/renderer/plugins/plugin-ui-dialog-session';
 
 describe('plugin dialog host session', () => {
   const view = {

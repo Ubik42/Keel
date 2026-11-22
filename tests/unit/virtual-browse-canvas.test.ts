@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { createCaptionBandResolver } from "../../src/renderer/asset-caption-band";
+import { createCaptionBandResolver } from "../../src/renderer/browse/asset-caption-band";
 import { ASSET_GRID_GAP_PX } from "../../src/renderer/workbench/collection/asset-grid-layout";
 import {
   MASONRY_CAPTION_BAND_PX,
   MASONRY_DIMENSIONS_CAPTION_BAND_PX,
-} from "../../src/renderer/canvas-asset-layout";
-import { estimateMasonryPreviewHeightPx } from "../../src/renderer/masonry-preview-frame";
+} from "../../src/renderer/browse/canvas-asset-layout";
+import { estimateMasonryPreviewHeightPx } from "../../src/renderer/browse/masonry-preview-frame";
 import {
   buildChunkedJustifiedGeometry,
   buildChunkedMasonryGeometry,

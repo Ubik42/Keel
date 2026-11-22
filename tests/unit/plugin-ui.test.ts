@@ -9,7 +9,7 @@ import {
   pluginUiMimeType,
   resolvePluginUiAssetPath,
   rewritePluginUiHtmlAssetUrls,
-} from '../../src/main/plugin-ui-assets';
+} from '../../src/main/plugins/plugin-ui-assets';
 import {
   isTrustedPluginUiMessage,
   parsePluginUiIframeMessage,

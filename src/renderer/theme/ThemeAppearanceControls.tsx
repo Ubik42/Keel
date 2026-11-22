@@ -1,7 +1,7 @@
 import { useRef, useState, type CSSProperties, type ReactNode } from 'react';
 
 import { useT } from '../i18n';
-import { Icon } from '../Icons';
+import { Icon } from '../common/Icons';
 import { ThemeMiniDialog } from './ThemeMiniDialog';
 import { Select, Slider, Switch } from '../workbench/ui/primitives';
 import { BackgroundImagePanel } from './BackgroundImageControls';

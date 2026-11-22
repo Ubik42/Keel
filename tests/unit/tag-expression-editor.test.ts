@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { replaceTagExpressionTerm, tagExpressionTermAt } from "../../src/renderer/tag-expression-editor";
+import { replaceTagExpressionTerm, tagExpressionTermAt } from "../../src/renderer/search/tag-expression-editor";
 
 describe("tag expression editor source edits", () => {
   it("finds the atom at a caret inside quotes and replaces it exactly", () => {

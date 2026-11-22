@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { resolveFolderBrowseParentId } from "../../src/renderer/folder-browse-canvas";
+import { resolveFolderBrowseParentId } from "../../src/renderer/browse/folder-browse-canvas";
 import type { ManagedFolderSummary } from "../../src/shared/asset-types";
 
 /**

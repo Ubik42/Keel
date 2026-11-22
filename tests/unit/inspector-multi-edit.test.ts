@@ -10,7 +10,7 @@ import {
   rebuildMultiEditFromCache,
   resolveScalarField,
   type MultiEditMetadataSlice,
-} from "../../src/renderer/inspector-multi-edit";
+} from "../../src/renderer/inspector/inspector-multi-edit";
 
 describe("resolveScalarField", () => {
   it("returns null for an empty list", () => {

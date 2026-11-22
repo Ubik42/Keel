@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { RelinkPreviewStore } from '../../src/main/relink-preview-store';
+import { RelinkPreviewStore } from '../../src/main/library/relink-preview-store';
 
 describe('RelinkPreviewStore', () => {
   it('consumes a matching preview exactly once', () => {

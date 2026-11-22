@@ -10,7 +10,7 @@ import {
   readFilePathsFromClipboard,
   writeFilePathsToClipboard,
   type FileClipboardDeps,
-} from "../../src/main/file-clipboard";
+} from "../../src/main/shell/file-clipboard";
 
 function makeDeps(
   overrides: Partial<FileClipboardDeps> & Pick<FileClipboardDeps, "platform">,

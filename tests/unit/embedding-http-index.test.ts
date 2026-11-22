@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { EmbeddingHttpIndex, type EmbeddingHttpServiceView } from '../../src/main/embedding-http-index';
+import { EmbeddingHttpIndex, type EmbeddingHttpServiceView } from '../../src/main/embedding/embedding-http-index';
 import type { WorkerCommand } from '../../src/shared/protocol/requests';
 import type { WorkerResult } from '../../src/shared/protocol/responses';
 

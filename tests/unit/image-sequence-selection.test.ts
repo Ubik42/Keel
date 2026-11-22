@@ -6,7 +6,7 @@ import {
   canCreateImageSequenceFromSelection,
   LIST_ASSETS_BY_ID_MAX,
   resolveAssetSummariesForSelection,
-} from "../../src/renderer/image-sequence-selection";
+} from "../../src/renderer/import/image-sequence-selection";
 
 function image(assetId: string, extra?: Partial<AssetSummary>): AssetSummary {
   return {

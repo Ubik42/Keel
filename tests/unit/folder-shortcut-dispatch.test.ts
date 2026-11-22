@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   readFocusedNavFolder,
   resolveFolderShortcutAction,
-} from "../../src/renderer/folder-shortcut-dispatch";
+} from "../../src/renderer/folders/folder-shortcut-dispatch";
 
 const names = new Map([
   ["folder-a", "Alpha"],

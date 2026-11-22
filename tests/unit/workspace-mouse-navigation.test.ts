@@ -8,7 +8,7 @@ import {
   bindIframeWorkspaceMouseNav,
   resolveWorkspaceMouseNavAction,
   resolveWorkspaceMouseNavButton,
-} from "../../src/renderer/workspace-mouse-navigation";
+} from "../../src/renderer/workspace/workspace-mouse-navigation";
 
 afterEach(() => {
   document.body.replaceChildren();

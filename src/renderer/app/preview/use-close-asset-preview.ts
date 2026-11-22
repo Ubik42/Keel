@@ -1,8 +1,8 @@
 import type { Dispatch, RefObject, SetStateAction } from "react";
 import type { WorkspaceNavHistory } from "../../workbench/workspace/workspace-nav-history";
 import type { KeelLibraryApi } from "../../../shared/library-api";
-import { logBrowseScrollWrite, shouldApplyRestoredFocusScroll } from "../../browse-scroll-debug";
-import { scheduleBrowseViewRestore } from "../../browse-view-restore-scheduler";
+import { logBrowseScrollWrite, shouldApplyRestoredFocusScroll } from "../../browse/browse-scroll-debug";
+import { scheduleBrowseViewRestore } from "../../browse/browse-view-restore-scheduler";
 import { type PreviewState } from "../../stores/preview-store";
 import { type SessionState } from "../../stores/session-store";
 import { type WorkspaceState } from "../../stores/workspace-store";

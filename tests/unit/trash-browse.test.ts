@@ -4,7 +4,7 @@ import {
   buildTrashBreadcrumbHops,
   filterTrashedAssetsAtTombstone,
   filterTrashedFoldersAtTombstone,
-} from '../../src/renderer/trash-browse';
+} from '../../src/renderer/trash/trash-browse';
 import type { AssetSummary, TrashedFolderSummary } from '../../src/shared/asset-types';
 
 function folder(

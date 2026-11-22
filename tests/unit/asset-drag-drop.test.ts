@@ -12,7 +12,7 @@ import {
   resolveTrashDrop,
   supportsManagedAssetDrag,
   type DragAssetFact,
-} from '../../src/renderer/asset-drag-drop';
+} from '../../src/renderer/browse/asset-drag-drop';
 
 function managed(assetId: string): DragAssetFact {
   return {

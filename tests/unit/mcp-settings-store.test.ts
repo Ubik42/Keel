@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { McpSettingsStore } from '../../src/main/mcp-settings-store';
+import { McpSettingsStore } from '../../src/main/mcp/mcp-settings-store';
 
 const roots: string[] = [];
 

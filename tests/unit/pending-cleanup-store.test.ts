@@ -7,7 +7,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
   readPendingCleanupAsidePaths,
   writePendingCleanupAsidePaths,
-} from '../../src/main/pending-cleanup-store';
+} from '../../src/main/library/pending-cleanup-store';
 
 describe('pending cleanup store (Serpent-65d837)', () => {
   let storeDirectory = '';

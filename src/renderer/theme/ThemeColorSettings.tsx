@@ -7,7 +7,7 @@ import { useTheme } from './ThemeProvider';
 import { cssColorToHex, sampleThemeColors, type SampledThemeColors } from './sample-theme-colors';
 import { USER_THEME_NAME_MAX } from './user-themes';
 import { ThemeMiniDialog } from './ThemeMiniDialog';
-import { Icon } from '../Icons';
+import { Icon } from '../common/Icons';
 
 /**
  * Twelve fields cover every surface the islands app paints; everything else

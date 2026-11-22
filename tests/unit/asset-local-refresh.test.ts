@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   decrementScopeCount,
   removeAssetIdsLocally,
-} from "../../src/renderer/asset-local-refresh";
+} from "../../src/renderer/browse/asset-local-refresh";
 
 interface Row {
   assetId: string;

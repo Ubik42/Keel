@@ -1,9 +1,9 @@
-import { defaultFormatFilter } from "../default-format-filter";
+import { defaultFormatFilter } from "../filters/default-format-filter";
 import { createFieldStore } from './create-field-store';
 import { type SortDefinition } from '../../shared/asset-types';
-import { loadBrowseSortPreferences } from '../browse-sort-preferences';
-import { loadColorFilterPreferences } from '../color-filter-preferences';
-import { readShowMissingLinkedFiles } from '../linked-missing-preference';
+import { loadBrowseSortPreferences } from '../browse/browse-sort-preferences';
+import { loadColorFilterPreferences } from '../filters/color-filter-preferences';
+import { readShowMissingLinkedFiles } from '../folders/linked-missing-preference';
 
 export interface QueryState {
   searchValue: string;

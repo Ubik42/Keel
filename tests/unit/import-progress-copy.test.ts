@@ -6,7 +6,7 @@ import {
   isBlockingImportOverlayVisible,
   isImportAwaitingUserDecision,
   shouldApplyImportProgressEvent,
-} from "../../src/renderer/import-progress-copy";
+} from "../../src/renderer/import/import-progress-copy";
 import type { ImportProgressEvent } from "../../src/shared/protocol/responses";
 
 function progress(

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { resolveImageSequenceImportPaths } from "../../src/main/image-sequence-import";
+import { resolveImageSequenceImportPaths } from "../../src/main/ingestion/image-sequence-import";
 import type { ImageSequenceImportOffer } from "../../src/shared/protocol/responses";
 
 const offer: ImageSequenceImportOffer = {

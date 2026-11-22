@@ -6,7 +6,7 @@ import {
   formatMenuActionSkipLine,
   formatMultiAssetMenuSkipFooter,
   type MenuSkipAssetSnapshot,
-} from "../../src/renderer/menu-skip-report";
+} from "../../src/renderer/jobs/menu-skip-report";
 
 function asset(
   partial: Partial<MenuSkipAssetSnapshot> & Pick<MenuSkipAssetSnapshot, "assetId">,

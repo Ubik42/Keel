@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   createWorkspaceRenderSnapshotCache,
   type WorkspaceRenderSnapshot,
-} from "../../src/renderer/workspace-render-snapshot-cache";
+} from "../../src/renderer/workspace/workspace-render-snapshot-cache";
 
 function browseSnapshot(label = "all"): WorkspaceRenderSnapshot {
   return {

@@ -7,7 +7,7 @@ import { readRendererStyles } from "../support/renderer-styles";
 describe("zoomable image decode failure fallback", () => {
   it("uses the themed broken-file surface instead of native broken-image UI", () => {
     const source = readFileSync(
-      resolve(process.cwd(), "src/renderer/zoomable-preview-image.tsx"),
+      resolve(process.cwd(), "src/renderer/viewer/zoomable-preview-image.tsx"),
       "utf8",
     );
     const styles = readRendererStyles();

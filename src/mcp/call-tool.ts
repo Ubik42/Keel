@@ -11,7 +11,7 @@ import type {
 } from '../automation/command-gateway';
 import type { AutomationGatewayErrorCode } from '../shared/automation-host-command-error';
 import type { PublicErrorCode } from '../shared/protocol/errors';
-import { normalizeAutomationAssetSearchInput } from '../main/normalize-automation-asset-search-input';
+import { normalizeAutomationAssetSearchInput } from '../main/automation/normalize-automation-asset-search-input';
 import {
   parsePluginMcpToolArguments,
   parsePluginMcpLibraryId,

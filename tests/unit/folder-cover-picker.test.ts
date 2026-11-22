@@ -4,7 +4,7 @@ import {
   folderCoverPickerAssetMatches,
   folderCoverPickerImageFilter,
   folderCoverPickerSearchQuery,
-} from "../../src/renderer/folder-cover-picker";
+} from "../../src/renderer/folders/folder-cover-picker";
 
 const asset = {
   displayName: "Hero.png",

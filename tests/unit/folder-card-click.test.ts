@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { resolveFolderCardClickIntent } from "../../src/renderer/folder-card-click";
+import { resolveFolderCardClickIntent } from "../../src/renderer/browse/folder-card-click";
 
 const folders = ["a", "b", "c", "d"] as const;
 

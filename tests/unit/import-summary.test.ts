@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { importSummaryMessage } from '../../src/renderer/import-summary';
+import { importSummaryMessage } from '../../src/renderer/import/import-summary';
 
 const zh = 'zh-CN';
 

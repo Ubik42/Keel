@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 
-import { applyNativeDragReadiness } from '../../src/renderer/use-native-drag-readiness';
+import { applyNativeDragReadiness } from '../../src/renderer/browse/use-native-drag-readiness';
 import { parseNativeDragReadinessEvent } from '../../src/shared/native-drag-readiness';
 
 test('only Main-validated ids become draggable, and closing a library clears them', () => {

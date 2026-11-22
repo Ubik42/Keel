@@ -4,7 +4,7 @@ import {
   loadLegacyAiConfigFile,
   runAiProfileMigrationStartup,
   withLegacyAiConfig,
-} from "../../src/main/ai-profile-legacy-config";
+} from "../../src/main/ai/ai-profile-legacy-config";
 
 type LegacyConfig = { model?: string };
 

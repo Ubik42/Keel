@@ -5,7 +5,7 @@ import { rmSync } from "node:fs";
 
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import { PreviewCache } from "../../src/main/preview-cache";
+import { PreviewCache } from "../../src/main/media/preview-cache";
 
 describe("PreviewCache", () => {
   let root: string;

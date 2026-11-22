@@ -6,7 +6,7 @@ import {
   loadAiUiPreferences,
   saveAiUiPreferences,
   type AiUiPreferencesStorage,
-} from "../../src/renderer/ai-ui-preferences";
+} from "../../src/renderer/ai/ai-ui-preferences";
 
 function memoryStorage(
   initial?: Record<string, string>,

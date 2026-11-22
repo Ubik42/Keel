@@ -5,7 +5,7 @@ import {
   imageSequenceConfirmSummaryKey,
   imageSequenceConfirmTitleKey,
   shouldShowApplyToRest,
-} from "../../src/renderer/image-sequence-import-dialog";
+} from "../../src/renderer/import/image-sequence-import-dialog";
 import { en } from "../../src/renderer/i18n/catalogs/en";
 import { zhCN } from "../../src/renderer/i18n/catalogs/zh-CN";
 

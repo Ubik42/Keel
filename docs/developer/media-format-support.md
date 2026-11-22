@@ -20,7 +20,7 @@
 | 路径 | 重点位置 | 要确认的内容 |
 | --- | --- | --- |
 | 导入识别 | `src/worker/library-service.ts`、导入策略 | 文件能被识别、索引、重扫和删除；不支持或损坏时有明确结果 |
-| 格式过滤 | `src/renderer/format-filter-presets.ts` | 从共享注册表生成，不遗漏新扩展名；补过滤单测 |
+| 格式过滤 | `src/renderer/filters/format-filter-presets.ts` | 从共享注册表生成，不遗漏新扩展名；补过滤单测 |
 | 缩略图 | Worker thumbnail/媒体解码模块 | 解码器、尺寸上限、动画/多帧和损坏文件行为明确 |
 | 查看器 | `src/shared/preview-policy.ts`、查看器组件 | 区分源文件直出与全分辨率派生图；不能把缩略图冒充原图 |
 | MIME/协议 | `src/main/index.ts`、preload 和共享协议 | 主进程 artifact、远程资源、插件上下文使用正确 MIME，并通过运行时校验 |

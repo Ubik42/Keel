@@ -244,7 +244,7 @@ export const en = {
     pinnedButton: "Pinned",
     pinHelp: "Keep this tag filter when switching folders",
     unpinHelp: "Unpin this tag filter",
-    appearance: "Color and icon",
+    appearance: "Icon & color",
     randomAppearance: "Random appearance",
     appearanceSaved: "Tag appearance updated",
     title: "Tags",

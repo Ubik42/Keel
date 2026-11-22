@@ -4,7 +4,7 @@ import {
   isLibraryOpenTransferKind,
   libraryTransferHeadlineKey,
   libraryTransferKindFromOperation,
-} from '../../src/renderer/library-transfer-progress';
+} from '../../src/renderer/library/library-transfer-progress';
 
 describe('library transfer progress copy (Serpent-lvif)', () => {
   it('maps Eagle opening to Eagle copy, not Billfish or import', () => {

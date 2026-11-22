@@ -5,7 +5,7 @@ import {
   loadVideoSeekJumpPreferences,
   saveVideoSeekJumpPreferences,
   type VideoSeekJumpPreferencesStorage,
-} from "../../src/renderer/video-seek-jump-preferences";
+} from "../../src/renderer/viewer/video-seek-jump-preferences";
 
 function memoryStorage(): VideoSeekJumpPreferencesStorage & { raw: Map<string, string> } {
   const raw = new Map<string, string>();

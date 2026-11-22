@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { advanceImageSequenceFrame } from "../../src/renderer/image-sequence-playback";
+import { advanceImageSequenceFrame } from "../../src/renderer/viewer/image-sequence-playback";
 
 describe("advanceImageSequenceFrame", () => {
   it("wraps playback at the end of the sequence", () => {

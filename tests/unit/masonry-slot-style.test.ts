@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { ASSET_GRID_GAP_PX } from "../../src/renderer/workbench/collection/asset-grid-layout";
-import { masonryCardSlotStyle } from "../../src/renderer/masonry-columns";
+import { masonryCardSlotStyle } from "../../src/renderer/browse/masonry-columns";
 
 function cssVar(
   style: ReturnType<typeof masonryCardSlotStyle>,

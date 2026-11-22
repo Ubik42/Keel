@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { normalizeAutomationAssetSearchInput } from '../../src/main/normalize-automation-asset-search-input';
+import { normalizeAutomationAssetSearchInput } from '../../src/main/automation/normalize-automation-asset-search-input';
 
 describe('normalizeAutomationAssetSearchInput', () => {
   it('accepts null query and optional pagination', () => {

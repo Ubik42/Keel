@@ -4,7 +4,7 @@ import {
   JobStatusCoordinator,
   type JobStatusKind,
   type JobStatusProbeResult,
-} from '../../src/renderer/job-status-coordinator';
+} from '../../src/renderer/jobs/job-status-coordinator';
 
 /**
  * Serpent-e97c00: the fallback status queries must stay bounded while the

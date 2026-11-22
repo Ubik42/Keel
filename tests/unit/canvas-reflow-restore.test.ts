@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { publishCanvasAssetLayoutIndex } from "../../src/renderer/canvas-asset-layout";
+import { publishCanvasAssetLayoutIndex } from "../../src/renderer/browse/canvas-asset-layout";
 import {
   captureReflowAnchorFromCards,
   isCanvasReflowRestorationPending,
@@ -8,7 +8,7 @@ import {
   retainReflowAnchor,
   scheduleAnchorRestore,
   type AnchorCard,
-} from "../../src/renderer/canvas-reflow-restore";
+} from "../../src/renderer/browse/canvas-reflow-restore";
 
 describe("pickTopmostVisibleCard", () => {
   const viewport = { left: 0, top: 100, width: 800, height: 600 };

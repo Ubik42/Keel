@@ -1,7 +1,7 @@
 import type { ContextMenuDescriptor } from "../workbench/menu/context-menu";
 import type { TranslateFn } from "../i18n/LocaleProvider";
 import { useAssetContextMenuActions } from "./menu-shared";
-import { Icon } from "../Icons";
+import { Icon } from "../common/Icons";
 import { type BrowseState } from "../stores/browse-store";
 import { ContextMenuItem, ContextMenuSection } from "../workbench/menu/context-menu";
 

@@ -3,7 +3,7 @@ import { act, createElement } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { ImportLibraryChooserDialog, OpenLibraryChooserDialog } from "../../src/renderer/ImportLibraryChooserDialog";
+import { ImportLibraryChooserDialog, OpenLibraryChooserDialog } from "../../src/renderer/import/ImportLibraryChooserDialog";
 import { LocaleProvider } from "../../src/renderer/i18n";
 
 describe("ImportLibraryChooserDialog external library open", () => {

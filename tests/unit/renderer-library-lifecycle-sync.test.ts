@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { shouldApplyLibraryLifecycleEvent } from '../../src/renderer/library-lifecycle-sync';
+import { shouldApplyLibraryLifecycleEvent } from '../../src/renderer/library/library-lifecycle-sync';
 import type { RendererLifecycleEvent } from '../../src/shared/protocol/responses';
 
 const opened = (

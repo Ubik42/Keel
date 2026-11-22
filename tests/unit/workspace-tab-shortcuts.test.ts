@@ -9,7 +9,7 @@ import {
 import {
   matchWorkspaceTabShortcut,
   workspaceTabShortcutEffect,
-} from "../../src/renderer/use-workspace-tab-shortcuts";
+} from "../../src/renderer/workspace/use-workspace-tab-shortcuts";
 
 function key(
   letter: string,

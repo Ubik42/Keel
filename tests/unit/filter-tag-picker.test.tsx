@@ -4,7 +4,7 @@ import { act, createElement, useState } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it } from "vitest";
 
-import { FilterTagPicker } from "../../src/renderer/FilterTagPicker";
+import { FilterTagPicker } from "../../src/renderer/filters/FilterTagPicker";
 import { LocaleProvider } from "../../src/renderer/i18n";
 
 const tags = [

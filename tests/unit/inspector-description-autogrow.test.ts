@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { resolveAutoGrowHeight } from "../../src/renderer/inspector-description-autogrow";
+import { resolveAutoGrowHeight } from "../../src/renderer/inspector/inspector-description-autogrow";
 
 describe("resolveAutoGrowHeight (Serpent-qto)", () => {
   it("floors to the single-line minimum for empty/short content", () => {

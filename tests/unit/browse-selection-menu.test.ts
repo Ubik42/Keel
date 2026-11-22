@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { resolveBrowseContextMenuIntent } from "../../src/renderer/browse-selection-menu";
+import { resolveBrowseContextMenuIntent } from "../../src/renderer/browse/browse-selection-menu";
 
 describe("resolveBrowseContextMenuIntent", () => {
   it("replaces selection when the click target is outside the current selection", () => {

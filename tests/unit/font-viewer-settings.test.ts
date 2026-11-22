@@ -15,7 +15,7 @@ import {
   previewLanguageForDeclared,
   stepFontViewerSize,
   variableWeightOptions,
-} from "../../src/renderer/font-viewer-settings";
+} from "../../src/renderer/viewer/font-viewer-settings";
 
 // Serpent-485aeb：字体查看器的预览设置（语言 / 文字 / 字号 / 字重 / B-I-U）。
 describe("font viewer settings", () => {

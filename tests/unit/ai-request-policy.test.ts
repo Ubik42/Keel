@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { planAiSearch } from '../../src/main/ai-search-planner';
+import { planAiSearch } from '../../src/main/ai/ai-search-planner';
 import {
   applyAiRequestRetry,
   classifyAiRequestRetry,

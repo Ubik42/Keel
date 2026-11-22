@@ -6,7 +6,7 @@ import {
   resolveViewerImageDisplay,
   resolveViewerPlaceholderUrl,
   shouldRecoverCachedFullImage,
-} from "../../src/renderer/viewer-mip-upgrade";
+} from "../../src/renderer/viewer/viewer-mip-upgrade";
 
 const readyImage = {
   displayName: "image.png",

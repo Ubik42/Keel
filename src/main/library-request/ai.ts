@@ -16,13 +16,13 @@ import {
   normalizeAiLanguages,
   type AiApiFormat,
 } from "../../shared/ai-endpoints";
-import { aiSearchFailureReason, planAiSearch } from "../ai-search-planner";
+import { aiSearchFailureReason, planAiSearch } from "../ai/ai-search-planner";
 import {
   AiProfileStorageError,
   AiProfileValidationError,
   type AiConnectionProfileDraft,
   type AiConnectionProfileSummary,
-} from "../ai-profile-store";
+} from "../ai/ai-profile-store";
 
 type AiConfigRead =
   | { ok: true; config: AiOwnedConfig }

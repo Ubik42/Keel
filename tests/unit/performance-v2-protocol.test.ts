@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { LibraryRequestBroker } from '../../src/main/library-request-broker';
+import { LibraryRequestBroker } from '../../src/main/library/library-request-broker';
 import {
   DEFAULT_PERFORMANCE_CONSUMER_ID,
   MUTATION_RECEIPT_MAX_ENTITY_IDS,

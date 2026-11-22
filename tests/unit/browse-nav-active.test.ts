@@ -5,7 +5,7 @@ import {
   isRootFolderNavActive,
   isTagManagementNavActive,
   isTrashNavActive,
-} from "../../src/renderer/browse-nav-active";
+} from "../../src/renderer/browse/browse-nav-active";
 
 const base = {
   assetScope: "all" as const,

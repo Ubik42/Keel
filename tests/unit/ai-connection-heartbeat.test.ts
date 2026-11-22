@@ -5,7 +5,7 @@ import {
   aiAnalyzeConnectionReady,
   aiAnalyzeShowsDisconnectGlyph,
   shouldRunAiConnectionHeartbeat,
-} from "../../src/renderer/ai-connection-heartbeat";
+} from "../../src/renderer/ai/ai-connection-heartbeat";
 
 describe("ai-connection-heartbeat (Serpent-rsbt)", () => {
   it("uses a ~60s interval", () => {

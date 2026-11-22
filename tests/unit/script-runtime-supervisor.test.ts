@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { ScriptRuntimeSupervisor } from '../../src/main/script-runtime-supervisor';
+import { ScriptRuntimeSupervisor } from '../../src/main/automation/script-runtime-supervisor';
 import { AutomationScriptHostCommandError } from '../../src/shared/automation-host-command-error';
 import type { ScriptRuntimeChildMessage } from '../../src/shared/script-runtime-utility-protocol';
 

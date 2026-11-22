@@ -29,7 +29,7 @@ import {
   stripMcpChallengeConfirmationFields,
   type McpDangerousOperationChallenge,
 } from './mcp-challenge';
-import type { AutomationIdempotencyStore } from '../main/automation-idempotency-store';
+import type { AutomationIdempotencyStore } from '../main/automation/automation-idempotency-store';
 
 const nonBlankString = z.string().min(1).refine((value) => value.trim().length > 0, {
   message: 'Value must not be blank.',

@@ -2,10 +2,10 @@ import type { Dispatch, SetStateAction } from "react";
 import type { KeelLibraryApi } from "../../../shared/library-api";
 import type { TranslateFn } from "../../i18n/LocaleProvider";
 import type { AppLocale } from "../../i18n/types";
-import { LibraryOperationError, toMessage } from "../../error-utils";
-import { appendSemanticCleanupNotice } from "../../semantic-cleanup-notice";
+import { LibraryOperationError, toMessage } from "../../common/error-utils";
+import { appendSemanticCleanupNotice } from "../../ai/semantic-cleanup-notice";
 import { type SessionState } from "../../stores/session-store";
-import { playTaskCompletionSound } from "../../task-completion-sound";
+import { playTaskCompletionSound } from "../../jobs/task-completion-sound";
 
 export interface UseSelectionDiskDeleteDeps {
   api: KeelLibraryApi | undefined;

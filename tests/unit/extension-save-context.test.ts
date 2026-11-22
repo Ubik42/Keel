@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { resolveExtensionSaveContext, resolveExtensionSaveRouting } from "../../src/main/extension-save-context";
+import { resolveExtensionSaveContext, resolveExtensionSaveRouting } from "../../src/main/ingestion/extension-save-context";
 import type { ActiveContext } from "../../src/shared/protocol/requests";
 
 function contexts(

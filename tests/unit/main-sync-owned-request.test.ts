@@ -9,7 +9,7 @@ import {
   type SyncOwnedRequestRuntime,
   type SyncServerRecord,
 } from "../../src/main/library-request/sync";
-import { WorkerRequestTimeoutError } from "../../src/main/worker-client";
+import { WorkerRequestTimeoutError } from "../../src/main/library/worker-client";
 
 function runtime(overrides?: Partial<SyncOwnedRequestRuntime>): SyncOwnedRequestRuntime {
   return {

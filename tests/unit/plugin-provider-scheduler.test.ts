@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { PluginProviderScheduler } from '../../src/main/plugin-provider-scheduler';
+import { PluginProviderScheduler } from '../../src/main/plugins/plugin-provider-scheduler';
 import type { PluginProviderRegistration } from '../../src/plugins/plugin-providers';
 
 describe('PluginProviderScheduler', () => {

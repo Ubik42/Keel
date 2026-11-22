@@ -7,7 +7,7 @@
 // import App.tsx，避免循环依赖；node 环境可测。
 // ---------------------------------------------------------------------------
 
-import type { CanvasPreferences } from '../canvas-preferences';
+import type { CanvasPreferences } from '../browse/canvas-preferences';
 import { translateForLocale } from '../i18n';
 import { createCommandRegistry } from '../workbench/menu/command-registry';
 import type { CommandContext, CommandDefinition } from '../workbench/menu/command-types';

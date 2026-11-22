@@ -6,16 +6,16 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 vi.mock("../../src/renderer/i18n", () => ({
   useT: () => (key: string) => key,
 }));
-vi.mock("../../src/renderer/icon-action-attrs", () => ({
+vi.mock("../../src/renderer/common/icon-action-attrs", () => ({
   iconActionAttrs: () => ({ "aria-label": "action" }),
 }));
-vi.mock("../../src/renderer/ViewerVolumeControls", () => ({
+vi.mock("../../src/renderer/viewer/ViewerVolumeControls", () => ({
   ViewerVolumeControls: () => null,
 }));
-vi.mock("../../src/renderer/viewer-volume-preferences", () => ({
+vi.mock("../../src/renderer/viewer/viewer-volume-preferences", () => ({
   applyViewerVolumeToMedia: () => undefined,
 }));
-vi.mock("../../src/renderer/media-seek-session", () => ({
+vi.mock("../../src/renderer/viewer/media-seek-session", () => ({
   createMediaSeekSession: () => ({
     request: () => undefined,
     commit: () => undefined,
@@ -24,7 +24,7 @@ vi.mock("../../src/renderer/media-seek-session", () => ({
   }),
 }));
 
-import { AudioPlayerControls } from "../../src/renderer/AudioPlayerControls";
+import { AudioPlayerControls } from "../../src/renderer/viewer/AudioPlayerControls";
 
 // React 19 act() requires the global flag to actually wrap updates; without
 // it every act() call warns "not configured to support act(...)".
