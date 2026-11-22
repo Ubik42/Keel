@@ -8,11 +8,11 @@ import {
   resolveAiRequestPolicy,
   type AiRequestPurpose,
 } from '../../src/shared/ai-request-policy';
-import { AnthropicVendorAdapter } from '../../src/worker/ai/anthropic-adapter';
-import { DashScopeVendorAdapter } from '../../src/worker/ai/dashscope-adapter';
-import { GeminiVendorAdapter } from '../../src/worker/ai/gemini-adapter';
-import { OpenAIVendorAdapter } from '../../src/worker/ai/openai-adapter';
-import type { AiAnalysisRequest } from '../../src/worker/ai/protocol';
+import { AnthropicVendorAdapter } from '../../src/worker/integrations/ai/anthropic-adapter';
+import { DashScopeVendorAdapter } from '../../src/worker/integrations/ai/dashscope-adapter';
+import { GeminiVendorAdapter } from '../../src/worker/integrations/ai/gemini-adapter';
+import { OpenAIVendorAdapter } from '../../src/worker/integrations/ai/openai-adapter';
+import type { AiAnalysisRequest } from '../../src/worker/integrations/ai/protocol';
 
 const request: AiAnalysisRequest = {
   displayName: 'test.png',

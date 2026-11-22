@@ -20,7 +20,7 @@ import {
   LibraryService,
   LibraryServiceError,
 } from '../../src/worker/library-service';
-import { removePathWithSyncRetry } from '../../src/worker/windows-fs-retry';
+import { removePathWithSyncRetry } from '../../src/worker/library/windows-fs-retry';
 
 const temporaryRoots: string[] = [];
 const require = createRequire(import.meta.url);

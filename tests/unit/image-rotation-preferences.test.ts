@@ -11,7 +11,7 @@ import {
   loadImageRotationPreferences,
   saveImageRotationPreferences,
 } from "../../src/renderer/image-rotation-preferences";
-import { rotateStillImageFile } from "../../src/worker/rotate-still-image-file";
+import { rotateStillImageFile } from "../../src/worker/media/rotate-still-image-file";
 
 const roots: string[] = [];
 

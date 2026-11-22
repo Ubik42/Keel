@@ -14,7 +14,7 @@ import {
   MIGRATIONS,
   SUPPORTED_SCHEMA_VERSION,
 } from '../../src/worker/library-service';
-import { removePathWithSyncRetry } from '../../src/worker/windows-fs-retry';
+import { removePathWithSyncRetry } from '../../src/worker/library/windows-fs-retry';
 import { removeLinkedDirectoryIndexFixture } from './remove-linked-directory-index';
 
 const temporaryRoots: string[] = [];

@@ -2,7 +2,7 @@ import http from 'node:http';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { defaultPinnedHttpTransport } from '../../src/worker/secure-http-download';
+import { defaultPinnedHttpTransport } from '../../src/worker/integrations/secure-http-download';
 
 const servers: http.Server[] = [];
 

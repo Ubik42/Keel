@@ -21,7 +21,7 @@ import {
   importFilesThroughBridge,
   resolveElectronExecutablePath,
 } from './electron-test-helpers';
-import { removePathWithSyncRetry } from '../../src/worker/windows-fs-retry';
+import { removePathWithSyncRetry } from '../../src/worker/library/windows-fs-retry';
 
 test.describe.configure({ timeout: 180_000 });
 

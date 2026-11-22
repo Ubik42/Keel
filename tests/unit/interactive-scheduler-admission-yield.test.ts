@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { InteractiveScheduler } from '../../src/worker/interactive-scheduler';
+import { InteractiveScheduler } from '../../src/worker/library/interactive-scheduler';
 
 /**
  * Serpent-be29a9: a long background pass (the open reconciliation) must not hold

@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { LibraryService } from '../../src/worker/library-service';
 import { executeBoundedWriteWorkerCommand } from '../../src/worker/bounded-write-command';
 import type { WorkerCommand } from '../../src/shared/protocol/requests';
-import { removePathWithSyncRetry } from '../../src/worker/windows-fs-retry';
+import { removePathWithSyncRetry } from '../../src/worker/library/windows-fs-retry';
 const roots: string[] = [];
 const services: LibraryService[] = [];
 function fixture() {

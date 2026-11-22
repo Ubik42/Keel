@@ -6,7 +6,7 @@ import {
   shouldPreemptVisibleWindow,
   shouldRunThumbnailBackgroundRepair,
   visibleWindowOverlapRatio,
-} from '../../src/worker/visible-window-policy';
+} from '../../src/worker/library/visible-window-policy';
 
 describe('visible-window scheduling policy', () => {
   it('preempts on the first visible-window report', () => {

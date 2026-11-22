@@ -7,7 +7,7 @@ import path from 'node:path';
 import { _electron as electron, expect, test, type ElectronApplication, type Page } from '@playwright/test';
 import sharp from 'sharp';
 
-import { resolveOiiotoolPath } from '../../src/worker/binary-resolver';
+import { resolveOiiotoolPath } from '../../src/worker/media/binary-resolver';
 import { assetCard, electronLaunchEnv, openLinkedFolderImportMenu, resolveElectronExecutablePath, waitForLibraryLoadingToFinish } from './electron-test-helpers';
 
 async function quit(application: ElectronApplication): Promise<void> {

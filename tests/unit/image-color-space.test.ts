@@ -5,7 +5,7 @@ import {
   defaultImageColorSpace,
   parseIccProfileDescription,
   parseOiioColorSpaceInfo,
-} from '../../src/worker/image-color-space';
+} from '../../src/worker/media/image-color-space';
 import { canOverrideImageColorSpace } from '../../src/shared/image-color-space';
 
 describe('image color-space metadata', () => {

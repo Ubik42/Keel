@@ -7,26 +7,26 @@ import {
   applyAiOutputPolicy,
   parseAiAnalysisResult,
   parseAiAnalysisResultFromModelText,
-} from '../../src/worker/ai/protocol';
-import type { AiAnalysisRequest } from '../../src/worker/ai/protocol';
-import { DashScopeVendorAdapter } from '../../src/worker/ai/dashscope-adapter';
+} from '../../src/worker/integrations/ai/protocol';
+import type { AiAnalysisRequest } from '../../src/worker/integrations/ai/protocol';
+import { DashScopeVendorAdapter } from '../../src/worker/integrations/ai/dashscope-adapter';
 import {
   buildOpenAiStructuredResponseFormat,
   isStructuredOutputFormatRejection,
   OpenAIVendorAdapter,
-} from '../../src/worker/ai/openai-adapter';
+} from '../../src/worker/integrations/ai/openai-adapter';
 import {
   normalizeOpenAiChatResponse,
   normalizeOpenAiResponsesResponse,
   parseOpenAiAnalysisResponse,
-} from '../../src/worker/ai/openai-response';
-import { VendorAdapterError } from '../../src/worker/ai/vendor-adapter';
+} from '../../src/worker/integrations/ai/openai-response';
+import { VendorAdapterError } from '../../src/worker/integrations/ai/vendor-adapter';
 import {
   safeAiConnectionFailure,
   safeAiDiagnostic,
   safeAiErrorDetail,
   vendorFailure,
-} from '../../src/worker/ai/error-mapping';
+} from '../../src/worker/integrations/ai/error-mapping';
 
 // ---------------------------------------------------------------------------
 // Test helpers

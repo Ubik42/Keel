@@ -4,7 +4,7 @@ import {
   extractRawImageMetadata,
   normalizeRawImageMetadata,
   resolvedExtractedPixelSize,
-} from "../../src/worker/raw-image-metadata";
+} from "../../src/worker/media/raw-image-metadata";
 import { buildRawImageMetadataRows } from "../../src/renderer/raw-image-metadata-format";
 import { extractedVideoMetadataSchema } from "../../src/shared/asset-types";
 

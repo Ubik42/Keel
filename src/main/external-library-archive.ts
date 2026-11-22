@@ -18,7 +18,7 @@ import {
   inspectZipUncompressedBytes,
   zipBombProtectionLimits,
   ZipImportStreamError,
-} from '../worker/zip-import-stream';
+} from '../worker/library/zip-import-stream';
 import type { PublicErrorCode, PublicErrorReason } from '../shared/protocol/errors';
 import { publicReasonFromError } from '../shared/protocol/errors';
 import {

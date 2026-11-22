@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   StartupBurstGateRegistry,
-} from '../../src/worker/startup-burst-gate';
+} from '../../src/worker/library/startup-burst-gate';
 
 describe('StartupBurstGateRegistry', () => {
   it('keeps libraries and generations isolated', async () => {

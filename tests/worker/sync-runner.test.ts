@@ -7,10 +7,10 @@ import type {
   RemoteStorageDriver,
   RemoteWriteOptions,
   RemoteWriteResult,
-} from '../../src/worker/sync/remote-storage';
-import { createEmptyManifest } from '../../src/worker/sync/manifest';
-import { planSyncActions } from '../../src/worker/sync/sync-plan';
-import { conflictCopyFileName, runSyncActions, type SyncRunnerContext } from '../../src/worker/sync/sync-runner';
+} from '../../src/worker/integrations/sync/remote-storage';
+import { createEmptyManifest } from '../../src/worker/integrations/sync/manifest';
+import { planSyncActions } from '../../src/worker/integrations/sync/sync-plan';
+import { conflictCopyFileName, runSyncActions, type SyncRunnerContext } from '../../src/worker/integrations/sync/sync-runner';
 
 class MemoryDriver implements RemoteStorageDriver {
   readonly files = new Map<string, Buffer>();

@@ -10,7 +10,7 @@ import {
   LibraryService,
   SUPPORTED_SCHEMA_VERSION,
 } from '../../src/worker/library-service';
-import { buildFts5Query, normalizeSearchText, tokenizeForFts } from '../../src/worker/search-query';
+import { buildFts5Query, normalizeSearchText, tokenizeForFts } from '../../src/worker/library/search-query';
 import { parseSearchExpression, parseSearchExpressionDetailed } from '../../src/shared/search-expression';
 
 const temporaryRoots: string[] = [];

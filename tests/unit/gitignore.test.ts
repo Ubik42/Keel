@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   gitignoreMatchesPath,
   parseGitignore,
-} from "../../src/worker/gitignore";
+} from "../../src/worker/library/gitignore";
 
 describe("library ignore-file matching", () => {
   it("matches extension rules at every folder depth", () => {

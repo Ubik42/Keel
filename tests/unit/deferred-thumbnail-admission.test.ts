@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DeferredThumbnailAdmission } from '../../src/worker/deferred-thumbnail-admission';
+import { DeferredThumbnailAdmission } from '../../src/worker/media/deferred-thumbnail-admission';
 
 describe('DeferredThumbnailAdmission', () => {
   it('retains startup work while a viewport queue is active, then admits it once idle', () => {

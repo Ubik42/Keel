@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { LibraryService } from '../../src/worker/library-service';
-import { removePathWithSyncRetry } from '../../src/worker/windows-fs-retry';
+import { removePathWithSyncRetry } from '../../src/worker/library/windows-fs-retry';
 
 describe('shared originals allowlist', () => {
   it('indexes only included files on the first scan and excludes future unrelated files', async () => {

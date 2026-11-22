@@ -3,8 +3,8 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { LibraryService, type AssetObserverEvent } from '../../src/worker/library-service';
-import { normalizeRelativeAssetPath } from '../../src/worker/library-rules';
-import { removePathWithSyncRetry } from '../../src/worker/windows-fs-retry';
+import { normalizeRelativeAssetPath } from '../../src/worker/library/library-rules';
+import { removePathWithSyncRetry } from '../../src/worker/library/windows-fs-retry';
 
 const roots: string[] = [];
 const services: LibraryService[] = [];

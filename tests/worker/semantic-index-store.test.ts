@@ -8,7 +8,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import {
   encodeSemanticVector,
   SemanticIndexStore,
-} from '../../src/worker/semantic-index-store';
+} from '../../src/worker/library/semantic-index-store';
 
 const temporaryRoots: string[] = [];
 const stores: SemanticIndexStore[] = [];

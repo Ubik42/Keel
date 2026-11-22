@@ -13,7 +13,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import {
   LibraryParentError,
   resolveWritableLibraryParent,
-} from '../../src/worker/library-parent';
+} from '../../src/worker/library/library-parent';
 
 const roots: string[] = [];
 

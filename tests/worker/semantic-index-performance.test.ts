@@ -12,7 +12,7 @@ import type { WorkerCommand, WorkerRequest } from '../../src/shared/protocol/req
 import type { WorkerResult } from '../../src/shared/protocol/responses';
 import { LibraryService } from '../../src/worker/library-service';
 import { closeSemanticIndexWorkerLibrary, executeSemanticIndexWorkerCommand } from '../../src/worker/handlers/semantic-index';
-import { SemanticIndexStore } from '../../src/worker/semantic-index-store';
+import { SemanticIndexStore } from '../../src/worker/library/semantic-index-store';
 
 const enabled = process.env.KEEL_RUN_SEMANTIC_PERF === '1';
 const temporaryRoots: string[] = [];

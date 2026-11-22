@@ -5,8 +5,8 @@ import {
   buildGitignorePreviewListRows,
   type GitignorePreviewCandidate,
 } from "../../src/shared/gitignore-preview";
-import { parseGitignore } from "../../src/worker/gitignore";
-import { diffGitignoreHits } from "../../src/worker/gitignore-preview";
+import { parseGitignore } from "../../src/worker/library/gitignore";
+import { diffGitignoreHits } from "../../src/worker/library/gitignore-preview";
 
 function candidate(
   relativePath: string,

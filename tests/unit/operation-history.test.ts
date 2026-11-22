@@ -4,7 +4,7 @@ import {
   HistoryTransitionError,
   OperationHistoryStateMachine,
   type HistoryStackEntry,
-} from '../../src/worker/operation-history';
+} from '../../src/worker/library/operation-history';
 
 function entry(
   historyEntryId: string,

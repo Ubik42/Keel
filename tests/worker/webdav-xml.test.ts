@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { parseWebDAVMultistatus } from '../../src/worker/sync/webdav-xml';
+import { parseWebDAVMultistatus } from '../../src/worker/integrations/sync/webdav-xml';
 
 describe('WebDAV multistatus parsing (Serpent-xffq)', () => {
   it('detects collections whose resourcetype carries an xmlns attribute (real-server shape)', () => {

@@ -12,7 +12,7 @@ import { randomUUID } from 'node:crypto';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { LibraryService } from '../../src/worker/library-service';
-import { portablePathIdentity } from '../../src/worker/library-rules';
+import { portablePathIdentity } from '../../src/worker/library/library-rules';
 
 interface TestDatabase {
   pragma(source: string, options?: { simple: boolean }): unknown;

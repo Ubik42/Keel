@@ -21,7 +21,7 @@ import {
   zipBombProtectionLimits,
   ZipImportStreamError,
   type ZipImportProgress,
-} from '../../src/worker/zip-import-stream';
+} from '../../src/worker/library/zip-import-stream';
 
 const require = createRequire(import.meta.url);
 const temporaryRoots: string[] = [];

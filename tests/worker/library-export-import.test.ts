@@ -18,8 +18,8 @@ import {
   LibraryService,
   LibraryServiceError,
 } from '../../src/worker/library-service';
-import { SemanticIndexStore } from '../../src/worker/semantic-index-store';
-import { removePathWithSyncRetry } from '../../src/worker/windows-fs-retry';
+import { SemanticIndexStore } from '../../src/worker/library/semantic-index-store';
+import { removePathWithSyncRetry } from '../../src/worker/library/windows-fs-retry';
 import { embeddingTextRevision } from '../../src/shared/embedding/profile';
 import type { WorkerCommand, WorkerRequest } from '../../src/shared/protocol/requests';
 import type { WorkerResult } from '../../src/shared/protocol/responses';

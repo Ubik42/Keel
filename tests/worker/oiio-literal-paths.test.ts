@@ -7,8 +7,8 @@ import path from 'node:path';
 import { afterEach, expect, it } from 'vitest';
 
 import { LibraryService } from '../../src/worker/library-service';
-import { resolveOiiotoolPath } from '../../src/worker/binary-resolver';
-import { OIIO_LITERAL_PATHS_MARK } from '../../src/worker/oiio-invocation';
+import { resolveOiiotoolPath } from '../../src/worker/media/binary-resolver';
+import { OIIO_LITERAL_PATHS_MARK } from '../../src/worker/media/oiio-invocation';
 
 const require = createRequire(import.meta.url);
 const roots: string[] = [];

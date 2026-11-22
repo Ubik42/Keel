@@ -4,7 +4,7 @@ import {
   MediaJobStatusSummaryCache,
   mediaJobCountTotal,
   mediaJobCountsFromRows,
-} from '../../src/worker/media-job-status-summary';
+} from '../../src/worker/media/media-job-status-summary';
 
 function counts(overrides: Partial<Record<string, number>> = {}) {
   return {

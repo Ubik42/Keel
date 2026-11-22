@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   embeddedMetadataSearchText,
   normalizeProbeEmbeddedMetadata,
-} from "../../src/worker/embedded-metadata";
+} from "../../src/worker/media/embedded-metadata";
 
 describe("embedded metadata normalization", () => {
   it("maps common ffprobe tags and preserves bounded custom fields", () => {

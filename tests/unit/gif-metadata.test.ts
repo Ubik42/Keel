@@ -5,7 +5,7 @@ import {
   computeGifDurationMs,
   GIF_DEFAULT_FRAME_DELAY_MS,
   normalizeGifFrameDelayMs,
-} from "../../src/worker/gif-metadata";
+} from "../../src/worker/media/gif-metadata";
 
 describe("normalizeGifFrameDelayMs", () => {
   it("maps non-positive delays to the browser default", () => {

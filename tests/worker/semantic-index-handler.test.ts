@@ -12,9 +12,9 @@ import { embeddingTextRevision } from '../../src/shared/embedding/profile';
 import { performanceLaneForCommand } from '../../src/shared/performance-contract';
 import { LibraryService } from '../../src/worker/library-service';
 import { closeSemanticIndexWorkerLibrary, executeSemanticIndexWorkerCommand, reconcileSemanticPermanentDeletes, reserveSemanticDeleteCleanup, semanticPermanentDeleteCandidates, withSemanticDeleteCleanupStatus } from '../../src/worker/handlers/semantic-index';
-import { SemanticIndexStore } from '../../src/worker/semantic-index-store';
-import { InteractiveScheduler } from '../../src/worker/interactive-scheduler';
-import { removePathWithSyncRetry } from '../../src/worker/windows-fs-retry';
+import { SemanticIndexStore } from '../../src/worker/library/semantic-index-store';
+import { InteractiveScheduler } from '../../src/worker/library/interactive-scheduler';
+import { removePathWithSyncRetry } from '../../src/worker/library/windows-fs-retry';
 
 const require = createRequire(import.meta.url);
 interface TestDatabase {

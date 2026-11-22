@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { RawMetadataBackfillAdmissionGate } from '../../src/worker/raw-metadata-backfill-gate';
+import { RawMetadataBackfillAdmissionGate } from '../../src/worker/media/raw-metadata-backfill-gate';
 
 const EMPTY = { admitted: 0, probed: 0, budgetCapped: false };
 const CAPPED = { admitted: 0, probed: 0, budgetCapped: true };

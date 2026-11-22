@@ -10,12 +10,12 @@ import {
 import type { WorkerRequest } from '../../shared/protocol/requests';
 import type { WorkerResult } from '../../shared/protocol/responses';
 import type { LibraryService } from '../library-service';
-import { parseManifest, serializeManifest } from '../sync/manifest';
-import { createLibrarySyncPort } from '../sync/library-port';
-import { parseSyncAssetMetadata } from '../sync/sync-metadata';
-import { RemoteStorageError } from '../sync/remote-storage';
-import { SyncEngine, type SyncEngineOptions } from '../sync/sync-engine';
-import { WebDAVDriver } from '../sync/webdav-driver';
+import { parseManifest, serializeManifest } from '../integrations/sync/manifest';
+import { createLibrarySyncPort } from '../integrations/sync/library-port';
+import { parseSyncAssetMetadata } from '../integrations/sync/sync-metadata';
+import { RemoteStorageError } from '../integrations/sync/remote-storage';
+import { SyncEngine, type SyncEngineOptions } from '../integrations/sync/sync-engine';
+import { WebDAVDriver } from '../integrations/sync/webdav-driver';
 
 function buildSyncEngine(
   libraryService: LibraryService,

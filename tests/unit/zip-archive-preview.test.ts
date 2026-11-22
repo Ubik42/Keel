@@ -5,7 +5,7 @@ import path from 'node:path';
 import AdmZip from 'adm-zip';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { listZipArchiveFiles, readZipArchiveEntry } from '../../src/worker/zip-archive-preview';
+import { listZipArchiveFiles, readZipArchiveEntry } from '../../src/worker/media/zip-archive-preview';
 
 const PNG = Buffer.from(
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',

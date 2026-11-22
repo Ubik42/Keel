@@ -5,7 +5,7 @@ import {
   ffmpegOneFrameEncodeArgs,
   listedH264ProxyEncoders,
   parseFfmpegEncoderTokens,
-} from '../../src/worker/video-proxy-encoder';
+} from '../../src/worker/media/video-proxy-encoder';
 
 describe('video proxy encoder listing', () => {
   it('prefers listed hardware names but does not treat the name as a capability', () => {

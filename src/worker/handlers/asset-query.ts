@@ -1,6 +1,6 @@
 import type { WorkerRequest } from '../../shared/protocol/requests';
 import type { WorkerResult } from '../../shared/protocol/responses';
-import { searchRequestLaneKey } from '../search-request-coordinator';
+import { searchRequestLaneKey } from '../library/search-request-coordinator';
 import type { LibraryService } from '../library-service';
 
 export type AssetQueryHooks = {

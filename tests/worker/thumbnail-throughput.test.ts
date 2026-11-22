@@ -6,14 +6,14 @@ import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const extractAuthorFromExifMock = vi.hoisted(() => vi.fn(async () => null as string | null));
-vi.mock('../../src/worker/author-from-exif', () => ({
+vi.mock('../../src/worker/media/author-from-exif', () => ({
   extractAuthorFromExif: extractAuthorFromExifMock,
 }));
 
 import {
   LibraryService,
 } from '../../src/worker/library-service';
-import { workerMediaDecodeConcurrency } from '../../src/worker/media-concurrency';
+import { workerMediaDecodeConcurrency } from '../../src/worker/media/media-concurrency';
 
 const temporaryRoots: string[] = [];
 const require = createRequire(import.meta.url);

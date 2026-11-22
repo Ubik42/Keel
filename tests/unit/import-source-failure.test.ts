@@ -5,7 +5,7 @@ import {
   isSkippableImportSourceFailure,
   skippedImportSourceFromError,
   toImportSourceFailurePlan,
-} from "../../src/worker/import-source-failure";
+} from "../../src/worker/library/import-source-failure";
 import { LibraryServiceError } from "../../src/worker/library-service";
 
 describe("import-source-failure", () => {

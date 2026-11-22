@@ -4,7 +4,7 @@ import {
   canonicalizeSyncAssetMetadata,
   metadataContentHash,
   parseSyncAssetMetadata,
-} from '../../src/worker/sync/sync-metadata';
+} from '../../src/worker/integrations/sync/sync-metadata';
 
 describe('sync metadata sidecar (GitHub #39 / Serpent-4ffae8)', () => {
   it('keeps human-only JSON identical to the previous sidecar format', () => {

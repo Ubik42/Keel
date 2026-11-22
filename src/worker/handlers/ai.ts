@@ -2,18 +2,18 @@ import path from 'node:path';
 import type { ParentPort } from 'electron';
 import type { WorkerRequest } from '../../shared/protocol/requests';
 import type { AiProgressEvent, WorkerResult } from '../../shared/protocol/responses';
-import { OpenAIVendorAdapter } from '../ai/openai-adapter';
-import { GeminiVendorAdapter } from '../ai/gemini-adapter';
-import { AnthropicVendorAdapter } from '../ai/anthropic-adapter';
-import { DashScopeVendorAdapter } from '../ai/dashscope-adapter';
+import { OpenAIVendorAdapter } from '../integrations/ai/openai-adapter';
+import { GeminiVendorAdapter } from '../integrations/ai/gemini-adapter';
+import { AnthropicVendorAdapter } from '../integrations/ai/anthropic-adapter';
+import { DashScopeVendorAdapter } from '../integrations/ai/dashscope-adapter';
 import {
   DEFAULT_AI_ANALYSIS_SETTINGS,
   normalizeAiAnalysisSettings,
 } from '../../shared/ai-analysis-settings';
 import { apiFormatLimiterKey, formatAiLanguagesForPrompt } from '../../shared/ai-endpoints';
-import { VendorAdapterError } from '../ai/vendor-adapter';
-import type { VendorAdapter } from '../ai/vendor-adapter';
-import { applyAiOutputPolicy, type AiAnalysisRequest } from '../ai/protocol';
+import { VendorAdapterError } from '../integrations/ai/vendor-adapter';
+import type { VendorAdapter } from '../integrations/ai/vendor-adapter';
+import { applyAiOutputPolicy, type AiAnalysisRequest } from '../integrations/ai/protocol';
 import {
   AI_ARTIFACT_PENDING_CODES,
   AI_ARTIFACT_PENDING_MAX_ATTEMPTS,
@@ -22,16 +22,16 @@ import {
   safeAiDiagnostic,
   safeAiErrorDetail,
   vendorFailure,
-} from '../ai/error-mapping';
-import type { AiJobAbortRegistry } from '../ai/job-abort-registry';
-import { loadAiImageInput } from '../ai/image-input';
-import { loadVideoAiInput } from '../ai/video-input';
+} from '../integrations/ai/error-mapping';
+import type { AiJobAbortRegistry } from '../integrations/ai/job-abort-registry';
+import { loadAiImageInput } from '../integrations/ai/image-input';
+import { loadVideoAiInput } from '../integrations/ai/video-input';
 import {
   DEFAULT_AI_ANALYSIS_IMAGE_EDGE_PX,
   normalizeAiAnalysisImageEdgePx,
 } from '../../shared/ai-analysis-image';
-import type { ProviderConcurrencyLimiter } from '../ai/provider-concurrency-limiter';
-import { runLimitedAiRequest } from '../ai/limited-request';
+import type { ProviderConcurrencyLimiter } from '../integrations/ai/provider-concurrency-limiter';
+import { runLimitedAiRequest } from '../integrations/ai/limited-request';
 import { DEFAULT_AI_RELIABILITY_SETTINGS } from '../../shared/ai-reliability';
 import { LibraryServiceError, type LibraryService } from '../library-service';
 

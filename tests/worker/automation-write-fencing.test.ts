@@ -11,7 +11,7 @@ import {
 } from '../../src/worker/automation-readonly-command-executor';
 import { dispatchAutomationReadOnlyRequest } from '../../src/worker/automation-readonly-dispatch';
 import { LibraryService, LibraryServiceError } from '../../src/worker/library-service';
-import { LibraryWriteCoordinatorError } from '../../src/worker/library-write-coordinator';
+import { LibraryWriteCoordinatorError } from '../../src/worker/library/library-write-coordinator';
 import { importNoConflict } from './import-no-conflict';
 
 const require = createRequire(import.meta.url);

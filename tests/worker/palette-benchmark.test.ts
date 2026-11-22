@@ -16,7 +16,7 @@ import { createRequire } from 'node:module';
 import { afterAll, describe, expect, it } from 'vitest';
 
 import { LibraryService } from '../../src/worker/library-service';
-import { extractRepresentativePalette } from '../../src/worker/palette-extractor';
+import { extractRepresentativePalette } from '../../src/worker/media/palette-extractor';
 import { referenceExtractRepresentativePalette } from '../helpers/palette-extractor-reference';
 
 /**

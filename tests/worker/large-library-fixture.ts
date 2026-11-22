@@ -12,7 +12,7 @@ import { createRequire } from 'node:module';
 import path from 'node:path';
 
 import { LibraryService } from '../../src/worker/library-service';
-import { normalizeSearchText } from '../../src/worker/search-query';
+import { normalizeSearchText } from '../../src/worker/library/search-query';
 import {
   createAssetBytes,
   createUniqueVideoFile,

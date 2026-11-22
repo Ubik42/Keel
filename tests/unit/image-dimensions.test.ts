@@ -4,7 +4,7 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { readImageDimensions, readImageDimensionsSync } from "../../src/worker/image-dimensions";
+import { readImageDimensions, readImageDimensionsSync } from "../../src/worker/media/image-dimensions";
 
 function tiffWithDistantIfd(): Buffer {
   const ifdOffset = 140_000;

@@ -11,7 +11,7 @@ import {
   type WorkerResult,
   type AiProgressEvent,
 } from '../shared/protocol/responses';
-import { stopOutgoingLibrariesForOpen } from './library-open-stop';
+import { stopOutgoingLibrariesForOpen } from './library/library-open-stop';
 import type { ParentPort } from 'electron';
 import {
   BUNDLED_HDRI_PRESET_IDS,
@@ -48,13 +48,13 @@ import {
   type RawMetadataBackfillAdmissionState,
 } from './library-service';
 import { publicErrorForWorkerFailure } from './public-error';
-import { AiJobAbortRegistry } from './ai/job-abort-registry';
-import { ProviderConcurrencyLimiter } from './ai/provider-concurrency-limiter';
-import { AiProgressThrottler } from './ai/progress-throttler';
+import { AiJobAbortRegistry } from './integrations/ai/job-abort-registry';
+import { ProviderConcurrencyLimiter } from './integrations/ai/provider-concurrency-limiter';
+import { AiProgressThrottler } from './integrations/ai/progress-throttler';
 import { DEFAULT_AI_ANALYSIS_CONCURRENCY } from '../shared/ai-concurrency';
 import { dispatchAutomationReadOnlyRequest } from './automation-readonly-dispatch';
-import { workerMediaDecodeWaveSize } from './media-concurrency';
-import { mediaResourceGuard } from './media-resource-guard';
+import { workerMediaDecodeWaveSize } from './media/media-concurrency';
+import { mediaResourceGuard } from './media/media-resource-guard';
 import {
   boundedWriteLibraryId,
   executeBoundedWriteWorkerCommand,
@@ -66,11 +66,11 @@ import {
   type PluginMediaProviderRequest,
   type PluginMediaProviderResult,
 } from '../shared/plugin-media-protocol';
-import { handleFbxConvertCommand } from './fbx/convert-command';
+import { handleFbxConvertCommand } from './media/fbx/convert-command';
 import {
   LatestSearchRequestCoordinator,
   searchRequestLaneKey,
-} from './search-request-coordinator';
+} from './library/search-request-coordinator';
 import {
   performanceLaneForCommand,
   performanceInteractionKeyForCommand,
@@ -82,7 +82,7 @@ import { createPublicError } from '../shared/protocol/errors';
 import {
   InteractiveScheduler,
   SchedulerCancelledError,
-} from './interactive-scheduler';
+} from './library/interactive-scheduler';
 import { executeBrowseSessionWorkerCommand } from './handlers/browse-session';
 import { runWithVerifiedDestructiveBackup } from './destructive-backup';
 import { executeLibraryIdentityWorkerCommand } from './handlers/library-identity';
@@ -104,17 +104,17 @@ import { executeAssetQueryWorkerCommand } from './handlers/asset-query';
 import { backupSemanticIndexWorkerLibrary, closeSemanticIndexWorkerLibrary, executeSemanticIndexWorkerCommand, reserveSemanticDeleteCleanup, semanticPermanentDeleteCandidates, withSemanticDeleteCleanupStatus } from './handlers/semantic-index';
 import { executeLibraryLifecycleWorkerCommand } from './handlers/library-lifecycle';
 import { executeSyncWorkerCommand } from './handlers/sync';
-import { LibraryGenerationRegistry } from './library-generation';
+import { LibraryGenerationRegistry } from './library/library-generation';
 import {
   isViewportOnlyThumbnailWave,
   shouldRunThumbnailBackgroundRepair,
-} from './visible-window-policy';
+} from './library/visible-window-policy';
 import {
   StartupBurstGateRegistry,
   type StartupBurstGateToken,
-} from './startup-burst-gate';
-import { DeferredThumbnailAdmission } from './deferred-thumbnail-admission';
-import { RawMetadataBackfillAdmissionGate } from './raw-metadata-backfill-gate';
+} from './library/startup-burst-gate';
+import { DeferredThumbnailAdmission } from './media/deferred-thumbnail-admission';
+import { RawMetadataBackfillAdmissionGate } from './media/raw-metadata-backfill-gate';
 
 const parentPort: ParentPort | undefined = process.parentPort;
 const aiJobAbortRegistry = new AiJobAbortRegistry();

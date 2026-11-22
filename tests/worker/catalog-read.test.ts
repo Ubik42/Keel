@@ -22,7 +22,7 @@ import {
   readCatalogArtifactDescriptor,
   readCatalogThumbnailArtifacts,
   type CatalogReadConnection,
-} from '../../src/worker/catalog-read';
+} from '../../src/worker/library/catalog-read';
 
 describe('expression search candidate and rank', () => {
   const term = (value: string) => ({ kind: 'TERM' as const, field: null, match: 'contains' as const, value });

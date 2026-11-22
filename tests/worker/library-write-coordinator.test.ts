@@ -8,7 +8,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   LibraryWriteCoordinator,
   LibraryWriteCoordinatorError,
-} from '../../src/worker/library-write-coordinator';
+} from '../../src/worker/library/library-write-coordinator';
 
 const require = createRequire(import.meta.url);
 const Database = require('better-sqlite3') as new (filename: string) => {

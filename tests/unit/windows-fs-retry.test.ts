@@ -5,7 +5,7 @@ import {
   removeLibraryRootWithRetry,
   removePathWithSyncRetry,
   renamePathWithRetry,
-} from '../../src/worker/windows-fs-retry';
+} from '../../src/worker/library/windows-fs-retry';
 
 describe('renamePathWithRetry (Windows folder-trash staging rename)', () => {
   it('renames immediately when the first attempt succeeds', () => {

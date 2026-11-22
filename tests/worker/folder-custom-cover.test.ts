@@ -7,7 +7,7 @@ import { afterEach, describe, expect, it } from "vitest";
 
 import { assetParentFolderCoverTarget } from "../../src/shared/folder-cover-target";
 import { LibraryService } from "../../src/worker/library-service";
-import { removePathWithSyncRetry } from "../../src/worker/windows-fs-retry";
+import { removePathWithSyncRetry } from "../../src/worker/library/windows-fs-retry";
 
 const require = createRequire(import.meta.url);
 const TestDatabase = require("better-sqlite3") as new (filename: string) => {

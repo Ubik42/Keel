@@ -17,7 +17,7 @@ import {
   missingColumns,
   resetColumnProbe,
   selectColumns,
-} from '../../src/worker/lenient-columns';
+} from '../../src/worker/library/lenient-columns';
 
 const require = createRequire(import.meta.url);
 const Database = require('better-sqlite3') as new (filename: string) => {

@@ -16,11 +16,11 @@ import { applyBaseColorTextureAlpha } from '../../src/renderer/3d-viewer/base-co
 import { applyDecodedRgbaTextures } from '../../src/renderer/3d-viewer/rgba-texture-chunk';
 import { readRgbaTextureChunk } from '../../src/shared/fbx-rgba-chunk';
 import { LibraryService } from '../../src/worker/library-service';
-import { convertFbxBuffer } from '../../src/worker/fbx/converter';
-import { buildGlb } from '../../src/worker/fbx/glb-builder';
-import type { FbxDescriptor } from '../../src/worker/fbx/descriptor';
-import { handleFbxConvertCommand } from '../../src/worker/fbx/convert-command';
-import { resetKeelUfbxModuleForTest } from '../../src/worker/fbx/wasm-loader';
+import { convertFbxBuffer } from '../../src/worker/media/fbx/converter';
+import { buildGlb } from '../../src/worker/media/fbx/glb-builder';
+import type { FbxDescriptor } from '../../src/worker/media/fbx/descriptor';
+import { handleFbxConvertCommand } from '../../src/worker/media/fbx/convert-command';
+import { resetKeelUfbxModuleForTest } from '../../src/worker/media/fbx/wasm-loader';
 import {
   buildAsciiFbx,
   ONE_PX_RED_PNG,

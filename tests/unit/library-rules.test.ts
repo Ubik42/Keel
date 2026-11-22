@@ -14,7 +14,7 @@ import {
   stripWindowsExtendedPathPrefix,
   stripTrailingPathSeparators,
   targetLibraryPath,
-} from '../../src/worker/library-rules';
+} from '../../src/worker/library/library-rules';
 
 describe('library name rules', () => {
   it('accepts a trimmed Unicode display name of at most 80 code points', () => {

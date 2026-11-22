@@ -7,7 +7,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import { LibraryService } from '../../src/worker/library-service';
 import type { LibraryServiceError } from '../../src/worker/library-service';
-import { portablePathIdentity } from '../../src/worker/library-rules';
+import { portablePathIdentity } from '../../src/worker/library/library-rules';
 import { importNoConflict as importFile } from './import-no-conflict';
 
 const roots: string[] = [];

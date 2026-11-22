@@ -4,7 +4,7 @@ import {
   durationSecondsFromProbeStdout,
   videoPosterGeneratorVersion,
   videoPosterSeekSeconds,
-} from "../../src/worker/video-poster-seek";
+} from "../../src/worker/media/video-poster-seek";
 
 describe("videoPosterSeekSeconds", () => {
   it("seeks to 25% of a normal duration", () => {

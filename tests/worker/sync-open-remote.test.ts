@@ -5,10 +5,10 @@ import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { LibraryService } from '../../src/worker/library-service';
-import { SyncEngine } from '../../src/worker/sync/sync-engine';
-import { createLibrarySyncPort } from '../../src/worker/sync/library-port';
-import { WebDAVDriver } from '../../src/worker/sync/webdav-driver';
-import { parseManifest } from '../../src/worker/sync/manifest';
+import { SyncEngine } from '../../src/worker/integrations/sync/sync-engine';
+import { createLibrarySyncPort } from '../../src/worker/integrations/sync/library-port';
+import { WebDAVDriver } from '../../src/worker/integrations/sync/webdav-driver';
+import { parseManifest } from '../../src/worker/integrations/sync/manifest';
 import { SYNC_MANIFEST_FILE, SYNC_ASSETS_DIR, sanitizeSyncDirectoryName } from '../../src/shared/sync-paths';
 import { startMockWebDAVServer } from './webdav-fixture-server';
 

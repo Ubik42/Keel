@@ -23,10 +23,10 @@ import {
   LibraryServiceError,
   SUPPORTED_SCHEMA_VERSION,
 } from '../../src/worker/library-service';
-import { LibraryWriteCoordinatorError } from '../../src/worker/library-write-coordinator';
+import { LibraryWriteCoordinatorError } from '../../src/worker/library/library-write-coordinator';
 import { publicErrorForWorkerFailure } from '../../src/worker/public-error';
 import { PUBLIC_ERROR_MESSAGES } from '../../src/shared/protocol/errors';
-import { removePathWithSyncRetry } from '../../src/worker/windows-fs-retry';
+import { removePathWithSyncRetry } from '../../src/worker/library/windows-fs-retry';
 import { build } from 'vite';
 import { removeLinkedDirectoryIndexFixture } from './remove-linked-directory-index';
 

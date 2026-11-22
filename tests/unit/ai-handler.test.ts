@@ -2,8 +2,8 @@ import { expect, test, vi } from 'vitest';
 
 import { DEFAULT_AI_ANALYSIS_SETTINGS } from '../../src/shared/ai-analysis-settings';
 import type { WorkerRequest } from '../../src/shared/protocol/requests';
-import { AiJobAbortRegistry } from '../../src/worker/ai/job-abort-registry';
-import { ProviderConcurrencyLimiter } from '../../src/worker/ai/provider-concurrency-limiter';
+import { AiJobAbortRegistry } from '../../src/worker/integrations/ai/job-abort-registry';
+import { ProviderConcurrencyLimiter } from '../../src/worker/integrations/ai/provider-concurrency-limiter';
 import { executeAiWorkerCommand, type AiRuntime } from '../../src/worker/handlers/ai';
 import type { LibraryService } from '../../src/worker/library-service';
 

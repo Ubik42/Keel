@@ -17,9 +17,9 @@ import type { WorkerCommand, WorkerRequest } from '../../shared/protocol/request
 import type { InternalLibrarySummary, WorkerResult } from '../../shared/protocol/responses';
 import type { AssetSummary } from '../../shared/asset-types';
 import type { LibraryService } from '../library-service';
-import { backupExistingSemanticIndexFile, removeSemanticIndexForRebuild, SemanticIndexStore, type SemanticVectorProfile } from '../semantic-index-store';
-import { digestLegacySemanticCache, parseLegacySemanticCache, type LegacySemanticCacheEntry } from '../legacy-semantic-cache';
-import { resolveFfmpegPath } from '../binary-resolver';
+import { backupExistingSemanticIndexFile, removeSemanticIndexForRebuild, SemanticIndexStore, type SemanticVectorProfile } from '../library/semantic-index-store';
+import { digestLegacySemanticCache, parseLegacySemanticCache, type LegacySemanticCacheEntry } from '../integrations/legacy-semantic-cache';
+import { resolveFfmpegPath } from '../media/binary-resolver';
 import { libraryMetaDir } from '../../shared/library-meta-dir';
 
 const TARGET_PAGE_SIZE = 500;

@@ -17,7 +17,7 @@ import {
   LibraryService,
   type LibraryServiceDiagnostic,
 } from '../../src/worker/library-service';
-import { mediaResourceGuard } from '../../src/worker/media-resource-guard';
+import { mediaResourceGuard } from '../../src/worker/media/media-resource-guard';
 import { isSourceDirectPreview } from '../../src/shared/preview-policy';
 import type { LargeLibraryFixtureManifest } from './large-library-fixture';
 

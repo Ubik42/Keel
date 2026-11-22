@@ -3,10 +3,10 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { loadAiImageInput, encodeAiAnalysisImage, type AiAnalysisSharpFactory } from '../../src/worker/ai/image-input';
-import { ProviderConcurrencyLimiter } from '../../src/worker/ai/provider-concurrency-limiter';
-import { runLimitedAiRequest } from '../../src/worker/ai/limited-request';
-import { AiProgressThrottler } from '../../src/worker/ai/progress-throttler';
+import { loadAiImageInput, encodeAiAnalysisImage, type AiAnalysisSharpFactory } from '../../src/worker/integrations/ai/image-input';
+import { ProviderConcurrencyLimiter } from '../../src/worker/integrations/ai/provider-concurrency-limiter';
+import { runLimitedAiRequest } from '../../src/worker/integrations/ai/limited-request';
+import { AiProgressThrottler } from '../../src/worker/integrations/ai/progress-throttler';
 import {
   DEFAULT_AI_ANALYSIS_IMAGE_EDGE_PX,
   normalizeAiAnalysisImageEdgePx,

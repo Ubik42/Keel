@@ -4,7 +4,7 @@ import path from 'node:path';
 import { _electron as electron, expect, test } from '@playwright/test';
 import type { KeelLibraryApi } from '../../src/shared/library-api';
 import { resolveElectronExecutablePath } from './electron-test-helpers';
-import { removePathWithSyncRetry } from '../../src/worker/windows-fs-retry';
+import { removePathWithSyncRetry } from '../../src/worker/library/windows-fs-retry';
 
 test('creates root storage by default and offers the compatible Assets layout', async () => {
   const parent = mkdtempSync(path.join(tmpdir(), 'serpent-root-ui-'));

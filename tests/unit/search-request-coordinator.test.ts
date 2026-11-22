@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   LatestSearchRequestCoordinator,
   searchRequestLaneKey,
-} from '../../src/worker/search-request-coordinator';
+} from '../../src/worker/library/search-request-coordinator';
 
 describe('LatestSearchRequestCoordinator', () => {
   it('coalesces requests independently per library and lane', () => {

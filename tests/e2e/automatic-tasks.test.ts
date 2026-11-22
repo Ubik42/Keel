@@ -4,7 +4,7 @@ import path from "node:path";
 import { _electron as electron, expect, test } from "@playwright/test";
 import type { KeelLibraryApi } from "../../src/shared/library-api";
 import { resolveElectronExecutablePath } from "./electron-test-helpers";
-import { removePathWithSyncRetry } from "../../src/worker/windows-fs-retry";
+import { removePathWithSyncRetry } from "../../src/worker/library/windows-fs-retry";
 
 test("independent automatic tasks replace group entries and apply tags manually and in background", async () => {
   test.setTimeout(100000);

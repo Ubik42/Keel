@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { normalizeWebDAVBaseUrl } from '../../src/shared/sync-paths';
-import { RemoteStorageError } from '../../src/worker/sync/remote-storage';
+import { RemoteStorageError } from '../../src/worker/integrations/sync/remote-storage';
 import { publicErrorForWorkerFailure } from '../../src/worker/public-error';
 
 describe('normalizeWebDAVBaseUrl (Serpent-fatf)', () => {

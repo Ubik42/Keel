@@ -5,7 +5,7 @@ import { performance } from 'node:perf_hooks';
 import { expect, it } from 'vitest';
 
 import { LibraryService, openConfiguredDatabase } from '../../src/worker/library-service';
-import { LinkedDirectoryIndex } from '../../src/worker/linked-directory-index';
+import { LinkedDirectoryIndex } from '../../src/worker/library/linked-directory-index';
 
 /** Metadata-scale benchmark; real media decoding is verified separately. */
 it.skipIf(process.env.KEEL_LINKED_NAV_BENCHMARK !== '1')('records 150k linked-asset navigation and event-loop latency', async () => {

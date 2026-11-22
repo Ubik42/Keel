@@ -5,12 +5,12 @@ import {
   mediaDecodeWaveSize,
   mediaInteractiveDecodeConcurrency,
 } from "../../src/shared/media-concurrency";
-import { physicalCpuCountFromProcCpuInfo } from "../../src/worker/media-concurrency";
+import { physicalCpuCountFromProcCpuInfo } from "../../src/worker/media/media-concurrency";
 import {
   MediaResourceGuard,
   isMediaResourceExhaustion,
   MEDIA_RESOURCE_EXHAUSTED_ERROR_CODE,
-} from "../../src/worker/media-resource-guard";
+} from "../../src/worker/media/media-resource-guard";
 
 describe("mediaDecodeConcurrency", () => {
   it("keeps the queue bounded for memory-heavy native decoders", () => {

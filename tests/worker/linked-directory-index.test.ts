@@ -8,7 +8,7 @@ import { afterEach, expect, it, vi } from 'vitest';
 
 import { executeAutomationReadOnlyWorkerCommand } from '../../src/worker/automation-readonly-command-executor';
 import { LibraryService, openConfiguredDatabase } from '../../src/worker/library-service';
-import { LinkedDirectoryIndex } from '../../src/worker/linked-directory-index';
+import { LinkedDirectoryIndex } from '../../src/worker/library/linked-directory-index';
 
 const roots: string[] = [];
 const services: LibraryService[] = [];

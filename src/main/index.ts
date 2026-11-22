@@ -408,7 +408,7 @@ import {
 } from "../shared/protocol/errors";
 import {
   LibraryParentError,
-} from "../worker/library-parent";
+} from "../worker/library/library-parent";
 import {
   parseNativeAssetDragRequest,
   parseRendererRequest,

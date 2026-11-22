@@ -4,7 +4,7 @@ import path from 'node:path';
 import { _electron as electron, expect, test } from '@playwright/test';
 import type { KeelLibraryApi } from '../../src/shared/library-api';
 import { resolveElectronExecutablePath } from './electron-test-helpers';
-import { removePathWithSyncRetry } from '../../src/worker/windows-fs-retry';
+import { removePathWithSyncRetry } from '../../src/worker/library/windows-fs-retry';
 
 test('tag browsing clears on folder navigation while pinned tags remain scoped', async () => {
   test.setTimeout(90000);

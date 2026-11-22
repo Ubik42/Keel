@@ -1,7 +1,7 @@
 import { localCatalogSequenceFields } from '../../shared/performance-contract';
 import type { WorkerRequest } from '../../shared/protocol/requests';
 import type { WorkerResult } from '../../shared/protocol/responses';
-import { browseCatalogSequenceStale } from '../catalog-sequence-admission';
+import { browseCatalogSequenceStale } from '../library/catalog-sequence-admission';
 import type { LibraryService } from '../library-service';
 
 export function executeBrowseSessionWorkerCommand(

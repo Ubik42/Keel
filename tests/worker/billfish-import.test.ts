@@ -5,9 +5,9 @@ import path from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { readBillfishLibrary } from '../../src/worker/billfish-library';
+import { readBillfishLibrary } from '../../src/worker/integrations/billfish-library';
 import { LibraryService } from '../../src/worker/library-service';
-import { IMPORTED_THUMBNAIL_NORMALIZATION_JOB } from '../../src/worker/imported-thumbnail-policy';
+import { IMPORTED_THUMBNAIL_NORMALIZATION_JOB } from '../../src/worker/media/imported-thumbnail-policy';
 import { ONE_PX_RED_PNG } from '../fixtures/fbx/ascii-fbx';
 
 const temporaryRoots: string[] = [];

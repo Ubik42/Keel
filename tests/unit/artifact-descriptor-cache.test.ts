@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { ArtifactDescriptorCache } from '../../src/worker/artifact-descriptor-cache';
+import { ArtifactDescriptorCache } from '../../src/worker/media/artifact-descriptor-cache';
 
 describe('ArtifactDescriptorCache', () => {
   it('uses the change sequence as a local coherence fence', () => {

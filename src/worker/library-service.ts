@@ -1,8 +1,8 @@
-import { ASSET_COMPANIONS_SQL, BUILT_IN_COMPANION_EXTENSIONS, normalizeCompanionExtensions, pairCompanions, renamedCompanionName, type CompanionCandidateRow } from './companion-files';
+import { ASSET_COMPANIONS_SQL, BUILT_IN_COMPANION_EXTENSIONS, normalizeCompanionExtensions, pairCompanions, renamedCompanionName, type CompanionCandidateRow } from './library/companion-files';
 import { AUTOMATIC_TASKS_SQL, AUTOMATIC_TASK_LAYOUT_SQL, automaticTaskLayoutSchema, type AutomaticTaskLayout, automaticTaskConfigSchema, type AutomaticTask, type AutomaticTaskConfig } from '../shared/automatic-tasks';
-import { ensureWindowsLibraryIcon } from './windows-library-icon';
+import { ensureWindowsLibraryIcon } from './integrations/windows-library-icon';
 import { randomTagAppearance } from '../shared/tag-appearance';
-import { managedStoragePath, readStorageLayout, writeStorageLayout } from './library-storage-layout';
+import { managedStoragePath, readStorageLayout, writeStorageLayout } from './library/library-storage-layout';
 import type { LibraryStorageLayout } from '../shared/library-storage-layout';
 import { randomUUID, createHash } from 'node:crypto';
 import {
@@ -42,7 +42,7 @@ import {
   rm as rmAsync,
 } from 'node:fs/promises';
 import path from 'node:path';
-import { removeLibraryRootWithRetry, removePathWithSyncRetry, renamePathWithRetry } from './windows-fs-retry';
+import { removeLibraryRootWithRetry, removePathWithSyncRetry, renamePathWithRetry } from './library/windows-fs-retry';
 import {
   execFileSync,
   spawn,
@@ -59,13 +59,13 @@ import {
   resolveFfmpegPath,
   resolveFfprobePath,
   resolveOiiotoolPath,
-} from './binary-resolver';
+} from './media/binary-resolver';
 import {
   durationSecondsFromProbeStdout,
   VIDEO_POSTER_GENERATOR_TAG,
   videoPosterGeneratorVersion,
   videoPosterSeekSeconds,
-} from './video-poster-seek';
+} from './media/video-poster-seek';
 import {
   commitReplacingFolderCoverFiles,
   folderCoverAbsolutePath,
@@ -74,44 +74,44 @@ import {
   installFolderCoverFile,
   listStaleFolderCoverFiles,
   removeFolderCoverFile,
-} from './folder-custom-cover';
-import { hasPdfCompatibleIllustratorHeader } from './illustrator-ai-format';
+} from './library/folder-custom-cover';
+import { hasPdfCompatibleIllustratorHeader } from './media/illustrator-ai-format';
 import {
   dominantColorMetrics,
   extractRepresentativePalette,
   type RepresentativeColor,
-} from './palette-extractor';
-import { pathIsWithin } from './path-utils';
+} from './media/palette-extractor';
+import { pathIsWithin } from './library/path-utils';
 import {
   workerMediaDecodeConcurrency,
   workerMediaDecodeWaveSize,
   workerMediaInteractiveDecodeConcurrency,
-} from './media-concurrency';
+} from './media/media-concurrency';
 import {
   mediaFfmpegConcurrencyLimit,
   systemAvailablePhysicalMemoryBytes,
-} from './media-memory-concurrency';
+} from './media/media-memory-concurrency';
 import {
   encoderUsesHardwareName,
   ffmpegOneFrameEncodeArgs,
   listedH264ProxyEncoders,
   parseFfmpegEncoderTokens,
-} from './video-proxy-encoder';
+} from './media/video-proxy-encoder';
 import {
   readImageDimensions,
   readImageDimensionsSync,
-} from './image-dimensions';
+} from './media/image-dimensions';
 import {
   MediaJobStatusSummaryCache,
   mediaJobCountTotal,
   mediaJobCountsFromRows,
-} from './media-job-status-summary';
+} from './media/media-job-status-summary';
 import {
   clampMediaJobListLimit,
   type MediaJobListCursor,
   sliceMediaJobListPage,
 } from '../shared/media-jobs';
-import type { RawMetadataBackfillProbeOutcome } from './raw-metadata-backfill-gate';
+import type { RawMetadataBackfillProbeOutcome } from './media/raw-metadata-backfill-gate';
 
 export interface RawMetadataBackfillAdmissionState {
   token: string;
@@ -143,11 +143,11 @@ import {
   interruptUnfinishedPluginJobs,
   resumePluginJobRecord,
   retryPluginJobRecord,
-} from './plugin-job-repository';
+} from './library/plugin-job-repository';
 import {
   materializePluginDerivedFields as materializePluginDerivedFieldRows,
   queryPluginDerivedFields as queryPluginDerivedFieldRows,
-} from './plugin-derived-field-repository';
+} from './library/plugin-derived-field-repository';
 import {
   LibraryWriteCoordinator,
   LibraryWriteCoordinatorError,
@@ -157,7 +157,7 @@ import {
   type LibraryJobLease,
   type LibraryWriteLease,
   type LibraryWriteLeaseHeartbeat,
-} from './library-write-coordinator';
+} from './library/library-write-coordinator';
 import {
   createNetworkReadThroughConnection,
   defaultNetworkMetadataCacheDirectory,
@@ -171,35 +171,35 @@ import {
   type NetworkMetadataCacheManifest,
   type NetworkMetadataSourceFingerprint,
   type NetworkReadThroughConnection,
-} from './network-metadata-cache';
+} from './library/network-metadata-cache';
 
-import { columnsFor, degradedDefaults, hasTable, invalidateColumnProbe, missingColumns, qualify, selectColumns } from './lenient-columns';
+import { columnsFor, degradedDefaults, hasTable, invalidateColumnProbe, missingColumns, qualify, selectColumns } from './library/lenient-columns';
 import { isBakeableStillImageFile } from '../shared/bakeable-still-image';
-import { rotateStillImageFile } from './rotate-still-image-file';
+import { rotateStillImageFile } from './media/rotate-still-image-file';
 import {
   asMediaResourceExhaustedError,
   MEDIA_RESOURCE_EXHAUSTED_ERROR_CODE,
   MediaResourceExhaustedError,
   mediaResourceGuard,
   mediaResourceFailureFromSpawnResult,
-} from './media-resource-guard';
+} from './media/media-resource-guard';
 import {
   estimateMediaNativeMemoryBytes,
   mediaNativeMemoryBudget,
   type MediaNativeMemoryEstimate,
-} from './media-memory-budget';
+} from './media/media-memory-budget';
 import {
   clearMigrationFailure,
   MAX_MIGRATION_ATTEMPTS,
   readMigrationFailure,
   recordMigrationFailure,
-} from './schema-failure';
+} from './library/schema-failure';
 import {
   gitignoreMatchesPath,
   parseGitignore,
   type GitIgnoreMatcher,
-} from './gitignore';
-import { diffGitignoreHits } from './gitignore-preview';
+} from './library/gitignore';
+import { diffGitignoreHits } from './library/gitignore-preview';
 import {
   gitignorePreviewCandidateKey,
   type GitignorePreviewCandidate,
@@ -257,8 +257,8 @@ import {
   type HistorySource,
   type HistoryStackEntry,
   type HistoryStatus,
-} from './operation-history';
-import { assertRegisteredHistoryRecipePair, assertRegisteredHistoryRecipe } from './operation-history-recipes';
+} from './library/operation-history';
+import { assertRegisteredHistoryRecipePair, assertRegisteredHistoryRecipe } from './library/operation-history-recipes';
 import {
   EagleLibraryReadError,
   readEagleAssetCandidate,
@@ -266,19 +266,19 @@ import {
   sumEagleLibrarySourceBytes,
   type EagleAssetCandidate,
   type EagleFolderNode,
-} from './eagle-library';
+} from './integrations/eagle-library';
 import {
   BillfishLibraryReadError,
   readBillfishLibrary,
   type BillfishAssetCandidate,
-} from './billfish-library';
+} from './integrations/billfish-library';
 import {
   emptySyncAssetMetadata,
   hasSyncAiLayer,
   metadataContentHash,
   type SyncAssetMetadata,
-} from './sync/sync-metadata';
-import { parseManifest } from './sync/manifest';
+} from './integrations/sync/sync-metadata';
+import { parseManifest } from './integrations/sync/manifest';
 import { deriveSyncCardStatus, isLocalSyncPending } from '../shared/sync-card-status';
 import { LIBRARY_IGNORE_FILE_NAMES, LIBRARY_META_DIR_NAMES, isLibraryIgnoreFileName, isLibraryMetaDirName, libraryIgnoreFile, libraryMetaDir, migrateLibraryMetaDir, type LibraryMetaDirMigration } from '../shared/library-meta-dir';
 
@@ -703,7 +703,7 @@ import type {
   SuspectedDuplicateDecision,
 } from '../shared/protocol/requests';
 import { assetAuthorSchema, sourcePageUrlSchema } from '../shared/protocol/requests';
-import { extractAuthorFromExif } from './author-from-exif';
+import { extractAuthorFromExif } from './media/author-from-exif';
 import {
   extractRawImageMetadataDetailed,
   extractRawImageMetadata,
@@ -711,16 +711,16 @@ import {
   resolvedExtractedPixelSize,
   type RawImageMetadata,
   type RawImageMetadataParser,
-} from './raw-image-metadata';
+} from './media/raw-image-metadata';
 import {
   embeddedMetadataSearchText,
   normalizeProbeEmbeddedMetadata,
-} from './embedded-metadata';
-import { extractRawEmbeddedJpegThumbnail } from './raw-embedded-thumbnail';
+} from './media/embedded-metadata';
+import { extractRawEmbeddedJpegThumbnail } from './media/raw-embedded-thumbnail';
 import {
   queryModelCompanionAssets,
   resolveModelPreviewResolution,
-} from './model-resolution';
+} from './media/model-resolution';
 import type { ModelCompanionAsset } from '../shared/model-companions';
 import type {
   ImportCompletion,
@@ -746,21 +746,21 @@ import {
   portablePathIdentity,
   portablePathSegmentIdentity,
   targetLibraryPath,
-} from './library-rules';
+} from './library/library-rules';
 import {
   classifyLibraryStorage,
   type LibraryStorageKind,
-} from './network-storage';
-import { ImportDestinationDirectoryCache } from './import-destination-directory-cache';
+} from './library/network-storage';
+import { ImportDestinationDirectoryCache } from './library/import-destination-directory-cache';
 import {
   LibraryParentError,
   resolveWritableLibraryParent,
-} from './library-parent';
+} from './library/library-parent';
 import {
   normalizeSearchText,
   tokenizeForFts,
   type SearchClause,
-} from './search-query';
+} from './library/search-query';
 import {
   buildCatalogAssetVisibilityPredicates,
   buildCatalogContextualSearchWhere,
@@ -784,7 +784,7 @@ import {
   readCatalogThumbnailArtifacts,
   type CatalogAssetSummaryRow,
   type CatalogSearchGroup as SearchGroup,
-} from './catalog-read';
+} from './library/catalog-read';
 import { rollupDirectFolderCounts } from '../shared/filtered-folder-counts';
 import {
   GIF_GOOD_PAGE_SCORE_THRESHOLD,
@@ -792,8 +792,8 @@ import {
   pickBestGifPage,
   sampleGifPageIndices,
   scoreRawRgbFrame,
-} from './gif-thumbnail-page';
-import { buildGifExtractedMetadata, type GifExtractedMetadata } from './gif-metadata';
+} from './media/gif-thumbnail-page';
+import { buildGifExtractedMetadata, type GifExtractedMetadata } from './media/gif-metadata';
 import {
   IMPORTED_THUMBNAIL_GENERATOR_PREFIX,
   IMPORTED_THUMBNAIL_MAX_BYTES,
@@ -803,12 +803,12 @@ import {
   importedThumbnailNeedsNormalization,
   isImportedThumbnailGenerator,
   isLegacyImportedThumbnailGenerator,
-} from './imported-thumbnail-policy';
+} from './media/imported-thumbnail-policy';
 import {
   parseIcoPageSizes,
   pickLargestIcoPage,
   type IcoPageSize,
-} from './ico-page';
+} from './media/ico-page';
 import {
   AUDIO_EXTENSION_NAMES,
   AUDIO_FORCED_WAVEFORM_GENERATOR_MARK,
@@ -864,11 +864,11 @@ import {
   artifactIdentityForPersistedRow,
   EXPLICIT_PROXY_FALLBACK_MARKER,
   type ArtifactJobKind,
-} from './artifact-policy';
+} from './media/artifact-policy';
 import {
   ArtifactDescriptorCache,
   type ArtifactDescriptorCacheMetrics,
-} from './artifact-descriptor-cache';
+} from './media/artifact-descriptor-cache';
 import {
   BrowseSessionStore,
   browseQueryFingerprint,
@@ -876,11 +876,11 @@ import {
   browseSessionPageUsesSnapshot,
   type BrowseSessionLookup,
   type BrowseSessionSnapshot,
-} from './browse-session-store';
+} from './library/browse-session-store';
 import {
   LibraryReconciliationOwner,
   type LibraryReconciliationTask,
-} from './reconciliation-owner';
+} from './library/reconciliation-owner';
 import {
   MODEL_THUMBNAIL_GENERATOR_VERSION,
 } from '../shared/model-thumbnail-protocol';
@@ -895,7 +895,7 @@ import {
   fontMetadataToExtractedFields,
   fontSampleQuerySuffix,
   readFontMetadata,
-} from './font-file-metadata';
+} from './media/font-file-metadata';
 import {
   COMMON_IMAGE_COLOR_SPACE_OPTIONS,
   colorSpaceInfoFromName,
@@ -904,7 +904,7 @@ import {
   parseOiioColorSpaceInfo,
   type ImageColorSpaceInfo,
   type ImageColorSpaceOption,
-} from './image-color-space';
+} from './media/image-color-space';
 import {
   countTextLines,
   isTextFileName,
@@ -921,7 +921,7 @@ import {
   formatImageSequenceDisplayName,
   type ImageSequenceFrameCandidate,
 } from '../shared/image-sequence';
-import { discoverSelectedImageSequenceFrames } from './image-sequence-import-discovery';
+import { discoverSelectedImageSequenceFrames } from './library/image-sequence-import-discovery';
 import { isImportConflictPlan, isImportSourceFailurePlan } from '../shared/import-outcome';
 import {
   ImportSourceFailurePause,
@@ -929,36 +929,36 @@ import {
   skippedImportSourceFromError,
   toImportSourceFailurePlan,
   type SkippedImportSource,
-} from './import-source-failure';
+} from './library/import-source-failure';
 import { assetSupportsThumbnail } from '../shared/thumbnail-support';
 import {
   extractZipStream,
   zipBombProtectionLimits,
   ZipImportStreamError,
   type ZipArchiveManifest,
-} from './zip-import-stream';
-import { listZipArchiveFiles, readZipArchiveEntry } from './zip-archive-preview';
+} from './library/zip-import-stream';
+import { listZipArchiveFiles, readZipArchiveEntry } from './media/zip-archive-preview';
 import {
   defaultPinnedHttpTransport,
   type DnsLookup,
   type PinnedHttpTransport,
   type ResolvedAddress,
-} from './secure-http-download';
+} from './integrations/secure-http-download';
 import {
   extensionForRemoteContentType,
   filenameMatchesRemoteContentType,
   normalizeRemoteContentType,
   remoteMediaValidationFailure,
   RemoteMediaMagicProbe,
-} from './remote-media-validation';
-import { requeueRetryableFailedArtifacts } from './derived-artifact-repair';
-import { literalOiioArgs, oiioFailureCode, OIIO_LITERAL_PATHS_MARK, requeueLegacyOiioPathFailures } from './oiio-invocation';
-import { LinkedDirectoryIndex, LINKED_DIRECTORY_INDEX_SQL } from './linked-directory-index';
-import { SingleFlightRead } from './single-flight-read';
-import { linkedDirectoryIgnored } from './linked-directory-visibility';
-import { compileLinkedFolderRules } from './linked-folder-rule-matcher';
-import { NavigationReadMetrics } from './navigation-read-metrics';
-import { collectLinkedAssetPaths } from './linked-asset-path-projection';
+} from './media/remote-media-validation';
+import { requeueRetryableFailedArtifacts } from './media/derived-artifact-repair';
+import { literalOiioArgs, oiioFailureCode, OIIO_LITERAL_PATHS_MARK, requeueLegacyOiioPathFailures } from './media/oiio-invocation';
+import { LinkedDirectoryIndex, LINKED_DIRECTORY_INDEX_SQL } from './library/linked-directory-index';
+import { SingleFlightRead } from './library/single-flight-read';
+import { linkedDirectoryIgnored } from './library/linked-directory-visibility';
+import { compileLinkedFolderRules } from './library/linked-folder-rule-matcher';
+import { NavigationReadMetrics } from './library/navigation-read-metrics';
+import { collectLinkedAssetPaths } from './library/linked-asset-path-projection';
 import {
   SQLITE_IN_BIND_LIMIT,
   sqliteAllInChunks,
@@ -966,7 +966,7 @@ import {
   sqliteInPlaceholders,
   sqliteRunInChunks,
   withSqliteInPredicate,
-} from './sqlite-in';
+} from './library/sqlite-in';
 
 interface RunResult {
   changes: number;

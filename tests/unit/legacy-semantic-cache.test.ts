@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
-import { digestLegacySemanticCache, parseLegacySemanticCache } from '../../src/worker/legacy-semantic-cache';
+import { digestLegacySemanticCache, parseLegacySemanticCache } from '../../src/worker/integrations/legacy-semantic-cache';
 
 const temporaryDirectories: string[] = [];
 

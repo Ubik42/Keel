@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { LibraryReconciliationOwner } from '../../src/worker/reconciliation-owner';
+import { LibraryReconciliationOwner } from '../../src/worker/library/reconciliation-owner';
 
 describe('LibraryReconciliationOwner', () => {
   it('advances generation independently of the current task slot', () => {

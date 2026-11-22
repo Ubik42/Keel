@@ -3,7 +3,7 @@ import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
-import { loadVideoAiInput } from '../../src/worker/ai/video-input';
+import { loadVideoAiInput } from '../../src/worker/integrations/ai/video-input';
 
 describe('loadVideoAiInput', () => {
   it('uses the contact sheet alone and never asks for a video poster', async () => {

@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import sharp, { type Sharp } from 'sharp';
 
-import { resolveFfmpegPath } from '../../src/worker/binary-resolver';
+import { resolveFfmpegPath } from '../../src/worker/media/binary-resolver';
 import {
   imageGeometryForIndex,
   pad,

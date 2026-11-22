@@ -6,7 +6,7 @@ import {
   importedThumbnailNeedsNormalization,
   isImportedThumbnailGenerator,
   isLegacyImportedThumbnailGenerator,
-} from '../../src/worker/imported-thumbnail-policy';
+} from '../../src/worker/media/imported-thumbnail-policy';
 
 describe('imported thumbnail policy', () => {
   it('normalizes an imported preview when its dimensions exceed the card bound', () => {

@@ -13,7 +13,7 @@ import {
   LibraryService,
   LibraryServiceError,
 } from '../../src/worker/library-service';
-import { removePathWithSyncRetry } from '../../src/worker/windows-fs-retry';
+import { removePathWithSyncRetry } from '../../src/worker/library/windows-fs-retry';
 
 vi.mock('node:fs', async (importOriginal) => {
   const actual = await importOriginal<typeof NodeFs>();

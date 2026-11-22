@@ -4,8 +4,8 @@ import path from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { ImportDestinationDirectoryCache } from '../../src/worker/import-destination-directory-cache';
-import { portablePathSegmentIdentity } from '../../src/worker/library-rules';
+import { ImportDestinationDirectoryCache } from '../../src/worker/library/import-destination-directory-cache';
+import { portablePathSegmentIdentity } from '../../src/worker/library/library-rules';
 
 describe('ImportDestinationDirectoryCache', () => {
   it('reads each directory once and indexes names by portable identity', () => {

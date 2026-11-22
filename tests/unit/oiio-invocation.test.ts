@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest';
 
-import { literalOiioArgs, oiioFailureCode } from '../../src/worker/oiio-invocation';
+import { literalOiioArgs, oiioFailureCode } from '../../src/worker/media/oiio-invocation';
 
 it('uses literal filenames before both input and output arguments', () => {
   expect(literalOiioArgs(['#images/source.exr', '-o', '#previews/output.png']))

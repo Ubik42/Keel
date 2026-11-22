@@ -4,7 +4,7 @@ import path from 'node:path';
 import { _electron as electron, expect, test } from '@playwright/test';
 import type { KeelLibraryApi } from '../../src/shared/library-api';
 import { resolveElectronExecutablePath, openAppSettingsDialog } from './electron-test-helpers';
-import { removePathWithSyncRetry } from '../../src/worker/windows-fs-retry';
+import { removePathWithSyncRetry } from '../../src/worker/library/windows-fs-retry';
 test.setTimeout(120_000);
 test('tag appearance, reverse image drop and persistent interface scale', async () => {
   const root = mkdtempSync(path.join(tmpdir(), 'serpent-tag-style-'));

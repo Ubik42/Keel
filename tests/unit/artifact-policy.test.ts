@@ -9,7 +9,7 @@ import {
   artifactPolicyForMediaType,
   artifactRoleForJob,
   shouldGeneratePlaybackProxy,
-} from '../../src/worker/artifact-policy';
+} from '../../src/worker/media/artifact-policy';
 
 describe('artifact policy', () => {
   it('maps product roles to the durable artifact kinds without mixing audio and video', () => {

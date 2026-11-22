@@ -7,9 +7,9 @@ import type {
   RemoteStorageDriver,
   RemoteWriteOptions,
   RemoteWriteResult,
-} from '../../src/worker/sync/remote-storage';
-import { SyncEngine, type SyncLibraryPort, type SyncRootConfig } from '../../src/worker/sync/sync-engine';
-import type { SyncAssetMetadata } from '../../src/worker/sync/sync-metadata';
+} from '../../src/worker/integrations/sync/remote-storage';
+import { SyncEngine, type SyncLibraryPort, type SyncRootConfig } from '../../src/worker/integrations/sync/sync-engine';
+import type { SyncAssetMetadata } from '../../src/worker/integrations/sync/sync-metadata';
 
 class MemoryDriver implements RemoteStorageDriver {
   readonly files = new Map<string, Buffer>();

@@ -9,9 +9,9 @@ import { randomUUID } from 'node:crypto';
 
 import { LibraryService } from '../../src/worker/library-service';
 import { importNoConflict as sharedImportNoConflict } from './import-no-conflict';
-import { GeminiVendorAdapter } from '../../src/worker/ai/gemini-adapter';
-import { AnthropicVendorAdapter } from '../../src/worker/ai/anthropic-adapter';
-import { VendorAdapterError } from '../../src/worker/ai/vendor-adapter';
+import { GeminiVendorAdapter } from '../../src/worker/integrations/ai/gemini-adapter';
+import { AnthropicVendorAdapter } from '../../src/worker/integrations/ai/anthropic-adapter';
+import { VendorAdapterError } from '../../src/worker/integrations/ai/vendor-adapter';
 
 // ---------------------------------------------------------------------------
 // Helpers

@@ -2,7 +2,7 @@ import path from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { pathIsWithin } from '../../src/worker/path-utils';
+import { pathIsWithin } from '../../src/worker/library/path-utils';
 
 describe('pathIsWithin', () => {
   const root = path.resolve(path.sep, 'serpent-path-root');

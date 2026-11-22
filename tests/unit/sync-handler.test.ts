@@ -2,7 +2,7 @@ import { expect, test, vi } from 'vitest';
 
 import { executeSyncWorkerCommand } from '../../src/worker/handlers/sync';
 import type { LibraryService } from '../../src/worker/library-service';
-import { RemoteStorageError } from '../../src/worker/sync/remote-storage';
+import { RemoteStorageError } from '../../src/worker/integrations/sync/remote-storage';
 import type { WorkerRequest } from '../../src/shared/protocol/requests';
 
 function syncRequest(command: WorkerRequest['command']): WorkerRequest {

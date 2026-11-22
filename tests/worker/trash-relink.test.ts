@@ -24,7 +24,7 @@ import {
 } from '../../src/worker/library-service';
 import {
   removeLibraryRootWithRetry,
-} from '../../src/worker/windows-fs-retry';
+} from '../../src/worker/library/windows-fs-retry';
 import { importNoConflict } from './import-no-conflict';
 import { removeLinkedDirectoryIndexFixture } from './remove-linked-directory-index';
 

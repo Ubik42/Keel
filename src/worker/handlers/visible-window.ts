@@ -6,7 +6,7 @@ import {
   shouldAbortRunningOutsideViewport,
   type ViewportPriorityOverlay,
 } from '../../shared/viewport-priority';
-import { shouldPreemptVisibleWindow } from '../visible-window-policy';
+import { shouldPreemptVisibleWindow } from '../library/visible-window-policy';
 import type { LibraryService } from '../library-service';
 
 export type VisibleWindowRuntime = {

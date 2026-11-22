@@ -8,7 +8,7 @@ import {
   sqliteAllInChunks,
   sqliteRunInChunks,
   withSqliteInPredicate,
-} from '../../src/worker/sqlite-in';
+} from '../../src/worker/library/sqlite-in';
 import { openConfiguredDatabase } from '../../src/worker/library-service';
 import { LibraryService } from '../../src/worker/library-service';
 

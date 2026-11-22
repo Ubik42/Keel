@@ -8,7 +8,7 @@ import {
   serializeManifest,
   stampRemoteIdentity,
   type SyncManifestEntry,
-} from '../../src/worker/sync/manifest';
+} from '../../src/worker/integrations/sync/manifest';
 
 function entry(overrides: Partial<SyncManifestEntry>): SyncManifestEntry {
   return {

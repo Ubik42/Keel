@@ -4,8 +4,8 @@ import {
   MEDIA_FFMPEG_MEMORY_THRESHOLD_BYTES,
   mediaFfmpegConcurrencyLimit,
   systemAvailablePhysicalMemoryBytes,
-} from '../../src/worker/media-memory-concurrency';
-import { MediaNativeMemoryBudget } from '../../src/worker/media-memory-budget';
+} from '../../src/worker/media/media-memory-concurrency';
+import { MediaNativeMemoryBudget } from '../../src/worker/media/media-memory-budget';
 
 describe('memory-aware FFmpeg concurrency', () => {
   it('uses one process below 4 GiB and for unknown probes, and two at the boundary', () => {

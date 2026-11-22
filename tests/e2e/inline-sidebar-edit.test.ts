@@ -3,7 +3,7 @@ import { copyFileSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { resolveElectronExecutablePath } from './electron-test-helpers';
-import { removePathWithSyncRetry } from '../../src/worker/windows-fs-retry';
+import { removePathWithSyncRetry } from '../../src/worker/library/windows-fs-retry';
 
 test.setTimeout(120_000);
 test('sidebar searches stay in headings, tags edit in place, and image trash works', async () => {

@@ -4,7 +4,7 @@ import {
   classifyLibraryStorage,
   isNetworkStoragePath,
   isWindowsNetworkPath,
-} from '../../src/worker/network-storage';
+} from '../../src/worker/library/network-storage';
 
 describe('network storage detection', () => {
   it('recognizes a macOS SMB mount and prefers the longest matching mount point', () => {

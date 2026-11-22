@@ -1,6 +1,6 @@
 import { expect, it, vi } from 'vitest';
 
-import { collectLinkedAssetPaths } from '../../src/worker/linked-asset-path-projection';
+import { collectLinkedAssetPaths } from '../../src/worker/library/linked-asset-path-projection';
 
 it('aggregates ancestors across keyset pages and yields between pages', async () => {
   const firstPage = Array.from({ length: 2_048 }, (_, n) => `plants/fern/image-${n}.png`);

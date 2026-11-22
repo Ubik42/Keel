@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { hasPdfCompatibleIllustratorHeader } from '../../src/worker/illustrator-ai-format';
+import { hasPdfCompatibleIllustratorHeader } from '../../src/worker/media/illustrator-ai-format';
 
 describe('Illustrator PDF compatibility probe', () => {
   it('finds a PDF header in the bounded Illustrator header area', () => {

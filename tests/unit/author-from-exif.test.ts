@@ -4,7 +4,7 @@ import path from "node:path";
 
 import { afterEach, describe, expect, it } from "vitest";
 
-import { extractAuthorFromExif, type ExifParser } from "../../src/worker/author-from-exif";
+import { extractAuthorFromExif, type ExifParser } from "../../src/worker/media/author-from-exif";
 
 const temporaryRoots: string[] = [];
 

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { queryModelCompanionAssets } from '../../src/worker/model-resolution';
+import { queryModelCompanionAssets } from '../../src/worker/media/model-resolution';
 
 describe('model companion resolution', () => {
   it('canonicalizes safe extensions and drops oversized suffixes', () => {

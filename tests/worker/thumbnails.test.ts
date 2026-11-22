@@ -6,7 +6,7 @@ import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const extractAuthorFromExifMock = vi.hoisted(() => vi.fn(async () => null as string | null));
-vi.mock('../../src/worker/author-from-exif', () => ({
+vi.mock('../../src/worker/media/author-from-exif', () => ({
   extractAuthorFromExif: extractAuthorFromExifMock,
 }));
 
@@ -19,9 +19,9 @@ import {
 import { MEDIA_QUEUE_CONCURRENCY } from '../../src/shared/media-concurrency';
 import {
   workerMediaDecodeConcurrency,
-} from '../../src/worker/media-concurrency';
+} from '../../src/worker/media/media-concurrency';
 import { importNoConflict as sharedImportNoConflict } from './import-no-conflict';
-import { videoPosterGeneratorVersion } from '../../src/worker/video-poster-seek';
+import { videoPosterGeneratorVersion } from '../../src/worker/media/video-poster-seek';
 
 const CURRENT_VIDEO_POSTER_GENERATOR = videoPosterGeneratorVersion('8.1');
 

@@ -18,7 +18,7 @@ import {
   migrationFailurePath,
   readMigrationFailure,
   recordMigrationFailure,
-} from '../../src/worker/schema-failure';
+} from '../../src/worker/library/schema-failure';
 
 const temporaryRoots: string[] = [];
 const require = createRequire(import.meta.url);

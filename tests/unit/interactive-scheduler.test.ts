@@ -11,7 +11,7 @@ import {
   InteractiveScheduler,
   SchedulerCancelledError,
   type SchedulerStallInfo,
-} from '../../src/worker/interactive-scheduler';
+} from '../../src/worker/library/interactive-scheduler';
 
 describe('performance command classification', () => {
   it('validates Main-owned lane metadata at the Worker protocol boundary', () => {

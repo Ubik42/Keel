@@ -27,7 +27,7 @@ import type { ImportConflictPlan } from '../../src/shared/protocol/responses';
 import {
   normalizeAbsolutePath as normalizeLibraryAbsolutePath,
   portablePathIdentity,
-} from '../../src/worker/library-rules';
+} from '../../src/worker/library/library-rules';
 import { ONE_PX_RED_PNG } from '../fixtures/fbx/ascii-fbx';
 
 const temporaryRoots: string[] = [];

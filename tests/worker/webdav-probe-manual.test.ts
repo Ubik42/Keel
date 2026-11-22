@@ -9,8 +9,8 @@
  */
 import { describe, expect, it } from 'vitest';
 
-import { WebDAVDriver } from '../../src/worker/sync/webdav-driver';
-import type { DriverCapabilities } from '../../src/worker/sync/remote-storage';
+import { WebDAVDriver } from '../../src/worker/integrations/sync/webdav-driver';
+import type { DriverCapabilities } from '../../src/worker/integrations/sync/remote-storage';
 
 const probeUrl = process.env.KEEL_WEBDAV_PROBE_URL;
 

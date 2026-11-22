@@ -5,7 +5,7 @@ import {
   pickBestGifPage,
   sampleGifPageIndices,
   scoreRawRgbFrame,
-} from "../../src/worker/gif-thumbnail-page";
+} from "../../src/worker/media/gif-thumbnail-page";
 
 describe("gif-thumbnail-page", () => {
   it("samples uniformly including endpoints", () => {

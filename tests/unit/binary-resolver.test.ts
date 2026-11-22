@@ -8,7 +8,7 @@ import {
   resolveFfmpegPath,
   resolveFfprobePath,
   resolveOiiotoolPath,
-} from '../../src/worker/binary-resolver';
+} from '../../src/worker/media/binary-resolver';
 
 const roots: string[] = [];
 const originalResourcesPath = Object.getOwnPropertyDescriptor(process, 'resourcesPath');

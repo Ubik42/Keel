@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { dominantColorMetrics, extractRepresentativePalette } from '../../src/worker/palette-extractor';
+import { dominantColorMetrics, extractRepresentativePalette } from '../../src/worker/media/palette-extractor';
 
 describe('extractRepresentativePalette', () => {
   it('is deterministic and reports normalized representative ratios', () => {

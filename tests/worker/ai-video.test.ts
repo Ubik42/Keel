@@ -11,8 +11,8 @@ import { randomUUID } from 'node:crypto';
 
 import { LibraryService } from '../../src/worker/library-service';
 import { importNoConflict as sharedImportNoConflict } from './import-no-conflict';
-import { OpenAIVendorAdapter } from '../../src/worker/ai/openai-adapter';
-import type { AiAnalysisRequest, AiAnalysisResult } from '../../src/worker/ai/protocol';
+import { OpenAIVendorAdapter } from '../../src/worker/integrations/ai/openai-adapter';
+import type { AiAnalysisRequest, AiAnalysisResult } from '../../src/worker/integrations/ai/protocol';
 
 // ---------------------------------------------------------------------------
 // Helpers

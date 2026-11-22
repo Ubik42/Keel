@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { decodeTgaRgba } from "../../src/worker/fbx/tga-image";
+import { decodeTgaRgba } from "../../src/worker/media/fbx/tga-image";
 
 function uncompressedTga(args: {
   width: number;

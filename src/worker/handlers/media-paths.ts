@@ -1,6 +1,6 @@
 import type { WorkerRequest } from '../../shared/protocol/requests';
 import type { WorkerResult } from '../../shared/protocol/responses';
-import { handleFbxConvertCommand } from '../fbx/convert-command';
+import { handleFbxConvertCommand } from '../media/fbx/convert-command';
 import { LibraryServiceError, type LibraryService } from '../library-service';
 
 export type MediaPathHooks = {

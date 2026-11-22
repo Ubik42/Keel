@@ -5,9 +5,9 @@ import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { LibraryService } from '../../src/worker/library-service';
-import { parseManifest, serializeManifest } from '../../src/worker/sync/manifest';
-import { createLibrarySyncPort } from '../../src/worker/sync/library-port';
-import { SyncEngine } from '../../src/worker/sync/sync-engine';
+import { parseManifest, serializeManifest } from '../../src/worker/integrations/sync/manifest';
+import { createLibrarySyncPort } from '../../src/worker/integrations/sync/library-port';
+import { SyncEngine } from '../../src/worker/integrations/sync/sync-engine';
 import { startMockWebDAVServer } from './webdav-fixture-server';
 
 const roots: string[] = [];

@@ -7,7 +7,7 @@ import { performance } from 'node:perf_hooks';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import { LibraryService, type AssetRefreshResult } from '../../src/worker/library-service';
-import { normalizeSearchText } from '../../src/worker/search-query';
+import { normalizeSearchText } from '../../src/worker/library/search-query';
 
 const ASSET_COUNT = 100_000;
 const FIRST_PAGE_SIZE = 50;

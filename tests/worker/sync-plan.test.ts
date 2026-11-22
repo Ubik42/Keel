@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { createEmptyManifest, type SyncManifestEntry } from '../../src/worker/sync/manifest';
-import { planSyncActions, type LocalAssetSnapshotEntry } from '../../src/worker/sync/sync-plan';
+import { createEmptyManifest, type SyncManifestEntry } from '../../src/worker/integrations/sync/manifest';
+import { planSyncActions, type LocalAssetSnapshotEntry } from '../../src/worker/integrations/sync/sync-plan';
 
 function manifest(): ReturnType<typeof createEmptyManifest> {
   return createEmptyManifest({ libraryId: 'lib-1', displayName: '库', directoryName: '库' });

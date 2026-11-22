@@ -9,7 +9,7 @@ import {
   networkMetadataCacheKey,
   networkMetadataSourceFingerprintEqual,
   type NetworkMetadataCacheDatabase,
-} from '../../src/worker/network-metadata-cache';
+} from '../../src/worker/library/network-metadata-cache';
 
 const temporaryRoots: string[] = [];
 

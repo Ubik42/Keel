@@ -13,7 +13,7 @@ import {
   IMPORTED_THUMBNAIL_MAX_BYTES,
   IMPORTED_THUMBNAIL_NORMALIZATION_JOB,
   IMPORTED_THUMBNAIL_PRESERVED_GENERATOR,
-} from '../../src/worker/imported-thumbnail-policy';
+} from '../../src/worker/media/imported-thumbnail-policy';
 
 const enabled = process.env.KEEL_IMPORTED_THUMBNAIL_BENCH === '1';
 const stressEnabled = enabled && process.env.KEEL_IMPORTED_THUMBNAIL_BENCH_STRESS === '1';

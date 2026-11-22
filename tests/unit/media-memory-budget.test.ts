@@ -4,7 +4,7 @@ import {
   estimateMediaNativeMemoryBytes,
   MEDIA_NATIVE_MEMORY_BUDGET_BYTES,
   MediaNativeMemoryBudget,
-} from "../../src/worker/media-memory-budget";
+} from "../../src/worker/media/media-memory-budget";
 
 const RESERVATION_UNIT = 8 * 1024 * 1024;
 

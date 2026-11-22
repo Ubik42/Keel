@@ -4,7 +4,7 @@ import path from 'node:path';
 import { _electron as electron, expect, test } from '@playwright/test';
 import type { KeelLibraryApi } from '../../src/shared/library-api';
 import { resolveElectronExecutablePath } from './electron-test-helpers';
-import { removePathWithSyncRetry } from '../../src/worker/windows-fs-retry';
+import { removePathWithSyncRetry } from '../../src/worker/library/windows-fs-retry';
 test.setTimeout(120_000);
 test('tag tree creates children, filters descendants, assigns assets and moves tags', async () => {
   const root = mkdtempSync(path.join(tmpdir(), 'serpent-tag-tree-ui-'));

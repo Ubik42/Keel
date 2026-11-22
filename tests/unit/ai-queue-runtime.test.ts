@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import { AiQueueScheduler } from '../../src/main/ai-queue-scheduler';
-import { AiJobAbortRegistry } from '../../src/worker/ai/job-abort-registry';
+import { AiJobAbortRegistry } from '../../src/worker/integrations/ai/job-abort-registry';
 
 describe('AiJobAbortRegistry', () => {
   it('aborts only matching active jobs and removes completed registrations', () => {

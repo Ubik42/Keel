@@ -3,9 +3,9 @@ import { describe, expect, it } from 'vitest';
 import { PUBLIC_ERROR_MESSAGES } from '../../src/shared/protocol/errors';
 import { parseRendererResult, parseWorkerResponse } from '../../src/shared/protocol/responses';
 import { LibraryServiceError } from '../../src/worker/library-service';
-import { LibraryWriteCoordinatorError } from '../../src/worker/library-write-coordinator';
+import { LibraryWriteCoordinatorError } from '../../src/worker/library/library-write-coordinator';
 import { publicErrorForWorkerFailure } from '../../src/worker/public-error';
-import { DriverUnsupportedError, RemoteStorageError } from '../../src/worker/sync/remote-storage';
+import { DriverUnsupportedError, RemoteStorageError } from '../../src/worker/integrations/sync/remote-storage';
 
 describe('Library Worker public error boundary', () => {
   it('preserves the current entity version for optimistic-lock conflicts', () => {

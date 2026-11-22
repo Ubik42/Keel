@@ -15,7 +15,7 @@ import {
   summarizeTimingSamples,
   visibleImageDecodeCoverage,
 } from '../../src/shared/performance-contract';
-import { browseCatalogSequenceStale } from '../../src/worker/catalog-sequence-admission';
+import { browseCatalogSequenceStale } from '../../src/worker/library/catalog-sequence-admission';
 import { parseWorkerRequest } from '../../src/shared/protocol/requests';
 import { workerResultSchema } from '../../src/shared/protocol/responses';
 

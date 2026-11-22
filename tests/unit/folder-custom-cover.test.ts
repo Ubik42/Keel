@@ -12,7 +12,7 @@ import {
   installFolderCoverFile,
   listStaleFolderCoverFiles,
   removeFolderCoverFile,
-} from "../../src/worker/folder-custom-cover";
+} from "../../src/worker/library/folder-custom-cover";
 
 const PNG = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",

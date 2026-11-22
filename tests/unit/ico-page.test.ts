@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { parseIcoPageSizes, pickLargestIcoPage } from "../../src/worker/ico-page";
+import { parseIcoPageSizes, pickLargestIcoPage } from "../../src/worker/media/ico-page";
 
 function icoDirectory(widths: number[]): Uint8Array {
   const data = new Uint8Array(6 + widths.length * 16);

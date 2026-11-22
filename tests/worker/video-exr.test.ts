@@ -15,9 +15,9 @@ import {
   type SpawnFunction,
   type SpawnResult,
 } from '../../src/worker/library-service';
-import { mediaResourceGuard } from '../../src/worker/media-resource-guard';
-import { MEDIA_FFMPEG_MEMORY_THRESHOLD_BYTES } from '../../src/worker/media-memory-concurrency';
-import { extractRawEmbeddedJpegThumbnail } from '../../src/worker/raw-embedded-thumbnail';
+import { mediaResourceGuard } from '../../src/worker/media/media-resource-guard';
+import { MEDIA_FFMPEG_MEMORY_THRESHOLD_BYTES } from '../../src/worker/media/media-memory-concurrency';
+import { extractRawEmbeddedJpegThumbnail } from '../../src/worker/media/raw-embedded-thumbnail';
 import { AUDIO_FORCED_WAVEFORM_GENERATOR_MARK, AUDIO_WAVEFORM_COVER_GENERATOR_TAG } from '../../src/shared/audio-media';
 import { importNoConflict as sharedImportNoConflict } from './import-no-conflict';
 

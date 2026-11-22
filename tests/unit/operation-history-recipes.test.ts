@@ -4,7 +4,7 @@ import {
   assertRegisteredHistoryRecipePair,
   historyRecipeDescriptor,
   registeredHistoryRecipeKinds,
-} from '../../src/worker/operation-history-recipes';
+} from '../../src/worker/library/operation-history-recipes';
 
 describe('operation history recipe registry', () => {
   it('registers a bidirectional descriptor for every recipe kind', () => {

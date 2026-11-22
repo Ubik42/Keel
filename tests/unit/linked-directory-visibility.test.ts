@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest';
 
-import { linkedDirectoryIgnored } from '../../src/worker/linked-directory-visibility';
+import { linkedDirectoryIgnored } from '../../src/worker/library/linked-directory-visibility';
 
 it('matches whole directory ancestors literally, including percent and underscore', () => {
   const ignored = linkedDirectoryIgnored(['100%_done', 'Foliage'], () => false);

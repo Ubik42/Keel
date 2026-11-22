@@ -7,10 +7,10 @@ import { afterEach, describe, expect, it } from 'vitest';
 import {
   extractRawEmbeddedJpegThumbnail,
   RAW_EMBEDDED_THUMBNAIL_MAX_BYTES,
-} from '../../src/worker/raw-embedded-thumbnail';
+} from '../../src/worker/media/raw-embedded-thumbnail';
 import {
   extractRawImageMetadataDetailed,
-} from '../../src/worker/raw-image-metadata';
+} from '../../src/worker/media/raw-image-metadata';
 
 const temporaryRoots: string[] = [];
 

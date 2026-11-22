@@ -33,7 +33,7 @@ import {
   mixCountsFor,
   sizeBucketForIndex,
 } from '../worker/large-library-mix';
-import { resolveFfmpegPath } from '../../src/worker/binary-resolver';
+import { resolveFfmpegPath } from '../../src/worker/media/binary-resolver';
 
 function supportsLavfiInput(): boolean {
   try {

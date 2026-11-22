@@ -5,7 +5,7 @@ import {
   browseQueryFingerprint,
   browseSessionIndexComplete,
   browseSessionPageUsesSnapshot,
-} from '../../src/worker/browse-session-store';
+} from '../../src/worker/library/browse-session-store';
 
 describe('BrowseSessionStore', () => {
   it('keeps an ordered id snapshot and fences it by sequence and generation', () => {

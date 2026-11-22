@@ -8,12 +8,12 @@ import BetterSqlite3 from 'better-sqlite3';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { LibraryService, type LibraryServiceOptions, type SharpModule } from '../../src/worker/library-service';
-import { mediaResourceGuard, MediaResourceExhaustedError } from '../../src/worker/media-resource-guard';
+import { mediaResourceGuard, MediaResourceExhaustedError } from '../../src/worker/media/media-resource-guard';
 import {
   IMPORTED_THUMBNAIL_GENERATOR_PREFIX,
   IMPORTED_THUMBNAIL_NORMALIZATION_JOB,
   IMPORTED_THUMBNAIL_PRESERVED_GENERATOR,
-} from '../../src/worker/imported-thumbnail-policy';
+} from '../../src/worker/media/imported-thumbnail-policy';
 
 const require = createRequire(import.meta.url);
 const temporaryRoots: string[] = [];

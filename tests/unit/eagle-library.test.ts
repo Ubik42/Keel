@@ -10,7 +10,7 @@ import {
   readEagleLibrary,
   readEagleLibraryRoot,
   sumEagleLibrarySourceBytes,
-} from '../../src/worker/eagle-library';
+} from '../../src/worker/integrations/eagle-library';
 
 const temporaryRoots: string[] = [];
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { extractRepresentativePalette } from '../../src/worker/palette-extractor';
+import { extractRepresentativePalette } from '../../src/worker/media/palette-extractor';
 import { referenceExtractRepresentativePalette } from '../helpers/palette-extractor-reference';
 
 /**

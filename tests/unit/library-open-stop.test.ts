@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { stopOutgoingLibrariesForOpen } from "../../src/worker/library-open-stop";
+import { stopOutgoingLibrariesForOpen } from "../../src/worker/library/library-open-stop";
 
 /**
  * Guards the fix for "switching libraries hangs".

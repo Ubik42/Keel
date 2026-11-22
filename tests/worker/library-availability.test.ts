@@ -16,7 +16,7 @@ import {
   MIGRATIONS,
   SUPPORTED_SCHEMA_VERSION,
 } from '../../src/worker/library-service';
-import { MAX_MIGRATION_ATTEMPTS } from '../../src/worker/schema-failure';
+import { MAX_MIGRATION_ATTEMPTS } from '../../src/worker/library/schema-failure';
 import { removeLinkedDirectoryIndexFixture } from './remove-linked-directory-index';
 
 interface TestDatabase {

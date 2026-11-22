@@ -3,8 +3,8 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { LibraryService } from '../../src/worker/library-service';
-import { removePathWithSyncRetry } from '../../src/worker/windows-fs-retry';
-import { pairCompanions, renamedCompanionName } from '../../src/worker/companion-files';
+import { removePathWithSyncRetry } from '../../src/worker/library/windows-fs-retry';
+import { pairCompanions, renamedCompanionName } from '../../src/worker/library/companion-files';
 
 const roots: string[] = [];
 const services: LibraryService[] = [];

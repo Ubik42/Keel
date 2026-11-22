@@ -1,6 +1,6 @@
 import { expect, it, vi } from 'vitest';
 
-import { SingleFlightRead } from '../../src/worker/single-flight-read';
+import { SingleFlightRead } from '../../src/worker/library/single-flight-read';
 
 it('shares a cold read per key while keeping different versions independent', async () => {
   const reads = new SingleFlightRead<number>();

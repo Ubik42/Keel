@@ -6,9 +6,9 @@ import {
   type PublicErrorReason,
 } from '../shared/protocol/errors';
 import { LibraryServiceError } from './library-service';
-import { LibraryWriteCoordinatorError } from './library-write-coordinator';
-import { HistoryTransitionError } from './operation-history';
-import { RemoteStorageError } from './sync/remote-storage';
+import { LibraryWriteCoordinatorError } from './library/library-write-coordinator';
+import { HistoryTransitionError } from './library/operation-history';
+import { RemoteStorageError } from './integrations/sync/remote-storage';
 
 /** Serpent-033e: SQLite rejected a write because the file or connection is read-only. */
 function isSqliteReadonlyFailure(error: unknown): boolean {

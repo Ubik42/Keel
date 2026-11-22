@@ -8,7 +8,7 @@ import { createPublicError } from "../../shared/protocol/errors";
 import {
   LibraryParentError,
   resolveWritableLibraryParent,
-} from "../../worker/library-parent";
+} from "../../worker/library/library-parent";
 
 export type LibraryOpenOperation =
   | "create"
