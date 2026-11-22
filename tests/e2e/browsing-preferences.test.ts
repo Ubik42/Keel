@@ -19,6 +19,7 @@ import sharp from "sharp";
 import {
   importFilesThroughBridge,
   resolveElectronExecutablePath,
+  useTagPicker,
 } from "./electron-test-helpers";
 
 test.describe.configure({ timeout: 120_000 });
@@ -999,7 +1000,7 @@ test("maintains consistent preferences, accessible names, zoom behavior, and avo
       .click();
     await expect(window.locator('[data-testid="tag-management-workspace"]'))
       .toBeVisible();
-    await expect(window.getByText("偏好测试标签", { exact: true })).toBeVisible();
+    await expect(window.locator('[data-testid="tag-management-workspace"]').getByText("偏好测试标签", { exact: true })).toBeVisible();
     await window.getByRole("button", { name: "所有资产", exact: true }).click();
     await assertHiddenFieldPresentation(true);
 
@@ -1014,7 +1015,8 @@ test("maintains consistent preferences, accessible names, zoom behavior, and avo
     // Enter the tag-filtered view through the retained 标签过滤 entry and
     // verify presentation consistency
     await window.getByRole("button", { name: "标签", exact: true }).click();
-    await window.getByLabel("标签过滤").fill("偏好测试标签");
+    await useTagPicker(window);
+    await window.getByRole("textbox", { name: "标签过滤", exact: true }).fill("偏好测试标签");
     await window.getByRole("option", { name: /偏好测试标签/ }).click();
     await expect(
       window

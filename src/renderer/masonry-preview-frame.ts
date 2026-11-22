@@ -13,16 +13,14 @@ export function estimateMasonryPreviewHeightPx(
   columnWidthPx: number,
   mediaType?: string | null,
 ): number {
-  // `.asset-card` is a border-box with a transparent 1px border on both
-  // sides. The masonry column owns the outer card width, while the preview
-  // itself occupies the card's content width. Use that content width here so
-  // portrait previews preserve their source ratio at the smallest stops too
-  // (the two-pixel discrepancy is visible on narrow columns).
+  // Islands cards have no border since a87 (the ring is an outline), so the
+  // preview spans the whole column. Subtracting the former 2px border made
+  // portrait previews slightly short and letterboxed on narrow columns.
   const outerColumn = Number.isFinite(columnWidthPx) && columnWidthPx > 0
     ? columnWidthPx
     : 0;
   if (outerColumn <= 0) return 1;
-  const col = Math.max(1, outerColumn - 2);
+  const col = outerColumn;
   if (!width || !height || width <= 0 || height <= 0) {
     // Font cards render a 16:9 specimen sheet even though the source has no
     // pixel resolution. The generic 1.3 frame made their virtual slot taller
