@@ -18,7 +18,7 @@ import { type DialogsState } from "../stores/dialogs-store";
 import { type AssetScope, type NavigationState } from "../stores/navigation-store";
 import { type PreviewState } from "../stores/preview-store";
 import { selectionFields, type SelectionState } from "../stores/selection-store";
-import { sessionFields, type SessionState } from "../stores/session-store";
+import { type SessionState } from "../stores/session-store";
 import { type TransfersState } from "../stores/transfers-store";
 import { useAssetDragDropHandlers } from "../use-asset-drag-drop-handlers";
 import { useExternalImportHandlers } from "../use-external-import-handlers";
@@ -28,7 +28,7 @@ import { useFolderOrganizeActions } from "../use-folder-organize-actions";
 import { useOpenWithSettings } from "../use-open-with-settings";
 import { useShellFileActions } from "../use-shell-file-actions";
 import { useBatchActions } from "../useBatchActions";
-import { type QueryFilterSnapshot, type SearchDefinition, type WorkspaceNavigationRequest } from "./app-shared";
+import { type QueryFilterSnapshot, type SearchDefinition, type WorkspaceNavigationRequest, renderedLibrary } from "./app-shared";
 import { useCallback, useEffect, useRef } from "react";
 
 export interface UseImageSequenceOperationsDeps {
@@ -224,7 +224,7 @@ export function useImageSequenceOperations({ api, library, imageSequenceDialog, 
   }
 
   function scheduleFilteredBrowseReconcile(delayMs: number): void {
-    const operationLibraryId = sessionFields.get("library")?.libraryId;
+    const operationLibraryId = renderedLibrary.current?.libraryId;
     if (deferredReconcileTimerRef.current !== undefined) {
       window.clearTimeout(deferredReconcileTimerRef.current);
     }
@@ -232,7 +232,7 @@ export function useImageSequenceOperations({ api, library, imageSequenceDialog, 
       deferredReconcileTimerRef.current = undefined;
       if (
         operationLibraryId !== undefined
-        && sessionFields.get("library")?.libraryId !== operationLibraryId
+        && renderedLibrary.current?.libraryId !== operationLibraryId
       ) return;
       const canvas = workspaceCanvasRef.current;
       const scrollTopBefore = canvas?.scrollTop ?? 0;
@@ -241,7 +241,7 @@ export function useImageSequenceOperations({ api, library, imageSequenceDialog, 
         .finally(() => {
           if (
             operationLibraryId !== undefined
-            && sessionFields.get("library")?.libraryId !== operationLibraryId
+            && renderedLibrary.current?.libraryId !== operationLibraryId
           ) return;
           const nextCanvas = workspaceCanvasRef.current;
           if (nextCanvas && nextCanvas.scrollTop !== scrollTopBefore) {
@@ -317,7 +317,7 @@ export function useImageSequenceOperations({ api, library, imageSequenceDialog, 
     // mutation cannot reload a stale scope after a switch.
     reloadCurrentContent: () => reloadCurrentContentRef.current(),
     applyLocalAssetRemoval,
-    isCurrentLibrary: (libraryId) => sessionFields.get("library")?.libraryId === libraryId,
+    isCurrentLibrary: (libraryId) => renderedLibrary.current?.libraryId === libraryId,
     chooseTag,
     clearAssetSelection,
     activeTagId,

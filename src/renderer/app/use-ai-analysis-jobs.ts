@@ -1,3 +1,4 @@
+import { renderedLibrary } from "./app-shared";
 import type { Dispatch, RefObject, SetStateAction } from "react";
 import type { KeelLibraryApi } from "../../shared/library-api";
 import type { TranslateFn } from "../i18n/LocaleProvider";
@@ -17,7 +18,7 @@ import { type DialogsState } from "../stores/dialogs-store";
 import { type InspectorState } from "../stores/inspector-store";
 import { type JobsState } from "../stores/jobs-store";
 import { type SelectionState } from "../stores/selection-store";
-import { sessionFields, type SessionState } from "../stores/session-store";
+import { type SessionState } from "../stores/session-store";
 import { useEffect } from "react";
 import { flushSync } from "react-dom";
 
@@ -164,7 +165,7 @@ export function useAiAnalysisJobs({ selectedAssetId, api, library, setError, t, 
     ) {
       return;
     }
-    if (sessionFields.get("library")?.libraryId !== library.libraryId) return;
+    if (renderedLibrary.current?.libraryId !== library.libraryId) return;
     try {
       const result = await api.clearAiContent({
         libraryId: library.libraryId,

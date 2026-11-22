@@ -1,4 +1,5 @@
 import { navigationFields } from "../stores/navigation-store";
+import type { SessionState } from "../stores/session-store";
 import { isMacPlatform, type CommandPlatform } from "../workbench/menu/command-types";
 import { usesWindowsStyleShell } from "../renderer-platform";
 import { type KeelLibraryApi } from "../../shared/library-api";
@@ -274,3 +275,12 @@ export const folderRecursiveRef = navigationFields.ref("folderRecursive");
 export function late<F extends (...args: never[]) => unknown>(get: () => F): F {
   return ((...args: Parameters<F>) => get()(...args)) as F;
 }
+
+/**
+ * The library the shell last rendered, as the former libraryRef held it:
+ * updated during render, and ahead of setLibrary where an open or close flow
+ * needs the new value before React renders it. Code that guards async work
+ * by "is this still the current library" reads this, not the store, which
+ * may already hold a value React has not rendered.
+ */
+export const renderedLibrary: { current: SessionState["library"] } = { current: null };

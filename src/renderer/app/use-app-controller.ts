@@ -17,7 +17,7 @@ import { playTaskCompletionSound } from "../task-completion-sound";
 import { browseEntryUnderPreview, workspaceNavLocationsEqual } from "../workbench/workspace/workspace-nav-history";
 import { captureWorkspaceNavViewport, resolveWorkspaceScrollTop } from "../workbench/workspace/workspace-scroll-position";
 import { type WorkspaceTabSession, workspaceTabBrowseStateHasDiscoveryInput } from "../workspace-tabs";
-import { late, parseNumericRange, type QueryFilterSnapshot, type RendererWindow, type SearchDefinition, type WorkspaceNavigationRequest } from "./app-shared";
+import { late, parseNumericRange, type QueryFilterSnapshot, type RendererWindow, type SearchDefinition, type WorkspaceNavigationRequest, renderedLibrary } from "./app-shared";
 import { useAiAnalysisJobs } from "./use-ai-analysis-jobs";
 import { useAiAndPreviewState } from "./use-ai-and-preview-state";
 import { useAiConfigActions } from "./use-ai-config-actions";
@@ -72,11 +72,11 @@ export function useAppController() {
       syncProgress: transfersFields.get("syncProgress"),
       writeOperationInFlight: libraryWriteInFlightRef.current,
     });
-    const sourceLibraryId = sessionFields.get("library")?.libraryId;
+    const sourceLibraryId = renderedLibrary.current?.libraryId;
     const confirmed = activity === null || await requestConfirmation(
       t("shell.librarySwitchWarning"), false, { scopeBound: !keepDestinationChoice },
     );
-    return confirmed && (keepDestinationChoice || sessionFields.get("library")?.libraryId === sourceLibraryId);
+    return confirmed && (keepDestinationChoice || renderedLibrary.current?.libraryId === sourceLibraryId);
   }
 
   function openLibraryChooserFromError(): void {

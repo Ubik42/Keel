@@ -19,10 +19,10 @@ import { type DialogsState } from "../stores/dialogs-store";
 import { type InspectorState } from "../stores/inspector-store";
 import { type AssetScope } from "../stores/navigation-store";
 import { selectionFields } from "../stores/selection-store";
-import { sessionFields, type SessionState } from "../stores/session-store";
+import { type SessionState } from "../stores/session-store";
 import { type TransfersState } from "../stores/transfers-store";
 import { expandThumbnailCardEvents, shouldProjectThumbnailCompletion } from "../thumbnail-completion-projection";
-import { type SearchDefinition } from "./app-shared";
+import { type SearchDefinition, renderedLibrary } from "./app-shared";
 import { useEffect } from "react";
 
 export interface UseLibraryEventSubscriptionsDeps {
@@ -93,7 +93,7 @@ export function useLibraryEventSubscriptions({ api, setWorkerRecoveryState, setW
       if (event.type === 'worker.recovered') {
         setWorkerRecoveryState('ready');
         if (event.failedLibraryIds.length > 0) setError(t('toast.workerRestoreFailed'));
-        const currentLibrary = sessionFields.get("library");
+        const currentLibrary = renderedLibrary.current;
         if (currentLibrary && event.libraryIds.includes(currentLibrary.libraryId)) {
           void reloadCurrentContentRef.current().catch((caught) => {
             setError(toMessage(caught, t('toast.readAssetsFailed'), locale));
@@ -164,19 +164,19 @@ export function useLibraryEventSubscriptions({ api, setWorkerRecoveryState, setW
           return;
         }
         const applyLibraryClosed = async () => {
-          if (sessionFields.get("library")?.libraryId !== closedLibraryId) return;
+          if (renderedLibrary.current?.libraryId !== closedLibraryId) return;
           setUiState("closing");
           try {
             await closeAssetPreview(false);
-            if (sessionFields.get("library")?.libraryId !== closedLibraryId) return;
+            if (renderedLibrary.current?.libraryId !== closedLibraryId) return;
             applyClosedLibraryUi();
             await refreshRecentLibraries(null);
           } catch (caught) {
-            if (sessionFields.get("library")?.libraryId === closedLibraryId) {
+            if (renderedLibrary.current?.libraryId === closedLibraryId) {
               setError(toMessage(caught, t("toast.closeFailed"), locale));
             }
           } finally {
-            if (sessionFields.get("library") === null) setUiState("idle");
+            if (renderedLibrary.current === null) setUiState("idle");
           }
         };
         // Main can close the active library on behalf of MCP. Keep the same
@@ -189,14 +189,14 @@ export function useLibraryEventSubscriptions({ api, setWorkerRecoveryState, setW
       const applyLibraryOpened = async () => {
         if (!shouldApplyLibraryLifecycleEvent({
           event,
-          currentLibraryId: sessionFields.get("library")?.libraryId,
+          currentLibraryId: renderedLibrary.current?.libraryId,
           scriptSandboxPreviewOpen,
         })) return;
         try {
           beginLibraryTransition();
           await closeAssetPreview(false);
           clearLibraryScopedView();
-          setLibrary(event.library);
+          renderedLibrary.current = event.library;
           activateLibraryView(event.library.libraryId);
           setLibrary(event.library);
           api.setActiveContext(event.library.libraryId);

@@ -14,7 +14,7 @@ import { type AssetScope, type NavigationState } from "../stores/navigation-stor
 import { type QueryState } from "../stores/query-store";
 import { sessionFields, type SessionState } from "../stores/session-store";
 import { type TransfersState } from "../stores/transfers-store";
-import { type SearchDefinition } from "./app-shared";
+import { type SearchDefinition, renderedLibrary } from "./app-shared";
 import { useCallback } from "react";
 
 export interface UseLibraryOpeningDeps {
@@ -299,7 +299,7 @@ export function useLibraryOpening({ api, t, dialogValue, useExistingCreateFolder
       setUiState(busyState);
       setLibraryLoading({ name: loadingName ?? null });
       beginLibraryTransition();
-      const previousLibraryId = sessionFields.get("library")?.libraryId;
+      const previousLibraryId = renderedLibrary.current?.libraryId;
       const libraryApi = api;
       let opened = false;
       try {
@@ -319,7 +319,7 @@ export function useLibraryOpening({ api, t, dialogValue, useExistingCreateFolder
         await closeAssetPreview(false);
         opened = true;
         clearLibraryScopedView();
-        setLibrary(result.value);
+        renderedLibrary.current = result.value;
         activateLibraryView(result.value.libraryId);
         setLibrary(result.value);
         api?.setActiveContext(result.value.libraryId);

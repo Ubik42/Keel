@@ -13,11 +13,11 @@ import { type BrowseState } from "../stores/browse-store";
 import { type DialogsState } from "../stores/dialogs-store";
 import { type AssetScope } from "../stores/navigation-store";
 import { type SelectionState } from "../stores/selection-store";
-import { sessionFields, type SessionState } from "../stores/session-store";
+import { type SessionState } from "../stores/session-store";
 import { transfersFields, type TransfersState } from "../stores/transfers-store";
 import { playTaskCompletionSound } from "../task-completion-sound";
 import { isUserCancellation, userCancellationNoticeKey } from "../user-cancellation";
-import { type SearchDefinition } from "./app-shared";
+import { type SearchDefinition, renderedLibrary } from "./app-shared";
 import { useRelinkOperations } from "./use-relink-operations";
 
 export interface UseTransferOperationsDeps {
@@ -328,11 +328,11 @@ export function useTransferOperations({ api, library, setUiState, locale, setNot
         if (!summary) {
           throw new Error(t("toast.importFailed"));
         }
-        const previousLibraryId = sessionFields.get("library")?.libraryId;
+        const previousLibraryId = renderedLibrary.current?.libraryId;
         beginLibraryTransition();
         await closeAssetPreview(false);
         clearLibraryScopedView();
-        setLibrary(summary);
+        renderedLibrary.current = summary;
         activateLibraryView(summary.libraryId);
         setLibrary(summary);
         setLibraryLoading({ name: summary.displayName });

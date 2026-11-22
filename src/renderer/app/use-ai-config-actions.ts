@@ -1,3 +1,4 @@
+import { renderedLibrary } from "./app-shared";
 import type { Dispatch, RefObject, SetStateAction } from "react";
 import type { KeelLibraryApi } from "../../shared/library-api";
 import type { TranslateFn } from "../i18n/LocaleProvider";
@@ -10,7 +11,7 @@ import { toMessage } from "../error-utils";
 import { requestConfirmation } from "../local-confirmation";
 import { aiFields, type AiState } from "../stores/ai-store";
 import { type DialogsState } from "../stores/dialogs-store";
-import { sessionFields, type SessionState } from "../stores/session-store";
+import { type SessionState } from "../stores/session-store";
 import { useCallback, useEffect } from "react";
 
 export interface UseAiConfigActionsDeps {
@@ -396,7 +397,7 @@ export function useAiConfigActions({ aiProfiles, aiProfileDraftId, aiApiKey, aiA
     if (!librarySettingsOpen || !api || !library) return;
     const libraryId = library.libraryId;
     void api.getGitignore({ libraryId }).then((gitignoreResult) => {
-      if (sessionFields.get("library")?.libraryId !== libraryId) return;
+      if (renderedLibrary.current?.libraryId !== libraryId) return;
       if (gitignoreResult.ok) setGitignoreContent(gitignoreResult.value.content);
     });
   }, [librarySettingsOpen, api, library, setGitignoreContent]);

@@ -1,3 +1,4 @@
+import { renderedLibrary } from "./app-shared";
 import { type LinkedFolderRule } from "../../shared/asset-types";
 import { type BrowseMembershipChange } from "../browse-filter-membership";
 import { useLocale, useT } from "../i18n";
@@ -37,6 +38,7 @@ export function useCoreState() {
 
   // Library / folder / assets (existing)
   const [library, setLibrary] = useSessionField("library");
+  renderedLibrary.current = library;
   const nativeDragReadyIds = useNativeDragReadyIds(rawLibraryApi, library?.libraryId);
   const setRecentLibraries = sessionFields.setterFor("recentLibraries");
   const [folders, setFolders] = useNavigationField("folders");

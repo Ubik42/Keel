@@ -6,10 +6,10 @@ import { folderBrowseScope, folderSearchScope } from "../folder-browse-scope";
 import { type BrowseState } from "../stores/browse-store";
 import { type AssetScope, type NavigationState } from "../stores/navigation-store";
 import { type QueryState } from "../stores/query-store";
-import { sessionFields, type SessionState } from "../stores/session-store";
+import { type SessionState } from "../stores/session-store";
 import { browseStateForWorkspaceNavigation, workspaceNavigationKeepsLiveDiscovery } from "../workspace-discovery-navigation";
 import { createDefaultWorkspaceTabBrowseState, type WorkspaceTabBrowseState } from "../workspace-tabs";
-import { type QueryFilterSnapshot, type SearchDefinition, type WorkspaceNavigationRequest } from "./app-shared";
+import { type QueryFilterSnapshot, type SearchDefinition, type WorkspaceNavigationRequest, renderedLibrary } from "./app-shared";
 import { useCallback, useRef } from "react";
 
 export interface UseContentQueriesDeps {
@@ -180,7 +180,7 @@ export function useContentQueries({ currentQueryDefinition, captureWorkspaceTabB
       assetIds: string[],
       options?: { removedCount?: number; libraryId?: string },
     ): (() => void) => {
-      const operationLibraryId = options?.libraryId ?? sessionFields.get("library")?.libraryId;
+      const operationLibraryId = options?.libraryId ?? renderedLibrary.current?.libraryId;
       const removalGeneration = ++localAssetRemovalGenerationRef.current;
       let restored = false;
       const previousAssets = assets;
@@ -203,7 +203,7 @@ export function useContentQueries({ currentQueryDefinition, captureWorkspaceTabB
         deferredReconcileTimerRef.current = undefined;
         if (
           operationLibraryId !== undefined &&
-          sessionFields.get("library")?.libraryId !== operationLibraryId
+          renderedLibrary.current?.libraryId !== operationLibraryId
         ) return;
         // Keep the user's scroll position across the silent reconcile — a
         // replaced first page must not yank the canvas to the bottom.
@@ -214,7 +214,7 @@ export function useContentQueries({ currentQueryDefinition, captureWorkspaceTabB
           .finally(() => {
             if (
               operationLibraryId !== undefined &&
-              sessionFields.get("library")?.libraryId !== operationLibraryId
+              renderedLibrary.current?.libraryId !== operationLibraryId
             ) return;
             const nextCanvas = workspaceCanvasRef.current;
             if (nextCanvas && nextCanvas.scrollTop !== scrollTopBefore) {
@@ -229,7 +229,7 @@ export function useContentQueries({ currentQueryDefinition, captureWorkspaceTabB
         ) return;
         if (
           operationLibraryId !== undefined &&
-          sessionFields.get("library")?.libraryId !== operationLibraryId
+          renderedLibrary.current?.libraryId !== operationLibraryId
         ) return;
         restored = true;
         if (deferredReconcileTimerRef.current !== undefined) {

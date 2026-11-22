@@ -1,3 +1,4 @@
+import { renderedLibrary } from "./app-shared";
 import { loadPanelOpenPreferences, savePanelOpenPreferences } from "../workbench/shell/panel-open-preferences";
 import type { Dispatch, RefObject, SetStateAction } from "react";
 import type { TranslateFn } from "../i18n/LocaleProvider";
@@ -18,7 +19,7 @@ import { useBrowseField } from "../stores/browse-store";
 import { dialogsFields, type DialogsState, useDialogField } from "../stores/dialogs-store";
 import { type NavigationState, useNavigationField } from "../stores/navigation-store";
 import { queryFields, useQueryField } from "../stores/query-store";
-import { sessionFields, type SessionState, useSessionField } from "../stores/session-store";
+import { type SessionState, useSessionField } from "../stores/session-store";
 import { useTransfersField } from "../stores/transfers-store";
 import { workspaceFields } from "../stores/workspace-store";
 import { useToastNotifications } from "../useToastNotifications";
@@ -469,7 +470,7 @@ export function useLibraryShellState({ library, t, setFatalAlertAlreadyOpen, set
       // awaits. Never let that callback reactivate its old identity after a
       // newer library has been published; only bootstrap an identity while
       // the renderer has no library ref yet.
-      if (sessionFields.get("library") !== null) return null;
+      if (renderedLibrary.current !== null) return null;
       const next = activateLibraryView(libraryId);
       return {
         libraryId,

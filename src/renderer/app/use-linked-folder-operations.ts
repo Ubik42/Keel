@@ -15,11 +15,11 @@ import { type BrowseState } from "../stores/browse-store";
 import { type DialogsState } from "../stores/dialogs-store";
 import { type AssetScope, type NavigationState } from "../stores/navigation-store";
 import { selectionFields, type SelectionState } from "../stores/selection-store";
-import { sessionFields, type SessionState } from "../stores/session-store";
+import { type SessionState } from "../stores/session-store";
 import { playTaskCompletionSound } from "../task-completion-sound";
 import { shouldOpenTrashRestoreDialog, silentTrashRestoreRequest, type TrashRestoreRequest } from "../trash-restore-flow";
 import { userCancellationNoticeKey } from "../user-cancellation";
-import { IS_WINDOWS_PLATFORM, type SearchDefinition } from "./app-shared";
+import { IS_WINDOWS_PLATFORM, type SearchDefinition, renderedLibrary } from "./app-shared";
 import { flushSync } from "react-dom";
 
 export interface UseLinkedFolderOperationsDeps {
@@ -224,7 +224,7 @@ export function useLinkedFolderOperations({ api, library, setUiState, reloadCurr
       )
     )
       return;
-    if (sessionFields.get("library")?.libraryId !== library.libraryId) return;
+    if (renderedLibrary.current?.libraryId !== library.libraryId) return;
     const startedAt = Date.now();
     setUiState("importing");
     try {
@@ -252,7 +252,7 @@ export function useLinkedFolderOperations({ api, library, setUiState, reloadCurr
     if (!api) return;
     if (libraryTransitionLock.hasTransitionPending() || !(await confirmLibrarySwitch())) return;
     await libraryTransitionLock(async () => {
-      const currentLibrary = sessionFields.get("library");
+      const currentLibrary = renderedLibrary.current;
       if (!currentLibrary) return;
       beginLibraryTransition();
       setUiState("closing");
@@ -279,7 +279,7 @@ export function useLinkedFolderOperations({ api, library, setUiState, reloadCurr
     if (!api) return;
     if (libraryTransitionLock.hasTransitionPending() || !(await confirmLibrarySwitch())) return;
     await libraryTransitionLock(async () => {
-      const currentLibrary = sessionFields.get("library");
+      const currentLibrary = renderedLibrary.current;
       if (!currentLibrary) return;
       beginLibraryTransition();
       const removedName = currentLibrary.displayName;
@@ -355,6 +355,7 @@ export function useLinkedFolderOperations({ api, library, setUiState, reloadCurr
       null,
     );
     clearLibraryScopedView();
+    renderedLibrary.current = null;
     setLibrary(null);
     api?.setActiveContext(null);
   }
@@ -368,7 +369,7 @@ export function useLinkedFolderOperations({ api, library, setUiState, reloadCurr
     if (!api) return;
     if (libraryTransitionLock.hasTransitionPending() || !(await confirmLibrarySwitch())) return;
     await libraryTransitionLock(async () => {
-      const currentLibrary = sessionFields.get("library");
+      const currentLibrary = renderedLibrary.current;
       if (!currentLibrary) return;
       beginLibraryTransition();
       const deletedName = currentLibrary.displayName;

@@ -29,7 +29,7 @@ import { useDialogEscapeDismiss } from "../use-dialog-escape-dismiss";
 import { useWindowsBrowseShortcutBridge } from "../use-windows-browse-shortcut-bridge";
 import { resolveDialogEscapeAction, type DialogEscapeSnapshot } from "../workbench/overlay/dialog-escape-stack";
 import { useDialogFocusTrap } from "../workbench/overlay/use-dialog-focus-trap";
-import { LIBRARY_LOADING_DISPLAY_DELAY_MS, NETWORK_LIBRARY_RELOAD_INTERVAL_MS, useDelayedVisibility } from "./app-shared";
+import { LIBRARY_LOADING_DISPLAY_DELAY_MS, NETWORK_LIBRARY_RELOAD_INTERVAL_MS, useDelayedVisibility, renderedLibrary } from "./app-shared";
 import { useEffect, useMemo } from "react";
 
 export interface UseDialogEscapeAndFocusDeps {
@@ -135,7 +135,7 @@ export function useDialogEscapeAndFocus({ api, library, reloadCurrentContentRef,
     if (!api || !library) return;
     const effectLibraryId = library.libraryId;
     const isEffectLibraryCurrent = () =>
-      sessionFields.get("library")?.libraryId === effectLibraryId;
+      renderedLibrary.current?.libraryId === effectLibraryId;
     let reloadTimer: number | undefined;
     let reloadInFlight = false;
     let reloadQueued = false;
