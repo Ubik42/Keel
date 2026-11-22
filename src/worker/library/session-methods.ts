@@ -829,7 +829,7 @@ export function openLibrary(this: LibraryService, selectedLibraryPath: string, o
         ...(rescue.reportPath ? { reportPath: rescue.reportPath } : {}),
         recoveredAssetCount: rescue.recoveredAssetCount,
         metadataRecovered: false,
-        metadataLosses: ['collections', 'tags', 'ratings', 'descriptions', 'source-links'],
+        metadataLosses: ['tags', 'ratings', 'descriptions', 'source-links'],
       });
     } catch (rescueError) {
       this.diagnose('library.recovery.rescue', rescueError, {
@@ -896,7 +896,7 @@ export function rescueLibraryFromAssets(this: LibraryService, libraryPath: strin
       recoveredFrom: readStorageLayout(libraryPath) === 'root' ? '.' : 'Assets',
       recoveredAssetCount,
       metadataRecovered: false,
-      metadataLosses: ['collections', 'tags', 'ratings', 'descriptions', 'source-links'],
+      metadataLosses: ['tags', 'ratings', 'descriptions', 'source-links'],
       primaryFailure: primaryFailure instanceof Error ? primaryFailure.message : String(primaryFailure),
       createdAt: new Date().toISOString(),
     }, null, 2));
