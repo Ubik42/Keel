@@ -6,7 +6,7 @@ import { useLocale, useT } from "./i18n";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useScrollbarActivity } from "./workbench/collection/use-scrollbar-activity";
 import { useNativeDragReadyIds } from "./use-native-drag-readiness";
-import { type AssetScope, useNavigationField } from "./stores/navigation-store";
+import { navigationFields, type AssetScope, useNavigationField } from "./stores/navigation-store";
 import { type AssetMetadataResult, type AssetSummary, type FilterClause, type LinkedFolderRule, type SortDefinition } from "../shared/asset-types";
 import { dialogsFields, useDialogField } from "./stores/dialogs-store";
 import { browseFields, useBrowseField } from "./stores/browse-store";
@@ -40,7 +40,7 @@ import { useInspectorMultiEdit } from "./use-inspector-multi-edit";
 import { isEditableTextTarget } from "../shared/edit-context-menu";
 import { addRetiredImportId, runImportRpc } from "./import-progress-session";
 import { usePluginsField } from "./stores/plugins-store";
-import { PluginSidebarViewPanel, isPluginSidebarViewsEnabled, usePluginSidebarViews } from "./plugin-sidebar-views";
+import { isPluginSidebarViewsEnabled, usePluginSidebarViews } from "./plugin-sidebar-views";
 import { FOLDER_COVER_PICKER_PAGE_SIZE, folderCoverPickerAssetMatches, folderCoverPickerImageFilter, folderCoverPickerSearchQuery } from "./folder-cover-picker";
 import { LibraryOperationError, toMessage } from "./error-utils";
 import { browseEntryUnderPreview, type WorkspaceNavViewport, workspaceNavLocationsEqual } from "./workbench/workspace/workspace-nav-history";
@@ -56,7 +56,7 @@ import { DEFAULT_AI_ANALYSIS_SETTINGS, toWireAiAnalysisSettings } from "../share
 import { useInspectorAssetMetadata } from "./use-inspector-asset-metadata";
 import { type AiProgressJobUpdate } from "./ai-analyze-progress";
 import { usePreviewField } from "./stores/preview-store";
-import { AssetPreviewModal, type AssetPreviewModalHandle } from "./AssetPreviewModal";
+import { type AssetPreviewModalHandle } from "./AssetPreviewModal";
 import { useViewerChromeIdle } from "./use-viewer-chrome-idle";
 import { useSyncCardStatuses } from "./use-sync-card-status";
 import { useViewerVolume } from "./use-viewer-volume";
@@ -68,26 +68,17 @@ import { rectLikeFromDomRect, type AnchorCard, type CanvasAnchor } from "./workb
 import { captureReflowAnchorFromCards, scheduleAnchorRestore, type ScrollOffsetSnapshot } from "./canvas-reflow-restore";
 import { type PendingAssetReveal } from "./pending-asset-reveal";
 import { type BrowseViewSnapshot } from "./workbench/collection/view-restore";
-import { ASSET_DRAG_PREVIEW_HEIGHT, ASSET_DRAG_PREVIEW_WIDTH, dismissAssetDragPreview, setAssetDragPreviewCopyMode, showAssetDragPreview } from "./asset-drag-preview";
-import { createPortal, flushSync } from "react-dom";
-import { virtualLayoutEntryForAsset } from "./browse/virtual-browse-layout";
-import { ScopeBreadcrumbs } from "./ScopeBreadcrumbs";
-import { assetCardKey, isCardHoverPreviewable, isCardSequencePlayable, resolveAssetCardCoverUrl } from "./asset-card-hover-preview";
-import { assetCaptionAlignClass, nextCanvasCaptionAlign, shouldShowGridDimensions } from "./canvas-preferences";
-import { folderSearchScope } from "./folder-browse-scope";
+import { setAssetDragPreviewCopyMode } from "./asset-drag-preview";
+import { flushSync } from "react-dom";
 import { buildRecentLibraryMenuEntries } from "./LibrarySwitcher";
-import { saveFolderRecursivePreferences, withFolderRecursiveEnabled } from "./folder-recursive-preferences";
 import { descendantTagIds } from "./tag-tree-model";
 import { resolveInspectorTagTarget } from "./inspector-tag-target";
 import { compactFormatFilterTokens } from "../shared/text-media";
 import { buildTagFilterClauses, resolveTagFilterSets } from "./dimension-filter-selection";
-import { splitAssetFileName } from "./useAssetRename";
 import { parseLinkedVirtualFolderId } from "../shared/linked-folder-tree";
 import { playTaskCompletionSound } from "./task-completion-sound";
 import { isBrowseScopeAffectedByFolderTrash } from "./folder-trash-scope";
 import { formatBytes } from "./format-file-meta";
-import { isImeKeyboardEvent } from "./workbench/overlay/ime-safe-dismiss";
-import { resolveBrowseContextMenuIntent } from "./browse-selection-menu";
 import { HoverTipHost } from "./workbench/overlay/hover-tip";
 import { PluginUiDialogHost } from "./plugin-ui-dialog-host";
 import { EditTextContextMenuHost } from "./workbench/menu/edit-text-context-menu";
@@ -104,32 +95,6 @@ import { TagTreeSidebar } from "./TagTreeSidebar";
 import { AutomaticTasksSidebar } from "./AutomaticTasksSidebar";
 import { LIBRARY_ROOT_FOLDER_ID } from "../shared/library-root-folder";
 import { toggleFolderMultiSelection } from "./folder-selection-toggle";
-import { iconActionAttrs } from "./icon-action-attrs";
-import { CanvasToolbarControls } from "./CanvasToolbarControls";
-import { PluginToolbarButtons } from "./plugin-toolbar-contributions";
-import { PluginWorkspaceViews } from "./plugin-workspace-views";
-import { DimensionFilterBar } from "./DimensionFilterBar";
-import { PluginJobActivityBanner } from "./PluginJobActivityBanner";
-import { Notice } from "./workbench/ui/patterns";
-import { WorkspaceNoticeBanner } from "./WorkspaceNoticeBanner";
-import { FindSimilarBanner } from "./FindSimilarBanner";
-import { TagManagementWorkspace } from "./TagManagementWorkspace";
-import { assetGridLayoutStyle } from "./workbench/collection/asset-grid-layout";
-import { assetTypeBadgeLabel, fileExtensionLabel, formatSequenceDuration, shouldShowAssetCardBadges, shouldShowDurationBadge, shouldShowExtensionBadge, shouldShowTypeBadgeAlongsideExtension } from "./asset-card-badges";
-import { corruptAssetAffordance, isCorruptAsset, missingAssetAffordance, shouldShowMissingAssetOverlay } from "./availability-affordance";
-import { resolveAssetSourceBadgeLabel, shouldShowAssetSourceBadge } from "./asset-source-badge";
-import { trashedFromLabel } from "./trashed-from-label";
-import { resolveSearchSnippetCaption } from "./search-snippet-caption";
-import { shouldShowThumbnailFailureBadge } from "./thumbnail-failure-badge";
-import { MANAGED_ASSETS_DRAG_TYPE, resolveDragDropMode, resolveDraggedAssetIds } from "./asset-drag-drop";
-import { resolveMasonryTabTarget } from "./workbench/collection/masonry-focus-order";
-import { TAG_DRAG_TYPE } from "./tag-drag-drop";
-import { TextAssetPreviewTile } from "./TextAssetPreviewTile";
-import { AssetCardMedia } from "./AssetCardMedia";
-import { SyncCardStatusBadge } from "./SyncCardStatusBadge";
-import { MasonryColumns } from "./masonry-columns";
-import { BrowseLayoutPreview } from "./BrowseLayoutPreview";
-import { JustifiedAssetRows } from "./justified-asset-rows";
 import { InspectorPanel } from "./InspectorPanel";
 import type {
   QueryFilterSnapshot,
@@ -137,16 +102,11 @@ import type {
   SearchDefinition,
   WorkspaceNavigationRequest,
 } from "./app/app-shared";
-import { folderRecursiveRef, late } from "./app/app-shared";
+import { late } from "./app/app-shared";
 import {
   IS_MAC_PLATFORM,
   LIBRARY_LOADING_DISPLAY_DELAY_MS,
-  SHORTCUT_PLATFORM,
-  formatDate,
-  formatDuration,
-  highlightSnippet,
   parseNumericRange,
-  renderMiddleEllipsisFilename,
   useDelayedVisibility,
 } from "./app/app-shared";
 import { useFolderCardRowElement } from "./app/use-folder-card-row-element";
@@ -182,6 +142,11 @@ import { AppToolbar } from "./app/AppToolbar";
 import { PaneResizeHandles } from "./app/PaneResizeHandles";
 import { AppAssetContextMenu } from "./app/AppAssetContextMenu";
 import { AppDialogs } from "./app/AppDialogs";
+import { AssetPreviewHost } from "./app/AssetPreviewHost";
+import { BrowseCanvas } from "./app/BrowseCanvas";
+import { WorkspaceNotices } from "./app/WorkspaceNotices";
+import { WorkspaceBanners } from "./app/WorkspaceBanners";
+import { WorkspaceHeader } from "./app/WorkspaceHeader";
 
 
 function AppInner() {
@@ -215,14 +180,14 @@ function AppInner() {
   } | null>(null);
   const [convertLinkedDialog, setConvertLinkedDialog] = useDialogField("convertLinkedDialog");
   const [assets, setAssets] = useBrowseField("assets");
-  const [findSimilarSource, setFindSimilarSource] = useNavigationField("findSimilarSource");
+  const setFindSimilarSource = navigationFields.setterFor("findSimilarSource");
   const findSimilarTokenRef = useRef(0);
   const syncBrowseFilterMembershipRef = useRef<
     (change: BrowseMembershipChange) => void
   >(() => undefined);
   const [browseLayout, setBrowseLayout] = useBrowseField("browseLayout");
   const [virtualBrowseLayout, setVirtualBrowseLayout] = useBrowseField("virtualBrowseLayout");
-  const [layoutThumbnailArtifacts, setLayoutThumbnailArtifacts] = useBrowseField("layoutThumbnailArtifacts");
+  const setLayoutThumbnailArtifacts = browseFields.setterFor("layoutThumbnailArtifacts");
   const [assetScope, setAssetScope] = useNavigationField("assetScope");
   // REQ-FOLDER-001/002/003/010: direct child folder cards shown above assets
   // when the current browse parent is a managed folder or the managed root.
@@ -534,13 +499,12 @@ function AppInner() {
 
   // Tags
   const [tags, setTags] = useNavigationField("tags");
-  const [tagDropTargetId, setTagDropTargetId] = useNavigationField("tagDropTargetId");
   const [activeTagId, setActiveTagId] = useNavigationField("activeTagId");
   const [storedPinnedTagId, setPinnedTagId] = useState<string | null>(null);
 
   // REQ-FOLDER-009: folder browse/search recurse only when explicitly enabled.
   const [folderRecursive, setFolderRecursive] = useNavigationField("folderRecursive");
-  const [folderRecursivePrefs, setFolderRecursivePrefs] = useNavigationField("folderRecursivePrefs");
+  const [folderRecursivePrefs] = useNavigationField("folderRecursivePrefs");
   const [showFolderCardsWhenRecursive, setShowFolderCardsWhenRecursive] = useNavigationField("showFolderCardsWhenRecursive");
   // Serpent-b8a853: one-time feature hints for hidden UI affordances share a
   // global switch (Settings → Feature hints) and per-key "seen" marks.
@@ -1366,7 +1330,7 @@ function AppInner() {
     aiTagsEnabled,
   ]);
   const [aiAnalyzing, setAiAnalyzing] = useAiField("aiAnalyzing");
-  const [aiProgressBannerVisible, setAiProgressBannerVisible] = useAiField("aiProgressBannerVisible");
+  const setAiProgressBannerVisible = aiFields.setterFor("aiProgressBannerVisible");
   const [aiContent, setAiContent] = useInspectorField("aiContent");
   /** Description editor is showing AI-layer text (human description empty). */
   const [descriptionIsAi, setDescriptionIsAi] = useInspectorField("descriptionIsAi");
@@ -1416,7 +1380,7 @@ function AppInner() {
     failed: number;
     changedJobs?: AiProgressJobUpdate[];
   }) => void>(() => undefined);
-  const [aiBatchProgress, setAiBatchProgress] = useAiField("aiBatchProgress");
+  const setAiBatchProgress = aiFields.setterFor("aiBatchProgress");
   const aiUiPrefs = usePrefsStore((state) => state.aiUi);
   const setAiUiPrefs = usePrefsStore((state) => state.setAiUi);
   const [importValidated, setImportValidated] = useTransfersField("importValidated");
@@ -1766,7 +1730,7 @@ function AppInner() {
   const previewCloseGenerationRef = useRef(0);
   const previewRestoreFrameRef = useRef<number | null>(null);
   const cancelPreviewViewRestoreRef = useRef<(() => void) | null>(null);
-  const { setMediaJobsOpen, visibleVirtualBrowseLayout, visibleBrowseLayout, shuffleOrder, selectedFolderId, visibleAssets, selectedFolder, setThumbnailFailures, selectedAsset, jobStatusCoordinatorRef, setAiJobs, workspaceTabPresentations, getManagedAssetDragIds, embeddingSelectionRef, embeddingService, mediaJobsOpen, aiConnectionFailureGate, onAiConnectionFailureAbort, pluginUiDialogOpen, aiJobs, notifyAiConnectionBatchStarted, setMediaJobsLoading, setMediaJobs, loadMediaJobsRef, mediaJobs, setPluginJobs, controlAiJobsRef, openMediaJobs, managedFolderDragIdsRef, setPluginUiDialogOpen, semanticSearchActive, embeddingSearchReady, backgroundJobsActive, getManagedFolderDragIds, dragPreviewRef, pluginJobActivity, hidePluginJobActivity, pluginJobQueuedMore, thumbnailFailures, managedAssetDragIdsRef, automaticPaletteRatios, displayedPalette, handleFavoriteToggle, handleMetadataDescriptionInput, handleMetadataDescriptionSave, handleRatingClick, handleSourceUrlInput, handleSourceUrlSave, handleAuthorInput, handleAuthorSave, handleOpenSourceUrl, embeddingBound, handleAiConnectionFailureRetry, embeddingSelectionId } = useAssetDragState({ cancelPreviewViewRestoreRef, previewRestoreFrameRef, library, api, setFindSimilarSource, aiAnalyzing, lastAiBatchJobIdsRef, aiBatchStatusRequestRef, aiBatchJobIdsRef, aiBatchSkippedCountRef, aiBatchKnownJobsRef, aiBatchCounterBaselineRef, analyzingAssetIdRef, lastAiBatchAssetIdRef, analyzingBatchSizeRef, setAiBatchProgress, setAiAnalyzing, setAiProgressBannerVisible, assetScope, folders, showTrash, trashedAssets, selectedAssetId, assets, browseLayout, virtualBrowseLayout, shellApi, selectedAssetIds, assetMetadata, multiEdit, editDescription, editFavorite, editSourceUrl, editAuthor, descriptionIsAi, aiContent, setEditDescription, setEditRating, setEditFavorite, setEditSourceUrl, setEditAuthor, setDescriptionIsAi, setAiContent, saveMetadata, saveMetadataForSelection, batchSetRatingForSelection, loadMetadata, setNotice, setError, trashedFolders, trashBrowseTombstoneId, shuffleSeed, workspaceTabsState, linkedFolders, tags, pluginSidebarViews, t });
+  const { setMediaJobsOpen, visibleVirtualBrowseLayout, visibleBrowseLayout, shuffleOrder, selectedFolderId, visibleAssets, selectedFolder, setThumbnailFailures, selectedAsset, jobStatusCoordinatorRef, setAiJobs, workspaceTabPresentations, getManagedAssetDragIds, embeddingSelectionRef, embeddingService, mediaJobsOpen, aiConnectionFailureGate, onAiConnectionFailureAbort, pluginUiDialogOpen, aiJobs, notifyAiConnectionBatchStarted, setMediaJobsLoading, setMediaJobs, loadMediaJobsRef, mediaJobs, setPluginJobs, controlAiJobsRef, openMediaJobs, managedFolderDragIdsRef, setPluginUiDialogOpen, semanticSearchActive, embeddingSearchReady, backgroundJobsActive, getManagedFolderDragIds, dragPreviewRef, pluginJobActivity, hidePluginJobActivity, pluginJobQueuedMore, managedAssetDragIdsRef, automaticPaletteRatios, displayedPalette, handleFavoriteToggle, handleMetadataDescriptionInput, handleMetadataDescriptionSave, handleRatingClick, handleSourceUrlInput, handleSourceUrlSave, handleAuthorInput, handleAuthorSave, handleOpenSourceUrl, embeddingBound, handleAiConnectionFailureRetry, embeddingSelectionId } = useAssetDragState({ cancelPreviewViewRestoreRef, previewRestoreFrameRef, library, api, setFindSimilarSource, aiAnalyzing, lastAiBatchJobIdsRef, aiBatchStatusRequestRef, aiBatchJobIdsRef, aiBatchSkippedCountRef, aiBatchKnownJobsRef, aiBatchCounterBaselineRef, analyzingAssetIdRef, lastAiBatchAssetIdRef, analyzingBatchSizeRef, setAiBatchProgress, setAiAnalyzing, setAiProgressBannerVisible, assetScope, folders, showTrash, trashedAssets, selectedAssetId, assets, browseLayout, virtualBrowseLayout, shellApi, selectedAssetIds, assetMetadata, multiEdit, editDescription, editFavorite, editSourceUrl, editAuthor, descriptionIsAi, aiContent, setEditDescription, setEditRating, setEditFavorite, setEditSourceUrl, setEditAuthor, setDescriptionIsAi, setAiContent, saveMetadata, saveMetadataForSelection, batchSetRatingForSelection, loadMetadata, setNotice, setError, trashedFolders, trashBrowseTombstoneId, shuffleSeed, workspaceTabsState, linkedFolders, tags, pluginSidebarViews, t });
   const { canvasFolderBrowseEntries, setHoveredAssetId, hoveredAssetIdRef, clearHoveredAssetId, selectedVisibleAssets, pluginSurfaceContext, filteredFolderCounts, browseCanvasBodyLayout, importMenuCopy, recursiveHintActive, scopeBreadcrumbSegments, sourceBadgeContext, hoveredAssetId, activePreviewAssetId, activeResolution, retryLiveVideoProxyFallback, assetRenderSections, browseEmptyState, pluginBrowseScope, pluginViewerState } = useBrowsePluginContext({ api, library, workspaceCanvasRef, reportedVisibleWindowKeyRef, interactionGenerationRef, viewportScrollTopRef, visibleVirtualBrowseLayout, visibleBrowseLayout, previewAssetRef, viewportGenerationRef, visibleWindowAssetIdsRef, assetViewMode, browseLayout, virtualBrowseLayout, shuffleOrder, ensureBrowseVisibleIndices, ensureBrowseVisibleRange, selectedFolderId, showTrash, activeTagId, searchValue, colorFilter, excludeColorFilter, formatFilter, excludeFormatFilter, tagFilter, excludeTagFilter, excludedTagFilter, tagFilterMatch, ratingFilter, excludeRatingFilter, favoriteFilter, sourceUrlFilter, availabilityFilter, excludeAvailabilityFilter, widthRange, heightRange, aspectRatioRange, aspectRatioRanges, longEdgeRange, durationRange, previewAsset, selectedAssetIds, visibleAssets, busy, locale, assetScope, tagFilterExpression, tagFilterMode, includeAiTagFilter, includeAiRatingFilter, selectedFolder, currentQueryDefinition, showIgnoredItems, filteredFolderCountRefreshToken, folderBrowseEntries, trashedFolders, trashBrowseTombstoneId, t, tags, folders, linkedFolders, recursiveHintKey, showTagManagement, showPluginSidebarView, folderRecursive, featureHintPrefs, selectedAssetId });
   const { resizeAssetCards, selectionAnchorRef, setAssetSelectionAnchor, clearAssetSelection, selectedAssets, diskDeleteKeyboardTargets, previewIndex, browseScopeAssetIds, selectAllBrowseScope, invertBrowseScope, handleFolderCardClick, cardMouseDownRef, selectedFolderIdSet, workspaceBrowseCount, handleCanvasMouseDown, selectedIdSet, handleCardClick, selectionAssetIds, folderInspector, folderInspectorAppearance, menuSkipScope } = useBrowseSelection({ assetViewMode, visibleAssets, masonryGridWidth, assetCardSize, canvasPrefs, assetGridRef, setMasonryGridWidth, canvasFolderBrowseEntries, selectedAssetIds, setSelectedAssetIds, setSelectedAssetId, previewAsset, workspaceCanvasRef, marqueeBoxRef, selectedFolderIds, setSelectedFolderIds, setHoveredAssetId, pendingRevealRef, pendingRestoredFocusRef, folderBrowseEntries, library, assetScope, showTrash, activeTagId, folders, linkedFolders, searchValue, api, trashedAssets, assets, showTagManagement, tags, searchTotal, fetchBrowseScopeAssetIds, shellApi, editableTextFocused, t, showBlockingError, setError, setWarning, setNotice, locale, ensureLibraryView, setFolderBrowseEntries, folderRecursive, showFolderCardsWhenRecursive, showIgnoredItems, isCurrentLibraryView, folderBrowseRefreshToken, folderCoverCandidateAssetIdsRef, folderNavigationCovers, virtualBrowseLayout, cardResizeAnchorRef, cardResizeScrollSnapshotRef, reflowRestoreFrameRef, reflowAnchorRef, reflowScrollSnapshotRef, setCanvasPrefs, cardSizeRestoreFrameRef });
   const { openAssetPreview, saveCurrentWorkspaceHistoryViewport, navigateAssetPreview, persistAssetColorSpace } = useCanvasEffects({ workspaceCanvasRef, setFolderCanvasContentWidthPx, setCanvasWidthPx, previewAssetRef, previewRestoringRef, cardResizeAnchorRef, reflowAnchorRef, reflowScrollSnapshotRef, panelResizeLockRef, reflowRestoreFrameRef, panelResizingRef, cardResizeScrollSnapshotRef, previewAsset, previewRestoring, cardSizeRestoreFrameRef, sortField, sortOrder, assetCardSize, resizeAssetCards, workspaceHistoryReplayActiveRef, cancelWorkspaceViewportRestoreRef, navHistoryRef, pendingViewportRestoreRef, wakeViewerChrome, previewRestoreFrameRef, previewCloseGenerationRef, closingPreviewRef, setPreviewRestoring, setPreviewCanvasReady, cancelPreviewViewRestoreRef, clearPreviewScrollHold, previewFocusReturnRef, previewScrollSnapshotRef, setSelectedAssetIds, setSelectedAssetId, selectionAnchorRef, setPreviewAsset, syncActiveWorkspaceTabLocation, setNavHistoryUi, api, library, setError, t, setNotice, pendingWorkspacePreviewRef, visibleAssets, assets });
@@ -2692,1243 +2656,125 @@ function AppInner() {
         }
       />
       <section className="workspace">
-        <div
-          className={`workspace-toolstrip${previewAsset ? " is-viewing" : previewRestoring ? " is-restoring" : ""}`}
-          data-chrome="unified"
-        >
-        <div
-          className={`workspace-bar${previewAsset ? " is-viewing" : previewRestoring ? " is-restoring" : ""}`}
-        >
-          <div className="workspace-title">
-            {library &&
-              !showTrash &&
-              !showTagManagement &&
-              !showPluginSidebarView &&
-              !activeTagId &&
-              assetScope !== "all" &&
-              assetScope !== "root" && (
-                <button
-                  aria-pressed={folderRecursive}
-                  className={`workspace-include-subfolders${
-                    recursiveHintActive ? " is-feature-hinting" : ""
-                  }`}
-                  onMouseEnter={() => {
-                    // Hovering the highlighted affordance >0.5s dismisses the
-                    // hint permanently (shared all-highlights rule).
-                    includeSubfoldersHoverTimerRef.current = setTimeout(() => {
-                      includeSubfoldersHoverTimerRef.current = null;
-                      if (recursiveHintKey) {
-                        const hinted = withFeatureHintShown(
-                          featureHintPrefs,
-                          recursiveHintKey,
-                        );
-                        setFeatureHintPrefs(hinted);
-                        saveFeatureHintPreferences(hinted);
-                      }
-                    }, 500);
-                  }}
-                  onMouseLeave={() => {
-                    if (includeSubfoldersHoverTimerRef.current) {
-                      clearTimeout(includeSubfoldersHoverTimerRef.current);
-                      includeSubfoldersHoverTimerRef.current = null;
-                    }
-                  }}
-                  onClick={() => {
-                    // Include-subfolders changes the browse result set (REQ-VIEW-004).
-                    void closeAssetPreview(false);
-                    const next = !folderRecursiveRef.current;
-                    folderRecursiveRef.current = next;
-                    setFolderRecursive(next);
-                    const nextPrefs = withFolderRecursiveEnabled(
-                      folderRecursivePrefs,
-                      library.libraryId,
-                      assetScope,
-                      next,
-                    );
-                    setFolderRecursivePrefs(nextPrefs);
-                    saveFolderRecursivePreferences(nextPrefs);
-                    // Once the user has expanded this folder's children, the
-                    // hint is moot and must never pulse again (Serpent-b8a853).
-                    if (next && recursiveHintKey) {
-                      const hintedPrefs = withFeatureHintShown(
-                        featureHintPrefs,
-                        recursiveHintKey,
-                      );
-                      setFeatureHintPrefs(hintedPrefs);
-                      saveFeatureHintPreferences(hintedPrefs);
-                    }
-                    const searchActive = currentQueryDefinition().search !== undefined;
-                    void loadContent(library, assetScope, {
-                      discovery: currentQueryDefinition(),
-                      // Text search is recursive by definition (REQ-FILTER-012),
-                      // so changing the browse-only switch must not narrow a
-                      // live search result set.
-                      searchScope: searchActive
-                        ? folderSearchScope(assetScope)
-                        : {
-                            kind: "folder",
-                            folderId: assetScope,
-                            recursive: next,
-                          },
-                    }).catch((caught) => {
-                      setError(
-                        toMessage(caught, t("toast.readAssetsFailed"), locale),
-                      );
-                    });
-                  }}
-                  type="button"
-                  {...iconActionAttrs(t("nav.includeChildFolders"))}
-                >
-                  <Icon name="folders" size={14} />
-                </button>
-              )}
-            {showTagManagement || showPluginSidebarView ? (
-              <span>{workspaceTitle()}</span>
-            ) : (
-              <ScopeBreadcrumbs
-                onNavigateFolder={(folderId) => void chooseFolder(folderId)}
-                onNavigateTrashTombstone={(tombstoneId) => {
-                  void enterTrashAt(tombstoneId);
-                }}
-                segments={scopeBreadcrumbSegments}
-              />
-            )}
-            <span className="item-count">
-              {library
-                ? showTagManagement
-                  ? t("common.itemCount", { count: tags.length })
-                  : t("common.itemCount", { count: workspaceBrowseCount })
-                : t("common.notLoaded")}
-            </span>
-          </div>
-          <div className="workspace-tools">
-            {library && showTrash ? (
-              <>
-                <button
-                  className="compact-action"
-                  disabled={busy}
-                  onClick={() => void emptyTrash()}
-                  type="button"
-                >
-                  <Icon name="trash" size={14} />
-                  {t("toolbar.emptyTrash")}
-                </button>
-                <span className="tool-separator" />
-              </>
-            ) : (
-              library &&
-              !showTrash &&
-              !showTagManagement &&
-              !showPluginSidebarView &&
-              visibleAssets.some(
-                (a) => a.availability === "missing" && !a.deletedAt,
-              ) && (
-                <>
-                  <button
-                    className="compact-action"
-                    disabled={busy}
-                    onClick={() => void startBatchRelink()}
-                    type="button"
-                  >
-                    <Icon name="folder" size={14} />
-                    {t("toolbar.batchRelink")}
-                  </button>
-                  <span className="tool-separator" />
-                </>
-              )
-            )}
-            {!showTagManagement && !showPluginSidebarView && (
-              <CanvasToolbarControls
-                actions={{
-                  refresh: () => {
-                    void refreshAssets();
-                  },
-                  setViewMode: (mode) => {
-                    setCanvasPrefs((p) => ({ ...p, viewMode: mode }));
-                  },
-                  toggleField: (field) => {
-                    setCanvasPrefs((p) => ({
-                      ...p,
-                      fields: { ...p.fields, [field]: !p.fields[field] },
-                    }));
-                  },
-                  cycleCaptionAlign: () => {
-                    setCanvasPrefs((p) => ({
-                      ...p,
-                      captionAlign: nextCanvasCaptionAlign(p.captionAlign),
-                    }));
-                  },
-                  openAiSettings: () => {
-                    setAppSettingsCategory("ai");
-                    setAppSettingsOpen(true);
-                  },
-                  openAppSettings: () => {
-                    setAppSettingsCategory("general");
-                    setAppSettingsOpen(true);
-                  },
-                }}
-                busy={busy}
-                canvasPrefs={canvasPrefs}
-                cardSize={assetCardSize}
-                cardSizeStops={cardSizeStops}
-                libraryOpen={Boolean(library)}
-                locale={locale}
-                onCardSizeChange={resizeAssetCards}
-                platform={SHORTCUT_PLATFORM}
-              />
-            )}
-            <PluginToolbarButtons
-              disabled={busy || library === null || showTagManagement || showPluginSidebarView}
-              libraryId={library?.libraryId}
-              pluginApi={(window as RendererWindow).keel?.plugins}
-              refreshKey={pluginContributionRefreshKey}
-              selectedAssetIds={selectedAssetIds}
-              selectedAssets={selectedVisibleAssets}
-              context={pluginSurfaceContext}
-            />
-          </div>
-        </div>
-        <PluginWorkspaceViews
-          disabled={busy || library === null || showTagManagement || showPluginSidebarView}
-          libraryId={library?.libraryId}
-          pluginApi={(window as RendererWindow).keel?.plugins}
-          refreshKey={pluginContributionRefreshKey}
+        <WorkspaceHeader
+          showPluginSidebarView={showPluginSidebarView}
+          recursiveHintActive={recursiveHintActive}
+          includeSubfoldersHoverTimerRef={includeSubfoldersHoverTimerRef}
+          recursiveHintKey={recursiveHintKey}
+          closeAssetPreview={closeAssetPreview}
+          currentQueryDefinition={currentQueryDefinition}
+          loadContent={loadContent}
+          setError={setError}
+          t={t}
+          locale={locale}
+          workspaceTitle={workspaceTitle}
+          chooseFolder={chooseFolder}
+          enterTrashAt={enterTrashAt}
+          scopeBreadcrumbSegments={scopeBreadcrumbSegments}
+          workspaceBrowseCount={workspaceBrowseCount}
+          busy={busy}
+          emptyTrash={emptyTrash}
+          visibleAssets={visibleAssets}
+          startBatchRelink={startBatchRelink}
+          refreshAssets={refreshAssets}
+          setCanvasPrefs={setCanvasPrefs}
+          canvasPrefs={canvasPrefs}
+          assetCardSize={assetCardSize}
+          cardSizeStops={cardSizeStops}
+          resizeAssetCards={resizeAssetCards}
+          pluginContributionRefreshKey={pluginContributionRefreshKey}
+          selectedVisibleAssets={selectedVisibleAssets}
+          pluginSurfaceContext={pluginSurfaceContext}
+          dialogFocusTrapActive={dialogFocusTrapActive}
+          clearDiscoveryFilter={clearDiscoveryFilter}
+          setPinnedTagId={setPinnedTagId}
         />
-        {!showTagManagement && !showPluginSidebarView && (
-        <div
-          className={`workspace-discovery${previewAsset ? " is-viewing" : previewRestoring ? " is-restoring" : ""}`}
-        >
-          <DimensionFilterBar
-            disabled={!library}
-            interactionsLocked={dialogFocusTrapActive}
-            onClearFilter={clearDiscoveryFilter}
-            onTagNamesChange={(names) => {
-              // Discovery tag filters overlay the current folder/collection
-              // scope. Do not set activeTagId — that is "browse by tag" mode
-              // (chooseTag) and would clear folder nav highlight + folder cards
-              // (Serpent-w9c6 / resolveFolderBrowseParentId).
-              setTagFilter(names.join(", "));
-              setActiveTagId(null);
-            }}
-            setSortField={(field) => {
-              setShuffleSeed(null);
-              setSortField(field);
-            }}
-            setSortOrder={(order) => {
-              setShuffleSeed(null);
-              setSortOrder(order);
-            }}
-            setTagFilter={(value) => {
-              // Explicit filter-bar edits leave the tag-management AND mode.
-              setTagFilterMatch("any");
-              setTagFilter(value);
-              setTagFilterExpression("");
-            }}
-            setTagFilterExpression={(value) => {
-              setPinnedTagId(null);
-              setTagFilterExpression(value);
-              if (parseSearchExpressionDetailed(value, "tags").ok) setTagFilterLastValidExpression(value);
-            }}
-            shuffleActive={shuffleSeed !== null}
-            onShuffle={() => {
-              setShuffleSeed((prev) => {
-                const next = Date.now() >>> 0;
-                return prev === null ? next : (next ^ ((prev + 1) >>> 0)) >>> 0;
-              });
-            }}
-            snapshot={{
-              colorFilter,
-              excludeColorFilter,
-              formatFilter,
-              excludeFormatFilter,
-              tagFilter,
-              tagFilterExpression,
-              tagFilterMode,
-              tagFilterLastValidExpression,
-              excludeTagFilter,
-              excludedTagFilter,
-              includeAiTagFilter,
-              ratingFilter,
-              excludeRatingFilter,
-              includeAiRatingFilter,
-              favoriteFilter,
-              sourceUrlFilter,
-              availabilityFilter,
-              excludeAvailabilityFilter,
-              widthRange,
-              heightRange,
-              aspectRatioRange,
-              aspectRatioRanges,
-              longEdgeRange,
-              durationRange,
-            }}
-          />
-        </div>
-        )}
-        </div>
-        {(aiAnalyzing ||
-          (aiJobs !== null && aiJobs.queued + aiJobs.running > 0)) &&
-          aiProgressBannerVisible &&
-          (() => {
-            const batchProgress = aiBatchProgress;
-            const progressLabel =
-              batchProgress && batchProgress.batchTotal > 0
-                ? t("toast.aiAnalyzeProgressCount", {
-                    done: String(batchProgress.done),
-                    total: String(batchProgress.batchTotal),
-                  })
-                : t("toast.aiAnalyzeStarted");
-            return (
-              <div className="workspace-ai-progress" role="status">
-                <div className="workspace-ai-progress-body">
-                  <div className="workspace-ai-progress-headline">
-                    <span className="activity-pulse" aria-hidden />
-                    <span className="workspace-ai-progress-message">
-                      {progressLabel}
-                    </span>
-                  </div>
-                  {batchProgress && batchProgress.batchTotal > 0 && (
-                    <div
-                      aria-valuemax={batchProgress.batchTotal}
-                      aria-valuemin={0}
-                      aria-valuenow={batchProgress.done}
-                      className="task-progress-track workspace-ai-progress-bar"
-                      role="progressbar"
-                    >
-                      <div
-                        className="task-progress-fill"
-                        style={{
-                          width: `${Math.round((batchProgress.ratio ?? 0) * 100)}%`,
-                        }}
-                      />
-                    </div>
-                  )}
-                </div>
-                <div className="workspace-ai-progress-actions">
-                  <button
-                    className="secondary-button"
-                    onClick={() => void controlAiJobs("cancel")}
-                    type="button"
-                  >
-                    {t("toast.aiAnalyzeStop")}
-                  </button>
-                  <button
-                    className="secondary-button"
-                    onClick={() => setAiProgressBannerVisible(false)}
-                    type="button"
-                  >
-                    {t("toast.aiAnalyzeRunInBackground")}
-                  </button>
-                </div>
-              </div>
-            );
-          })()}
-        {pluginJobActivity !== null && (
-          <PluginJobActivityBanner
-            job={pluginJobActivity}
-            onDismiss={() => hidePluginJobActivity(pluginJobActivity.jobId)}
-            onRunInBackground={() => hidePluginJobActivity(pluginJobActivity.jobId)}
-            queuedMoreCount={pluginJobQueuedMore}
-          />
-        )}
+        <WorkspaceBanners
+          t={t}
+          controlAiJobs={controlAiJobs}
+          pluginJobActivity={pluginJobActivity}
+          hidePluginJobActivity={hidePluginJobActivity}
+          pluginJobQueuedMore={pluginJobQueuedMore}
+        />
         <div
           aria-busy={workspaceNavigationPending || workerRecoveryState === 'recovering'}
           className={`workspace-canvas-host${previewAsset || previewRestoring ? " is-viewing" : ""}${previewRestoring ? " is-restoring" : ""}${previewRestoring && previewCanvasReady ? " is-restore-visible" : ""}${workspaceNavigationPending ? " is-navigating" : ""}`}
         >
-          {renderedToastStack.length > 0 || workerRecoveryState !== 'ready'
-            ? createPortal(
-                <div
-                  aria-atomic="false"
-                  aria-live="polite"
-                  className="workspace-notice-stack workspace-notice"
-                >
-                  {workerRecoveryState !== 'ready' ? (
-                    <Notice
-                      className="workspace-notice-item"
-                      message={t(workerRecoveryState === 'recovering' ? 'toast.workerRecovering' : 'toast.workerFailed')}
-                      tone={workerRecoveryState === 'recovering' ? 'warning' : 'error'}
-                    />
-                  ) : null}
-                  {renderedToastStack.map((message) => {
-                    const isUndoTarget =
-                      !message.closing &&
-                      message.id === topVisibleToastId;
-                    return (
-                      <WorkspaceNoticeBanner
-                        key={message.id}
-                        closing={message.closing}
-                        message={message}
-                        onDismiss={() => dismissToast(message.id)}
-                        onTransitionEnd={handleToastTransitionEnd}
-                        onUndo={
-                          message.kind === "notice" &&
-                          isUndoTarget &&
-                          message.historyEntryId
-                            ? () => void undoLastFileOp(message.historyEntryId)
-                            : undefined
-                        }
-                        toastId={message.id}
-                        undoLabel={
-                          message.kind === "notice" &&
-                          isUndoTarget &&
-                          message.historyEntryId
-                            ? t("action.undo")
-                            : undefined
-                        }
-                      />
-                    );
-                  })}
-                </div>,
-                document.body,
-              )
-            : null}
-        {findSimilarSource
-          && findSimilarSource.libraryId === library?.libraryId
-          && findSimilarSource.workspaceTabId === workspaceTabsState.activeTabId
-          && !previewAsset ? (
-            <FindSimilarBanner
-              coverUrl={findSimilarSource.coverUrl}
-              displayName={findSimilarSource.displayName}
-              onBack={() => void goWorkspaceBack()}
-            />
-          ) : null}
-        <div
-          className={`workspace-canvas${previewAsset ? " is-viewing" : previewRestoring ? " is-restoring" : ""}${externalDropActive ? " is-external-drop" : ""}`}
-          inert={workerRecoveryState !== 'ready'}
-          onDragEnter={handleExternalDragEnter}
-          onDragLeave={handleExternalDragLeave}
-          onDragOver={handleExternalDragOver}
-          onDragOverCapture={handleExternalDragOver}
-          onDrop={handleExternalDrop}
-          onMouseDown={handleCanvasMouseDown}
-          onContextMenu={(event) => {
-            const target = event.target;
-            if (!(target instanceof Element)) return;
-            if (
-              target.closest(
-                ".asset-card, .folder-card, button, [role='button'], [role='menuitem'], a, input, textarea, select",
-              )
-            ) {
-              return;
-            }
-            if (!library || previewAsset || showTagManagement || showPluginSidebarView) return;
-            event.preventDefault();
-            openContextMenu(
-              {
-                type: "workspace",
-                ...(selectedAssetIds.length > 0
-                  ? { assetIds: [...selectedAssetIds] }
-                  : {}),
-              },
-              { x: event.clientX, y: event.clientY },
-            );
-          }}
-          ref={workspaceCanvasRef}
-        >
-          {/* Serpent-wgl2: rendered once, mutated directly via ref — a
-              per-frame React state would re-render the whole grid. */}
-          <div
-            className="marquee-selection-box"
-            ref={marqueeBoxRef}
+          <WorkspaceNotices
+            renderedToastStack={renderedToastStack}
+            t={t}
+            topVisibleToastId={topVisibleToastId}
+            dismissToast={dismissToast}
+            handleToastTransitionEnd={handleToastTransitionEnd}
+            undoLastFileOp={undoLastFileOp}
+            workspaceTabsState={workspaceTabsState}
+            goWorkspaceBack={goWorkspaceBack}
           />
-          {library && showPluginSidebarView ? (
-            <PluginSidebarViewPanel
-              activeView={activePluginSidebarView}
-              libraryId={library.libraryId}
-              pluginApi={(window as RendererWindow).keel?.plugins}
-            />
-          ) : library && showTagManagement ? (
-            <TagManagementWorkspace
-              busy={busy}
-              onCreate={handleCreateTagInManagement}
-              onDeleteMany={handleDeleteTagsInManagement}
-              onMerge={handleMergeTagsInManagement}
-              onOpenTag={(tagId) => void chooseTag(tagId)}
-              onRename={handleRenameTagInManagement}
-              onSearchTags={(names, match) =>
-                void handleSearchTagsFromManagement(names, match)
-              }
-              tags={tags}
-            />
-          ) : library ? (
-            browseCanvasBodyLayout.mode !== "empty" ? (
-              <>
-                {folderCardRowElement}
-                {browseCanvasBodyLayout.showAssetGrid && (
-                  <div
-                    className={`asset-grid is-${assetViewMode}`}
-                    ref={assetGridRef}
-                    style={{
-                      ...assetGridLayoutStyle(assetViewMode, assetCardSize),
-                      ...(panelResizing && panelReflowFrozenWidthRef.current
-                        ? {
-                            width: `${panelReflowFrozenWidthRef.current}px`,
-                            maxWidth: "none",
-                          }
-                        : {}),
-                    }}
-                  >
-                  {(() => {
-                    const showCornerBadges =
-                      shouldShowAssetCardBadges(assetCardSize);
-                    const renderAssetCard = (
-                      asset: AssetSummary,
-                      renderOptions?: { loadImmediately?: boolean; stableSlot?: boolean },
-                    ) => {
-                      const typeBadge = assetTypeBadgeLabel(
-                        asset.mediaType,
-                        asset.displayName,
-                      );
-                      const showExtension =
-                        showCornerBadges &&
-                        canvasPrefs.fields.badgeExtension &&
-                        shouldShowExtensionBadge(asset.mediaType);
-                      const showDuration =
-                        showCornerBadges &&
-                        canvasPrefs.fields.badgeDuration &&
-                        shouldShowDurationBadge(
-                          asset.mediaType,
-                          asset.displayName,
-                          asset.durationMs,
-                        );
-                      const showTypeBadge =
-                        showCornerBadges &&
-                        canvasPrefs.fields.badgeType &&
-                        Boolean(typeBadge) &&
-                        shouldShowTypeBadgeAlongsideExtension(showExtension) &&
-                        !asset.deletedAt &&
-                        !shouldShowMissingAssetOverlay(asset.availability);
-                      const sourceBadgeLabel =
-                        showCornerBadges &&
-                        canvasPrefs.fields.badgeSource &&
-                        !showTrash &&
-                        shouldShowAssetSourceBadge(
-                          sourceBadgeContext,
-                          asset.managedFolderId,
-                        )
-                          ? resolveAssetSourceBadgeLabel(
-                              folders,
-                              asset.managedFolderId,
-                              selectedFolderId ?? null,
-                            )
-                          : null;
-                      const trashOriginBadgeLabel =
-                        showTrash &&
-                        asset.deletedAt &&
-                        asset.trashedFromPath
-                          ? trashedFromLabel(asset.trashedFromPath, locale)
-                          : null;
-                      const snippetCaption = resolveSearchSnippetCaption(
-                        searchSnippets.get(asset.assetId),
-                        asset.displayName,
-                      );
-                      const syncStatus =
-                        canvasPrefs.fields.badgeSync !== false
-                          ? syncCardStatuses.get(asset.assetId)
-                          : undefined;
-                      const layoutThumbnailArtifactId =
-                        layoutThumbnailArtifacts.libraryId === library?.libraryId
-                          ? layoutThumbnailArtifacts.ids.get(asset.assetId)
-                          : undefined;
-                      const layoutEntry = virtualBrowseLayout
-                        ? virtualLayoutEntryForAsset(virtualBrowseLayout, asset.assetId)
-                        : undefined;
-                      const cardCover = resolveAssetCardCoverUrl({
-                        libraryId: library?.libraryId,
-                        assetId: asset.assetId,
-                        mediaType: asset.mediaType,
-                        availability: asset.availability,
-                        deletedAt: asset.deletedAt,
-                        thumbnailStatus: layoutThumbnailArtifactId
-                          ? "ready"
-                          : asset.thumbnailStatus,
-                        thumbnailArtifactId:
-                          layoutThumbnailArtifactId ?? asset.thumbnailArtifactId,
-                        layoutPreviewArtifactId:
-                          layoutThumbnailArtifactId
-                          ?? layoutEntry?.previewArtifactId
-                          ?? null,
-                        previewKind: asset.previewKind,
-                        previewRevisionId: asset.previewRevisionId,
-                      });
-                      const showThumbnailFailure = shouldShowThumbnailFailureBadge(
-                        asset,
-                        thumbnailFailures.has(asset.assetId),
-                      );
-                      const renamingThisAsset =
-                        assetRenameDialog?.assetId === asset.assetId;
-                      const corruptAsset = isCorruptAsset(asset);
-                      const CardTag = renamingThisAsset ? "div" : "button";
-                      return (
-                    <CardTag
-                      aria-label={canvasPrefs.fields.name ? undefined : asset.displayName}
-                      data-hover-tip={canvasPrefs.fields.name ? undefined : asset.displayName}
-                      aria-pressed={selectedIdSet.has(asset.assetId)}
-                      className={`asset-card${selectedIdSet.has(asset.assetId) ? " is-selected" : ""}${asset.availability === "missing" ? " is-missing" : ""}${corruptAsset ? " is-corrupt" : ""}${asset.deletedAt ? " is-trashed" : ""}${renamingThisAsset ? " is-renaming" : ""}`}
-                      data-tag-drop-target={tagDropTargetId === asset.assetId || undefined}
-                      data-asset-id={asset.assetId}
-                      data-asset-name={asset.displayName}
-                      data-media-type={asset.mediaType}
-                      draggable={
-                        !showTrash && !renamingThisAsset && (
-                          !nativeAssetDragEnabled
-                          || (selectedIdSet.has(asset.assetId)
-                            ? selectedNativeDragReady
-                            : nativeDragReadyIds.has(asset.assetId))
-                        )
-                      }
-                      key={renderOptions?.stableSlot
-                        ? undefined
-                        : assetCardKey(library?.libraryId, asset.assetId)}
-                      {...(renamingThisAsset
-                        ? { role: "group" as const }
-                        : { type: "button" as const })}
-                      onMouseDown={(e) => {
-                        cardMouseDownRef.current = e.button;
-                        if (e.button !== 0 || showTrash || renamingThisAsset || !api || !library) {
-                          return;
-                        }
-                        const ids = resolveDraggedAssetIds(asset.assetId, selectedAssetIds);
-                        api.primeAssetDrag({
-                          libraryId: library.libraryId,
-                          assetIds: ids,
-                        });
-                      }}
-                      onMouseEnter={() => {
-                        setHoveredAssetId(asset.assetId);
-                      }}
-                      onMouseLeave={() => {
-                        clearHoveredAssetId(asset.assetId);
-                      }}
-                      onClick={(event) => {
-                        if (renamingThisAsset) return;
-                        handleCardClick(asset.assetId, event);
-                      }}
-                      onKeyDown={(event) => {
-                        if (
-                          renamingThisAsset ||
-                          assetViewMode !== "masonry" ||
-                          event.key !== "Tab"
-                        ) {
-                          return;
-                        }
-                        const nextAssetId = resolveMasonryTabTarget(
-                          selectionAssetIds ?? [],
-                          asset.assetId,
-                          event.shiftKey,
-                        );
-                        if (!nextAssetId) return;
-                        const nextCard = workspaceCanvasRef.current?.querySelector<HTMLElement>(
-                          `.asset-card[data-asset-id="${CSS.escape(nextAssetId)}"]`,
-                        );
-                        if (!nextCard) return;
-                        event.preventDefault();
-                        nextCard.focus();
-                      }}
-                      onDoubleClick={() => {
-                        if (renamingThisAsset) return;
-                        openAssetByDefault(asset);
-                      }}
-                      onDragEnd={() => {
-                        managedAssetDragIdsRef.current = null;
-                        // REQ-DND-003: unmount the custom drag ghost.
-                        dismissAssetDragPreview(dragPreviewRef.current);
-                        dragPreviewRef.current = null;
-                      }}
-                      onDragOver={(event) => {
-                        if (!showTrash && event.dataTransfer.types.includes(TAG_DRAG_TYPE)) {
-                          event.preventDefault(); event.stopPropagation(); event.dataTransfer.dropEffect = 'copy'; setTagDropTargetId(asset.assetId); return;
-                        }
-                      }}
-                      onDragLeave={() => setTagDropTargetId(null)}
-                      onDragStart={(event) => {
-                        // REQ-DND-001/002: folder/trash drops resolve this
-                        // selection snapshot at the target (asset-drag-drop.ts).
-                        const ids = resolveDraggedAssetIds(asset.assetId, selectedAssetIds);
-                        // Native OS drag and Chromium HTML5 drag cannot share a
-                        // single session: Electron requires preventDefault()
-                        // before startDrag, while in-app E2E keeps the HTML5
-                        // payload to exercise internal targets. The test flag
-                        // only disables the OS hand-off; production always
-                        // uses the native path.
-                        // `globalThis` in preload is isolated from the page
-                        // world when contextIsolation is enabled. Use the
-                        // explicit diagnostics bridge so E2E HTML5 drops do
-                        // not enter Electron's native OS drag loop, while
-                        // production still uses startDrag().
-                        if (nativeAssetDragEnabled && api && library) {
-                          if (!ids.every((id) => nativeDragReadyIds.has(id))) {
-                            event.preventDefault();
-                            api.primeAssetDrag({ libraryId: library.libraryId, assetIds: ids });
-                            return;
-                          }
-                          // Electron's supported path is an asynchronous
-                          // one-way IPC from dragstart. A synchronous round
-                          // trip deadlocks when this native file drag returns
-                          // to Keel as a drop. The OS drag carries Files,
-                          // so the canvas must not treat it as an import.
-                          beginInternalAssetDrag();
-                          event.preventDefault();
-                          api.startAssetDrag({
-                            libraryId: library.libraryId,
-                            assetIds: ids,
-                          });
-                          return;
-                        }
-                        managedAssetDragIdsRef.current = ids;
-                        event.dataTransfer.setData(
-                          MANAGED_ASSETS_DRAG_TYPE,
-                          JSON.stringify(ids),
-                        );
-                        // Serpent-aa3: Option/Alt during dragover selects copy
-                        // vs move via dropEffect; both must be allowed here.
-                        event.dataTransfer.effectAllowed = "copyMove";
-                        // REQ-DND-003: replace Chromium's full-card ghost with
-                        // the small, translucent, rounded preview tile
-                        // (asset-drag-preview.ts); the same keel:// URL as
-                        // the card's <img>, so it is already cached.
-                        const preview = showAssetDragPreview({
-                          thumbnailUrl:
-                            asset.thumbnailStatus === "ready" &&
-                            asset.thumbnailArtifactId &&
-                            library
-                              ? `keel://preview/${library.libraryId}/${asset.thumbnailArtifactId}`
-                              : null,
-                          fileName: asset.displayName,
-                          count: ids.length,
-                          copyMode: resolveDragDropMode({
-                            altKey: event.altKey,
-                          }) === "copy",
-                        });
-                        dragPreviewRef.current = preview;
-                        event.dataTransfer.setDragImage(
-                          preview,
-                          ASSET_DRAG_PREVIEW_WIDTH / 2,
-                          ASSET_DRAG_PREVIEW_HEIGHT / 2,
-                        );
-                      }}
-                      onDrop={(event) => {
-                        if (!showTrash && event.dataTransfer.types.includes(TAG_DRAG_TYPE)) {
-                          event.preventDefault(); event.stopPropagation(); setTagDropTargetId(null);
-                          const tagId = event.dataTransfer.getData(TAG_DRAG_TYPE);
-                          if (tags.some((tag) => tag.tagId === tagId)) void assignAssetsToTreeTag([asset.assetId], tagId);
-                          return;
-                        }
-                      }}
-                      onContextMenu={(e) => {
-                        e.preventDefault();
-                        const intent = resolveBrowseContextMenuIntent(
-                          { kind: "asset", id: asset.assetId },
-                          {
-                            assetIds: selectedAssetIds,
-                            folderIds: selectedFolderIds,
-                          },
-                        );
-                        if (intent.type === "single-asset") {
-                          if (!selectedIdSet.has(intent.assetId)) {
-                            setSelectedAssetIds([intent.assetId]);
-                            setSelectedAssetId(intent.assetId);
-                          }
-                          setSelectedFolderIds([]);
-                          if (library) {
-                            openContextMenu(
-                              {
-                                type: "asset",
-                                assetId: asset.assetId,
-                                displayName: asset.displayName,
-                                locationKind: asset.locationKind,
-                                isAvailable: asset.availability === "available",
-                                isDeleted: Boolean(asset.deletedAt),
-                              },
-                              { x: e.clientX, y: e.clientY },
-                            );
-                          }
-                          return;
-                        }
-                        if (intent.type !== "multi" || !library) return;
-                        openContextMenu(
-                          {
-                            type: "multi-asset",
-                            assetIds: [...intent.assetIds],
-                            folderIds: [...intent.folderIds],
-                            count:
-                              intent.assetIds.length + intent.folderIds.length,
-                          },
-                          { x: e.clientX, y: e.clientY },
-                        );
-                      }}
-                      type="button"
-                    >
-                      <div
-                        className="asset-preview"
-                        data-hover-tip={
-                          showThumbnailFailure
-                            ? thumbnailFailures.get(asset.assetId)
-                            : undefined
-                        }
-                      >
-                        {(() => {
-                          if (asset.mediaType === "text" && api && library) {
-                            return (
-                              <TextAssetPreviewTile
-                                api={api}
-                                assetId={asset.assetId}
-                                fileName={asset.relativeFilePath || asset.displayName}
-                                libraryId={library.libraryId}
-                                revisionId={asset.currentRevisionId}
-                              />
-                            );
-                          }
-                          const thumbCover = cardCover.url;
-                          if (isCardSequencePlayable(asset) && library) {
-                            const sequenceActive =
-                              hoveredAssetId === asset.assetId ||
-                              selectedAssetId === asset.assetId;
-                            if (
-                              thumbCover ||
-                              asset.sequence?.frames.some(
-                                (frame) => frame.thumbnailArtifactId,
-                              )
-                            ) {
-                              return (
-                                <AssetCardMedia
-                                  alt={asset.displayName}
-                                  coverUrl={thumbCover}
-                                  hovering={hoveredAssetId === asset.assetId}
-                                  hoverAudioPlay={canvasPrefs.hoverAudioPlay}
-                                  hoverVideoSound={canvasPrefs.hoverVideoSound}
-                                  isActive={sequenceActive}
-                                  libraryId={library.libraryId}
-                                  loadImmediately={
-                                    renderOptions?.loadImmediately
-                                      ?? Boolean(virtualBrowseLayout)
-                                  }
-                                  deferUntilVisible={Boolean(virtualBrowseLayout)}
-                                  mediaMuted={viewerVolumeMuted}
-                                  mediaVolume={viewerVolume}
-                                  preview={null}
-                                  sequence={asset.sequence}
-                                />
-                              );
-                            }
-                          }
-                          const cardActive =
-                            activePreviewAssetId === asset.assetId;
-                          const cardThumbFailed =
-                            asset.thumbnailStatus === "failed"
-                            && !layoutThumbnailArtifactId;
-                          if (isCardHoverPreviewable(asset)) {
-                            if (
-                              thumbCover ||
-                              (cardActive && activeResolution?.url)
-                            ) {
-                              return (
-                                <AssetCardMedia
-                                  alt={asset.displayName}
-                                  coverUrl={thumbCover}
-                                  failed={cardThumbFailed}
-                                  hovering={hoveredAssetId === asset.assetId}
-                                  hoverAudioPlay={canvasPrefs.hoverAudioPlay}
-                                  hoverVideoSound={canvasPrefs.hoverVideoSound}
-                                  isActive={cardActive}
-                                  libraryId={library.libraryId}
-                                  loadImmediately={
-                                    renderOptions?.loadImmediately
-                                      ?? Boolean(virtualBrowseLayout)
-                                  }
-                                  deferUntilVisible={Boolean(virtualBrowseLayout)}
-                                  mediaMuted={viewerVolumeMuted}
-                                  mediaVolume={viewerVolume}
-                                  onLiveVideoError={() =>
-                                    retryLiveVideoProxyFallback(asset.assetId)
-                                  }
-                                  preview={
-                                    cardActive ? activeResolution : null
-                                  }
-                                />
-                              );
-                            }
-                          } else if (thumbCover) {
-                            // Serpent-2ajm: unify with AssetCardMedia so a
-                            // failed load shows the themed fallback icon
-                            // instead of the browser's broken-image glyph.
-                            return (
-                              <AssetCardMedia
-                                alt={asset.displayName}
-                                coverUrl={thumbCover}
-                                failed={cardThumbFailed}
-                                hovering={hoveredAssetId === asset.assetId}
-                                hoverAudioPlay={canvasPrefs.hoverAudioPlay}
-                                hoverVideoSound={canvasPrefs.hoverVideoSound}
-                                isActive={false}
-                                libraryId={library.libraryId}
-                                loadImmediately={
-                                  renderOptions?.loadImmediately
-                                    ?? Boolean(virtualBrowseLayout)
-                                }
-                                deferUntilVisible={Boolean(virtualBrowseLayout)}
-                                mediaMuted={viewerVolumeMuted}
-                                mediaVolume={viewerVolume}
-                                preview={null}
-                              />
-                            );
-                          }
-                          return (
-                            <>
-                              <Icon
-                                name={
-                                  cardThumbFailed ? "broken-file" : "file"
-                                }
-                                size={28}
-                              />
-                              {!showExtension &&
-                                shouldShowExtensionBadge(asset.mediaType) && (
-                                  <span className="asset-extension">
-                                    {fileExtensionLabel(asset.displayName)}
-                                  </span>
-                                )}
-                            </>
-                          );
-                        })()}
-                        {sourceBadgeLabel && (
-                          <span
-                            aria-label={t("scope.containingFolder", {
-                              name: sourceBadgeLabel,
-                            })}
-                            className="asset-source-badge"
-                            data-hover-tip={t("scope.containingFolder", {
-                              name: sourceBadgeLabel,
-                            })}
-                          >
-                            {sourceBadgeLabel}
-                          </span>
-                        )}
-                        {trashOriginBadgeLabel && (
-                          <span
-                            aria-label={t("scope.containingFolder", {
-                              name: trashOriginBadgeLabel,
-                            })}
-                            className="asset-source-badge"
-                            data-hover-tip={asset.trashedFromPath ?? trashOriginBadgeLabel}
-                          >
-                            {trashOriginBadgeLabel}
-                          </span>
-                        )}
-                        {showExtension && (
-                          <span className="asset-extension">
-                            {fileExtensionLabel(asset.displayName)}
-                          </span>
-                        )}
-                        {showThumbnailFailure && (
-                          <span className="missing-banner">
-                            <Icon name="warning" size={12} />
-                            {t("toast.thumbnailFailedBadge")}
-                          </span>
-                        )}
-                        {shouldShowMissingAssetOverlay(asset.availability) && (
-                          <span
-                            aria-label={
-                              corruptAsset
-                                ? t("inspector.dataCorrupt")
-                                : t("inspector.missing")
-                            }
-                            data-hover-tip={
-                              corruptAsset
-                                ? t("inspector.dataCorrupt")
-                                : t("inspector.missing")
-                            }
-                            className="missing-overlay"
-                          >
-                            {(() => {
-                              const affordance = corruptAsset
-                                ? corruptAssetAffordance()
-                                : missingAssetAffordance();
-                              return (
-                                <Icon
-                                  color={affordance.iconColor}
-                                  name={affordance.icon}
-                                  size={28}
-                                />
-                              );
-                            })()}
-                          </span>
-                        )}
-                        {asset.deletedAt && (
-                          <span
-                            className="missing-banner"
-                            style={{
-                              background: "var(--raised-2)",
-                              color: "var(--secondary)",
-                              bottom: 6,
-                              right: 6,
-                            }}
-                          >
-                            <Icon name="trash" size={12} />
-                            {t("inspector.trashed")}
-                            {asset.remainingDays !== null &&
-                              t("scope.remainingDays", {
-                                days: asset.remainingDays,
-                              })}
-                          </span>
-                        )}
-                        {showDuration && asset.durationMs != null && (
-                          <span className="asset-duration-badge">
-                            {formatDuration(asset.durationMs)}
-                          </span>
-                        )}
-                        {asset.sequence && (
-                          <span className="asset-duration-badge asset-sequence-badge">
-                            {asset.sequence.frameCount}F · {asset.sequence.fps} FPS ·{" "}
-                            {formatSequenceDuration(
-                              asset.sequence.frameCount,
-                              asset.sequence.fps,
-                            )}
-                          </span>
-                        )}
-                        {showTypeBadge && typeBadge && (
-                          <span className="asset-type-badge">{typeBadge}</span>
-                        )}
-                      </div>
-                      {(renamingThisAsset ||
-                        canvasPrefs.fields.name ||
-                        canvasPrefs.fields.size ||
-                        canvasPrefs.fields.date ||
-                        snippetCaption != null ||
-                        shouldShowGridDimensions(
-                          canvasPrefs.fields,
-                          assetViewMode,
-                          asset.width,
-                          asset.height,
-                          { mediaType: asset.mediaType },
-                        )) && (
-                        <div
-                          className={`asset-caption ${assetCaptionAlignClass(canvasPrefs.captionAlign)}`}
-                        >
-                          {shouldShowGridDimensions(
-                            canvasPrefs.fields,
-                            assetViewMode,
-                            asset.width,
-                            asset.height,
-                            { mediaType: asset.mediaType },
-                          ) &&
-                            !renamingThisAsset && (
-                              <span className="asset-dimensions">
-                                {asset.width} × {asset.height}
-                              </span>
-                            )}
-                          {(canvasPrefs.fields.name || renamingThisAsset) && (
-                            <>
-                              {renamingThisAsset && assetRenameDialog ? (
-                                <span className="asset-inline-rename">
-                                  <input
-                                    aria-label={t("dialog.rename.fileTitle")}
-                                    autoFocus
-                                    className="text-field asset-inline-rename-input"
-                                    readOnly={assetRenameDialog.submitting}
-                                    aria-disabled={assetRenameDialog.submitting || undefined}
-                                    onBlur={() => {
-                                      void submitAssetRename();
-                                    }}
-                                    onChange={(event) =>
-                                      changeAssetRenameValue(event.target.value)
-                                    }
-                                    onClick={(event) => event.stopPropagation()}
-                                    onFocus={(event) => {
-                                      const { baseName } = splitAssetFileName(
-                                        event.currentTarget.value,
-                                      );
-                                      event.currentTarget.setSelectionRange(
-                                        0,
-                                        baseName.length,
-                                      );
-                                    }}
-                                    onKeyDown={(event) => {
-                                      event.stopPropagation();
-                                      if (isImeKeyboardEvent(event)) return;
-                                      if (event.key === "Enter") {
-                                        event.preventDefault();
-                                        void submitAssetRename();
-                                      } else if (event.key === "Escape") {
-                                        event.preventDefault();
-                                        cancelAssetRename();
-                                      }
-                                    }}
-                                    onMouseDown={(event) => event.stopPropagation()}
-                                    value={assetRenameDialog.value}
-                                  />
-                                  {assetRenameDialog.error ? (
-                                    <span className="asset-inline-rename-error">
-                                      {assetRenameDialog.error}
-                                    </span>
-                                  ) : null}
-                                </span>
-                              ) : (
-                                <strong className="asset-caption-filename" data-hover-tip={asset.displayName}>
-                                  {renderMiddleEllipsisFilename(asset.displayName, searchValue)}
-                                </strong>
-                              )}
-                            </>
-                          )}
-                          {snippetCaption != null ? (
-                            <span className="search-snippet">
-                              {highlightSnippet(snippetCaption)}
-                            </span>
-                          ) : (canvasPrefs.fields.size ||
-                              canvasPrefs.fields.date) ? (
-                            <span>
-                              {canvasPrefs.fields.size &&
-                                formatBytes(asset.byteSize)}
-                              {canvasPrefs.fields.size &&
-                                canvasPrefs.fields.date &&
-                                " · "}
-                              {canvasPrefs.fields.date &&
-                                formatDate(asset.modifiedAt, locale, t("common.unknownTime"))}
-                            </span>
-                          ) : null}
-                        </div>
-                      )}
-                      {syncStatus ? <SyncCardStatusBadge status={syncStatus} /> : null}
-                    </CardTag>
-                    );
-                    };
-                    return assetRenderSections.map((section) => (
-                      <div
-                        className={
-                          section.label ? "trash-folder-group" : undefined
-                        }
-                        key={section.key || "__root__"}
-                      >
-                        {section.label ? (
-                          <h3 className="trash-folder-group-header">
-                            {section.label}
-                          </h3>
-                        ) : null}
-                        {assetViewMode === "masonry" ? (
-                          <MasonryColumns
-                            assets={section.assets}
-                            layout={visibleBrowseLayout}
-                            virtualLayout={visibleVirtualBrowseLayout}
-                            cardSize={assetCardSize}
-                            renderCard={renderAssetCard}
-                            renderLayoutPreview={(entry, renderOptions) =>
-                              library ? (
-                                <BrowseLayoutPreview
-                                  entry={entry}
-                                  fields={canvasPrefs.fields}
-                                  libraryId={library.libraryId}
-                                  previewArtifactId={
-                                    layoutThumbnailArtifacts.libraryId === library.libraryId
-                                      ? layoutThumbnailArtifacts.ids.get(entry.assetId)
-                                      : undefined
-                                  }
-                                  syncStatus={
-                                    canvasPrefs.fields.badgeSync !== false
-                                      ? syncCardStatuses.get(entry.assetId)
-                                      : undefined
-                                  }
-                                  viewMode="masonry"
-                                  loadImmediately={renderOptions?.loadImmediately ?? true}
-                                  deferUntilVisible={Boolean(virtualBrowseLayout)}
-                                />
-                              ) : null
-                            }
-                            captionFields={canvasPrefs.fields}
-                            snippetLine={searchSnippets.size > 0}
-                            suspendScrollRestoration={
-                              Boolean(previewAsset || previewRestoring)
-                            }
-                          />
-                        ) : (
-                          <JustifiedAssetRows
-                            assets={section.assets}
-                            layout={visibleBrowseLayout}
-                            virtualLayout={visibleVirtualBrowseLayout}
-                            cardSize={assetCardSize}
-                            captionFields={canvasPrefs.fields}
-                            snippetLine={searchSnippets.size > 0}
-                            renderCard={renderAssetCard}
-                            renderLayoutPreview={(entry, renderOptions) =>
-                              library ? (
-                                <BrowseLayoutPreview
-                                  entry={entry}
-                                  fields={canvasPrefs.fields}
-                                  libraryId={library.libraryId}
-                                  previewArtifactId={
-                                    layoutThumbnailArtifacts.libraryId === library.libraryId
-                                      ? layoutThumbnailArtifacts.ids.get(entry.assetId)
-                                      : undefined
-                                  }
-                                  syncStatus={
-                                    canvasPrefs.fields.badgeSync !== false
-                                      ? syncCardStatuses.get(entry.assetId)
-                                      : undefined
-                                  }
-                                  viewMode="grid"
-                                  loadImmediately={renderOptions?.loadImmediately ?? true}
-                                  deferUntilVisible={Boolean(virtualBrowseLayout)}
-                                />
-                              ) : null
-                            }
-                          />
-                        )}
-                      </div>
-                    ));
-                  })()}
-                  </div>
-                )}
-                {/* Serpent-87pd: invisible tail probe. A jump to the end fills
-                    the last window, not pages 0 → 100 → 200. Serpent-6z5r:
-                    no spinner or "loading more" copy. */}
-                {browsePagination.hasMorePages && (
-                  <div
-                    ref={browsePagination.sentinelRef}
-                    className="browse-load-more"
-                    aria-hidden="true"
-                  />
-                )}
-              </>
-            ) : (
-              <>
-                {folderCardRowElement}
-                <div className="empty-library">
-                <div className="empty-orbit">
-                  <Icon name={browseEmptyState.icon} size={24} />
-                </div>
-                <h1>{t(browseEmptyState.titleKey)}</h1>
-                <p>{t(browseEmptyState.detailKey)}</p>
-                {browseEmptyState.showImportActions ? (
-                  <div className="empty-actions">
-                    <button
-                      className="primary-button"
-                      disabled={libraryLoading !== null}
-                      onClick={() => void importAssets("files")}
-                      type="button"
-                    >
-                      {t("toolbar.importFiles")}
-                    </button>
-                    <button
-                      className="secondary-button"
-                      disabled={libraryLoading !== null}
-                      onClick={() => void importAssets("folder")}
-                      type="button"
-                    >
-                      {t("toolbar.importFolder")}
-                    </button>
-                    <button
-                      className="secondary-button"
-                      disabled={libraryLoading !== null}
-                      onClick={() => void pasteClipboardImage()}
-                      type="button"
-                    >
-                      {t("toolbar.pasteImage")}
-                    </button>
-                  </div>
-                ) : null}
-              </div>
-              </>
-            )
-          ) : null}
-        </div>
+        <BrowseCanvas
+          externalDropActive={externalDropActive}
+          handleExternalDragEnter={handleExternalDragEnter}
+          handleExternalDragLeave={handleExternalDragLeave}
+          handleExternalDragOver={handleExternalDragOver}
+          handleExternalDrop={handleExternalDrop}
+          handleCanvasMouseDown={handleCanvasMouseDown}
+          showPluginSidebarView={showPluginSidebarView}
+          openContextMenu={openContextMenu}
+          workspaceCanvasRef={workspaceCanvasRef}
+          marqueeBoxRef={marqueeBoxRef}
+          activePluginSidebarView={activePluginSidebarView}
+          busy={busy}
+          handleCreateTagInManagement={handleCreateTagInManagement}
+          handleDeleteTagsInManagement={handleDeleteTagsInManagement}
+          handleMergeTagsInManagement={handleMergeTagsInManagement}
+          chooseTag={chooseTag}
+          handleRenameTagInManagement={handleRenameTagInManagement}
+          handleSearchTagsFromManagement={handleSearchTagsFromManagement}
+          browseCanvasBodyLayout={browseCanvasBodyLayout}
+          folderCardRowElement={folderCardRowElement}
+          assetViewMode={assetViewMode}
+          assetGridRef={assetGridRef}
+          assetCardSize={assetCardSize}
+          panelResizing={panelResizing}
+          panelReflowFrozenWidthRef={panelReflowFrozenWidthRef}
+          canvasPrefs={canvasPrefs}
+          sourceBadgeContext={sourceBadgeContext}
+          selectedFolderId={selectedFolderId}
+          locale={locale}
+          syncCardStatuses={syncCardStatuses}
+          assetRenameDialog={assetRenameDialog}
+          selectedIdSet={selectedIdSet}
+          nativeAssetDragEnabled={nativeAssetDragEnabled}
+          selectedNativeDragReady={selectedNativeDragReady}
+          nativeDragReadyIds={nativeDragReadyIds}
+          cardMouseDownRef={cardMouseDownRef}
+          api={api}
+          setHoveredAssetId={setHoveredAssetId}
+          clearHoveredAssetId={clearHoveredAssetId}
+          handleCardClick={handleCardClick}
+          selectionAssetIds={selectionAssetIds}
+          openAssetByDefault={openAssetByDefault}
+          managedAssetDragIdsRef={managedAssetDragIdsRef}
+          dragPreviewRef={dragPreviewRef}
+          beginInternalAssetDrag={beginInternalAssetDrag}
+          assignAssetsToTreeTag={assignAssetsToTreeTag}
+          hoveredAssetId={hoveredAssetId}
+          viewerVolumeMuted={viewerVolumeMuted}
+          viewerVolume={viewerVolume}
+          activePreviewAssetId={activePreviewAssetId}
+          activeResolution={activeResolution}
+          retryLiveVideoProxyFallback={retryLiveVideoProxyFallback}
+          t={t}
+          submitAssetRename={submitAssetRename}
+          changeAssetRenameValue={changeAssetRenameValue}
+          cancelAssetRename={cancelAssetRename}
+          assetRenderSections={assetRenderSections}
+          visibleBrowseLayout={visibleBrowseLayout}
+          visibleVirtualBrowseLayout={visibleVirtualBrowseLayout}
+          browsePagination={browsePagination}
+          browseEmptyState={browseEmptyState}
+          importAssets={importAssets}
+          pasteClipboardImage={pasteClipboardImage}
+        />
         {/* Drop overlay lives outside the scrollable canvas so it stays put
             while the browse grid scrolls (Serpent-ns3r). */}
         {externalDropActive && (
@@ -3947,72 +2793,26 @@ function AppInner() {
           />
         )}
         </div>
-        {previewAsset && library && api && (
-          <>
-          <AssetPreviewModal
-            ref={previewModalRef}
-            api={api}
-            asset={previewAsset}
-            bakeImageRotation={bakeImageRotation}
-            chromeIdle={viewerChromeIdle}
-            canDiskDeleteAsset={!showTrash && previewAsset.deletedAt === null}
-            canPermanentDelete={showTrash}
-            canTrashAsset={
-              previewAsset.locationKind === "managed"
-              && previewAsset.deletedAt === null
-              && !showTrash
-            }
-            libraryId={library.libraryId}
-            navArrowsOnApproach={viewerChromePrefs.navArrowsOnApproach}
-            onToggleNavArrowsOnApproach={() => {
-              setViewerChromePrefs((current) => ({
-                ...current,
-                navArrowsOnApproach: !current.navArrowsOnApproach,
-              }));
-            }}
-            onToggleVideoTransportOnApproach={() => {
-              setViewerChromePrefs((current) => ({
-                ...current,
-                videoTransportOnApproach: !current.videoTransportOnApproach,
-              }));
-            }}
-            onDiskDeleteAsset={() => {
-              requestSelectionDiskDelete([previewAsset.assetId], []);
-            }}
-            onPermanentDelete={() => {
-              const assetId = previewAsset.assetId;
-              void deletePermanentFromTrash([assetId]).then((removed) => {
-                if (removed) advanceOpenViewer(assetId);
-              });
-            }}
-            onTrashAsset={() => {
-              const assetId = previewAsset.assetId;
-              void trashManagedAssets([assetId]).then(() => {
-                advanceOpenViewer(assetId);
-              });
-            }}
-            videoTransportOnApproach={viewerChromePrefs.videoTransportOnApproach}
-            onChromeActivity={onViewerChromeActivity}
-            onSetColorSpace={(assetId, colorSpace) => {
-              void persistAssetColorSpace(assetId, colorSpace);
-            }}
-            onClose={() => void closeAssetPreview()}
-            onInfoNotice={setNotice}
-            onNext={
-              previewIndex >= 0 && previewIndex < visibleAssets.length - 1
-                ? () => navigateAssetPreview(visibleAssets[previewIndex + 1]!)
-                : undefined
-            }
-            onPrevious={
-              previewIndex > 0
-                ? () => navigateAssetPreview(visibleAssets[previewIndex - 1]!)
-                : undefined
-            }
-            pluginApi={(window as RendererWindow).keel?.plugins}
-            pluginContributionRefreshKey={pluginContributionRefreshKey}
-          />
-          </>
-        )}
+        <AssetPreviewHost
+          api={api}
+          previewModalRef={previewModalRef}
+          bakeImageRotation={bakeImageRotation}
+          viewerChromeIdle={viewerChromeIdle}
+          viewerChromePrefs={viewerChromePrefs}
+          setViewerChromePrefs={setViewerChromePrefs}
+          requestSelectionDiskDelete={requestSelectionDiskDelete}
+          deletePermanentFromTrash={deletePermanentFromTrash}
+          advanceOpenViewer={advanceOpenViewer}
+          trashManagedAssets={trashManagedAssets}
+          onViewerChromeActivity={onViewerChromeActivity}
+          persistAssetColorSpace={persistAssetColorSpace}
+          closeAssetPreview={closeAssetPreview}
+          setNotice={setNotice}
+          previewIndex={previewIndex}
+          visibleAssets={visibleAssets}
+          navigateAssetPreview={navigateAssetPreview}
+          pluginContributionRefreshKey={pluginContributionRefreshKey}
+        />
       </section>
       <InspectorPanel
         aiContent={

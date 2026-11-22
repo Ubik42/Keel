@@ -1,5 +1,4 @@
-import type { DragEvent, RefObject } from "react";
-import type { Dispatch, MutableRefObject, SetStateAction } from "react";
+import type { Dispatch, DragEvent, MutableRefObject, RefObject, SetStateAction } from "react";
 import type { BrowseCanvasBodyLayout } from "../folder-browse-canvas";
 import type { ResizablePanel } from "../workbench/shell/panel-auto-hide";
 import type { FilteredFolderCounts } from "../use-filtered-folder-counts";
