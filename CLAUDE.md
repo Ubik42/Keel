@@ -1,7 +1,7 @@
 # 本地开发约定
 
 - 本仓库基于 dolag233/Serpent（MIT），2026-11-21 起独立开发，不再合并上游，正在改名为 Keel（元数据目录 `.keel`）。长期任务入口为 GOAL.md，计划与进度记录在 docs/进度.md。默认直接在 main 分支开发，推送只在用户要求时进行；upstream 只作参考。
-- 工程固定在 D:\Manage\_tools\Keel（2026-11-21 由 Keel 目录改名）。开发版使用独立配置目录，图形启动入口为 Start-Keel.exe，命令行入口保留 Start-Keel.cmd。
+- 工程固定在 D:\Manage\_tools\Keel（2026-11-21 由 Serpent 目录改名）。开发版使用独立配置目录，图形启动入口为 Start-Keel.exe，命令行入口保留 Start-Keel.cmd。
 - 新建资源库默认 storageLayout=root，用户可以选择 assets。没有 storage-layout.json 的旧库按 Assets 模式打开。现有库的布局不自动转换。
 - useExistingFolder=true 时，在所选现有目录中创建根目录资源库。只创建 .keel；已有元数据时拒绝覆盖；初始化失败只清理本次创建的元数据。
 - 标签层级保存在 tag_hierarchy，父标签筛选通过 includeDescendants 的递归 SQL 包含后代。调整层级沿用 tag.create/tag.rename 的可撤销事务；不得拼接标签路径改写原名，也不得形成循环。
