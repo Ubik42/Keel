@@ -873,7 +873,7 @@ export function attachSyncAiLayer(this: LibraryService, openLibrary: OpenLibrary
   }
   for (const assetId of assetIds) {
     const ai = {
-      tags: [...(aiTagsByAsset.get(assetId) ?? [])].sort((left, right) => left.localeCompare(right)),
+      tags: [...(aiTagsByAsset.get(assetId) ?? [])].sort((left, right) => (left < right ? -1 : left > right ? 1 : 0)),
       description: descriptionByAsset.get(assetId)?.value ?? null,
       rating: ratingByAsset.get(assetId)?.value ?? null,
       modelId: modelByAsset.get(assetId)?.modelId ?? 'sync',

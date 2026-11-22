@@ -38,10 +38,16 @@ export function hasSyncAiLayer(ai: SyncAiLayer | undefined): boolean {
     || (ai.rating != null && ai.rating >= 1);
 }
 
+/**
+ * Canonical order must be the same on every machine: compare code points,
+ * not localeCompare (which follows the system language, e.g. pinyin order).
+ */
+function compareCodePoints(left: string, right: string): number {
+  return left < right ? -1 : left > right ? 1 : 0;
+}
+
 function canonicalizeAiLayer(ai: SyncAiLayer): SyncAiLayer {
-  const tags = [...new Set(ai.tags.map((tag) => tag.trim()).filter(Boolean))].sort((left, right) =>
-    left.localeCompare(right),
-  );
+  const tags = [...new Set(ai.tags.map((tag) => tag.trim()).filter(Boolean))].sort(compareCodePoints);
   const description = ai.description?.trim() ? ai.description.trim() : null;
   const rating = typeof ai.rating === 'number' && Number.isInteger(ai.rating) && ai.rating >= 1 && ai.rating <= 5
     ? ai.rating
@@ -56,9 +62,7 @@ function canonicalizeAiLayer(ai: SyncAiLayer): SyncAiLayer {
 }
 
 export function canonicalizeSyncAssetMetadata(metadata: SyncAssetMetadata): string {
-  const tags = [...new Set(metadata.tags.map((tag) => tag.trim()).filter(Boolean))].sort((left, right) =>
-    left.localeCompare(right),
-  );
+  const tags = [...new Set(metadata.tags.map((tag) => tag.trim()).filter(Boolean))].sort(compareCodePoints);
   const description = metadata.description?.trim() ? metadata.description.trim() : null;
   const rating = Number.isInteger(metadata.rating) ? Math.min(5, Math.max(0, metadata.rating)) : 0;
   const body: {

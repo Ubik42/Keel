@@ -204,9 +204,18 @@ export async function fetchAiWithPolicyRetry(
   // Read a clone so a caller can still inspect the original body when this
   // status does not match a retry phrase. A timeout while reading that body
   // stays a timeout instead of being replaced by a reconstructed response.
-  const text = typeof first.clone === 'function'
-    ? await first.clone().text()
-    : await first.text();
+  let text: string;
+  try {
+    text = typeof first.clone === 'function'
+      ? await first.clone().text()
+      : await first.text();
+  } catch (error: unknown) {
+    const name = error instanceof Error ? error.name : '';
+    if (name === 'AbortError' || name === 'TimeoutError') throw error;
+    // An unreadable body is not a reason to retry; the caller inspects the
+    // original response and reports it as an unreadable error response.
+    return { response: first, action: 'none' };
+  }
   const action = classifyAiRequestRetry(first.status, text);
   if (action === 'none') {
     if (typeof first.clone === 'function') return { response: first, action };
