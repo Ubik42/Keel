@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 import {
   normalizeOpenWithExtension,
@@ -10,13 +10,22 @@ import { iconActionAttrs } from "./icon-action-attrs";
 import { useT } from "./i18n";
 import { SettingsCard } from "./workbench/ui/patterns";
 import { openWithBridge, useOpenWithSettings } from "./use-open-with-settings";
+import { listPluginOpenWithTargets, type PluginOpenWithTarget } from "./plugin-open-with";
+import { useSessionField } from "./stores/session-store";
+import type { RendererWindow } from "./app/app-shared";
 
 function targetValue(target: OpenWithTarget): string {
-  return target.kind === "program" ? `program:${target.programId}` : target.kind;
+  if (target.kind === "program") return `program:${target.programId}`;
+  if (target.kind === "plugin") return `plugin:${target.contributionId}:${target.itemId}`;
+  return target.kind;
 }
 
-function parseTargetValue(value: string): OpenWithTarget {
+function parseTargetValue(value: string, pluginTargets: readonly PluginOpenWithTarget[]): OpenWithTarget {
   if (value.startsWith("program:")) return { kind: "program", programId: value.slice("program:".length) };
+  if (value.startsWith("plugin:")) {
+    const plugin = pluginTargets.find((target) => targetValue(target) === value);
+    if (plugin) return plugin;
+  }
   return value === "system" ? { kind: "system" } : { kind: "viewer" };
 }
 
@@ -27,6 +36,22 @@ export function OpenWithSettingsCard(): ReactNode {
   const [extensionDraft, setExtensionDraft] = useState("");
   const [targetDraft, setTargetDraft] = useState("system");
   const draftExtension = normalizeOpenWithExtension(extensionDraft);
+  const [library] = useSessionField("library");
+  const libraryId = library?.libraryId;
+  // Plugin "open" menu items of the open library; saved plugin targets stay
+  // listed (by their saved label) when the plugin is not loaded.
+  const [loadedPluginTargets, setLoadedPluginTargets] = useState<PluginOpenWithTarget[]>([]);
+  useEffect(() => {
+    let cancelled = false;
+    void listPluginOpenWithTargets((window as RendererWindow).keel?.plugins, libraryId)
+      .then((targets) => { if (!cancelled) setLoadedPluginTargets(targets); })
+      .catch(() => { if (!cancelled) setLoadedPluginTargets([]); });
+    return () => { cancelled = true; };
+  }, [libraryId]);
+  const savedPluginTargets = Object.values(settings.defaults)
+    .filter((target): target is PluginOpenWithTarget => target.kind === "plugin");
+  const pluginTargets = [...loadedPluginTargets, ...savedPluginTargets]
+    .filter((target, index, all) => all.findIndex((other) => targetValue(other) === targetValue(target)) === index);
 
   async function update(next: OpenWithSettings): Promise<void> {
     await save(next);
@@ -58,6 +83,7 @@ export function OpenWithSettingsCard(): ReactNode {
     { value: "viewer", label: t("menu.openWithViewer") },
     { value: "system", label: t("menu.openWithSystem") },
     ...settings.programs.map((program) => ({ value: `program:${program.programId}`, label: program.name })),
+    ...pluginTargets.map((target) => ({ value: targetValue(target), label: target.label })),
   ];
   const defaults = Object.entries(settings.defaults).sort(([left], [right]) => left.localeCompare(right));
 
@@ -107,7 +133,7 @@ export function OpenWithSettingsCard(): ReactNode {
                 <select
                   aria-label={t("settings.openWithDefaultFor", { extension })}
                   className="text-field"
-                  onChange={(event) => void setDefault(extension, parseTargetValue(event.target.value))}
+                  onChange={(event) => void setDefault(extension, parseTargetValue(event.target.value, pluginTargets))}
                   value={targetValue(target)}
                 >
                   {targetOptions.map((option) => (
@@ -131,7 +157,7 @@ export function OpenWithSettingsCard(): ReactNode {
           onSubmit={(event) => {
             event.preventDefault();
             if (!draftExtension) return;
-            void setDefault(draftExtension, parseTargetValue(targetDraft)).then(() => setExtensionDraft(""));
+            void setDefault(draftExtension, parseTargetValue(targetDraft, pluginTargets)).then(() => setExtensionDraft(""));
           }}
         >
           <input

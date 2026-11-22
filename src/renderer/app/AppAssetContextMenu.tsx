@@ -1,3 +1,4 @@
+import type { OpenWithSettings } from "../../shared/open-with";
 import type { AssetContextMenuActions } from "../AssetContextMenu";
 import { useStableCallbacks } from "./use-stable-callbacks";
 import { useAiField } from "../stores/ai-store";
@@ -64,7 +65,7 @@ export interface AppAssetContextMenuProps {
   copyManagedSelectionToLinked: (folder: LinkedFolderSummary, assetIds: string[]) => Promise<void>;
   clearAssetSelection: (options?: { preserveFolders?: boolean; }) => void;
   handleOpenExternal: (assetId: string) => Promise<void>;
-  openWithSettings: { version: 1; programs: { programId: string; name: string; executablePath: string; }[]; defaults: Record<string, { kind: "viewer"; } | { kind: "system"; } | { kind: "program"; programId: string; }>; };
+  openWithSettings: OpenWithSettings;
   openAssetWithProgram: (assetId: string, programId?: string) => Promise<void>;
   openAssetPreview: (asset: AssetSummary, options?: { recordHistory?: boolean; }) => void;
   persistAssetColorSpace: (assetId: string, colorSpace: string | null) => Promise<void>;

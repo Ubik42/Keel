@@ -14,6 +14,14 @@ export const openWithTargetSchema = z.discriminatedUnion('kind', [
   z.strictObject({ kind: z.literal('viewer') }),
   z.strictObject({ kind: z.literal('system') }),
   z.strictObject({ kind: z.literal('program'), programId: z.string().uuid() }),
+  /** A plugin's asset menu item in the "open" group (e.g. "用 Panthesia 练习"). */
+  z.strictObject({
+    kind: z.literal('plugin'),
+    pluginId: z.string().min(1).max(256),
+    contributionId: z.string().min(1).max(512),
+    itemId: z.string().min(1).max(512),
+    label: z.string().trim().min(1).max(200),
+  }),
 ]);
 export type OpenWithTarget = z.infer<typeof openWithTargetSchema>;
 

@@ -1,4 +1,6 @@
 import type { Dispatch, RefObject, SetStateAction } from "react";
+import { openAssetWithPlugin } from "../plugin-open-with";
+import type { RendererWindow } from "./app-shared";
 import type { KeelLibraryApi } from "../../shared/library-api";
 import type { AppLocale } from "../i18n/types";
 import type { TranslateFn } from "../i18n/LocaleProvider";
@@ -406,10 +408,14 @@ export function useImageSequenceOperations({ api, library, imageSequenceDialog, 
       void handleOpenExternal(asset.assetId);
     } else if (target.kind === "program" && asset.availability === "available" && !asset.deletedAt) {
       void openAssetWithProgram(asset.assetId, target.programId);
+    } else if (target.kind === "plugin" && asset.availability === "available" && !asset.deletedAt) {
+      // A plugin that is gone or fails falls back to the Keel viewer.
+      void openAssetWithPlugin((window as RendererWindow).keel?.plugins, library?.libraryId, target, asset)
+        .then((opened) => { if (!opened) openAssetPreview(asset); });
     } else {
       openAssetPreview(asset);
     }
-  }, [handleOpenExternal, openAssetPreview, openAssetWithProgram, openWithSettings]);
+  }, [handleOpenExternal, library?.libraryId, openAssetPreview, openAssetWithProgram, openWithSettings]);
 
   const browsePasteDestination = resolveBrowsePasteDestination({
     libraryOpen: Boolean(library),

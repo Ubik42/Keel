@@ -30,6 +30,12 @@ describe('open-with settings', () => {
     expect(parseOpenWithSettings({ version: 2 })).toEqual({ version: 1, programs: [], defaults: {} });
   });
 
+  it('keeps a plugin open-with target as a per-extension default', () => {
+    const plugin = { kind: 'plugin', pluginId: 'panthesia', contributionId: 'panthesia.practice', itemId: 'panthesia.practice', label: '用 Panthesia 练习' } as const;
+    const settings = parseOpenWithSettings({ version: 1, programs: [], defaults: { mid: plugin } });
+    expect(resolveOpenWithTarget(settings, 'song.MID')).toEqual(plugin);
+  });
+
   it('normalizes extensions typed by the user', () => {
     expect(normalizeOpenWithExtension(' .MID ')).toBe('mid');
     expect(normalizeOpenWithExtension('tar.gz')).toBe('tar.gz');
