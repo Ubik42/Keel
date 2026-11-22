@@ -186,7 +186,6 @@ import {
 import {
   hasFeatureHintBeenShown,
   isFeatureHintEnabled,
-  loadFeatureHintPreferences,
   saveFeatureHintPreferences,
   withFeatureHintShown,
 } from "./feature-hint-preferences";
@@ -314,6 +313,8 @@ import { playTaskCompletionSound } from "./task-completion-sound";
 import { AppSettingsEntry } from "./AppSettingsEntry";
 import { usePrefsStore } from "./stores/prefs-store";
 import { useDialogField } from "./stores/dialogs-store";
+import { useWorkspaceField } from "./stores/workspace-store";
+import { usePluginsField } from "./stores/plugins-store";
 import { useAiField } from "./stores/ai-store";
 import { useEmbeddingField } from "./stores/embedding-store";
 import { useJobsField } from "./stores/jobs-store";
@@ -544,7 +545,7 @@ import type { KeelShellApi } from "../shared/external-url";
 import type { KeelAutomationScriptApi } from '../shared/automation-script-api';
 import type { KeelPluginManagerApi } from '../shared/plugin-manager-api';
 import type { PluginContributionContext } from "../plugins/plugin-context";
-import type { AppLogEntry, ReadAppLogResult } from "../shared/app-log";
+import type { ReadAppLogResult } from "../shared/app-log";
 import type {
   ImportConflictPlan,
   ImportSourceFailurePlan,
@@ -691,15 +692,6 @@ type RendererWindow = Window & {
     };
   };
 };
-type UiState =
-  | "booting"
-  | "idle"
-  | "creating"
-  | "opening"
-  | "closing"
-  | "loading"
-  | "importing"
-  | "ready";
 
 const LIBRARY_LOADING_DISPLAY_DELAY_MS = 3_000;
 
@@ -755,7 +747,6 @@ type QueryFilterSnapshot = {
 };
 // REQ-FOLDER-007 removed the "folder" kind: folder create/rename now happens
 // inline in the directory tree (use-inline-folder-edit), not in a dialog.
-type DialogKind = "library" | "tag" | null;
 type WorkspaceNavigationRequest = Readonly<{
   token?: WorkspaceNavigationToken;
   historyMode: WorkspaceNavigationHistoryMode;
@@ -912,14 +903,12 @@ function AppInner() {
   // saved scope and selection; otherwise the initial empty React state can
   // overwrite the last browsed asset in localStorage.
   const [browserSessionReady, setBrowserSessionReady] = useSessionField("browserSessionReady");
-  const [uiState, setUiState] = useState<UiState>("booting");
+  const [uiState, setUiState] = useSessionField("uiState");
   const [libraryLoading, setLibraryLoading] = useSessionField("libraryLoading");
   const libraryLoadingVisible = useDelayedVisibility(
     libraryLoading !== null,
     LIBRARY_LOADING_DISPLAY_DELAY_MS,
   );
-  const uiStateRef = useRef(uiState);
-  uiStateRef.current = uiState;
   const busy = [
     "booting",
     "creating",
@@ -1052,11 +1041,11 @@ function AppInner() {
       setLibraryRecoveryDialogOpen(true);
     }
   }, [library?.recovery, library?.libraryId, setLibraryRecoveryDialogOpen]);
-  const [dialog, setDialog] = useState<DialogKind>(null);
+  const [dialog, setDialog] = useDialogField("dialog");
   const [createLibraryPhase, setCreateLibraryPhase] =
     useState<CreateLibraryPhase>("start");
-  const [useExistingCreateFolder, setUseExistingCreateFolder] = useState(false);
-  const [createStorageLayout, setCreateStorageLayout] = useState<'root' | 'assets'>('root');
+  const [useExistingCreateFolder, setUseExistingCreateFolder] = useDialogField("useExistingCreateFolder");
+  const [createStorageLayout, setCreateStorageLayout] = useDialogField("createStorageLayout");
   const hadLibraryRef = useRef(false);
   const [dialogValue, setDialogValue] = useState(() => t("shell.myLibrary"));
   const [conflicts, setConflicts] = useTransfersField("conflicts");
@@ -1187,14 +1176,11 @@ function AppInner() {
   const workspaceTabTransitionRef = useRef(0);
   const [workspaceNavigationPending, setWorkspaceNavigationPending] =
     useState(false);
-  const [navHistoryUi, setNavHistoryUi] = useState({
-    canBack: false,
-    canForward: false,
-  });
+  const [navHistoryUi, setNavHistoryUi] = useWorkspaceField("navHistoryUi");
 
   // Tags
   const [tags, setTags] = useNavigationField("tags");
-  const [tagDropTargetId, setTagDropTargetId] = useState<string | null>(null);
+  const [tagDropTargetId, setTagDropTargetId] = useNavigationField("tagDropTargetId");
   const [activeTagId, setActiveTagId] = useNavigationField("activeTagId");
   const [storedPinnedTagId, setPinnedTagId] = useState<string | null>(null);
 
@@ -1205,13 +1191,11 @@ function AppInner() {
   const [showFolderCardsWhenRecursive, setShowFolderCardsWhenRecursive] = useNavigationField("showFolderCardsWhenRecursive");
   // Serpent-b8a853: one-time feature hints for hidden UI affordances share a
   // global switch (Settings → Feature hints) and per-key "seen" marks.
-  const [featureHintPrefs, setFeatureHintPrefs] = useState(() =>
-    loadFeatureHintPreferences(),
-  );
+  const [featureHintPrefs, setFeatureHintPrefs] = useNavigationField("featureHintPrefs");
   // Linked-folder "new user" hint: after adding a normal folder, briefly pulse
   // the sidebar 导入链接文件夹 entry. Dismissed permanently by hovering it
   // >0.5s or by actually importing a linked folder.
-  const [linkedFolderHintActive, setLinkedFolderHintActive] = useState(false);
+  const [linkedFolderHintActive, setLinkedFolderHintActive] = useNavigationField("linkedFolderHintActive");
   const linkedFolderHintStopTimerRef = useRef<ReturnType<
     typeof setTimeout
   > | null>(null);
@@ -1652,7 +1636,7 @@ function AppInner() {
   // REQ-PREF-001: browse-area general settings panel (theme/language/canvas).
   const [appSettingsOpen, setAppSettingsOpen] = useDialogField("appSettingsOpen");
   const [appSettingsCategory, setAppSettingsCategory] = useDialogField("appSettingsCategory");
-  const [pluginContributionEpoch, setPluginContributionEpoch] = useState(0);
+  const [pluginContributionEpoch, setPluginContributionEpoch] = usePluginsField("pluginContributionEpoch");
   const pluginContributionRefreshKey = `${appSettingsOpen ? "settings" : "browse"}:${pluginContributionEpoch}`;
   const pluginSidebarRefreshKey = pluginContributionRefreshKey;
   useEffect(() => {
@@ -1661,7 +1645,7 @@ function AppInner() {
     return api.onContributionsChanged(() => {
       setPluginContributionEpoch((current) => current + 1);
     });
-  }, []);
+  }, [setPluginContributionEpoch]);
   const pluginManagerApi = (window as RendererWindow).keel?.plugins;
   const pluginSidebarViews = usePluginSidebarViews(
     (window as RendererWindow).keel?.plugins,
@@ -1682,7 +1666,7 @@ function AppInner() {
   const [openSourceLicensesOpen, setOpenSourceLicensesOpen] = useDialogField("openSourceLicensesOpen");
   const [librarySettingsOpen, setLibrarySettingsOpen] = useDialogField("librarySettingsOpen");
   const [openSyncLibraryOpen, setOpenSyncLibraryOpen] = useDialogField("openSyncLibraryOpen");
-  const [gitignoreContent, setGitignoreContent] = useState("");
+  const [gitignoreContent, setGitignoreContent] = useDialogField("gitignoreContent");
   /** 同步传输进度（手动/自动），供资源库设置同步页显示进度条与速度。 */
   const [syncProgress, setSyncProgress] = useTransfersField("syncProgress");
   /** 当前库的同步绑定状态（库切换器 link/link-off 图标）。 */
@@ -1877,16 +1861,16 @@ function AppInner() {
     },
     [restoreWorkspaceTabs],
   );
-  const [appLogEntries, setAppLogEntries] = useState<AppLogEntry[]>([]);
-  const [appLogLoading, setAppLogLoading] = useState(false);
-  const [appLogAutomationCorrelationId, setAppLogAutomationCorrelationId] = useState("");
+  const [appLogEntries, setAppLogEntries] = useDialogField("appLogEntries");
+  const [appLogLoading, setAppLogLoading] = useDialogField("appLogLoading");
+  const [appLogAutomationCorrelationId, setAppLogAutomationCorrelationId] = useDialogField("appLogAutomationCorrelationId");
   const [appLogErrorCode, setAppLogErrorCode] = useState<
     Extract<ReadAppLogResult, { ok: false }>["code"] | null
   >(null);
 
   async function confirmLibrarySwitch(keepDestinationChoice = false): Promise<boolean> {
     const activity = activeLibrarySwitchActivity({
-      uiState: uiStateRef.current,
+      uiState: sessionFields.get("uiState"),
       importProgress: transfersFields.get("importProgress"),
       exportProgress: transfersFields.get("exportProgress"),
       syncProgress: transfersFields.get("syncProgress"),
@@ -4682,8 +4666,7 @@ function AppInner() {
     appSettingsOpen,
     busy,
     scriptSandboxPreviewOpen,
-    t,
-  ]);
+    t, setDialog]);
   // Yield the required create surface while another full-window modal is up.
   useEffect(() => {
     if (library) return;
@@ -4691,7 +4674,7 @@ function AppInner() {
     if (dialog === "library") {
       queueMicrotask(() => setDialog(null));
     }
-  }, [library, importLibraryChooserOpen, openLibraryChooserOpen, appSettingsOpen, dialog]);
+  }, [library, importLibraryChooserOpen, openLibraryChooserOpen, appSettingsOpen, dialog, setDialog]);
   // Dismiss the auto-opened no-library surface once a library becomes available.
   // Do not close a menu-opened create dialog while a library is already open.
   useEffect(() => {
@@ -4704,7 +4687,7 @@ function AppInner() {
       setCreateLibraryPhase("start");
     }
     hadLibraryRef.current = true;
-  }, [library, dialog]);
+  }, [library, dialog, setDialog]);
   // MCP can switch the library behind an already-open renderer. Ordinary
   // renderer requests still update state from their response, so only tagged
   // MCP events (plus the legacy script-preview bootstrap path) are applied.
@@ -9851,7 +9834,7 @@ function AppInner() {
     } finally {
       setUiState("ready");
     }
-  }, [api, library, locale, operationHistory, refreshOperationHistory, setError, setNotice, t, setOperationHistory]);
+  }, [api, library, locale, operationHistory, refreshOperationHistory, setError, setNotice, t, setOperationHistory, setUiState]);
 
   const redoLastOperation = useCallback(async () => {
     if (isEditableTextTarget(document.activeElement)) {
@@ -9877,7 +9860,7 @@ function AppInner() {
     } finally {
       setUiState("ready");
     }
-  }, [api, library, locale, operationHistory, refreshOperationHistory, setError, setNotice, t, setOperationHistory]);
+  }, [api, library, locale, operationHistory, refreshOperationHistory, setError, setNotice, t, setOperationHistory, setUiState]);
 
   async function deletePermanentFromTrash(assetIds: string[]): Promise<boolean> {
     if (!api || !library || assetIds.length === 0) return false;
@@ -10774,7 +10757,7 @@ function AppInner() {
       void refreshOperationHistory();
       // Serpent-yqrl: while a user import is applying, each committed asset
       // triggers a silent canvas refresh so cards appear one-by-one.
-      if (uiStateRef.current === "importing" || transfersFields.get("importProgress")) {
+      if (sessionFields.get("uiState") === "importing" || transfersFields.get("importProgress")) {
         scheduleSilentReload();
         return;
       }
@@ -10842,7 +10825,7 @@ function AppInner() {
       // Cross-process change-sequence bumps are not asset mutation counts.
       // Refresh silently without forging an asset.changed payload.
       const importing =
-        uiStateRef.current === "importing" || Boolean(transfersFields.get("importProgress"));
+        sessionFields.get("uiState") === "importing" || Boolean(transfersFields.get("importProgress"));
       if (shouldRefreshContentForLibraryChange({
         networkStorage: library.networkStorage,
         importing,
@@ -11937,7 +11920,7 @@ function AppInner() {
       if (sessionFields.get("library")?.libraryId !== libraryId) return;
       if (gitignoreResult.ok) setGitignoreContent(gitignoreResult.value.content);
     });
-  }, [librarySettingsOpen, api, library]);
+  }, [librarySettingsOpen, api, library, setGitignoreContent]);
 
   const probeStoredAiConnection = useCallback(async () => {
     const generation = ++aiConnectionProbeGenerationRef.current;

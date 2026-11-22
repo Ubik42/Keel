@@ -1,5 +1,8 @@
 import { createFieldStore } from './create-field-store';
+import { type AppLogEntry } from '../../shared/app-log';
 import type { AppSettingsCategoryId } from '../app-settings-sections';
+
+export type DialogKind = "library" | "tag" | null;
 
 export interface DialogsState {
   convertLinkedDialog: {
@@ -43,6 +46,13 @@ export interface DialogsState {
   openLibraryChooserOpen: boolean;
   pluginUiDialogOpen: boolean;
   mediaJobsOpen: boolean;
+  dialog: DialogKind;
+  useExistingCreateFolder: boolean;
+  createStorageLayout: 'root' | 'assets';
+  gitignoreContent: string;
+  appLogEntries: AppLogEntry[];
+  appLogLoading: boolean;
+  appLogAutomationCorrelationId: string;
   // @fields
 }
 
@@ -67,6 +77,13 @@ export const dialogsFields = createFieldStore<DialogsState>(() => ({
     openLibraryChooserOpen: false,
     pluginUiDialogOpen: false,
     mediaJobsOpen: false,
+    dialog: null,
+    useExistingCreateFolder: false,
+    createStorageLayout: 'root',
+    gitignoreContent: "",
+    appLogEntries: [],
+    appLogLoading: false,
+    appLogAutomationCorrelationId: "",
     // @initial
 }));
 

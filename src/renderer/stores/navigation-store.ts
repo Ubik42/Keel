@@ -1,4 +1,5 @@
 import { createFieldStore } from './create-field-store';
+import { loadFeatureHintPreferences } from '../feature-hint-preferences';
 import { type LinkedFolderSummary, type ManagedFolderSummary, type TagSummary, type TrashedFolderSummary } from '../../shared/asset-types';
 import { type FindSimilarSource } from '../find-similar';
 import { loadFolderBrowseCardPreferences } from '../folder-browse-card-preferences';
@@ -20,6 +21,9 @@ export interface NavigationState {
   showTagManagement: boolean;
   activePluginSidebarViewId: string | null;
   findSimilarSource: FindSimilarSource | null;
+  tagDropTargetId: string | null;
+  linkedFolderHintActive: boolean;
+  featureHintPrefs: ReturnType<typeof loadFeatureHintPreferences>;
   // @fields
 }
 
@@ -37,6 +41,9 @@ export const navigationFields = createFieldStore<NavigationState>(() => ({
     showTagManagement: false,
     activePluginSidebarViewId: null,
     findSimilarSource: null,
+    tagDropTargetId: null,
+    linkedFolderHintActive: false,
+    featureHintPrefs: loadFeatureHintPreferences(),
     // @initial
 }));
 

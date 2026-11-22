@@ -7,6 +7,16 @@ export type LibraryLoadingState = {
   operation?: "opening" | "deleting";
 };
 
+export type UiState =
+  | "booting"
+  | "idle"
+  | "creating"
+  | "opening"
+  | "closing"
+  | "loading"
+  | "importing"
+  | "ready";
+
 export interface SessionState {
   library: RendererLibrarySummary | null;
   recentLibraries: RecentLibraryMenuEntry[];
@@ -15,6 +25,7 @@ export interface SessionState {
   libraryRecoveryDialogOpen: boolean;
   operationHistory: HistoryStatus | null;
   browserSessionReady: boolean;
+  uiState: UiState;
   // @fields
 }
 
@@ -26,6 +37,7 @@ export const sessionFields = createFieldStore<SessionState>(() => ({
     libraryRecoveryDialogOpen: false,
     operationHistory: null,
     browserSessionReady: false,
+    uiState: "booting",
     // @initial
 }));
 
