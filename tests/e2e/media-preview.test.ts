@@ -811,8 +811,8 @@ test("video preview reports a specific generation failure and persists its diagn
 
     await window.keyboard.press("Escape");
     await expect(preview).toBeHidden();
-    await window.getByRole("button", { name: "更多工具" }).click();
-    await window.getByRole("menuitem", { name: "后台任务" }).click();
+    await window.getByRole("button", { name: "规则菜单" }).click();
+    await window.getByRole("menuitem", { name: "运行状态" }).click();
     const jobsDialog = window.getByRole("dialog", { name: "后台媒体任务" });
     await expect(jobsDialog).toBeVisible();
     await expect(jobsDialog.getByText(/失败 [1-9]/)).toBeVisible();

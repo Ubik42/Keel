@@ -7,6 +7,7 @@ import path from "node:path";
 import {
   assetCard,
   resolveElectronExecutablePath,
+  chooseAssetsLayout
 } from "./electron-test-helpers";
 
 test.describe.configure({ timeout: 120_000 });
@@ -21,6 +22,7 @@ function launchApp(temporaryRoot: string, libraryPath: string, importFiles: stri
     env: {
       ...process.env,
       KEEL_E2E: "1",
+      KEEL_E2E_SHOW_TEXT: "1",
       KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
       KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
       KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
@@ -32,6 +34,7 @@ function launchApp(temporaryRoot: string, libraryPath: string, importFiles: stri
 async function createLibrary(window: Page, libraryName: string) {
   await window.getByRole("button", { name: "创建资源库" }).click();
   await window.getByRole("textbox", { name: "名称" }).fill(libraryName);
+  await chooseAssetsLayout(window);
   await window.getByRole("button", { name: "创建", exact: true }).click();
 }
 

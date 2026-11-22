@@ -9,6 +9,7 @@ import {
   resolveSessionLogPath,
   waitForLibraryLoadingToFinish,
   pasteClipboardImageThroughFileMenu,
+  chooseAssetsLayout
 } from './electron-test-helpers';
 
 test.describe.configure({ timeout: 120_000 });
@@ -79,6 +80,7 @@ test('pastes a Main-owned clipboard image into the current folder', async () => 
     const window = await application.firstWindow();
     await window.getByRole('button', { name: '创建资源库' }).click();
     await window.getByRole("textbox", { name: "名称" }).fill(libraryName);
+    await chooseAssetsLayout(window);
     await window.getByRole('button', { name: '创建', exact: true }).click();
     await waitForLibraryLoadingToFinish(window);
 
@@ -142,6 +144,7 @@ test('pastes a clipboard image through the File menu into the library (Serpent-a
     const window = await application.firstWindow();
     await window.getByRole('button', { name: '创建资源库' }).click();
     await window.getByRole("textbox", { name: "名称" }).fill(libraryName);
+    await chooseAssetsLayout(window);
     await window.getByRole('button', { name: '创建', exact: true }).click();
     await waitForLibraryLoadingToFinish(window);
 
@@ -191,6 +194,7 @@ test('creates an asset when an image is pasted via Ctrl+V with no clipboardData 
     const window = await application.firstWindow();
     await window.getByRole('button', { name: '创建资源库' }).click();
     await window.getByRole("textbox", { name: "名称" }).fill(libraryName);
+    await chooseAssetsLayout(window);
     await window.getByRole('button', { name: '创建', exact: true }).click();
     await waitForLibraryLoadingToFinish(window);
     // Let the post-open transition settle before the paste dispatch; the
@@ -245,6 +249,7 @@ test('creates an asset when an image is pasted via Cmd+V on macOS (Serpent-a3de5
     const window = await application.firstWindow();
     await window.getByRole('button', { name: '创建资源库' }).click();
     await window.getByRole("textbox", { name: "名称" }).fill(libraryName);
+    await chooseAssetsLayout(window);
     await window.getByRole('button', { name: '创建', exact: true }).click();
     await waitForLibraryLoadingToFinish(window);
     await window.waitForTimeout(1500);
@@ -286,6 +291,7 @@ test('returns specific safe desktop-ingestion errors and records their diagnosti
     const window = await application.firstWindow();
     await window.getByRole('button', { name: '创建资源库' }).click();
     await window.getByRole("textbox", { name: "名称" }).fill('桌面导入错误验收');
+    await chooseAssetsLayout(window);
     await window.getByRole('button', { name: '创建', exact: true }).click();
     await waitForLibraryLoadingToFinish(window);
 

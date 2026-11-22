@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import { _electron as electron, expect, test } from '@playwright/test';
 
-import { resolveElectronExecutablePath } from './electron-test-helpers';
+import { resolveElectronExecutablePath, chooseAssetsLayout } from './electron-test-helpers';
 
 test.describe.configure({ timeout: 120_000 });
 
@@ -37,13 +37,14 @@ test('runs a planned batch file rename through the Desktop Console without expos
     const window = await application.firstWindow();
     await window.getByRole('button', { name: '创建资源库' }).click();
     await window.getByRole('textbox', { name: '名称' }).fill(libraryName);
+    await chooseAssetsLayout(window);
     await window.getByRole('button', { name: '创建', exact: true }).click();
     await window.getByRole('button', { name: '导入文件', exact: true }).first().click();
     await expect(window.locator('.asset-card', { hasText: 'Ser-reference.png' })).toBeVisible();
     await expect(window.getByText('导入完成：新增 1 项。', { exact: true })).toBeVisible();
 
-    await window.getByRole('button', { name: '更多工具' }).click();
-    await window.getByRole('menuitem', { name: '自动化脚本' }).click();
+    await window.getByRole('button', { name: '规则菜单' }).click();
+    await window.getByRole('menuitem', { name: '高级脚本工具' }).click();
     const dialog = window.getByRole('dialog', { name: '自动化脚本' });
     await expect(dialog).toBeVisible();
     await dialog.locator('#script-sandbox-preview-source').fill(`
@@ -98,6 +99,7 @@ test('moves an asset through the Desktop Console plan and updates its folder loc
     const window = await application.firstWindow();
     await window.getByRole('button', { name: '创建资源库' }).click();
     await window.getByRole('textbox', { name: '名称' }).fill(libraryName);
+    await chooseAssetsLayout(window);
     await window.getByRole('button', { name: '创建', exact: true }).click();
     await window.getByRole('button', { name: '添加文件夹' }).click();
     await window.getByLabel('新文件夹名称').fill('Automation Target');
@@ -105,8 +107,8 @@ test('moves an asset through the Desktop Console plan and updates its folder loc
     await window.getByRole('button', { name: '导入文件', exact: true }).first().click();
     await expect(window.locator('.asset-card', { hasText: 'automation-move.png' })).toBeVisible();
 
-    await window.getByRole('button', { name: '更多工具' }).click();
-    await window.getByRole('menuitem', { name: '自动化脚本' }).click();
+    await window.getByRole('button', { name: '规则菜单' }).click();
+    await window.getByRole('menuitem', { name: '高级脚本工具' }).click();
     const dialog = window.getByRole('dialog', { name: '自动化脚本' });
     await dialog.locator('#script-sandbox-preview-source').fill(`
       const folders = await serpent.folders.list({ limit: 20 });
@@ -161,6 +163,7 @@ test('undoes a scripted asset move from the Desktop Console', async () => {
     const window = await application.firstWindow();
     await window.getByRole('button', { name: '创建资源库' }).click();
     await window.getByRole('textbox', { name: '名称' }).fill(libraryName);
+    await chooseAssetsLayout(window);
     await window.getByRole('button', { name: '创建', exact: true }).click();
     await window.getByRole('button', { name: '添加文件夹' }).click();
     await window.getByLabel('新文件夹名称').fill('Automation Undo Target');
@@ -169,8 +172,8 @@ test('undoes a scripted asset move from the Desktop Console', async () => {
     const assetCard = window.locator('.asset-card', { hasText: 'automation-undo.png' });
     await expect(assetCard).toBeVisible();
 
-    await window.getByRole('button', { name: '更多工具' }).click();
-    await window.getByRole('menuitem', { name: '自动化脚本' }).click();
+    await window.getByRole('button', { name: '规则菜单' }).click();
+    await window.getByRole('menuitem', { name: '高级脚本工具' }).click();
     const dialog = window.getByRole('dialog', { name: '自动化脚本' });
     await dialog.locator('#script-sandbox-preview-source').fill(`
       const folders = await serpent.folders.list({ limit: 20 });
@@ -195,7 +198,7 @@ test('undoes a scripted asset move from the Desktop Console', async () => {
     expect(existsSync(path.join(libraryPath, 'Assets', 'automation-undo.png'))).toBe(true);
     expect(existsSync(path.join(libraryPath, 'Assets', 'Automation Undo Target', 'automation-undo.png'))).toBe(false);
     await expect(assetCard).toBeVisible();
-    await window.getByRole('button', { name: '关闭', exact: true }).click();
+    await dialog.getByRole('button', { name: '关闭', exact: true }).click();
   } finally {
     await application.close();
     rmSync(temporaryRoot, { force: true, recursive: true });

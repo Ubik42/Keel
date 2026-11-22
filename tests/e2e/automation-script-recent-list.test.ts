@@ -44,8 +44,8 @@ test('reopens a saved script from the recent scripts list', async () => {
     await window.getByRole('button', { name: '导入文件', exact: true }).first().click();
     await expect(window.getByText('导入完成：新增 1 项。', { exact: true })).toBeVisible();
 
-    await window.getByRole('button', { name: '更多工具' }).click();
-    await window.getByRole('menuitem', { name: '自动化脚本' }).click();
+    await window.getByRole('button', { name: '规则菜单' }).click();
+    await window.getByRole('menuitem', { name: '高级脚本工具' }).click();
     const dialog = window.getByRole('dialog', { name: '自动化脚本' });
     await expect(dialog).toBeVisible();
     await dialog.getByRole('textbox', { name: '脚本' }).fill(DEFAULT_AUTOMATION_RATING_SCRIPT);
@@ -58,8 +58,8 @@ test('reopens a saved script from the recent scripts list', async () => {
     await dialog.getByRole('button', { name: '关闭', exact: true }).click();
     await expect(dialog).toBeHidden();
 
-    await window.getByRole('button', { name: '更多工具' }).click();
-    await window.getByRole('menuitem', { name: '自动化脚本' }).click();
+    await window.getByRole('button', { name: '规则菜单' }).click();
+    await window.getByRole('menuitem', { name: '高级脚本工具' }).click();
     await expect(dialog).toBeVisible();
     await dialog.getByRole('button', { name: 'rating.keel.ts' }).click();
     await expect(dialog.getByRole('textbox', { name: '脚本' })).toHaveValue(/serpent\.assets\.setRating/);

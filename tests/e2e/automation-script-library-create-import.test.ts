@@ -46,8 +46,8 @@ test('creates a library, then inspects, imports, and restores it through Desktop
     await window.getByRole('button', { name: '创建', exact: true }).click();
     await expect(window.getByText(libraryName, { exact: true }).first()).toBeVisible();
 
-    await window.getByRole('button', { name: '更多工具' }).click();
-    await window.getByRole('menuitem', { name: '自动化脚本' }).click();
+    await window.getByRole('button', { name: '规则菜单' }).click();
+    await window.getByRole('menuitem', { name: '高级脚本工具' }).click();
     const dialog = window.getByRole('dialog', { name: '自动化脚本' });
     await expect(dialog).toBeVisible();
     await expect(dialog).toContainText('当前已绑定资源库');
@@ -113,8 +113,8 @@ test('cancels a planned import before retrying it successfully', async () => {
     await window.getByRole('button', { name: '创建资源库' }).click();
     await window.getByRole('textbox', { name: '名称' }).fill(libraryName);
     await window.getByRole('button', { name: '创建', exact: true }).click();
-    await window.getByRole('button', { name: '更多工具' }).click();
-    await window.getByRole('menuitem', { name: '自动化脚本' }).click();
+    await window.getByRole('button', { name: '规则菜单' }).click();
+    await window.getByRole('menuitem', { name: '高级脚本工具' }).click();
     const dialog = window.getByRole('dialog', { name: '自动化脚本' });
     const sourceCode = `
       return await serpent.files.import({

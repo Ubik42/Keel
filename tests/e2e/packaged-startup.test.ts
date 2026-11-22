@@ -1,3 +1,4 @@
+import { chooseAssetsLayout } from './electron-test-helpers';
 import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { rm } from 'node:fs/promises';
 import { once } from 'node:events';
@@ -56,6 +57,7 @@ test('the packaged application starts and completes a real Worker import', async
 
     await window.getByRole('button', { name: '创建资源库' }).click();
     await window.getByRole('textbox', { name: '名称' }).fill(libraryName);
+    await chooseAssetsLayout(window);
     await window.getByRole('button', { name: '创建', exact: true }).click();
     await expect(window.getByText(libraryName, { exact: true }).first()).toBeVisible();
 
@@ -125,6 +127,7 @@ test('the packaged application FTS5 search finds and filters imported assets', a
     // Create library
     await window.getByRole('button', { name: '创建资源库' }).click();
     await window.getByRole('textbox', { name: '名称' }).fill(libraryName);
+    await chooseAssetsLayout(window);
     await window.getByRole('button', { name: '创建', exact: true }).click();
     await expect(window.getByText(libraryName, { exact: true }).first()).toBeVisible();
 

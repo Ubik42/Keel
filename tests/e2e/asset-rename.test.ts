@@ -7,6 +7,7 @@ import path from "node:path";
 import {
   importFilesThroughBridge,
   resolveElectronExecutablePath,
+  chooseAssetsLayout
 } from "./electron-test-helpers";
 
 test.describe.configure({ timeout: 120_000 });
@@ -41,6 +42,7 @@ function launchApp(temporaryRoot: string, libraryPath: string, importFiles?: str
 async function createLibrary(window: Page, libraryName: string) {
   await window.getByRole("button", { name: "创建资源库" }).click();
   await window.getByRole("textbox", { name: "名称" }).fill(libraryName);
+  await chooseAssetsLayout(window);
   await window.getByRole("button", { name: "创建", exact: true }).click();
 }
 

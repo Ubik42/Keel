@@ -60,8 +60,8 @@ test('runs the default Desktop Console script and rates only its matching assets
     await expect(matchingCard).toHaveAttribute('aria-pressed', 'true');
     await expect(window.locator('.asset-card[aria-pressed="true"]')).toHaveCount(1);
 
-    await window.getByRole('button', { name: '更多工具' }).click();
-    await window.getByRole('menuitem', { name: '自动化脚本' }).click();
+    await window.getByRole('button', { name: '规则菜单' }).click();
+    await window.getByRole('menuitem', { name: '高级脚本工具' }).click();
     const dialog = window.getByRole('dialog', { name: '自动化脚本' });
     await expect(dialog).toBeVisible();
     await dialog.getByRole('textbox', { name: '脚本' }).fill(DEFAULT_AUTOMATION_RATING_SCRIPT);

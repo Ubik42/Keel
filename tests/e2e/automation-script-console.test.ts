@@ -61,9 +61,9 @@ test('keeps the background task entry in the opened-library tools menu', async (
     await window.getByRole('button', { name: '创建', exact: true }).click();
     await expect(window.getByText(libraryName, { exact: true }).first()).toBeVisible();
 
-    await window.getByRole('button', { name: '更多工具' }).click();
-    await expect(window.getByRole('menuitem', { name: '后台任务' })).toBeVisible();
-    await window.getByRole('menuitem', { name: '后台任务' }).click();
+    await window.getByRole('button', { name: '规则菜单' }).click();
+    await expect(window.getByRole('menuitem', { name: '运行状态' })).toBeVisible();
+    await window.getByRole('menuitem', { name: '运行状态' }).click();
     await expect(window.getByRole('dialog', { name: '后台媒体任务' })).toBeVisible();
   } finally {
     await application.close();

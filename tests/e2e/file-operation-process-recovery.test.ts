@@ -20,6 +20,7 @@ import {
   electronLaunchEnv,
   importFilesThroughBridge,
   resolveElectronExecutablePath,
+  chooseAssetsLayout
 } from './electron-test-helpers';
 import { removePathWithSyncRetry } from '../../src/worker/library/windows-fs-retry';
 
@@ -129,6 +130,7 @@ test('recovers an interrupted import after a complete Electron process restart',
     const firstWindow = await application.firstWindow();
     await firstWindow.getByRole('button', { name: '创建资源库' }).click();
     await firstWindow.getByRole('textbox', { name: '名称' }).fill(libraryName);
+    await chooseAssetsLayout(firstWindow);
     await firstWindow.getByRole('button', { name: '创建', exact: true }).click();
     await importFilesThroughBridge(firstWindow);
     await expect(firstWindow.getByText('stable.png', { exact: true })).toBeVisible();
