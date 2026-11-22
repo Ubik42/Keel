@@ -48,7 +48,7 @@ export const AUDIO_WAVEFORM_COVER_GENERATOR_TAG = "audio-cover7";
 export const AUDIO_FORCED_WAVEFORM_GENERATOR_MARK = "forced-wave";
 
 /**
- * Light browse canvas (`--canvas` in light theme). Covers must not match this
+ * Light browse canvas (`--ui-canvas` in light theme). Covers must not match this
  * or the 4:3 stage blends into the grid.
  */
 export const LIGHT_CANVAS_BACKGROUND = {
@@ -59,7 +59,7 @@ export const LIGHT_CANVAS_BACKGROUND = {
 
 /**
  * Preview/grid cover stage — charcoal grey-black (Serpent-vlx).
- * Shared PNG across themes; viewer shell uses theme `--pane` separately.
+ * Shared PNG across themes; viewer shell uses theme `--ui-pane` separately.
  */
 export const AUDIO_WAVEFORM_COVER_BACKGROUND = {
   r: 0x2a,

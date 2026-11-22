@@ -15,7 +15,7 @@
   padding-right: 12px;
 }
 .app-shell.app-shell .nav-section {
-  margin-top: var(--island-group-gap);
+  margin-top: var(--ui-island-group-gap);
 }
 .app-shell.app-shell .nav-row {
   border-color: transparent;
@@ -110,7 +110,7 @@
    stroke hugs the media with no light sliver of card background between. */
 .app-shell.app-shell .asset-card.is-selected,
 .app-shell.app-shell .asset-card:focus-visible {
-  border-radius: var(--island-card-radius);
+  border-radius: var(--ui-island-card-radius);
 }
 
 /* ---- Gallery: Photos air + softer card chrome --------------------------- */
@@ -152,7 +152,7 @@
 }
 .app-shell.app-shell .inspector-section-label,
 .app-shell.app-shell .inspector-content .micro-label {
-  font-family: var(--font-ui);
+  font-family: var(--ui-font-ui);
 }
 .app-shell.app-shell .inspector-content .editor-field {
   margin-top: 14px;
@@ -160,17 +160,17 @@
 .app-shell.app-shell .inspector-quick-row {
   margin-top: 14px;
   padding-top: 14px;
-  border-top: 1px solid var(--island-hairline);
+  border-top: 1px solid var(--ui-island-hairline);
 }
 .app-shell.app-shell .inspector-quick-row + .editor-field {
   margin-top: 14px;
   padding-top: 14px;
-  border-top: 1px solid var(--island-hairline);
+  border-top: 1px solid var(--ui-island-hairline);
 }
 .app-shell.app-shell .inspector-tech-bar {
   margin-top: 16px;
   padding: 12px 0 4px;
-  border-top: 1px solid var(--island-hairline);
+  border-top: 1px solid var(--ui-island-hairline);
   gap: 8px 10px;
 }
 .app-shell.app-shell .inspector-raw-tech-label { color: var(--ui-content-tertiary); }

@@ -98,7 +98,7 @@
 
 .workspace-tab.is-active {
   z-index: 1;
-  /* Face joins --canvas browse chrome. Silhouette fill+stroke come from the
+  /* Face joins --ui-canvas browse chrome. Silhouette fill+stroke come from the
      single SVG chrome (.workspace-tab-outline); keep a transparent face so the
      path is the only geometry. Bottom tongue covers the toolstrip seam. */
   margin-bottom: -1px;
@@ -107,7 +107,7 @@
   border-color: transparent;
   border-radius: var(--workspace-tab-curve) var(--workspace-tab-curve) 0 0;
   color: var(--ui-content-primary);
-  box-shadow: 0 2px 0 0 var(--canvas);
+  box-shadow: 0 2px 0 0 var(--ui-canvas);
 }
 
 /* No CSS scoop feet — WorkspaceTabOutline path is the only silhouette. */
@@ -127,7 +127,7 @@
 }
 
 .workspace-tab-outline-path {
-  fill: var(--island-tab-fill, var(--canvas));
+  fill: var(--ui-island-tab-fill, var(--ui-canvas));
   stroke: none;
   stroke-linecap: butt;
   stroke-linejoin: round;
@@ -161,7 +161,7 @@
   justify-content: flex-start;
   align-self: flex-start;
   min-width: 0;
-  height: var(--shell-control-height);
+  height: var(--ui-shell-control-height);
   gap: var(--ui-space-2);
   padding: 0 var(--ui-space-2) 0 var(--ui-space-3);
   border-radius: inherit;
@@ -188,9 +188,9 @@
 
 .workspace-tab-close {
   align-self: flex-start;
-  width: var(--shell-chip-height);
-  height: var(--shell-chip-height);
-  margin-top: calc((var(--shell-control-height) - var(--shell-chip-height)) / 2);
+  width: var(--ui-shell-chip-height);
+  height: var(--ui-shell-chip-height);
+  margin-top: calc((var(--ui-shell-control-height) - var(--ui-shell-chip-height)) / 2);
   border-radius: var(--ui-radius-surface);
   color: var(--ui-content-secondary);
 }
@@ -200,8 +200,8 @@
   z-index: 2;
   flex: 0 0 auto;
   align-self: center;
-  width: var(--shell-control-height);
-  height: var(--shell-control-height);
+  width: var(--ui-shell-control-height);
+  height: var(--ui-shell-control-height);
   /* List padding-inline reserves scoop width; pull plus back into that gutter.
      The list is position:relative, so it paints above this in-flow button
      where they overlap — keep the plus above that hit target. */
@@ -227,7 +227,7 @@
 .workspace-tab-select:focus-visible,
 .workspace-tab-close:focus-visible,
 .workspace-tab-add:focus-visible {
-  outline: 2px solid var(--accent-ring);
+  outline: 2px solid var(--ui-accent-ring);
   outline-offset: -2px;
 }
 
@@ -237,7 +237,7 @@
   align-self: center;
   align-items: center;
   min-width: 0;
-  height: var(--shell-control-height);
+  height: var(--ui-shell-control-height);
   gap: 9px;
 }
 

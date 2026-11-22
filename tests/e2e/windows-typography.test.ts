@@ -68,7 +68,7 @@ async function readTypography(window: Page) {
       platform: document.documentElement.dataset.platform,
       theme: document.documentElement.dataset.theme,
       rootFamily: rootStyle.fontFamily,
-      paneColor: rootStyle.getPropertyValue("--pane").trim(),
+      paneColor: rootStyle.getPropertyValue("--ui-pane").trim(),
       raisedColor: rootStyle.getPropertyValue("--raised").trim(),
       textRendering: rootStyle.textRendering,
       badge: computed(".inspector-badge"),

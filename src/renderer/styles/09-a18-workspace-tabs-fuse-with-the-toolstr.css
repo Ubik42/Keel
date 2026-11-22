@@ -1,5 +1,5 @@
 /* ---- a18: workspace tabs fuse with the toolstrip; icon-only filter segments ---- */
-/* The active tab + its scoops paint var(--canvas); rebinding it on the tab
+/* The active tab + its scoops paint var(--ui-canvas); rebinding it on the tab
    (not self-referential: value comes from the island token) makes tab, scoops
    and toolstrip one continuous surface in both themes. */
 .app-shell.app-shell .dimension-filter-dims .dimension-filter-btn {
@@ -67,7 +67,7 @@
 .app-shell.app-shell .empty-orbit {
   background: color-mix(in srgb, var(--ui-content-primary) 4%, var(--ui-surface-raised));
   color: var(--ui-content-tertiary);
-  border-color: var(--island-hairline);
+  border-color: var(--ui-island-hairline);
 }
 .app-shell.app-shell .inspector-empty > .icon {
   color: var(--ui-content-tertiary);
@@ -162,16 +162,16 @@
 .app-shell.app-shell .workspace-toolstrip {
   border-bottom-width: var(--island-hairline-w);
   border-bottom-style: solid;
-  border-bottom-color: var(--island-hairline);
+  border-bottom-color: var(--ui-island-hairline);
 }
 .app-shell.app-shell .asset-card {
-  border-color: var(--island-hairline);
+  border-color: var(--ui-island-hairline);
 }
 .app-shell.app-shell .inspector-quick-row,
 .app-shell.app-shell .inspector-quick-row + .editor-field,
 .app-shell.app-shell .inspector-tech-bar {
   border-top-width: var(--island-hairline-w);
-  border-top-color: var(--island-hairline);
+  border-top-color: var(--ui-island-hairline);
 }
 
 /* Loud accent: selected / focused card ring. */
@@ -210,7 +210,7 @@
 .app-shell.app-shell .inspector-empty > .icon,
 .app-shell.app-shell .inspector-empty > svg {
   background: var(--island-surface-soft);
-  border-color: var(--island-hairline);
+  border-color: var(--ui-island-hairline);
   color: var(--ui-content-tertiary);
 }
 

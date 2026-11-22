@@ -92,7 +92,7 @@
 }
 
 .app-shell.app-shell .filter-tag-chip {
-  height: var(--shell-chip-height);
+  height: var(--ui-shell-chip-height);
   color: var(--ui-content-secondary);
 }
 .app-shell.app-shell .filter-tag-chip button {
@@ -151,14 +151,14 @@
    Punchy accents (a70) and tag silhouette (a65–a67) unchanged. */
 .app-shell.app-shell {
   --island-border: color-mix(in srgb, var(--ui-content-primary) 6%, transparent);
-  --island-hairline: color-mix(in srgb, var(--ui-content-primary) 4%, transparent);
+  --ui-island-hairline: color-mix(in srgb, var(--ui-content-primary) 4%, transparent);
   /* Tab stroke follows quieter border */
   --island-tab-stroke: color-mix(in srgb, var(--island-border) 45%, var(--island-backdrop));
 }
 
 /* Cards / chips / fields: quieter default strokes (selection accent stays loud). */
 .app-shell.app-shell .asset-card:not(.is-selected):not(:focus-visible) {
-  border-color: var(--island-hairline);
+  border-color: var(--ui-island-hairline);
 }
 .app-shell.app-shell .text-field,
 .app-shell.app-shell .filter-tag-expression-input,
@@ -169,14 +169,14 @@
 .app-shell.app-shell .dimension-filter-popover,
 .app-shell.app-shell .filter-preset-chip:not(.is-active),
 .app-shell.app-shell .dimension-active-chip:not(.is-clear-all) {
-  border-color: var(--island-hairline);
+  border-color: var(--ui-island-hairline);
 }
 .app-shell.app-shell .text-field:focus,
 .app-shell.app-shell .filter-tag-expression-input:focus-within,
 .app-shell.app-shell .inspector-input:focus,
 .app-shell.app-shell .inspector-textarea:focus,
 .app-shell.app-shell .search-control-wrap:focus-within {
-  border-color: color-mix(in srgb, var(--accent) 45%, var(--island-hairline));
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--ui-island-hairline));
 }
 
 /* ==== a75: filter wrap, create-lib radii, quieter sort, card truncate/title,
@@ -338,7 +338,7 @@
 .app-shell.app-shell > .navigation-pane,
 .app-shell.app-shell > .inspector-pane,
 .app-shell.app-shell > .workspace {
-  margin: 0 var(--island-gap) var(--island-gap);
+  margin: 0 var(--ui-island-gap) var(--ui-island-gap);
 }
 .app-shell.app-shell > .navigation-pane { margin-right: 0; }
 .app-shell.app-shell > .inspector-pane { margin-left: 0; }

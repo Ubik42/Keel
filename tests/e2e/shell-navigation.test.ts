@@ -310,7 +310,7 @@ test("library switcher, breadcrumbs, and workspace history", async () => {
     expect(backBox!.x).toBeLessThan(settingsBox!.x);
     expect(backBox!.x).toBeLessThan(crumbsBox!.x);
     // Islands: toolbar cluster padding and the workspace island margin are
-    // both --island-gap, so history controls sit on the workspace edge.
+    // both --ui-island-gap, so history controls sit on the workspace edge.
     expect(backBox!.x - workspaceBox!.x).toBeCloseTo(0, 0);
 
     // Left sidebar status dots (top/bottom) were removed as redundant.

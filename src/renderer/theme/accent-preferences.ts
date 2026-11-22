@@ -103,15 +103,15 @@ export function setStoredAccentHex(
 }
 
 /**
- * Apply user accent. Only `--accent` is set; never inline `--accent-dark` so
+ * Apply user accent. Only `--accent` is set; never inline `--ui-accent-dark` so
  * CSS color-mix derivatives stay in sync (Serpent-gnus).
  */
 export function applyAccentColor(accentHex: string): void {
   if (typeof document === 'undefined') return;
   const normalized = normalizeAccentHex(accentHex) ?? DEFAULT_ACCENT_HEX;
   const root = document.documentElement;
-  // Clear any prior buggy inline --accent-dark from THEME-018 v1.
-  root.style.removeProperty('--accent-dark');
+  // Clear any prior buggy inline --ui-accent-dark from THEME-018 v1.
+  root.style.removeProperty('--ui-accent-dark');
   if (normalized === DEFAULT_ACCENT_HEX) {
     root.style.removeProperty('--accent');
     return;

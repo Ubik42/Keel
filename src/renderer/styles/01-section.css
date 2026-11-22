@@ -18,9 +18,9 @@
   /* Default to the current low acrylic treatment so menus remain polished
      even before the preference provider has mounted. */
   background: color-mix(in srgb, var(--ui-surface-raised) 92%, transparent);
-  border: 1px solid var(--menu-surface-border);
-  border-radius: var(--menu-surface-radius);
-  box-shadow: var(--menu-surface-shadow);
+  border: 1px solid var(--ui-menu-surface-border);
+  border-radius: var(--ui-menu-surface-radius);
+  box-shadow: var(--ui-menu-surface-shadow);
   backdrop-filter: blur(14px) saturate(120%);
   min-width: 180px;
   /* Keep tall menus inside the renderer viewport and let their content scroll. */
@@ -112,14 +112,14 @@
   gap: 8px;
   width: 100%;
   min-height: 30px;
-  padding: var(--menu-item-padding);
+  padding: var(--ui-menu-item-padding);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
   border: none;
   background: transparent;
   color: var(--ui-content-primary);
   font-family: inherit;
-  font-size: var(--menu-item-font-size);
-  line-height: var(--menu-item-line-height);
+  font-size: var(--ui-menu-item-font-size);
+  line-height: var(--ui-menu-item-line-height);
   cursor: default;
   text-align: left;
   white-space: nowrap;
@@ -135,7 +135,7 @@
 }
 
 .context-menu.is-keyboard-navigation .context-menu-item:focus {
-  background: var(--menu-item-focus-background);
+  background: var(--ui-menu-item-focus-background);
   /* Keep the focus marker renderable during the brief theme/bootstrap window
      before the secondary token has been installed on :root. */
   box-shadow: inset 1px 0 var(--ui-content-secondary);
@@ -143,8 +143,8 @@
 
 .context-menu-item.is-danger:hover,
 .context-menu.is-keyboard-navigation .context-menu-item.is-danger:focus {
-  background: var(--menu-danger-hover-background);
-  color: var(--menu-danger-color);
+  background: var(--ui-menu-danger-hover-background);
+  color: var(--ui-menu-danger-color);
 }
 
 /* The normal pointer-hover selector is scoped by the menu state class, so it
@@ -152,12 +152,12 @@
    text. Keep every danger-marked asset/folder/collection action red on hover. */
 .context-menu:not(.is-keyboard-navigation)
   .context-menu-item.is-danger:hover:not(:disabled) {
-  background: var(--menu-danger-hover-background);
-  color: var(--menu-danger-color);
+  background: var(--ui-menu-danger-hover-background);
+  color: var(--ui-menu-danger-color);
 }
 
 .context-menu-item.is-disabled {
-  opacity: var(--menu-item-disabled-opacity);
+  opacity: var(--ui-menu-item-disabled-opacity);
   cursor: not-allowed;
 }
 
@@ -403,7 +403,7 @@
 
 .appearance-picker-swatch.is-selected,
 .appearance-picker-cell.is-selected {
-  box-shadow: 0 0 0 2px var(--accent-ring);
+  box-shadow: 0 0 0 2px var(--ui-accent-ring);
 }
 
 .appearance-picker-scroll {
@@ -677,7 +677,7 @@
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
   overflow: hidden;
-  background: var(--pane);
+  background: var(--ui-pane);
   cursor: pointer;
   outline: none;
 }
@@ -698,7 +698,7 @@
 .preview-audio-waveform.is-placeholder {
   background:
     linear-gradient(90deg, transparent 0%, var(--ui-surface-hover) 50%, transparent 100%),
-    var(--pane);
+    var(--ui-pane);
 }
 /* Serpent-r8a: full-height star-yellow playhead; trail = separate particles. */
 .preview-audio-playhead {
@@ -706,8 +706,8 @@
   top: 0;
   bottom: 0;
   width: 2px;
-  background: var(--rating-star);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--pane) 45%, transparent);
+  background: var(--ui-rating-star);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ui-pane) 45%, transparent);
   transform: translateX(-50%);
   pointer-events: none;
   z-index: 2;
@@ -724,7 +724,7 @@
   top: 0;
   bottom: 0;
   width: 2px;
-  background: var(--rating-star);
+  background: var(--ui-rating-star);
   transform: translateX(-50%);
   pointer-events: none;
 }
@@ -752,7 +752,7 @@
   height: 100%;
   min-width: 0;
   min-height: 0;
-  background: var(--canvas);
+  background: var(--ui-canvas);
   color: var(--ui-content-primary);
 }
 .zip-archive-list {
@@ -963,7 +963,7 @@
   border-right: 1px solid var(--ui-border-divider);
   background: var(--ui-surface-raised);
   color: var(--ui-content-tertiary);
-  font-family: var(--font-ui);
+  font-family: var(--ui-font-ui);
   font-size: calc(12px * var(--ui-font-scale));
   line-height: 1.55;
   text-align: right;
@@ -982,7 +982,7 @@
   overflow: hidden;
   background: transparent;
   color: var(--ui-content-primary);
-  font-family: var(--font-ui);
+  font-family: var(--ui-font-ui);
   font-size: calc(12px * var(--ui-font-scale));
   line-height: 1.55;
   white-space: pre;
@@ -1006,7 +1006,7 @@
 
 :root:not([data-elevation="0"]) .inspector-hero-preview.inspector-hero-text-preview,
 :root:not([data-elevation="0"]) .text-asset-preview {
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--ui-shadow-card);
 }
 
 .inspector-hero-text-snippet,
@@ -1020,7 +1020,7 @@
   padding: 10px 12px;
   overflow: hidden;
   color: var(--ui-content-secondary);
-  font-family: var(--font-ui);
+  font-family: var(--ui-font-ui);
   font-size: calc(11px * var(--ui-font-scale));
   line-height: 1.45;
   white-space: pre-wrap;
@@ -1128,7 +1128,7 @@
   align-items: center;
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(10px * var(--ui-radius-scale, 1));
-  background: var(--viewer-chrome-bg);
+  background: var(--ui-viewer-chrome-bg);
   box-shadow: 0 1px 6px rgb(0 0 0 / 10%);
   color: var(--ui-content-primary);
   font-size: calc(11px * var(--ui-font-scale));
@@ -1411,7 +1411,7 @@
   height: 100%;
   object-fit: contain;
   border-radius: calc(4px * var(--ui-radius-scale, 1));
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--ui-shadow-card);
 }
 
 .pdf-viewer-toolbar {
@@ -1495,9 +1495,9 @@
   height: var(--pdf-page-height, auto);
   min-height: var(--pdf-page-height, auto);
   max-height: none;
-  background: var(--viewer-document-page);
+  background: var(--ui-viewer-document-page);
   border-radius: calc(4px * var(--ui-radius-scale, 1));
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--ui-shadow-card);
   overflow: hidden;
 }
 
@@ -1812,7 +1812,7 @@
   align-items: center;
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: var(--viewer-chrome-bg);
+  background: var(--ui-viewer-chrome-bg);
   box-shadow: 0 1px 6px rgb(0 0 0 / 10%);
   backdrop-filter: blur(10px);
   transform: translateX(-50%);
@@ -1845,7 +1845,7 @@
   outline: 0;
   background: transparent;
   color: var(--ui-content-primary);
-  font-family: var(--font-ui);
+  font-family: var(--ui-font-ui);
   font-size: inherit;
   font-weight: 400;
   cursor: pointer;
@@ -1974,7 +1974,7 @@
   min-height: 200px;
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: var(--canvas);
+  background: var(--ui-canvas);
 }
 .plugin-viewer-overlay-host {
   position: absolute;
@@ -1996,7 +1996,7 @@
   padding: 6px 10px;
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: var(--viewer-chrome-bg);
+  background: var(--ui-viewer-chrome-bg);
   color: var(--ui-content-primary);
   font-size: calc(11px * var(--ui-font-scale));
   cursor: pointer;
@@ -2011,7 +2011,7 @@
   padding: 8px;
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(10px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--pane) 92%, transparent);
+  background: color-mix(in srgb, var(--ui-pane) 92%, transparent);
   box-shadow: 0 8px 24px rgb(0 0 0 / 18%);
   backdrop-filter: blur(12px);
 }
@@ -2025,7 +2025,7 @@
   min-height: 180px;
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: var(--canvas);
+  background: var(--ui-canvas);
 }
 .plugin-settings-pages-card {
   display: flex;
@@ -2047,7 +2047,7 @@
   min-height: 280px;
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: var(--canvas);
+  background: var(--ui-canvas);
 }
 .preview-plugin-actions {
   position: absolute;
@@ -2055,7 +2055,7 @@
   display: flex;
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: var(--viewer-chrome-bg);
+  background: var(--ui-viewer-chrome-bg);
   box-shadow: 0 1px 6px rgb(0 0 0 / 10%);
   backdrop-filter: blur(10px);
 }
@@ -2102,7 +2102,7 @@
 .preview-sequence-play-stage {
   position: absolute;
   inset: 0;
-  background: var(--canvas);
+  background: var(--ui-canvas);
 }
 .preview-sequence-controls {
   position: absolute;
@@ -2115,7 +2115,7 @@
   padding: 5px 10px;
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(9px * var(--ui-radius-scale, 1));
-  background: var(--viewer-chrome-bg);
+  background: var(--ui-viewer-chrome-bg);
   box-shadow: 0 1px 6px rgb(0 0 0 / 10%);
   color: var(--ui-content-secondary);
   font-size: calc(10px * var(--ui-font-scale));
@@ -2146,32 +2146,32 @@
   grid-area: 1 / 1;
 }
 .preview-nav.is-on-dark .preview-nav-glyph .icon:first-child {
-  color: var(--preview-nav-on-dark-stroke);
+  color: var(--ui-preview-nav-on-dark-stroke);
   stroke-width: 3.5;
 }
 .preview-nav.is-on-dark .preview-nav-glyph .icon:last-child {
-  color: var(--preview-nav-on-dark-fill);
+  color: var(--ui-preview-nav-on-dark-fill);
   stroke-width: 2.85;
 }
 .preview-nav.is-on-light .preview-nav-glyph .icon:first-child {
-  color: var(--preview-nav-on-light-stroke);
+  color: var(--ui-preview-nav-on-light-stroke);
   stroke-width: 3.5;
 }
 .preview-nav.is-on-light .preview-nav-glyph .icon:last-child {
-  color: var(--preview-nav-on-light-fill);
+  color: var(--ui-preview-nav-on-light-fill);
   stroke-width: 2.85;
 }
 .preview-nav.is-on-dark:disabled .preview-nav-glyph .icon:first-child {
-  color: var(--preview-nav-on-dark-disabled-stroke);
+  color: var(--ui-preview-nav-on-dark-disabled-stroke);
 }
 .preview-nav.is-on-dark:disabled .preview-nav-glyph .icon:last-child {
-  color: var(--preview-nav-on-dark-disabled-fill);
+  color: var(--ui-preview-nav-on-dark-disabled-fill);
 }
 .preview-nav.is-on-light:disabled .preview-nav-glyph .icon:first-child {
-  color: var(--preview-nav-on-light-disabled-stroke);
+  color: var(--ui-preview-nav-on-light-disabled-stroke);
 }
 .preview-nav.is-on-light:disabled .preview-nav-glyph .icon:last-child {
-  color: var(--preview-nav-on-light-disabled-fill);
+  color: var(--ui-preview-nav-on-light-disabled-fill);
 }
 .preview-exr-plane-selector {
   position: absolute;
@@ -2180,7 +2180,7 @@
   align-items: center;
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
-  background: var(--viewer-chrome-bg);
+  background: var(--ui-viewer-chrome-bg);
   box-shadow: 0 1px 6px rgb(0 0 0 / 10%);
   color: var(--ui-content-secondary);
   font-size: calc(11px * var(--ui-font-scale));
@@ -2198,10 +2198,10 @@
   box-shadow: 0 0 0 2px var(--accent);
 }
 .preview-nav.is-on-dark {
-  color: var(--preview-nav-on-dark-fill);
+  color: var(--ui-preview-nav-on-dark-fill);
 }
 .preview-nav.is-on-light {
-  color: var(--preview-nav-on-light-fill);
+  color: var(--ui-preview-nav-on-light-fill);
 }
 .preview-nav:hover:not(:disabled),
 .preview-nav:focus-visible:not(:disabled) {
@@ -2252,7 +2252,7 @@
   transform: translateX(-50%);
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(5px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--pane) 92%, transparent);
+  background: color-mix(in srgb, var(--ui-pane) 92%, transparent);
 }
 .preview-state strong {
   color: var(--ui-content-primary);
@@ -2281,7 +2281,7 @@
   padding: 9px 11px;
   border: 1px solid color-mix(in srgb, var(--ui-status-warning) 35%, var(--ui-border-divider));
   border-radius: calc(5px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--ui-status-warning-surface) 88%, var(--pane));
+  background: color-mix(in srgb, var(--ui-status-warning-surface) 88%, var(--ui-pane));
   color: var(--ui-status-warning-content);
   font-size: calc(11px * var(--ui-font-scale));
 }
@@ -2301,7 +2301,7 @@
   padding: 5px 8px;
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(5px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--pane) 92%, transparent);
+  background: color-mix(in srgb, var(--ui-pane) 92%, transparent);
   color: var(--ui-content-secondary);
   font-size: calc(11px * var(--ui-font-scale));
   transform: translateX(-50%);
@@ -2332,7 +2332,7 @@
   padding: 5px 10px;
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(5px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--pane) 92%, transparent);
+  background: color-mix(in srgb, var(--ui-pane) 92%, transparent);
   color: var(--ui-content-secondary);
   font-size: calc(12px * var(--ui-font-scale));
   transform: translateX(-50%);
@@ -2345,8 +2345,8 @@
   padding: 20px;
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(12px * var(--ui-radius-scale, 1));
-  background: var(--pane);
-  box-shadow: var(--shadow-elevated);
+  background: var(--ui-pane);
+  box-shadow: var(--ui-shadow-elevated);
   /* Opacity-only enter — translateY fights true window centering. */
   animation: dialog-enter 180ms ease-out both;
 }
@@ -2416,7 +2416,7 @@
   overflow: auto;
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--ui-surface-raised) 70%, var(--pane));
+  background: color-mix(in srgb, var(--ui-surface-raised) 70%, var(--ui-pane));
 }
 
 .app-log-entry {
@@ -2472,7 +2472,7 @@
   padding: 8px;
   overflow: auto;
   border-radius: calc(5px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--canvas) 65%, var(--ui-surface-raised));
+  background: color-mix(in srgb, var(--ui-canvas) 65%, var(--ui-surface-raised));
   color: var(--ui-content-secondary);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: calc(10px * var(--ui-font-scale));
@@ -2509,7 +2509,7 @@
   padding: 12px;
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--canvas) 72%, var(--ui-surface-raised));
+  background: color-mix(in srgb, var(--ui-canvas) 72%, var(--ui-surface-raised));
   color: var(--ui-content-primary);
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: calc(12px * var(--ui-font-scale));
@@ -2546,7 +2546,7 @@
   min-height: 260px;
   border: 1px solid var(--ui-border-subtle);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--ui-surface-raised) 72%, var(--pane));
+  background: color-mix(in srgb, var(--ui-surface-raised) 72%, var(--ui-pane));
   color: var(--ui-content-secondary);
   font-size: calc(11px * var(--ui-font-scale));
   line-height: 1.5;
@@ -2831,7 +2831,7 @@
   max-width: 100%;
   border: 1px solid color-mix(in srgb, var(--ui-border-divider) 88%, transparent);
   border-radius: calc(10px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--ui-surface-raised) 70%, var(--pane));
+  background: color-mix(in srgb, var(--ui-surface-raised) 70%, var(--ui-pane));
 }
 
 .semantic-settings-tab {
@@ -2852,7 +2852,7 @@
 }
 
 .semantic-settings-tab.is-active {
-  background: var(--pane);
+  background: var(--ui-pane);
   color: var(--ui-content-primary);
   box-shadow: 0 1px 2px color-mix(in srgb, var(--ui-content-primary) 12%, transparent);
 }
@@ -2906,7 +2906,7 @@
   padding: 12px 14px;
   border: 1px solid color-mix(in srgb, var(--ui-border-divider) 88%, transparent);
   border-radius: calc(10px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--ui-surface-raised) 55%, var(--pane));
+  background: color-mix(in srgb, var(--ui-surface-raised) 55%, var(--ui-pane));
 }
 
 .semantic-model-card-copy {
@@ -2997,7 +2997,7 @@
   opacity: 1;
   cursor: default;
   filter: none;
-  background: color-mix(in srgb, var(--ui-surface-raised) 82%, var(--pane));
+  background: color-mix(in srgb, var(--ui-surface-raised) 82%, var(--ui-pane));
   color: color-mix(in srgb, var(--ui-content-tertiary) 88%, var(--ui-content-secondary));
   border-color: color-mix(in srgb, var(--ui-border-divider) 92%, transparent);
   box-shadow: none;
@@ -3025,7 +3025,7 @@
   padding: 10px 11px;
   border: 1px solid color-mix(in srgb, var(--ui-border-divider) 88%, transparent);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--ui-surface-raised-subtle) 70%, var(--pane));
+  background: color-mix(in srgb, var(--ui-surface-raised-subtle) 70%, var(--ui-pane));
 }
 
 .semantic-install-progress-label {
@@ -3122,7 +3122,7 @@
   padding: 14px 14px 13px;
   border: 1px solid color-mix(in srgb, var(--ui-border-divider) 88%, transparent);
   border-radius: calc(10px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--ui-surface-raised) 55%, var(--pane));
+  background: color-mix(in srgb, var(--ui-surface-raised) 55%, var(--ui-pane));
 }
 
 .semantic-service-form .ai-config-field {
@@ -3258,7 +3258,7 @@
   padding: 0 10px;
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
-  background: var(--pane);
+  background: var(--ui-pane);
   color: var(--ui-content-primary);
   font-size: calc(12px * var(--ui-font-scale));
 }
@@ -3466,8 +3466,8 @@
   list-style: none;
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: var(--pane);
-  box-shadow: var(--shadow-menu);
+  background: var(--ui-pane);
+  box-shadow: var(--ui-shadow-menu);
 }
 
 .ai-config-model-picker-menu.is-portaled {
@@ -3706,8 +3706,8 @@ select.ai-config-input {
 
 .app-settings-entry {
   display: grid;
-  width: var(--shell-control-height);
-  height: var(--shell-control-height);
+  width: var(--ui-shell-control-height);
+  height: var(--ui-shell-control-height);
   flex: 0 0 auto;
   align-self: center;
   place-items: center;
@@ -3936,7 +3936,7 @@ select.ai-config-input {
   padding: 14px 15px;
   border: 1px solid color-mix(in srgb, var(--ui-border-divider) 92%, transparent);
   border-radius: calc(10px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--ui-surface-raised) 92%, var(--pane));
+  background: color-mix(in srgb, var(--ui-surface-raised) 92%, var(--ui-pane));
   box-shadow: inset 0 1px rgb(255 255 255 / 2%);
 }
 
@@ -3997,7 +3997,7 @@ select.ai-config-input {
   padding: 10px 11px;
   border: 1px solid color-mix(in srgb, var(--ui-border-divider) 88%, transparent);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--ui-surface-raised) 55%, var(--pane));
+  background: color-mix(in srgb, var(--ui-surface-raised) 55%, var(--ui-pane));
 }
 
 .mcp-permission-client .app-settings-card-divider {
@@ -4060,7 +4060,7 @@ select.ai-config-input {
 
 .mcp-client-action:hover:not(:disabled) {
   color: var(--ui-content-primary);
-  background: color-mix(in srgb, var(--pane) 55%, transparent);
+  background: color-mix(in srgb, var(--ui-pane) 55%, transparent);
 }
 
 .mcp-client-action:disabled {
@@ -4117,7 +4117,7 @@ select.ai-config-input {
   padding: 5px 8px 5px 11px;
   border: 1px solid var(--ui-border-subtle);
   border-radius: var(--ui-radius-pill);
-  background: var(--pane);
+  background: var(--ui-pane);
   color: var(--ui-content-secondary);
   font-size: calc(12px * var(--ui-font-scale));
   line-height: 1.45;
@@ -5490,7 +5490,7 @@ select.ai-config-input {
   padding: 0 10px;
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
-  background: var(--canvas);
+  background: var(--ui-canvas);
   color: var(--ui-content-primary);
   font-size: calc(12px * var(--ui-font-scale));
   transition:
@@ -5638,7 +5638,7 @@ select.ai-config-input {
   /* REQ-CANVAS-006: never shrink below content size or wrap — a squeezed
      flex item let the label spill outside the button's border box. */
   flex: 0 0 auto;
-  height: var(--shell-control-height);
+  height: var(--ui-shell-control-height);
   align-items: center;
   gap: 6px;
   padding: 0 10px;
@@ -5769,7 +5769,7 @@ select.ai-config-input {
   /* Keep global feedback below the app chrome, in the empty workspace
      toolbar band. It remains viewport-level (above dialogs) without sitting
      against the window edge. */
-  top: calc(var(--shell-toolbar-height) + 20px);
+  top: calc(var(--ui-shell-toolbar-height) + 20px);
   left: 50%;
   display: flex;
   flex-direction: column;
@@ -5783,7 +5783,7 @@ select.ai-config-input {
   width: fit-content;
   min-width: 0;
   max-width: min(520px, calc(100vw - 32px));
-  max-height: calc(100vh - var(--shell-toolbar-height) - 40px);
+  max-height: calc(100vh - var(--ui-shell-toolbar-height) - 40px);
   overflow-y: auto;
   overscroll-behavior: contain;
   transform: translateX(-50%);
@@ -5968,7 +5968,7 @@ select.ai-config-input {
   padding: 12px;
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: var(--canvas);
+  background: var(--ui-canvas);
   color: var(--ui-content-primary);
   font-family: var(--font-mono);
   font-size: calc(12px * var(--ui-font-scale));
@@ -6002,7 +6002,7 @@ select.ai-config-input {
   padding: 0;
   border: 1px solid color-mix(in srgb, var(--accent) 16%, var(--ui-border-divider));
   background: var(--ui-surface-raised);
-  box-shadow: var(--shadow-elevated);
+  box-shadow: var(--ui-shadow-elevated);
 }
 
 .about-dialog-close {
@@ -6044,7 +6044,7 @@ select.ai-config-input {
   margin-bottom: 4px;
   border: 1px solid color-mix(in srgb, var(--ui-border-divider) 72%, transparent);
   border-radius: calc(18px * var(--ui-radius-scale, 1));
-  box-shadow: var(--shadow-panel);
+  box-shadow: var(--ui-shadow-panel);
   object-fit: cover;
 }
 
@@ -6196,7 +6196,7 @@ select.ai-config-input {
 }
 
 .workspace-notice-undo:focus-visible {
-  box-shadow: 0 0 0 2px var(--accent-ring);
+  box-shadow: 0 0 0 2px var(--ui-accent-ring);
 }
 
 .import-progress-strip {
@@ -6484,12 +6484,12 @@ select.ai-config-input {
 }
 
 :root:not([data-elevation="0"]) .folder-card {
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--ui-shadow-card);
 }
 
 :root:not([data-elevation="0"]) .folder-card.is-selected,
 :root:not([data-elevation="0"]) .folder-card:focus-visible {
-  box-shadow: var(--shadow-card), 0 0 0 2px var(--accent);
+  box-shadow: var(--ui-shadow-card), 0 0 0 2px var(--accent);
 }
 
 /* Serpent-l67w / FOLDER-011: reference folder — rear rounded panel + front
@@ -6519,7 +6519,7 @@ select.ai-config-input {
   position: absolute;
   inset: 0;
   border-radius: var(--folder-card-radius);
-  background: color-mix(in srgb, var(--canvas) 55%, var(--pane));
+  background: color-mix(in srgb, var(--ui-canvas) 55%, var(--ui-pane));
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ui-content-primary) 12%, transparent);
 }
 
@@ -6537,7 +6537,7 @@ select.ai-config-input {
 }
 
 .folder-card-front-shape {
-  fill: var(--pane);
+  fill: var(--ui-pane);
   stroke: color-mix(in srgb, var(--ui-content-primary) 12%, transparent);
   stroke-width: 1.25;
   vector-effect: non-scaling-stroke;
@@ -6769,7 +6769,7 @@ select.ai-config-input {
   border: 1.5px dashed color-mix(in srgb, var(--accent) 70%, transparent);
   border-radius: calc(12px * var(--ui-radius-scale, 1));
   /* Keep the drag affordance visible while letting the assets remain visible
-     through a translucent accent wash. Mixing with --canvas here made the
+     through a translucent accent wash. Mixing with --ui-canvas here made the
      light theme effectively opaque white, which looked like the canvas had
      been emptied during a drag. */
   background: color-mix(in srgb, var(--accent) 40%, transparent);
@@ -6783,10 +6783,10 @@ select.ai-config-input {
   place-items: center;
   gap: 7px;
   padding: 18px 24px 16px;
-  border: 1px solid var(--menu-surface-border);
-  border-radius: var(--menu-surface-radius);
+  border: 1px solid var(--ui-menu-surface-border);
+  border-radius: var(--ui-menu-surface-radius);
   background: color-mix(in srgb, var(--ui-surface-raised) 92%, transparent);
-  box-shadow: var(--menu-surface-shadow);
+  box-shadow: var(--ui-menu-surface-shadow);
   backdrop-filter: blur(14px) saturate(120%);
 }
 .external-drop-overlay-content > .icon {
@@ -7096,7 +7096,7 @@ select.ai-config-input {
   width: 16px;
   height: 16px;
   margin-top: -5px;
-  border: 2px solid var(--canvas);
+  border: 2px solid var(--ui-canvas);
   border-radius: 50%;
   background: var(--accent);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.28);
@@ -7107,7 +7107,7 @@ select.ai-config-input {
   pointer-events: auto;
   width: 16px;
   height: 16px;
-  border: 2px solid var(--canvas);
+  border: 2px solid var(--ui-canvas);
   border-radius: 50%;
   background: var(--accent);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.28);
@@ -7346,7 +7346,7 @@ select.ai-config-input {
   width: 18px;
   height: 18px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--pane) 78%, transparent);
+  background: color-mix(in srgb, var(--ui-pane) 78%, transparent);
   color: var(--asset-sync-status-color);
   pointer-events: auto;
 }
@@ -7354,10 +7354,10 @@ select.ai-config-input {
   --asset-sync-status-color: var(--ui-status-success);
 }
 .asset-sync-status[data-state="conflict"] {
-  --asset-sync-status-color: var(--rating-star);
-  background: var(--rating-star);
+  --asset-sync-status-color: var(--ui-rating-star);
+  background: var(--ui-rating-star);
   color: var(--ui-content-on-accent);
-  box-shadow: 0 0 0 2px var(--pane);
+  box-shadow: 0 0 0 2px var(--ui-pane);
 }
 .asset-sync-status .icon {
   position: relative;
@@ -7581,7 +7581,7 @@ select.ai-config-input {
   filter: brightness(1.18);
 }
 .palette-preview span:focus-visible {
-  outline: 2px solid var(--accent-ring);
+  outline: 2px solid var(--ui-accent-ring);
   outline-offset: -2px;
 }
 
@@ -7615,7 +7615,7 @@ select.ai-config-input {
   background: radial-gradient(
     circle at 40% 35%,
     color-mix(in srgb, var(--ui-action-accent-soft) 55%, var(--ui-surface-raised-subtle)),
-    var(--pane) 70%
+    var(--ui-pane) 70%
   );
   color: var(--accent);
 }
@@ -7641,7 +7641,7 @@ select.ai-config-input {
   border: 0;
   border-radius: calc(8px * var(--ui-radius-scale, 1));
   background: var(--ui-surface-raised);
-  box-shadow: var(--shadow-toast);
+  box-shadow: var(--ui-shadow-toast);
   color: var(--ui-content-primary);
   font-size: calc(11px * var(--ui-font-scale));
   /* REQ-SHELL-010: dismissal adds .is-closing and unmounts only after this
@@ -7662,7 +7662,7 @@ select.ai-config-input {
   background: var(--ui-status-warning-surface);
   color: var(--ui-status-warning-content);
   border: 1px solid color-mix(in srgb, var(--ui-status-warning) 28%, transparent);
-  box-shadow: var(--shadow-toast);
+  box-shadow: var(--ui-shadow-toast);
 }
 .toast.is-error > :first-child,
 .toast.is-error .icon,
@@ -7800,7 +7800,7 @@ select.ai-config-input {
   width: 100%;
   border: 1px solid var(--ui-border-subtle);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--canvas) 86%, var(--ui-content-inverse));
+  background: color-mix(in srgb, var(--ui-canvas) 86%, var(--ui-content-inverse));
 }
 
 .inspector-hero-image {
@@ -7815,7 +7815,7 @@ select.ai-config-input {
 
 :root:not([data-elevation="0"]) .inspector-hero-preview-fallback,
 :root:not([data-elevation="0"]) .inspector-hero-image {
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--ui-shadow-card);
 }
 
 .inspector-hero-sequence-preview {
@@ -7845,7 +7845,7 @@ select.ai-config-input {
 }
 
 :root:not([data-elevation="0"]) .inspector-hero-sequence-preview .inspector-hero-face {
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--ui-shadow-card);
 }
 
 .inspector-hero-image.is-loading {
@@ -7926,7 +7926,7 @@ select.ai-config-input {
   .inspector-pane[data-inspector-card-feel="on"]
   .inspector-hero-text-preview.text-asset-preview {
   box-shadow:
-    var(--shadow-card),
+    var(--ui-shadow-card),
     inset 0 1px 0 rgb(255 255 255 / 0.04),
     0 1px 2px rgb(0 0 0 / 0.12);
 }
@@ -8086,7 +8086,7 @@ select.ai-config-input {
   inset: 0;
   overflow: hidden;
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--canvas) 90%, var(--ui-content-inverse));
+  background: color-mix(in srgb, var(--ui-canvas) 90%, var(--ui-content-inverse));
   /* REQ-INSPECT-004: soft layered shadows so stacked multi-select previews stay separable. */
   box-shadow:
     0 1px 2px color-mix(in srgb, var(--ui-content-inverse) 18%, transparent),
@@ -8166,7 +8166,7 @@ select.ai-config-input {
   min-width: 0;
   width: 100%;
   /* Match the Inspector description field so Chinese metadata stays readable. */
-  font-family: var(--font-ui);
+  font-family: var(--ui-font-ui);
   font-size: calc(11.5px * var(--ui-font-scale));
   font-weight: var(--ui-font-weight-regular);
   line-height: 1.35;
@@ -8351,12 +8351,12 @@ select.ai-config-input {
 }
 
 .rating-star:hover {
-  color: var(--rating-star);
+  color: var(--ui-rating-star);
   transform: scale(1.12);
 }
 
 .rating-star[data-active] {
-  color: var(--rating-star);
+  color: var(--ui-rating-star);
 }
 
 .rating-star[data-active] .icon {
@@ -8579,7 +8579,7 @@ select.ai-config-input {
   padding: 8px 10px;
   border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--ui-border-divider));
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--accent) 8%, var(--pane));
+  background: color-mix(in srgb, var(--accent) 8%, var(--ui-pane));
   color: var(--ui-content-secondary);
   font-size: calc(11px * var(--ui-font-scale));
 }
@@ -8622,7 +8622,7 @@ select.ai-config-input {
   padding: 2px 9px;
   border: 1px solid var(--ui-border-subtle);
   border-radius: 999px;
-  background: var(--pane);
+  background: var(--ui-pane);
   color: var(--ui-content-secondary);
   font-size: calc(10px * var(--ui-font-scale));
   line-height: 1.5;
@@ -8694,7 +8694,7 @@ select.ai-config-input {
   padding: 3px 9px;
   border: 1px solid var(--ui-border-divider);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--ui-surface-raised) 55%, var(--canvas));
+  background: color-mix(in srgb, var(--ui-surface-raised) 55%, var(--ui-canvas));
   color: var(--ui-content-secondary);
   transition: border-color 120ms ease, background 120ms ease;
 }
@@ -8709,7 +8709,7 @@ select.ai-config-input {
 
 .tag-input-chip:focus-within {
   border-color: color-mix(in srgb, var(--accent) 72%, var(--ui-border-divider));
-  background: color-mix(in srgb, var(--ui-surface-raised) 72%, var(--canvas));
+  background: color-mix(in srgb, var(--ui-surface-raised) 72%, var(--ui-canvas));
 }
 
 .tag-add-input {
@@ -8747,7 +8747,7 @@ select.ai-config-input {
   overflow-y: auto;
   border: 1px solid color-mix(in srgb, var(--ui-border-divider) 82%, transparent);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--ui-surface-raised) 90%, var(--canvas));
+  background: color-mix(in srgb, var(--ui-surface-raised) 90%, var(--ui-canvas));
   box-shadow: 0 10px 28px rgb(0 0 0 / 30%);
 }
 
@@ -8870,7 +8870,7 @@ select.ai-config-input {
   transform: none;
   border: 1px solid var(--ui-border-divider);
   border-radius: 50%;
-  background: var(--pane);
+  background: var(--ui-pane);
   color: var(--ui-content-secondary);
   opacity: 1;
 }
@@ -8891,8 +8891,8 @@ select.ai-config-input {
   padding: 20px;
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(12px * var(--ui-radius-scale, 1));
-  background: var(--pane);
-  box-shadow: var(--shadow-elevated);
+  background: var(--ui-pane);
+  box-shadow: var(--ui-shadow-elevated);
   animation: dialog-enter 180ms ease-out both;
 }
 .conflict-dialog-compact .dialog-heading {
@@ -8954,7 +8954,7 @@ select.ai-config-input {
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
   object-fit: cover;
-  background: var(--canvas);
+  background: var(--ui-canvas);
 }
 
 .conflict-duplicate-thumb.is-empty {
@@ -9005,7 +9005,7 @@ select.ai-config-input {
   flex-direction: column;
   gap: 3px;
   padding: 13px 8px;
-  background: var(--pane);
+  background: var(--ui-pane);
 }
 .conflict-summary strong {
   color: var(--ui-content-primary);
@@ -9033,7 +9033,7 @@ select.ai-config-input {
   appearance: none;
   -webkit-appearance: none;
   width: 100%;
-  height: var(--shell-control-height);
+  height: var(--ui-shell-control-height);
   padding: 0 28px 0 8px;
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
@@ -9076,7 +9076,7 @@ select.ai-config-input {
   padding: 9px;
   border: 1px solid var(--ui-border-subtle);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: var(--pane);
+  background: var(--ui-pane);
 }
 .conflict-examples > span {
   display: flex;
@@ -9103,7 +9103,7 @@ select.ai-config-input {
   .inspector-pane {
     position: fixed;
     z-index: var(--ui-layer-shell);
-    top: var(--shell-toolbar-height);
+    top: var(--ui-shell-toolbar-height);
     bottom: 0;
     width: 224px;
     visibility: visible;
@@ -9119,11 +9119,11 @@ select.ai-config-input {
   }
 
   :root:not([data-elevation="0"]) .navigation-pane {
-    box-shadow: var(--shadow-pane-east);
+    box-shadow: var(--ui-shadow-pane-east);
   }
 
   :root:not([data-elevation="0"]) .inspector-pane {
-    box-shadow: var(--shadow-pane-west);
+    box-shadow: var(--ui-shadow-pane-west);
   }
 
   .left-collapsed .navigation-pane,

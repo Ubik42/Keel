@@ -4777,7 +4777,7 @@ export async function generateAudioArtifacts(this: LibraryService, input: { libr
         kind: 'video_poster',
         width: AUDIO_WAVEFORM_VIEWER_WIDTH,
         height: AUDIO_WAVEFORM_VIEWER_HEIGHT,
-        // Viewer shell paints theme --pane; flatten to near-black so fill
+        // Viewer shell paints theme --ui-pane; flatten to near-black so fill
         // stretch does not flash a light letterbox fringe.
         flattenBackground: { r: 0x1a, g: 0x1c, b: 0x1f },
       },

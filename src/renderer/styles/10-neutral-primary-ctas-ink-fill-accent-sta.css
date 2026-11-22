@@ -47,7 +47,7 @@
 
 .app-shell.app-shell {
   /* Structure: tighter shell, flatter, clearer ladder */
-  --island-shadow: none;
+  --ui-island-shadow: none;
 
   /* Stronger surface ladder: deep backdrop → opaque sides → bright canvas */
   --island-surface-soft: color-mix(in srgb, var(--ui-surface-raised) 90%, var(--ui-content-primary));
@@ -65,7 +65,7 @@
 }
 
 :root[data-theme="dark"] .app-shell.app-shell {
-  --island-shadow: none;
+  --ui-island-shadow: none;
 }
 
 /* Flat islands: hairline only, no drop shadow */
@@ -155,8 +155,8 @@
 /* Unified dense toolstrip: title + filters on ONE row (bold a28) */
 .app-shell.app-shell .workspace-toolstrip {
   min-height: 30px;
-  background: var(--island-toolstrip-bg);
-  border-bottom: var(--island-hairline-w) solid var(--island-hairline);
+  background: var(--ui-island-toolstrip-bg);
+  border-bottom: var(--island-hairline-w) solid var(--ui-island-hairline);
   box-shadow: none;
 }
 .app-shell.app-shell .workspace-toolstrip .workspace-bar {
@@ -222,7 +222,7 @@
 .app-shell.app-shell .dimension-filter-btn[aria-pressed="true"]:not(.is-active) {
   background: var(--island-segment-pill);
   color: var(--ui-content-primary);
-  box-shadow: inset 0 0 0 1px var(--island-hairline);
+  box-shadow: inset 0 0 0 1px var(--ui-island-hairline);
 }
 .app-shell.app-shell .dimension-filter-btn[aria-pressed="true"]:not(.is-active) .icon {
   color: var(--ui-content-primary);
@@ -232,8 +232,8 @@
 
 /* Flat cards */
 .app-shell.app-shell .asset-card {
-  border-radius: var(--island-card-radius);
-  border: var(--island-hairline-w) solid var(--island-hairline);
+  border-radius: var(--ui-island-card-radius);
+  border: var(--island-hairline-w) solid var(--ui-island-hairline);
   box-shadow: none;
   background: var(--island-canvas);
 }
@@ -244,6 +244,6 @@
 .app-shell.app-shell .asset-card .asset-preview,
 .app-shell.app-shell .asset-card .asset-preview .asset-card-media,
 .app-shell.app-shell .asset-card .asset-preview .asset-thumbnail {
-  border-radius: calc(var(--island-card-radius) - 1px) calc(var(--island-card-radius) - 1px) 0 0;
+  border-radius: calc(var(--ui-island-card-radius) - 1px) calc(var(--ui-island-card-radius) - 1px) 0 0;
 }
 

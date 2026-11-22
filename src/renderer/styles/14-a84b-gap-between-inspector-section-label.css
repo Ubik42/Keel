@@ -20,7 +20,7 @@
 }
 
 /* ==== a86: asset card drop shadow (Elevation shadows) ======================
-   Scales with --elev-size / --elev-intensity; none at data-elevation="0".
+   Scales with --ui-elev-size / --ui-elev-intensity; none at data-elevation="0".
    Smaller than the island shadow. Many later blocks reset card box-shadow to
    none (incl. selected / selected:hover at 0,7,0 specificity), so the
    :is(...) arm lifts these rules above all of them. box-shadow follows the
@@ -30,25 +30,25 @@
    Hover "lifts" by deepening the shadow (no transform: keeps virtualized
    layout / marquee hit-testing stable). */
 .app-shell.app-shell {
-  --island-radius: calc(16px * var(--ui-radius-scale, 1));
-  --island-card-radius: calc(10px * var(--ui-radius-scale, 1));
-  --island-group-gap: 12px;
+  --ui-island-radius: calc(16px * var(--ui-radius-scale, 1));
+  --ui-island-card-radius: calc(10px * var(--ui-radius-scale, 1));
+  --ui-island-group-gap: 12px;
   --island-accent-loud: var(--ui-action-accent);
   --island-segment-pill-shadow: none;
   --island-side: var(--ui-surface-pane);
   --island-hairline-w: 0.5px;
   --island-outer-gap: 3px;
-  --island-gap: 6px;
+  --ui-island-gap: 6px;
   --card-shadow:
-    0 calc(0.5px * var(--elev-size)) calc(1.5px * var(--elev-size))
-      rgb(0 0 0 / calc(0.07 * var(--elev-intensity))),
-    0 calc(2px * var(--elev-size)) calc(5px * var(--elev-size))
-      rgb(0 0 0 / calc(0.09 * var(--elev-intensity)));
+    0 calc(0.5px * var(--ui-elev-size)) calc(1.5px * var(--ui-elev-size))
+      rgb(0 0 0 / calc(0.07 * var(--ui-elev-intensity))),
+    0 calc(2px * var(--ui-elev-size)) calc(5px * var(--ui-elev-size))
+      rgb(0 0 0 / calc(0.09 * var(--ui-elev-intensity)));
   --card-shadow-hover:
-    0 calc(1px * var(--elev-size)) calc(2px * var(--elev-size))
-      rgb(0 0 0 / calc(0.09 * var(--elev-intensity))),
-    0 calc(3px * var(--elev-size)) calc(8px * var(--elev-size))
-      rgb(0 0 0 / calc(0.14 * var(--elev-intensity)));
+    0 calc(1px * var(--ui-elev-size)) calc(2px * var(--ui-elev-size))
+      rgb(0 0 0 / calc(0.09 * var(--ui-elev-intensity))),
+    0 calc(3px * var(--ui-elev-size)) calc(8px * var(--ui-elev-size))
+      rgb(0 0 0 / calc(0.14 * var(--ui-elev-intensity)));
 }
 :root[data-theme="dark"] .app-shell.app-shell {
   --island-surface-soft: color-mix(in srgb, var(--ui-surface-raised) 88%, white);
@@ -61,23 +61,23 @@
   --island-segment-pill: color-mix(in srgb, var(--ui-surface-raised) 92%, white);
   --island-accent-soft: var(--ui-content-secondary);
   --island-canvas: color-mix(in srgb, var(--ui-surface-raised) 55%, var(--ui-surface-pane));
-  --island-toolstrip-bg: color-mix(in srgb, var(--ui-surface-pane) 75%, var(--island-canvas));
-  --island-tab-fill: var(--island-toolstrip-bg);
+  --ui-island-toolstrip-bg: color-mix(in srgb, var(--ui-surface-pane) 75%, var(--island-canvas));
+  --ui-island-tab-fill: var(--ui-island-toolstrip-bg);
   --island-border: color-mix(in srgb, white 6%, transparent);
-  --island-hairline: color-mix(in srgb, white 4%, transparent);
+  --ui-island-hairline: color-mix(in srgb, white 4%, transparent);
   --island-tab-stroke: color-mix(in srgb, var(--island-border) 45%, var(--island-backdrop));
   --island-backdrop: color-mix(in oklab, var(--ui-surface-pane) 83%, black);
   background-color: var(--island-backdrop);
   --card-shadow:
-    0 calc(0.5px * var(--elev-size)) calc(1.5px * var(--elev-size))
-      rgb(0 0 0 / calc(0.25 * var(--elev-intensity))),
-    0 calc(2px * var(--elev-size)) calc(5px * var(--elev-size))
-      rgb(0 0 0 / calc(0.30 * var(--elev-intensity)));
+    0 calc(0.5px * var(--ui-elev-size)) calc(1.5px * var(--ui-elev-size))
+      rgb(0 0 0 / calc(0.25 * var(--ui-elev-intensity))),
+    0 calc(2px * var(--ui-elev-size)) calc(5px * var(--ui-elev-size))
+      rgb(0 0 0 / calc(0.30 * var(--ui-elev-intensity)));
   --card-shadow-hover:
-    0 calc(1px * var(--elev-size)) calc(2px * var(--elev-size))
-      rgb(0 0 0 / calc(0.30 * var(--elev-intensity))),
-    0 calc(3px * var(--elev-size)) calc(8px * var(--elev-size))
-      rgb(0 0 0 / calc(0.42 * var(--elev-intensity)));
+    0 calc(1px * var(--ui-elev-size)) calc(2px * var(--ui-elev-size))
+      rgb(0 0 0 / calc(0.30 * var(--ui-elev-intensity))),
+    0 calc(3px * var(--ui-elev-size)) calc(8px * var(--ui-elev-size))
+      rgb(0 0 0 / calc(0.42 * var(--ui-elev-intensity)));
 }
 :root:not([data-elevation="0"]) .app-shell.app-shell .asset-card:is(.is-selected.is-selected:hover:focus-visible, *) .asset-preview {
   box-shadow: var(--card-shadow);

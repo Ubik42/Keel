@@ -31,7 +31,7 @@
 
 .search-control-wrap:hover {
   border-color: var(--ui-border-subtle);
-  background: color-mix(in srgb, var(--canvas) 70%, var(--ui-surface-raised));
+  background: color-mix(in srgb, var(--ui-canvas) 70%, var(--ui-surface-raised));
   box-shadow: none;
 }
 

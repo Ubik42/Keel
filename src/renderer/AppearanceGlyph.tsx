@@ -10,7 +10,7 @@ export const CHROME_APPEARANCE_ICONS = new Set<string>([
 ]);
 
 export function appearanceColorVar(colorId: string | null | undefined): string | undefined {
-  return colorId ? `var(--appearance-color-${colorId})` : undefined;
+  return colorId ? `var(--ui-appearance-color-${colorId})` : undefined;
 }
 
 export function AppearanceGlyph({

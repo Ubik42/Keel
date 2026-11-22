@@ -7,7 +7,7 @@
      Noto Sans SC render U+2026 as a full-width, vertically-centered glyph,
      which made every truncation ellipsis appear mid-height. CJK characters
      still fall through to the CJK entries below. */
-  --font-ui:
+  --ui-font-ui:
     -apple-system,
     "Segoe UI",
     "Helvetica Neue",
@@ -18,43 +18,43 @@
     sans-serif;
   /* Color emoji must not fall through to the UI CJK stack: YaHei / HarmonyOS
      intercept emoji codepoints as monochrome glyphs on Windows. */
-  font-family: var(--font-ui);
+  font-family: var(--ui-font-ui);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   font-optical-sizing: auto;
   /* Legacy aliases intentionally read the UI foundation tokens so migrated
      profiles retheme old surfaces while they are being incrementally moved. */
-  --canvas: var(--ui-surface-canvas, #16171a);
-  --pane: var(--ui-surface-pane, #1c1d21);
+  --ui-canvas: var(--ui-surface-canvas, #16171a);
+  --ui-pane: var(--ui-surface-pane, #1c1d21);
   /* REQ-THEME-004 / Serpent-gnus: only --accent is a leaf color. soft / ring /
      dark / soft-fg must derive via color-mix so user accent prefs retheme every
      accent surface. Continuous controls (sliders) stay on --secondary. */
   --accent: #3b82f6;
-  --accent-dark: color-mix(in srgb, var(--accent) 78%, black);
+  --ui-accent-dark: color-mix(in srgb, var(--accent) 78%, black);
   /* Surface state tokens: quiet, content-first hover/active shades shared by
      nav rows, tool buttons, cards and menus. */
-  --accent-ring: color-mix(in srgb, var(--ui-action-accent, var(--accent)) 55%, transparent);
+  --ui-accent-ring: color-mix(in srgb, var(--ui-action-accent, var(--accent)) 55%, transparent);
   /* a70: scores = full theme accent (vivid); never wash with tertiary */
-  --rating-star: var(--accent);
-  --appearance-color-blue: #6ea8dc;
-  --appearance-color-indigo: #8b9be8;
-  --appearance-color-purple: #b794e8;
-  --appearance-color-pink: #e89bb8;
-  --appearance-color-orange: #e8a06a;
-  --appearance-color-green: #7dbe7a;
-  --appearance-color-teal: #5cb8b0;
-  --appearance-color-red: #e07a7a;
+  --ui-rating-star: var(--accent);
+  --ui-appearance-color-blue: #6ea8dc;
+  --ui-appearance-color-indigo: #8b9be8;
+  --ui-appearance-color-purple: #b794e8;
+  --ui-appearance-color-pink: #e89bb8;
+  --ui-appearance-color-orange: #e8a06a;
+  --ui-appearance-color-green: #7dbe7a;
+  --ui-appearance-color-teal: #5cb8b0;
+  --ui-appearance-color-red: #e07a7a;
   /* Semantic status / ink tokens for themeable surfaces (REQ-THEME-002). */
   /* Serpent-znex: Win11-like caption close hover (kept as tokens for REQ-THEME-002). */
   /* Serpent-jfi: exclude-filter chips use a muted red in dark theme — clearly
      red but softer than --danger; avoid washed-out pink (#c48990 was too pale). */
-  --filter-exclude-soft: color-mix(in srgb, var(--ui-status-danger) 22%, var(--canvas));
-  --filter-exclude-border: color-mix(in srgb, var(--ui-status-danger) 55%, var(--ui-border-divider));
-  --filter-exclude-fg: color-mix(in srgb, var(--ui-status-danger) 78%, var(--ui-content-primary));
-  --filter-exclude-active-bg: color-mix(in srgb, var(--ui-status-danger) 28%, var(--canvas));
+  --ui-filter-exclude-soft: color-mix(in srgb, var(--ui-status-danger) 22%, var(--ui-canvas));
+  --ui-filter-exclude-border: color-mix(in srgb, var(--ui-status-danger) 55%, var(--ui-border-divider));
+  --ui-filter-exclude-fg: color-mix(in srgb, var(--ui-status-danger) 78%, var(--ui-content-primary));
+  --ui-filter-exclude-active-bg: color-mix(in srgb, var(--ui-status-danger) 28%, var(--ui-canvas));
   /* Viewer stage follows theme (not always near-black --ink). */
   /* PDF page paper stays white in both themes (document content, not chrome). */
-  --viewer-document-page: #fff;
+  --ui-viewer-document-page: #fff;
   /* Viewer arrows contrast with the picture, not the application theme. */
   /* Serpent-627: viewer bottom chrome (zoom bar / video transport /
      fullscreen chip) is semi-transparent rather than near-opaque —
@@ -63,32 +63,32 @@
      existed (their borders silently rendered as none). */
   /* Elevation multipliers (Serpent-zcyg): levels 1–3 write these on :root.
      Level 0 omits elev box-shadows entirely via :not([data-elevation="0"]). */
-  /* Shell hierarchy: chrome / panes / cards sit above --canvas.
+  /* Shell hierarchy: chrome / panes / cards sit above --ui-canvas.
      Toolbar is full-bleed; its shadow lands on side panes AND the browse
      column top — keep it softer/shorter than pane/card elev so the canvas
      header stays quiet. */
-  --shadow-toolbar:
-    0 calc(1px * var(--elev-size)) calc(3px * var(--elev-size))
-    rgb(0 0 0 / calc(0.04 * var(--elev-intensity)));
-  --shadow-pane-east:
-    calc(2px * var(--elev-size)) 0 calc(8px * var(--elev-size))
-    rgb(0 0 0 / calc(0.12 * var(--elev-intensity)));
-  --shadow-pane-west:
-    calc(-2px * var(--elev-size)) 0 calc(8px * var(--elev-size))
-    rgb(0 0 0 / calc(0.12 * var(--elev-intensity)));
-  --shadow-card:
-    0 calc(1px * var(--elev-size)) calc(2px * var(--elev-size))
-    rgb(0 0 0 / calc(0.12 * var(--elev-intensity)));
-  --shadow-workspace-tab:
-    0 0 calc(4px * var(--elev-size))
-    rgb(0 0 0 / calc(0.12 * var(--elev-intensity)));
+  --ui-shadow-toolbar:
+    0 calc(1px * var(--ui-elev-size)) calc(3px * var(--ui-elev-size))
+    rgb(0 0 0 / calc(0.04 * var(--ui-elev-intensity)));
+  --ui-shadow-pane-east:
+    calc(2px * var(--ui-elev-size)) 0 calc(8px * var(--ui-elev-size))
+    rgb(0 0 0 / calc(0.12 * var(--ui-elev-intensity)));
+  --ui-shadow-pane-west:
+    calc(-2px * var(--ui-elev-size)) 0 calc(8px * var(--ui-elev-size))
+    rgb(0 0 0 / calc(0.12 * var(--ui-elev-intensity)));
+  --ui-shadow-card:
+    0 calc(1px * var(--ui-elev-size)) calc(2px * var(--ui-elev-size))
+    rgb(0 0 0 / calc(0.12 * var(--ui-elev-intensity)));
+  --ui-shadow-workspace-tab:
+    0 0 calc(4px * var(--ui-elev-size))
+    rgb(0 0 0 / calc(0.12 * var(--ui-elev-intensity)));
   /* Floating overlays stay fixed (pre-elevation family; Serpent-4ojz). */
-  --shadow-menu: 0 6px 18px rgb(0 0 0 / 22%), 0 1px 3px rgb(0 0 0 / 10%);
+  --ui-shadow-menu: 0 6px 18px rgb(0 0 0 / 22%), 0 1px 3px rgb(0 0 0 / 10%);
   /* Shared menu family: context menus, the Windows main menu, and the library
      switcher must read as one interaction system in both themes. */
-  --shadow-elevated: 0 24px 70px rgb(0 0 0 / 42%);
-  --shadow-panel: 0 16px 40px rgb(0 0 0 / 42%);
-  --shadow-toast: 0 12px 32px rgb(0 0 0 / 28%);
+  --ui-shadow-elevated: 0 24px 70px rgb(0 0 0 / 42%);
+  --ui-shadow-panel: 0 16px 40px rgb(0 0 0 / 42%);
+  --ui-shadow-toast: 0 12px 32px rgb(0 0 0 / 28%);
   /* REQ-SHELL-002: shell chrome heights — existing literals promoted to
      tokens so toolbar / workspace bar / controls / chips share one rhythm. */
   /* Matches .toolbar-nav-cluster .library-switcher max-width. The collapsed
@@ -99,7 +99,7 @@
    @font-face weight ranges + ascent/descent overrides so intermediate UI
    weights (520–650) map onto static faces without browser-synthesized bold. */
 :root[data-platform="windows"] {
-  --font-ui:
+  --ui-font-ui:
     "HarmonyOS Sans SC",
     "Segoe UI Variable",
     "Segoe UI",
@@ -108,7 +108,7 @@
     "Noto Sans SC Variable",
     Arial,
     sans-serif;
-  --font-ui-unified: var(--font-ui);
+  --ui-font-ui-unified: var(--ui-font-ui);
   text-rendering: auto;
 }
 
@@ -128,7 +128,7 @@
 
 [data-theme="light"] .toast {
   background: var(--ui-surface-raised);
-  box-shadow: var(--shadow-toast);
+  box-shadow: var(--ui-shadow-toast);
   color: var(--ui-content-primary);
 }
 [data-theme="light"] .toast > :first-child,
@@ -150,7 +150,7 @@
   color: var(--ui-status-warning-content);
 }
 [data-theme="light"] .context-menu {
-  box-shadow: var(--shadow-menu);
+  box-shadow: var(--ui-shadow-menu);
 }
 
 html,
@@ -181,7 +181,7 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 summary:focus-visible {
-  outline: 2px solid var(--accent-ring);
+  outline: 2px solid var(--ui-accent-ring);
   outline-offset: 1px;
 }
 
@@ -302,14 +302,14 @@ summary:focus-visible {
       --inspector-width,
       268px
     );
-  grid-template-rows: var(--shell-toolbar-height) minmax(0, 1fr);
+  grid-template-rows: var(--ui-shell-toolbar-height) minmax(0, 1fr);
   width: 100%;
   height: 100%;
   min-width: 760px;
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  background-color: var(--ui-background-color, var(--canvas));
+  background-color: var(--ui-background-color, var(--ui-canvas));
   background-image: var(--ui-backdrop-image, none);
   background-position: var(--ui-backdrop-position, center);
   background-repeat: var(--ui-backdrop-repeat, no-repeat);
@@ -354,7 +354,7 @@ summary:focus-visible {
    tracks the app-shell toolbar row (grid-template-rows above). */
 .panel-resizer {
   position: fixed;
-  top: var(--shell-toolbar-height);
+  top: var(--ui-shell-toolbar-height);
   bottom: 0;
   z-index: var(--ui-layer-shell);
   width: 6px;
@@ -393,7 +393,7 @@ summary:focus-visible {
   grid-column: 1 / -1;
   grid-template-columns: subgrid;
   align-items: center;
-  height: var(--shell-toolbar-height);
+  height: var(--ui-shell-toolbar-height);
   min-width: 0;
   -webkit-app-region: drag;
   -webkit-user-select: none;
@@ -403,7 +403,7 @@ summary:focus-visible {
 
 /* Serpent-zcyg: elev shadows only when level > 0 (skip paint at 0). */
 :root:not([data-elevation="0"]) .app-toolbar {
-  box-shadow: var(--shadow-toolbar);
+  box-shadow: var(--ui-shadow-toolbar);
 }
 
 .toolbar-cluster,
@@ -458,7 +458,7 @@ body.platform-darwin .toolbar-nav-cluster {
   flex: 0 0 auto;
   align-self: center;
   align-items: center;
-  height: var(--shell-control-height);
+  height: var(--ui-shell-control-height);
   margin-left: auto;
   -webkit-app-region: no-drag;
 }
@@ -491,7 +491,7 @@ body.platform-darwin .toolbar-nav-cluster {
 
 .app-shell.left-collapsed .toolbar-workspace-cluster {
   padding-left: calc(
-    10px + var(--shell-control-height) + 9px + var(--shell-library-switcher-width, 150px) + 9px
+    10px + var(--ui-shell-control-height) + 9px + var(--ui-shell-library-switcher-width, 150px) + 9px
   );
 }
 
@@ -503,7 +503,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-nav-cluster {
 
 body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   padding-left: calc(
-    78px + var(--shell-control-height) + 9px + var(--shell-library-switcher-width, 150px) + 9px
+    78px + var(--ui-shell-control-height) + 9px + var(--ui-shell-library-switcher-width, 150px) + 9px
   );
 }
 
@@ -512,7 +512,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   z-index: 1;
   top: 0;
   right: 10px;
-  width: var(--shell-control-height);
+  width: var(--ui-shell-control-height);
   min-width: 0;
   padding: 0;
   gap: 0;
@@ -521,7 +521,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 
 /* The search field ends before the pinned Inspector control, not beneath it. */
 .app-shell.right-collapsed .toolbar-workspace-cluster {
-  padding-right: calc(10px + var(--shell-control-height) + 6px);
+  padding-right: calc(10px + var(--ui-shell-control-height) + 6px);
 }
 
 /* Windows caption buttons sit at the far right. Keep the Inspector toggle
@@ -535,7 +535,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   padding-right: calc(
     3 * var(--windows-caption-width, 46px) +
     14px +
-    var(--shell-control-height) +
+    var(--ui-shell-control-height) +
     6px
   );
 }
@@ -558,7 +558,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   right: 0;
   z-index: var(--ui-layer-window-caption);
   display: flex;
-  height: var(--shell-toolbar-height);
+  height: var(--ui-shell-toolbar-height);
   -webkit-app-region: no-drag;
 }
 
@@ -586,13 +586,13 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 }
 
 .windows-caption-button-close:hover {
-  background: var(--windows-caption-close-hover);
-  color: var(--windows-caption-close-hover-fg);
+  background: var(--ui-windows-caption-close-hover);
+  color: var(--ui-windows-caption-close-hover-fg);
 }
 
 .windows-caption-button-close:active {
-  background: color-mix(in srgb, var(--windows-caption-close-hover) 82%, white);
-  color: var(--windows-caption-close-hover-fg);
+  background: color-mix(in srgb, var(--ui-windows-caption-close-hover) 82%, white);
+  color: var(--ui-windows-caption-close-hover-fg);
 }
 
 .windows-caption-glyph {
@@ -622,7 +622,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 }
 .discovery-filters > summary {
   display: inline-flex;
-  height: var(--shell-control-height);
+  height: var(--ui-shell-control-height);
   align-items: center;
   gap: 5px;
   padding: 0 10px;
@@ -669,7 +669,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   flex-wrap: wrap;
   align-items: center;
   gap: 4px;
-  min-height: var(--shell-control-height);
+  min-height: var(--ui-shell-control-height);
 }
 
 .dimension-filter-dim {
@@ -680,7 +680,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 
 .dimension-filter-btn {
   display: inline-flex;
-  height: var(--shell-control-height);
+  height: var(--ui-shell-control-height);
   align-items: center;
   gap: 5px;
   padding: 0 10px;
@@ -734,8 +734,8 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   padding: 12px;
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(10px * var(--ui-radius-scale, 1));
-  background: var(--pane);
-  box-shadow: var(--shadow-panel);
+  background: var(--ui-pane);
+  box-shadow: var(--ui-shadow-panel);
   isolation: isolate;
 }
 
@@ -824,7 +824,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   flex-wrap: wrap;
   align-items: center;
   gap: 4px;
-  min-height: var(--shell-chip-height);
+  min-height: var(--ui-shell-chip-height);
 }
 
 .dimension-filter-dim-sep {
@@ -912,13 +912,13 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 .dimension-active-chip {
   display: inline-flex;
   max-width: 100%;
-  height: var(--shell-chip-height);
+  height: var(--ui-shell-chip-height);
   align-items: center;
   gap: 6px;
   padding: 0 8px;
   border: 1px solid var(--ui-border-divider);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--canvas) 80%, var(--pane));
+  background: color-mix(in srgb, var(--ui-canvas) 80%, var(--ui-pane));
   color: var(--ui-content-primary);
   font-size: calc(11px * var(--ui-font-scale));
   line-height: 1;
@@ -1047,8 +1047,8 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 
 .tool-button {
   display: inline-grid;
-  width: var(--shell-control-height);
-  height: var(--shell-control-height);
+  width: var(--ui-shell-control-height);
+  height: var(--ui-shell-control-height);
   align-self: center;
   padding: 0;
   place-items: center;
@@ -1088,7 +1088,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   height: 6px;
   border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 0 1px var(--pane);
+  box-shadow: 0 0 0 1px var(--ui-pane);
   pointer-events: none;
 }
 
@@ -1106,8 +1106,8 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 /* Toolbar placement (beside the panel toggle): a bounded width keeps the tabs
    from being squeezed, and the whole row is clickable. */
 .toolbar-nav-cluster .library-switcher {
-  flex: 0 1 var(--shell-library-switcher-width);
-  max-width: var(--shell-library-switcher-width);
+  flex: 0 1 var(--ui-shell-library-switcher-width);
+  max-width: var(--ui-shell-library-switcher-width);
 }
 
 .toolbar-nav-cluster .library-switcher-trigger {
@@ -1125,7 +1125,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   align-items: center;
   min-width: 0;
   max-width: 220px;
-  height: var(--shell-control-height);
+  height: var(--ui-shell-control-height);
   overflow: visible;
 }
 
@@ -1136,7 +1136,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   min-width: 0;
   align-items: center;
   gap: 4px;
-  height: var(--shell-control-height);
+  height: var(--ui-shell-control-height);
   padding: 0 7px 0 9px;
   border: 1px solid transparent;
   border-radius: calc(6px * var(--ui-radius-scale, 1));
@@ -1203,10 +1203,10 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   display: grid;
   min-width: 180px;
   padding: 5px;
-  border: 1px solid var(--menu-surface-border);
-  border-radius: var(--menu-surface-radius);
+  border: 1px solid var(--ui-menu-surface-border);
+  border-radius: var(--ui-menu-surface-radius);
   background: color-mix(in srgb, var(--ui-surface-raised) 92%, transparent);
-  box-shadow: var(--menu-surface-shadow);
+  box-shadow: var(--ui-menu-surface-shadow);
   backdrop-filter: blur(14px) saturate(120%);
 }
 
@@ -1216,15 +1216,15 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   width: 100%;
   min-height: 30px;
   gap: 8px;
-  padding: var(--menu-item-padding);
+  padding: var(--ui-menu-item-padding);
   border: 0;
   border-radius: calc(6px * var(--ui-radius-scale, 1));
   background: transparent;
   color: var(--ui-content-primary);
   font-family: inherit;
-  font-size: var(--menu-item-font-size);
+  font-size: var(--ui-menu-item-font-size);
   font-weight: 450;
-  line-height: var(--menu-item-line-height);
+  line-height: var(--ui-menu-item-line-height);
   text-align: left;
   white-space: nowrap;
   cursor: default;
@@ -1252,34 +1252,34 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 
 .library-switcher-menu.is-keyboard-navigation .library-switcher-item:focus-visible:not(:disabled),
 .library-switcher-item:focus-visible:not(:disabled) {
-  background: var(--menu-item-focus-background);
+  background: var(--ui-menu-item-focus-background);
   box-shadow: inset 1px 0 var(--ui-content-secondary);
   outline: none;
 }
 
 .library-switcher-item:disabled {
   color: var(--ui-content-tertiary);
-  opacity: var(--menu-item-disabled-opacity);
+  opacity: var(--ui-menu-item-disabled-opacity);
   cursor: not-allowed;
 }
 
 .library-switcher-item.is-danger {
-  color: var(--menu-danger-color);
+  color: var(--ui-menu-danger-color);
 }
 
 .library-switcher-item.is-danger:hover:not(:disabled),
 .library-switcher-menu.is-keyboard-navigation
   .library-switcher-item.is-danger:focus-visible:not(:disabled) {
-  background: var(--menu-danger-hover-background);
-  color: var(--menu-danger-color);
+  background: var(--ui-menu-danger-hover-background);
+  color: var(--ui-menu-danger-color);
 }
 
 /* The normal library-menu hover selector includes the menu state class, so
    repeat that scope here to keep destructive text red in pointer navigation. */
 .library-switcher-menu:not(.is-keyboard-navigation)
   .library-switcher-item.is-danger:hover:not(:disabled) {
-  background: var(--menu-danger-hover-background);
-  color: var(--menu-danger-color);
+  background: var(--ui-menu-danger-hover-background);
+  color: var(--ui-menu-danger-color);
 }
 
 .library-switcher-recent-row {
@@ -1348,7 +1348,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 .library-switcher-item.is-danger > .icon,
 .library-switcher-item.is-danger:hover:not(:disabled) > .icon,
 .library-switcher-item.is-danger:focus-visible:not(:disabled) > .icon {
-  color: var(--menu-danger-color);
+  color: var(--ui-menu-danger-color);
 }
 
 .library-switcher-item:disabled > .icon {
@@ -1382,7 +1382,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   flex: 0 0 auto;
   align-self: center;
   align-items: center;
-  height: var(--shell-control-height);
+  height: var(--ui-shell-control-height);
   gap: 2px;
 }
 
@@ -1390,8 +1390,8 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
    the browse toolbar cluster. */
 .scope-history-button {
   display: grid;
-  width: var(--shell-control-height);
-  height: var(--shell-control-height);
+  width: var(--ui-shell-control-height);
+  height: var(--ui-shell-control-height);
   padding: 0;
   place-items: center;
   border: 1px solid transparent;
@@ -1437,14 +1437,14 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 .scope-crumb-label {
   overflow: hidden;
   max-width: 160px;
-  height: var(--shell-control-height);
+  height: var(--ui-shell-control-height);
   padding: 0 4px;
   border: 0;
   border-radius: calc(3px * var(--ui-radius-scale, 1));
   background: transparent;
   color: var(--ui-content-secondary);
   font-size: calc(11px * var(--ui-font-scale));
-  line-height: var(--shell-control-height);
+  line-height: var(--ui-shell-control-height);
   text-overflow: ellipsis;
   white-space: nowrap;
   vertical-align: middle;
@@ -1475,7 +1475,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   flex: 0 1 360px;
   width: min(360px, 100%);
   min-width: 200px;
-  height: var(--shell-control-height);
+  height: var(--ui-shell-control-height);
   align-self: center;
   align-items: center;
   border: 1px solid var(--ui-border-divider);
@@ -1605,7 +1605,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   background: color-mix(in srgb, var(--ui-surface-raised) 54%, transparent);
   color: var(--ui-content-tertiary);
   cursor: pointer;
-  font-family: var(--font-ui);
+  font-family: var(--ui-font-ui);
   font-size: calc(12px * var(--ui-font-scale));
   font-weight: 650;
   line-height: 1;
@@ -1643,14 +1643,14 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   flex-wrap: wrap;
   align-content: flex-start;
   gap: 6px;
-  max-height: calc(4 * var(--shell-chip-height) + 18px);
+  max-height: calc(4 * var(--ui-shell-chip-height) + 18px);
   overflow: hidden;
 }
 
 .search-history-item {
   display: inline-flex;
   max-width: 100%;
-  height: var(--shell-chip-height);
+  height: var(--ui-shell-chip-height);
   align-items: center;
   overflow: hidden;
   padding: 0 8px;
@@ -1761,14 +1761,14 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 }
 
 .dimension-filter-btn.is-excluding:not(:disabled) {
-  border-color: var(--filter-exclude-border);
-  background: var(--filter-exclude-soft);
-  color: var(--filter-exclude-fg);
+  border-color: var(--ui-filter-exclude-border);
+  background: var(--ui-filter-exclude-soft);
+  color: var(--ui-filter-exclude-fg);
 }
 
 .dimension-filter-btn.is-excluding.is-active:not(:disabled) {
   border-color: var(--ui-status-danger);
-  background: var(--filter-exclude-active-bg);
+  background: var(--ui-filter-exclude-active-bg);
   color: var(--ui-status-danger);
 }
 
@@ -1796,7 +1796,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
   transform: none;
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--canvas) 80%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ui-canvas) 80%, transparent);
 }
 
 .dimension-color-swatch:disabled {
@@ -1905,7 +1905,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   position: absolute;
   width: 12px;
   height: 12px;
-  border: 2px solid var(--canvas);
+  border: 2px solid var(--ui-canvas);
   border-radius: 999px;
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--ui-content-inverse) 40%, transparent);
   transform: translate(-50%, -50%);
@@ -2009,17 +2009,17 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   overflow: visible;
   background: color-mix(
     in srgb,
-    var(--pane) var(--ui-background-surface-opacity, 100%),
+    var(--ui-pane) var(--ui-background-surface-opacity, 100%),
     transparent
   );
 }
 
 :root:not([data-elevation="0"]) .navigation-pane {
-  box-shadow: var(--shadow-pane-east);
+  box-shadow: var(--ui-shadow-pane-east);
 }
 
 :root:not([data-elevation="0"]) .inspector-pane {
-  box-shadow: var(--shadow-pane-west);
+  box-shadow: var(--ui-shadow-pane-west);
 }
 
 .left-collapsed .navigation-pane,
@@ -2161,7 +2161,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 .nav-row {
   display: grid;
   width: 100%;
-  height: var(--shell-control-height);
+  height: var(--ui-shell-control-height);
   min-width: 0;
   /* Navigation rows expose one trailing count: the number of assets in the
      current folder or collection. Child-collection totals belong to the
@@ -2197,7 +2197,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 .nav-entity-glyph-emoji {
   line-height: 1;
   font-size: 13px;
-  font-family: var(--font-emoji);
+  font-family: var(--ui-font-emoji);
 }
 
 .nav-entity-glyph-badge {
@@ -2209,7 +2209,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   height: 8px;
   place-items: center;
   border-radius: 50%;
-  background: var(--pane);
+  background: var(--ui-pane);
   color: var(--ui-content-secondary);
 }
 
@@ -2348,11 +2348,11 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 .filter-tag-expression-input {
   display: flex;
   align-items: center;
-  height: var(--shell-control-height);
+  height: var(--ui-shell-control-height);
   padding-right: 4px;
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
-  background: var(--canvas);
+  background: var(--ui-canvas);
 }
 
 .filter-tag-expression-input:focus-within {
@@ -2368,7 +2368,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   border: 0;
   border-radius: inherit;
   background: transparent;
-  line-height: calc(var(--shell-control-height) - 2px);
+  line-height: calc(var(--ui-shell-control-height) - 2px);
   box-shadow: none;
   resize: none;
 }
@@ -2385,7 +2385,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 }
 
 .filter-tag-picker > .text-field {
-  height: var(--shell-control-height);
+  height: var(--ui-shell-control-height);
 }
 
 .filter-tag-chips {
@@ -2397,7 +2397,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 
 .filter-tag-chip {
   display: inline-flex;
-  height: var(--shell-chip-height);
+  height: var(--ui-shell-chip-height);
   align-items: center;
   gap: 4px;
   padding: 0 4px 0 8px;
@@ -2420,14 +2420,14 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 }
 
 .filter-tag-chip.is-excluding {
-  border-color: var(--filter-exclude-border);
-  background: var(--filter-exclude-soft);
-  color: var(--filter-exclude-fg);
+  border-color: var(--ui-filter-exclude-border);
+  background: var(--ui-filter-exclude-soft);
+  color: var(--ui-filter-exclude-fg);
 }
 
 .filter-tag-chip.is-excluding button,
 .filter-tag-chip.is-excluding button:hover {
-  color: var(--filter-exclude-fg);
+  color: var(--ui-filter-exclude-fg);
 }
 
 .filter-tag-chip button {
@@ -2472,7 +2472,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 }
 
 .filter-tag-recent-options {
-  max-height: calc(var(--shell-chip-height) * 2 + 8px);
+  max-height: calc(var(--ui-shell-chip-height) * 2 + 8px);
   overflow: hidden;
 }
 
@@ -2484,7 +2484,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 .filter-tag-all-scroll {
   min-height: 0;
   flex: 0 1 auto;
-  max-height: calc(var(--shell-chip-height) * 6 + 24px);
+  max-height: calc(var(--ui-shell-chip-height) * 6 + 24px);
   overflow-y: auto;
   padding-right: 4px;
   scrollbar-gutter: stable both-edges;
@@ -2521,7 +2521,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   padding: 3px 8px;
   border: 1px solid var(--ui-border-subtle);
   border-radius: 999px;
-  background: var(--pane);
+  background: var(--ui-pane);
   color: var(--ui-content-primary);
   font-size: calc(11px * var(--ui-font-scale));
   line-height: 1.3;
@@ -2602,7 +2602,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 
 .filter-preset-chip {
   display: inline-flex;
-  height: var(--shell-chip-height);
+  height: var(--ui-shell-chip-height);
   align-items: center;
   padding: 0 10px;
   border: 1px solid var(--ui-border-divider);
@@ -2644,15 +2644,15 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   position: relative;
   flex: 0 0 auto;
   align-self: center;
-  width: var(--shell-control-height);
-  height: var(--shell-control-height);
+  width: var(--ui-shell-control-height);
+  height: var(--ui-shell-control-height);
   overflow: visible;
 }
 
 .main-menu-trigger {
   display: grid;
-  width: var(--shell-control-height);
-  height: var(--shell-control-height);
+  width: var(--ui-shell-control-height);
+  height: var(--ui-shell-control-height);
   place-items: center;
   padding: 0;
   border: 1px solid transparent;
@@ -2676,10 +2676,10 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   display: block;
   overflow: visible;
   padding: 5px;
-  border: 1px solid var(--menu-surface-border);
-  border-radius: var(--menu-surface-radius);
+  border: 1px solid var(--ui-menu-surface-border);
+  border-radius: var(--ui-menu-surface-radius);
   background: color-mix(in srgb, var(--ui-surface-raised) 92%, transparent);
-  box-shadow: var(--menu-surface-shadow);
+  box-shadow: var(--ui-menu-surface-shadow);
   backdrop-filter: blur(14px) saturate(120%);
 }
 
@@ -2698,7 +2698,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   background: transparent;
   color: var(--ui-content-primary);
   font-family: inherit;
-  line-height: var(--menu-item-line-height);
+  line-height: var(--ui-menu-item-line-height);
   text-align: left;
   white-space: nowrap;
   cursor: default;
@@ -2727,7 +2727,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 .main-menu-section:disabled,
 .main-menu-section[aria-disabled="true"] {
   color: var(--ui-content-tertiary);
-  opacity: var(--menu-item-disabled-opacity);
+  opacity: var(--ui-menu-item-disabled-opacity);
   cursor: not-allowed;
 }
 
@@ -2761,10 +2761,10 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   max-width: min(360px, calc(100vw - 12px));
   align-content: start;
   padding: 5px;
-  border: 1px solid var(--menu-surface-border);
-  border-radius: var(--menu-surface-radius);
+  border: 1px solid var(--ui-menu-surface-border);
+  border-radius: var(--ui-menu-surface-radius);
   background: color-mix(in srgb, var(--ui-surface-raised) 92%, transparent);
-  box-shadow: var(--menu-surface-shadow);
+  box-shadow: var(--ui-menu-surface-shadow);
   backdrop-filter: blur(14px) saturate(120%);
 }
 
@@ -2792,18 +2792,18 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 .main-menu-item.is-disabled,
 .main-menu-item:disabled {
   color: var(--ui-content-tertiary);
-  opacity: var(--menu-item-disabled-opacity);
+  opacity: var(--ui-menu-item-disabled-opacity);
   cursor: not-allowed;
 }
 
 .main-menu-item.is-danger {
-  color: var(--menu-danger-color);
+  color: var(--ui-menu-danger-color);
 }
 
 .main-menu-item.is-danger:hover:not(:disabled),
 .main-menu-item.is-danger:focus-visible {
-  background: var(--menu-danger-hover-background);
-  color: var(--menu-danger-color);
+  background: var(--ui-menu-danger-hover-background);
+  color: var(--ui-menu-danger-color);
 }
 
 /* REQ-VIEW: hide browse workspace toolbar while the viewer is open. */
@@ -2830,7 +2830,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   flex-direction: column;
   background: color-mix(
     in srgb,
-    var(--canvas) var(--ui-background-surface-opacity, 100%),
+    var(--ui-canvas) var(--ui-background-surface-opacity, 100%),
     transparent
   );
   isolation: isolate;
@@ -2838,7 +2838,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 
 .workspace-bar {
   display: flex;
-  height: var(--shell-workspace-bar-height);
+  height: var(--ui-shell-workspace-bar-height);
   flex: 0 0 auto;
   align-items: center;
   justify-content: space-between;
@@ -2921,7 +2921,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   padding: 0 11px;
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
-  background: var(--pane);
+  background: var(--ui-pane);
   color: var(--ui-content-primary);
   font-size: calc(11px * var(--ui-font-scale));
   font-weight: 520;
@@ -3073,7 +3073,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   padding: 0 12px;
   border: 1px solid color-mix(in srgb, var(--plugin-job-status-color) 28%, var(--ui-border-divider));
   border-radius: calc(7px * var(--ui-radius-scale, 1));
-  background: var(--pane);
+  background: var(--ui-pane);
   color: var(--ui-content-primary);
   font-size: calc(11px * var(--ui-font-scale));
   font-weight: 560;
@@ -3142,7 +3142,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 /* Title label shares the control midline with tools / count badge. */
 .workspace-title > span:not(.item-count) {
   display: inline-flex;
-  height: var(--shell-control-height);
+  height: var(--ui-shell-control-height);
   align-items: center;
   line-height: 1.2;
 }
@@ -3182,7 +3182,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 .tiny-action.is-feature-hinting {
   background: var(--ui-action-accent-soft);
   color: var(--ui-content-accent);
-  box-shadow: inset 0 0 0 1px var(--accent-ring);
+  box-shadow: inset 0 0 0 1px var(--ui-accent-ring);
   animation: feature-hint-accent-pulse 2.2s ease-in-out infinite;
 }
 
@@ -3196,7 +3196,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   45%,
   55% {
     background: color-mix(in srgb, var(--accent) 26%, transparent);
-    box-shadow: inset 0 0 0 1px var(--accent-ring),
+    box-shadow: inset 0 0 0 1px var(--ui-accent-ring),
       0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
   }
 }
@@ -3212,7 +3212,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 /* Scope size reads as a quiet count pill beside the title. */
 .item-count {
   display: inline-flex;
-  height: var(--shell-chip-height);
+  height: var(--ui-shell-chip-height);
   align-items: center;
   padding: 0 8px;
   border-radius: 999px;
@@ -3270,7 +3270,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   border: 1px solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
   background: color-mix(in srgb, var(--ui-surface-raised) 92%, transparent);
-  box-shadow: var(--shadow-menu);
+  box-shadow: var(--ui-shadow-menu);
   backdrop-filter: blur(14px) saturate(120%);
 }
 
@@ -3426,7 +3426,7 @@ input[type="range"] {
   padding: 5px 12px;
   border: 1px solid var(--ui-border-subtle);
   border-radius: 999px;
-  background: var(--pane);
+  background: var(--ui-pane);
   color: var(--ui-content-secondary);
   font-size: calc(12px * var(--ui-font-scale));
   line-height: 1.5;
@@ -3625,7 +3625,7 @@ input[type="range"] {
 }
 
 .create-dialog-recent-forget:hover {
-  background: var(--canvas);
+  background: var(--ui-canvas);
   color: var(--ui-content-primary);
 }
 
@@ -3691,7 +3691,7 @@ input[type="range"] {
 }
 
 .primary-button:hover {
-  background: color-mix(in srgb, var(--accent) 55%, var(--accent-dark));
+  background: color-mix(in srgb, var(--accent) 55%, var(--ui-accent-dark));
 }
 
 .secondary-button {
@@ -3714,7 +3714,7 @@ input[type="range"] {
   border: 1px solid color-mix(in srgb, var(--ui-status-warning) 38%, transparent);
   border-left: 2px solid var(--ui-status-warning);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--ui-status-warning) 8%, var(--pane));
+  background: color-mix(in srgb, var(--ui-status-warning) 8%, var(--ui-pane));
   color: var(--ui-content-primary);
   font-size: calc(11px * var(--ui-font-scale));
 }
@@ -3767,7 +3767,7 @@ input[type="range"] {
   border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--ui-border-divider));
   border-radius: calc(6px * var(--ui-radius-scale, 1)) calc(2px * var(--ui-radius-scale, 1)) calc(6px * var(--ui-radius-scale, 1)) calc(2px * var(--ui-radius-scale, 1));
   background:
-    linear-gradient(145deg, color-mix(in srgb, var(--accent) 17%, transparent), transparent 55%), var(--pane);
+    linear-gradient(145deg, color-mix(in srgb, var(--accent) 17%, transparent), transparent 55%), var(--ui-pane);
   color: color-mix(in srgb, var(--accent) 72%, white);
   font-family: "IBM Plex Mono", monospace;
   font-size: calc(18px * var(--ui-font-scale));
@@ -3812,7 +3812,7 @@ input[type="range"] {
   place-items: center;
   border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--ui-border-divider));
   border-radius: calc(10px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--accent) 9%, var(--pane));
+  background: color-mix(in srgb, var(--accent) 9%, var(--ui-pane));
   color: var(--ui-content-accent);
   font-family: "IBM Plex Mono", monospace;
   font-size: calc(13px * var(--ui-font-scale));

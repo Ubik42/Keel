@@ -8,65 +8,65 @@
    (nav BL, inspector BR) use the same radius so the seam disappears — Codex.
    Maximized/square windows zero the outer radius. */
 :root {
-  --font-emoji:
+  --ui-font-emoji:
     "Segoe UI Emoji",
     "Segoe UI Symbol",
     "Apple Color Emoji",
     "Noto Color Emoji",
     sans-serif;
-  --windows-caption-close-hover: #e81123;
-  --windows-caption-close-hover-fg: #ffffff;
-  --preview-nav-on-dark-stroke: #000;
-  --preview-nav-on-dark-fill: #fff;
-  --preview-nav-on-light-stroke: #fff;
-  --preview-nav-on-light-fill: #111;
-  --preview-nav-on-dark-disabled-stroke: #2a2a2a;
-  --preview-nav-on-dark-disabled-fill: #8d8d8d;
-  --preview-nav-on-light-disabled-stroke: #f3f3f3;
-  --preview-nav-on-light-disabled-fill: #8a8a8a;
-  --elev-size: 0.9;
-  --elev-intensity: 0.8;
-  --menu-surface-border: color-mix(in srgb, var(--ui-border-divider) 82%, transparent);
-  --menu-surface-radius: calc(8px * var(--ui-radius-scale, 1));
-  --menu-surface-shadow: var(--shadow-menu);
-  --menu-item-focus-background: color-mix(in srgb, var(--ui-content-primary) 11%, transparent);
-  --menu-item-disabled-opacity: 0.4;
-  --menu-danger-color: color-mix(in srgb, var(--ui-status-danger) 78%, var(--ui-content-primary));
-  --menu-danger-hover-background: color-mix(in srgb, var(--ui-status-danger) 14%, var(--ui-surface-hover));
-  --menu-item-padding: 6px 10px;
-  --menu-item-font-size: calc(12.5px * var(--ui-font-scale));
-  --menu-item-line-height: 1.4;
-  --shell-toolbar-height: 44px;
-  --shell-workspace-bar-height: 40px;
-  --shell-control-height: 28px;
-  --shell-chip-height: 22px;
-  --shell-library-switcher-width: 170px;
-  --window-corner-radius: 8px;
+  --ui-windows-caption-close-hover: #e81123;
+  --ui-windows-caption-close-hover-fg: #ffffff;
+  --ui-preview-nav-on-dark-stroke: #000;
+  --ui-preview-nav-on-dark-fill: #fff;
+  --ui-preview-nav-on-light-stroke: #fff;
+  --ui-preview-nav-on-light-fill: #111;
+  --ui-preview-nav-on-dark-disabled-stroke: #2a2a2a;
+  --ui-preview-nav-on-dark-disabled-fill: #8d8d8d;
+  --ui-preview-nav-on-light-disabled-stroke: #f3f3f3;
+  --ui-preview-nav-on-light-disabled-fill: #8a8a8a;
+  --ui-elev-size: 0.9;
+  --ui-elev-intensity: 0.8;
+  --ui-menu-surface-border: color-mix(in srgb, var(--ui-border-divider) 82%, transparent);
+  --ui-menu-surface-radius: calc(8px * var(--ui-radius-scale, 1));
+  --ui-menu-surface-shadow: var(--ui-shadow-menu);
+  --ui-menu-item-focus-background: color-mix(in srgb, var(--ui-content-primary) 11%, transparent);
+  --ui-menu-item-disabled-opacity: 0.4;
+  --ui-menu-danger-color: color-mix(in srgb, var(--ui-status-danger) 78%, var(--ui-content-primary));
+  --ui-menu-danger-hover-background: color-mix(in srgb, var(--ui-status-danger) 14%, var(--ui-surface-hover));
+  --ui-menu-item-padding: 6px 10px;
+  --ui-menu-item-font-size: calc(12.5px * var(--ui-font-scale));
+  --ui-menu-item-line-height: 1.4;
+  --ui-shell-toolbar-height: 44px;
+  --ui-shell-workspace-bar-height: 40px;
+  --ui-shell-control-height: 28px;
+  --ui-shell-chip-height: 22px;
+  --ui-shell-library-switcher-width: 170px;
+  --ui-window-corner-radius: 8px;
 }
 html.keel-window-square {
-  --window-corner-radius: 0px;
+  --ui-window-corner-radius: 0px;
 }
 
 /* Outer corners that meet the window chrome = window radius; other corners
    keep the island radius so inner seams stay soft. */
 .app-shell.app-shell > .navigation-pane {
-  border-radius: var(--island-radius) var(--island-radius) var(--island-radius) var(--window-corner-radius);
+  border-radius: var(--ui-island-radius) var(--ui-island-radius) var(--ui-island-radius) var(--ui-window-corner-radius);
 }
 .app-shell.app-shell > .inspector-pane {
-  border-radius: var(--island-radius) var(--island-radius) var(--window-corner-radius) var(--island-radius);
+  border-radius: var(--ui-island-radius) var(--ui-island-radius) var(--ui-window-corner-radius) var(--ui-island-radius);
 }
 .app-shell.app-shell > .workspace {
-  border-radius: var(--island-radius);
+  border-radius: var(--ui-island-radius);
 }
 /* Collapsed panes leave the remaining outer corner to the neighbor. */
 .app-shell.app-shell.left-collapsed > .workspace {
-  border-bottom-left-radius: var(--window-corner-radius);
+  border-bottom-left-radius: var(--ui-window-corner-radius);
 }
 
 /* ==== a78: separate outer vs inter-panel gaps ==============================
    a77 set one gap to 1px — too tight between panels. Split tokens:
    --island-outer-gap ≈ 2–3px against the window edge
-   --island-gap ≈ 4–8px between nav / workspace / inspector */
+   --ui-island-gap ≈ 4–8px between nav / workspace / inspector */
 
 /* Outer: L of nav, R of inspector, bottom of all three.
    Inter: L/R of workspace (nav↔ws↔inspector). */
@@ -74,7 +74,7 @@ html.keel-window-square {
   margin: 0 0 var(--island-outer-gap) var(--island-outer-gap);
 }
 .app-shell.app-shell > .workspace {
-  margin: 0 var(--island-gap) var(--island-outer-gap);
+  margin: 0 var(--ui-island-gap) var(--island-outer-gap);
 }
 .app-shell.app-shell > .inspector-pane {
   margin: 0 var(--island-outer-gap) var(--island-outer-gap) 0;
@@ -88,7 +88,7 @@ html.keel-window-square {
   margin-left: var(--island-outer-gap);
 }
 .app-shell.app-shell.right-collapsed > .workspace {
-  border-bottom-right-radius: var(--window-corner-radius);
+  border-bottom-right-radius: var(--ui-window-corner-radius);
   margin-right: var(--island-outer-gap);
 }
 
@@ -97,14 +97,14 @@ html.keel-window-square {
   padding-left: var(--island-outer-gap);
 }
 .app-shell.app-shell .toolbar-workspace-cluster {
-  padding-left: var(--island-gap);
-  padding-right: var(--island-gap);
+  padding-left: var(--ui-island-gap);
+  padding-right: var(--ui-island-gap);
 }
 .app-shell.app-shell:not(.left-collapsed) .toolbar-workspace-cluster:has(.workspace-tabs) {
-  padding-left: var(--island-gap);
+  padding-left: var(--ui-island-gap);
 }
 .app-shell.app-shell:not(.right-collapsed) .toolbar-workspace-cluster:has(.workspace-tabs) {
-  padding-right: var(--island-gap);
+  padding-right: var(--ui-island-gap);
 }
 /* The shell's first column is 0 when the sidebar is collapsed, and a fixed
    reservation left a wide hole after a short library name. Give the toolbar
@@ -124,7 +124,7 @@ html.keel-window-square {
 .app-shell.app-shell.left-collapsed .toolbar-nav-cluster .library-switcher {
   flex: 0 0 auto;
   width: fit-content;
-  max-width: var(--shell-library-switcher-width);
+  max-width: var(--ui-shell-library-switcher-width);
 }
 .app-shell.app-shell.left-collapsed .toolbar-nav-cluster .library-switcher-trigger {
   width: auto;
@@ -160,14 +160,14 @@ html.keel-window-square {
 }
 
 /* ==== a80: subtle island drop shadow, driven by Settings → Elevation shadows
-   (shadow-preferences.ts, level 0–3 → --elev-size / --elev-intensity).
+   (shadow-preferences.ts, level 0–3 → --ui-elev-size / --ui-elev-intensity).
    Level 0 keeps islands flat (data-elevation="0"). box-shadow follows each
-   island's own border-radius (incl. --window-corner-radius outer corners) and
+   island's own border-radius (incl. --ui-window-corner-radius outer corners) and
    is painted outside the island, so its overflow:hidden doesn't clip it.
    Offsets/blur are kept tight (negative spread) so the shadow stays within
    --island-outer-gap at the window edge, where .app-shell clips. */
 :root[data-elevation="0"] .app-shell.app-shell {
-  --island-shadow: none;
+  --ui-island-shadow: none;
 }
 
 /* ==== a81: sort trigger matches icon-button height ========================
@@ -233,7 +233,7 @@ html.keel-window-square {
 }
 .app-shell.app-shell .filter-tag-chip.is-excluding {
   --tag-fill-solid: color-mix(in oklab, var(--ui-status-danger) 16%, var(--tag-base));
-  color: var(--filter-exclude-fg);
+  color: var(--ui-filter-exclude-fg);
 }
 :root[data-theme="dark"] .app-shell.app-shell .tag-chip,
 :root[data-theme="dark"] .app-shell.app-shell .filter-tag-chip {
@@ -254,7 +254,7 @@ html.keel-window-square {
 }
 :root[data-theme="dark"] .app-shell.app-shell .filter-tag-chip.is-excluding {
   --tag-fill-solid: color-mix(in oklab, var(--ui-status-danger) 22%, var(--tag-base));
-  color: var(--filter-exclude-fg);
+  color: var(--ui-filter-exclude-fg);
 }
 .app-shell.app-shell .tag-chip::before,
 .app-shell.app-shell .filter-tag-chip::before {
@@ -272,32 +272,32 @@ html.keel-window-square {
 
 /* ==== a83: island shadow actually paints ===================================
    Root cause (verified in headless Chromium on the built renderer): a80 only
-   re-set --island-shadow, but later islands blocks (a72-era flattening) set
+   re-set --ui-island-shadow, but later islands blocks (a72-era flattening) set
    `box-shadow: none` directly on `.app-shell[islands] > .navigation-pane /
    .inspector-pane / .workspace`, so the var was never used → computed none.
    This rule outranks them (extra :root[data-elevation] specificity) and
-   scales with Settings → Elevation shadows (level 0–3 → --elev-size /
-   --elev-intensity, applied live by ElevationProvider). Level 0: none.
+   scales with Settings → Elevation shadows (level 0–3 → --ui-elev-size /
+   --ui-elev-intensity, applied live by ElevationProvider). Level 0: none.
    Offsets are mostly blur so it reads in the inter-panel gaps; at the window
    edge it simply fades out under the frame. */
 :root:not([data-elevation="0"]) .app-shell.app-shell {
-  --island-shadow:
-    0 calc(1px * var(--elev-size)) calc(3px * var(--elev-size))
-      rgb(0 0 0 / calc(0.08 * var(--elev-intensity))),
-    0 calc(3px * var(--elev-size)) calc(14px * var(--elev-size))
-      rgb(0 0 0 / calc(0.14 * var(--elev-intensity)));
+  --ui-island-shadow:
+    0 calc(1px * var(--ui-elev-size)) calc(3px * var(--ui-elev-size))
+      rgb(0 0 0 / calc(0.08 * var(--ui-elev-intensity))),
+    0 calc(3px * var(--ui-elev-size)) calc(14px * var(--ui-elev-size))
+      rgb(0 0 0 / calc(0.14 * var(--ui-elev-intensity)));
 }
 :root[data-theme="dark"]:not([data-elevation="0"]) .app-shell.app-shell {
-  --island-shadow:
-    0 calc(1px * var(--elev-size)) calc(3px * var(--elev-size))
-      rgb(0 0 0 / calc(0.30 * var(--elev-intensity))),
-    0 calc(3px * var(--elev-size)) calc(14px * var(--elev-size))
-      rgb(0 0 0 / calc(0.45 * var(--elev-intensity)));
+  --ui-island-shadow:
+    0 calc(1px * var(--ui-elev-size)) calc(3px * var(--ui-elev-size))
+      rgb(0 0 0 / calc(0.30 * var(--ui-elev-intensity))),
+    0 calc(3px * var(--ui-elev-size)) calc(14px * var(--ui-elev-size))
+      rgb(0 0 0 / calc(0.45 * var(--ui-elev-intensity)));
 }
 :root[data-elevation] .app-shell.app-shell > .navigation-pane,
 :root[data-elevation] .app-shell.app-shell > .inspector-pane,
 :root[data-elevation] .app-shell.app-shell > .workspace {
-  box-shadow: var(--island-shadow);
+  box-shadow: var(--ui-island-shadow);
 }
 :root[data-elevation="0"] .app-shell.app-shell > .navigation-pane,
 :root[data-elevation="0"] .app-shell.app-shell > .inspector-pane,

@@ -2,51 +2,51 @@
    Quieter floating bars, softer contrast, tighter spacing. No library-
    settings / semantic-settings. */
 :root {
-  --viewer-chrome-bg: color-mix(in srgb, var(--ui-surface-raised) 90%, transparent);
-  --viewer-chrome-shadow: 0 6px 20px rgb(0 0 0 / 10%), 0 1px 3px rgb(0 0 0 / 5%);
+  --ui-viewer-chrome-bg: color-mix(in srgb, var(--ui-surface-raised) 90%, transparent);
+  --ui-viewer-chrome-shadow: 0 6px 20px rgb(0 0 0 / 10%), 0 1px 3px rgb(0 0 0 / 5%);
 }
 
 [data-theme="light"] {
-  --canvas: var(--ui-surface-canvas, #f0f1f3);
-  --pane: var(--ui-surface-pane, #f7f7f8);
+  --ui-canvas: var(--ui-surface-canvas, #f0f1f3);
+  --ui-pane: var(--ui-surface-pane, #f7f7f8);
   --accent: #3b82f6;
-  --accent-dark: color-mix(in srgb, var(--accent) 78%, black);
-  --accent-ring: color-mix(in srgb, var(--ui-action-accent, var(--accent)) 50%, transparent);
-  --rating-star: var(--accent);
-  --appearance-color-blue: #2f6fad;
-  --appearance-color-indigo: #4c5fd0;
-  --appearance-color-purple: #7c4db8;
-  --appearance-color-pink: #c45d86;
-  --appearance-color-orange: #c46a2a;
-  --appearance-color-green: #3d8f45;
-  --appearance-color-teal: #2a8a82;
-  --appearance-color-red: #c44545;
-  --filter-exclude-soft: color-mix(in srgb, var(--ui-status-danger) 14%, var(--canvas));
-  --filter-exclude-border: color-mix(in srgb, var(--ui-status-danger) 50%, var(--ui-border-divider));
-  --filter-exclude-fg: color-mix(in srgb, var(--ui-status-danger) 75%, var(--ui-content-primary));
-  --filter-exclude-active-bg: color-mix(in srgb, var(--ui-status-danger) 20%, var(--canvas));
-  --viewer-document-page: #fff;
-  --shadow-toolbar:
-    0 calc(1px * var(--elev-size)) calc(4px * var(--elev-size))
-    rgb(0 0 0 / calc(0.04 * var(--elev-intensity)));
-  --shadow-pane-east:
-    calc(2px * var(--elev-size)) 0 calc(8px * var(--elev-size))
-    rgb(0 0 0 / calc(0.05 * var(--elev-intensity)));
-  --shadow-pane-west:
-    calc(-2px * var(--elev-size)) 0 calc(8px * var(--elev-size))
-    rgb(0 0 0 / calc(0.05 * var(--elev-intensity)));
-  --shadow-card:
-    0 calc(1px * var(--elev-size)) calc(2px * var(--elev-size))
-    rgb(0 0 0 / calc(0.05 * var(--elev-intensity)));
-  --shadow-workspace-tab:
-    0 0 calc(4px * var(--elev-size))
-    rgb(0 0 0 / calc(0.05 * var(--elev-intensity)));
-  --shadow-menu: 0 6px 18px rgb(0 0 0 / 10%), 0 1px 3px rgb(0 0 0 / 5%);
-  --shadow-elevated: 0 18px 48px rgb(0 0 0 / 16%);
-  --shadow-panel: 0 12px 28px rgb(0 0 0 / 12%);
-  --shadow-toast: 0 8px 20px rgb(0 0 0 / 10%);
-  --viewer-chrome-bg: color-mix(in srgb, var(--ui-surface-raised) 94%, transparent);
-  --viewer-chrome-shadow: 0 8px 22px rgb(0 0 0 / 8%), 0 1px 2px rgb(0 0 0 / 4%);
+  --ui-accent-dark: color-mix(in srgb, var(--accent) 78%, black);
+  --ui-accent-ring: color-mix(in srgb, var(--ui-action-accent, var(--accent)) 50%, transparent);
+  --ui-rating-star: var(--accent);
+  --ui-appearance-color-blue: #2f6fad;
+  --ui-appearance-color-indigo: #4c5fd0;
+  --ui-appearance-color-purple: #7c4db8;
+  --ui-appearance-color-pink: #c45d86;
+  --ui-appearance-color-orange: #c46a2a;
+  --ui-appearance-color-green: #3d8f45;
+  --ui-appearance-color-teal: #2a8a82;
+  --ui-appearance-color-red: #c44545;
+  --ui-filter-exclude-soft: color-mix(in srgb, var(--ui-status-danger) 14%, var(--ui-canvas));
+  --ui-filter-exclude-border: color-mix(in srgb, var(--ui-status-danger) 50%, var(--ui-border-divider));
+  --ui-filter-exclude-fg: color-mix(in srgb, var(--ui-status-danger) 75%, var(--ui-content-primary));
+  --ui-filter-exclude-active-bg: color-mix(in srgb, var(--ui-status-danger) 20%, var(--ui-canvas));
+  --ui-viewer-document-page: #fff;
+  --ui-shadow-toolbar:
+    0 calc(1px * var(--ui-elev-size)) calc(4px * var(--ui-elev-size))
+    rgb(0 0 0 / calc(0.04 * var(--ui-elev-intensity)));
+  --ui-shadow-pane-east:
+    calc(2px * var(--ui-elev-size)) 0 calc(8px * var(--ui-elev-size))
+    rgb(0 0 0 / calc(0.05 * var(--ui-elev-intensity)));
+  --ui-shadow-pane-west:
+    calc(-2px * var(--ui-elev-size)) 0 calc(8px * var(--ui-elev-size))
+    rgb(0 0 0 / calc(0.05 * var(--ui-elev-intensity)));
+  --ui-shadow-card:
+    0 calc(1px * var(--ui-elev-size)) calc(2px * var(--ui-elev-size))
+    rgb(0 0 0 / calc(0.05 * var(--ui-elev-intensity)));
+  --ui-shadow-workspace-tab:
+    0 0 calc(4px * var(--ui-elev-size))
+    rgb(0 0 0 / calc(0.05 * var(--ui-elev-intensity)));
+  --ui-shadow-menu: 0 6px 18px rgb(0 0 0 / 10%), 0 1px 3px rgb(0 0 0 / 5%);
+  --ui-shadow-elevated: 0 18px 48px rgb(0 0 0 / 16%);
+  --ui-shadow-panel: 0 12px 28px rgb(0 0 0 / 12%);
+  --ui-shadow-toast: 0 8px 20px rgb(0 0 0 / 10%);
+  --ui-viewer-chrome-bg: color-mix(in srgb, var(--ui-surface-raised) 94%, transparent);
+  --ui-viewer-chrome-shadow: 0 8px 22px rgb(0 0 0 / 8%), 0 1px 2px rgb(0 0 0 / 4%);
 }
 
 .preview-video-controls,
@@ -57,8 +57,8 @@
 .plugin-viewer-overlay-toggle {
   border-color: var(--ui-border-subtle);
   border-radius: var(--ui-radius-overlay);
-  background: var(--viewer-chrome-bg);
-  box-shadow: var(--viewer-chrome-shadow);
+  background: var(--ui-viewer-chrome-bg);
+  box-shadow: var(--ui-viewer-chrome-shadow);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
@@ -167,8 +167,8 @@
 .pdf-viewer-toolbar {
   border-color: var(--ui-border-subtle);
   border-radius: var(--ui-radius-overlay);
-  background: var(--viewer-chrome-bg);
-  box-shadow: var(--viewer-chrome-shadow);
+  background: var(--ui-viewer-chrome-bg);
+  box-shadow: var(--ui-viewer-chrome-shadow);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
@@ -213,28 +213,28 @@
    Floating islands kept; visual language pushed toward macOS Photos / Finder /
    Info. Scoped to .app-shell. Import/drop stays on-dev. */
 :root {
-  --island-gap: 12px;
-  --island-radius: calc(22px * var(--ui-radius-scale, 1));
+  --ui-island-gap: 12px;
+  --ui-island-radius: calc(22px * var(--ui-radius-scale, 1));
   --island-backdrop: color-mix(in srgb, var(--ui-surface-pane) 82%, var(--ui-surface-raised));
   --island-border: rgb(0 0 0 / 5%);
-  --island-shadow: 0 1px 2px rgb(0 0 0 / 4%), 0 4px 16px -6px rgb(0 0 0 / 8%);
+  --ui-island-shadow: 0 1px 2px rgb(0 0 0 / 4%), 0 4px 16px -6px rgb(0 0 0 / 8%);
   --island-select: color-mix(in srgb, var(--accent) 16%, transparent);
-  --island-hairline: rgb(0 0 0 / 6%);
-  --island-group-gap: 20px;
-  --island-card-radius: calc(14px * var(--ui-radius-scale, 1));
-  --island-toolstrip-bg: color-mix(in srgb, var(--ui-surface-raised) 72%, transparent);
+  --ui-island-hairline: rgb(0 0 0 / 6%);
+  --ui-island-group-gap: 20px;
+  --ui-island-card-radius: calc(14px * var(--ui-radius-scale, 1));
+  --ui-island-toolstrip-bg: color-mix(in srgb, var(--ui-surface-raised) 72%, transparent);
   /* Opaque equivalent of the toolstrip over the canvas island: the active tab
      must be exactly this so it fuses with the toolstrip it attaches to. */
-  --island-tab-fill: color-mix(in srgb, var(--ui-surface-raised) 72%, var(--ui-surface-canvas));
+  --ui-island-tab-fill: color-mix(in srgb, var(--ui-surface-raised) 72%, var(--ui-surface-canvas));
 }
 :root[data-theme="dark"] {
   --island-backdrop: color-mix(in srgb, var(--ui-surface-canvas) 78%, black);
   --island-border: rgb(255 255 255 / 7%);
-  --island-shadow: 0 6px 20px -8px rgb(0 0 0 / 45%);
+  --ui-island-shadow: 0 6px 20px -8px rgb(0 0 0 / 45%);
   --island-select: color-mix(in srgb, var(--accent) 28%, transparent);
-  --island-hairline: rgb(255 255 255 / 8%);
-  --island-toolstrip-bg: color-mix(in srgb, var(--ui-surface-raised) 55%, transparent);
-  --island-tab-fill: color-mix(in srgb, var(--ui-surface-raised) 55%, var(--ui-surface-canvas));
+  --ui-island-hairline: rgb(255 255 255 / 8%);
+  --ui-island-toolstrip-bg: color-mix(in srgb, var(--ui-surface-raised) 55%, transparent);
+  --ui-island-tab-fill: color-mix(in srgb, var(--ui-surface-raised) 55%, var(--ui-surface-canvas));
 }
 
 /* Quieter window chrome: transparent title bar (backdrop shows through). */
@@ -245,7 +245,7 @@
 }
 
 /* Title-bar controls align to island edges (grid columns are full-bleed;
-   islands are inset by --island-gap). Search was overhanging the canvas
+   islands are inset by --ui-island-gap). Search was overhanging the canvas
    island by one gap into the inspector column. No soft title-bar fill. */
 .app-shell.app-shell .toolbar-nav-cluster {
   align-items: center;
@@ -260,13 +260,13 @@
   /* Sit at the inspector island's leading edge so search | gap | toggle read
      as one aligned control row (captions stay reserved on the right). */
   justify-content: flex-start;
-  padding-left: var(--island-gap);
+  padding-left: var(--ui-island-gap);
   align-items: center;
   gap: 8px;
 }
 .app-shell.app-shell .toolbar-workspace-search,
 .app-shell.app-shell .search-control-wrap {
-  height: var(--shell-control-height);
+  height: var(--ui-shell-control-height);
   align-self: center;
 }
 .app-shell.app-shell .toolbar-workspace-search {
@@ -289,7 +289,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  height: var(--shell-toolbar-height);
+  height: var(--ui-shell-toolbar-height);
 }
 
 .app-shell.app-shell > .navigation-pane,

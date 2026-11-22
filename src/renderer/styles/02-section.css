@@ -32,7 +32,7 @@
 
 .nav-inline-edit:focus-within {
   border-color: color-mix(in srgb, var(--accent) 62%, var(--ui-border-divider));
-  background: var(--canvas);
+  background: var(--ui-canvas);
   box-shadow: 0 0 0 3px var(--ui-action-accent-soft);
 }
 
@@ -84,7 +84,7 @@
 :root[data-platform="windows"] .micro-label {
   /* IBM Plex Mono does not contain CJK glyphs. Keep the existing macOS label
      styling intact while avoiding an unrelated monospace fallback on Windows. */
-  font-family: var(--font-ui);
+  font-family: var(--ui-font-ui);
 }
 
 :root[data-platform="windows"] :where(
@@ -93,11 +93,11 @@
     .metadata-list
   ) {
   /* Identity/summary surfaces share the HarmonyOS-first Windows stack. */
-  font-family: var(--font-ui-unified);
+  font-family: var(--ui-font-ui-unified);
 }
 
 :root[data-platform="windows"] .inspector-identity .micro-label {
-  font-family: var(--font-ui-unified);
+  font-family: var(--ui-font-ui-unified);
 }
 
 :root[data-platform="windows"] .app-shell.app-shell .inspector-content .micro-label {
@@ -137,25 +137,25 @@
      menus, cards and other compact surfaces keep their existing one-line
      text-overflow ellipsis. */
   overflow: visible;
-  font-family: var(--font-ui);
+  font-family: var(--ui-font-ui);
   overflow-wrap: anywhere;
   text-overflow: clip;
   white-space: normal;
 }
 
 :root[data-platform="windows"] .inspector-identity-name {
-  font-family: var(--font-ui-unified);
+  font-family: var(--ui-font-ui-unified);
 }
 
 :root[data-platform="windows"] .metadata-list dd.mono {
-  font-family: var(--font-ui-unified);
+  font-family: var(--ui-font-ui-unified);
   font-variant-numeric: tabular-nums;
 }
 
 :root[data-platform="windows"] .search-snippet {
   /* These fields can contain localized prose, so they must not inherit the
      technical monospace styling used for machine-oriented values. */
-  font-family: var(--font-ui);
+  font-family: var(--ui-font-ui);
 }
 
 :root[data-platform="windows"] :where(

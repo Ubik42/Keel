@@ -344,7 +344,7 @@ textarea.ui-field__control {
 .ui-select .ui-field__control,
 .ui-select-menu,
 .ui-select-menu [role="option"] {
-  font-family: var(--font-ui);
+  font-family: var(--ui-font-ui);
   font-style: normal;
   font-weight: 400;
   letter-spacing: normal;

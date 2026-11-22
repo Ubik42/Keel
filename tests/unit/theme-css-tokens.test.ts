@@ -10,17 +10,17 @@ describe('theme CSS tokens (REQ-THEME-002)', () => {
   it('defines light overrides for core and status tokens', () => {
     expect(css).toContain('[data-theme="light"]');
     for (const token of [
-      '--canvas',
-      '--pane',
+      '--ui-canvas',
+      '--ui-pane',
       '--accent',
-      '--rating-star',
-      '--elev-size',
-      '--elev-intensity',
-      '--shadow-toolbar',
-      '--shadow-pane-east',
-      '--shadow-card',
-      '--shadow-workspace-tab',
-      '--shadow-menu',
+      '--ui-rating-star',
+      '--ui-elev-size',
+      '--ui-elev-intensity',
+      '--ui-shadow-toolbar',
+      '--ui-shadow-pane-east',
+      '--ui-shadow-card',
+      '--ui-shadow-workspace-tab',
+      '--ui-shadow-menu',
     ]) {
       expect(css).toContain(token);
     }

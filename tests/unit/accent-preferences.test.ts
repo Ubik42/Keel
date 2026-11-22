@@ -58,7 +58,7 @@ describe('accent CSS derivation (Serpent-gnus)', () => {
 
   it('derives accent-dark and soft-fg from --accent (no frozen blues)', () => {
     expect(css).toMatch(
-      /--accent-dark:\s*color-mix\(in srgb,\s*var\(--accent\)/,
+      /--ui-accent-dark:\s*color-mix\(in srgb,\s*var\(--accent\)/,
     );
     expect(css).not.toMatch(/--accent-soft-fg:\s*#1d4ed8/);
     // Accent-tinted text uses --ui-content-accent directly (the --accent-soft-fg alias is gone).

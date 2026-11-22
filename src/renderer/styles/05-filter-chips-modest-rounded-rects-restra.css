@@ -47,7 +47,7 @@
 .inspector-content .text-field {
   border-radius: var(--ui-radius-control);
   border-color: var(--ui-border-subtle);
-  background: color-mix(in srgb, var(--canvas) 40%, var(--ui-surface-raised));
+  background: color-mix(in srgb, var(--ui-canvas) 40%, var(--ui-surface-raised));
   box-shadow: none;
 }
 
@@ -78,7 +78,7 @@
 .app-settings-dialog:not(.library-settings-dialog) {
   border-radius: var(--ui-radius-dialog);
   border-color: var(--ui-border-subtle);
-  background: color-mix(in srgb, var(--canvas) 55%, var(--pane));
+  background: color-mix(in srgb, var(--ui-canvas) 55%, var(--ui-pane));
   box-shadow: var(--ui-shadow-modal);
 }
 
@@ -86,7 +86,7 @@
 .app-settings-dialog:not(.library-settings-dialog) > [data-dialog-header="true"] {
   padding: 12px 16px 11px 18px;
   border-bottom: 1px solid var(--ui-border-subtle);
-  background: color-mix(in srgb, var(--ui-content-primary) 7%, var(--canvas));
+  background: color-mix(in srgb, var(--ui-content-primary) 7%, var(--ui-canvas));
   color: var(--ui-content-primary);
 }
 
@@ -98,12 +98,12 @@
 }
 
 .app-settings-dialog:not(.library-settings-dialog).ui-dialog-shell {
-  background: color-mix(in srgb, var(--canvas) 55%, var(--pane));
+  background: color-mix(in srgb, var(--ui-canvas) 55%, var(--ui-pane));
 }
 
 .app-settings-dialog:not(.library-settings-dialog) .app-settings-nav {
   padding: 12px 10px;
-  background: color-mix(in srgb, var(--canvas) 62%, var(--pane));
+  background: color-mix(in srgb, var(--ui-canvas) 62%, var(--ui-pane));
   border-right: 1px solid var(--ui-border-subtle);
 }
 
@@ -122,7 +122,7 @@
 }
 
 .app-settings-dialog:not(.library-settings-dialog) .app-settings-content {
-  background: color-mix(in srgb, var(--canvas) 88%, var(--pane));
+  background: color-mix(in srgb, var(--ui-canvas) 88%, var(--ui-pane));
 }
 
 .app-settings-dialog:not(.library-settings-dialog) .app-settings-page-heading h3 {
@@ -134,7 +134,7 @@
 .app-settings-dialog:not(.library-settings-dialog) .app-settings-card {
   border: 1px solid var(--ui-border-subtle);
   border-radius: var(--ui-radius-surface);
-  background: color-mix(in srgb, var(--ui-surface-raised) 62%, var(--canvas));
+  background: color-mix(in srgb, var(--ui-surface-raised) 62%, var(--ui-canvas));
   box-shadow: none;
 }
 
@@ -167,33 +167,33 @@
 
 
 /* --- Extra calm polish --- */
-/* Workspace bar must share --canvas with the active tab face so the tab
+/* Workspace bar must share --ui-canvas with the active tab face so the tab
    joins the browse chrome without a tint seam under the tab. */
 .workspace-bar {
   border-bottom: 1px solid var(--ui-border-subtle);
-  background: var(--canvas);
+  background: var(--ui-canvas);
   box-shadow: none;
 }
 
 .workspace-discovery {
-  background: var(--canvas);
+  background: var(--ui-canvas);
 }
 
 .folder-card {
   --folder-card-radius: calc(var(--folder-card-size, 160px) * 0.05);
   border: 1px solid var(--ui-border-subtle);
   border-radius: var(--ui-radius-surface);
-  background: color-mix(in srgb, var(--ui-surface-raised) 42%, var(--canvas));
+  background: color-mix(in srgb, var(--ui-surface-raised) 42%, var(--ui-canvas));
   box-shadow: none;
 }
 
 .folder-card:hover {
-  background: color-mix(in srgb, var(--ui-surface-raised) 42%, var(--canvas));
+  background: color-mix(in srgb, var(--ui-surface-raised) 42%, var(--ui-canvas));
   border-color: var(--ui-border-subtle);
 }
 
 .folder-card.is-selected {
-  background: color-mix(in srgb, var(--accent) 6%, color-mix(in srgb, var(--ui-surface-raised) 42%, var(--canvas)));
+  background: color-mix(in srgb, var(--accent) 6%, color-mix(in srgb, var(--ui-surface-raised) 42%, var(--ui-canvas)));
   border-color: transparent;
   box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--accent) 82%, var(--ui-border-divider));
 }

@@ -11,7 +11,7 @@ const css = readFileSync(
 describe("workspace tab chrome", () => {
   it("uses a single SVG path for active-tab fill (no CSS scoop feet)", () => {
     expect(css).toContain(".workspace-tab-outline-path");
-    expect(css).toContain("fill: var(--island-tab-fill, var(--canvas))");
+    expect(css).toContain("fill: var(--ui-island-tab-fill, var(--ui-canvas))");
     expect(css).toContain(".workspace-tab.is-active::before");
     expect(css).toContain("content: none");
     // No radial scoop fills competing with the SVG silhouette.

@@ -78,7 +78,7 @@
   max-width: 150px;
   height: 24px;
   padding: 0 26px 0 8px;
-  font-family: var(--font-ui);
+  font-family: var(--ui-font-ui);
   font-size: calc(12px * var(--ui-font-scale));
   font-weight: 400;
   line-height: 22px;

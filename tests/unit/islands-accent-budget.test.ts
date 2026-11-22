@@ -38,7 +38,7 @@ describe("islands accent budget + Codex transfer tokens (a27/a28)", () => {
     const design = a27.slice(a72Start, customStart);
     expect(lastAssignment(design, "--island-hairline-w")).toMatch(/^(0\.5|1)px$/);
     expect(lastAssignment(design, "--island-border")).toMatch(/6%/);
-    expect(lastAssignment(design, "--island-hairline")).toMatch(/4%/);
+    expect(lastAssignment(design, "--ui-island-hairline")).toMatch(/4%/);
     expect(a27.slice(customStart)).toMatch(/--island-border:\s*var\(--ui-island-border\)/);
   });
 

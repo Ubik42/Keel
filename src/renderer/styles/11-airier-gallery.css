@@ -14,7 +14,7 @@
   box-shadow: none;
 }
 .app-shell.app-shell .dimension-active-chip:not(.is-clear-all) {
-  border: var(--island-hairline-w) solid var(--island-hairline);
+  border: var(--island-hairline-w) solid var(--ui-island-hairline);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
 }
 
@@ -30,7 +30,7 @@
 .app-shell.app-shell .inspector-quick-row,
 .app-shell.app-shell .inspector-quick-row + .editor-field,
 .app-shell.app-shell .inspector-tech-bar {
-  border-top: var(--island-hairline-w) solid var(--island-hairline);
+  border-top: var(--island-hairline-w) solid var(--ui-island-hairline);
 }
 
 /* Monochrome CTAs — ink pills everywhere in islands chrome */
@@ -89,8 +89,8 @@
 .app-shell.app-shell {
   /* 1) Backdrop toward pane; canvas closer to sides */
   --island-canvas: color-mix(in srgb, var(--ui-surface-raised) 45%, var(--ui-surface-pane));
-  --island-toolstrip-bg: color-mix(in srgb, var(--ui-surface-pane) 70%, var(--island-canvas));
-  --island-tab-fill: var(--island-toolstrip-bg);
+  --ui-island-toolstrip-bg: color-mix(in srgb, var(--ui-surface-pane) 70%, var(--island-canvas));
+  --ui-island-tab-fill: var(--ui-island-toolstrip-bg);
 }
 
 .app-shell.app-shell > .workspace {
@@ -155,7 +155,7 @@
 .app-shell.app-shell > .inspector-pane,
 .app-shell.app-shell > .workspace {
   border: var(--island-hairline-w) solid var(--island-border);
-  border-radius: var(--island-radius);
+  border-radius: var(--ui-island-radius);
   box-shadow: none;
 }
 
@@ -177,12 +177,12 @@
 }
 
 .app-shell.app-shell .workspace-tab.is-active {
-  --canvas: var(--island-tab-fill);
+  --ui-canvas: var(--ui-island-tab-fill);
   background: transparent;
   color: var(--ui-content-primary);
   margin-bottom: -2px;
   padding-bottom: 2px;
-  box-shadow: 0 3px 0 0 var(--island-tab-fill);
+  box-shadow: 0 3px 0 0 var(--ui-island-tab-fill);
   z-index: 2;
 }
 
@@ -196,7 +196,7 @@
 }
 
 .app-shell.app-shell .workspace-tab-outline-fill {
-  fill: var(--island-tab-fill);
+  fill: var(--ui-island-tab-fill);
   stroke: none;
 }
 
@@ -214,7 +214,7 @@
    background hole — cover under-tab with an opaque ::after ON TOP of the border. */
 .app-shell.app-shell:has(.workspace-tab-outline) > .workspace {
   border: var(--island-hairline-w) solid var(--island-border);
-  border-radius: var(--island-radius);
+  border-radius: var(--ui-island-radius);
   background-color: var(--island-canvas);
   background-image: none;
 }
@@ -227,7 +227,7 @@
   left: calc(var(--tab-seam-hole-left, 0px) - var(--island-hairline-w));
   width: calc(var(--tab-seam-hole-right, 0px) - var(--tab-seam-hole-left, 0px));
   height: var(--island-hairline-w);
-  background: var(--island-tab-fill);
+  background: var(--ui-island-tab-fill);
   pointer-events: none;
   z-index: 4;
 }

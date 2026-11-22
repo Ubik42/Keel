@@ -16,8 +16,8 @@
   overflow: visible;
 }
 .app-shell.app-shell .asset-card .asset-preview {
-  border-radius: var(--island-card-radius);
-  outline: 1px solid var(--island-hairline);
+  border-radius: var(--ui-island-card-radius);
+  outline: 1px solid var(--ui-island-hairline);
   outline-offset: -1px;
 }
 .app-shell.app-shell .asset-card .asset-preview .asset-card-media,

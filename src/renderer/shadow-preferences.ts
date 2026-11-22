@@ -4,8 +4,8 @@ import { z } from "zod";
  * Hierarchical elevation (Serpent-zcyg, a87).
  *
  * v4: two continuous axes picked on a 2D pad in Settings —
- *   size      0–100 (X)  → CSS `--elev-size`      = size / 50
- *   intensity 0–100 (Y)  → CSS `--elev-intensity` = intensity / 50
+ *   size      0–100 (X)  → CSS `--ui-elev-size`      = size / 50
+ *   intensity 0–100 (Y)  → CSS `--ui-elev-intensity` = intensity / 50
  * Either axis below SHADOW_OFF_THRESHOLD turns elevation off
  * (`data-elevation="0"`, no box-shadow paint).
  *
@@ -206,7 +206,7 @@ export function clampShadowLevel(value: number): ShadowLevel {
 }
 
 /**
- * 50 → multiplier 1. CSS tokens use `calc(... * var(--elev-size))`.
+ * 50 → multiplier 1. CSS tokens use `calc(... * var(--ui-elev-size))`.
  */
 export function shadowPreferenceToMultiplier(value: number): number {
   if (!Number.isFinite(value)) return 0;
@@ -224,17 +224,17 @@ export function applyShadowPreferences(preferences: ShadowPreferences): void {
   const root = document.documentElement;
   if (!isShadowPreferenceEnabled(preferences)) {
     root.dataset.elevation = "0";
-    root.style.removeProperty("--elev-size");
-    root.style.removeProperty("--elev-intensity");
+    root.style.removeProperty("--ui-elev-size");
+    root.style.removeProperty("--ui-elev-intensity");
     return;
   }
   root.dataset.elevation = "on";
   root.style.setProperty(
-    "--elev-size",
+    "--ui-elev-size",
     String(shadowPreferenceToMultiplier(preferences.size)),
   );
   root.style.setProperty(
-    "--elev-intensity",
+    "--ui-elev-intensity",
     String(shadowPreferenceToMultiplier(preferences.intensity)),
   );
 }
