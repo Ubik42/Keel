@@ -3,6 +3,8 @@ import path from "node:path";
 import { tmpdir } from "node:os";
 import { copyLegacyUserData } from "./legacy-user-data";
 import { MCP_START_FLAG } from "./mcp-stdio-launcher";
+import { RuleRunner } from "./rule-runner";
+import { ruleAiPrompt, ruleIpcRequestSchema, type RuleIpcResult } from "../shared/rules";
 import { spawn } from "node:child_process";
 import { openWithSettingsFilePath, readOpenWithSettings, writeOpenWithSettings } from "./open-with-settings-store";
 import { DEFAULT_OPEN_WITH_SETTINGS } from "../shared/open-with";
@@ -260,6 +262,8 @@ import {
   STARTUP_PREFERENCES_GET_CHANNEL,
   STARTUP_PREFERENCES_SET_CHANNEL,
   OPEN_WITH_CHOOSE_PROGRAM_CHANNEL,
+  RULE_RUN_RECORDED_CHANNEL,
+  RULE_INVOKE_CHANNEL,
   OPEN_WITH_SETTINGS_GET_CHANNEL,
   OPEN_WITH_SETTINGS_SET_CHANNEL,
   SHORTCUT_BINDINGS_EXPORT_CHANNEL,
@@ -891,6 +895,11 @@ let mcpPermissionBroker: McpPermissionBroker | undefined;
 let criticalConfirmationWindowManager: CriticalConfirmationWindowManager | undefined;
 let criticalConfirmationBroker: RendererCriticalConfirmationBroker | undefined;
 let scriptRuntimeSupervisor: ScriptRuntimeSupervisor | undefined;
+/** PR: runs rule scripts (docs/进度.md 3.5). */
+let ruleRunner: RuleRunner | undefined;
+const ruleTriggerSequence = new Map<string, number>();
+const ruleLibraryChangeTimers = new Map<string, ReturnType<typeof setTimeout>>();
+const ruleScheduleLastRun = new Map<string, number>();
 let pluginRuntimeSupervisor: PluginRuntimeSupervisor | undefined;
 let pluginTrustedRuntimeSupervisor: PluginTrustedRuntimeSupervisor | undefined;
 let pluginInputCaptureBroker: PluginInputCaptureBroker | undefined;
@@ -2942,11 +2951,60 @@ function publishAiCleared(event: AiContentClearedEvent): void {
   );
 }
 
+/**
+ * PR: run the enabled rules of one trigger. Changes made by those rules do
+ * not trigger "library-change" rules again: events up to the change sequence
+ * seen after the batch are ignored.
+ */
+async function runRulesFor(libraryId: string, kind: 'after-import' | 'library-change' | 'schedule'): Promise<void> {
+  if (!ruleRunner || !workerClient) return;
+  try {
+    const runs = await ruleRunner.runTriggered(libraryId, kind);
+    if (runs.length === 0) return;
+    const sequence = await workerClient.request({ type: 'library.change-sequence', libraryId });
+    if (sequence.ok && 'changeSequence' in sequence && typeof sequence.changeSequence === 'number') {
+      ruleTriggerSequence.set(libraryId, sequence.changeSequence);
+    }
+  } catch (error) {
+    logger?.error('rule.trigger-failed', error, { libraryId, kind });
+  }
+}
+
+function scheduleLibraryChangeRules(event: LibraryChangedEvent): void {
+  if ((ruleTriggerSequence.get(event.libraryId) ?? -1) >= event.changeSequence) return;
+  const pending = ruleLibraryChangeTimers.get(event.libraryId);
+  if (pending) clearTimeout(pending);
+  ruleLibraryChangeTimers.set(event.libraryId, setTimeout(() => {
+    ruleLibraryChangeTimers.delete(event.libraryId);
+    void runRulesFor(event.libraryId, 'library-change');
+  }, 2_000));
+}
+
+/** Once a minute: run "schedule" rules whose interval has passed. */
+async function runScheduledRules(): Promise<void> {
+  if (!ruleRunner || !pluginActivationCoordinator) return;
+  for (const libraryId of pluginActivationCoordinator.trackedOpenLibraryIds()) {
+    const list = await ruleRunner.listRules(libraryId).catch(() => undefined);
+    const due = list?.rules.some((rule) => {
+      if (!rule.enabled || rule.manifest.trigger.kind !== 'schedule') return false;
+      const last = ruleScheduleLastRun.get(rule.manifest.id) ?? (rule.lastRun ? Date.parse(rule.lastRun.startedAt) : 0);
+      return Date.now() - last >= rule.manifest.trigger.everyMinutes * 60_000;
+    });
+    if (!due || !list) continue;
+    // A schedule batch runs every due rule once, in priority order.
+    for (const rule of list.rules) {
+      if (rule.enabled && rule.manifest.trigger.kind === 'schedule') ruleScheduleLastRun.set(rule.manifest.id, Date.now());
+    }
+    await runRulesFor(libraryId, 'schedule');
+  }
+}
+
 async function enqueueAutoAnalyzeAfterImport(
   libraryId: string,
   importedAssetIds: string[],
   folderId?: string,
 ): Promise<void> {
+  if (importedAssetIds.length > 0 || folderId) void runRulesFor(libraryId, 'after-import');
   try {
     const config = loadAiConfig();
     if (!config.autoAnalyzeEnabled || !config.hasKey || !config.apiFormat) return;
@@ -5270,6 +5328,19 @@ async function startApplication(): Promise<void> {
     }),
     logger,
   });
+  ruleRunner = new RuleRunner({
+    workerClient: () => workerClient,
+    journal: () => automationExecutionJournal,
+    gateway: () => automationCommandGateway,
+    runtime: () => scriptRuntimeSupervisor,
+    confirmDesktopWrite: confirmDesktopAutomationWrite,
+    logger: () => logger,
+    onRunRecorded: (libraryId, run) => {
+      if (!mainWindow || mainWindow.isDestroyed()) return;
+      mainWindow.webContents.send(RULE_RUN_RECORDED_CHANNEL, { libraryId, ruleId: run.ruleId, runId: run.runId });
+    },
+  });
+  setInterval(() => { void runScheduledRules(); }, 60_000).unref?.();
   const executePluginHostCommand: PluginRuntimeHostCommandHandler = async (commandId, input, context) => {
     const gateway = automationCommandGateway;
     if (gateway === undefined) throw new Error('Automation Gateway is unavailable.');
@@ -5953,6 +6024,7 @@ async function startApplication(): Promise<void> {
   await pluginActivationCoordinator?.refreshGlobal();
   workerClient.onAssetsChanged(publishAssetChange);
   workerClient.onLibraryChanged(publishLibraryChanged);
+  workerClient.onLibraryChanged(scheduleLibraryChangeRules);
   workerClient.onProgress(publishProgress);
   workerClient.onAiProgress(publishAiProgress);
   workerClient.onAiAnalysisCompleted(publishAiCompleted);
@@ -6816,6 +6888,83 @@ async function startApplication(): Promise<void> {
     } catch (error) {
       logger?.error("open-with.settings", error);
       return readOpenWithSettings(filePath);
+    }
+  });
+  // PR: rule list, switch, order, run, history, files and the AI prompt.
+  ipcMain.handle(RULE_INVOKE_CHANNEL, async (event, input: unknown): Promise<RuleIpcResult> => {
+    if (!mainWindow || event.sender !== mainWindow.webContents) return { ok: false, message: "Unauthorized." };
+    const parsed = ruleIpcRequestSchema.safeParse(input);
+    if (!parsed.success || !workerClient || !ruleRunner) return { ok: false, message: "规则服务不可用。" };
+    const request = parsed.data;
+    const listResult = (response: Awaited<ReturnType<LibraryWorkerClient["request"]>>): RuleIpcResult =>
+      response.ok && response.type === "rule.list.result"
+        ? { ok: true, list: response.result }
+        : { ok: false, message: response.ok ? "规则服务不可用。" : response.error.code };
+    try {
+      switch (request.action) {
+        case "list":
+          return listResult(await workerClient.request({ type: "rule.list", libraryId: request.libraryId }));
+        case "set-enabled":
+          return listResult(await workerClient.request({ type: "rule.set-enabled", libraryId: request.libraryId, ruleId: request.ruleId, enabled: request.enabled }));
+        case "set-layout":
+          return listResult(await workerClient.request({ type: "rule.layout.set", libraryId: request.libraryId, layout: request.layout }));
+        case "delete":
+          return listResult(await workerClient.request({ type: "rule.delete", libraryId: request.libraryId, ruleId: request.ruleId }));
+        case "create": {
+          const id = randomUUID();
+          return listResult(await workerClient.request({
+            type: "rule.save",
+            libraryId: request.libraryId,
+            manifest: {
+              $schema: "../rule.schema.json",
+              version: 1,
+              id,
+              name: request.name,
+              purpose: "",
+              trigger: { kind: "manual" },
+              scope: { folderId: null, recursive: true },
+              permissions: ["asset.search"],
+              script: "rule.ts",
+            },
+            source: [
+              "// 用 AI 编写这条规则：点规则详情中的“复制给 AI”。",
+              "const page = await keel.assets.search({ query: null, scope: rule.scope, limit: 20 });",
+              "return { count: page.total };",
+              "",
+            ].join("\n"),
+          }));
+        }
+        case "run": {
+          const run = await ruleRunner.run({
+            libraryId: request.libraryId,
+            ruleId: request.ruleId,
+            reason: request.dryRun ? "dry-run" : "manual",
+            interactive: true,
+          });
+          return run ? { ok: true, run } : { ok: false, message: "找不到这条规则。" };
+        }
+        case "history": {
+          const response = await workerClient.request({ type: "rule.runs.list", libraryId: request.libraryId, ruleId: request.ruleId, limit: 50 });
+          return response.ok && response.type === "rule.runs.result" ? { ok: true, runs: response.runs } : { ok: false, message: "无法读取运行历史。" };
+        }
+        case "reveal":
+        case "copy-for-ai": {
+          const response = await workerClient.request({ type: "rule.list", libraryId: request.libraryId });
+          if (!response.ok || response.type !== "rule.list.result") return { ok: false, message: "规则服务不可用。" };
+          const list = response.result;
+          const rule = request.ruleId ? list.rules.find((r) => r.manifest.id === request.ruleId) ?? null : null;
+          if (request.action === "reveal") {
+            const target = rule ? path.join(list.rulesDirectory, rule.manifest.id) : list.rulesDirectory;
+            const failure = await shell.openPath(target);
+            return failure ? { ok: false, message: failure } : { ok: true };
+          }
+          clipboard.writeText(ruleAiPrompt({ rulesDirectory: list.rulesDirectory.replaceAll("\\", "/"), rule }));
+          return { ok: true };
+        }
+      }
+    } catch (error) {
+      logger?.error("rule.ipc", error, { action: request.action });
+      return { ok: false, message: error instanceof Error ? error.message : String(error) };
     }
   });
   ipcMain.handle(OPEN_WITH_CHOOSE_PROGRAM_CHANNEL, async (event) => {

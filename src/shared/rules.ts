@@ -152,3 +152,54 @@ CREATE INDEX IF NOT EXISTS idx_rule_runs_rule ON rule_runs(rule_id, started_at D
 
 /** Runs kept per rule; older ones are dropped when a run is recorded. */
 export const RULE_RUNS_KEPT = 200;
+
+/** Renderer → Main rule actions (one IPC channel, validated in Main). */
+export const ruleIpcRequestSchema = z.discriminatedUnion("action", [
+  z.strictObject({ action: z.literal("list"), libraryId: z.string().min(1) }),
+  z.strictObject({ action: z.literal("set-enabled"), libraryId: z.string().min(1), ruleId: z.string().uuid(), enabled: z.boolean() }),
+  z.strictObject({ action: z.literal("set-layout"), libraryId: z.string().min(1), layout: ruleLayoutSchema }),
+  z.strictObject({ action: z.literal("run"), libraryId: z.string().min(1), ruleId: z.string().uuid(), dryRun: z.boolean() }),
+  z.strictObject({ action: z.literal("history"), libraryId: z.string().min(1), ruleId: z.string().uuid() }),
+  z.strictObject({ action: z.literal("delete"), libraryId: z.string().min(1), ruleId: z.string().uuid() }),
+  z.strictObject({ action: z.literal("reveal"), libraryId: z.string().min(1), ruleId: z.string().uuid().nullable() }),
+  z.strictObject({ action: z.literal("copy-for-ai"), libraryId: z.string().min(1), ruleId: z.string().uuid().nullable() }),
+  z.strictObject({ action: z.literal("create"), libraryId: z.string().min(1), name: z.string().trim().min(1).max(120) }),
+]);
+export type RuleIpcRequest = z.infer<typeof ruleIpcRequestSchema>;
+
+export type RuleIpcResult =
+  | { ok: true; list?: RuleListResult; run?: RuleRun; runs?: RuleRun[] }
+  | { ok: false; message: string };
+
+/** The prompt "复制给 AI" puts on the clipboard. */
+export function ruleAiPrompt(input: { rulesDirectory: string; rule: RuleSummary | null }): string {
+  const lines = [
+    `这是 Keel 资源库的规则目录：${input.rulesDirectory}`,
+    `先读 ${input.rulesDirectory}/AGENTS.md（写法与约束）、keel-rule-api.d.ts（可用 API）和 rule.schema.json（清单格式）。`,
+  ];
+  if (input.rule) {
+    const dir = `${input.rulesDirectory}/${input.rule.manifest.id}`;
+    lines.push(
+      `要修改的规则：${dir}`,
+      `名称：${input.rule.manifest.name}`,
+      `用途：${input.rule.manifest.purpose || "（未填写）"}`,
+      "",
+      "当前 rule.json：",
+      "```json",
+      JSON.stringify(input.rule.manifest, null, 2),
+      "```",
+      "",
+      `当前 ${input.rule.manifest.script}：`,
+      "```ts",
+      input.rule.source.trimEnd(),
+      "```",
+    );
+    if (input.rule.lastRun?.error) {
+      lines.push("", `最近一次运行失败：${input.rule.lastRun.error.code} ${input.rule.lastRun.error.message}${input.rule.lastRun.error.line ? `（第 ${input.rule.lastRun.error.line} 行）` : ""}`);
+    }
+  } else {
+    lines.push("要新建一条规则：在目录下新建 <UUID>/rule.json 与 rule.ts。");
+  }
+  lines.push("", "改完后用 rule.validate 和 rule.dry-run 检查；新规则默认关闭，由我在 Keel 中打开。");
+  return lines.join("\n");
+}

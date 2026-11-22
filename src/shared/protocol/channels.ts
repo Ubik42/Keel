@@ -145,3 +145,5 @@ export const OFFSCREEN_THUMBNAIL_FRAME_CHANNEL =
 export const WORKER_READY_MESSAGE_TYPE = 'worker.ready' as const;
 export const WORKER_SHUTDOWN_MESSAGE_TYPE = 'worker.shutdown' as const;
 export const WORKER_SHUTDOWN_ACK_MESSAGE_TYPE = 'worker.shutdown.ack' as const;
+export const RULE_RUN_RECORDED_CHANNEL = 'keel:rule:run-recorded';
+export const RULE_INVOKE_CHANNEL = 'keel:rule:invoke';
