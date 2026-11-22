@@ -192,7 +192,7 @@ export function useBrowsePluginContext({ api, library, workspaceCanvasRef, repor
       if (frame !== undefined) window.cancelAnimationFrame(frame);
       if (debounceTimer !== undefined) window.clearTimeout(debounceTimer);
     };
-  }, [api, library, assetViewMode, browseLayout, visibleVirtualBrowseLayout, interactionGenerationRef, previewAssetRef, reportedVisibleWindowKeyRef, viewportGenerationRef, viewportScrollTopRef, visibleWindowAssetIdsRef, workspaceCanvasRef]);
+  }, [api, library, assetViewMode, browseLayout, visibleVirtualBrowseLayout, visibleBrowseLayout, interactionGenerationRef, previewAssetRef, reportedVisibleWindowKeyRef, viewportGenerationRef, viewportScrollTopRef, visibleWindowAssetIdsRef, workspaceCanvasRef]);
 
   // Map the scrollbar to the compact real-asset index. One-frame coalescing
   // avoids request spam without spending 50ms of the 500ms loading budget.

@@ -90,6 +90,8 @@ function createHarness(options?: {
       if (options?.restoredAnchor) {
         selection.setAssetSelectionAnchor(options.restoredAnchor);
       }
+      // Mount-only: publish the fixture layout once, as the canvas does.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     snapshot = {

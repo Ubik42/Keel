@@ -36,7 +36,6 @@ const safeDisplayName = nonBlankString.max(255).refine(
 // opens a user library in that mode; damage goes to backup then Assets rescue.
 const libraryRecoveryModeSchema = z.enum(['backup-1', 'backup-2', 'read-only', 'rescue']);
 const recoveryMetadataLossSchema = z.enum([
-  'collections',
   'tags',
   'ratings',
   'descriptions',

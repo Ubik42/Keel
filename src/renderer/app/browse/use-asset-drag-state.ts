@@ -383,7 +383,7 @@ export function useAssetDragState({ cancelPreviewViewRestoreRef, previewRestoreF
       setAiProgressBannerVisible(true);
     });
     // Progress events drive the banner; a status RPC would wait behind the queue.
-  }, [aiConnectionFailureGate.failedJobIds, onAiConnectionFailureRetry, setAiAnalyzing, setAiBatchProgress, setAiProgressBannerVisible, aiBatchCounterBaselineRef, aiBatchJobIdsRef, aiBatchKnownJobsRef, aiBatchSkippedCountRef, aiBatchStatusRequestRef, analyzingAssetIdRef, analyzingBatchSizeRef, lastAiBatchAssetIdRef, lastAiBatchJobIdsRef]);
+  }, [aiConnectionFailureGate.failedJobIds, aiJobs?.failed, aiJobs?.succeeded, onAiConnectionFailureRetry, setAiAnalyzing, setAiBatchProgress, setAiProgressBannerVisible, aiBatchCounterBaselineRef, aiBatchJobIdsRef, aiBatchKnownJobsRef, aiBatchSkippedCountRef, aiBatchStatusRequestRef, analyzingAssetIdRef, analyzingBatchSizeRef, lastAiBatchAssetIdRef, lastAiBatchJobIdsRef]);
 
 
   const selectedFolderId =

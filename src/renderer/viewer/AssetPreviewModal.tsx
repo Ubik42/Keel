@@ -262,8 +262,10 @@ const AssetPreviewModalContent = forwardRef<
 ) {
   const t = useT();
   const modalRef = useRef<HTMLElement>(null);
-  const fullscreenElement = (): Element | null =>
-    fullscreenRootRef?.current ?? modalRef.current;
+  const fullscreenElement = useCallback(
+    (): Element | null => fullscreenRootRef?.current ?? modalRef.current,
+    [fullscreenRootRef],
+  );
   const viewerSessionControllerRef = useRef<ViewerSessionController | null>(null);
   if (viewerSessionControllerRef.current === null) {
     viewerSessionControllerRef.current = new ViewerSessionController();
@@ -639,6 +641,7 @@ const AssetPreviewModalContent = forwardRef<
   }, [
     asset.assetId,
     asset.currentRevisionId,
+    fullscreenElement,
     libraryId,
     resolvePreview,
     viewerSessionController,
@@ -831,7 +834,7 @@ const AssetPreviewModalContent = forwardRef<
     return () => {
       document.removeEventListener("fullscreenchange", onFullscreenChange);
     };
-  }, []);
+  }, [fullscreenElement]);
 
   function handlePlaybackError(event: SyntheticEvent<HTMLMediaElement>) {
     const mediaError = event.currentTarget.error;
