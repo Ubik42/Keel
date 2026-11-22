@@ -1885,6 +1885,12 @@ export const workerCommandSchema = z.discriminatedUnion('type', [
     content: z.string().max(1_000_000),
   }),
   z.strictObject({
+    // PF: companion extensions declared by active plugins (built-ins stay on).
+    type: z.literal('library.companion-extensions.set'),
+    libraryId: identifierSchema,
+    extensions: z.array(z.string().min(1).max(33)).max(256),
+  }),
+  z.strictObject({
     type: z.literal('ignore.set'),
     libraryId: identifierSchema,
     locationKind: z.enum(['managed', 'linked']),

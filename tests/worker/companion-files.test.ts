@@ -94,4 +94,24 @@ describe('companion files', () => {
     expect(existsSync(path.join(shoot, 'photo.CR3.xmp'))).toBe(false);
     expect(existsSync(path.join(shoot, 'lonely.xmp'))).toBe(true);
   });
+
+  it('pairs plugin-declared companions and ingests music files', () => {
+    const parent = mkdtempSync(path.join(tmpdir(), 'keel-companions-music-'));
+    roots.push(parent);
+    const service = new LibraryService();
+    services.push(service);
+    const library = service.createLibrary({ displayName: 'Music', selectedParentPath: parent });
+    for (const name of ['song.mid', 'song.panthesia', 'score.musicxml', 'score.mxl']) {
+      writeFileSync(path.join(library.libraryPath, name), name);
+    }
+    service.refreshManagedAssets(library.libraryId);
+    expect(visibleNames(service, library.libraryId)).toEqual(['score.musicxml', 'score.mxl', 'song.mid', 'song.panthesia']);
+    service.setCompanionExtensions(['.panthesia']);
+    expect(visibleNames(service, library.libraryId)).toEqual(['score.musicxml', 'score.mxl', 'song.mid']);
+    const song = service.listAssets({ libraryId: library.libraryId, recursive: true }).find((asset) => asset.displayName === 'song.mid')!;
+    expect(service.getAssetMetadata({ libraryId: library.libraryId, assetId: song.assetId }).companions)
+      .toEqual([expect.objectContaining({ fileName: 'song.panthesia' })]);
+    service.renameAssetFile({ libraryId: library.libraryId, assetId: song.assetId, newBaseName: 'etude' });
+    expect(readFileSync(path.join(library.libraryPath, 'etude.panthesia'), 'utf8')).toBe('song.panthesia');
+  });
 });

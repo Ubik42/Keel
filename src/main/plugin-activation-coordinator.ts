@@ -111,6 +111,7 @@ type ActiveRecord = {
   permissions: readonly PluginPermission[];
   hooks: readonly ActiveHookContribution[];
   jobs: readonly ActiveJobContribution[];
+  companionExtensions: readonly string[];
   themePackage?: PluginThemePackage;
 };
 
@@ -260,6 +261,7 @@ export class PluginActivationCoordinator {
         packageHash: candidate.pluginPackage.lock.packageHash,
         packageDirectory: candidate.pluginPackage.packageDirectory,
         permissions: candidate.pluginPackage.manifest.permissions,
+        companionExtensions: (candidate.pluginPackage.manifest.contributes?.companions ?? []).map((entry) => entry.extension),
         hooks: (candidate.pluginPackage.manifest.contributes?.hooks ?? []).map((hook) => ({
           event: hook.event,
           blocking: hook.blocking,
@@ -347,6 +349,7 @@ export class PluginActivationCoordinator {
         packageHash: candidate.pluginPackage.lock.packageHash,
         packageDirectory: candidate.pluginPackage.packageDirectory,
         permissions: candidate.pluginPackage.manifest.permissions,
+        companionExtensions: (candidate.pluginPackage.manifest.contributes?.companions ?? []).map((entry) => entry.extension),
         hooks: (candidate.pluginPackage.manifest.contributes?.hooks ?? []).map((hook) => ({
           event: hook.event,
           blocking: hook.blocking,
@@ -518,6 +521,7 @@ export class PluginActivationCoordinator {
         packageHash: candidate.pluginPackage.lock.packageHash,
         packageDirectory: candidate.pluginPackage.packageDirectory,
         permissions: candidate.pluginPackage.manifest.permissions,
+        companionExtensions: (candidate.pluginPackage.manifest.contributes?.companions ?? []).map((entry) => entry.extension),
         hooks: (candidate.pluginPackage.manifest.contributes?.hooks ?? []).map((hook) => ({
           event: hook.event,
           blocking: hook.blocking,
@@ -736,6 +740,12 @@ export class PluginActivationCoordinator {
       pluginId: record.pluginId,
       packageHash: record.packageHash,
     }));
+  }
+
+  /** PF: companion extensions declared by plugins active for this library. */
+  listCompanionExtensions(libraryId: string): string[] {
+    const active = [...this.#activeGlobal.values(), ...(this.#activeByLibrary.get(libraryId)?.values() ?? [])];
+    return [...new Set(active.flatMap((record) => record.companionExtensions))];
   }
 
   listActiveProviders(libraryId: string): readonly PluginProviderRegistration[] {

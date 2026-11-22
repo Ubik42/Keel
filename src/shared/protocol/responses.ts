@@ -662,6 +662,11 @@ export type TagOperationSkip = z.infer<typeof tagOperationSkipSchema>;
 const assetOperationSuccessSchemas = [
   z.strictObject({
     ok: z.literal(true),
+    type: z.literal('library.companion-extensions.updated'),
+    libraryId: nonBlankString,
+  }),
+  z.strictObject({
+    ok: z.literal(true),
     type: z.literal('media.job-summary.read'),
     libraryId: nonBlankString,
     ...mediaJobCountsShape,

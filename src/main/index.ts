@@ -2990,6 +2990,23 @@ async function syncPluginThumbnailExtensions(): Promise<void> {
   }
 }
 
+/**
+ * PF: tell the Worker which companion extensions active plugins declare. The
+ * Worker keeps one process-wide set, so send the union over open libraries.
+ */
+async function syncPluginCompanionExtensions(): Promise<void> {
+  const coordinator = pluginActivationCoordinator;
+  if (!coordinator || !workerClient) return;
+  const libraryIds = coordinator.trackedOpenLibraryIds();
+  if (libraryIds.length === 0) return;
+  const extensions = [...new Set(libraryIds.flatMap((id) => coordinator.listCompanionExtensions(id)))];
+  try {
+    await workerClient.request({ type: "library.companion-extensions.set", libraryId: libraryIds[0]!, extensions });
+  } catch (error) {
+    logger?.error("plugin.companion-extensions", error);
+  }
+}
+
 async function notifyLibraryOpenedSideEffects(input: {
   libraryId: string;
   libraryDirectory: string;
@@ -3000,6 +3017,7 @@ async function notifyLibraryOpenedSideEffects(input: {
       libraryId: input.libraryId,
       libraryDirectory: input.libraryDirectory,
     });
+    await syncPluginCompanionExtensions();
   } catch (error) {
     logger?.error("plugin.activation.library-opened", error, {
       libraryId: input.libraryId,
@@ -6681,6 +6699,7 @@ async function startApplication(): Promise<void> {
           } else if (libraryId !== undefined && libraryDirectory !== undefined) {
             await coordinator.refreshLibrary({ libraryId, libraryDirectory });
           }
+          await syncPluginCompanionExtensions();
           if (mainWindow && !mainWindow.isDestroyed()) {
             mainWindow.webContents.send(PLUGIN_CONTRIBUTIONS_CHANGED_CHANNEL, {
               libraryId: libraryId ?? null,

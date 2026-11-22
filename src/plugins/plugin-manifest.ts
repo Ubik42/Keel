@@ -774,6 +774,14 @@ export const pluginContributesSchema = z.strictObject({
   jobs: z.array(contributionJobSchema).max(128).default([]),
   providers: z.array(contributionProviderSchema).max(128).default([]),
   themes: z.array(contributionThemeSchema).max(8).default([]),
+  /**
+   * PF: extensions whose files travel with a primary of the same name
+   * (e.g. `.panthesia` next to `song.mid`).
+   */
+  companions: z.array(z.strictObject({
+    id: z.string().min(1).max(128),
+    extension: z.string().regex(/^\.?[A-Za-z0-9][A-Za-z0-9_-]{0,31}$/u),
+  })).max(32).optional(),
   /** Host-rendered semantic UI. Settings/menu entries reference the existing contributions above. */
   ui: pluginUiDescriptorSchema.optional(),
 });
@@ -844,6 +852,7 @@ export const pluginManifestSchema = pluginManifestObjectSchema.superRefine((mani
     ...manifest.contributes.jobs.map((contribution) => contribution.id),
     ...manifest.contributes.providers.map((contribution) => contribution.id),
     ...manifest.contributes.themes.map((contribution) => contribution.id),
+    ...(manifest.contributes.companions ?? []).map((contribution) => contribution.id),
   ];
   if (new Set(contributionIds).size !== contributionIds.length) {
     context.addIssue({ code: 'custom', path: ['contributes'], message: 'Contribution identifiers must be unique within a plugin.' });

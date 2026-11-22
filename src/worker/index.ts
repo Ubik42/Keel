@@ -2661,6 +2661,10 @@ async function handleRequestWithoutWriteLease(request: WorkerRequest): Promise<W
       }
       return result;
     }
+    case 'library.companion-extensions.set':
+      // PF: the set is process-wide; the next read re-pairs companions.
+      libraryService.setCompanionExtensions(request.command.extensions);
+      return { ok: true, type: 'library.companion-extensions.updated', libraryId: request.command.libraryId };
     case 'ignore.list':
     case 'ignore.gitignore.get':
     case 'ignore.gitignore.preview':

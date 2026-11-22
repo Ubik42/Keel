@@ -150,6 +150,16 @@ type ThemeColor = string; // Host schema accepts only bounded color literals.
 
 所有这些 Contribution 的 ID 在插件内共享同一命名空间，必须唯一。菜单中的 command 必须引用已声明命令。
 
+### 伴生扩展名与打开方式（PF）
+
+`contributes.companions` 声明伴生扩展名：同一目录中与主文件同名（去掉扩展名，或主文件全名加此扩展名）的文件作为伴生文件，浏览时隐藏，在主文件的 Inspector“附件”中列出，并随主文件移动、改名、进回收站、恢复和删除。Keel 内置 `.xmp`。
+
+```json
+"companions": [{ "id": "panthesia-manifest", "extension": ".panthesia" }]
+```
+
+“打开方式”条目用菜单贡献实现：在 `menus.asset` 中把命令放进 `open` 分组（例如“用 Panthesia 练习”），命令收到所选资产。按扩展名的默认打开方式由用户在设置中选择（Keel 预览、系统默认程序或登记的外部程序）；插件条目暂不能设为双击默认。
+
 ## 4. 菜单、条件和上下文
 
 Manifest 菜单的 key 当前是 `asset`、`folder`、`workspace`。其他 key（包括已删除的 `collection`）会被忽略：
