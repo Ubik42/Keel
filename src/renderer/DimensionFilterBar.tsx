@@ -3,31 +3,18 @@ import { useQueryField } from "./stores/query-store";
 import { memo, useEffect, useRef, useState, createContext, useContext } from "react";
 
 import { Icon, type IconName } from "./Icons";
-import { Select } from "./workbench/ui/primitives";
-import { FilterTagPicker } from "./FilterTagPicker";
-import { FilterPresetChips } from "./FilterPresetChips";
 import {
-  ASPECT_RATIO_PRESETS,
-  ORIENTATION_PRESETS,
-  RESOLUTION_PRESETS,
-  aspectRatioPresetRange,
-  togglePresetRange,
   togglePresetRanges,
   type RangeStrings,
 } from "./filter-presets";
 import {
   applyDimensionSelectionClick,
   formatGroupSelectionState,
-  formatTokensHas,
   resolveTagFilterSets,
-  toggleFormatGroup,
-  toggleFormatToken,
 } from "./dimension-filter-selection";
 import {
-  FORMAT_FILTER_GROUPS,
   OTHER_FORMAT_EXTENSIONS,
   FORMAT_TEXT_TOKEN,
-  FORMAT_UNKNOWN_TOKEN,
 } from "./format-filter-presets";
 import { DimensionEnableToggle } from "./dimension-enable-toggle";
 import {
@@ -41,19 +28,20 @@ import {
   type ClearableFilterId,
   type DiscoveryFilterSnapshot,
 } from "./active-discovery-filters";
-import { ColorFilterPopover } from "./ColorFilterPopover";
 import {
   parseColorFilterValues,
 } from "../shared/color-filter-presets";
-import { TechnicalRangeFilter } from "./TechnicalRangeFilter";
 import { SortModeControl, type SortFieldOption } from "./SortModeControl";
 import { useT } from "./i18n";
 import type { SortDefinition } from "../shared/asset-types";
-import { PortaledPopover } from "./workbench/overlay/PortaledPopover";
 import {
   attachCompositionLock,
   shouldHoldDismissForIme,
 } from "./workbench/overlay/ime-safe-dismiss";
+import { MoreFilterPanel } from "./filter-panels/MoreFilterPanel";
+import { FormatFilterPanel } from "./filter-panels/FormatFilterPanel";
+import { RatingFilterPanel } from "./filter-panels/RatingFilterPanel";
+import { TagFilterPanel } from "./filter-panels/TagFilterPanel";
 
 export type DimensionId =
   | "color"
@@ -95,40 +83,6 @@ function useDimensionFilterBarActions(): DimensionFilterBarActions {
   const actions = useContext(DimensionFilterBarActionsContext);
   if (!actions) throw new Error("DimensionFilterBar needs DimensionFilterBarActionsProvider.");
   return actions;
-}
-
-/** Category checkbox with native indeterminate for partial format selection. */
-function FormatGroupCheckbox({
-  checked,
-  indeterminate,
-  disabled,
-  label,
-  onToggle,
-}: {
-  checked: boolean;
-  indeterminate: boolean;
-  disabled: boolean;
-  label: string;
-  onToggle: () => void;
-}) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.indeterminate = indeterminate;
-    }
-  }, [indeterminate]);
-  return (
-    <label className="format-filter-group-check">
-      <input
-        checked={checked}
-        disabled={disabled}
-        onChange={onToggle}
-        ref={inputRef}
-        type="checkbox"
-      />
-      <span>{label}</span>
-    </label>
-  );
 }
 
 function DimensionButton({
@@ -568,42 +522,26 @@ export const DimensionFilterBar = memo(function DimensionFilterBar(props: Dimens
             onClick={handleTagsDimensionClick}
             open={openDimension === "tags"}
           />
-          {openDimension === "tags" && (
-            <PortaledPopover
-              anchorRef={tagsDimRef}
-              className="dimension-filter-popover is-tag-filter"
-              data-dimension="tags"
-              role="dialog"
-            >
-              <FilterTagPicker
-                disabled={controlsDisabled}
-                excludedNames={excludedTagNames}
-                includedNames={includedTagNames}
-                expression={tagFilterExpression}
-                lastValidExpression={tagFilterLastValidExpression}
-                onExpressionChange={setTagFilterExpression ?? (() => {})}
-                expressionMode={tagFilterMode === "expression"}
-                onExpressionModeChange={(value) => setTagFilterMode?.(value ? "expression" : "selection")}
-                tagMatch={tagFilterMatch}
-                onTagMatchChange={(value) => setTagFilterMatch?.(value)}
-                onChange={handleTagSelectionChange}
-                recentNames={tagRecency.names}
-                tags={tags}
-              />
-              <div className="dimension-filter-check-row">
-                <label className="dimension-filter-check">
-                  <input
-                    checked={includeAiTag}
-                    disabled={controlsDisabled}
-                    onChange={(event) => setIncludeAiTag(event.target.checked)}
-                    type="checkbox"
-                  />
-                  <span className="inspector-ai-badge">{t("filter.ai")}</span>
-                </label>
-              </div>
-              <p className="dimension-filter-hint">{t("filter.tagClickHint")}</p>
-            </PortaledPopover>
-          )}
+          <TagFilterPanel
+            openDimension={openDimension}
+            tagsDimRef={tagsDimRef}
+            controlsDisabled={controlsDisabled}
+            excludedTagNames={excludedTagNames}
+            includedTagNames={includedTagNames}
+            tagFilterExpression={tagFilterExpression}
+            tagFilterLastValidExpression={tagFilterLastValidExpression}
+            setTagFilterExpression={setTagFilterExpression}
+            tagFilterMode={tagFilterMode}
+            setTagFilterMode={setTagFilterMode}
+            tagFilterMatch={tagFilterMatch}
+            setTagFilterMatch={setTagFilterMatch}
+            handleTagSelectionChange={handleTagSelectionChange}
+            tagRecency={tagRecency}
+            tags={tags}
+            includeAiTag={includeAiTag}
+            setIncludeAiTag={setIncludeAiTag}
+            t={t}
+          />
         </div>
 
         <div className="dimension-filter-dim" data-dimension="rating" ref={ratingDimRef}>
@@ -616,52 +554,19 @@ export const DimensionFilterBar = memo(function DimensionFilterBar(props: Dimens
             onClick={handleRatingDimensionClick}
             open={openDimension === "rating"}
           />
-          {openDimension === "rating" && (
-            <PortaledPopover
-              anchorRef={ratingDimRef}
-              className="dimension-filter-popover"
-              data-dimension="rating"
-              role="dialog"
-            >
-              <div className="dimension-rating-row" role="group">
-                {[5, 4, 3, 2, 1, 0].map((star) => (
-                  <button
-                    aria-pressed={selectedRatings.has(String(star))}
-                    className={`dimension-rating-chip${selectedRatings.has(String(star)) ? " is-active" : ""}`}
-                    disabled={controlsDisabled}
-                    key={star}
-                    onClick={(event) => toggleRating(star, event.shiftKey)}
-                    type="button"
-                  >
-                    {star === 0 ? t("filter.unrated") : `${star}★`}
-                  </button>
-                ))}
-              </div>
-              <div className="dimension-filter-check-row">
-                <label className="dimension-filter-check">
-                  <input
-                    checked={excludeRatingFilter}
-                    disabled={disabled || selectedRatings.size === 0}
-                    onChange={(event) =>
-                      setExcludeRatingFilter(event.target.checked)
-                    }
-                    type="checkbox"
-                  />
-                  {t("filter.exclude")}
-                </label>
-                <label className="dimension-filter-check">
-                  <input
-                    checked={includeAiRating}
-                    disabled={controlsDisabled}
-                    onChange={(event) => setIncludeAiRating(event.target.checked)}
-                    type="checkbox"
-                  />
-                  <span className="inspector-ai-badge">{t("filter.ai")}</span>
-                </label>
-              </div>
-              <p className="dimension-filter-hint">{t("filter.shiftMultiSelectHint")}</p>
-            </PortaledPopover>
-          )}
+          <RatingFilterPanel
+            openDimension={openDimension}
+            ratingDimRef={ratingDimRef}
+            selectedRatings={selectedRatings}
+            controlsDisabled={controlsDisabled}
+            toggleRating={toggleRating}
+            t={t}
+            excludeRatingFilter={excludeRatingFilter}
+            disabled={disabled}
+            setExcludeRatingFilter={setExcludeRatingFilter}
+            includeAiRating={includeAiRating}
+            setIncludeAiRating={setIncludeAiRating}
+          />
         </div>
 
         <div className="dimension-filter-dim">
@@ -684,134 +589,19 @@ export const DimensionFilterBar = memo(function DimensionFilterBar(props: Dimens
             onClick={handleFormatDimensionClick}
             open={openDimension === "format"}
           />
-          {openDimension === "format" && (
-            <PortaledPopover
-              anchorRef={formatDimRef}
-              className="dimension-filter-popover is-wide format-filter-popover"
-              data-dimension="format"
-              role="dialog"
-            >
-              <input
-                aria-label={t("filter.format")}
-                className="text-field"
-                disabled={controlsDisabled}
-                onChange={(event) => setFormatFilter(event.target.value)}
-                placeholder="png, jpg, mp4"
-                value={formatFilter}
-              />
-              {FORMAT_FILTER_GROUPS.map((group) => {
-                const groupState = formatGroupSelectionState(
-                  formatFilter,
-                  group.extensions,
-                );
-                return (
-                  <div className="format-filter-group" key={group.labelKey}>
-                    <FormatGroupCheckbox
-                      checked={groupState === "all"}
-                      disabled={controlsDisabled}
-                      indeterminate={groupState === "partial"}
-                      label={t(group.labelKey)}
-                      onToggle={() =>
-                        setFormatFilter(
-                          toggleFormatGroup(formatFilter, group.extensions),
-                        )
-                      }
-                    />
-                    <div className="filter-presets" role="group">
-                      {group.extensions.map((ext) => {
-                        const active = formatTokensHas(formatFilter, ext);
-                        return (
-                          <button
-                            aria-pressed={active}
-                            className={`filter-preset-chip${active ? " is-active" : ""}`}
-                            disabled={controlsDisabled}
-                            key={ext}
-                            onClick={(event) =>
-                              setFormatFilter(
-                                toggleFormatToken(
-                                  formatFilter,
-                                  ext,
-                                  event.shiftKey,
-                                ),
-                              )
-                            }
-                            type="button"
-                          >
-                            {ext}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
-              <div className="format-filter-group">
-                <FormatGroupCheckbox
-                  checked={otherGroupState === "all"}
-                  disabled={controlsDisabled}
-                  indeterminate={otherGroupState === "partial"}
-                  label={t("filter.formatGroupMisc")}
-                  onToggle={() =>
-                    setFormatFilter(
-                      toggleFormatGroup(formatFilter, otherFormatTokens),
-                    )
-                  }
-                />
-                <div className="filter-presets" role="group">
-                  {otherFormatTokens.map((ext) => {
-                    const active = formatTokensHas(formatFilter, ext);
-                    return (
-                      <button
-                        aria-pressed={active}
-                        className={`filter-preset-chip${active ? " is-active" : ""}`}
-                        disabled={controlsDisabled}
-                        key={ext}
-                        onClick={(event) =>
-                          setFormatFilter(
-                            toggleFormatToken(
-                              formatFilter,
-                              ext,
-                              event.shiftKey,
-                            ),
-                          )
-                        }
-                        type="button"
-                      >
-                        {ext === FORMAT_TEXT_TOKEN
-                          ? t("filter.formatText")
-                          : ext}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-              <div className="format-filter-group">
-                <FormatGroupCheckbox
-                  checked={formatTokensHas(formatFilter, FORMAT_UNKNOWN_TOKEN)}
-                  disabled={controlsDisabled}
-                  indeterminate={false}
-                  label={t("filter.formatUnrecognized")}
-                  onToggle={() =>
-                    setFormatFilter(
-                      toggleFormatGroup(formatFilter, [FORMAT_UNKNOWN_TOKEN]),
-                    )
-                  }
-                />
-              </div>
-              <label className="dimension-filter-check">
-                <input
-                  checked={excludeFormatFilter}
-                  disabled={disabled || !formatFilter.trim()}
-                  onChange={(event) =>
-                    setExcludeFormatFilter(event.target.checked)
-                  }
-                  type="checkbox"
-                />
-                {t("filter.exclude")}
-              </label>
-              <p className="dimension-filter-hint">{t("filter.shiftMultiSelectHint")}</p>
-            </PortaledPopover>
-          )}
+          <FormatFilterPanel
+            openDimension={openDimension}
+            formatDimRef={formatDimRef}
+            t={t}
+            controlsDisabled={controlsDisabled}
+            setFormatFilter={setFormatFilter}
+            formatFilter={formatFilter}
+            otherGroupState={otherGroupState}
+            otherFormatTokens={otherFormatTokens}
+            excludeFormatFilter={excludeFormatFilter}
+            disabled={disabled}
+            setExcludeFormatFilter={setExcludeFormatFilter}
+          />
         </div>
 
         <div className="dimension-filter-dim" data-dimension="more" ref={moreDimRef}>
@@ -823,209 +613,42 @@ export const DimensionFilterBar = memo(function DimensionFilterBar(props: Dimens
             onClick={handleMoreDimensionClick}
             open={openDimension === "more"}
           />
-          {openDimension === "more" && (
-            <PortaledPopover
-              anchorRef={moreDimRef}
-              className="dimension-filter-popover is-wide"
-              data-dimension="more"
-              role="dialog"
-            >
-              <details className="dimension-filter-more-section">
-                <summary>{t('filter.dimColor')}</summary>
-              <ColorFilterPopover
-                colorFilter={colorFilter}
-                colorFilterPrefs={colorFilterPrefs}
-                colorSimilarity={colorSimilarity}
-                disabled={controlsDisabled}
-                excludeColorFilter={excludeColorFilter}
-                onColorFilterPrefsChange={onColorFilterPrefsChange}
-                setColorFilter={setColorFilter}
-                setColorSimilarity={setColorSimilarity}
-                setExcludeColorFilter={setExcludeColorFilter}
-              />
-              </details>
-              <details className="dimension-filter-more-section">
-                <summary>{t('filter.dimShape')}</summary>
-              <FilterPresetChips
-                disabled={controlsDisabled}
-                label={t("filter.orientation")}
-                onToggle={applyShapePreset}
-                presets={ORIENTATION_PRESETS.map((preset) => ({
-                  label:
-                    preset.id === "landscape"
-                      ? t("filter.landscape")
-                      : t("filter.portrait"),
-                  range: preset.range,
-                }))}
-                selected={shapeSelectedRanges}
-              />
-              <FilterPresetChips
-                disabled={controlsDisabled}
-                label={t("filter.aspectRatioPresets")}
-                onToggle={applyShapePreset}
-                presets={ASPECT_RATIO_PRESETS.map((preset) => ({
-                  label: preset.label,
-                  range: aspectRatioPresetRange(preset),
-                }))}
-                selected={shapeSelectedRanges}
-              />
-              <TechnicalRangeFilter
-                label={t("filter.aspectRatio")}
-                range={aspectRatioRange}
-                setRange={(next) => {
-                  setAspectRatioRange(next);
-                  const resolved =
-                    typeof next === "function" ? next(aspectRatioRange) : next;
-                  setAspectRatioRanges(
-                    resolved.min || resolved.max
-                      ? [{ min: resolved.min, max: resolved.max }]
-                      : [],
-                  );
-                }}
-                step="0.01"
-              />
-              <p className="dimension-filter-hint">{t("filter.shiftMultiSelectHint")}</p>
-
-              </details>
-              <label>
-                {t("filter.favoriteField")}
-                <Select
-                  aria-label={t("filter.favorite")}
-                  className="text-field"
-                  disabled={controlsDisabled}
-                  onValueChange={(value) =>
-                    setFavoriteFilter(value as typeof favoriteFilter)
-                  }
-                  options={[
-                    { value: "any", label: t("common.none") },
-                    { value: "yes", label: t("filter.favoriteOnly") },
-                    { value: "no", label: t("filter.notFavorite") },
-                  ]}
-                  value={favoriteFilter}
-                />
-              </label>
-              <label>
-                {t("filter.sourceUrlField")}
-                <Select
-                  aria-label={t("filter.sourceUrl")}
-                  className="text-field"
-                  disabled={controlsDisabled}
-                  onValueChange={(value) =>
-                    setSourceUrlFilter(value as typeof sourceUrlFilter)
-                  }
-                  options={[
-                    { value: "any", label: t("common.none") },
-                    { value: "yes", label: t("filter.hasSourceUrl") },
-                    { value: "no", label: t("filter.noSourceUrl") },
-                  ]}
-                  value={sourceUrlFilter}
-                />
-              </label>
-              <label>
-                {t("filter.availabilityField")}
-                <Select
-                  aria-label={t("filter.availability")}
-                  className="text-field"
-                  disabled={controlsDisabled}
-                  onValueChange={(value) =>
-                    setAvailabilityFilter(value as typeof availabilityFilter)
-                  }
-                  options={[
-                    { value: "any", label: t("common.all") },
-                    { value: "available", label: t("filter.available") },
-                    { value: "missing", label: t("filter.missing") },
-                  ]}
-                  value={availabilityFilter}
-                />
-              </label>
-              <label className="dimension-filter-check">
-                <input
-                  checked={excludeAvailabilityFilter}
-                  disabled={disabled || availabilityFilter === "any"}
-                  onChange={(event) =>
-                    setExcludeAvailabilityFilter(event.target.checked)
-                  }
-                  type="checkbox"
-                />
-                {t("filter.exclude")}
-              </label>
-              <FilterPresetChips
-                disabled={controlsDisabled}
-                label={t("filter.resolutionPresets")}
-                onToggle={(range, shiftKey) => {
-                  if (shiftKey) {
-                    const seed =
-                      longEdgeRange.min || longEdgeRange.max
-                        ? [
-                            {
-                              min: longEdgeRange.min,
-                              max: longEdgeRange.max,
-                            },
-                          ]
-                        : [];
-                    const next = togglePresetRanges(seed, range, true);
-                    if (next.length === 1) {
-                      setLongEdgeRange((current) => ({
-                        ...current,
-                        min: next[0]!.min,
-                        max: next[0]!.max,
-                      }));
-                    } else if (next.length === 0) {
-                      setLongEdgeRange((current) => ({
-                        ...current,
-                        min: "",
-                        max: "",
-                      }));
-                    } else {
-                      // Resolution still uses a single range in App state;
-                      // Shift multi falls back to replace for long-edge.
-                      setLongEdgeRange((current) => ({
-                        ...current,
-                        ...range,
-                      }));
-                    }
-                    return;
-                  }
-                  setLongEdgeRange((current) => ({
-                    ...current,
-                    ...togglePresetRange(current, range),
-                  }));
-                }}
-                presets={RESOLUTION_PRESETS}
-                selected={
-                  longEdgeRange.min || longEdgeRange.max
-                    ? [
-                        {
-                          min: longEdgeRange.min,
-                          max: longEdgeRange.max,
-                        },
-                      ]
-                    : []
-                }
-              />
-              <TechnicalRangeFilter
-                label={t("filter.longEdgePx")}
-                range={longEdgeRange}
-                setRange={setLongEdgeRange}
-              />
-              <TechnicalRangeFilter
-                label={t("filter.widthPx")}
-                range={widthRange}
-                setRange={setWidthRange}
-              />
-              <TechnicalRangeFilter
-                label={t("filter.heightPx")}
-                range={heightRange}
-                setRange={setHeightRange}
-              />
-              <TechnicalRangeFilter
-                label={t("filter.durationSec")}
-                range={durationRange}
-                setRange={setDurationRange}
-                step="0.1"
-              />
-            </PortaledPopover>
-          )}
+          <MoreFilterPanel
+            openDimension={openDimension}
+            moreDimRef={moreDimRef}
+            t={t}
+            colorFilter={colorFilter}
+            colorFilterPrefs={colorFilterPrefs}
+            colorSimilarity={colorSimilarity}
+            controlsDisabled={controlsDisabled}
+            excludeColorFilter={excludeColorFilter}
+            onColorFilterPrefsChange={onColorFilterPrefsChange}
+            setColorFilter={setColorFilter}
+            setColorSimilarity={setColorSimilarity}
+            setExcludeColorFilter={setExcludeColorFilter}
+            applyShapePreset={applyShapePreset}
+            shapeSelectedRanges={shapeSelectedRanges}
+            aspectRatioRange={aspectRatioRange}
+            setAspectRatioRange={setAspectRatioRange}
+            setAspectRatioRanges={setAspectRatioRanges}
+            setFavoriteFilter={setFavoriteFilter}
+            favoriteFilter={favoriteFilter}
+            setSourceUrlFilter={setSourceUrlFilter}
+            sourceUrlFilter={sourceUrlFilter}
+            setAvailabilityFilter={setAvailabilityFilter}
+            availabilityFilter={availabilityFilter}
+            excludeAvailabilityFilter={excludeAvailabilityFilter}
+            disabled={disabled}
+            setExcludeAvailabilityFilter={setExcludeAvailabilityFilter}
+            longEdgeRange={longEdgeRange}
+            setLongEdgeRange={setLongEdgeRange}
+            widthRange={widthRange}
+            setWidthRange={setWidthRange}
+            heightRange={heightRange}
+            setHeightRange={setHeightRange}
+            durationRange={durationRange}
+            setDurationRange={setDurationRange}
+          />
         </div>
 
         <SortModeControl
