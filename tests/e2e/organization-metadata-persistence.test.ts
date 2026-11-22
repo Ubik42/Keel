@@ -173,6 +173,9 @@ test("persists organization and metadata across restart and surfaces optimistic-
     await expect(
       locateAssetCard(window, "persistent-asset.txt"),
     ).toBeVisible();
+    // The hover-opened tag panel covers the grid; Escape closes it (clicking
+    // 标签 again would toggle the filter off instead).
+    await window.keyboard.press("Escape");
     const restoredCard = locateAssetCard(window, "persistent-asset.txt");
     await expect(restoredCard).toBeVisible();
     await restoredCard.click();
@@ -706,7 +709,10 @@ test("assigns Inspector tag suggestions directly and hides tags after their fina
     await expect(inspector.locator(".tag-chip-name")).toContainText(
       "待清理标签",
     );
+    // Removal is staged in the tag editor and saved by 完成编辑标签.
+    await inspector.getByRole("button", { name: "编辑标签", exact: true }).click();
     await inspector.getByRole("button", { name: "移除此标签" }).click();
+    await inspector.getByRole("button", { name: "完成编辑标签", exact: true }).click();
     await expect(
       inspector.locator(".tag-chip-name", { hasText: "待清理标签" }),
     ).toHaveCount(0);
