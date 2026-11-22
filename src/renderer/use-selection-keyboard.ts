@@ -15,7 +15,7 @@
 
 import { useEffect } from "react";
 
-import type { CommandPlatform } from "./commands/command-types";
+import type { CommandPlatform } from "./workbench/menu/command-types";
 import type { ShortcutEventLike } from "../shared/shortcut-resolution";
 import { listenForShortcutInputs } from "./workbench/shortcuts/shortcut-runtime";
 import {

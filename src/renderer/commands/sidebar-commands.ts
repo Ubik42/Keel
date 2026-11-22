@@ -8,7 +8,7 @@ import {
   parseLinkedVirtualFolderId,
 } from '../../shared/linked-folder-tree';
 import { translateForLocale } from '../i18n';
-import type { CommandContext, CommandDefinition } from './command-types';
+import type { CommandContext, CommandDefinition } from '../workbench/menu/command-types';
 import { DELETE_FROM_DISK_SHORTCUT } from './asset-shortcuts';
 
 function revealFolderId(ctx: SidebarCommandContext): string {

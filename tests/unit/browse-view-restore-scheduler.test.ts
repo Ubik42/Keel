@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { scheduleBrowseViewRestore } from "../../src/renderer/browse-view-restore-scheduler";
-import { captureBrowseViewSnapshot } from "../../src/renderer/view-restore";
+import { captureBrowseViewSnapshot } from "../../src/renderer/workbench/collection/view-restore";
 
 afterEach(() => vi.unstubAllGlobals());
 

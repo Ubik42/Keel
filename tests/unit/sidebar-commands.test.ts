@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { createCommandRegistry } from '../../src/renderer/commands/command-registry';
-import type { ResolvedMenuItem } from '../../src/renderer/commands/command-types';
+import { createCommandRegistry } from '../../src/renderer/workbench/menu/command-registry';
+import type { ResolvedMenuItem } from '../../src/renderer/workbench/menu/command-types';
 import {
   sidebarCommandDefinitions,
   type SidebarCommandActions,

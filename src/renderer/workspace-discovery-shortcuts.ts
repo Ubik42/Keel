@@ -9,7 +9,7 @@ import {
   type CommandPlatform,
   type ShortcutEvent,
   type ShortcutSpec,
-} from "./commands/command-types";
+} from "./workbench/menu/command-types";
 import {
   asLegacyKeyboardShortcutEvent,
   matchesRuntimeShortcut,

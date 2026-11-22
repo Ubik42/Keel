@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import type { SessionStorage } from "../../src/renderer/session-storage";
+import type { SessionStorage } from "../../src/renderer/workbench/workspace/session-storage";
 import {
   buildWorkspaceTabsSession,
   createWorkspaceTabsFromSession,

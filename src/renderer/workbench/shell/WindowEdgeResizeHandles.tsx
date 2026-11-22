@@ -6,11 +6,11 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 
-import type { KeelShellApi } from "../shared/external-url";
+import type { KeelShellApi } from "../../../shared/external-url";
 import {
   WINDOW_RESIZE_EDGES,
   type WindowResizeEdge,
-} from "../shared/window-edge-resize";
+} from "../../../shared/window-edge-resize";
 
 type Props = {
   shell: KeelShellApi | null | undefined;

@@ -7,7 +7,7 @@ import {
 import {
   matchesShortcut,
   type ShortcutEvent,
-} from "../../src/renderer/commands/command-types";
+} from "../../src/renderer/workbench/menu/command-types";
 import { assetCommandDefinitions } from "../../src/renderer/commands/asset-commands";
 import { canDeleteAssetFromDiskWithShortcut } from "../../src/renderer/browse-key-command";
 

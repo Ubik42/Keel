@@ -6,7 +6,7 @@ import {
   matchesShortcut,
   type ShortcutEvent,
   type ShortcutSpec,
-} from '../../src/renderer/commands/command-types';
+} from '../../src/renderer/workbench/menu/command-types';
 import { assetCommandDefinitions } from '../../src/renderer/commands/asset-commands';
 import { assetMultiCommandDefinitions } from '../../src/renderer/commands/asset-multi-commands';
 

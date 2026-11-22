@@ -26,7 +26,7 @@ import {
   isToggleSelectionModifier,
   resolveSelectionPlatform,
 } from "./workbench/selection/selection-modifiers";
-import { isPointerNearScrollbarTrack } from "./scrollbar-visibility";
+import { isPointerNearScrollbarTrack } from "./workbench/collection/scrollbar-visibility";
 
 export interface UseAssetSelectionParams {
   /** Visible asset summaries, used for Shift+click range computation */

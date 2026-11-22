@@ -6,7 +6,7 @@
  */
 
 import { type WorkspaceNavLocation } from "./workbench/workspace/workspace-nav-history";
-import { resolveSessionStorage, type SessionStorage } from "./session-storage";
+import { resolveSessionStorage, type SessionStorage } from "./workbench/workspace/session-storage";
 import type { WorkspaceTabsState } from "./workspace-tabs";
 
 export type StoredWorkspaceTab = {

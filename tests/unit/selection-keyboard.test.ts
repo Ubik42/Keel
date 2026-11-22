@@ -6,7 +6,7 @@ import {
   dispatchSelectionKeyboardAction,
   matchSelectionKeyboardAction,
 } from "../../src/renderer/workbench/selection/selection-keyboard";
-import { formatShortcut, matchesShortcut } from "../../src/renderer/commands/command-types";
+import { formatShortcut, matchesShortcut } from "../../src/renderer/workbench/menu/command-types";
 
 function event(
   partial: Partial<{

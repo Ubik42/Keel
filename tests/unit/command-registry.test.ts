@@ -1,15 +1,15 @@
 import { describe, expect, it } from 'vitest';
 
-import { createCommandRegistry } from '../../src/renderer/commands/command-registry';
+import { createCommandRegistry } from '../../src/renderer/workbench/menu/command-registry';
 import {
   formatShortcut,
   GROUP_ORDER,
-} from '../../src/renderer/commands/command-types';
+} from '../../src/renderer/workbench/menu/command-types';
 import type {
   CommandContext,
   CommandDefinition,
   ShortcutSpec,
-} from '../../src/renderer/commands/command-types';
+} from '../../src/renderer/workbench/menu/command-types';
 
 // REQ-COMMAND-001: 注册表是纯函数模块，node 环境直接测试，不挂载任何 DOM。
 

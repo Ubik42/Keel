@@ -7,7 +7,7 @@
 // ---------------------------------------------------------------------------
 
 import { formatShortcut, GROUP_ORDER } from './command-types';
-import { formatRuntimeShortcut } from '../workbench/shortcuts/shortcut-runtime';
+import { formatRuntimeShortcut } from '../shortcuts/shortcut-runtime';
 import type {
   CommandContext,
   CommandDefinition,

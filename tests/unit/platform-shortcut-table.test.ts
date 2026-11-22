@@ -10,7 +10,7 @@ import { sidebarCommandDefinitions } from "../../src/renderer/commands/sidebar-c
 import {
   formatShortcut,
   matchesShortcut,
-} from "../../src/renderer/commands/command-types";
+} from "../../src/renderer/workbench/menu/command-types";
 
 describe("PLATFORM_SHORTCUT_TABLE (Serpent-4ojz / Serpent-vf8x)", () => {
   it("gives every mac meta chord a windows Ctrl twin", () => {

@@ -21,7 +21,7 @@ import {
   matchAssetActionKeyboardCommand,
   isEditableAssetActionKeyboardTarget,
 } from "./asset-action-keyboard";
-import type { CommandPlatform } from "./commands/command-types";
+import type { CommandPlatform } from "./workbench/menu/command-types";
 import { listenForShortcutInputs, matchesRuntimeShortcut } from "./workbench/shortcuts/shortcut-runtime";
 import {
   isLibrarySearchInput,

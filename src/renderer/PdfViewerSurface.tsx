@@ -8,7 +8,7 @@ import type {
 import pdfjsWorkerUrl from "pdfjs-dist/build/pdf.worker.mjs?url";
 
 import type { KeelLibraryApi } from "../shared/library-api";
-import { isMacPlatform } from "./commands/command-types";
+import { isMacPlatform } from "./workbench/menu/command-types";
 import {
   GLOBAL_ZOOM_MENU_ACTION_EVENT,
   matchGlobalZoomShortcut,

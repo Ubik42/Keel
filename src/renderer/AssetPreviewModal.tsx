@@ -92,7 +92,7 @@ import {
 } from "./viewer/viewer-session-controller";
 import { ShellSurface, ViewerSurface } from "./workbench/ui/surfaces";
 import { ModelViewerSurface } from "./3d-viewer/viewer-surface";
-import { isMacPlatform } from "./commands/command-types";
+import { isMacPlatform } from "./workbench/menu/command-types";
 import { isBakeableStillImageFile } from "../shared/bakeable-still-image";
 
 interface AssetPreviewModalProps {

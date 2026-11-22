@@ -9,7 +9,7 @@
 import {
   type CommandPlatform,
   type ShortcutSpec,
-} from "../../commands/command-types";
+} from "../menu/command-types";
 import { matchesRuntimeShortcut } from "../shortcuts/shortcut-runtime";
 import type { ShortcutEventLike } from "../../../shared/shortcut-resolution";
 

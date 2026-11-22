@@ -7,7 +7,7 @@ import {
   matchesShortcut,
   type CommandPlatform,
   type ShortcutEvent,
-} from "./commands/command-types";
+} from "./workbench/menu/command-types";
 import { isEditableAssetActionKeyboardTarget } from "./asset-action-keyboard";
 import {
   resolvePluginContributionConditions,

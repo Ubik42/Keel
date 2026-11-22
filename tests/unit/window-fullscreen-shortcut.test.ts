@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { matchWindowFullscreenShortcut } from "../../src/shared/window-fullscreen-shortcut";
 import { findPlatformShortcut } from "../../src/shared/platform-shortcut-table";
-import { matchesShortcut } from "../../src/renderer/commands/command-types";
+import { matchesShortcut } from "../../src/renderer/workbench/menu/command-types";
 
 describe("window fullscreen shortcut (Serpent-692279)", () => {
   it("matches unmodified F11 on Windows and Linux", () => {

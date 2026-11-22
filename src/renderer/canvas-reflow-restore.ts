@@ -15,7 +15,7 @@ import {
   type AnchorCard,
   type CanvasAnchor,
   type RectLike,
-} from "./canvas-scroll-anchor";
+} from "./workbench/collection/canvas-scroll-anchor";
 import { canvasHasPreviewScrollHold } from "./browse-scroll-debug";
 import {
   readPublishedCanvasAssetLayout,

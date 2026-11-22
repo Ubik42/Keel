@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { isMacPlatform } from "./commands/command-types";
+import { isMacPlatform } from "./workbench/menu/command-types";
 import {
   matchGlobalZoomShortcut,
   nextKeyboardZoomScale,

@@ -6,7 +6,7 @@
 import {
   resolveSessionStorage,
   type SessionStorage,
-} from "./session-storage";
+} from "./workbench/workspace/session-storage";
 
 export type StoredBrowserSession = {
   version: 1;

@@ -11,7 +11,7 @@ import {
   browseRestoreExtentIsReady,
   resolveBrowseRestoreScroll,
   type BrowseViewSnapshot,
-} from "./view-restore";
+} from "./workbench/collection/view-restore";
 
 const STABLE_FRAMES_AFTER_READY = 2;
 const MAX_ATTEMPTS = 120;

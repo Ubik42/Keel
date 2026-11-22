@@ -39,8 +39,8 @@ import { Icon, type IconName } from "./Icons";
 import { formatRuntimeShortcut } from "./workbench/shortcuts/shortcut-runtime";
 import { TagPickerEntry, TagPickerMenu } from "./TagPickerMenu";
 import { ColorSpaceSubmenuItems } from "./ColorSpacePickerMenu";
-import { isMacPlatform } from "./commands/command-types";
-import { createCommandRegistry } from "./commands/command-registry";
+import { isMacPlatform } from "./workbench/menu/command-types";
+import { createCommandRegistry } from "./workbench/menu/command-registry";
 import { useLocale, useT, type TranslateFn } from "./i18n";
 import {
   assetCommandDefinitions,

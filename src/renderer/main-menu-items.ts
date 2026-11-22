@@ -6,7 +6,7 @@ import {
   type TranslateParams,
 } from "./i18n";
 import type { IconName } from "./Icons";
-import type { CommandPlatform } from "./commands/command-types";
+import type { CommandPlatform } from "./workbench/menu/command-types";
 import type { ApplicationMenuCommand } from "../shared/application-menu";
 import { formatRuntimeShortcut } from "./workbench/shortcuts/shortcut-runtime";
 

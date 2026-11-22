@@ -8,7 +8,7 @@ import {
   type ReactNode,
 } from "react";
 
-import { isMacPlatform } from "../../commands/command-types";
+import { isMacPlatform } from "../menu/command-types";
 import type { ShortcutPlatform } from "../../../shared/shortcut-catalog";
 import {
   DEFAULT_SHORTCUT_BINDINGS,

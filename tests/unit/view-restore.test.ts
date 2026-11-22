@@ -5,7 +5,7 @@ import {
   captureBrowseViewSnapshot,
   resolveBrowseRestoreScroll,
   type ScrollExtent,
-} from "../../src/renderer/view-restore";
+} from "../../src/renderer/workbench/collection/view-restore";
 
 const extent: ScrollExtent = {
   scrollWidth: 2000,

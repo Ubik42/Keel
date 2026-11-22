@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   SCROLLBAR_TRACK_PROXIMITY_PX,
   isPointerNearScrollbarTrack,
-} from "../../src/renderer/scrollbar-visibility";
+} from "../../src/renderer/workbench/collection/scrollbar-visibility";
 
 describe("isPointerNearScrollbarTrack", () => {
   const el = {

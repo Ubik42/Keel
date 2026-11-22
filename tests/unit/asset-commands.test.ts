@@ -5,8 +5,8 @@ import {
   type AssetCommandActions,
   type AssetCommandContext,
 } from '../../src/renderer/commands/asset-commands';
-import { createCommandRegistry } from '../../src/renderer/commands/command-registry';
-import type { ResolvedMenuItem } from '../../src/renderer/commands/command-types';
+import { createCommandRegistry } from '../../src/renderer/workbench/menu/command-registry';
+import type { ResolvedMenuItem } from '../../src/renderer/workbench/menu/command-types';
 
 // REQ-COMMAND-001 / 切片 0015-B：单资产右键菜单定义的等价性验证。
 // 每条规则对照 0015-B 之前 AssetContextMenu 的内联 JSX 条件；纯数据，node 环境。

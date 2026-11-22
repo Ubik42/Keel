@@ -1,4 +1,4 @@
-import type { ShortcutSpec } from './command-types';
+import type { ShortcutSpec } from '../workbench/menu/command-types';
 
 /** Shared by single-asset, multi-selection, and folder commands. */
 export const DELETE_FROM_DISK_SHORTCUT: ShortcutSpec = {

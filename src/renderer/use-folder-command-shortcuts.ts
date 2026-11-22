@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 
-import { createCommandRegistry } from "./commands/command-registry";
+import { createCommandRegistry } from "./workbench/menu/command-registry";
 import {
   matchesShortcut,
   type CommandPlatform,
   type ShortcutSpec,
-} from "./commands/command-types";
+} from "./workbench/menu/command-types";
 import {
   asLegacyKeyboardShortcutEvent,
   listenForShortcutInputs,

@@ -9,8 +9,8 @@
 
 import type { CanvasPreferences } from '../canvas-preferences';
 import { translateForLocale } from '../i18n';
-import { createCommandRegistry } from './command-registry';
-import type { CommandContext, CommandDefinition } from './command-types';
+import { createCommandRegistry } from '../workbench/menu/command-registry';
+import type { CommandContext, CommandDefinition } from '../workbench/menu/command-types';
 
 export type CanvasFieldKey = keyof CanvasPreferences['fields'];
 export type CanvasViewMode = CanvasPreferences['viewMode'];

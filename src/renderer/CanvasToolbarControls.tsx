@@ -11,7 +11,7 @@ import {
   type ToolbarCommandActions,
   type ToolbarCommandContext,
 } from "./commands/toolbar-commands";
-import type { CommandLocale, CommandPlatform } from "./commands/command-types";
+import type { CommandLocale, CommandPlatform } from "./workbench/menu/command-types";
 import { Icon, type IconName } from "./Icons";
 import { iconActionAttrs } from "./icon-action-attrs";
 import { translateForLocale } from "./i18n";

@@ -7,7 +7,7 @@ import {
   pickNearestCard,
   rectLikeFromDomRect,
   type AnchorCard,
-} from "../../src/renderer/canvas-scroll-anchor";
+} from "../../src/renderer/workbench/collection/canvas-scroll-anchor";
 
 describe("rectLikeFromDomRect", () => {
   it("copies non-enumerable DOMRect geometry accessors explicitly", () => {

@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import { matchAssetActionKeyboardCommand } from "../../src/renderer/asset-action-keyboard";
-import { formatShortcut } from "../../src/renderer/commands/command-types";
+import { formatShortcut } from "../../src/renderer/workbench/menu/command-types";
 import { assetCommandDefinitions } from "../../src/renderer/commands/asset-commands";
-import { createCommandRegistry } from "../../src/renderer/commands/command-registry";
+import { createCommandRegistry } from "../../src/renderer/workbench/menu/command-registry";
 
 function event(
   partial: Partial<{

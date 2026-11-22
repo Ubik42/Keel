@@ -4,7 +4,7 @@ import { assetCommandDefinitions } from "../../src/renderer/commands/asset-comma
 import { assetMultiCommandDefinitions } from "../../src/renderer/commands/asset-multi-commands";
 import { sidebarCommandDefinitions } from "../../src/renderer/commands/sidebar-commands";
 import { toolbarCommandDefinitions } from "../../src/renderer/commands/toolbar-commands";
-import type { ShortcutSpec } from "../../src/renderer/commands/command-types";
+import type { ShortcutSpec } from "../../src/renderer/workbench/menu/command-types";
 import { PLATFORM_SHORTCUT_TABLE } from "../../src/shared/platform-shortcut-table";
 import { SELECT_ALL_SHORTCUT, INVERT_SELECTION_SHORTCUT } from "../../src/renderer/workbench/selection/selection-keyboard";
 import { FOCUS_SEARCH_SHORTCUT } from "../../src/renderer/workspace-discovery-shortcuts";

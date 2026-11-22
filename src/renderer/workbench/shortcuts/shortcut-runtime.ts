@@ -20,7 +20,7 @@ import {
   type ShortcutMouseEventLike,
   type ShortcutEventLike,
 } from "../../../shared/shortcut-resolution";
-import type { ShortcutEvent } from "../../commands/command-types";
+import type { ShortcutEvent } from "../menu/command-types";
 
 let runtimePlatform: ShortcutPlatform = "windows";
 let runtimeBindings: ShortcutBindings = DEFAULT_SHORTCUT_BINDINGS;

@@ -11,7 +11,7 @@ import {
   leftoverWidthPx,
   masonryVisualReadingOrderIds,
 } from "../../src/renderer/workbench/collection/asset-grid-layout";
-import { resolveMasonryTabTarget } from "../../src/renderer/masonry-focus-order";
+import { resolveMasonryTabTarget } from "../../src/renderer/workbench/collection/masonry-focus-order";
 
 describe("masonry keyboard focus order", () => {
   it("moves Tab and Shift+Tab through the visual reading order", () => {

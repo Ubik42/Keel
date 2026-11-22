@@ -5,8 +5,8 @@ import {
   type AssetMultiCommandActions,
   type AssetMultiCommandContext,
 } from '../../src/renderer/commands/asset-multi-commands';
-import { createCommandRegistry } from '../../src/renderer/commands/command-registry';
-import type { ResolvedMenuItem } from '../../src/renderer/commands/command-types';
+import { createCommandRegistry } from '../../src/renderer/workbench/menu/command-registry';
+import type { ResolvedMenuItem } from '../../src/renderer/workbench/menu/command-types';
 
 // REQ-COMMAND-001 / 切片 0015-C：多资产右键菜单定义的等价性验证。
 // 每条规则对照 0015-C 之前 AssetContextMenu 多资产分支的内联 JSX 条件；

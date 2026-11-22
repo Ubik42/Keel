@@ -11,7 +11,7 @@ import {
   CARD_SIZE_MIN,
   DEFAULT_CANVAS_PREFERENCES,
 } from "./canvas-preferences";
-import type { CommandPlatform } from "./commands/command-types";
+import type { CommandPlatform } from "./workbench/menu/command-types";
 import { clampViewerScale } from "./viewer-fit";
 import { isEditableKeyboardTarget } from "./video-player-controls";
 import { matchesRuntimeShortcut } from "./workbench/shortcuts/shortcut-runtime";

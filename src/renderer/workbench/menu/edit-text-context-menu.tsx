@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
-import { isEditableTextTarget } from '../shared/edit-context-menu';
-import { useContextMenu } from './workbench/menu/context-menu';
+import { isEditableTextTarget } from '../../../shared/edit-context-menu';
+import { useContextMenu } from './context-menu';
 
 type RendererWindow = Window & {
   keel?: {

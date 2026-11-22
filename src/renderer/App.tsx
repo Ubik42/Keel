@@ -23,7 +23,7 @@ import { createPortal, flushSync } from "react-dom";
 import { Icon, type IconName } from "./Icons";
 import { isCurrentAiConnectionProbe } from "./ai-connection-probe-guard";
 import { iconActionAttrs } from "./icon-action-attrs";
-import { EditTextContextMenuHost } from "./edit-text-context-menu";
+import { EditTextContextMenuHost } from "./workbench/menu/edit-text-context-menu";
 import { HoverTipHost } from "./workbench/overlay/hover-tip";
 import {
   corruptAssetAffordance,
@@ -361,7 +361,7 @@ import {
   type MediaJobSummaryCounts,
 } from "./media-job-status-state";
 import { MEDIA_JOB_LIST_PAGE_SIZE } from "../shared/media-jobs";
-import { useScrollbarActivity } from "./use-scrollbar-activity";
+import { useScrollbarActivity } from "./workbench/collection/use-scrollbar-activity";
 import { splitFilenameForDisplay } from "./filename-display";
 
 import {
@@ -475,7 +475,7 @@ import {
 import { invertSelection } from "./workbench/selection/invert-selection";
 import { trashedFoldersToBrowseEntries } from "./trashed-folder-entries";
 import { computeMasonrySelectionAssetIds } from "./masonry-selection-order";
-import { resolveMasonryTabTarget } from "./masonry-focus-order";
+import { resolveMasonryTabTarget } from "./workbench/collection/masonry-focus-order";
 import { shuffleBrowseItems, shuffledIndexOrder } from "./client-shuffle";
 import {
   toMessage,
@@ -571,8 +571,8 @@ import type {
 } from "../shared/protocol/responses";
 import { AssetPreviewModal, type AssetPreviewModalHandle } from "./AssetPreviewModal";
 import { TextAssetPreviewTile } from "./TextAssetPreviewTile";
-import { WindowEdgeResizeHandles } from "./WindowEdgeResizeHandles";
-import { WindowsWindowControls } from "./WindowsWindowControls";
+import { WindowEdgeResizeHandles } from "./workbench/shell/WindowEdgeResizeHandles";
+import { WindowsWindowControls } from "./workbench/shell/WindowsWindowControls";
 import { useViewerChromeIdle } from "./use-viewer-chrome-idle";
 import { useViewerVolume } from "./use-viewer-volume";
 import { hasActiveModalDialog, useDialogFocusTrap } from "./workbench/overlay/use-dialog-focus-trap";
@@ -656,7 +656,7 @@ import {
   rectLikeFromDomRect,
   type AnchorCard,
   type CanvasAnchor,
-} from "./canvas-scroll-anchor";
+} from "./workbench/collection/canvas-scroll-anchor";
 import {
   captureReflowAnchorFromCards,
   retainReflowAnchor,
@@ -666,7 +666,7 @@ import {
 import {
   captureBrowseViewSnapshot,
   type BrowseViewSnapshot,
-} from "./view-restore";
+} from "./workbench/collection/view-restore";
 import { tagRenameError } from "./tag-rename-error";
 import { tagBrowseDefinition } from "./tag-browse-definition";
 import { scheduleBrowseViewRestore } from "./browse-view-restore-scheduler";
@@ -681,7 +681,7 @@ import {
 import {
   isMacPlatform,
   type CommandPlatform,
-} from "./commands/command-types";
+} from "./workbench/menu/command-types";
 import { usesWindowsStyleShell } from "./renderer-platform";
 import {
   defaultKeyboardCardSize,
