@@ -1,0 +1,687 @@
+/* tags: rules whose subject element belongs to this area (P5). */
+
+.tag-management {
+  position: relative;
+  z-index: 1;
+  /* The canvas grid centers children (place-items: center) for empty/preview
+     states; a management page anchors to the top instead of floating in the
+     vertical middle of the canvas. */
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: min(960px, calc(100% - 48px));
+  margin: 24px auto;
+  padding: 0 4px 32px;
+}
+
+.tag-management-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+}
+
+.tag-management-title {
+  margin: 0;
+  font-size: calc(18px * var(--ui-font-scale));
+  font-weight: var(--ui-font-weight-semibold);
+  letter-spacing: -0.02em;
+}
+
+.tag-management-search {
+  width: min(240px, 100%);
+}
+
+.tag-management-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.tag-management-create {
+  display: flex;
+  flex: 1 1 260px;
+  max-width: 440px;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Sort buttons match discovery toolbar rounded-rect controls
+   (.dimension-filter-btn), with browse sort glyphs for direction. */
+
+.tag-management-sort {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 4px;
+}
+
+.tag-management-selection {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  color: var(--ui-content-secondary);
+  font-size: calc(12px * var(--ui-font-scale));
+}
+
+.tag-management-empty {
+  margin: 24px 0;
+  color: var(--ui-content-tertiary);
+  font-size: calc(13px * var(--ui-font-scale));
+}
+
+/* Chip flow grid (REQ-TAG-010): management chips stay larger than
+   inspector chips for denser click targets; selection ring matches
+   .asset-card.is-selected. */
+
+.tag-management-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 8px;
+  padding: 4px 2px;
+}
+
+.tag-management-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid var(--ui-border-subtle);
+  border-radius: 999px;
+  background: var(--ui-pane);
+  color: var(--ui-content-secondary);
+  font-size: calc(12px * var(--ui-font-scale));
+  line-height: 1.5;
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  transition: background 120ms ease, color 120ms ease, box-shadow 120ms ease;
+}
+
+.tag-management-chip:hover {
+  background: var(--ui-surface-raised);
+  color: var(--ui-content-primary);
+}
+
+.tag-management-chip:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.tag-management-chip.is-selected {
+  background: color-mix(in srgb, var(--accent) 9%, transparent);
+  box-shadow: 0 0 0 2px var(--accent);
+  color: var(--ui-content-primary);
+}
+
+.tag-management-chip-name {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tag-management-chip-count {
+  color: var(--ui-content-tertiary);
+  font-size: calc(11px * var(--ui-font-scale));
+}
+
+.tag-management-chip.is-selected .tag-management-chip-count {
+  color: var(--ui-content-secondary);
+}
+
+.tag-management-chip-rename {
+  width: 140px;
+  padding: 1px 6px;
+  font-size: calc(12px * var(--ui-font-scale));
+}
+
+/* Tag picker (REQ-TAG-004) — searchable secondary view inside the menu */
+
+.tag-picker {
+  min-width: 220px;
+}
+
+.tag-picker-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 4px 6px;
+}
+
+.tag-picker-title {
+  color: var(--ui-content-primary);
+  font-size: calc(11px * var(--ui-font-scale));
+  font-weight: 650;
+  letter-spacing: 0.01em;
+}
+
+.tag-picker-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 2px 4px;
+  padding: 4px 8px;
+  border: 1px solid var(--ui-border-subtle);
+  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  background: color-mix(in srgb, var(--ui-surface-raised-subtle) 72%, transparent);
+  color: var(--ui-content-tertiary);
+}
+
+.tag-picker-search-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  color: var(--ui-content-primary);
+  font-family: inherit;
+  font-size: calc(12px * var(--ui-font-scale));
+}
+
+.tag-picker-search-input:focus {
+  outline: none;
+}
+
+.tag-picker-search-input::placeholder {
+  color: var(--ui-content-tertiary);
+}
+
+.tag-picker-options {
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+/* Mirrors .context-menu-item layout, but highlight is driven solely by the
+   picker's single is-active option (pointer hover or arrow keys), never by
+   :hover/:focus — the search input keeps DOM focus while navigating. */
+
+.tag-picker-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 10px;
+  border: none;
+  border-radius: calc(4px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: var(--ui-content-primary);
+  font-family: inherit;
+  font-size: calc(13px * var(--ui-font-scale));
+  line-height: 1.4;
+  cursor: default;
+  text-align: left;
+}
+
+.tag-picker-option:focus {
+  outline: none;
+}
+
+.tag-picker-option.is-active {
+  background: color-mix(in srgb, var(--ui-content-primary) 11%, transparent);
+}
+
+.tag-picker-option-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.tag-picker-option-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.tag-picker-option-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tag-picker-option-count {
+  margin-left: auto;
+  color: var(--ui-content-tertiary);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: calc(10px * var(--ui-font-scale));
+  flex-shrink: 0;
+}
+
+.tag-picker-empty {
+  padding: 10px 12px;
+  color: var(--ui-content-tertiary);
+  font-size: calc(12px * var(--ui-font-scale));
+  text-align: center;
+}
+
+.tag-chip[data-source="ai"] {
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--ui-border-subtle));
+}
+
+/* Tag chips container (REQ-TAG-003) */
+
+.tag-chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+  min-height: 22px;
+}
+
+/* Tag chip */
+
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 9px;
+  border: 1px solid var(--ui-border-subtle);
+  border-radius: 999px;
+  background: var(--ui-pane);
+  color: var(--ui-content-secondary);
+  font-size: calc(10px * var(--ui-font-scale));
+  line-height: 1.5;
+  white-space: nowrap;
+  cursor: default;
+  transition: background 120ms ease;
+}
+
+.tag-chip:hover {
+  background: var(--ui-surface-raised);
+}
+
+.tag-chip-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.tag-chip-name {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tag-chip-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ui-content-tertiary);
+  cursor: pointer;
+  font-size: calc(8px * var(--ui-font-scale));
+  line-height: 1;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.tag-chip-remove:hover {
+  background: var(--ui-status-danger-surface);
+  color: var(--ui-status-danger);
+}
+
+/* Tag chip placeholder */
+
+.tag-chip-placeholder {
+  color: var(--ui-content-tertiary);
+  font-size: calc(10px * var(--ui-font-scale));
+  font-style: italic;
+}
+
+/* Tag input wrapper */
+
+.tag-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.tag-input-chip {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  min-height: 28px;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ui-surface-raised) 55%, var(--ui-canvas));
+  color: var(--ui-content-secondary);
+  transition: border-color 120ms ease, background 120ms ease;
+}
+
+.tag-input-chip:has(.tag-input-pending) {
+  border-radius: calc(14px * var(--ui-radius-scale, 1));
+}
+
+.tag-input-pending {
+  max-width: 100%;
+}
+
+.tag-input-chip:focus-within {
+  border-color: color-mix(in srgb, var(--accent) 72%, var(--ui-border-divider));
+  background: color-mix(in srgb, var(--ui-surface-raised) 72%, var(--ui-canvas));
+}
+
+.tag-add-input {
+  flex: 1 1 6em;
+  min-width: 6em;
+  width: auto;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ui-content-primary);
+  font-size: calc(11px * var(--ui-font-scale));
+  outline: none;
+  box-sizing: border-box;
+}
+
+.tag-add-input:focus-visible {
+  outline: none;
+}
+
+.tag-add-input::placeholder {
+  color: var(--ui-content-tertiary);
+  font-size: calc(10px * var(--ui-font-scale));
+}
+
+/* Tag suggestions dropdown */
+
+.tag-suggestions-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: var(--ui-layer-popover);
+  max-height: 184px;
+  padding: 4px;
+  overflow-y: auto;
+  border: 1px solid color-mix(in srgb, var(--ui-border-divider) 82%, transparent);
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  background: color-mix(in srgb, var(--ui-surface-raised) 90%, var(--ui-canvas));
+  box-shadow: 0 10px 28px rgb(0 0 0 / 30%);
+}
+
+.tag-suggestion-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 29px;
+  padding: 5px 8px;
+  border: 0;
+  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: var(--ui-content-secondary);
+  font-size: calc(11px * var(--ui-font-scale));
+  cursor: pointer;
+  text-align: left;
+}
+
+.tag-suggestion-item:hover,
+.tag-suggestion-item.is-active {
+  background: color-mix(in srgb, var(--ui-content-primary) 7%, transparent);
+  color: var(--ui-content-primary);
+}
+
+.tag-suggestion-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tag-suggestion-count {
+  color: var(--ui-content-tertiary);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: calc(10px * var(--ui-font-scale));
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.tag-suggestion-create {
+  color: var(--accent);
+  border-top: 1px solid color-mix(in srgb, var(--ui-border-subtle) 70%, transparent);
+  border-radius: 0 0 calc(5px * var(--ui-radius-scale, 1)) calc(5px * var(--ui-radius-scale, 1));
+}
+
+.inspector-tags-section .tag-chips-container.is-editing-tags {
+  gap: 10px;
+  padding-top: 5px;
+}
+
+.inspector-tags-section .tag-chips-container .inspector-tag-chip.is-editing > .tag-chip-remove {
+  position: absolute;
+  z-index: 2;
+  top: -5px;
+  right: -5px;
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  transform: none;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: 50%;
+  background: var(--ui-pane);
+  color: var(--ui-content-secondary);
+  opacity: 1;
+}
+
+.inspector-tags-section .tag-chips-container .inspector-tag-chip.is-editing > .tag-chip-remove:hover {
+  color: var(--ui-status-danger);
+  background: var(--ui-status-danger-surface);
+}
+
+/* Active (filter applied) segment: accent-tinted pill + accent label. */
+
+/* Tag chips (inspector + filter summary): refined tinted capsules. */
+
+.app-shell.app-shell .tag-chips-container {
+  gap: 6px;
+}
+
+.app-shell.app-shell .tag-chip {
+  gap: 5px;
+  min-height: 22px;
+  padding: 0 8px 0 9px;
+  border: 0;
+  font-size: calc(11.5px * var(--ui-font-scale));
+  font-weight: 480;
+  line-height: 22px;
+  letter-spacing: -0.005em;
+}
+
+.app-shell.app-shell .tag-chip:hover {
+  background: color-mix(in srgb, var(--ui-content-primary) 9%, transparent);
+}
+
+.app-shell.app-shell .tag-chip-dot {
+  width: 7px;
+  height: 7px;
+}
+
+/* Tag chips: quieter fill; dots stay but at lower opacity. */
+
+.app-shell.app-shell .tag-chip-dot {
+  opacity: 0.72;
+}
+
+/* Soft surfaces: chips, filter summary, empty plates. */
+
+.app-shell.app-shell .tag-chip {
+  background: var(--island-surface-soft);
+}
+
+.app-shell.app-shell .tag-chip:hover {
+  background: color-mix(in srgb, var(--island-surface-soft) 88%, var(--ui-content-primary));
+}
+
+/* Soft chips stay monochrome */
+
+.app-shell.app-shell .tag-chip {
+  background: var(--island-surface-soft);
+  color: var(--ui-content-secondary);
+  box-shadow: none;
+}
+
+/* ==== a48: inspector preview L/R padding match ============================
+   Scrollbar consumed the right inset (CSS pad 12/12 → visual 12 vs 22).
+   scrollbar-gutter: stable both-edges on .inspector-content equalizes. */
+
+/* ==== a45: deeper backdrop + soft tab stroke ==============================
+   Backdrop one more subtle step darker. Tab/seam stroke pulls border ink
+   toward backdrop (less contrast than full --island-border). */
+
+/* ==== a67: vertically center tag remove × ================================
+   a66 label centering kept (name translateY 0.5px). Remove × with the same
+   0.5px down sat optically low in the tip — flip to translateY(-0.5px).
+   a65 radii + a63 contrast + single mask unchanged. */
+
+.app-shell.app-shell .tag-chip {
+  --tag-hairline: 28%;
+  --tag-hairline-hover: 36%;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 var(--tag-tip-w) 0 8px;
+  height: 22px;
+  min-height: 22px;
+  line-height: 1;
+}
+
+/* Single paint + one 9-slice mask (tip & left radius fixed; middle stretches) */
+
+.app-shell.app-shell .tag-chip::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--tag-chip-fill);
+  z-index: 0;
+}
+
+.app-shell.app-shell .tag-chip::after {
+  content: none;
+}
+
+.app-shell.app-shell .tag-chip {
+  gap: 2px;
+  color: var(--ui-content-secondary);
+}
+
+.app-shell.app-shell .tag-chip-dot {
+  display: none;
+}
+
+.app-shell.app-shell .tag-chip-name,
+.app-shell.app-shell .tag-chip-remove {
+  position: relative;
+  z-index: 1;
+}
+
+.app-shell.app-shell .tag-chip-remove {
+  order: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  margin-left: 0;
+  margin-right: -8px;
+  line-height: 0;
+  opacity: 0.7;
+  /* Opposite of label nudge: Lucide × in the tip reads low at +0.5px */
+  transform: translateY(-0.5px);
+}
+
+.app-shell.app-shell .tag-chip:hover .tag-chip-remove {
+  opacity: 1;
+}
+
+.app-shell.app-shell .tag-chip-name {
+  order: 2;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  transform: translateY(0.5px);
+}
+
+.app-shell.app-shell .tag-chip-dot {
+  order: 1;
+}
+
+.app-shell.app-shell .tag-input-chip {
+  border-color: var(--ui-island-hairline);
+}
+
+/* ==== a82: clean tag fills, rounder tag shape, tighter AI badge inset ======
+   1) Light fills were muddy: tints mixed into --island-surface-soft (which
+      carries --ui-content-primary) in sRGB. Now tag hue → white in oklab and
+      untagged/neutral chips use pure neutral gray; hairline neutral too.
+      Dark keeps the island surface as base, mixed in oklab.
+   2) Radii in sync: left 6px (was 4), body→tip shoulders 6px (was 2), nose
+      2.5px (was 1.2). Tip slopes stay straight lines between fillets; left
+      slice widened to 6 so the 9-slice never cuts a curve (no seams).
+   3) AI badge: chip left inset = badge's vertical inset (22-16)/2 = 3px. */
+
+.app-shell.app-shell .tag-chip {
+  --tag-tip-w: 16px;
+  --tag-base: white;
+  --tag-neutral: color-mix(in oklab, black 55%, white);
+  --tag-fill-tint: 9%;
+  --tag-fill-tint-hover: 13%;
+  --tag-fill-solid: color-mix(
+    in oklab,
+    var(--tag-chip-color, var(--tag-neutral)) var(--tag-fill-tint),
+    var(--tag-base)
+  );
+  --tag-chip-fill: var(--tag-fill-solid);
+  filter: drop-shadow(0 0 0.5px rgb(0 0 0 / 22%));
+}
+
+.app-shell.app-shell .tag-chip:hover {
+  --tag-fill-solid: color-mix(
+    in oklab,
+    var(--tag-chip-color, var(--tag-neutral)) var(--tag-fill-tint-hover),
+    var(--tag-base)
+  );
+  filter: drop-shadow(0 0 0.5px rgb(0 0 0 / 30%));
+}
+
+:root[data-theme="dark"] .app-shell.app-shell .tag-chip {
+  --tag-hairline: 10%;
+  --tag-hairline-hover: 15%;
+  --tag-base: var(--island-surface-soft);
+  --tag-neutral: color-mix(in oklab, white 70%, black);
+  --tag-fill-tint: 4%;
+  --tag-fill-tint-hover: 7%;
+  --tag-chip-fill: color-mix(in oklab, var(--tag-fill-solid) 78%, transparent);
+  filter: drop-shadow(0 0 0.5px rgb(255 255 255 / 12%));
+}
+
+:root[data-theme="dark"] .app-shell.app-shell .tag-chip:hover {
+  filter: drop-shadow(0 0 0.5px rgb(255 255 255 / 18%));
+}
+
+.app-shell.app-shell .tag-chip::before {
+  pointer-events: none;
+  -webkit-mask-box-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2780%27%20height%3D%2722%27%20viewBox%3D%270%200%2080%2022%27%3E%3Cpath%20fill%3D%27black%27%20d%3D%27M6%200H66.35A6%206%200%200%201%2070.79%201.96L77.47%209.32A2.5%202.5%200%200%201%2077.47%2012.68L70.79%2020.04A6%206%200%200%201%2066.35%2022H6A6%206%200%200%201%200%2016V6A6%206%200%200%201%206%200Z%27%2F%3E%3C%2Fsvg%3E") 0 16 0 6 fill / 0 var(--tag-tip-w) 0 6px / 0 stretch;
+  mask-border: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2780%27%20height%3D%2722%27%20viewBox%3D%270%200%2080%2022%27%3E%3Cpath%20fill%3D%27black%27%20d%3D%27M6%200H66.35A6%206%200%200%201%2070.79%201.96L77.47%209.32A2.5%202.5%200%200%201%2077.47%2012.68L70.79%2020.04A6%206%200%200%201%2066.35%2022H6A6%206%200%200%201%200%2016V6A6%206%200%200%201%206%200Z%27%2F%3E%3C%2Fsvg%3E") 0 16 0 6 fill / 0 var(--tag-tip-w) 0 6px / 0 stretch;
+}
+
+.app-shell.app-shell .tag-chip:has(> .inspector-ai-badge-inline) {
+  padding-left: 3px;
+}

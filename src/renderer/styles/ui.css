@@ -1,0 +1,1281 @@
+/* ui: rules whose subject element belongs to this area (P5). */
+
+[data-theme="light"] .toast .icon {
+  color: var(--ui-content-secondary);
+}
+
+[data-theme="light"] .toast.is-error .icon,
+[data-theme="light"] .toast.is-warning .icon {
+  color: var(--ui-status-warning-content);
+}
+
+/* A solid fill already draws the edge. Another outline repeats it. */
+
+.primary-button:focus,
+.primary-button:focus-visible {
+  outline: none;
+}
+
+.compact-action,
+.primary-button,
+.secondary-button,
+.tiny-action {
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.tiny-action,
+.primary-button,
+.secondary-button,
+.inline-error button,
+.compact-action {
+  -webkit-app-region: no-drag;
+}
+
+.icon {
+  display: block;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.55;
+}
+
+.library-switcher-trigger .icon {
+  flex: 0 0 auto;
+  /* No rotation: the glyph is drawn in its final orientation (the old
+     right-chevron was rotated 90deg here, which turned the vertical
+     chevrons-up-down into a horizontal < >). */
+  opacity: 0.7;
+}
+
+.library-switcher-item > .icon {
+  display: flex;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  align-items: center;
+  justify-content: center;
+  color: var(--ui-content-secondary);
+}
+
+.library-switcher-menu:not(.is-keyboard-navigation) .library-switcher-item:hover:not(:disabled) > .icon,
+.library-switcher-item:focus-visible:not(:disabled) > .icon {
+  color: var(--ui-content-primary);
+}
+
+.library-switcher-item.is-danger > .icon,
+.library-switcher-item.is-danger:hover:not(:disabled) > .icon,
+.library-switcher-item.is-danger:focus-visible:not(:disabled) > .icon {
+  color: var(--ui-menu-danger-color);
+}
+
+.library-switcher-item:disabled > .icon {
+  color: inherit;
+}
+
+.search-control-wrap > .icon {
+  flex: 0 0 auto;
+  margin-left: 9px;
+}
+
+.dimension-color-similarity > .ui-field {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.dimension-color-similarity .ui-field__label {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.dimension-color-similarity .ui-slider {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 0;
+}
+
+.dimension-color-similarity .ui-slider__control {
+  flex: 0 0 100px;
+  width: 100px;
+}
+
+.dimension-color-similarity .ui-slider__value {
+  min-width: 4ch;
+}
+
+.nav-section-title-row .tiny-action.is-active {
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
+}
+
+.tiny-action {
+  display: grid;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+.nav-section-sort .tiny-action.is-active {
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
+}
+
+.nav-entity-glyph-badge .icon {
+  width: 8px;
+  height: 8px;
+}
+
+.filter-tag-expression-input .text-field {
+  height: 100%;
+  min-width: 0;
+  flex: 1 1 auto;
+  padding: 0 8px;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  line-height: calc(var(--ui-shell-control-height) - 2px);
+  box-shadow: none;
+  resize: none;
+}
+
+.filter-tag-expression-input .text-field:focus {
+  border: 0;
+  box-shadow: none;
+}
+
+.filter-tag-picker > .text-field {
+  height: var(--ui-shell-control-height);
+}
+
+.format-filter-popover > .text-field {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding-inline: 12px;
+}
+
+.main-menu-section:hover > .icon,
+.main-menu-section.is-active > .icon,
+.main-menu-section:focus-visible > .icon {
+  color: var(--ui-content-primary);
+}
+
+.main-menu-section > .icon {
+  display: flex;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  align-items: center;
+  justify-content: center;
+  color: var(--ui-content-secondary);
+}
+
+.workspace-ai-progress .secondary-button {
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  height: 28px;
+  min-height: 28px;
+  padding: 0 11px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  background: var(--ui-pane);
+  color: var(--ui-content-primary);
+  font-size: calc(11px * var(--ui-font-scale));
+  font-weight: 520;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.workspace-ai-progress .secondary-button:hover:not(:disabled) {
+  background: var(--ui-surface-hover);
+}
+
+.workspace-plugin-job-progress .ui-feedback__body {
+  grid-area: body;
+  min-width: 0;
+}
+
+.workspace-plugin-job-progress .ui-feedback__message {
+  color: var(--ui-content-secondary);
+  font-size: var(--ui-font-size-caption);
+  line-height: var(--ui-line-height-tight);
+}
+
+.workspace-plugin-job-progress .ui-progress {
+  grid-area: progress;
+  width: 100%;
+  min-width: 0;
+}
+
+.workspace-plugin-job-progress > .ui-feedback__actions {
+  grid-area: actions;
+  align-self: start;
+  justify-self: end;
+}
+
+.workspace-plugin-job-progress .ui-progress__label,
+.workspace-plugin-job-progress .ui-progress__value {
+  color: var(--ui-content-primary);
+}
+
+.plugin-job-activity-actions .secondary-button {
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  height: 30px;
+  min-height: 30px;
+  padding: 0 12px;
+  border: 1px solid color-mix(in srgb, var(--plugin-job-status-color) 28%, var(--ui-border-divider));
+  border-radius: calc(7px * var(--ui-radius-scale, 1));
+  background: var(--ui-pane);
+  color: var(--ui-content-primary);
+  font-size: calc(11px * var(--ui-font-scale));
+  font-weight: 560;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.plugin-job-activity-actions .secondary-button:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--plugin-job-status-color) 48%, var(--ui-border-divider));
+  background: var(--ui-surface-hover);
+}
+
+@media (max-width: 720px) {
+
+  .workspace-plugin-job-progress > .ui-feedback__actions {
+    justify-self: stretch;
+  }
+}
+
+.tiny-action.is-feature-hinting {
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
+  box-shadow: inset 0 0 0 1px var(--ui-accent-ring);
+  animation: feature-hint-accent-pulse 2.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tiny-action.is-feature-hinting {
+    animation-duration: 2.2s !important;
+    animation-iteration-count: infinite !important;
+  }
+}
+
+.tag-management-create .text-field {
+  flex: 1 1 180px;
+  min-width: 0;
+}
+
+.micro-label {
+  color: var(--accent);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: calc(9px * var(--ui-font-scale));
+  font-weight: var(--ui-font-weight-medium);
+  letter-spacing: 0.13em;
+}
+
+.state-note {
+  max-width: 440px;
+  margin: 0;
+  color: var(--ui-content-secondary);
+  font-size: calc(12px * var(--ui-font-scale));
+  line-height: 1.72;
+}
+
+.primary-button,
+.secondary-button {
+  display: inline-flex;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 14px;
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  font-size: calc(12px * var(--ui-font-scale));
+  font-weight: 560;
+  cursor: pointer;
+}
+
+.primary-button:hover {
+  background: color-mix(in srgb, var(--accent) 55%, var(--ui-accent-dark));
+}
+
+.secondary-button {
+  border: 1px solid var(--ui-border-divider);
+  background: var(--ui-surface-raised);
+  color: var(--ui-content-primary);
+}
+
+.secondary-button:hover {
+  border-color: var(--ui-border-divider);
+  background: var(--ui-surface-raised-subtle);
+}
+
+.inline-error {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: 9px;
+  margin-top: 18px;
+  padding: 10px 11px;
+  border: 1px solid color-mix(in srgb, var(--ui-status-warning) 38%, transparent);
+  border-left: 2px solid var(--ui-status-warning);
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  background: color-mix(in srgb, var(--ui-status-warning) 8%, var(--ui-pane));
+  color: var(--ui-content-primary);
+  font-size: calc(11px * var(--ui-font-scale));
+}
+
+.inline-error > .icon {
+  color: var(--ui-status-warning);
+}
+
+.inline-error strong,
+.inline-error p {
+  display: block;
+  margin: 0;
+}
+
+.inline-error p {
+  margin-top: 2px;
+  color: var(--ui-content-secondary);
+}
+
+.inline-error button {
+  margin-top: 6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ui-status-warning-content);
+  font-size: calc(11px * var(--ui-font-scale));
+  cursor: pointer;
+}
+
+.mono {
+  font-family: "IBM Plex Mono", monospace;
+}
+
+.ui-menu-surface.preview-video-rate-menu {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 6px);
+  z-index: var(--ui-layer-menu);
+  min-width: 4.75rem;
+  width: max-content;
+}
+
+.preview-image-error .icon {
+  color: var(--ui-content-tertiary);
+}
+
+.font-viewer-control > .icon {
+  align-self: center;
+  margin-block: 0;
+}
+
+.font-viewer-control .icon {
+  color: var(--ui-content-secondary);
+}
+
+.preview-color-space-control .ui-select {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+.preview-color-space-control .ui-select-trigger {
+  width: max-content;
+  max-width: min(220px, 28vw);
+  padding: 0 18px 0 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ui-content-primary);
+  font-family: var(--ui-font-ui);
+  font-size: inherit;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.preview-color-space-control .ui-select::after {
+  right: 2px;
+}
+
+.preview-sequence-controls .ui-slider {
+  min-width: 0;
+}
+
+.preview-nav-glyph .icon {
+  grid-area: 1 / 1;
+}
+
+.preview-nav.is-on-dark .preview-nav-glyph .icon:first-child {
+  color: var(--ui-preview-nav-on-dark-stroke);
+  stroke-width: 3.5;
+}
+
+.preview-nav.is-on-dark .preview-nav-glyph .icon:last-child {
+  color: var(--ui-preview-nav-on-dark-fill);
+  stroke-width: 2.85;
+}
+
+.preview-nav.is-on-light .preview-nav-glyph .icon:first-child {
+  color: var(--ui-preview-nav-on-light-stroke);
+  stroke-width: 3.5;
+}
+
+.preview-nav.is-on-light .preview-nav-glyph .icon:last-child {
+  color: var(--ui-preview-nav-on-light-fill);
+  stroke-width: 2.85;
+}
+
+.preview-nav.is-on-dark:disabled .preview-nav-glyph .icon:first-child {
+  color: var(--ui-preview-nav-on-dark-disabled-stroke);
+}
+
+.preview-nav.is-on-dark:disabled .preview-nav-glyph .icon:last-child {
+  color: var(--ui-preview-nav-on-dark-disabled-fill);
+}
+
+.preview-nav.is-on-light:disabled .preview-nav-glyph .icon:first-child {
+  color: var(--ui-preview-nav-on-light-disabled-stroke);
+}
+
+.preview-nav.is-on-light:disabled .preview-nav-glyph .icon:last-child {
+  color: var(--ui-preview-nav-on-light-disabled-fill);
+}
+
+.preview-exr-plane-selector .ui-select-trigger {
+  max-width: min(260px, 45vw);
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ui-content-primary);
+  font: inherit;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.app-log-filter .text-field {
+  min-width: 0;
+  flex: 1;
+}
+
+/* 对话框内的小标签一律中性色：强调色留给真正的可点控件（按钮/链接），
+   满屏 accent 标签会稀释真正的行动点。 */
+
+.create-dialog .micro-label {
+  color: var(--ui-content-tertiary);
+  font-size: calc(9.5px * var(--ui-font-scale));
+  letter-spacing: 0.1em;
+}
+
+.semantic-custom-header .primary-button {
+  flex: 0 0 auto;
+  align-self: flex-start;
+  margin-top: 1px;
+}
+
+.ai-config-field.is-disabled .micro-label,
+.ai-config-advanced-row.is-disabled .micro-label {
+  color: var(--ui-content-tertiary);
+}
+
+.ai-config-field.is-disabled .text-field:disabled,
+.ai-config-advanced-row.is-disabled .text-field:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.ai-config-field .micro-label {
+  display: inline-block;
+  margin-bottom: 4px;
+}
+
+/* F1 (Serpent-lqof): eye toggle overlaid inside a credential input's right
+   side — an inline affordance, not a separate button beside the field.
+   通用类：AI Key（AiConfigDialog）与同步服务器密码（SyncSettingsPage）共用。 */
+
+.field-with-visibility-toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.field-with-visibility-toggle .field-with-visibility-input {
+  width: 100%;
+  padding-right: 32px;
+}
+
+.visibility-toggle {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  border-radius: calc(4px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: var(--ui-content-tertiary);
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+.visibility-toggle:hover {
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-primary);
+}
+
+.visibility-toggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ui-action-accent-soft);
+}
+
+.ai-config-model-picker-trigger .icon {
+  flex: 0 0 auto;
+  transform: rotate(90deg);
+  opacity: 0.7;
+}
+
+.asset-inline-rename .text-field.asset-inline-rename-input {
+  display: block;
+  box-sizing: border-box;
+  grid-column: 1;
+  min-width: 0;
+  width: 100%;
+  height: 23px;
+  margin: 0;
+  padding: 0 6px;
+  font: inherit;
+  font-size: calc(12px * var(--ui-font-scale));
+  line-height: 1.3;
+  color: var(--ui-content-primary);
+  user-select: text;
+  cursor: text;
+  pointer-events: auto;
+}
+
+.app-settings-nav-item.is-active .icon {
+  color: var(--accent);
+}
+
+/* MCP credentials use the shared settings-card header and helper text. */
+
+.mcp-credentials-card .ui-settings-card__header {
+  align-items: center;
+}
+
+@media (max-width: 560px) {
+  .mcp-credentials-card .ui-settings-card__header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .mcp-credentials-card .ui-settings-card__header .primary-button {
+    align-self: stretch;
+  }
+}
+
+.plugin-settings-overview-actions .primary-button,
+.plugin-settings-overview-actions .secondary-button {
+  white-space: nowrap;
+}
+
+.plugin-settings-unrestricted-warning .icon {
+  flex: 0 0 auto;
+  margin-top: 1px;
+  color: var(--ui-status-warning-content);
+}
+
+.plugin-settings-permissions-info .icon {
+  color: inherit;
+}
+
+.plugin-install-scope-field .text-field {
+  width: 100%;
+}
+
+.video-seek-jump-amount .text-field {
+  width: 96px;
+  flex: 0 0 auto;
+}
+
+.text-button {
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+  font: inherit;
+  font-size: calc(11px * var(--ui-font-scale));
+}
+
+.text-button:disabled {
+  color: var(--ui-content-tertiary);
+  cursor: default;
+}
+
+.app-settings-background-busy .ui-progress {
+  width: min(100%, 260px);
+}
+
+.app-settings-background-row > .ui-field,
+.app-settings-background-row > .ui-select {
+  flex: 1 1 180px;
+  min-width: 0;
+}
+
+.field-label {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--ui-content-secondary);
+  font-size: calc(11px * var(--ui-font-scale));
+  font-weight: 560;
+}
+
+.field-label-spaced {
+  margin-top: 12px;
+}
+
+.text-field {
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  background: var(--ui-canvas);
+  color: var(--ui-content-primary);
+  font-size: calc(12px * var(--ui-font-scale));
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.text-field:focus {
+  border-color: color-mix(in srgb, var(--accent) 62%, var(--ui-border-divider));
+  box-shadow: 0 0 0 3px var(--ui-action-accent-soft);
+  outline: 0;
+}
+
+/* CU-U4: smart-collection / toolbar text fields when no library is open. */
+
+.text-field:disabled {
+  color: var(--ui-content-tertiary);
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.text-field:disabled::placeholder {
+  color: var(--ui-content-tertiary);
+}
+
+.field-help {
+  margin: 7px 0 0;
+  color: var(--ui-content-tertiary);
+  font-size: calc(10px * var(--ui-font-scale));
+}
+
+.text-field-mono {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: calc(11px * var(--ui-font-scale));
+}
+
+.dialog-actions.is-stacked .primary-button,
+.dialog-actions.is-stacked .secondary-button {
+  justify-content: center;
+  width: 100%;
+}
+
+.primary-button:disabled,
+.secondary-button:disabled {
+  opacity: 0.48;
+  cursor: default;
+}
+
+.compact-action {
+  display: inline-flex;
+  /* REQ-CANVAS-006: never shrink below content size or wrap — a squeezed
+     flex item let the label spill outside the button's border box. */
+  flex: 0 0 auto;
+  height: var(--ui-shell-control-height);
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: var(--ui-content-primary);
+  font-size: calc(12px * var(--ui-font-scale));
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.compact-action:hover:not(:disabled) {
+  border-color: var(--ui-border-divider);
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-primary);
+}
+
+.compact-action:disabled {
+  color: var(--ui-content-tertiary);
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+/* Primary action of a cluster (e.g. 搜索提交): a quiet accent fill that
+   draws the eye without the weight of a solid accent button. */
+
+.compact-action.is-accent {
+  border-color: color-mix(in srgb, var(--accent) 42%, var(--ui-border-divider));
+  background: var(--ui-action-accent-soft);
+  color: color-mix(in srgb, var(--accent) 55%, white);
+}
+
+.compact-action.is-accent:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--accent) 60%, var(--ui-border-divider));
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+  color: color-mix(in srgb, var(--accent) 45%, white);
+}
+
+.compact-action.is-accent:disabled {
+  border-color: var(--ui-border-divider);
+  background: transparent;
+  color: var(--ui-content-tertiary);
+}
+
+.workspace-notice-item .ui-feedback__body {
+  display: contents;
+}
+
+.workspace-notice-item .ui-feedback__message {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.25;
+}
+
+.workspace-notice-item .ui-feedback__actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.workspace-notice-item .ui-feedback__dismiss {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  border-radius: 0;
+  font-size: calc(14px * var(--ui-font-scale));
+}
+
+.library-settings-name-row .text-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.asset-size-control .ui-slider {
+  min-width: 0;
+}
+
+.external-drop-overlay-content > .icon {
+  color: var(--ui-action-accent);
+}
+
+.asset-card.is-missing .asset-preview > .icon {
+  display: none;
+}
+
+.missing-overlay .icon {
+  stroke-width: 2;
+}
+
+.image-sequence-dialog .field-label {
+  margin-bottom: 0;
+}
+
+.image-sequence-dialog .dialog-inline-fields .text-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.image-sequence-dialog .field-help {
+  margin: 0;
+}
+
+.asset-sync-status .icon {
+  position: relative;
+  z-index: 1;
+  stroke-width: 2.2;
+}
+
+.toast.is-error .icon,
+.toast.is-warning .icon {
+  color: var(--ui-status-warning-content);
+}
+
+.rating-star[data-active] .icon {
+  fill: currentColor;
+  stroke-width: 1;
+}
+
+.favorite-toggle[data-active] .icon {
+  fill: currentColor;
+  stroke-width: 1;
+}
+
+.inspector-content .editor-field .micro-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 5px;
+}
+
+.decision-field .ui-select-trigger {
+  /* Serpent-4ojz / Serpent-p1rm: shell rhythm + de-native chrome (no OS
+     select bevel/arrow; custom chevron via theme tertiary stroke). */
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: var(--ui-shell-control-height);
+  padding: 0 28px 0 8px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  background-color: var(--ui-surface-raised);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' viewBox='0 0 12 12'%3E%3Cpath stroke='%23777c79' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M3 4.5 6 7.5 9 4.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 12px 12px;
+  color: var(--ui-content-primary);
+  font-size: calc(12px * var(--ui-font-scale));
+  cursor: pointer;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.decision-field .ui-select-trigger:hover {
+  border-color: color-mix(in srgb, var(--ui-content-primary) 16%, var(--ui-border-divider));
+}
+
+.decision-field .ui-select-trigger:focus-visible {
+  border-color: color-mix(in srgb, var(--accent) 62%, var(--ui-border-divider));
+  box-shadow: 0 0 0 3px var(--ui-action-accent-soft);
+  outline: 0;
+}
+
+.decision-field .ui-select::after {
+  content: none;
+}
+
+[data-theme="light"] .decision-field .ui-select-trigger {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' viewBox='0 0 12 12'%3E%3Cpath stroke='%238a8f8a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M3 4.5 6 7.5 9 4.5'/%3E%3C/svg%3E");
+}
+
+.nav-inline-edit > .icon {
+  justify-self: center;
+}
+
+.nav-inline-edit .text-field {
+  height: 23px;
+  padding: 0 6px 0 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: calc(12px * var(--ui-font-scale));
+}
+
+:root[data-platform="windows"] .micro-label {
+  /* IBM Plex Mono does not contain CJK glyphs. Keep the existing macOS label
+     styling intact while avoiding an unrelated monospace fallback on Windows. */
+  font-family: var(--ui-font-ui);
+}
+
+:root[data-platform="windows"] .inspector-identity .micro-label {
+  font-family: var(--ui-font-ui-unified);
+}
+
+:root[data-platform="windows"] .app-shell.app-shell .inspector-content .micro-label {
+  font-size: calc(12px * var(--ui-font-scale));
+  letter-spacing: 0.01em;
+  color: var(--ui-content-secondary);
+}
+
+:root[data-platform="windows"] .metadata-list dd.mono {
+  font-family: var(--ui-font-ui-unified);
+  font-variant-numeric: tabular-nums;
+}
+
+.ui-dialog-shell.plugin-ui-dialog--widget {
+  max-height: calc(100dvh - var(--ui-space-6) - var(--ui-space-6));
+}
+
+.tiny-action {
+  border-radius: var(--ui-radius-control);
+}
+
+.tiny-action {
+  width: 22px;
+  height: 22px;
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  color: var(--ui-content-tertiary);
+}
+
+.inspector-content .micro-label {
+  color: var(--ui-content-tertiary);
+  font-size: calc(10.5px * var(--ui-font-scale));
+  letter-spacing: 0.04em;
+}
+
+.inspector-content .text-field {
+  border-radius: var(--ui-radius-control);
+  border-color: var(--ui-border-subtle);
+  background: color-mix(in srgb, var(--ui-canvas) 40%, var(--ui-surface-raised));
+  box-shadow: none;
+}
+
+.inspector-content .text-field:focus {
+  border-color: color-mix(in srgb, var(--accent) 58%, var(--ui-border-divider));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.tiny-action:hover {
+  background: var(--ui-surface-hover);
+  border-color: transparent;
+  color: var(--ui-content-primary);
+}
+
+.tiny-action {
+  border-radius: var(--ui-radius-control);
+}
+
+.primary-button {
+  border: none;
+  background: var(--accent);
+  color: var(--ui-content-on-accent);
+  box-shadow: none;
+}
+
+.primary-button:hover:not(:disabled) {
+  background: var(--ui-action-accent-hover, color-mix(in srgb, var(--accent) 86%, white));
+}
+
+.app-shell.app-shell .dimension-filter-btn[aria-pressed="true"] .icon {
+  color: var(--accent);
+}
+
+.app-shell.app-shell .inspector-content .micro-label {
+  font-family: var(--ui-font-ui);
+}
+
+.app-shell.app-shell .inspector-empty > .icon {
+  box-sizing: content-box;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid var(--ui-border-subtle);
+  border-radius: calc(10px * var(--ui-radius-scale, 1));
+  background: var(--ui-surface-raised);
+  color: var(--ui-content-tertiary);
+}
+
+.app-shell.app-shell .inspector-empty > .icon {
+  color: var(--ui-content-tertiary);
+}
+
+.app-shell.app-shell .workspace-toolstrip .tool-button.is-active:not(.is-accent) .icon,
+.app-shell.app-shell .workspace-bar .tool-button.is-active:not(.is-accent) .icon {
+  color: var(--ui-content-primary);
+}
+
+/* Rating stars: mute only inactive glyphs; active/hover keep full accent. */
+
+.app-shell.app-shell .inspector-rating .rating-star:not([data-active]):not(:hover) .icon {
+  color: color-mix(in srgb, var(--ui-content-tertiary) 70%, transparent);
+  opacity: 0.85;
+}
+
+.app-shell.app-shell .canvas-controls .tool-button[aria-pressed="true"]:not(:disabled) .icon {
+  color: var(--ui-content-secondary);
+}
+
+.app-shell.app-shell .app-toolbar .tool-button[aria-pressed="true"]:not(:disabled):not(.is-accent) .icon,
+.app-shell.app-shell .workspace-toolstrip .tool-button[aria-pressed="true"]:not(:disabled):not(.is-accent) .icon,
+.app-shell.app-shell .workspace-bar .tool-button[aria-pressed="true"]:not(:disabled):not(.is-accent) .icon {
+  color: var(--ui-content-secondary);
+}
+
+.app-shell.app-shell .inspector-empty > .icon {
+  background: var(--island-surface-soft);
+  border-color: var(--ui-island-hairline);
+  color: var(--ui-content-tertiary);
+}
+
+/* --- Neutral primary CTAs (ink fill; accent stays off button paint) ------ */
+
+.app-shell.app-shell .empty-library .primary-button,
+.app-shell.app-shell .empty-state .primary-button,
+.app-shell.app-shell .inspector-empty .primary-button,
+.app-shell.app-shell .dialog-actions .primary-button,
+.app-shell.app-shell .workspace-canvas .primary-button {
+  background: var(--ui-content-primary);
+  color: var(--ui-content-inverse);
+  border-color: transparent;
+  border-radius: 9999px;
+  box-shadow: none;
+}
+
+.app-shell.app-shell .empty-library .primary-button:hover:not(:disabled),
+.app-shell.app-shell .empty-state .primary-button:hover:not(:disabled),
+.app-shell.app-shell .inspector-empty .primary-button:hover:not(:disabled),
+.app-shell.app-shell .dialog-actions .primary-button:hover:not(:disabled),
+.app-shell.app-shell .workspace-canvas .primary-button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ui-content-primary) 88%, var(--ui-content-inverse));
+  color: var(--ui-content-inverse);
+}
+
+.app-shell.app-shell .dialog-actions .secondary-button {
+  background: transparent;
+  color: var(--ui-content-primary);
+  border: var(--island-hairline-w) solid var(--island-border);
+  border-radius: 9999px;
+  box-shadow: none;
+}
+
+.app-shell.app-shell .inspector-content .micro-label {
+  font-size: calc(11px * var(--ui-font-scale));
+  color: var(--ui-content-tertiary);
+}
+
+.app-shell.app-shell .nav-row .nav-entity-glyph .icon,
+.app-shell.app-shell .nav-row .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.app-shell.app-shell .nav-row.is-active .icon {
+  color: var(--ui-content-primary);
+}
+
+.app-shell.app-shell .dimension-filter-btn.is-active .icon {
+  color: var(--ui-content-inverse);
+}
+
+.app-shell.app-shell .dimension-filter-btn[aria-pressed="true"]:not(.is-active) .icon {
+  color: var(--ui-content-primary);
+}
+
+.app-shell.app-shell .inspector-content .micro-label {
+  font-size: calc(10.5px * var(--ui-font-scale));
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  color: var(--ui-content-tertiary);
+}
+
+/* Monochrome CTAs — ink pills everywhere in islands chrome */
+
+.app-shell.app-shell .primary-button,
+.app-shell.app-shell .empty-library .primary-button,
+.app-shell.app-shell .empty-state .primary-button,
+.app-shell.app-shell .dialog-actions .primary-button {
+  background: var(--ui-content-primary);
+  color: var(--ui-content-inverse);
+  border: none;
+  outline: none;
+  border-radius: 9999px;
+  box-shadow: none;
+  min-height: 32px;
+  padding-inline: 16px;
+  font-weight: 560;
+}
+
+.app-shell.app-shell .primary-button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ui-content-primary) 82%, var(--ui-content-inverse));
+  color: var(--ui-content-inverse);
+}
+
+.app-shell.app-shell .secondary-button {
+  background: transparent;
+  color: var(--ui-content-primary);
+  border: var(--island-hairline-w) solid var(--island-border);
+  border-radius: 9999px;
+  box-shadow: none;
+  min-height: 32px;
+  padding-inline: 16px;
+}
+
+/* Active workspace tab fuses with unified toolstrip */
+
+.app-shell.app-shell .workspace-tab.is-active .workspace-tab-select > .icon {
+  color: var(--ui-content-primary);
+}
+
+.app-shell.app-shell .canvas-controls .tool-button[aria-pressed="true"]:not(:disabled) .icon,
+.app-shell.app-shell .canvas-controls .tool-button.is-active:not(.is-accent) .icon {
+  color: var(--ui-content-secondary);
+}
+
+.app-shell.app-shell .tag-chip-remove .icon {
+  display: block;
+  flex: 0 0 auto;
+}
+
+.app-shell.app-shell .rating-star[data-active] .icon,
+.app-shell.app-shell .rating-star:hover .icon {
+  color: var(--accent);
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 1;
+  opacity: 1;
+}
+
+.app-shell.app-shell .text-field {
+  border-color: var(--ui-island-hairline);
+}
+
+.app-shell.app-shell .text-field:focus {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--ui-island-hairline));
+}
+
+/* 2) Create-library: smaller radii — not 999px capsules */
+
+.app-shell.app-shell .create-dialog .primary-button,
+.app-shell.app-shell .create-dialog .secondary-button,
+.app-shell.app-shell .create-library-dialog .primary-button,
+.app-shell.app-shell .create-library-dialog .secondary-button,
+.app-shell.app-shell .create-dialog .dialog-actions .primary-button,
+.app-shell.app-shell .create-dialog .dialog-actions .secondary-button,
+.app-shell.app-shell .create-dialog .empty-actions .primary-button,
+.app-shell.app-shell .create-dialog .empty-actions .secondary-button {
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+}
+
+.app-shell.app-shell .create-dialog .text-field,
+.app-shell.app-shell .create-library-dialog .text-field {
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+}
+
+.app-shell.app-shell .sort-mode-control .dimension-filter-btn.is-active .icon {
+  color: var(--ui-content-secondary);
+}
+
+/* ==== a84b: gap between inspector section label and AI badge ============== */
+
+.app-shell.app-shell .inspector-content .micro-label:has(> .inspector-ai-badge-inline) {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Settings fields and buttons use the shortcut search/filter stroke. */
+
+.app-settings-dialog .text-field:not(textarea),
+.app-shell.app-shell .app-settings-dialog .text-field:not(textarea),
+.app-settings-dialog .ui-field__control:not(textarea),
+.app-shell.app-shell .app-settings-dialog .ui-field__control:not(textarea) {
+  height: 30px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  background: var(--ui-surface-raised);
+  box-shadow: none;
+  font-weight: 400;
+}
+
+.app-settings-dialog .text-field:not(textarea):focus,
+.app-settings-dialog .text-field:not(textarea):focus-visible,
+.app-shell.app-shell .app-settings-dialog .text-field:not(textarea):focus,
+.app-shell.app-shell .app-settings-dialog .text-field:not(textarea):focus-visible,
+.app-settings-dialog .ui-field__control:not(textarea):focus,
+.app-settings-dialog .ui-field__control:not(textarea):focus-visible,
+.app-shell.app-shell .app-settings-dialog .ui-field__control:not(textarea):focus,
+.app-shell.app-shell .app-settings-dialog .ui-field__control:not(textarea):focus-visible {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--ui-border-divider));
+  outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  outline-offset: 1px;
+  box-shadow: none;
+}
+
+.app-settings-dialog .secondary-button,
+.app-settings-dialog .ui-button:not(.ui-button--primary):not(.ui-button--danger),
+.app-shell.app-shell .app-settings-dialog .secondary-button,
+.app-shell.app-shell .app-settings-dialog .ui-button:not(.ui-button--primary):not(.ui-button--danger) {
+  height: 28px;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: var(--ui-content-secondary);
+  box-shadow: none;
+  font-size: calc(11px * var(--ui-font-scale));
+  font-weight: 400;
+}
+
+.app-settings-dialog .secondary-button:hover:not(:disabled),
+.app-settings-dialog .ui-button:not(.ui-button--primary):not(.ui-button--danger):hover:not(:disabled),
+.app-shell.app-shell .app-settings-dialog .secondary-button:hover:not(:disabled),
+.app-shell.app-shell .app-settings-dialog .ui-button:not(.ui-button--primary):not(.ui-button--danger):hover:not(:disabled) {
+  border-color: var(--ui-border-divider);
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-secondary);
+}
+
+.app-settings-dialog .primary-button,
+.app-settings-dialog .ui-button.ui-button--primary,
+.app-shell.app-shell .app-settings-dialog .primary-button,
+.app-shell.app-shell .app-settings-dialog .dialog-actions .primary-button,
+.app-shell.app-shell .app-settings-dialog .ui-button.ui-button--primary {
+  height: 28px;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--accent);
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
+  box-shadow: none;
+  font-size: calc(11px * var(--ui-font-scale));
+  font-weight: 400;
+}
+
+.app-settings-dialog .primary-button:hover:not(:disabled),
+.app-settings-dialog .ui-button.ui-button--primary:hover:not(:disabled),
+.app-shell.app-shell .app-settings-dialog .primary-button:hover:not(:disabled),
+.app-shell.app-shell .app-settings-dialog .dialog-actions .primary-button:hover:not(:disabled),
+.app-shell.app-shell .app-settings-dialog .ui-button.ui-button--primary:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
+}
+
+.tag-tree-edit .text-field { width: 100%; min-width: 0; }
+
+.automatic-task-group-editor .text-field{width:100%;min-width:0}
+
+.tag-tree-inline-edit > .text-field { flex: 1; min-width: 0; width: 0; height: 26px; padding: 2px 5px; font-size: 12px; }

@@ -1,0 +1,1786 @@
+/* sidebar: rules whose subject element belongs to this area (P5). */
+
+.nav-row,
+.library-switcher-trigger,
+.library-switcher-item {
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+/* Apply the freeze synchronously on pointer-down as well as through the
+   React render that follows it. This prevents the first pointermove from
+   reflowing cards before panelResizing has committed. */
+
+.workspace-canvas.is-reflow-frozen > .folder-card-row {
+  width: var(--reflow-frozen-width);
+  max-width: none;
+}
+
+.nav-row,
+.library-switcher-trigger {
+  -webkit-app-region: no-drag;
+}
+
+/* Library switcher sits in the browse column beside history + breadcrumbs. */
+
+/* Toolbar placement (beside the panel toggle): a bounded width keeps the tabs
+   from being squeezed, and the whole row is clickable. */
+
+.toolbar-nav-cluster .library-switcher {
+  flex: 0 1 var(--ui-shell-library-switcher-width);
+  max-width: var(--ui-shell-library-switcher-width);
+}
+
+.toolbar-nav-cluster .library-switcher-trigger {
+  cursor: pointer;
+}
+
+.library-switcher {
+  /* Do not set overflow:hidden here — the dropdown menu is position:absolute
+     inside this box (Serpent-7fy: clipping made the menu look “completely wrong”).
+     Ellipsis belongs on .library-switcher-name only. */
+  position: relative;
+  display: flex;
+  flex: 0 1 auto;
+  align-self: center;
+  align-items: center;
+  min-width: 0;
+  max-width: 220px;
+  height: var(--ui-shell-control-height);
+  overflow: visible;
+}
+
+.library-switcher-trigger {
+  display: inline-flex;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  align-items: center;
+  gap: 4px;
+  height: var(--ui-shell-control-height);
+  padding: 0 7px 0 9px;
+  border: 1px solid transparent;
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: var(--ui-content-primary);
+  font-size: calc(12.5px * var(--ui-font-scale));
+  font-weight: 620;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.library-switcher-trigger:hover:not(:disabled),
+.library-switcher-trigger[aria-expanded="true"]:not(:disabled) {
+  background: var(--ui-surface-hover);
+}
+
+.library-switcher-trigger:disabled {
+  color: var(--ui-content-tertiary);
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.library-switcher-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.library-switcher-sync-status {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+/* 已连接：绿色（--success 派生，亮/暗主题自适应；用户反馈
+   2026-08-18 两次加深：52% → 68% → 84%）；断连/未启用：灰色。 */
+
+.library-switcher-sync-status[data-state="enabled"] {
+  color: color-mix(in srgb, var(--ui-status-success) 84%, transparent);
+}
+
+.library-switcher-sync-status[data-state="disabled"] {
+  color: var(--ui-content-secondary);
+}
+
+.library-switcher-sync-status:hover {
+  color: var(--ui-content-primary);
+}
+
+.library-switcher-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: var(--ui-layer-menu);
+  display: grid;
+  min-width: 180px;
+  padding: 5px;
+  border: 1px solid var(--ui-menu-surface-border);
+  border-radius: var(--ui-menu-surface-radius);
+  background: color-mix(in srgb, var(--ui-surface-raised) 92%, transparent);
+  box-shadow: var(--ui-menu-surface-shadow);
+  backdrop-filter: blur(14px) saturate(120%);
+}
+
+.library-switcher-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 30px;
+  gap: 8px;
+  padding: var(--ui-menu-item-padding);
+  border: 0;
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: var(--ui-content-primary);
+  font-family: inherit;
+  font-size: var(--ui-menu-item-font-size);
+  font-weight: 450;
+  line-height: var(--ui-menu-item-line-height);
+  text-align: left;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.library-switcher-submenu-wrap {
+  position: static;
+}
+
+.library-switcher-submenu-trigger {
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.library-switcher-submenu {
+  /* The secondary surface deliberately shares the main-menu implementation.
+     Keeping this hook lets LibrarySwitcher tests target it without creating a
+     second visual menu system. */
+}
+
+.library-switcher-menu:not(.is-keyboard-navigation) .library-switcher-item:hover:not(:disabled) {
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-primary);
+}
+
+.library-switcher-menu.is-keyboard-navigation .library-switcher-item:focus-visible:not(:disabled),
+.library-switcher-item:focus-visible:not(:disabled) {
+  background: var(--ui-menu-item-focus-background);
+  box-shadow: inset 1px 0 var(--ui-content-secondary);
+  outline: none;
+}
+
+.library-switcher-item:disabled {
+  color: var(--ui-content-tertiary);
+  opacity: var(--ui-menu-item-disabled-opacity);
+  cursor: not-allowed;
+}
+
+.library-switcher-item.is-danger {
+  color: var(--ui-menu-danger-color);
+}
+
+.library-switcher-item.is-danger:hover:not(:disabled),
+.library-switcher-menu.is-keyboard-navigation
+  .library-switcher-item.is-danger:focus-visible:not(:disabled) {
+  background: var(--ui-menu-danger-hover-background);
+  color: var(--ui-menu-danger-color);
+}
+
+/* The normal library-menu hover selector includes the menu state class, so
+   repeat that scope here to keep destructive text red in pointer navigation. */
+
+.library-switcher-menu:not(.is-keyboard-navigation)
+  .library-switcher-item.is-danger:hover:not(:disabled) {
+  background: var(--ui-menu-danger-hover-background);
+  color: var(--ui-menu-danger-color);
+}
+
+.library-switcher-recent-row {
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+}
+
+.library-switcher-recent-open {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.library-switcher-recent-forget {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  margin: 1px 2px 1px 0;
+  padding: 0;
+  border: 0;
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: var(--ui-content-tertiary);
+  cursor: pointer;
+}
+
+.library-switcher-recent-forget:hover {
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-primary);
+}
+
+.library-switcher-divider {
+  height: 1px;
+  margin: 4px 2px;
+  background: var(--ui-border-divider);
+}
+
+.library-switcher-section {
+  display: grid;
+}
+
+.library-switcher-section-label {
+  padding: 4px 9px 2px;
+  color: var(--ui-content-tertiary);
+  font-size: calc(11px * var(--ui-font-scale));
+  letter-spacing: 0.02em;
+}
+
+.library-switcher-item-label {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.navigation-pane {
+  /* overflow on scroll children so pane box-shadow is not clipped
+     (Serpent-zcyg hierarchical elevation). */
+  position: relative;
+  z-index: 2;
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  overflow: visible;
+  background: color-mix(
+    in srgb,
+    var(--ui-pane) var(--ui-background-surface-opacity, 100%),
+    transparent
+  );
+}
+
+:root:not([data-elevation="0"]) .navigation-pane {
+  box-shadow: var(--ui-shadow-pane-east);
+}
+
+.left-collapsed .navigation-pane {
+  visibility: hidden;
+}
+
+.navigation-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* Serpent-6e3b10 / Serpent-b29bc4: the folder section's blank area (indentation
+   gutter) returns to the library root on click and accepts managed-folder drops.
+   Same accent-tinted language as .nav-row.is-drop-target and the same corner
+   radius as the rows (--ui-radius-surface), with an inset ring so the list never
+   changes size mid-drag. */
+
+.nav-folder-list.is-root-drop-target {
+  border-radius: var(--ui-radius-surface);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.nav-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* Secondary (not tertiary) so FOLDERS / COLLECTIONS stay readable on light panes. */
+}
+
+.nav-section-title-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.nav-section-search-slot {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.nav-section-search-slot.is-open {
+  grid-template-rows: 1fr;
+}
+
+.nav-section-search-clip {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.nav-section-search {
+  display: block;
+  box-sizing: border-box;
+  width: calc(100% - 12px);
+  height: 22px;
+  margin: 2px 6px 4px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: var(--ui-radius-surface);
+  background: var(--ui-surface-raised-subtle);
+  color: var(--ui-content-primary);
+  font: inherit;
+  font-size: calc(11px * var(--ui-font-scale));
+  font-weight: 450;
+  letter-spacing: normal;
+  text-transform: none;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition:
+    opacity 180ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.nav-section-search-slot.is-open .nav-section-search {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-section-search-slot,
+  .nav-section-search {
+    transition: none;
+  }
+}
+
+.nav-section-search:focus {
+  outline: 1px solid var(--accent);
+  outline-offset: 0;
+}
+
+.nav-section-search::placeholder {
+  color: var(--ui-content-tertiary);
+}
+
+.nav-section-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.nav-row {
+  display: grid;
+  width: 100%;
+  height: var(--ui-shell-control-height);
+  min-width: 0;
+  /* Navigation rows expose one trailing count: the number of assets in the
+     current folder or collection. Child-collection totals belong to the
+     tree model, not the row's count column. */
+  grid-template-columns: 17px minmax(0, 1fr) auto;
+  align-items: center;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+/* CU-D9: deep/long folder, collection, and smart-collection names ellipsize
+   instead of wrapping and inflating row height. Depth indent stays on the
+   tree row so the disclosure and content advance together. */
+
+.nav-row-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-entity-glyph {
+  position: relative;
+  display: inline-grid;
+  width: 17px;
+  height: 15px;
+  flex: 0 0 auto;
+  place-items: center;
+  color: inherit;
+}
+
+.nav-entity-glyph-emoji {
+  line-height: 1;
+  font-size: 13px;
+  font-family: var(--ui-font-emoji);
+}
+
+.nav-entity-glyph-badge {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  width: 8px;
+  height: 8px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--ui-pane);
+  color: var(--ui-content-secondary);
+}
+
+.nav-tree-row {
+  position: relative;
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: 16px minmax(0, 1fr);
+  align-items: center;
+  gap: 2px;
+}
+
+/* Custom folder order drag insertion line (folder "自定义" sort). */
+
+.nav-folder-insert-line {
+  position: absolute;
+  right: 0;
+  height: 2px;
+  border-radius: calc(1px * var(--ui-radius-scale, 1));
+  background: var(--accent);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.nav-tree-row[data-insert-edge="before"] .nav-folder-insert-line {
+  top: -1px;
+}
+
+.nav-tree-row[data-insert-edge="after"] .nav-folder-insert-line {
+  bottom: -1px;
+}
+
+.nav-folder-insert-line::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-right: 4px solid transparent;
+  border-left: 4px solid transparent;
+}
+
+.nav-tree-row[data-insert-edge="before"] .nav-folder-insert-line::before {
+  top: -5px;
+  border-bottom: 6px solid var(--accent);
+}
+
+.nav-tree-row[data-insert-edge="after"] .nav-folder-insert-line::before {
+  bottom: -5px;
+  border-top: 6px solid var(--accent);
+}
+
+.nav-disclosure,
+.nav-disclosure-spacer {
+  display: inline-grid;
+  width: 16px;
+  height: 22px;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.nav-disclosure {
+  padding: 0;
+  border: 0;
+  border-radius: calc(4px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: var(--ui-content-tertiary);
+  cursor: pointer;
+}
+
+.nav-disclosure:hover {
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-primary);
+}
+
+.nav-disclosure.is-expanded {
+  transform: rotate(90deg);
+}
+
+/* BUG-DND-001: row children (icon, label, count) are passive paint, never
+   drag targets — dragging across them fired dragleave on the row and
+   thrashed the drop highlight. Nothing interactive lives inside a nav row:
+   the inline rename/create field renders in the sibling .nav-inline-edit
+   row, never inside .nav-row. */
+
+.nav-row > * {
+  pointer-events: none;
+}
+
+/* REQ-NAV-005: hover and active differ only by background shade — no accent
+   edge bar, outline, or accent border on directory rows. The base transparent
+   border stays so rows don't shift between states. */
+
+/* Serpent-d7acfa：侧栏 Ctrl/⌘ 多选的行。沿用与拖放目标相同的「accent 轻染」
+   语言，但更轻，避免与当前浏览范围的 is-active 混淆。用户 2026-10-17：选中态
+   不要描边，只用背景色区分。取值挂在 .navigation-pane 上：islands 布局把同一条
+   高亮矩形画在行容器 .nav-tree-row（见文末 sidebar 状态矩形一节），两处必须用
+   同一组颜色。 */
+
+.nav-row.is-multi-selected {
+  background: var(--nav-selected-wash);
+  color: var(--ui-content-primary);
+}
+
+/* REQ-DND-001/002: asset-drag hover target — same background-only language as
+   the active state, one shade stronger and accent-tinted. BUG-DND-001: the
+   :hover companion keeps the accent tint above the plain hover shade
+   (.nav-row:hover:not(:disabled) is more specific) while the pointer rests
+   on the row mid-drag. */
+
+.nav-row.is-drop-target,
+.nav-row.is-drop-target:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--accent) 20%, var(--ui-surface-pressed));
+  color: var(--ui-content-primary);
+}
+
+.nav-row:disabled {
+  color: var(--ui-content-tertiary);
+  cursor: default;
+}
+
+.nav-count {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: calc(10px * var(--ui-font-scale));
+  white-space: nowrap;
+}
+
+.trash-folder-group {
+  display: contents;
+}
+
+.trash-folder-group-header {
+  grid-column: 1 / -1;
+  margin: 12px 4px 4px;
+  color: var(--ui-content-secondary);
+  font-size: calc(12px * var(--ui-font-scale));
+  font-weight: var(--ui-font-weight-semibold);
+  letter-spacing: 0.02em;
+}
+
+.asset-grid .trash-folder-group-header:first-child {
+  margin-top: 0;
+}
+
+.library-state {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: min(720px, calc(100% - 48px));
+  min-height: 260px;
+  animation: state-enter 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.library-state h1 {
+  margin: 9px 0 11px;
+  color: var(--ui-content-primary);
+  font-size: calc(clamp(22px, 3vw, 30px) * var(--ui-font-scale));
+  font-weight: 590;
+  letter-spacing: -0.025em;
+}
+
+.library-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 25px;
+}
+
+.library-state {
+  grid-template-columns: 106px minmax(0, 1fr) auto;
+  align-items: center;
+  padding: 31px;
+}
+
+.library-monogram {
+  display: grid;
+  width: 76px;
+  height: 92px;
+  place-items: end start;
+  padding: 10px;
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--ui-border-divider));
+  border-radius: calc(6px * var(--ui-radius-scale, 1)) calc(2px * var(--ui-radius-scale, 1)) calc(6px * var(--ui-radius-scale, 1)) calc(2px * var(--ui-radius-scale, 1));
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--accent) 17%, transparent), transparent 55%), var(--ui-pane);
+  color: color-mix(in srgb, var(--accent) 72%, white);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: calc(18px * var(--ui-font-scale));
+}
+
+.library-actions {
+  align-self: end;
+  margin: 0;
+  padding-left: 20px;
+}
+
+/* A library switch is a safety boundary: hide the old and not-yet-coherent
+ * navigation model until the replacement library has been read completely. */
+
+.library-loading-backdrop {
+  background: var(--ui-surface-canvas);
+  backdrop-filter: none;
+}
+
+.library-loading-dialog {
+  width: 100%;
+  max-width: 36rem;
+}
+
+:root[data-menu-acrylic="0"]
+  .library-switcher-menu {
+  background: var(--ui-surface-raised);
+  backdrop-filter: none;
+}
+
+:root[data-menu-acrylic="1"]
+  .library-switcher-menu {
+  background: color-mix(in srgb, var(--ui-surface-raised) 92%, transparent);
+  backdrop-filter: blur(14px) saturate(120%);
+}
+
+:root[data-menu-acrylic="2"]
+  .library-switcher-menu {
+  background: color-mix(in srgb, var(--ui-surface-raised) 84%, transparent);
+  backdrop-filter: blur(20px) saturate(125%);
+}
+
+:root[data-menu-acrylic="3"]
+  .library-switcher-menu {
+  background: color-mix(in srgb, var(--ui-surface-raised) 74%, transparent);
+  backdrop-filter: blur(28px) saturate(135%);
+}
+
+.appearance-picker-cell .nav-entity-glyph-emoji {
+  font-size: 15px;
+}
+
+/* Library settings → Semantic search: match Sync / AI analysis polish. */
+
+.library-semantic-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.library-semantic-card > .library-settings-gitignore-actions,
+.library-semantic-card > .library-semantic-notice {
+  margin: 0;
+}
+
+.library-semantic-select {
+  width: min(100%, 420px);
+  max-width: 100%;
+}
+
+.library-semantic-status-row {
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.library-semantic-notice {
+  margin-top: 10px;
+}
+
+.library-sync-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.library-sync-actions {
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.library-settings-gitignore-actions.library-sync-actions {
+  justify-content: flex-end;
+}
+
+.library-settings-dialog {
+  width: min(860px, calc(100vw - 48px));
+  height: min(680px, calc(100vh - 48px));
+}
+
+.library-settings-frame {
+  min-height: 0;
+}
+
+.library-settings-name-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.library-settings-path {
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+
+.library-settings-section-heading {
+  margin-top: 22px;
+}
+
+.library-settings-gitignore-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.library-settings-gitignore-heading,
+.library-settings-gitignore-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.library-settings-help-button {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: 50%;
+  background: var(--ui-surface-raised);
+  color: var(--text-secondary);
+  font-size: calc(12px * var(--ui-font-scale));
+  font-weight: var(--ui-font-weight-bold);
+  cursor: pointer;
+}
+
+.library-settings-help-button:hover,
+.library-settings-help-button:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.library-settings-gitignore-help {
+  margin: 0;
+  padding: 9px 11px;
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-tertiary);
+  font-size: calc(11px * var(--ui-font-scale));
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.library-settings-gitignore-editor {
+  min-height: 210px;
+  width: 100%;
+  resize: vertical;
+  padding: 12px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  background: var(--ui-canvas);
+  color: var(--ui-content-primary);
+  font-family: var(--font-mono);
+  font-size: calc(12px * var(--ui-font-scale));
+  line-height: 1.55;
+}
+
+.library-settings-gitignore-editor:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--ui-action-accent-soft);
+}
+
+.library-settings-gitignore-actions {
+  color: var(--text-tertiary);
+  font-size: calc(12px * var(--ui-font-scale));
+}
+
+.library-settings-gitignore-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* REQ-FOLDER-001/002/003/010: direct child folder cards above the asset grid.
+   Width uses --folder-card-size from the masonry-aligned flush column width
+   (Serpent-l67w) so folders line up with waterfall columns. */
+
+.folder-card-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-self: start;
+  justify-self: stretch;
+  gap: 14px;
+  width: 100%;
+  padding: 16px 16px 0;
+  --folder-card-size: 160px;
+}
+
+/* CANVAS-022: folders-only (no asset grid) — keep cards packed at the top
+   with normal bottom padding instead of a full-viewport empty grid. */
+
+.folder-card-row.is-folders-only {
+  padding-bottom: 48px;
+}
+
+.folder-card {
+  display: flex;
+  width: var(--folder-card-size, 160px);
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  transition: box-shadow 120ms ease;
+}
+
+.folder-card.is-trashed-folder {
+  opacity: 0.82;
+}
+
+.folder-card.is-trashed-folder .folder-card-shell {
+  filter: grayscale(0.35);
+}
+
+/* REQ-DND-006 / Serpent-12mb: external import drop target on folder cards. */
+
+.folder-card.is-drop-target,
+.folder-card.is-drop-target:hover {
+  background: color-mix(in srgb, var(--accent) 20%, var(--ui-surface-pressed));
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.folder-card:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+:root:not([data-elevation="0"]) .folder-card {
+  box-shadow: var(--ui-shadow-card);
+}
+
+:root:not([data-elevation="0"]) .folder-card.is-selected,
+:root:not([data-elevation="0"]) .folder-card:focus-visible {
+  box-shadow: var(--ui-shadow-card), 0 0 0 2px var(--accent);
+}
+
+/* Serpent-l67w / FOLDER-011: reference folder — rear rounded panel + front
+   pocket with left tab and S-curve shelf. Edge-flush with the card; quiet
+   stroke; black contact shadow from front onto the exposed rear strip. */
+
+.folder-card-cover {
+  position: relative;
+  display: flex;
+  /* Flush past the card's 1px transparent border so the shell meets the
+     outer rounded edge instead of sitting one pixel inside. */
+  width: calc(100% + 2px);
+  margin: -1px -1px 0;
+  aspect-ratio: 1.3;
+  align-items: stretch;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--folder-card-radius) var(--folder-card-radius) 0 0;
+}
+
+.folder-card-shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.folder-card-back {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--folder-card-radius);
+  background: color-mix(in srgb, var(--ui-canvas) 55%, var(--ui-pane));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ui-content-primary) 12%, transparent);
+}
+
+.folder-card-front {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  /* Rear strip sits ABOVE the shelf — cast upward onto it (black, not --text). */
+  filter: drop-shadow(0 -2px 4px rgb(0 0 0 / 6%))
+    drop-shadow(0 -4px 8px rgb(0 0 0 / 3%));
+  pointer-events: none;
+}
+
+.folder-card-front-shape {
+  fill: var(--ui-pane);
+  stroke: color-mix(in srgb, var(--ui-content-primary) 12%, transparent);
+  stroke-width: 1.25;
+  vector-effect: non-scaling-stroke;
+}
+
+.folder-card-pocket {
+  position: absolute;
+  z-index: 3;
+  /* Sit inside the front pocket below the shelf (~16% in the 124 viewBox). */
+  inset: 19% 4% 5%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.folder-card-cover-photo {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--ui-content-inverse) 14%, transparent);
+  border-radius: calc(7px * var(--ui-radius-scale, 1));
+  background: var(--ui-surface-raised-subtle);
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 12%),
+    0 3px 8px rgb(0 0 0 / 10%);
+}
+
+.folder-card-cover-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.folder-cover-picker-dialog {
+  width: min(640px, calc(100vw - 48px));
+}
+
+.folder-cover-picker-search {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.folder-cover-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 8px;
+  max-height: 360px;
+  overflow: auto;
+  margin: 0 0 8px;
+  padding: 2px;
+}
+
+.folder-cover-picker-cell {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 4px;
+  border: 1px solid transparent;
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.folder-cover-picker-cell.is-selected {
+  border-color: var(--accent);
+  background: var(--ui-action-accent-soft);
+}
+
+.folder-cover-picker-thumb {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  background: var(--ui-surface-raised-subtle);
+}
+
+.folder-cover-picker-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.folder-cover-picker-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+}
+
+.folder-cover-picker-status {
+  margin: 12px 0;
+  color: var(--ui-content-secondary);
+  font-size: 13px;
+}
+
+/* Serpent-9021d1: 2x2 four-grid collage for pure folders (subfolders only). */
+
+.folder-card-collage {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--ui-content-inverse) 14%, transparent);
+  border-radius: calc(7px * var(--ui-radius-scale, 1));
+  background: color-mix(in srgb, var(--ui-content-inverse) 14%, var(--ui-surface-raised-subtle));
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 12%),
+    0 3px 8px rgb(0 0 0 / 10%);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 1.5px;
+}
+
+.folder-card-collage-cell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--ui-surface-raised-subtle);
+}
+
+.folder-card-collage-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.folder-card-cover-empty {
+  display: grid;
+  place-items: center;
+  color: color-mix(in srgb, var(--ui-content-secondary) 72%, var(--ui-content-tertiary));
+  opacity: 0.78;
+}
+
+.folder-card-caption {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 7px 4px 8px;
+  text-align: center;
+}
+
+.folder-card-name {
+  width: 100%;
+  overflow: hidden;
+  color: var(--ui-content-primary);
+  font-size: calc(11px * var(--ui-font-scale));
+  font-weight: var(--ui-font-weight-medium);
+  letter-spacing: 0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.folder-card-count {
+  color: var(--ui-content-tertiary);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: calc(9px * var(--ui-font-scale));
+}
+
+.inspector-folder-hero > .folder-card-collage {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-width: none;
+  max-height: none;
+  object-fit: cover;
+}
+
+.inspector-pane .inspector-folder-hero > .folder-card-collage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  max-width: none;
+  max-height: none;
+  object-fit: cover;
+}
+
+@media (max-width: 800px) {
+
+  .navigation-pane {
+    position: fixed;
+    z-index: var(--ui-layer-shell);
+    top: var(--ui-shell-toolbar-height);
+    bottom: 0;
+    width: 224px;
+    visibility: visible;
+  }
+
+  .navigation-pane {
+    left: 0;
+  }
+
+  :root:not([data-elevation="0"]) .navigation-pane {
+    box-shadow: var(--ui-shadow-pane-east);
+  }
+
+  .left-collapsed .navigation-pane {
+    visibility: hidden;
+  }
+
+  .library-switcher-name {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   REQ-FOLDER-007 目录树原地编辑行（wave1 T4）
+   新建子文件夹 / 重命名… / 侧栏「+」共用的行内名称编辑行，取代原文件夹对话
+   框。行高、图标列与缩进对齐 .nav-row，进入/退出编辑时目录树不跳动。
+   --------------------------------------------------------------------------- */
+
+.nav-inline-edit {
+  display: grid;
+  width: 100%;
+  min-height: 29px;
+  grid-template-columns: 17px minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
+  padding: 2px 7px 2px 0;
+  border: 1px solid transparent;
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  color: var(--ui-content-secondary);
+}
+
+.nav-inline-edit:focus-within {
+  border-color: color-mix(in srgb, var(--accent) 62%, var(--ui-border-divider));
+  background: var(--ui-canvas);
+  box-shadow: 0 0 0 3px var(--ui-action-accent-soft);
+}
+
+/* 类型化失败（非法名/同名冲突）内联呈现在编辑行下方，行保持打开供修正。 */
+
+.nav-inline-edit-error {
+  grid-column: 1 / -1;
+  margin: 0 0 2px;
+  padding-left: 24px;
+  color: var(--ui-status-warning);
+  font-size: calc(10px * var(--ui-font-scale));
+  line-height: 1.5;
+}
+
+:root[data-platform="windows"] .app-shell.app-shell .library-switcher-item:not(.is-danger):not(:disabled) {
+  font-size: calc(12px * var(--ui-font-scale));
+  color: var(--ui-content-primary);
+}
+
+.nav-row,
+.nav-disclosure {
+  border-radius: var(--ui-radius-control);
+}
+
+/* --- Sidebar: muted, airy, quiet active (no accent edge — REQ-NAV-005) --- */
+
+.navigation-pane {
+  --nav-selected-wash: color-mix(in srgb, var(--accent) 10%, transparent);
+  border-right: 1px solid var(--ui-border-subtle);
+  background: color-mix(
+    in srgb,
+    var(--ui-pane) var(--ui-background-surface-opacity, 100%),
+    transparent
+  );
+  box-shadow: none;
+}
+
+.navigation-scroll {
+  padding: 14px 12px 28px;
+}
+
+.nav-section {
+  margin-top: 20px;
+}
+
+.nav-section-heading {
+  height: 24px;
+  margin-bottom: 4px;
+  padding: 0 8px 0 10px;
+  color: var(--ui-content-tertiary);
+  font-size: calc(10.5px * var(--ui-font-scale));
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.nav-row {
+  gap: 8px;
+  padding: 0 8px;
+  color: color-mix(in srgb, var(--ui-content-secondary) 88%, var(--ui-content-tertiary));
+  font-size: calc(12.5px * var(--ui-font-scale));
+  font-weight: 450;
+}
+
+.nav-row.is-active:hover:not(:disabled) {
+  background: var(--ui-action-accent-soft);
+  border-color: transparent;
+  box-shadow: none;
+  color: var(--ui-content-accent);
+}
+
+.nav-row.is-active {
+  /* Soft accent wash only — no accent edge/outline (REQ-NAV-005). */
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
+  font-weight: 600;
+}
+
+.nav-count {
+  color: color-mix(in srgb, var(--ui-content-tertiary) 85%, transparent);
+  font-weight: 450;
+}
+
+.nav-row.is-active .nav-count {
+  color: color-mix(in srgb, var(--ui-content-accent) 72%, transparent);
+}
+
+.nav-empty {
+  margin: 4px 8px 6px 10px;
+  padding: 2px 2px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ui-content-tertiary);
+  font-size: calc(11.5px * var(--ui-font-scale));
+  line-height: 1.45;
+}
+
+.library-state {
+  border: 1px solid var(--ui-border-subtle);
+  border-radius: var(--ui-radius-surface);
+  background: var(--ui-surface-raised);
+  padding: 4px;
+  box-shadow: none;
+}
+
+.folder-card {
+  --folder-card-radius: calc(var(--folder-card-size, 160px) * 0.05);
+  border: 1px solid var(--ui-border-subtle);
+  border-radius: var(--ui-radius-surface);
+  background: color-mix(in srgb, var(--ui-surface-raised) 42%, var(--ui-canvas));
+  box-shadow: none;
+}
+
+.folder-card:hover {
+  background: color-mix(in srgb, var(--ui-surface-raised) 42%, var(--ui-canvas));
+  border-color: var(--ui-border-subtle);
+}
+
+.folder-card.is-selected {
+  background: color-mix(in srgb, var(--accent) 6%, color-mix(in srgb, var(--ui-surface-raised) 42%, var(--ui-canvas)));
+  border-color: transparent;
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--accent) 82%, var(--ui-border-divider));
+}
+
+.navigation-pane {
+  box-shadow: none;
+}
+
+:root:not([data-elevation="0"]) .navigation-pane {
+  box-shadow: none;
+}
+
+.nav-disclosure:hover:not(:disabled) {
+  background: var(--ui-surface-hover);
+  border-color: transparent;
+  color: var(--ui-content-primary);
+}
+
+/* Radius-tier consumers already on tokens; keep shell controls consistent. */
+
+.nav-row {
+  border-radius: var(--ui-radius-control);
+}
+
+/* Nav rows — final cascade: soft idle wash, accent-soft active, never a border. */
+
+.nav-row {
+  border: 1px solid transparent;
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  box-shadow: none;
+  outline: none;
+}
+
+.nav-row:hover:not(:disabled):not(.is-active) {
+  background: color-mix(in srgb, var(--ui-content-primary) 5%, transparent);
+  border-color: transparent;
+  box-shadow: none;
+  outline: none;
+  color: var(--ui-content-primary);
+}
+
+.nav-row.is-active,
+.nav-row.is-active:hover:not(:disabled) {
+  background: var(--ui-action-accent-soft);
+  border-color: transparent;
+  box-shadow: none;
+  color: var(--ui-content-accent);
+}
+
+.nav-row:focus-visible {
+  border-color: transparent;
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 36%, transparent);
+}
+
+.app-shell.app-shell .library-switcher-trigger {
+  align-self: center;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.app-shell.app-shell > .navigation-pane {
+  overflow: hidden;
+}
+
+.app-shell.app-shell.left-collapsed > .navigation-pane {
+  border-width: 0;
+  box-shadow: none;
+}
+
+.app-shell.app-shell > .navigation-pane::before {
+  content: none;
+}
+
+/* ---- Sidebar: macOS Photos / Finder ------------------------------------ */
+
+.app-shell.app-shell .navigation-scroll {
+  /* Equal L/R inset; selection spans the full tree-row so the disclosure
+     gutter does not leave a one-sided blank. */
+}
+
+.app-shell.app-shell .nav-tree-row:has(> .nav-row.is-active) {
+  background: var(--island-select);
+}
+
+.app-shell.app-shell .nav-tree-row:has(> .nav-row.is-active) > .nav-row.is-active {
+  background: transparent;
+  box-shadow: none;
+}
+
+.app-shell.app-shell .nav-section-heading {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.app-shell.app-shell .nav-section {
+  margin-top: var(--ui-island-group-gap);
+}
+
+.app-shell.app-shell .nav-row {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.app-shell.app-shell .nav-row.is-active {
+  background: var(--island-select);
+  color: var(--ui-content-primary);
+  box-shadow: none;
+  border-color: transparent;
+  font-weight: 510;
+}
+
+.app-shell.app-shell .nav-empty {
+  margin: 2px 0 6px;
+  padding: 2px 8px 2px 50px;
+  color: var(--ui-content-tertiary);
+  font-size: calc(11px * var(--ui-font-scale));
+}
+
+/* ==== a19/a23: Islands materials derive from the active theme profile ======
+   Surfaces/text come from --ui-surface-* / --ui-content-* (profile tokens).
+   Only island structure (backdrop tint, side panels, toolstrip, hairlines)
+   is synthesized here so theme presets remain visible. */
+
+.app-shell.app-shell .nav-row.is-active,
+.app-shell.app-shell .nav-row[aria-current="page"] {
+  background: var(--island-select);
+}
+
+/* ==== a24: sidebar + inspector share ONE profile-derived surface ===========
+   Guarded by tests/unit/islands-side-panels-css.test.ts. */
+
+/* ==== a25: quieter secondary accents — strong accent only on primary ======
+   Keep: selected card ring, applied filter segment, nav selection wash,
+   primary CTAs. Mute: chrome icons, empty-state tint, filter-summary chip
+   wash, active-nav glyph tint, secondary focus rings, tag-chip loudness. */
+
+/* Active nav: wash stays; label/icon use primary text, not accent paint. */
+
+.app-shell.app-shell .nav-row.is-active,
+.app-shell.app-shell .nav-row[aria-current="page"] {
+  color: var(--ui-content-primary);
+}
+
+:root[data-theme="dark"] .app-shell.app-shell .nav-row.is-active,
+:root[data-theme="dark"] .app-shell.app-shell .nav-row[aria-current="page"] {
+  color: var(--ui-content-primary);
+}
+
+.app-shell.app-shell .nav-row:focus-visible:not(.is-active) {
+  outline: none;
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--ui-content-primary) 18%, transparent);
+}
+
+/* Hairline width on island shells + toolstrip seam. */
+
+.app-shell.app-shell > .navigation-pane {
+  border-width: var(--island-hairline-w);
+  border-style: solid;
+  border-color: var(--island-border);
+}
+
+/* Hover rows: 5% ink wash (not accent). */
+
+.app-shell.app-shell .nav-row:hover:not(:disabled):not(.is-active) {
+  background: var(--island-hover-wash);
+  box-shadow: none;
+}
+
+/* --- Denser chrome (~28–30px) ------------------------------------------- */
+
+.app-shell.app-shell .nav-section-heading {
+  font-size: calc(11px * var(--ui-font-scale));
+  color: var(--ui-content-tertiary);
+}
+
+/* Flat islands: hairline only, no drop shadow */
+
+/* L/R identical opaque side (reassert last word) */
+
+.app-shell.app-shell > .navigation-pane {
+  background: var(--island-side);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+
+/* ---- Dense chrome ------------------------------------------------------ */
+
+.app-shell.app-shell .nav-section-heading {
+  height: 18px;
+  margin: 0 0 2px;
+  padding: 0 8px;
+  font-size: calc(10.5px * var(--ui-font-scale));
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ui-content-tertiary);
+}
+
+.app-shell.app-shell .nav-row {
+  min-height: 26px;
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  font-size: calc(12px * var(--ui-font-scale));
+  font-weight: 450;
+}
+
+/* Root drop highlight uses the same corner as the islands row (6px), not
+   the 8px surface token the base list rule carries. */
+
+.app-shell.app-shell .nav-folder-list.is-root-drop-target {
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+}
+
+.app-shell.app-shell .nav-tree-row {
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+}
+
+/* Nav selection: neutral wash only — no accent glyphs */
+
+.app-shell.app-shell .nav-row.is-active,
+.app-shell.app-shell .nav-row[aria-current="page"],
+.app-shell.app-shell .nav-tree-row:has(> .nav-row.is-active) {
+  background: var(--island-select);
+  color: var(--ui-content-primary);
+}
+
+.app-shell.app-shell .nav-row.is-active .nav-entity-glyph {
+  color: var(--ui-content-primary);
+}
+
+/* ---- Sidebar row states share ONE highlight rectangle ---------------------
+   当前浏览范围（.is-active）、悬停、多选、资产拖放目标全都画在行容器
+   .nav-tree-row 上。四种状态曾分别画在行容器与内层 .nav-row 按钮上，而按钮被
+   展开箭头列 + 层级缩进往右推，于是同一条行出现两种宽度（选中/悬停比当前文件夹
+   短一截）。现在行容器是唯一的高亮面，按钮本身永远透明。
+
+   用户 2026-10-17：选中态不要描边，只用背景色；既在浏览又被选中时仍显示选中的
+   accent 轻染（中性 .is-active 底色不得把它盖掉）。 */
+
+.app-shell.app-shell .nav-tree-row:has(> .nav-row:hover:not(:disabled):not(.is-active):not(.is-multi-selected):not(.is-drop-target)) {
+  background: color-mix(in srgb, var(--ui-content-primary) 5%, transparent);
+}
+
+.app-shell.app-shell .nav-tree-row:has(> .nav-row.is-multi-selected) {
+  background: var(--nav-selected-wash);
+}
+
+.app-shell.app-shell .nav-tree-row:has(> .nav-row.is-drop-target) {
+  background: color-mix(in srgb, var(--accent) 20%, var(--ui-surface-pressed));
+}
+
+/* 行的所有状态底色都由 .nav-tree-row 提供；按钮自己再画一层就会在同一条行里
+   叠出第二条更窄的高亮（悬停时最明显）。 */
+
+.app-shell.app-shell .nav-tree-row > .nav-row,
+.app-shell.app-shell .nav-tree-row > .nav-row:hover:not(:disabled),
+.app-shell.app-shell .nav-tree-row > .nav-row.is-active,
+.app-shell.app-shell .nav-tree-row > .nav-row.is-multi-selected,
+.app-shell.app-shell .nav-tree-row > .nav-row.is-drop-target {
+  background: transparent;
+  box-shadow: none;
+}
+
+.app-shell.app-shell .workspace-tab.is-active .workspace-tab-select > .nav-entity-glyph {
+  color: var(--ui-content-primary);
+}
+
+.app-shell.app-shell .navigation-scroll {
+  padding: 8px 12px 12px;
+}
+
+/* 6) Reassert a28 panel hairlines (do not strip) */
+
+.app-shell.app-shell > .navigation-pane {
+  border: var(--island-hairline-w) solid var(--island-border);
+  border-radius: var(--ui-island-radius);
+  box-shadow: none;
+}
+
+.app-shell.app-shell .nav-row.is-active .nav-count {
+  color: var(--accent);
+  font-weight: 550;
+}
+
+/* 10) Panels closer to window edges — smaller outer island inset (Codex/macOS) */
+
+.app-shell.app-shell > .navigation-pane {
+  margin: 0 var(--ui-island-gap) var(--ui-island-gap);
+}
+
+.app-shell.app-shell > .navigation-pane { margin-right: 0; }
+
+/* Outer corners that meet the window chrome = window radius; other corners
+   keep the island radius so inner seams stay soft. */
+
+.app-shell.app-shell > .navigation-pane {
+  border-radius: var(--ui-island-radius) var(--ui-island-radius) var(--ui-island-radius) var(--ui-window-corner-radius);
+}
+
+/* ==== a78: separate outer vs inter-panel gaps ==============================
+   a77 set one gap to 1px — too tight between panels. Split tokens:
+   --island-outer-gap ≈ 2–3px against the window edge
+   --ui-island-gap ≈ 4–8px between nav / workspace / inspector */
+
+/* Outer: L of nav, R of inspector, bottom of all three.
+   Inter: L/R of workspace (nav↔ws↔inspector). */
+
+.app-shell.app-shell > .navigation-pane {
+  margin: 0 0 var(--island-outer-gap) var(--island-outer-gap);
+}
+
+.app-shell.app-shell.left-collapsed > .navigation-pane {
+  margin: 0;
+}
+
+.app-shell.app-shell.left-collapsed .toolbar-nav-cluster .library-switcher {
+  flex: 0 0 auto;
+  width: fit-content;
+  max-width: var(--ui-shell-library-switcher-width);
+}
+
+.app-shell.app-shell.left-collapsed .toolbar-nav-cluster .library-switcher-trigger {
+  width: auto;
+}
+
+:root[data-elevation] .app-shell.app-shell > .navigation-pane {
+  box-shadow: var(--ui-island-shadow);
+}
+
+:root[data-elevation="0"] .app-shell.app-shell > .navigation-pane {
+  box-shadow: none;
+}
+
+.app-shell .workspace-tab-select > .nav-entity-glyph .nav-entity-glyph-emoji {
+  display: block;
+  line-height: 16px;
+}
+
+/* Persistent tag taxonomy and linked asset navigation. */
+
+.tag-tree-section { margin: 10px 8px 16px; padding-top: 10px; border-top: 1px solid var(--ui-border-subtle); }
+
+.tag-tree-heading { display: flex; align-items: center; padding: 0 5px 8px; }
+
+.tag-tree-heading strong { font-size: 12px; font-weight: 650; }
+
+.tag-tree-total { font-size: 11px; opacity: .55; }
+
+.tag-tree-row { position: relative; display: flex; align-items: center; border-radius: calc(6px * var(--ui-radius-scale, 1)); }
+
+.tag-tree-guide { position: absolute; top: 0; bottom: 0; border-left: 1.5px solid currentColor; opacity: .3; pointer-events: none; }
+
+.tag-tree-pin { display: grid; place-items: center; flex: 0 0 24px; min-height: 28px; margin-left: 3px; padding: 2px; border: 1px solid transparent; border-radius: calc(5px * var(--ui-radius-scale, 1)); background: transparent; color: inherit; font-size: 11px; cursor: pointer; opacity: .65; }
+
+.tag-tree-pin:hover, .tag-tree-pin:focus-visible { opacity: 1; background: color-mix(in srgb, currentColor 10%, transparent); }
+
+.tag-tree-pin.is-pinned { opacity: 1; color: var(--ui-accent); background: color-mix(in srgb, var(--ui-accent) 13%, transparent); border-color: currentColor; }
+
+.tag-tree-row > .nav-row { flex: 1; min-width: 0; padding-left: 4px; }
+
+.tag-tree-disclosure, .tag-tree-disclosure-spacer { flex: 0 0 17px; width: 17px; height: 28px; }
+
+.tag-tree-disclosure { display: grid; place-items: center; border: 0; background: transparent; color: inherit; cursor: pointer; }
+
+.tag-tree-disclosure svg { transform: none; transition: transform 120ms; }
+
+.tag-tree-disclosure.is-open svg { transform: rotate(90deg); }
+
+.tag-tree-row.is-drop-target, .tag-tree-root-drop.is-drop-target { background: color-mix(in srgb, var(--ui-accent) 17%, transparent); outline: 1px solid var(--ui-accent); }
+
+.tag-tree-edit, .tag-tree-confirm { margin: 6px 0 9px; padding: 9px; border: 1px solid var(--ui-border-subtle); border-radius: calc(8px * var(--ui-radius-scale, 1)); }
+
+.tag-tree-edit label { display: block; margin-bottom: 6px; font-size: 12px; }
+
+.tag-tree-edit-actions { display: flex; justify-content: flex-end; gap: 6px; margin-top: 8px; }
+
+.tag-tree-edit-actions button { min-height: 26px; padding: 4px 9px; font-size: 12px; }
+
+.tag-tree-empty, .tag-tree-confirm p { padding: 0 5px; font-size: 12px; line-height: 1.6; opacity: .65; }
+
+.tag-tree-root-drop { margin-top: 7px; padding: 9px; border: 1px dashed currentColor; border-radius: calc(6px * var(--ui-radius-scale, 1)); font-size: 12px; opacity: .75; }
+
+@media (prefers-reduced-motion: reduce) { .tag-tree-disclosure svg { transition: none; } }
+
+.tag-tree-appearance { margin: 8px 0; padding: 9px; border: 1px solid var(--ui-border-subtle); border-radius: calc(8px * var(--ui-radius-scale, 1)); font-size: 12px; }
+
+.tag-tree-appearance-picker { max-height: 300px; overflow: auto; margin-top: 8px; }
+
+.tag-tree-appearance .tag-tree-edit-actions { flex-wrap: wrap; }
+
+.automatic-tasks-dialog { width: min(780px, calc(100vw - 48px)); max-height: calc(100vh - 64px); overflow: auto; }
+
+.automatic-tasks-sidebar { position: relative; margin: 10px 8px 16px; padding-top: 10px; border-top: 1px solid var(--ui-border-subtle); }
+
+.automatic-tasks-heading { display:flex;align-items:center;gap:5px;padding:0 5px 8px;font-size:12px; }
+
+.automatic-task-row { display:flex;align-items:center;min-height:32px;border-radius:calc(6px * var(--ui-radius-scale, 1));gap:3px; }
+
+.automatic-task-row:hover { background:color-mix(in srgb,currentColor 6%,transparent); }
+
+.automatic-task-grip { flex:0 0 18px;min-height:28px;padding:0;border:0;background:transparent;color:inherit;opacity:.4;cursor:grab; }
+
+.automatic-task-grip:hover { opacity:1; }
+
+.automatic-task-name { display:flex;align-items:center;gap:7px;flex:1;min-width:0;min-height:32px;border:0;background:transparent;color:inherit;text-align:left;font-size:12px;cursor:pointer; }
+
+.automatic-task-name > span:last-child { overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+
+.automatic-task-status { width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:currentColor;opacity:.25; }
+
+.automatic-task-status.is-enabled { background:var(--ui-accent);opacity:1; }
+
+.automatic-task-status.is-error { background:var(--ui-status-danger);opacity:1; }
+
+.automatic-task-row input[role=switch] { appearance:none;width:26px;height:15px;flex:0 0 26px;margin:0 5px;border-radius:calc(12px * var(--ui-radius-scale, 1));background:color-mix(in srgb,currentColor 22%,transparent);position:relative;cursor:pointer; }
+
+.automatic-task-row input[role=switch]::after { content:'';position:absolute;top:2px;left:2px;width:11px;height:11px;background:white;border-radius:50%;transition:transform 120ms; }
+
+.automatic-task-row input[role=switch]:checked { background:var(--ui-accent); }
+
+.automatic-task-row input[role=switch]:checked::after { transform:translateX(11px); }
+
+.automatic-task-group-heading { display:flex;align-items:center;min-height:30px;border-radius:calc(6px * var(--ui-radius-scale, 1)); }
+
+.automatic-task-group-name { display:flex;align-items:center;gap:5px;flex:1;min-width:0;border:0;background:transparent;color:inherit;text-align:left;font-size:12px;font-weight:600;cursor:pointer; }
+
+.automatic-task-group-name .nav-count { margin-left:auto; }
+
+.automatic-task-group-action { opacity:.45; }
+
+.automatic-task-group-content { margin-left:12px;padding-left:5px;border-left:1px solid color-mix(in srgb,currentColor 25%,transparent);min-height:18px; }
+
+.automatic-task-ungrouped { min-height:22px;padding-bottom:4px; }
+
+.automatic-task-ungrouped-heading,.automatic-task-empty-group { font-size:11px;opacity:.5;padding:5px 9px;margin:0; }
+
+.automatic-tasks-sidebar .is-drop-target { outline:1px solid var(--ui-accent);background:color-mix(in srgb,var(--ui-accent) 10%,transparent); }
+
+.automatic-task-section-menu { display:grid;gap:3px;padding:6px;border:1px solid var(--ui-border-subtle);border-radius:calc(8px * var(--ui-radius-scale, 1)); }
+
+.automatic-task-section-menu button { text-align:left;padding:6px;border:0;background:transparent;color:inherit;cursor:pointer; }
+
+.automatic-task-group-editor { display:grid;gap:6px;padding:6px; }
+
+.automatic-task-group-editor > div{display:flex;gap:6px;}
+
+.automatic-task-error { font-size:11px;color:var(--ui-status-danger);line-height:1.5; }
+
+/* Persistent sidebar search and editing at the tag's tree position. */
+
+.sidebar-heading-search { display: flex; align-items: center; gap: 4px; flex: 1 1 70px; min-width: 36px; height: 25px; padding: 0 4px; border: 1px solid transparent; border-radius: calc(5px * var(--ui-radius-scale, 1)); color: inherit; }
+
+.sidebar-heading-search:focus-within { border-color: var(--ui-accent); background: color-mix(in srgb, currentColor 5%, transparent); }
+
+.sidebar-heading-search svg { flex-shrink: 0; }
+
+.sidebar-heading-search input { width: 100%; min-width: 0; padding: 0; border: 0; outline: none; background: transparent; color: inherit; font: inherit; font-size: 11px; }
+
+.nav-section-title-row:has(.sidebar-heading-search) { flex: 1; }
+
+.nav-section-title-row > span:first-child, .tag-tree-heading > strong { flex-shrink: 0; }
+
+.tag-tree-heading { gap: 2px; padding-bottom: 5px; }
+
+.tag-tree-total { margin-right: 2px; }
+
+.tag-tree-inline-edit { display: flex; align-items: center; gap: 3px; min-height: 30px; padding: 2px 3px 2px 17px; }
+
+.tag-tree-inline-edit > svg, .tag-tree-inline-edit > button { flex-shrink: 0; }
+
+.tag-tree-pin.is-pinned svg { fill: currentColor; }
+
+/* PR: rule detail (trigger history). */
+
+.rule-detail-facts { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; margin: 0 0 12px; }
+
+.rule-detail-facts dt { color: var(--text-secondary); }
+
+.rule-detail-facts dd { margin: 0; overflow-wrap: anywhere; }
+
+.rule-detail-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+
+.rule-detail-heading { margin: 12px 0 6px; font-size: inherit; }
+
+.rule-run-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+
+.rule-run { border: 1px solid var(--ui-border-subtle); border-radius: calc(6px * var(--ui-radius-scale, 1)); }
+
+.rule-run.is-failed { border-color: color-mix(in srgb, var(--ui-status-danger) 45%, transparent); }
+
+.rule-run-summary { display: flex; justify-content: space-between; gap: 12px; width: 100%; padding: 6px 8px; background: none; border: 0; color: inherit; text-align: left; cursor: pointer; }
+
+.rule-run.is-dry-run .rule-run-summary { color: var(--text-secondary); }
+
+.rule-run-detail { padding: 0 8px 8px; }
+
+.rule-run-changes { margin: 4px 0; padding-left: 18px; }
+
+.rule-run-output { max-height: 160px; overflow: auto; margin: 4px 0; padding: 6px; border-radius: calc(4px * var(--ui-radius-scale, 1)); background: color-mix(in srgb, currentColor 6%, transparent); white-space: pre-wrap; font-size: 12px; }

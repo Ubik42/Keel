@@ -1,0 +1,914 @@
+/* base: rules whose subject element belongs to this area (P5). */
+
+:root {
+  color-scheme: dark;
+  color: var(--ui-content-primary, #f2f3f5);
+  background: var(--ui-surface-canvas, #16171a);
+  /* Latin-first stack: U+2026 (the text-overflow ellipsis glyph) must resolve
+     from a Latin font so the dots sit on the text baseline. CJK fonts such as
+     Noto Sans SC render U+2026 as a full-width, vertically-centered glyph,
+     which made every truncation ellipsis appear mid-height. CJK characters
+     still fall through to the CJK entries below. */
+  --ui-font-ui:
+    -apple-system,
+    "Segoe UI",
+    "Helvetica Neue",
+    Arial,
+    "Noto Sans SC Variable",
+    "PingFang SC",
+    "Microsoft YaHei",
+    sans-serif;
+  /* Color emoji must not fall through to the UI CJK stack: YaHei / HarmonyOS
+     intercept emoji codepoints as monochrome glyphs on Windows. */
+  font-family: var(--ui-font-ui);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  font-optical-sizing: auto;
+  /* Legacy aliases intentionally read the UI foundation tokens so migrated
+     profiles retheme old surfaces while they are being incrementally moved. */
+  --ui-canvas: var(--ui-surface-canvas, #16171a);
+  --ui-pane: var(--ui-surface-pane, #1c1d21);
+  /* REQ-THEME-004 / Serpent-gnus: only --accent is a leaf color. soft / ring /
+     dark / soft-fg must derive via color-mix so user accent prefs retheme every
+     accent surface. Continuous controls (sliders) stay on --secondary. */
+  --accent: #3b82f6;
+  --ui-accent-dark: color-mix(in srgb, var(--accent) 78%, black);
+  /* Surface state tokens: quiet, content-first hover/active shades shared by
+     nav rows, tool buttons, cards and menus. */
+  --ui-accent-ring: color-mix(in srgb, var(--ui-action-accent, var(--accent)) 55%, transparent);
+  /* a70: scores = full theme accent (vivid); never wash with tertiary */
+  --ui-rating-star: var(--accent);
+  --ui-appearance-color-blue: #6ea8dc;
+  --ui-appearance-color-indigo: #8b9be8;
+  --ui-appearance-color-purple: #b794e8;
+  --ui-appearance-color-pink: #e89bb8;
+  --ui-appearance-color-orange: #e8a06a;
+  --ui-appearance-color-green: #7dbe7a;
+  --ui-appearance-color-teal: #5cb8b0;
+  --ui-appearance-color-red: #e07a7a;
+  /* Semantic status / ink tokens for themeable surfaces (REQ-THEME-002). */
+  /* Serpent-znex: Win11-like caption close hover (kept as tokens for REQ-THEME-002). */
+  /* Serpent-jfi: exclude-filter chips use a muted red in dark theme — clearly
+     red but softer than --danger; avoid washed-out pink (#c48990 was too pale). */
+  --ui-filter-exclude-soft: color-mix(in srgb, var(--ui-status-danger) 22%, var(--ui-canvas));
+  --ui-filter-exclude-border: color-mix(in srgb, var(--ui-status-danger) 55%, var(--ui-border-divider));
+  --ui-filter-exclude-fg: color-mix(in srgb, var(--ui-status-danger) 78%, var(--ui-content-primary));
+  --ui-filter-exclude-active-bg: color-mix(in srgb, var(--ui-status-danger) 28%, var(--ui-canvas));
+  /* Viewer stage follows theme (not always near-black --ink). */
+  /* PDF page paper stays white in both themes (document content, not chrome). */
+  --ui-viewer-document-page: #fff;
+  /* Viewer arrows contrast with the picture, not the application theme. */
+  /* Serpent-627: viewer bottom chrome (zoom bar / video transport /
+     fullscreen chip) is semi-transparent rather than near-opaque —
+     moderate enough to still read clearly over any media, in both themes. */
+  /* Legacy alias: several components referenced --border before any token
+     existed (their borders silently rendered as none). */
+  /* Elevation multipliers (Serpent-zcyg): levels 1–3 write these on :root.
+     Level 0 omits elev box-shadows entirely via :not([data-elevation="0"]). */
+  /* Shell hierarchy: chrome / panes / cards sit above --ui-canvas.
+     Toolbar is full-bleed; its shadow lands on side panes AND the browse
+     column top — keep it softer/shorter than pane/card elev so the canvas
+     header stays quiet. */
+  --ui-shadow-toolbar:
+    0 calc(1px * var(--ui-elev-size)) calc(3px * var(--ui-elev-size))
+    rgb(0 0 0 / calc(0.04 * var(--ui-elev-intensity)));
+  --ui-shadow-pane-east:
+    calc(2px * var(--ui-elev-size)) 0 calc(8px * var(--ui-elev-size))
+    rgb(0 0 0 / calc(0.12 * var(--ui-elev-intensity)));
+  --ui-shadow-pane-west:
+    calc(-2px * var(--ui-elev-size)) 0 calc(8px * var(--ui-elev-size))
+    rgb(0 0 0 / calc(0.12 * var(--ui-elev-intensity)));
+  --ui-shadow-card:
+    0 calc(1px * var(--ui-elev-size)) calc(2px * var(--ui-elev-size))
+    rgb(0 0 0 / calc(0.12 * var(--ui-elev-intensity)));
+  --ui-shadow-workspace-tab:
+    0 0 calc(4px * var(--ui-elev-size))
+    rgb(0 0 0 / calc(0.12 * var(--ui-elev-intensity)));
+  /* Floating overlays stay fixed (pre-elevation family; Serpent-4ojz). */
+  --ui-shadow-menu: 0 6px 18px rgb(0 0 0 / 22%), 0 1px 3px rgb(0 0 0 / 10%);
+  /* Shared menu family: context menus, the Windows main menu, and the library
+     switcher must read as one interaction system in both themes. */
+  --ui-shadow-elevated: 0 24px 70px rgb(0 0 0 / 42%);
+  --ui-shadow-panel: 0 16px 40px rgb(0 0 0 / 42%);
+  --ui-shadow-toast: 0 12px 32px rgb(0 0 0 / 28%);
+  /* REQ-SHELL-002: shell chrome heights — existing literals promoted to
+     tokens so toolbar / workspace bar / controls / chips share one rhythm. */
+  /* Matches .toolbar-nav-cluster .library-switcher max-width. The collapsed
+     nav cluster is taken out of flow, so the browse row reserves this width. */
+}
+
+/* Windows UI: bundled HarmonyOS Sans SC (Regular–Black). Vite injects
+   @font-face weight ranges + ascent/descent overrides so intermediate UI
+   weights (520–650) map onto static faces without browser-synthesized bold. */
+
+:root[data-platform="windows"] {
+  --ui-font-ui:
+    "HarmonyOS Sans SC",
+    "Segoe UI Variable",
+    "Segoe UI",
+    "Microsoft YaHei UI",
+    "Microsoft YaHei",
+    "Noto Sans SC Variable",
+    Arial,
+    sans-serif;
+  --ui-font-ui-unified: var(--ui-font-ui);
+  text-rendering: auto;
+}
+
+/* REQ-THEME-001/002: light semantic token overrides. Prefer changing tokens
+   here over duplicating light-only hardcoded colors in selectors. */
+
+[data-theme="light"] {
+  color-scheme: light;
+  color: var(--ui-content-primary, #1a1b1e);
+  /* Serpent-28h7: ~1% brighter canvas after elevation shadows read dark. */
+  background: var(--ui-surface-canvas, #f0f1f3);
+  /* Was hardcoded #1d4ed8 — that froze soft labels to blue after accent change. */
+  /* Light: exclude red softer than --danger on destructive buttons (FILTER-022). */
+  /* Serpent-k9g: soft amber warning family (one hue for icon+text). */
+  /* Light: softer elev base alphas; still scaled by --elev-* (Serpent-zcyg).
+     Toolbar softer/shorter than panes/cards (casts onto browse header too). */
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+button,
+input,
+select,
+textarea {
+  /* Chromium gives native form controls their own platform defaults. Without
+     this reset, Windows textarea placeholders can fall back to a different
+     (often monospace) family than adjacent inputs. Purpose-built editors set
+     their own family later in the cascade. */
+  font: inherit;
+}
+
+button {
+  color: inherit;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--ui-accent-ring);
+  outline-offset: 1px;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 34%, transparent);
+}
+
+/* Thin overlay scrollbars (Serpent-62wm): thumb stays transparent until the
+   user scrolls or the pointer is near the track — not on generic panel hover.
+   Show is instant; hide fades out (docs/internal/ui/0005-motion-and-reveal-ux-principles).
+   Windows canvas still reserves scrollbar-gutter (Serpent-itr). */
+
+* {
+  box-sizing: border-box;
+  scrollbar-color: transparent transparent;
+  scrollbar-width: thin;
+  transition: scrollbar-color var(--scrollbar-fade-out, 220ms) ease-in;
+}
+
+*.is-scrollbar-active,
+*.is-scrollbar-proximity {
+  scrollbar-color: rgb(255 255 255 / 22%) transparent;
+  transition: none;
+}
+
+[data-theme="light"] * {
+  transition: scrollbar-color var(--scrollbar-fade-out, 220ms) ease-in;
+}
+
+[data-theme="light"] *.is-scrollbar-active,
+[data-theme="light"] *.is-scrollbar-proximity {
+  scrollbar-color: rgb(0 0 0 / 28%) transparent;
+  transition: none;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  background: transparent;
+  background-clip: padding-box;
+  transition: background var(--scrollbar-fade-out, 220ms) ease-in;
+}
+
+*.is-scrollbar-active::-webkit-scrollbar-thumb,
+*.is-scrollbar-proximity::-webkit-scrollbar-thumb {
+  background: rgb(255 255 255 / 13%);
+  background-clip: padding-box;
+  transition: none;
+}
+
+*.is-scrollbar-active::-webkit-scrollbar-thumb:hover,
+*.is-scrollbar-proximity::-webkit-scrollbar-thumb:hover {
+  background: rgb(255 255 255 / 24%);
+  background-clip: padding-box;
+  transition: background 120ms ease-out;
+}
+
+[data-theme="light"] *.is-scrollbar-active::-webkit-scrollbar-thumb,
+[data-theme="light"] *.is-scrollbar-proximity::-webkit-scrollbar-thumb {
+  background: rgb(0 0 0 / 18%);
+  background-clip: padding-box;
+  transition: none;
+}
+
+[data-theme="light"] *.is-scrollbar-active::-webkit-scrollbar-thumb:hover,
+[data-theme="light"] *.is-scrollbar-proximity::-webkit-scrollbar-thumb:hover {
+  background: rgb(0 0 0 / 28%);
+  background-clip: padding-box;
+  transition: background 120ms ease-out;
+}
+
+.app-shell {
+  display: grid;
+  /* REQ-SHELL-007: pane widths come from CSS variables so usePanelResize can
+     retarget them live; the fallbacks are the historical fixed widths. */
+  grid-template-columns: var(--nav-width, 224px) minmax(420px, 1fr) var(
+      --inspector-width,
+      268px
+    );
+  grid-template-rows: var(--ui-shell-toolbar-height) minmax(0, 1fr);
+  width: 100%;
+  height: 100%;
+  min-width: 760px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background-color: var(--ui-background-color, var(--ui-canvas));
+  background-image: var(--ui-backdrop-image, none);
+  background-position: var(--ui-backdrop-position, center);
+  background-repeat: var(--ui-backdrop-repeat, no-repeat);
+  background-size: var(--ui-backdrop-size, cover);
+  transition: grid-template-columns 160ms ease;
+}
+
+/* Live drags must not fight the collapse transition. */
+
+.app-shell.is-resizing {
+  transition: none;
+}
+
+.app-shell.left-collapsed {
+  grid-template-columns: 0 minmax(420px, 1fr) var(--inspector-width, 268px);
+}
+
+.app-shell.right-collapsed {
+  grid-template-columns: var(--nav-width, 224px) minmax(420px, 1fr) 0;
+}
+
+.app-shell.left-collapsed.right-collapsed {
+  grid-template-columns: 0 minmax(420px, 1fr) 0;
+}
+
+@keyframes plugin-job-status-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--plugin-job-status-color) 14%, transparent);
+  }
+
+  50% {
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--plugin-job-status-color) 4%, transparent);
+  }
+}
+
+@keyframes feature-hint-accent-pulse {
+  0%,
+  100% {
+    background: var(--ui-action-accent-soft);
+    color: var(--ui-content-accent);
+    box-shadow: inset 0 0 0 1px transparent;
+  }
+  45%,
+  55% {
+    background: color-mix(in srgb, var(--accent) 26%, transparent);
+    box-shadow: inset 0 0 0 1px var(--ui-accent-ring),
+      0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+}
+
+/* REQ-CANVAS-007: continuous controls use neutral gray, never the accent. */
+
+input[type="range"] {
+  accent-color: var(--ui-action-accent);
+}
+
+@keyframes state-enter {
+  from {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Serpent-q3qu: dialogs must not use translateY enter — it biases optical center down. */
+
+@keyframes dialog-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes loading-bars {
+  50% {
+    opacity: 0.35;
+    transform: scaleY(0.5);
+    transform-origin: bottom;
+  }
+}
+
+@keyframes ai-connection-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes about-dialog-update-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  to {
+    opacity: 0.35;
+    transform: scale(0.72);
+  }
+}
+
+@media (max-width: 800px) {
+  .app-shell {
+    grid-template-columns: 0 minmax(0, 1fr) 0;
+    min-width: 560px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Windows guidance sets 12 effective pixels as the regular UI-text floor.
+   Keep these explicit platform overrides after component rules so the cascade
+   does not rely on :is() adopting a selector's highest specificity. */
+
+:root[data-platform="windows"] :where(
+    .micro-label,
+    .search-snippet,
+    .inspector-section-label,
+    .inspector-status-row,
+    .nav-section-heading,
+    .nav-count,
+    .nav-empty,
+    .library-switcher-section-label,
+    .context-menu-item-shortcut,
+    .context-menu-scope-note,
+    .context-menu-section-label,
+    .filter-tag-chip,
+    .filter-tag-section-label,
+    .filter-tag-options button,
+    .filter-tag-count
+  ) {
+  font-size: calc(12px * var(--ui-font-scale));
+  /* The tertiary token is intentionally decorative and falls below small-text
+     contrast on both themes. Windows captions remain subtle but readable. */
+  color: var(--ui-content-secondary);
+}
+
+:root[data-platform="windows"] :where(
+    .inspector-badge,
+    .inspector-identity,
+    .metadata-list
+  ) {
+  /* Identity/summary surfaces share the HarmonyOS-first Windows stack. */
+  font-family: var(--ui-font-ui-unified);
+}
+
+:root[data-platform="windows"] .app-shell.app-shell :is(
+    .nav-section-heading,
+    .nav-count,
+    .library-switcher-section-label
+  ) {
+  font-size: calc(12px * var(--ui-font-scale));
+  color: var(--ui-content-secondary);
+}
+
+:root[data-platform="windows"] :where(
+    .inspector-badge
+  ) {
+  color: var(--ui-content-accent);
+}
+
+:root[data-platform="windows"] :where(
+    .micro-label,
+    .nav-section-heading,
+    .context-menu-section-label,
+    .filter-tag-section-label
+  ) {
+  letter-spacing: 0.02em;
+}
+
+@keyframes task-progress-slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(285%); }
+}
+
+@keyframes plugin-view-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* === Keel ui-tabs-viewer: calm image / video / model viewer chrome ===
+   Quieter floating bars, softer contrast, tighter spacing. No library-
+   settings / semantic-settings. */
+
+:root {
+  --ui-viewer-chrome-bg: color-mix(in srgb, var(--ui-surface-raised) 90%, transparent);
+  --ui-viewer-chrome-shadow: 0 6px 20px rgb(0 0 0 / 10%), 0 1px 3px rgb(0 0 0 / 5%);
+}
+
+[data-theme="light"] {
+  --ui-canvas: var(--ui-surface-canvas, #f0f1f3);
+  --ui-pane: var(--ui-surface-pane, #f7f7f8);
+  --accent: #3b82f6;
+  --ui-accent-dark: color-mix(in srgb, var(--accent) 78%, black);
+  --ui-accent-ring: color-mix(in srgb, var(--ui-action-accent, var(--accent)) 50%, transparent);
+  --ui-rating-star: var(--accent);
+  --ui-appearance-color-blue: #2f6fad;
+  --ui-appearance-color-indigo: #4c5fd0;
+  --ui-appearance-color-purple: #7c4db8;
+  --ui-appearance-color-pink: #c45d86;
+  --ui-appearance-color-orange: #c46a2a;
+  --ui-appearance-color-green: #3d8f45;
+  --ui-appearance-color-teal: #2a8a82;
+  --ui-appearance-color-red: #c44545;
+  --ui-filter-exclude-soft: color-mix(in srgb, var(--ui-status-danger) 14%, var(--ui-canvas));
+  --ui-filter-exclude-border: color-mix(in srgb, var(--ui-status-danger) 50%, var(--ui-border-divider));
+  --ui-filter-exclude-fg: color-mix(in srgb, var(--ui-status-danger) 75%, var(--ui-content-primary));
+  --ui-filter-exclude-active-bg: color-mix(in srgb, var(--ui-status-danger) 20%, var(--ui-canvas));
+  --ui-viewer-document-page: #fff;
+  --ui-shadow-toolbar:
+    0 calc(1px * var(--ui-elev-size)) calc(4px * var(--ui-elev-size))
+    rgb(0 0 0 / calc(0.04 * var(--ui-elev-intensity)));
+  --ui-shadow-pane-east:
+    calc(2px * var(--ui-elev-size)) 0 calc(8px * var(--ui-elev-size))
+    rgb(0 0 0 / calc(0.05 * var(--ui-elev-intensity)));
+  --ui-shadow-pane-west:
+    calc(-2px * var(--ui-elev-size)) 0 calc(8px * var(--ui-elev-size))
+    rgb(0 0 0 / calc(0.05 * var(--ui-elev-intensity)));
+  --ui-shadow-card:
+    0 calc(1px * var(--ui-elev-size)) calc(2px * var(--ui-elev-size))
+    rgb(0 0 0 / calc(0.05 * var(--ui-elev-intensity)));
+  --ui-shadow-workspace-tab:
+    0 0 calc(4px * var(--ui-elev-size))
+    rgb(0 0 0 / calc(0.05 * var(--ui-elev-intensity)));
+  --ui-shadow-menu: 0 6px 18px rgb(0 0 0 / 10%), 0 1px 3px rgb(0 0 0 / 5%);
+  --ui-shadow-elevated: 0 18px 48px rgb(0 0 0 / 16%);
+  --ui-shadow-panel: 0 12px 28px rgb(0 0 0 / 12%);
+  --ui-shadow-toast: 0 8px 20px rgb(0 0 0 / 10%);
+  --ui-viewer-chrome-bg: color-mix(in srgb, var(--ui-surface-raised) 94%, transparent);
+  --ui-viewer-chrome-shadow: 0 8px 22px rgb(0 0 0 / 8%), 0 1px 2px rgb(0 0 0 / 4%);
+}
+
+/* ==== Shell layout: Islands + bold Apple/Photos materials ================
+   Floating islands kept; visual language pushed toward macOS Photos / Finder /
+   Info. Scoped to .app-shell. Import/drop stays on-dev. */
+
+:root {
+  --ui-island-gap: 12px;
+  --ui-island-radius: calc(22px * var(--ui-radius-scale, 1));
+  --island-backdrop: color-mix(in srgb, var(--ui-surface-pane) 82%, var(--ui-surface-raised));
+  --island-border: rgb(0 0 0 / 5%);
+  --ui-island-shadow: 0 1px 2px rgb(0 0 0 / 4%), 0 4px 16px -6px rgb(0 0 0 / 8%);
+  --island-select: color-mix(in srgb, var(--accent) 16%, transparent);
+  --ui-island-hairline: rgb(0 0 0 / 6%);
+  --ui-island-group-gap: 20px;
+  --ui-island-card-radius: calc(14px * var(--ui-radius-scale, 1));
+  --ui-island-toolstrip-bg: color-mix(in srgb, var(--ui-surface-raised) 72%, transparent);
+  /* Opaque equivalent of the toolstrip over the canvas island: the active tab
+     must be exactly this so it fuses with the toolstrip it attaches to. */
+  --ui-island-tab-fill: color-mix(in srgb, var(--ui-surface-raised) 72%, var(--ui-surface-canvas));
+}
+
+:root[data-theme="dark"] {
+  --island-backdrop: color-mix(in srgb, var(--ui-surface-canvas) 78%, black);
+  --island-border: rgb(255 255 255 / 7%);
+  --ui-island-shadow: 0 6px 20px -8px rgb(0 0 0 / 45%);
+  --island-select: color-mix(in srgb, var(--accent) 28%, transparent);
+  --ui-island-hairline: rgb(255 255 255 / 8%);
+  --ui-island-toolstrip-bg: color-mix(in srgb, var(--ui-surface-raised) 55%, transparent);
+  --ui-island-tab-fill: color-mix(in srgb, var(--ui-surface-raised) 55%, var(--ui-surface-canvas));
+}
+
+/* SF-style segmented filter track — soft Apple materials */
+
+:root[data-theme="dark"] .app-shell.app-shell {
+  --island-segment-pill-shadow: 0 0.5px 1px rgb(0 0 0 / 35%), 0 0 0 0.5px rgb(255 255 255 / 8%);
+}
+
+/* ==== a27: Codex transfer plan top 5 =====================================
+   Accent budget (loud / soft / neutral-on), ink-alpha hairlines (~8–12%),
+   94/6 soft surfaces, neutral primary CTAs, denser chrome vs airier gallery.
+   Guarded by tests/unit/islands-accent-budget.test.ts. */
+
+.app-shell.app-shell {
+  /* --- Accent budget ----------------------------------------------------
+     loud:  selected card ring, applied filter segments (+ true CTAs stay ink)
+     soft:  links / optional icon tint (profile accent, diluted)
+     on:    aria-pressed / secondary tool toggles = ink wash only */
+
+  /* --- Ink-alpha hairlines (Codex ~12% outline / ~8% hairline) ---------- */
+
+  /* --- Soft surface = 94% raised + 6% ink (Codex diff-surface) ---------- */
+
+  /* Selection wash stays soft accent, not loud paint on glyphs. */
+}
+
+/* ==== a28: BOLD Codex islands redesign — 人有多大胆，地有多大产 ==============
+   Near-flat hairline materials, stronger surface ladder, denser chrome
+   (~26–28px), monochrome CTAs, accent ONLY on selection + applied filters,
+   gallery much airier. Keep L/R on --island-side. */
+
+.app-shell.app-shell {
+  /* Structure: tighter shell, flatter, clearer ladder */
+  --ui-island-shadow: none;
+
+  /* Stronger surface ladder: deep backdrop → opaque sides → bright canvas */
+  --island-surface-soft: color-mix(in srgb, var(--ui-surface-raised) 90%, var(--ui-content-primary));
+  --island-surface-recess: color-mix(in srgb, var(--ui-content-primary) 6%, var(--ui-surface-raised));
+
+  /* Accent almost only on selection + applied filters */
+  --island-accent-soft: var(--ui-content-secondary); /* demote soft accent → ink secondary */
+  --island-select: color-mix(in srgb, var(--ui-content-primary) 7%, transparent); /* NAV: neutral, not accent */
+  --island-pressed-wash: color-mix(in srgb, var(--ui-content-primary) 7%, transparent);
+  --island-hover-wash: color-mix(in srgb, var(--ui-content-primary) 4%, transparent);
+
+  --island-segment-track: var(--island-surface-recess);
+  --island-segment-hover: color-mix(in srgb, var(--ui-content-primary) 6%, transparent);
+  --island-segment-pill: var(--ui-surface-raised);
+}
+
+:root[data-theme="dark"] .app-shell.app-shell {
+  --ui-island-shadow: none;
+}
+
+/* Links: secondary ink, not accent soft */
+
+.app-shell.app-shell a:not(.tool-button):not(.nav-row):not(.dimension-filter-btn) {
+  color: var(--ui-content-secondary);
+  text-decoration-color: color-mix(in srgb, var(--ui-content-primary) 25%, transparent);
+}
+
+.app-shell.app-shell a:not(.tool-button):not(.nav-row):hover {
+  color: var(--ui-content-primary);
+}
+
+/* ==== a37: selective a28 calibration (not full a29–a35) ====================
+   1) Softer ladder: lighter backdrop, quieter canvas; L/R --island-side kept
+   2) Tighter gallery (~14 gap, equal L/R pad)
+   3) Tighter caption pads
+   4) Card-content toggles = muted pressed wash (selection + applied filters stay loud)
+   5) Toolstrip extra inset from island edge
+   6) Keep a28 panel hairlines — do NOT strip
+   7) No tab strokes added */
+
+.app-shell.app-shell {
+  /* 1) Backdrop toward pane; canvas closer to sides */
+  --island-canvas: color-mix(in srgb, var(--ui-surface-raised) 45%, var(--ui-surface-pane));
+  --ui-island-toolstrip-bg: color-mix(in srgb, var(--ui-surface-pane) 70%, var(--island-canvas));
+  --ui-island-tab-fill: var(--ui-island-toolstrip-bg);
+}
+
+/* ==== a72: soften border presence ========================================
+   Owner: borders felt too loud. Keep structure, drop contrast + weight.
+   Punchy accents (a70) and tag silhouette (a65–a67) unchanged. */
+
+.app-shell.app-shell {
+  --island-border: color-mix(in srgb, var(--ui-content-primary) 6%, transparent);
+  --ui-island-hairline: color-mix(in srgb, var(--ui-content-primary) 4%, transparent);
+  /* Tab stroke follows quieter border */
+  --island-tab-stroke: color-mix(in srgb, var(--island-border) 45%, var(--island-backdrop));
+}
+
+/* ==== a76: soften accent-soft button fills ================================
+   Accent text on soft accent wash was eye-searing. Quieter soft fills;
+   keep accent-soft-fg readable; keep full --accent for scores (a70). */
+
+/* ==== a77: match window corner radii ======================================
+   Window chrome (Linux rounded #root / Win11-like) uses 8px
+   (LINUX_WINDOW_CORNER_RADIUS_PX). Outer panel corners that meet the window
+   (nav BL, inspector BR) use the same radius so the seam disappears — Codex.
+   Maximized/square windows zero the outer radius. */
+
+:root {
+  --ui-font-emoji:
+    "Segoe UI Emoji",
+    "Segoe UI Symbol",
+    "Apple Color Emoji",
+    "Noto Color Emoji",
+    sans-serif;
+  --ui-windows-caption-close-hover: #e81123;
+  --ui-windows-caption-close-hover-fg: #ffffff;
+  --ui-preview-nav-on-dark-stroke: #000;
+  --ui-preview-nav-on-dark-fill: #fff;
+  --ui-preview-nav-on-light-stroke: #fff;
+  --ui-preview-nav-on-light-fill: #111;
+  --ui-preview-nav-on-dark-disabled-stroke: #2a2a2a;
+  --ui-preview-nav-on-dark-disabled-fill: #8d8d8d;
+  --ui-preview-nav-on-light-disabled-stroke: #f3f3f3;
+  --ui-preview-nav-on-light-disabled-fill: #8a8a8a;
+  --ui-elev-size: 0.9;
+  --ui-elev-intensity: 0.8;
+  --ui-menu-surface-border: color-mix(in srgb, var(--ui-border-divider) 82%, transparent);
+  --ui-menu-surface-radius: calc(8px * var(--ui-radius-scale, 1));
+  --ui-menu-surface-shadow: var(--ui-shadow-menu);
+  --ui-menu-item-focus-background: color-mix(in srgb, var(--ui-content-primary) 11%, transparent);
+  --ui-menu-item-disabled-opacity: 0.4;
+  --ui-menu-danger-color: color-mix(in srgb, var(--ui-status-danger) 78%, var(--ui-content-primary));
+  --ui-menu-danger-hover-background: color-mix(in srgb, var(--ui-status-danger) 14%, var(--ui-surface-hover));
+  --ui-menu-item-padding: 6px 10px;
+  --ui-menu-item-font-size: calc(12.5px * var(--ui-font-scale));
+  --ui-menu-item-line-height: 1.4;
+  --ui-shell-toolbar-height: 44px;
+  --ui-shell-workspace-bar-height: 40px;
+  --ui-shell-control-height: 28px;
+  --ui-shell-chip-height: 22px;
+  --ui-shell-library-switcher-width: 170px;
+  --ui-window-corner-radius: 8px;
+}
+
+/* ==== a80: subtle island drop shadow, driven by Settings → Elevation shadows
+   (shadow-preferences.ts, level 0–3 → --ui-elev-size / --ui-elev-intensity).
+   Level 0 keeps islands flat (data-elevation="0"). box-shadow follows each
+   island's own border-radius (incl. --ui-window-corner-radius outer corners) and
+   is painted outside the island, so its overflow:hidden doesn't clip it.
+   Offsets/blur are kept tight (negative spread) so the shadow stays within
+   --island-outer-gap at the window edge, where .app-shell clips. */
+
+:root[data-elevation="0"] .app-shell.app-shell {
+  --ui-island-shadow: none;
+}
+
+/* ==== a83: island shadow actually paints ===================================
+   Root cause (verified in headless Chromium on the built renderer): a80 only
+   re-set --ui-island-shadow, but later islands blocks (a72-era flattening) set
+   `box-shadow: none` directly on `.app-shell[islands] > .navigation-pane /
+   .inspector-pane / .workspace`, so the var was never used → computed none.
+   This rule outranks them (extra :root[data-elevation] specificity) and
+   scales with Settings → Elevation shadows (level 0–3 → --ui-elev-size /
+   --ui-elev-intensity, applied live by ElevationProvider). Level 0: none.
+   Offsets are mostly blur so it reads in the inter-panel gaps; at the window
+   edge it simply fades out under the frame. */
+
+:root:not([data-elevation="0"]) .app-shell.app-shell {
+  --ui-island-shadow:
+    0 calc(1px * var(--ui-elev-size)) calc(3px * var(--ui-elev-size))
+      rgb(0 0 0 / calc(0.08 * var(--ui-elev-intensity))),
+    0 calc(3px * var(--ui-elev-size)) calc(14px * var(--ui-elev-size))
+      rgb(0 0 0 / calc(0.14 * var(--ui-elev-intensity)));
+}
+
+:root[data-theme="dark"]:not([data-elevation="0"]) .app-shell.app-shell {
+  --ui-island-shadow:
+    0 calc(1px * var(--ui-elev-size)) calc(3px * var(--ui-elev-size))
+      rgb(0 0 0 / calc(0.30 * var(--ui-elev-intensity))),
+    0 calc(3px * var(--ui-elev-size)) calc(14px * var(--ui-elev-size))
+      rgb(0 0 0 / calc(0.45 * var(--ui-elev-intensity)));
+}
+
+/* ==== a85: island/backdrop contrast ====================================
+   Backdrop anchored to the side-panel surface so every theme gets the same
+   small step (was ≈4 L* light / ≈3 L* dark; vscode & onedark dark were ~0
+   or inverted). Now ≈ +1.5–2 L* more separation. */
+
+.app-shell.app-shell {
+  --island-backdrop: color-mix(in oklab, var(--ui-surface-pane) 95%, black);
+  background-color: var(--island-backdrop);
+}
+
+/* ==== a86: asset card drop shadow (Elevation shadows) ======================
+   Scales with --ui-elev-size / --ui-elev-intensity; none at data-elevation="0".
+   Smaller than the island shadow. Many later blocks reset card box-shadow to
+   none (incl. selected / selected:hover at 0,7,0 specificity), so the
+   :is(...) arm lifts these rules above all of them. box-shadow follows the
+   card's border-radius; selection stays the 1px accent border (unchanged).
+   At max the shadow reaches ~6px — inside .workspace-canvas padding
+   (10/8/18px) and slots are overflow:visible, so it is not clipped.
+   Hover "lifts" by deepening the shadow (no transform: keeps virtualized
+   layout / marquee hit-testing stable). */
+
+.app-shell.app-shell {
+  --ui-island-radius: calc(16px * var(--ui-radius-scale, 1));
+  --ui-island-card-radius: calc(10px * var(--ui-radius-scale, 1));
+  --ui-island-group-gap: 12px;
+  --island-accent-loud: var(--ui-action-accent);
+  --island-segment-pill-shadow: none;
+  --island-side: var(--ui-surface-pane);
+  --island-hairline-w: 0.5px;
+  --island-outer-gap: 3px;
+  --ui-island-gap: 6px;
+  --card-shadow:
+    0 calc(0.5px * var(--ui-elev-size)) calc(1.5px * var(--ui-elev-size))
+      rgb(0 0 0 / calc(0.07 * var(--ui-elev-intensity))),
+    0 calc(2px * var(--ui-elev-size)) calc(5px * var(--ui-elev-size))
+      rgb(0 0 0 / calc(0.09 * var(--ui-elev-intensity)));
+  --card-shadow-hover:
+    0 calc(1px * var(--ui-elev-size)) calc(2px * var(--ui-elev-size))
+      rgb(0 0 0 / calc(0.09 * var(--ui-elev-intensity))),
+    0 calc(3px * var(--ui-elev-size)) calc(8px * var(--ui-elev-size))
+      rgb(0 0 0 / calc(0.14 * var(--ui-elev-intensity)));
+}
+
+:root[data-theme="dark"] .app-shell.app-shell {
+  --island-surface-soft: color-mix(in srgb, var(--ui-surface-raised) 88%, white);
+  --island-surface-recess: color-mix(in srgb, white 7%, transparent);
+  --island-select: color-mix(in srgb, white 8%, transparent);
+  --island-pressed-wash: color-mix(in srgb, white 8%, transparent);
+  --island-hover-wash: color-mix(in srgb, white 5%, transparent);
+  --island-segment-track: color-mix(in srgb, white 6%, transparent);
+  --island-segment-hover: color-mix(in srgb, white 9%, transparent);
+  --island-segment-pill: color-mix(in srgb, var(--ui-surface-raised) 92%, white);
+  --island-accent-soft: var(--ui-content-secondary);
+  --island-canvas: color-mix(in srgb, var(--ui-surface-raised) 55%, var(--ui-surface-pane));
+  --ui-island-toolstrip-bg: color-mix(in srgb, var(--ui-surface-pane) 75%, var(--island-canvas));
+  --ui-island-tab-fill: var(--ui-island-toolstrip-bg);
+  --island-border: color-mix(in srgb, white 6%, transparent);
+  --ui-island-hairline: color-mix(in srgb, white 4%, transparent);
+  --island-tab-stroke: color-mix(in srgb, var(--island-border) 45%, var(--island-backdrop));
+  --island-backdrop: color-mix(in oklab, var(--ui-surface-pane) 83%, black);
+  background-color: var(--island-backdrop);
+  --card-shadow:
+    0 calc(0.5px * var(--ui-elev-size)) calc(1.5px * var(--ui-elev-size))
+      rgb(0 0 0 / calc(0.25 * var(--ui-elev-intensity))),
+    0 calc(2px * var(--ui-elev-size)) calc(5px * var(--ui-elev-size))
+      rgb(0 0 0 / calc(0.30 * var(--ui-elev-intensity)));
+  --card-shadow-hover:
+    0 calc(1px * var(--ui-elev-size)) calc(2px * var(--ui-elev-size))
+      rgb(0 0 0 / calc(0.30 * var(--ui-elev-intensity))),
+    0 calc(3px * var(--ui-elev-size)) calc(8px * var(--ui-elev-size))
+      rgb(0 0 0 / calc(0.42 * var(--ui-elev-intensity)));
+}
+
+/* ── a90/a91: background image in the panels ──────────────────────────────
+   The app shell paints the wallpaper. With "面板显示背景图" on, all three
+   islands (sidebar, main, inspector) swap their opaque fill for a tint at
+   --ui-panel-opacity (own setting, independent of the window-image opacity),
+   so the same aligned image shows through. Cards keep solid surfaces.
+   With the acrylic setting on, the panels also blur what is beneath. */
+
+:root[data-bg-main-panel="on"] .app-shell.app-shell > :is(.navigation-pane, .workspace, .inspector-pane) {
+  --panel-fill: var(--ui-surface-pane);
+  background-color: color-mix(in oklab, var(--panel-fill) var(--ui-panel-opacity, 72%), transparent);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:root[data-bg-main-panel="on"][data-menu-acrylic="1"] .app-shell.app-shell > :is(.navigation-pane, .workspace, .inspector-pane) {
+  -webkit-backdrop-filter: blur(12px) saturate(1.15);
+  backdrop-filter: blur(12px) saturate(1.15);
+}
+
+:root[data-bg-main-panel="on"][data-menu-acrylic="2"] .app-shell.app-shell > :is(.navigation-pane, .workspace, .inspector-pane) {
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  backdrop-filter: blur(20px) saturate(1.2);
+}
+
+:root[data-bg-main-panel="on"][data-menu-acrylic="3"] .app-shell.app-shell > :is(.navigation-pane, .workspace, .inspector-pane) {
+  -webkit-backdrop-filter: blur(30px) saturate(1.3);
+  backdrop-filter: blur(30px) saturate(1.3);
+}
+
+/* ── a91: restore acrylic on every menu surface ────────────────────────────
+   The main-menu "compact flat surface" block forced `background: var(--raised);
+   backdrop-filter: none` under any acrylic level, and level 1 context menus
+   were 92% opaque (visually solid). All menu surfaces now share one
+   translucent + blurred treatment per acrylic level; level 0 stays solid. */
+
+:root[data-menu-acrylic] :is(.ui-menu-surface, .context-menu, .main-menu-surface, .main-menu-submenu, .library-switcher-menu, .workspace-tools-overflow-menu):is(*, #a91-acrylic-specificity) {
+  --menu-acrylic-fill: var(--ui-surface-raised);
+}
+
+:root[data-menu-acrylic="0"] :is(.ui-menu-surface, .context-menu, .main-menu-surface, .main-menu-submenu, .library-switcher-menu, .workspace-tools-overflow-menu):is(*, #a91-acrylic-specificity) {
+  background: var(--menu-acrylic-fill);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:root[data-menu-acrylic="1"] :is(.ui-menu-surface, .context-menu, .main-menu-surface, .main-menu-submenu, .library-switcher-menu, .workspace-tools-overflow-menu):is(*, #a91-acrylic-specificity) {
+  background: color-mix(in oklab, var(--menu-acrylic-fill) 80%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  backdrop-filter: blur(18px) saturate(1.5);
+}
+
+:root[data-menu-acrylic="2"] :is(.ui-menu-surface, .context-menu, .main-menu-surface, .main-menu-submenu, .library-switcher-menu, .workspace-tools-overflow-menu):is(*, #a91-acrylic-specificity) {
+  background: color-mix(in oklab, var(--menu-acrylic-fill) 70%, transparent);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  backdrop-filter: blur(24px) saturate(1.6);
+}
+
+:root[data-menu-acrylic="3"] :is(.ui-menu-surface, .context-menu, .main-menu-surface, .main-menu-submenu, .library-switcher-menu, .workspace-tools-overflow-menu):is(*, #a91-acrylic-specificity) {
+  background: color-mix(in oklab, var(--menu-acrylic-fill) 58%, transparent);
+  -webkit-backdrop-filter: blur(32px) saturate(1.7);
+  backdrop-filter: blur(32px) saturate(1.7);
+}
+
+/* a93: tag-chip shape follows the corner-radius tier (left corners, shoulders
+   and nose rounded in sync; level 2 keeps the a82 SVG). */
+
+:root[data-radius="0"] .app-shell.app-shell :is(.tag-chip, .filter-tag-chip)::before {
+  -webkit-mask-box-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2780%27%20height%3D%2722%27%20viewBox%3D%270%200%2080%2022%27%3E%3Cpath%20fill%3D%27black%27%20d%3D%27M0.5%200%20L69.78%200%20A0.5%200.5%200%200%201%2070.15%200.16%20L79.69%2010.66%20A0.5%200.5%200%200%201%2079.69%2011.34%20L70.15%2021.84%20A0.5%200.5%200%200%201%2069.78%2022%20L0.5%2022%20A0.5%200.5%200%200%201%200%2021.5%20L0%200.5%20A0.5%200.5%200%200%201%200.5%200Z%27%2F%3E%3C%2Fsvg%3E") 0 16 0 6 fill / 0 var(--tag-tip-w, 12px) 0 6px / 0 stretch;
+  mask-border: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2780%27%20height%3D%2722%27%20viewBox%3D%270%200%2080%2022%27%3E%3Cpath%20fill%3D%27black%27%20d%3D%27M0.5%200%20L69.78%200%20A0.5%200.5%200%200%201%2070.15%200.16%20L79.69%2010.66%20A0.5%200.5%200%200%201%2079.69%2011.34%20L70.15%2021.84%20A0.5%200.5%200%200%201%2069.78%2022%20L0.5%2022%20A0.5%200.5%200%200%201%200%2021.5%20L0%200.5%20A0.5%200.5%200%200%201%200.5%200Z%27%2F%3E%3C%2Fsvg%3E") 0 16 0 6 fill / 0 var(--tag-tip-w, 12px) 0 6px / 0 stretch;
+}
+
+:root[data-radius="1"] .app-shell.app-shell :is(.tag-chip, .filter-tag-chip)::before {
+  -webkit-mask-box-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2780%27%20height%3D%2722%27%20viewBox%3D%270%200%2080%2022%27%3E%3Cpath%20fill%3D%27black%27%20d%3D%27M3.5%200%20L68.45%200%20A3.5%203.5%200%200%201%2071.04%201.15%20L79.1%2010.01%20A1.47%201.47%200%200%201%2079.1%2011.99%20L71.04%2020.85%20A3.5%203.5%200%200%201%2068.45%2022%20L3.5%2022%20A3.5%203.5%200%200%201%200%2018.5%20L0%203.5%20A3.5%203.5%200%200%201%203.5%200Z%27%2F%3E%3C%2Fsvg%3E") 0 16 0 6 fill / 0 var(--tag-tip-w, 12px) 0 6px / 0 stretch;
+  mask-border: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2780%27%20height%3D%2722%27%20viewBox%3D%270%200%2080%2022%27%3E%3Cpath%20fill%3D%27black%27%20d%3D%27M3.5%200%20L68.45%200%20A3.5%203.5%200%200%201%2071.04%201.15%20L79.1%2010.01%20A1.47%201.47%200%200%201%2079.1%2011.99%20L71.04%2020.85%20A3.5%203.5%200%200%201%2068.45%2022%20L3.5%2022%20A3.5%203.5%200%200%201%200%2018.5%20L0%203.5%20A3.5%203.5%200%200%201%203.5%200Z%27%2F%3E%3C%2Fsvg%3E") 0 16 0 6 fill / 0 var(--tag-tip-w, 12px) 0 6px / 0 stretch;
+}
+
+:root[data-radius="3"] .app-shell.app-shell :is(.tag-chip, .filter-tag-chip)::before {
+  -webkit-mask-box-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2780%27%20height%3D%2722%27%20viewBox%3D%270%200%2080%2022%27%3E%3Cpath%20fill%3D%27black%27%20d%3D%27M9%200%20L66.02%200%20A9%209%200%200%201%2072.68%202.95%20L77.69%208.46%20A3.78%203.78%200%200%201%2077.69%2013.54%20L72.68%2019.05%20A9%209%200%200%201%2066.02%2022%20L9%2022%20A9%209%200%200%201%200%2013%20L0%209%20A9%209%200%200%201%209%200Z%27%2F%3E%3C%2Fsvg%3E") 0 16 0 9 fill / 0 var(--tag-tip-w, 12px) 0 9px / 0 stretch;
+  mask-border: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2780%27%20height%3D%2722%27%20viewBox%3D%270%200%2080%2022%27%3E%3Cpath%20fill%3D%27black%27%20d%3D%27M9%200%20L66.02%200%20A9%209%200%200%201%2072.68%202.95%20L77.69%208.46%20A3.78%203.78%200%200%201%2077.69%2013.54%20L72.68%2019.05%20A9%209%200%200%201%2066.02%2022%20L9%2022%20A9%209%200%200%201%200%2013%20L0%209%20A9%209%200%200%201%209%200Z%27%2F%3E%3C%2Fsvg%3E") 0 16 0 9 fill / 0 var(--tag-tip-w, 12px) 0 9px / 0 stretch;
+}
+
+/* ── a93: custom-theme islands surface overrides ───────────────────────────
+   Built-in profiles derive the island surfaces from canvas/pane/raised. A
+   custom theme may pin them via --ui-island-* (set inline on :root by the
+   theme provider only when overridden; the attribute match keeps the
+   derived formulas untouched otherwise). */
+
+:root[style*="--ui-island-backdrop:"] .app-shell.app-shell:is(*, #a93-island) {
+  --island-backdrop: var(--ui-island-backdrop);
+}
+
+:root[style*="--ui-island-canvas:"] .app-shell.app-shell:is(*, #a93-island) {
+  --island-canvas: var(--ui-island-canvas);
+}
+
+:root[style*="--ui-island-border:"] .app-shell.app-shell:is(*, #a93-island) {
+  --island-border: var(--ui-island-border);
+}
+
+/* a94: 强调色（柔和）= the selection wash (nav row, …) when pinned. */
+
+:root[style*="--ui-island-select:"] .app-shell.app-shell:is(*, #a93-island) {
+  --island-select: var(--ui-island-select);
+}
+
+/* ── a94: wallpaper veil uses the window backdrop colour in islands ────────
+   With an image, the inverse-opacity veil is tinted with --island-backdrop
+   (the 窗口背景 field) instead of the Inputs surface. */
+
+:root[data-bg-image="on"] .app-shell.app-shell {
+  --ui-a94-veil: color-mix(
+    in srgb,
+    var(--island-backdrop) calc((1 - var(--ui-background-image-opacity, 0.8)) * 100%),
+    transparent
+  );
+  --ui-backdrop-image: linear-gradient(var(--ui-a94-veil), var(--ui-a94-veil)), var(--ui-background-image, none);
+}
+
+/* a94: the document canvas behind the shell (window resize / overscroll /
+   macOS title-bar region before first paint) follows 窗口背景 too. */
+
+:root[style*="--ui-island-backdrop:"] {
+  background-color: var(--ui-island-backdrop);
+}
+
+@keyframes theme-mini-fade {
+  from { opacity: 0; }
+}

@@ -1,0 +1,1399 @@
+/* inspector: rules whose subject element belongs to this area (P5). */
+
+.inspector-pane {
+  /* overflow on scroll children so pane box-shadow is not clipped
+     (Serpent-zcyg hierarchical elevation). */
+  position: relative;
+  z-index: 2;
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  overflow: visible;
+  background: color-mix(
+    in srgb,
+    var(--ui-pane) var(--ui-background-surface-opacity, 100%),
+    transparent
+  );
+}
+
+:root:not([data-elevation="0"]) .inspector-pane {
+  box-shadow: var(--ui-shadow-pane-west);
+}
+
+.right-collapsed .inspector-pane {
+  visibility: hidden;
+}
+
+.inspector-content {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  overflow: auto;
+}
+
+/* Keep hero (preview + filename) from being flex-crushed onto tags. */
+
+.inspector-content > .inspector-hero-compact {
+  flex-shrink: 0;
+}
+
+.inspector-identity {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  align-items: center;
+  gap: 11px;
+  padding: 7px 0 14px;
+  border-bottom: 1px solid var(--ui-border-subtle);
+}
+
+.inspector-badge {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--ui-border-divider));
+  border-radius: calc(10px * var(--ui-radius-scale, 1));
+  background: color-mix(in srgb, var(--accent) 9%, var(--ui-pane));
+  color: var(--ui-content-accent);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: calc(13px * var(--ui-font-scale));
+}
+
+.inspector-identity strong {
+  display: block;
+  overflow: hidden;
+  margin-top: 4px;
+  font-size: calc(13px * var(--ui-font-scale));
+  font-weight: 560;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metadata-list {
+  margin: 4px 0 0;
+}
+
+/* Clean label/value rhythm — no per-row hairlines; the column gap and quiet
+   label color carry the grouping on their own. */
+
+.metadata-list div {
+  display: grid;
+  min-height: 23px;
+  grid-template-columns: 56px minmax(0, 1fr);
+  align-items: center;
+  font-size: calc(10px * var(--ui-font-scale));
+}
+
+.metadata-list dt {
+  color: var(--ui-content-secondary);
+}
+
+.metadata-list dd {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  color: var(--ui-content-primary);
+}
+
+.inspector-section {
+  margin-top: 16px;
+}
+
+.inspector-metadata-placeholder {
+  min-height: 280px;
+}
+
+.inspector-empty {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  padding: 28px;
+  text-align: center;
+}
+
+.inspector-empty strong {
+  font-size: calc(12px * var(--ui-font-scale));
+  font-weight: 560;
+}
+
+.inspector-empty p {
+  max-width: 190px;
+  margin: 7px 0 0;
+  font-size: calc(11px * var(--ui-font-scale));
+  line-height: 1.6;
+}
+
+.inspector-hero-preview.inspector-hero-text-preview {
+  position: relative;
+  display: block;
+  align-self: stretch;
+  flex-shrink: 0;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  max-height: none;
+  overflow: hidden;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  background: var(--ui-surface-raised);
+}
+
+:root:not([data-elevation="0"]) .inspector-hero-preview.inspector-hero-text-preview {
+  box-shadow: var(--ui-shadow-card);
+}
+
+.inspector-hero-text-snippet {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 10px 12px;
+  overflow: hidden;
+  color: var(--ui-content-secondary);
+  font-family: var(--ui-font-ui);
+  font-size: calc(11px * var(--ui-font-scale));
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Palette as an even strip: segments share width equally and keep the
+   extraction order (importance left → right). Clicking a segment copies its
+   hex value, so each one is a real button with hover/focus feedback. */
+
+.palette-preview {
+  display: flex;
+  height: 22px;
+  margin-top: 0;
+  overflow: hidden;
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 8%);
+}
+
+.editor-field-palette {
+  gap: 6px;
+}
+
+.palette-preview span {
+  flex: 1 1 0;
+  min-width: 5px;
+  cursor: copy;
+  transition: filter 120ms ease;
+}
+
+.palette-preview span:hover {
+  filter: brightness(1.18);
+}
+
+.palette-preview span:focus-visible {
+  outline: 2px solid var(--ui-accent-ring);
+  outline-offset: -2px;
+}
+
+/* Compact hero — preview centered; title/meta full-width below (Serpent-hhy0).
+   Must not shrink inside `.inspector-content` flex column: tech-bar uses
+   margin-top:auto and would otherwise crush the hero so the filename paints
+   over the tags header (Serpent-6uyp / INSPECT-012). */
+
+.inspector-hero-compact {
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: 8px;
+  padding: 4px 0 12px;
+  border-bottom: 1px solid var(--ui-border-subtle);
+  min-height: min-content;
+  /* Allow hero preview card shadow to paint (Serpent-zcyg). */
+  overflow: visible;
+}
+
+.inspector-hero-preview {
+  position: relative;
+  display: flex;
+  align-self: stretch;
+  flex-shrink: 0;
+  width: 100%;
+  max-height: min(360px, 45vh);
+  align-items: center;
+  justify-content: center;
+  /* Visible so hero image elevation shadow is not clipped (Serpent-zcyg). */
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+/* Folder inspector covers stay a square, whether one image or a 2×2 collage. */
+
+.inspector-hero-preview.inspector-folder-hero {
+  display: grid;
+  aspect-ratio: 1;
+  max-height: none;
+  overflow: hidden;
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  background: var(--ui-surface-raised-subtle);
+}
+
+.inspector-folder-hero > .inspector-hero-image,
+.inspector-folder-hero > .inspector-hero-preview-fallback {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-width: none;
+  max-height: none;
+  object-fit: cover;
+}
+
+.inspector-pane .inspector-hero-preview.inspector-folder-hero {
+  display: grid;
+  width: 100%;
+  min-width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  max-height: none;
+  /* Keep the track full-width; inherited centering otherwise lets the
+     empty-folder fallback size the auto track to the icon's min-content width. */
+  grid-template-columns: minmax(0, 1fr);
+  justify-content: stretch;
+  align-items: stretch;
+  justify-items: stretch;
+}
+
+.inspector-pane .inspector-folder-hero > .inspector-hero-image,
+.inspector-pane .inspector-folder-hero > .inspector-hero-preview-fallback {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  max-width: none;
+  max-height: none;
+  object-fit: cover;
+}
+
+.inspector-pane .inspector-folder-hero > .inspector-hero-preview-fallback {
+  display: grid;
+  place-items: center;
+}
+
+.inspector-folder-heading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.inspector-folder-heading > .inspector-hero-title {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Same row wrap as the asset metadata list. A column would stretch each
+   row to the full pane height. */
+
+.inspector-folder-details {
+  display: flex;
+  flex: 0 0 auto;
+  flex-flow: row wrap;
+  align-content: flex-start;
+  gap: 6px 10px;
+  padding-top: 10px;
+}
+
+.inspector-hero-preview-fallback {
+  min-height: 112px;
+  width: 100%;
+  border: 1px solid var(--ui-border-subtle);
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  background: color-mix(in srgb, var(--ui-canvas) 86%, var(--ui-content-inverse));
+}
+
+.inspector-hero-image {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: min(360px, 45vh);
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  object-fit: contain;
+}
+
+:root:not([data-elevation="0"]) .inspector-hero-preview-fallback,
+:root:not([data-elevation="0"]) .inspector-hero-image {
+  box-shadow: var(--ui-shadow-card);
+}
+
+.inspector-hero-sequence-preview {
+  position: relative;
+  width: 100%;
+  height: min(360px, 45vh);
+  min-height: 112px;
+  overflow: hidden;
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+}
+
+.inspector-hero-sequence-preview .inspector-hero-face {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 112px;
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+}
+
+:root:not([data-elevation="0"]) .inspector-hero-sequence-preview .inspector-hero-face {
+  box-shadow: var(--ui-shadow-card);
+}
+
+.inspector-hero-image.is-loading {
+  position: absolute;
+  opacity: 0;
+}
+
+/*
+ * Inspector preview card feel (experiment/card-feel-preview subset).
+ * Tilt host is the visual face (.inspector-hero-face / fallback / text tile),
+ * not the full-width hero strip — so glare/hit-testing match the card bounds.
+ */
+
+.inspector-pane[data-inspector-card-feel="on"] .inspector-hero-face,
+.inspector-pane[data-inspector-card-feel="on"] .inspector-hero-preview-fallback {
+  display: inline-flex;
+  max-width: 100%;
+  max-height: min(360px, 45vh);
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+}
+
+.inspector-pane[data-inspector-card-feel="on"]
+  .inspector-folder-hero > .inspector-hero-preview-fallback {
+  display: grid;
+  max-height: none;
+}
+
+.inspector-pane[data-inspector-card-feel="on"] .inspector-hero-face {
+  /* Shrink-wrap the contain-fit media so the face box == visible card. */
+  width: fit-content;
+  height: fit-content;
+}
+
+.inspector-pane[data-inspector-card-feel="on"] .inspector-hero-sequence-preview .inspector-hero-face {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 112px;
+  max-width: none;
+  max-height: none;
+}
+
+.inspector-pane[data-inspector-card-feel="on"] .inspector-hero-face > .inspector-hero-image {
+  display: block;
+  max-width: 100%;
+  max-height: min(360px, 45vh);
+  width: auto;
+  height: auto;
+  border-radius: inherit;
+  /* Shadow lives on the face host so glare inset matches the card, not a halo. */
+  box-shadow: none !important;
+}
+
+.inspector-pane[data-inspector-card-feel="on"] .inspector-hero-preview-fallback,
+.inspector-pane[data-inspector-card-feel="on"] .inspector-hero-face {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.04),
+    0 0 0 1px rgb(255 255 255 / 0.025),
+    0 1px 2px rgb(0 0 0 / 0.16),
+    0 5px 14px rgb(0 0 0 / 0.12);
+}
+
+.inspector-pane[data-inspector-card-feel="on"]
+  .inspector-hero-text-preview.text-asset-preview {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.04),
+    0 0 0 1px rgb(255 255 255 / 0.025),
+    0 1px 2px rgb(0 0 0 / 0.16),
+    0 5px 14px rgb(0 0 0 / 0.12);
+}
+
+:root:not([data-elevation="0"])
+  .inspector-pane[data-inspector-card-feel="on"]
+  .inspector-hero-preview-fallback,
+:root:not([data-elevation="0"])
+  .inspector-pane[data-inspector-card-feel="on"]
+  .inspector-hero-face,
+:root:not([data-elevation="0"])
+  .inspector-pane[data-inspector-card-feel="on"]
+  .inspector-hero-text-preview.text-asset-preview {
+  box-shadow:
+    var(--ui-shadow-card),
+    inset 0 1px 0 rgb(255 255 255 / 0.04),
+    0 1px 2px rgb(0 0 0 / 0.12);
+}
+
+[data-theme="light"]
+  .inspector-pane[data-inspector-card-feel="on"]
+  .inspector-hero-preview-fallback,
+[data-theme="light"]
+  .inspector-pane[data-inspector-card-feel="on"]
+  .inspector-hero-face,
+[data-theme="light"]
+  .inspector-pane[data-inspector-card-feel="on"]
+  .inspector-hero-text-preview.text-asset-preview {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.7),
+    0 0 0 1px rgb(0 0 0 / 0.04),
+    0 1px 2px rgb(0 0 0 / 0.04),
+    0 4px 12px rgb(0 0 0 / 0.05);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .inspector-pane[data-inspector-card-feel="on"] [data-card-feel-tilt] {
+    transform: perspective(1100px) rotateX(var(--card-tilt-x, 0deg))
+      rotateY(var(--card-tilt-y, 0deg)) translateZ(0);
+    transform-style: preserve-3d;
+    transform-origin: center center;
+    transition: transform 160ms cubic-bezier(0.2, 0.85, 0.25, 1);
+  }
+
+  .inspector-pane[data-inspector-card-feel="on"]
+    [data-card-feel-tilt].is-card-tilting {
+    position: relative;
+    z-index: 3;
+    transition: transform 40ms linear;
+  }
+
+  .inspector-pane[data-inspector-card-feel="on"]
+    [data-card-feel-tilt].is-card-pressing {
+    transform: perspective(1100px) rotateX(var(--card-tilt-x, 0deg))
+      rotateY(var(--card-tilt-y, 0deg)) scale(0.975) translateZ(-5px);
+    transition-duration: 80ms;
+  }
+
+  .inspector-pane[data-inspector-card-feel="on"] [data-card-feel-tilt] {
+    will-change: transform;
+    /* Keep overflow visible so contact shadow is not clipped; ::after is
+       inset:0 on the shrink-wrapped face so glare stays on the card. */
+    position: relative;
+  }
+
+  .inspector-pane[data-inspector-card-feel="on"] [data-card-feel-tilt]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    /* Point-light specular only — no fixed-angle linear stripe. */
+    background: radial-gradient(
+      circle at var(--card-glare-x, 50%) var(--card-glare-y, 40%),
+      rgb(255 255 255 / 0.32) 0%,
+      rgb(255 255 255 / 0.1) 38%,
+      transparent 66%
+    );
+    mix-blend-mode: soft-light;
+    transition: opacity 140ms ease;
+  }
+
+  .inspector-pane[data-inspector-card-feel="on"]
+    [data-card-feel-tilt].is-card-tilting::after {
+    opacity: 0.95;
+  }
+
+  .inspector-pane[data-inspector-card-feel="on"]
+    [data-card-feel-tilt].is-card-tilting {
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.06),
+      var(--card-shadow-x, 0px) var(--card-shadow-y, 8px) 14px
+        rgb(0 0 0 / 0.15);
+  }
+
+  .inspector-pane[data-inspector-card-feel="on"]
+    [data-card-feel-tilt].is-card-tilting:not(.is-card-pressing) {
+    transition:
+      transform 220ms cubic-bezier(0.2, 0.85, 0.25, 1),
+      box-shadow 220ms ease-in;
+  }
+}
+
+.inspector-hero-compact strong,
+.inspector-hero-title {
+  position: relative;
+  flex-shrink: 0;
+  align-self: stretch;
+  min-width: 0;
+  max-width: 100%;
+  /* Single-line ellipsis: webkit-line-clamp was clipping descenders (j/p/g). */
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: calc(12.5px * var(--ui-font-scale));
+  font-weight: var(--ui-font-weight-semibold);
+  line-height: 1.7;
+  padding-block: 0.1em 0.2em;
+}
+
+/* Keep a single asset's extension visible in the Inspector while the stem
+   prefix absorbs the available width and receives the middle ellipsis. */
+
+.inspector-hero-compact:not(.is-multi) .inspector-hero-title {
+  display: flex;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.inspector-hero-stack {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  flex-shrink: 0;
+  width: 100%;
+  max-height: min(300px, 38vh);
+  align-items: center;
+  justify-content: center;
+  padding: 10px 12px 10px;
+  overflow: visible;
+  isolation: isolate;
+}
+
+.inspector-hero-stack-stage {
+  position: relative;
+  width: min(100%, 220px);
+  height: 200px;
+  flex: 0 0 auto;
+}
+
+.inspector-hero-stack-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  background: color-mix(in srgb, var(--ui-canvas) 90%, var(--ui-content-inverse));
+  /* REQ-INSPECT-004: soft layered shadows so stacked multi-select previews stay separable. */
+  box-shadow:
+    0 1px 2px color-mix(in srgb, var(--ui-content-inverse) 18%, transparent),
+    0 6px 14px color-mix(in srgb, var(--ui-content-inverse) 16%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--ui-content-inverse) 8%, transparent);
+}
+
+.inspector-hero-stack-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.inspector-hero-stack-image.is-loading {
+  opacity: 0;
+}
+
+.inspector-hero-stack-fallback {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  color: var(--ui-content-tertiary);
+}
+
+/* Serpent-ijfm: middle card centered; front top-right, back bottom-left. */
+
+.inspector-hero-stack-layer[data-depth="0"] {
+  transform: translate(7px, -7px);
+}
+
+.inspector-hero-stack-layer[data-depth="1"] {
+  transform: translate(0, 0);
+}
+
+.inspector-hero-stack-layer[data-depth="2"] {
+  transform: translate(-7px, 7px);
+}
+
+.inspector-hero-stack[data-layer-count="2"] .inspector-hero-stack-layer[data-depth="0"] {
+  transform: translate(6px, -6px);
+}
+
+.inspector-hero-stack[data-layer-count="2"] .inspector-hero-stack-layer[data-depth="1"] {
+  transform: translate(-6px, 6px);
+}
+
+.inspector-hero-stack[data-layer-count="1"] .inspector-hero-stack-layer[data-depth="0"] {
+  transform: translate(0, 0);
+}
+
+.inspector-tech-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--ui-border-subtle);
+  color: var(--ui-content-secondary);
+  font-size: calc(11px * var(--ui-font-scale));
+  line-height: 1.35;
+}
+
+.inspector-tech-part {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: calc(10px * var(--ui-font-scale));
+  color: var(--ui-content-tertiary);
+}
+
+.inspector-raw-tech-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  align-items: baseline;
+  flex: 0 0 100%;
+  gap: 12px;
+  min-width: 0;
+  width: 100%;
+  /* Match the Inspector description field so Chinese metadata stays readable. */
+  font-family: var(--ui-font-ui);
+  font-size: calc(11.5px * var(--ui-font-scale));
+  font-weight: var(--ui-font-weight-regular);
+  line-height: 1.35;
+}
+
+.inspector-raw-tech-label,
+.inspector-raw-tech-value {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inspector-raw-tech-label {
+  color: var(--ui-content-secondary);
+}
+
+.inspector-raw-tech-value {
+  color: var(--ui-content-tertiary);
+  text-align: right;
+}
+
+/* Multi-selection: ellipsize the primary asset name, but never collapse the
+   "… 等 N 个文件" count suffix — the count must always stay visible. */
+
+.inspector-hero-compact.is-multi .inspector-hero-title {
+  position: relative;
+  z-index: 1;
+  margin-top: 2px;
+  display: flex;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.inspector-hero-compact.is-multi .inspector-hero-title .inspector-multi-name {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inspector-hero-compact.is-multi .inspector-hero-title .inspector-multi-count {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+/* Compact info line (INSPECT-003) — 与文件名同一左缘的摘要行。 */
+
+.inspector-compact-info {
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.inspector-compact-meta {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 2px;
+  color: var(--ui-content-tertiary);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: calc(10px * var(--ui-font-scale));
+  line-height: 1.5;
+}
+
+.inspector-meta-part {
+  white-space: nowrap;
+}
+
+.inspector-meta-sep {
+  padding: 0 6px;
+  opacity: 0.45;
+}
+
+/* 可用性状态：带语义色圆点的安静文本行，而不是抢视线的灰胶囊。 */
+
+.inspector-status-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 10px;
+  color: var(--ui-content-secondary);
+  font-size: calc(11px * var(--ui-font-scale));
+}
+
+.inspector-status-label {
+  min-width: 0;
+}
+
+.inspector-status-dot {
+  width: 7px;
+  height: 7px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--ui-content-tertiary);
+}
+
+.inspector-status-row[data-tone="ok"] .inspector-status-dot {
+  background: var(--ui-status-success);
+  box-shadow: 0 0 0 3px rgb(109 184 93 / 14%);
+}
+
+.inspector-status-row[data-tone="missing"] {
+  color: var(--ui-status-danger-content);
+}
+
+.inspector-status-row[data-tone="missing"] .inspector-status-dot {
+  background: var(--ui-status-danger);
+  box-shadow: 0 0 0 3px rgb(199 82 82 / 14%);
+}
+
+.inspector-status-row[data-tone="corrupt"] {
+  color: var(--ui-status-warning);
+}
+
+.inspector-status-row[data-tone="corrupt"] .inspector-status-dot {
+  background: var(--ui-status-warning);
+}
+
+.inspector-status-row[data-tone="trash"] .inspector-status-dot {
+  background: var(--ui-status-warning);
+  box-shadow: 0 0 0 3px rgb(217 154 62 / 14%);
+}
+
+/* 高频元数据操作聚拢行：评分在左、喜欢在右。 */
+
+.inspector-quick-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+}
+
+.inspector-rating {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.inspector-mixed-value,
+.inspector-mixed-field {
+  color: var(--muted);
+  font-size: calc(12px * var(--ui-font-scale));
+  font-style: italic;
+  user-select: none;
+}
+
+.inspector-mixed-field {
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 6px 10px;
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.inspector-textarea.inspector-mixed-field {
+  min-height: 48px;
+}
+
+.favorite-toggle:disabled,
+.rating-star:disabled,
+.rating-clear:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.rating-star {
+  display: grid;
+  padding: 2px;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--ui-content-tertiary);
+  cursor: pointer;
+  transition: color 120ms ease, transform 120ms ease;
+}
+
+.rating-star:hover {
+  color: var(--ui-rating-star);
+  transform: scale(1.12);
+}
+
+.rating-star[data-active] {
+  color: var(--ui-rating-star);
+}
+
+.rating-clear {
+  margin-left: 6px;
+  padding: 1px 0;
+  border: 0;
+  background: transparent;
+  color: var(--ui-content-tertiary);
+  cursor: pointer;
+  font-size: calc(10px * var(--ui-font-scale));
+  transition: color 120ms ease;
+}
+
+.rating-clear:hover {
+  color: var(--ui-content-secondary);
+}
+
+.favorite-toggle {
+  display: grid;
+  padding: 3px;
+  place-items: center;
+  border: 0;
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: var(--ui-content-tertiary);
+  cursor: pointer;
+  transition: color 120ms ease, transform 120ms ease;
+}
+
+.favorite-toggle:hover {
+  color: var(--ui-status-danger);
+  transform: scale(1.08);
+}
+
+.favorite-toggle[data-active] {
+  color: var(--ui-status-danger);
+}
+
+/* Inspector 字段节奏：原来靠内联 margin，现在统一由类承担。 */
+
+.inspector-content .editor-field {
+  margin-top: 14px;
+}
+
+/* Inspector 内的小标签统一使用次要色；accent 留给真正可点的控件。 */
+
+/* Serpent-qto / Serpent-goe: empty/single-line height matches .inspector-input
+   (28px); grows toward max-height once content wraps. */
+
+.inspector-textarea {
+  height: auto;
+  min-height: 28px;
+  max-height: 180px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  overflow-y: auto;
+  resize: none;
+  font-size: calc(11.5px * var(--ui-font-scale));
+  line-height: 1.35;
+}
+
+/* 源链接：单行截断，右侧嵌一个跳转按钮（仅当内容通过 HTTP(S) 校验时可用）。 */
+
+.source-url-field {
+  position: relative;
+}
+
+.inspector-companion-list {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.inspector-companion-list li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  color: var(--muted);
+  font-size: calc(12px * var(--ui-font-scale));
+}
+
+.inspector-companion-list li span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.source-url-field .inspector-input {
+  padding-right: 32px;
+}
+
+.source-url-open {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  display: grid;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: var(--ui-content-tertiary);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.source-url-open:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--ui-surface-hover);
+  color: var(--accent);
+}
+
+.source-url-open:disabled,
+.source-url-open[aria-disabled="true"] {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.inspector-input {
+  height: 28px;
+  font-size: calc(11.5px * var(--ui-font-scale));
+}
+
+.inspector-version-conflict {
+  margin-top: 14px;
+}
+
+.inspector-ai-badge {
+  display: inline-block;
+  padding: 1px 5px;
+  border-radius: calc(3px * var(--ui-radius-scale, 1));
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  color: var(--accent);
+  font-size: calc(9px * var(--ui-font-scale));
+  font-weight: var(--ui-font-weight-bold);
+  line-height: calc(14px * var(--ui-font-scale));
+  letter-spacing: 0.02em;
+  vertical-align: middle;
+}
+
+.inspector-ai-badge-inline {
+  flex: 0 0 auto;
+  margin-right: 2px;
+}
+
+.micro-label .inspector-ai-badge-inline {
+  margin-right: 6px;
+}
+
+.inspector-rating.is-ai .rating-star[data-active] {
+  color: var(--accent);
+}
+
+.inspector-ai-analyzing {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 8px 10px;
+  border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--ui-border-divider));
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  background: color-mix(in srgb, var(--accent) 8%, var(--ui-pane));
+  color: var(--ui-content-secondary);
+  font-size: calc(11px * var(--ui-font-scale));
+}
+
+.inspector-textarea.is-ai-sourced {
+  border-color: color-mix(in srgb, var(--accent) 28%, var(--ui-border-divider));
+}
+
+/* Section label — replaces h2 headings (INSPECT-003) */
+
+.inspector-section-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 0 6px;
+  color: var(--ui-content-secondary);
+  font-size: calc(10px * var(--ui-font-scale));
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Tags section header with add button */
+
+.inspector-tags-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.inspector-tag-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.inspector-tag-chip {
+  position: relative;
+}
+
+.inspector-tag-label {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: default;
+}
+
+.inspector-tag-label:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.inspector-tag-chip .inspector-tag-rename {
+  position: relative;
+  z-index: 1;
+  order: 0;
+  field-sizing: content;
+  width: auto;
+  min-width: 3ch;
+  max-width: min(140px, 100%);
+  height: 20px;
+  max-height: 100%;
+  box-sizing: border-box;
+  padding: 0 2px;
+  border: 0;
+  border-radius: calc(2px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: 1;
+  outline: none;
+}
+
+.inspector-tag-chip .inspector-tag-rename::selection {
+  color: var(--ui-content-primary);
+  background: var(--ui-action-accent-soft);
+}
+
+.inspector-tags-section {
+  margin-top: 14px;
+}
+
+@media (max-width: 800px) {
+
+  .inspector-pane {
+    position: fixed;
+    z-index: var(--ui-layer-shell);
+    top: var(--ui-shell-toolbar-height);
+    bottom: 0;
+    width: 224px;
+    visibility: visible;
+  }
+
+  .inspector-pane {
+    right: 0;
+    width: 268px;
+  }
+
+  :root:not([data-elevation="0"]) .inspector-pane {
+    box-shadow: var(--ui-shadow-pane-west);
+  }
+
+  .right-collapsed .inspector-pane {
+    visibility: hidden;
+  }
+}
+
+:root[data-platform="windows"] .metadata-list div {
+  font-size: calc(12px * var(--ui-font-scale));
+}
+
+:root[data-platform="windows"] .metadata-list dt {
+  color: var(--ui-content-secondary);
+}
+
+[data-theme="light"] .inspector-badge {
+  /* light palette 的 --ui-content-accent（#5b7cf0）在浅底对比度仅 2.8；
+     图标改用深色 accent（accent 60%+black）保证 ≥4.5。 */
+  color: color-mix(in srgb, var(--accent) 60%, black);
+}
+
+:root[data-platform="windows"] .inspector-identity strong {
+  /* Only the right-hand Inspector identity may wrap. Names in navigation,
+     menus, cards and other compact surfaces keep their existing one-line
+     text-overflow ellipsis. */
+  overflow: visible;
+  font-family: var(--ui-font-ui);
+  overflow-wrap: anywhere;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+:root[data-platform="windows"] .inspector-identity-name {
+  font-family: var(--ui-font-ui-unified);
+}
+
+/* --- Browse stage + flat cards --- */
+
+.inspector-pane {
+  border-left: 1px solid var(--ui-border-subtle);
+  box-shadow: none;
+}
+
+/* --- Inspector: quiet labels, flat fields --- */
+
+.inspector-content {
+  padding: 14px 14px 28px;
+}
+
+.inspector-section h2 {
+  margin: 0 0 10px;
+  font-size: calc(10.5px * var(--ui-font-scale));
+  text-transform: uppercase;
+}
+
+.inspector-empty p {
+  color: var(--ui-content-tertiary);
+}
+
+.inspector-pane {
+  box-shadow: none;
+}
+
+:root:not([data-elevation="0"]) .inspector-pane {
+  box-shadow: none;
+}
+
+/* Inspector section labels a touch quieter. */
+
+.inspector-section h2 {
+  letter-spacing: 0.02em;
+  color: var(--ui-content-tertiary);
+  font-weight: 600;
+}
+
+.app-shell.app-shell > .inspector-pane {
+  overflow: hidden;
+}
+
+.app-shell.app-shell.right-collapsed > .inspector-pane {
+  border-width: 0;
+  box-shadow: none;
+}
+
+.app-shell.app-shell > .inspector-pane::before {
+  content: none;
+}
+
+/* ---- Inspector: frosted Info panel -------------------------------------- */
+
+.app-shell.app-shell > .inspector-pane {
+  background: color-mix(in srgb, var(--ui-surface-raised) 78%, transparent);
+  backdrop-filter: blur(28px) saturate(1.35);
+  -webkit-backdrop-filter: blur(28px) saturate(1.35);
+}
+
+.app-shell.app-shell .inspector-section-label {
+  font-family: var(--ui-font-ui);
+}
+
+.app-shell.app-shell .inspector-content .editor-field {
+  margin-top: 14px;
+}
+
+.app-shell.app-shell .inspector-quick-row {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--ui-island-hairline);
+}
+
+.app-shell.app-shell .inspector-quick-row + .editor-field {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--ui-island-hairline);
+}
+
+.app-shell.app-shell .inspector-tech-bar {
+  margin-top: 16px;
+  padding: 12px 0 4px;
+  border-top: 1px solid var(--ui-island-hairline);
+  gap: 8px 10px;
+}
+
+.app-shell.app-shell .inspector-raw-tech-label { color: var(--ui-content-tertiary); }
+
+.app-shell.app-shell .inspector-raw-tech-value {
+  color: var(--ui-content-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.app-shell.app-shell .inspector-hero-preview {
+  border-radius: calc(12px * var(--ui-radius-scale, 1));
+  overflow: hidden;
+}
+
+.app-shell.app-shell .inspector-empty > svg {
+  box-sizing: content-box;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid var(--ui-border-subtle);
+  border-radius: calc(10px * var(--ui-radius-scale, 1));
+  background: var(--ui-surface-raised);
+  color: var(--ui-content-tertiary);
+}
+
+.app-shell.app-shell > .inspector-pane {
+  border-width: var(--island-hairline-w);
+  border-style: solid;
+  border-color: var(--island-border);
+}
+
+.app-shell.app-shell .inspector-quick-row,
+.app-shell.app-shell .inspector-quick-row + .editor-field,
+.app-shell.app-shell .inspector-tech-bar {
+  border-top-width: var(--island-hairline-w);
+  border-top-color: var(--ui-island-hairline);
+}
+
+.app-shell.app-shell .inspector-empty > svg {
+  background: var(--island-surface-soft);
+  border-color: var(--ui-island-hairline);
+  color: var(--ui-content-tertiary);
+}
+
+.app-shell.app-shell .inspector-section-label {
+  font-size: calc(11px * var(--ui-font-scale));
+  color: var(--ui-content-tertiary);
+}
+
+.app-shell.app-shell > .inspector-pane {
+  background: var(--island-side);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+
+/* Inspector denser + flat */
+
+.app-shell.app-shell .inspector-section-label {
+  font-size: calc(10.5px * var(--ui-font-scale));
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  color: var(--ui-content-tertiary);
+}
+
+.app-shell.app-shell .inspector-quick-row,
+.app-shell.app-shell .inspector-quick-row + .editor-field,
+.app-shell.app-shell .inspector-tech-bar {
+  border-top: var(--island-hairline-w) solid var(--ui-island-hairline);
+}
+
+.app-shell.app-shell .inspector-content {
+  padding: 12px 12px 20px;
+  /* Scrollbar was eating the right edge (L visual 12 vs R 12+sb) — reserve
+     gutter on both edges so hero preview L/R insets match. */
+  scrollbar-gutter: stable both-edges;
+}
+
+.app-shell.app-shell > .inspector-pane {
+  border: var(--island-hairline-w) solid var(--island-border);
+  border-radius: var(--ui-island-radius);
+  box-shadow: none;
+}
+
+.app-shell.app-shell .inspector-ai-badge-inline {
+  position: relative;
+  z-index: 1;
+}
+
+.app-shell.app-shell .inspector-ai-badge-inline {
+  order: 1;
+}
+
+/* ==== a70: punchy accent highlights (Codex) ==============================
+   Surfaces stay quiet; emphasis glyphs use FULL --accent (not tertiary mixes).
+   Codex: full accent on muted chrome — scarce but vivid. */
+
+.app-shell.app-shell .rating-star[data-active],
+.app-shell.app-shell .rating-star:hover {
+  color: var(--accent);
+}
+
+.app-shell.app-shell .inspector-ai-badge {
+  background: color-mix(in srgb, var(--accent) 24%, transparent);
+  color: var(--accent);
+}
+
+.app-shell.app-shell .inspector-input,
+.app-shell.app-shell .inspector-textarea {
+  border-color: var(--ui-island-hairline);
+}
+
+.app-shell.app-shell .inspector-input:focus,
+.app-shell.app-shell .inspector-textarea:focus {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--ui-island-hairline));
+}
+
+.app-shell.app-shell > .inspector-pane {
+  margin: 0 var(--ui-island-gap) var(--ui-island-gap);
+}
+
+.app-shell.app-shell > .inspector-pane { margin-left: 0; }
+
+.app-shell.app-shell > .inspector-pane {
+  border-radius: var(--ui-island-radius) var(--ui-island-radius) var(--ui-window-corner-radius) var(--ui-island-radius);
+}
+
+.app-shell.app-shell > .inspector-pane {
+  margin: 0 var(--island-outer-gap) var(--island-outer-gap) 0;
+}
+
+.app-shell.app-shell.right-collapsed > .inspector-pane {
+  margin: 0;
+}
+
+.app-shell.app-shell .tag-chip > .inspector-ai-badge-inline {
+  border-radius: calc(3px * var(--ui-radius-scale, 1));
+  line-height: calc(14px * var(--ui-font-scale));
+}
+
+:root[data-elevation] .app-shell.app-shell > .inspector-pane {
+  box-shadow: var(--ui-island-shadow);
+}
+
+:root[data-elevation="0"] .app-shell.app-shell > .inspector-pane {
+  box-shadow: none;
+}
+
+.app-shell.app-shell .inspector-section-label:has(> .inspector-ai-badge-inline) {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.app-shell.app-shell .inspector-content .micro-label > .inspector-ai-badge-inline,
+.app-shell.app-shell .inspector-section-label > .inspector-ai-badge-inline {
+  margin: 0;
+}

@@ -1,0 +1,1576 @@
+/* browse: rules whose subject element belongs to this area (P5). */
+
+.asset-card {
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.workspace-canvas.is-reflow-frozen > .asset-grid {
+  width: var(--reflow-frozen-width);
+  max-width: none;
+}
+
+/* Scope size reads as a quiet count pill beside the title. */
+
+.item-count {
+  display: inline-flex;
+  height: var(--ui-shell-chip-height);
+  align-items: center;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--ui-surface-hover);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: calc(10px * var(--ui-font-scale));
+  line-height: 1;
+}
+
+.canvas-controls {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 7px;
+}
+
+.empty-state {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: min(720px, calc(100% - 48px));
+  min-height: 260px;
+  animation: state-enter 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.empty-state {
+  /* REQ-SHELL-008: the step sidebar («01» marker) and specimen column are
+     gone — the create-library content renders directly in a single column. */
+  justify-items: center;
+  text-align: center;
+}
+
+.empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 25px;
+}
+
+.text-asset-preview {
+  position: relative;
+  display: block;
+  align-self: stretch;
+  flex-shrink: 0;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  max-height: none;
+  overflow: hidden;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  background: var(--ui-surface-raised);
+}
+
+:root:not([data-elevation="0"]) .text-asset-preview {
+  box-shadow: var(--ui-shadow-card);
+}
+
+.text-asset-preview-snippet {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 10px 12px;
+  overflow: hidden;
+  color: var(--ui-content-secondary);
+  font-family: var(--ui-font-ui);
+  font-size: calc(11px * var(--ui-font-scale));
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.text-asset-preview-markdown {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 8px 10px;
+  color: var(--ui-content-secondary);
+  pointer-events: none;
+}
+
+/* Browse cards: fill the existing .asset-preview frame (already ~4:3 / 1.3). */
+
+.asset-preview > .text-asset-preview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: inherit;
+  box-shadow: none;
+}
+
+.asset-preview > .text-asset-preview .text-asset-preview-snippet {
+  padding: 8px 9px;
+  font-size: calc(10px * var(--ui-font-scale));
+  line-height: 1.4;
+}
+
+/* REQ-PREF-001: general settings panel — theme/language/canvas display
+   grouped as labelled sections of pill-style radio options. */
+
+/* MENU-023 / Serpent-0rg: asset inline rename mirrors folder nav-inline-edit
+   (shared .text-field chrome: single border, focus ring via box-shadow only,
+   normal foreground — not caption tertiary gray). */
+
+.asset-inline-rename {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  gap: 2px;
+  width: 100%;
+  min-height: 29px;
+  padding: 2px 0;
+  border: 1px solid transparent;
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  color: var(--ui-content-primary);
+}
+
+.asset-inline-rename-input.text-field {
+  display: block;
+  box-sizing: border-box;
+  grid-column: 1;
+  min-width: 0;
+  width: 100%;
+  height: 23px;
+  margin: 0;
+  padding: 0 6px;
+  font: inherit;
+  font-size: calc(12px * var(--ui-font-scale));
+  line-height: 1.3;
+  color: var(--ui-content-primary);
+  user-select: text;
+  cursor: text;
+  pointer-events: auto;
+}
+
+.asset-inline-rename-input.text-field:focus,
+.asset-inline-rename-input.text-field:focus-visible {
+  outline: 0;
+}
+
+.asset-inline-rename-error {
+  grid-column: 1;
+  color: var(--ui-status-danger);
+  font-size: calc(10px * var(--ui-font-scale));
+}
+
+.asset-card.is-renaming {
+  cursor: default;
+}
+
+.marquee-selection-box {
+  position: fixed;
+  display: none;
+  z-index: 4;
+  border: 1px solid color-mix(in srgb, var(--accent) 65%, transparent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  pointer-events: none;
+  user-select: none;
+}
+
+.asset-grid {
+  display: grid;
+  align-self: start;
+  align-content: start;
+  justify-self: stretch;
+  justify-content: start;
+  grid-template-columns: repeat(auto-fill, minmax(138px, 1fr));
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 100%;
+  overflow: visible;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+.asset-grid.is-masonry {
+  display: block;
+  height: auto;
+  min-height: 100%;
+  overflow: visible;
+}
+
+.asset-grid.is-grid {
+  display: block;
+  height: auto;
+  min-height: 100%;
+  overflow: visible;
+}
+
+.asset-grid.is-masonry .asset-card {
+  display: block;
+  width: 100%;
+}
+
+/* Serpent-ws4k: infinite-scroll sentinel row under the asset grid. Idle it is
+   an invisible 1px trigger; while a page fetch is in flight it shows the
+   shared activity pulse + token-colored caption. */
+
+.browse-load-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 1px;
+  padding: 0;
+  color: var(--ui-content-secondary);
+  font-size: calc(12px * var(--ui-font-scale));
+  user-select: none;
+}
+
+.browse-load-more.is-loading {
+  padding: 14px 0 22px;
+}
+
+.justified-rows {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  flex-direction: column;
+  /* Windowing spacers own the inter-row gap via row margin. A CSS gap
+     here would add extra empty strips that the row window cannot see, so
+     loadImmediately drifts above the real viewport (Serpent-1s3d /
+     Serpent-614293). */
+  gap: 0;
+}
+
+.justified-row {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  /* flex-start: caption natural height must not stretch/shrink sibling media
+     boxes (Serpent-5p45). */
+  align-items: flex-start;
+  gap: 14px;
+  /* Selection ring is an outward box-shadow; clipping the row turns the
+     left edge into a thick bar that ignores border-radius (Serpent-ebff32).
+     Row height is locked in virtualJustifiedRowStyle instead. */
+  overflow: visible;
+}
+
+.justified-card-slot {
+  min-width: 0;
+  /* Integer widths from layoutJustifiedRows must not be flex-shrunk back
+     into fractional CSS pixels (Serpent-oq86). */
+  flex: 0 0 auto;
+}
+
+.justified-card-slot .asset-card {
+  display: flex;
+  width: 100%;
+  height: auto;
+  flex-direction: column;
+}
+
+.justified-card-slot .asset-preview {
+  /* Explicit height from --justified-preview-height (placement.height).
+     Never flex-shrink against the caption band (Serpent-omn / Serpent-5p45). */
+  flex: 0 0 auto;
+  width: 100%;
+  height: var(--justified-preview-height);
+  min-height: 0;
+  aspect-ratio: auto;
+}
+
+.justified-card-slot .asset-thumbnail {
+  object-fit: contain;
+  object-position: center;
+}
+
+.justified-card-slot .asset-caption {
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  height: var(--justified-caption-band, auto);
+  min-height: 0;
+  padding-top: calc(6px * var(--ui-font-scale));
+  overflow: hidden;
+}
+
+.justified-card-slot .asset-caption strong {
+  line-height: calc(14px * var(--ui-font-scale));
+}
+
+.justified-card-slot .asset-caption span {
+  line-height: calc(12px * var(--ui-font-scale));
+}
+
+.justified-card-slot .asset-caption .asset-dimensions {
+  color: var(--ui-content-secondary);
+  font-size: calc(11px * var(--ui-font-scale));
+  font-variant-numeric: tabular-nums;
+  line-height: calc(14px * var(--ui-font-scale));
+}
+
+.masonry-columns {
+  display: grid;
+  align-self: start;
+  width: 100%;
+  align-items: start;
+  gap: 14px;
+}
+
+.masonry-column {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  /* Windowing spacers own the inter-card gap via slot margin. A CSS gap
+     here would add extra empty strips that the column window cannot see
+     (Serpent-1s3d). */
+  gap: 0;
+}
+
+.masonry-card-slot {
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.asset-grid.is-masonry .masonry-card-slot .asset-card {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+}
+
+.asset-card.is-layout-preview {
+  pointer-events: none;
+}
+
+.masonry-card-slot .asset-preview {
+  flex: 0 0 var(--masonry-preview-height, auto);
+  width: 100%;
+  height: var(--masonry-preview-height, auto);
+  max-height: none;
+  aspect-ratio: unset;
+}
+
+.masonry-card-slot .asset-caption {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.asset-loading-more {
+  display: flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--ui-content-tertiary);
+  font-size: calc(10px * var(--ui-font-scale));
+  break-inside: avoid;
+}
+
+.asset-size-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ui-content-tertiary);
+  font-size: calc(9px * var(--ui-font-scale));
+  white-space: nowrap;
+}
+
+/* REQ-CANVAS-007: compact card-size slider — 3px track, 10px thumb, neutral
+   gray tokens instead of the accent. */
+
+.asset-size-control input[type="range"] {
+  width: 82px;
+  height: 14px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  appearance: none;
+  cursor: pointer;
+}
+
+.asset-size-control input[type="range"]::-webkit-slider-runnable-track {
+  height: 3px;
+  border-radius: calc(2px * var(--ui-radius-scale, 1));
+  background: var(--ui-border-divider);
+}
+
+.asset-size-control input[type="range"]::-webkit-slider-thumb {
+  width: 10px;
+  height: 10px;
+  margin-top: -3.5px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ui-content-secondary);
+  appearance: none;
+}
+
+.asset-size-control input[type="range"]:hover::-webkit-slider-thumb,
+.asset-size-control input[type="range"]:focus-visible::-webkit-slider-thumb {
+  background: var(--ui-content-primary);
+}
+
+.external-drop-overlay {
+  position: absolute;
+  z-index: 20;
+  inset: 14px;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 7px;
+  border: 1.5px dashed color-mix(in srgb, var(--accent) 70%, transparent);
+  border-radius: calc(12px * var(--ui-radius-scale, 1));
+  /* Keep the drag affordance visible while letting the assets remain visible
+     through a translucent accent wash. Mixing with --ui-canvas here made the
+     light theme effectively opaque white, which looked like the canvas had
+     been emptied during a drag. */
+  background: color-mix(in srgb, var(--accent) 40%, transparent);
+  color: var(--ui-action-accent);
+  pointer-events: none;
+}
+
+.external-drop-overlay-content {
+  display: grid;
+  min-width: 180px;
+  max-width: min(360px, calc(100vw - 48px));
+  place-items: center;
+  gap: 7px;
+  padding: 18px 24px 16px;
+  border: 1px solid var(--ui-menu-surface-border);
+  border-radius: var(--ui-menu-surface-radius);
+  background: color-mix(in srgb, var(--ui-surface-raised) 92%, transparent);
+  box-shadow: var(--ui-menu-surface-shadow);
+  backdrop-filter: blur(14px) saturate(120%);
+}
+
+.external-drop-overlay strong {
+  color: var(--ui-content-primary);
+  font-size: calc(16px * var(--ui-font-scale));
+}
+
+.external-drop-overlay span {
+  color: var(--ui-content-secondary);
+  font-size: calc(11px * var(--ui-font-scale));
+  text-align: center;
+}
+
+.asset-card {
+  position: relative;
+  min-width: 0;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  transition: box-shadow 120ms ease;
+}
+
+/* Hover only lifts the surface — no border flash, so dense grids stay calm
+   while the pointer scans across cards. */
+
+/* Serpent-wgl2: while a marquee drag is active the per-card selection
+   transition is disabled — a large hit set would otherwise animate hundreds
+   of box-shadows at once. Selection lands instantly, which also reads better
+   for batch marquee interaction. */
+
+.is-marquee-active .asset-card {
+  transition: none;
+}
+
+/* REQ-SELECT-003: the selection ring is an outward 2px box-shadow — one px
+   thicker than the card's own 1px border and fully outside the preview's
+   boundary, so the preview image can no longer cover it (the old inset
+   shadow painted underneath the thumbnail). The ring lives on the card, and
+   neither .asset-card nor .asset-grid clips overflow, so all four sides
+   stay visible inside the 14px grid gap. A faint accent fill under the
+   caption keeps multi-selection readable at a glance. */
+
+/* Keyboard modality (e.g. pressing Shift while a card holds focus) makes
+   Chromium match :focus-visible, and the global button:focus-visible accent
+   outline then painted a second ring around an already-selected card. Cards
+   use the same outward ring geometry for focus instead, so focus and
+   selection can never stack into two rings. */
+
+.asset-card[draggable="true"] {
+  cursor: pointer;
+}
+
+.asset-card.is-missing {
+  opacity: 0.85;
+}
+
+.asset-card.is-missing .asset-thumbnail {
+  filter: grayscale(1);
+  opacity: 0.55;
+}
+
+.missing-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.missing-overlay svg {
+  stroke-width: 2;
+}
+
+/* REQ-DND-003: custom drag ghost for asset drags — small, translucent and
+   rounded instead of Chromium's full-size opaque card snapshot. The node is
+   parked offscreen (Chromium only rasterizes attached elements for
+   setDragImage) and removed on dragend, so it never intercepts input. */
+
+.asset-drag-preview {
+  position: fixed;
+  top: 0;
+  left: -10000px;
+  display: grid;
+  width: 96px;
+  height: 72px;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(9px * var(--ui-radius-scale, 1));
+  background: var(--ui-surface-raised-subtle);
+  box-shadow: 0 6px 18px rgb(0 0 0 / 45%);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.asset-drag-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.asset-drag-preview-name {
+  max-width: 100%;
+  padding: 0 8px;
+  overflow: hidden;
+  color: var(--ui-content-primary);
+  font-size: calc(10px * var(--ui-font-scale));
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.asset-drag-preview-count {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  min-width: 16px;
+  padding: 1px 4px;
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  background: var(--accent);
+  color: var(--ui-content-primary);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: calc(9px * var(--ui-font-scale));
+  text-align: center;
+}
+
+/* Serpent-aa3: Option/Alt copy mode marker (Finder-style "+"). */
+
+.asset-drag-preview-copy {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  display: grid;
+  width: 16px;
+  height: 16px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--ui-content-primary);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: calc(12px * var(--ui-font-scale));
+  font-weight: var(--ui-font-weight-semibold);
+  line-height: 1;
+}
+
+.asset-preview {
+  position: relative;
+  display: grid;
+  aspect-ratio: 1.3;
+  place-items: center;
+  overflow: hidden;
+  /* REQ-CANVAS-008: uniform radius on all four corners, bottom corners too.
+     The selection ring lives on the parent .asset-card, so this overflow
+     clip only rounds the thumbnail, never the ring. */
+  /* Force a clipping context so absolutely-positioned GIF/video layers
+     (`.asset-card-media`) inherit the same rounded mask (Serpent-woa). */
+  isolation: isolate;
+  /* Flat, near-canvas stage: letterboxed areas of contain-fit thumbnails
+     read as quiet negative space instead of a patterned placeholder. */
+  color: var(--ui-content-tertiary);
+}
+
+/* Serpent-485aeb：字体卡片封面是 16:9 的样张（不是 4:3），卡片框跟着一起变成
+   16:9，否则 contain 会在上下留出与样张底色不同的横条。 */
+
+.asset-card[data-media-type="font"] .asset-preview {
+  aspect-ratio: 16 / 9;
+}
+
+.asset-thumbnail {
+  display: block;
+  width: 100%;  height: 100%;
+  object-fit: contain;
+  border-radius: inherit;
+}
+
+/* REQ-CANVAS-009: GIF/video in-place hover (or primary selection) preview.
+   Absolute fill; pointer-events none so card click/drag stay on the button.
+   Own overflow+radius so live layers cannot paint sharp corners or spill
+   into the caption band on extreme portrait cards (Serpent-woa). */
+
+.asset-card-media {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Serpent-l2at / Serpent-qc7v: 占位 caption 与完成卡共用 .asset-caption 间距；
+   骨架条只填尚未到达的文件名/大小日期行，高度贴近对应文字行。 */
+
+.asset-caption-skeleton-line {
+  display: block;
+  flex-shrink: 0;
+  border-radius: calc(3px * var(--ui-radius-scale, 1));
+  background: color-mix(in srgb, var(--ui-content-primary) 10%, var(--ui-surface-raised-subtle));
+}
+
+.asset-caption-skeleton-line.is-name {
+  width: 72%;
+  height: calc(11px * var(--ui-font-scale));
+  margin: calc(1.5px * var(--ui-font-scale)) 0;
+}
+
+.asset-caption-skeleton-line.is-meta {
+  width: 46%;
+  height: calc(9px * var(--ui-font-scale));
+  margin: calc(1.5px * var(--ui-font-scale)) 0;
+}
+
+.asset-card-media .asset-thumbnail,
+.asset-card-media-live {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.asset-card-media-live {
+  z-index: 1;
+}
+
+/* Hover scrub: frosted capsule on the frame. Dark theme uses a brighter
+   white frost so the bar stays readable; light keeps the approved 50% fill. */
+
+.asset-card-hover-progress {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 14px;
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 35%);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.asset-card-hover-progress-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: rgb(255 255 255 / 70%);
+}
+
+[data-theme="light"] .asset-card-hover-progress {
+  background: rgb(255 255 255 / 25%);
+}
+
+[data-theme="light"] .asset-card-hover-progress-fill {
+  background: rgb(255 255 255 / 50%);
+}
+
+/* Keel hover 音频: hover 播放只需出声，不显示播放控件。 */
+
+.asset-card-media audio.asset-card-media-live {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.asset-card-media-live.is-sequence-front {
+  opacity: 1;
+  z-index: 2;
+}
+
+.asset-card-media-live.is-sequence-back {
+  opacity: 0;
+  z-index: 1;
+}
+
+.sequence-card-cover-hidden {
+  opacity: 0;
+}
+
+.sequence-frame-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.sequence-frame-canvas-fallback,
+.sequence-frame-canvas-paint {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: inherit;
+}
+
+.sequence-frame-canvas-paint {
+  pointer-events: none;
+}
+
+.asset-sequence-badge {
+  bottom: 8px;
+  left: 8px;
+  letter-spacing: 0.01em;
+}
+
+/* Solid theme chips keep labels legible without a per-card backdrop blur.
+   Dense video grids otherwise spend most scroll frames rebuilding blur layers.
+   Serpent-i07: duration bottom-left; extension bottom-right (non-images). */
+
+.asset-extension {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  padding: 2px 6px;
+  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  background: var(--ui-surface-raised-subtle);
+  color: var(--ui-content-secondary);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: calc(9px * var(--ui-font-scale));
+  letter-spacing: 0.06em;
+  line-height: 1.45;
+  pointer-events: none;
+}
+
+/* Duration always bottom-left (Serpent-i07). */
+
+.asset-duration-badge {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  padding: 2px 6px;
+  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  background: var(--ui-surface-raised-subtle);
+  color: var(--ui-content-primary);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: calc(9px * var(--ui-font-scale));
+  line-height: 1.45;
+  pointer-events: none;
+}
+
+/* Type chip (GIF / VIDEO / TEXT) bottom-right when extension is absent. */
+
+.asset-type-badge {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  padding: 2px 6px;
+  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  background: var(--ui-surface-raised-subtle);
+  color: var(--ui-content-primary);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: calc(9px * var(--ui-font-scale));
+  letter-spacing: 0.04em;
+  line-height: 1.45;
+  pointer-events: none;
+}
+
+/* Serpent-871f34: ring at the card's bottom-right. Pending = blue, syncing =
+   green with a moving highlight, conflict = yellow + warning. */
+
+.asset-sync-status {
+  --asset-sync-status-color: var(--ui-action-accent);
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ui-pane) 78%, transparent);
+  color: var(--asset-sync-status-color);
+  pointer-events: auto;
+}
+
+.asset-sync-status[data-state="syncing"] {
+  --asset-sync-status-color: var(--ui-status-success);
+}
+
+.asset-sync-status[data-state="conflict"] {
+  --asset-sync-status-color: var(--ui-rating-star);
+  background: var(--ui-rating-star);
+  color: var(--ui-content-on-accent);
+  box-shadow: 0 0 0 2px var(--ui-pane);
+}
+
+.asset-sync-status-ring {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  border: 2px solid var(--asset-sync-status-color);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.asset-sync-status[data-state="syncing"] .asset-sync-status-ring {
+  border-color: color-mix(in srgb, var(--asset-sync-status-color) 32%, transparent);
+}
+
+.asset-sync-status[data-state="syncing"] .asset-sync-status-ring::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 210deg,
+    var(--asset-sync-status-color) 292deg,
+    color-mix(in srgb, var(--asset-sync-status-color) 35%, transparent) 328deg,
+    transparent 360deg
+  );
+  filter: drop-shadow(0 0 3px var(--asset-sync-status-color));
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 2px),
+    var(--ui-content-primary) calc(100% - 1.5px)
+  );
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 2px),
+    var(--ui-content-primary) calc(100% - 1.5px)
+  );
+  animation: plugin-view-spin 1.15s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .asset-sync-status[data-state="syncing"] .asset-sync-status-ring::after {
+    animation: none;
+    background: conic-gradient(
+      from 90deg,
+      transparent 0deg,
+      var(--asset-sync-status-color) 80deg,
+      transparent 140deg
+    );
+  }
+}
+
+.asset-card:has(.asset-sync-status) .asset-caption {
+  padding-right: 28px;
+}
+
+/* CU-U1: containing-folder origin for recursive / mixed-folder grids.
+   Top-left avoids duration (bottom-left) and type/extension (bottom-right). */
+
+.asset-source-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  max-width: calc(100% - 28px);
+  padding: 2px 6px;
+  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  background: var(--ui-surface-raised-subtle);
+  color: var(--ui-content-secondary);
+  font-size: calc(9px * var(--ui-font-scale));
+  line-height: 1.45;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Light surfaces need a subtle edge against bright covers. */
+
+[data-theme="light"] .asset-extension,
+[data-theme="light"] .asset-source-badge {
+  box-shadow: 0 0 0 1px var(--ui-border-subtle);
+  color: var(--ui-content-secondary);
+}
+
+[data-theme="light"] .asset-duration-badge,
+[data-theme="light"] .asset-type-badge {
+  box-shadow: 0 0 0 1px var(--ui-border-subtle);
+  color: var(--ui-content-primary);
+}
+
+.missing-banner {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 6px;
+  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  background: var(--ui-status-warning-surface);
+  color: var(--ui-status-warning-content);
+  font-size: calc(9px * var(--ui-font-scale));
+}
+
+.asset-caption {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  /* Masonry reserves a deterministic caption band for scrollbar geometry.
+     Font rasterization can make the actual line boxes a fraction shorter;
+     centering the remaining space keeps the visible top and bottom edge
+     breathing room equal instead of leaving all rounding at the bottom. */
+  justify-content: center;
+  /* Keep filename/meta above any preview overflow on tall portraits. */
+}
+
+.asset-caption-align-left {
+  text-align: left;
+}
+
+.asset-caption-align-center {
+  text-align: center;
+}
+
+.asset-caption-align-right {
+  text-align: right;
+}
+
+.asset-caption-align-center .asset-caption-filename,
+.asset-caption-align-right .asset-caption-filename {
+  justify-content: center;
+}
+
+.asset-caption-align-right .asset-caption-filename {
+  justify-content: flex-end;
+}
+
+.asset-caption-align-center .asset-inline-rename,
+.asset-caption-align-right .asset-inline-rename {
+  align-items: center;
+}
+
+.asset-caption-align-right .asset-inline-rename {
+  align-items: flex-end;
+}
+
+.asset-caption strong {
+  overflow: hidden;
+  color: var(--ui-content-primary);
+  font-size: calc(11px * var(--ui-font-scale));
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.asset-caption strong.asset-caption-filename {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.asset-filename-prefix {
+  min-width: 0;
+  /* Serpent-kmgw: flex-grow stretched the prefix on short names, pushing the
+     tail/extension to the far right (a short sample name rendered with a gap).
+     grow 0 keeps the name tightly packed when it fits; shrink 1 still lets
+     the prefix collapse with an ellipsis when the name overflows. */
+  flex: 0 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.asset-filename-tail,
+.asset-filename-extension {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.asset-caption span {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: calc(9px * var(--ui-font-scale));
+}
+
+.asset-caption strong.asset-caption-filename span {
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.empty-library {
+  display: flex;
+  width: min(490px, calc(100% - 40px));
+  height: 100%;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  margin: auto;
+  text-align: center;
+}
+
+.empty-library h1 {
+  margin: 8px 0 7px;
+  font-size: calc(23px * var(--ui-font-scale));
+  font-weight: 570;
+}
+
+.empty-library p {
+  max-width: 410px;
+  margin: 0;
+  color: var(--ui-content-secondary);
+  font-size: calc(12px * var(--ui-font-scale));
+  line-height: 1.65;
+}
+
+.empty-orbit {
+  display: grid;
+  margin-bottom: 16px;
+  place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 40% 35%,
+    color-mix(in srgb, var(--ui-action-accent-soft) 55%, var(--ui-surface-raised-subtle)),
+    var(--ui-pane) 70%
+  );
+  color: var(--accent);
+}
+
+.empty-library .empty-actions {
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.inspector-hero-sequence-preview .sequence-frame-canvas {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  height: 100%;
+  min-height: 112px;
+}
+
+.inspector-hero-compact:not(.is-multi) .inspector-hero-title .asset-filename-prefix {
+  min-width: 0;
+  /* Do not stretch short prefixes across the whole title row. Let the
+     extension stay adjacent when the full name fits, and only shrink this
+     segment when the title actually overflows. */
+  flex: 0 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inspector-hero-compact:not(.is-multi) .inspector-hero-title .asset-filename-tail,
+.inspector-hero-compact:not(.is-multi) .inspector-hero-title .asset-filename-extension {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.asset-grid {
+  gap: 14px;
+  padding: 14px 14px 56px;
+}
+
+.asset-card {
+  border: 0 solid transparent;
+  border-radius: var(--ui-radius-surface);
+  background: color-mix(in srgb, var(--ui-surface-raised) 42%, var(--ui-canvas));
+  box-shadow: none;
+  transform: none;
+}
+
+:root:not([data-elevation="0"]) .asset-card {
+  box-shadow: none;
+}
+
+.asset-card:hover {
+  background: color-mix(in srgb, var(--ui-surface-raised) 42%, var(--ui-canvas));
+  border-color: var(--ui-border-subtle);
+  transform: none;
+}
+
+.asset-card.is-selected {
+  background: color-mix(in srgb, var(--accent) 6%, color-mix(in srgb, var(--ui-surface-raised) 42%, var(--ui-canvas)));
+  border-color: transparent;
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--accent) 82%, var(--ui-border-divider));
+}
+
+.asset-card:focus-visible {
+  outline: none;
+  border-color: transparent;
+  box-shadow: 0 0 0 1.5px var(--accent);
+}
+
+:root:not([data-elevation="0"]) .asset-card.is-selected,
+:root:not([data-elevation="0"]) .asset-card:focus-visible {
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--accent) 82%, var(--ui-border-divider));
+}
+
+.asset-preview {
+  border-radius: var(--ui-radius-surface);
+  background: color-mix(in srgb, var(--ui-canvas) 72%, var(--ui-pane));
+}
+
+.asset-caption {
+  /* Match the caption layout helpers in both shell modes. */
+  border-top: 0;
+  gap: calc(4px * var(--ui-font-scale));
+  padding: calc(6px * var(--ui-font-scale)) 12px;
+  background: transparent;
+}
+
+.asset-caption strong {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: calc(14px * var(--ui-font-scale));
+}
+
+.asset-caption span {
+  color: var(--ui-content-tertiary);
+  line-height: calc(12px * var(--ui-font-scale));
+}
+
+.asset-caption .asset-dimensions {
+  margin-top: 0;
+  line-height: calc(14px * var(--ui-font-scale));
+}
+
+.item-count {
+  color: var(--ui-content-tertiary);
+  font-weight: 450;
+}
+
+/* --- Empty / welcome: quiet panel, restrained accent --- */
+
+.empty-orbit {
+  width: 56px;
+  height: 56px;
+  border: 1.5px solid color-mix(in srgb, var(--accent) 48%, var(--ui-border-divider));
+  box-shadow:
+    0 0 0 10px color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.empty-library h1 {
+  font-weight: 650;
+  letter-spacing: -0.03em;
+}
+
+.empty-library p {
+  color: var(--ui-content-secondary);
+}
+
+.empty-state {
+  border: 1px solid var(--ui-border-subtle);
+  border-radius: var(--ui-radius-surface);
+  background: var(--ui-surface-raised);
+  padding: 4px;
+  box-shadow: none;
+}
+
+/* === Keel ui-card-caption: caption alignment + micro polish === */
+
+.justified-card-slot .asset-caption,
+.masonry-card-slot .asset-caption {
+  gap: calc(4px * var(--ui-font-scale));
+  padding: calc(6px * var(--ui-font-scale)) 12px;
+  justify-content: center;
+}
+
+.asset-caption-skeleton-line.is-name {
+  margin-top: 0;
+}
+
+.asset-caption-skeleton-line.is-meta {
+  margin-top: 0;
+}
+
+/* Selected ring: must beat the islands .asset-card border-color rule so the
+   accent stroke replaces the hairline (no gap) and follows border-radius. */
+
+/* Ring = the card's own 1px border painted accent + 1px outer shadow, so the
+   stroke hugs the media with no light sliver of card background between. */
+
+.app-shell.app-shell .asset-card.is-selected,
+.app-shell.app-shell .asset-card:focus-visible {
+  border-radius: var(--ui-island-card-radius);
+}
+
+.app-shell.app-shell .justified-row {
+  /* Matches the 14px horizontal card gap (ASSET_GRID_GAP_PX). */
+}
+
+/* Concentric corners: the card clips its own content, and the media layers sit
+   1px inside the card border, so their radius is card radius - border width.
+   (Was 14px inside a 14px/1px card → corners flattened with a sliver gap.) */
+
+.app-shell.app-shell .asset-preview {
+  margin: 0;
+  box-shadow: none;
+}
+
+/* Preserve every source edge when integer slot rounding or the minimum aspect
+   clamp gives the slot a slightly different ratio from the source image. */
+
+.app-shell.app-shell .justified-card-slot .asset-card .asset-thumbnail {
+  object-fit: var(--justified-thumbnail-fit, contain);
+}
+
+.app-shell.app-shell .justified-card-slot .asset-caption,
+.app-shell.app-shell .masonry-card-slot .asset-caption {
+  /* Must fit the band reserved by justified-caption-band.ts / asset-caption-band.ts:
+     8px pad + name 13px + 3px gap + meta 12px (+ dims 14px) + 8px pad. */
+}
+
+/* Very narrow thumbnails: the source badge would cover the image. */
+
+@container (max-width: 96px) {
+  .app-shell.app-shell .asset-source-badge {
+    display: none;
+  }
+}
+
+/* Empty states — quiet squircle */
+
+.app-shell.app-shell .empty-orbit {
+  width: 52px;
+  height: 52px;
+  margin-bottom: 14px;
+  border: 1px solid var(--ui-border-subtle);
+  border-radius: calc(14px * var(--ui-radius-scale, 1));
+  box-shadow: none;
+}
+
+.app-shell.app-shell .empty-library h1 {
+  margin: 0 0 6px;
+  font-size: calc(18px * var(--ui-font-scale));
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.app-shell.app-shell .empty-library p {
+  max-width: 340px;
+  color: var(--ui-content-tertiary);
+  font-size: calc(12px * var(--ui-font-scale));
+}
+
+/* Empty-state squircle: neutral chrome. */
+
+.app-shell.app-shell .empty-orbit {
+  background: color-mix(in srgb, var(--ui-content-primary) 4%, var(--ui-surface-raised));
+  color: var(--ui-content-tertiary);
+  border-color: var(--ui-island-hairline);
+}
+
+.app-shell.app-shell .asset-card {
+  border-color: var(--ui-island-hairline);
+}
+
+.app-shell.app-shell .empty-orbit {
+  background: var(--island-surface-soft);
+  border-color: var(--ui-island-hairline);
+  color: var(--ui-content-tertiary);
+}
+
+/* --- Airier gallery (content breathes; chrome stays tight) -------------- */
+
+.app-shell.app-shell .justified-card-slot .asset-caption,
+.app-shell.app-shell .masonry-card-slot .asset-caption {
+  /* Keep in sync with JUSTIFIED_CAPTION_PAD_* / MASONRY_CAPTION_PAD_* (10px). */
+}
+
+.app-shell.app-shell .item-count {
+  font-size: calc(11px * var(--ui-font-scale));
+}
+
+/* Selection ring: LOUD — only other accent splash */
+
+/* Flat cards */
+
+.app-shell.app-shell .asset-card {
+  border-radius: var(--ui-island-card-radius);
+  border: var(--island-hairline-w) solid var(--ui-island-hairline);
+  box-shadow: none;
+  background: var(--island-canvas);
+}
+
+.app-shell.app-shell .asset-card:hover {
+  box-shadow: none;
+  border-color: color-mix(in srgb, var(--ui-content-primary) 18%, transparent);
+}
+
+.app-shell.app-shell .asset-card .asset-preview,
+.app-shell.app-shell .asset-card .asset-preview .asset-card-media,
+.app-shell.app-shell .asset-card .asset-preview .asset-thumbnail {
+  border-radius: calc(var(--ui-island-card-radius) - 1px) calc(var(--ui-island-card-radius) - 1px) 0 0;
+}
+
+/* ---- Airier gallery ---------------------------------------------------- */
+
+.app-shell.app-shell .justified-row {
+  /* Match ASSET_GRID_GAP_PX = 22 */
+}
+
+.app-shell.app-shell .asset-caption > span {
+  color: var(--ui-content-tertiary);
+}
+
+.app-shell.app-shell .justified-row {
+  /* Match ASSET_GRID_GAP_PX = 14 */
+  margin-bottom: 14px !important;
+}
+
+/* 3) Caption padding tightened */
+
+.app-shell.app-shell .justified-card-slot .asset-caption,
+.app-shell.app-shell .masonry-card-slot .asset-caption {
+  padding: 11px 12px;
+  gap: 4px;
+  background: var(--island-canvas);
+}
+
+.app-shell.app-shell .item-count {
+  color: var(--accent);
+  font-weight: 550;
+}
+
+/* Cards / chips / fields: quieter default strokes (selection accent stays loud). */
+
+.app-shell.app-shell .asset-card:not(.is-selected):not(:focus-visible) {
+  border-color: var(--ui-island-hairline);
+}
+
+/* 4) Asset card text truncation — clean ellipsis */
+
+.app-shell.app-shell .asset-caption {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.app-shell.app-shell .asset-caption strong,
+.app-shell.app-shell .asset-caption strong.asset-caption-filename {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.app-shell.app-shell .asset-caption strong.asset-caption-filename {
+  display: flex;
+  text-overflow: clip;
+}
+
+.app-shell.app-shell .asset-filename-prefix {
+  min-width: 0;
+  flex: 0 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 5 + 9) Restore original card title weight + type sizes (main/dev: 11/500 + 9) */
+
+.app-shell.app-shell .asset-caption strong {
+  font-size: calc(11px * var(--ui-font-scale));
+  line-height: calc(14px * var(--ui-font-scale));
+  font-weight: var(--ui-font-weight-medium);
+  letter-spacing: 0.01em;
+}
+
+.app-shell.app-shell .asset-caption > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: calc(9px * var(--ui-font-scale));
+  line-height: calc(12px * var(--ui-font-scale));
+}
+
+/* 6) Asset browser L/R padding — less empty gutter */
+
+/* 7) Selected card hover keeps accent selection stroke (not gray) */
+
+.app-shell.app-shell .asset-card.is-selected:hover,
+.app-shell.app-shell .asset-card.is-selected:focus-visible,
+.app-shell.app-shell .asset-card.is-selected:hover:focus-visible {
+  border-color: var(--accent);
+  /* Ring is the 1px border only — no outer shadow that doubles/gaps the top. */
+  box-shadow: none;
+}
+
+:root:not([data-elevation="0"]) .app-shell.app-shell .asset-card.is-selected:hover,
+:root:not([data-elevation="0"]) .app-shell.app-shell .asset-card.is-selected:focus-visible {
+  box-shadow: none;
+}
+
+/* 8) Card top flush with selection outline — no gap/crop
+   Selection ring = 1px accent border. Selected card fill is accent so any
+   sub-pixel frame between border and media reads as the ring (not canvas).
+   Media uses the card radius and is clipped by overflow:hidden. */
+
+.app-shell.app-shell .asset-card {
+  isolation: isolate;
+  container-type: inline-size;
+  border-width: 1px;
+  border-style: solid;
+  background-clip: border-box;
+  overflow: hidden;
+}
+
+.app-shell.app-shell .asset-card.is-selected,
+.app-shell.app-shell .asset-card:focus-visible {
+  border-width: 1px;
+  border-color: var(--accent);
+  background: var(--accent);
+  box-shadow: none;
+  outline: none;
+}
+
+:root:not([data-elevation="0"]) .app-shell.app-shell .asset-card.is-selected,
+:root:not([data-elevation="0"]) .app-shell.app-shell .asset-card:focus-visible {
+  box-shadow: none;
+}
+
+.app-shell.app-shell .asset-card.is-selected:hover,
+.app-shell.app-shell .asset-card.is-selected:focus-visible {
+  border-color: var(--accent);
+  background: var(--accent);
+  box-shadow: none;
+}
+
+.app-shell.app-shell .asset-card .asset-preview {
+  margin: 0;
+}
+
+.app-shell.app-shell .justified-row,
+.app-shell.app-shell .justified-card-slot,
+.app-shell.app-shell .masonry-card-slot {
+  overflow: visible;
+}
+
+:root:not([data-elevation="0"]) .app-shell.app-shell .asset-card:is(.is-selected.is-selected:hover:focus-visible, *) .asset-preview {
+  box-shadow: var(--card-shadow);
+}
+
+:root:not([data-elevation="0"]) .app-shell.app-shell .asset-card:is(.is-selected.is-selected:hover:focus-visible, *):hover .asset-preview {
+  box-shadow: var(--card-shadow-hover);
+}
+
+:root[data-elevation="0"] .app-shell.app-shell .asset-card:is(.is-selected.is-selected:hover:focus-visible, *) {
+  box-shadow: none;
+}
+
+/* ==== a87: gallery captions ================================================
+   The image owns the surface; the whole card owns the selection outline.
+   Metadata sits on the
+   canvas below it, without a boxed footer. Caption metrics mirror the layout
+   helpers so virtual rows reserve only the space occupied by visible text. */
+
+.app-shell.app-shell .asset-card,
+.app-shell.app-shell .asset-card:hover,
+.app-shell.app-shell .asset-card.is-selected,
+.app-shell.app-shell .asset-card:focus-visible,
+.app-shell.app-shell .asset-card.is-selected:hover,
+.app-shell.app-shell .asset-card.is-selected:focus-visible {
+  background: transparent;
+  border-color: transparent;
+  border-width: 0;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.app-shell.app-shell .asset-card .asset-preview {
+  border-radius: var(--ui-island-card-radius);
+  outline: 1px solid var(--ui-island-hairline);
+  outline-offset: -1px;
+}
+
+.app-shell.app-shell .asset-card .asset-preview .asset-card-media,
+.app-shell.app-shell .asset-card .asset-preview .asset-thumbnail {
+  border-radius: inherit;
+}
+
+.app-shell.app-shell .asset-card.is-selected,
+.app-shell.app-shell .asset-card:focus-visible,
+.app-shell.app-shell .asset-card.is-selected:hover,
+.app-shell.app-shell .asset-card.is-selected:focus-visible,
+.app-shell.app-shell .asset-card.is-selected:hover:focus-visible {
+  background: color-mix(in srgb, var(--accent) 9%, transparent);
+  outline: 2px solid var(--accent);
+  outline-offset: 0;
+}
+
+.app-shell.app-shell .justified-card-slot .asset-caption,
+.app-shell.app-shell .masonry-card-slot .asset-caption,
+.app-shell.app-shell .asset-card .asset-caption {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  padding-top: calc(6px * var(--ui-font-scale));
+  padding-bottom: calc(6px * var(--ui-font-scale));
+  gap: calc(4px * var(--ui-font-scale));
+  background: transparent;
+}
+
+.app-shell.app-shell .asset-card.is-selected .asset-caption,
+.app-shell.app-shell .asset-card:focus-visible .asset-caption {
+  background: transparent;
+}
+
+.app-shell.app-shell .asset-caption > :first-child {
+  margin-top: 0;
+}
+
+.app-shell.app-shell .asset-caption > :last-child {
+  margin-bottom: 0;
+}
+
+:root[style*="--ui-island-card:"] .app-shell.app-shell .asset-card .asset-preview:is(*, #a93-island) {
+  background-color: var(--ui-island-card);
+}
+
+.asset-card[data-tag-drop-target="true"] { outline: 3px solid var(--ui-action-accent); outline-offset: 2px; }

@@ -1,0 +1,1609 @@
+/* viewer: rules whose subject element belongs to this area (P5). */
+
+.media-jobs-embedding-section {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--ui-border-divider);
+}
+
+.zoom-label {
+  color: var(--ui-content-tertiary);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: calc(10px * var(--ui-font-scale));
+  font-weight: var(--ui-font-weight-regular);
+}
+
+/* Color-space picker (Serpent-aoj0) — secondary view for viewer/context menu. */
+
+.color-space-picker {
+  min-width: 220px;
+}
+
+.color-space-picker-back {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  width: 100%;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: calc(4px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: var(--ui-content-secondary);
+  font: inherit;
+  font-size: calc(11px * var(--ui-font-scale));
+  text-align: left;
+}
+
+.color-space-picker-back:hover,
+.color-space-picker-back:focus-visible {
+  background: var(--ui-surface-raised-subtle);
+  color: var(--ui-content-primary);
+  outline: none;
+}
+
+.color-space-picker-title {
+  padding: 5px 8px 4px;
+  color: var(--ui-content-primary);
+  font-size: calc(11px * var(--ui-font-scale));
+  font-weight: 650;
+}
+
+.preview-modal {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  background: transparent;
+}
+
+.workspace-viewer:fullscreen .preview-modal,
+.workspace-viewer-transition:fullscreen .preview-modal {
+  width: 100vw;
+  height: 100vh;
+  border: 0;
+  border-radius: 0;
+}
+
+.preview-state button,
+.preview-playback-error button {
+  padding: 6px 10px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(4px * var(--ui-radius-scale, 1));
+  background: var(--ui-surface-raised);
+  color: var(--ui-content-primary);
+  font-size: calc(10px * var(--ui-font-scale));
+  cursor: pointer;
+}
+
+.preview-state button:disabled,
+.preview-playback-error button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.preview-content {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  flex: 1;
+  place-items: center;
+  overflow: hidden;
+  /* Non-fullscreen: transparent, so the wallpaper shows through the
+     workspace veil exactly like the canvas area (same opacity, same look).
+     The old approach of painting --ui-backdrop directly here stacked the
+     image layer above the veil and rendered the wallpaper at full opacity —
+     inconsistent with the canvas. Fullscreen paints the backdrop below. */
+  background: transparent;
+}
+
+/* Fullscreen: the workspace is off-screen, so the stage paints the wallpaper
+   itself — a semi-transparent viewer-stage veil keeps the media readable
+   (--ui-background-surface-opacity is 100% when no background is configured,
+   restoring the solid dark stage). */
+
+.workspace-viewer:fullscreen .preview-content,
+.workspace-viewer-transition:fullscreen .preview-content {
+  background-color: color-mix(
+    in srgb,
+    var(--ui-surface-canvas) var(--ui-background-surface-opacity, 100%),
+    transparent
+  );
+  background-image: var(--ui-backdrop-image, none);
+  background-position: var(--ui-backdrop-position, center);
+  background-repeat: var(--ui-backdrop-repeat, no-repeat);
+  background-size: var(--ui-backdrop-size, cover);
+}
+
+.preview-video-stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.preview-audio-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 16px;
+  width: min(1100px, 96%);
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  margin: 0 auto;
+}
+
+.preview-audio {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Serpent-vlx: wide strip fills the shell (not 4:3 grid cover / contain letterbox). */
+
+.preview-audio-waveform-shell {
+  position: relative;
+  width: 100%;
+  height: min(240px, 42vh);
+  flex: 0 0 auto;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  overflow: hidden;
+  background: var(--ui-pane);
+  cursor: pointer;
+  outline: none;
+}
+
+.preview-audio-waveform-shell:focus-visible {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.preview-audio-waveform {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  object-position: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+.preview-audio-waveform.is-placeholder {
+  background:
+    linear-gradient(90deg, transparent 0%, var(--ui-surface-hover) 50%, transparent 100%),
+    var(--ui-pane);
+}
+
+/* Serpent-r8a: full-height star-yellow playhead; trail = separate particles. */
+
+.preview-audio-playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--ui-rating-star);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ui-pane) 45%, transparent);
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.preview-audio-trail {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.preview-audio-trail-particle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--ui-rating-star);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.preview-audio-controls {
+  position: relative;
+  width: 100%;
+  max-width: none;
+  align-self: stretch;
+}
+
+.preview-content.is-text-mode,
+.preview-content.is-document-mode,
+.preview-content.is-archive-mode {
+  place-items: stretch;
+}
+
+.preview-content.is-document-mode > .pdf-viewer,
+.preview-content.is-document-mode > .html-viewer {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.preview-text-stage {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  align-self: stretch;
+  background: var(--ui-surface-canvas);
+}
+
+.preview-text-topbar {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 36px;
+  padding: 8px 12px;
+  transition: opacity 220ms ease;
+}
+
+.workspace-viewer-transition.is-toolbar-proximity:not(.is-toolbar-near-top) .preview-text-topbar {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.preview-text-meta {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+  color: var(--ui-content-secondary);
+  font-size: calc(12px * var(--ui-font-scale));
+}
+
+.preview-text-meta > span {
+  flex: 0 0 auto;
+}
+
+.preview-text-error-btn {
+  min-width: 0;
+  max-width: min(480px, 50vw);
+  padding: 4px 8px;
+  overflow: hidden;
+  border: 0;
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  background: color-mix(in srgb, var(--ui-status-warning) 14%, var(--ui-surface-canvas));
+  color: var(--ui-status-warning-content);
+  font-size: calc(12px * var(--ui-font-scale));
+  line-height: 1.4;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.preview-text-error-btn:hover,
+.preview-text-error-btn:focus-visible {
+  background: color-mix(in srgb, var(--ui-status-warning) 22%, var(--ui-surface-canvas));
+  outline: none;
+}
+
+.preview-text-error-btn:focus-visible {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.preview-text-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 4px;
+}
+
+.preview-text-action {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: var(--ui-content-primary);
+  cursor: pointer;
+  opacity: 0.85;
+}
+
+.preview-text-action:hover,
+.preview-text-action:focus-visible {
+  opacity: 1;
+  background: var(--ui-surface-hover);
+  outline: none;
+}
+
+.preview-markdown {
+  min-width: 0;
+  padding: 16px 20px;
+}
+
+.preview-text-action:focus-visible {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.preview-text-action:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.preview-text-action.is-active {
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
+  opacity: 1;
+}
+
+.preview-text-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.preview-text-line-layer {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  min-height: 100%;
+  width: max-content;
+  min-width: 100%;
+}
+
+.preview-text-line-layer.is-wrap {
+  display: block;
+  width: 100%;
+}
+
+.preview-text-input.is-wrap {
+  width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.preview-text-gutter {
+  margin: 0;
+  padding: 12px 8px 12px 12px;
+  overflow: visible;
+  border-right: 1px solid var(--ui-border-divider);
+  background: var(--ui-surface-raised);
+  color: var(--ui-content-tertiary);
+  font-family: var(--ui-font-ui);
+  font-size: calc(12px * var(--ui-font-scale));
+  line-height: 1.55;
+  text-align: right;
+  user-select: none;
+  white-space: pre;
+}
+
+.preview-text-input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 12px;
+  border: 0;
+  resize: none;
+  outline: none;
+  overflow: hidden;
+  background: transparent;
+  color: var(--ui-content-primary);
+  font-family: var(--ui-font-ui);
+  font-size: calc(12px * var(--ui-font-scale));
+  line-height: 1.55;
+  white-space: pre;
+  overflow-wrap: normal;
+}
+
+.preview-video {
+  /* Centered via left/top 50% + translate −50% (not margin auto): keeps the
+     layout origin scale-independent so the translate-based zoom anchor
+     holds at overflow; see .preview-image (Serpent-yo0n / Serpent-190). */
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  background: var(--ui-surface-canvas);
+  object-fit: contain;
+}
+
+/* Custom video transport (REQ-VIEW-005 / Serpent-60k): one unified bar so
+   auto-hide has a single owner (chrome-idle) instead of fighting the UA's
+   own native-controls hide timer, which caused the prior VIEW-009 failure. */
+
+.preview-video-controls {
+  position: absolute;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(10px * var(--ui-radius-scale, 1));
+  background: var(--ui-viewer-chrome-bg);
+  box-shadow: 0 1px 6px rgb(0 0 0 / 10%);
+  color: var(--ui-content-primary);
+  font-size: calc(11px * var(--ui-font-scale));
+  backdrop-filter: blur(10px);
+  /* Rate listbox is position:absolute above this bar; do not clip it. */
+  overflow: visible;
+}
+
+.preview-video-controls.is-drawer {
+  transition: transform 220ms ease, opacity 220ms ease;
+}
+
+.workspace-viewer.is-chrome-idle .preview-video-controls.is-drawer,
+.workspace-viewer-transition:not(.is-drawer-open) .preview-video-controls.is-drawer,
+.workspace-viewer-transition:not(.is-drawer-open) .preview-video-controls.is-drawer:hover,
+.workspace-viewer-transition:not(.is-drawer-open) .preview-video-controls.is-drawer:focus-within {
+  transform: translateY(calc(100% + 24px));
+}
+
+.preview-video-progress-rail {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  pointer-events: none;
+  background: transparent;
+}
+
+.preview-video-progress-rail > span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+.workspace-viewer-transition.is-drawer-open .preview-video-progress-rail {
+  opacity: 0;
+}
+
+.preview-video-playpause,
+.preview-video-fit,
+.preview-video-fullscreen {
+  display: grid;
+  flex: 0 0 auto;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  font-size: calc(12px * var(--ui-font-scale));
+  cursor: pointer;
+}
+
+.preview-video-time {
+  flex: 0 0 auto;
+  color: var(--ui-content-secondary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.preview-video-track {
+  position: relative;
+  flex: 1 1 auto;
+  height: 14px;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.preview-video-track::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 4px;
+  border-radius: calc(2px * var(--ui-radius-scale, 1));
+  background: var(--ui-border-divider);
+  transform: translateY(-50%);
+}
+
+.preview-video-track-fill {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 4px;
+  border-radius: calc(2px * var(--ui-radius-scale, 1));
+  background: var(--accent);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.preview-video-track-thumb {
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.preview-video-track:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: calc(4px * var(--ui-radius-scale, 1));
+}
+
+.preview-video-rate-host {
+  position: relative;
+  display: flex;
+  flex: 0 0 auto;
+  overflow: visible;
+}
+
+.preview-video-rate {
+  display: grid;
+  flex: 0 0 auto;
+  min-width: 40px;
+  height: 26px;
+  padding: 0 8px;
+  place-items: center;
+  border: 0;
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: var(--ui-content-primary);
+  font-size: calc(11px * var(--ui-font-scale));
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.preview-video-rate:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.preview-viewer-volume {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+  z-index: 1;
+}
+
+.preview-viewer-volume-track {
+  position: relative;
+  flex: 0 0 auto;
+  width: 88px;
+  height: 20px;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.preview-viewer-volume-track::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 4px;
+  border-radius: calc(2px * var(--ui-radius-scale, 1));
+  background: var(--ui-border-divider);
+  transform: translateY(-50%);
+}
+
+.preview-viewer-volume-track-fill {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 4px;
+  border-radius: calc(2px * var(--ui-radius-scale, 1));
+  background: var(--accent);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.preview-viewer-volume-track-thumb {
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.preview-viewer-volume-track:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: calc(4px * var(--ui-radius-scale, 1));
+}
+
+.preview-image-viewport,
+.preview-video-viewport {
+  position: absolute;
+  overflow: hidden;
+  cursor: grab;
+  inset: 0;
+  touch-action: none;
+}
+
+.preview-image-viewport.is-pannable,
+.preview-video-viewport.is-pannable {
+  cursor: grab;
+}
+
+.preview-image-viewport.is-pannable:active,
+.preview-video-viewport.is-pannable:active,
+.preview-image-viewport[data-panning="true"],
+.preview-video-viewport[data-panning="true"] {
+  cursor: grabbing;
+}
+
+.preview-image-viewport:active,
+.preview-video-viewport:active {
+  cursor: grabbing;
+}
+
+.preview-image {
+  /* Size comes from natural dimensions × viewer scale (REQ-VIEW-006). */
+  /* left/top 50% + translate −50% keeps the media centered even when it
+     overflows the viewport: percentage translate is relative to the media's
+     own box, so the layout origin never depends on scale. Grid/flex "safe"
+     centering and abs margin-auto both pin the start edge on overflow
+     (marginLeft computes to 0 for replaced elements), shifting the origin
+     by (media−viewport)/2 and breaking the pointer-zoom anchor
+     (Serpent-yo0n). The pan offset stays in the inline `transform`, which
+     composes after the `translate` property. */
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  max-width: none;
+  max-height: none;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  will-change: transform;
+}
+
+.preview-image-error {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  padding: 24px;
+  overflow: hidden;
+  background: var(--ui-surface-canvas);
+  color: var(--ui-content-tertiary);
+  text-align: center;
+}
+
+.preview-image-error-name {
+  max-width: min(520px, 100%);
+  overflow: hidden;
+  color: var(--ui-content-tertiary);
+  font-size: calc(12px * var(--ui-font-scale));
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Serpent-8ca259: PDF viewer — vertical page column rendered by pdfjs. */
+
+.pdf-viewer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--ui-surface-canvas);
+  color: var(--ui-content-primary);
+}
+
+.pdf-viewer-placeholder {
+  position: absolute;
+  z-index: 2;
+  inset: 44px 16px 16px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.72;
+}
+
+.pdf-viewer-placeholder img {
+  display: block;
+  width: min(100%, 720px);
+  height: 100%;
+  object-fit: contain;
+  border-radius: calc(4px * var(--ui-radius-scale, 1));
+  box-shadow: var(--ui-shadow-card);
+}
+
+.pdf-viewer-toolbar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+}
+
+.pdf-viewer-tool {
+  min-width: 28px;
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(4px * var(--ui-radius-scale, 1));
+  background: var(--ui-surface-raised);
+  color: var(--ui-content-primary);
+  font-size: calc(14px * var(--ui-font-scale));
+  line-height: 1;
+  cursor: pointer;
+}
+
+.pdf-viewer-tool:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.pdf-viewer-zoom-label {
+  min-width: 52px;
+  color: var(--ui-content-tertiary);
+  font-size: calc(11px * var(--ui-font-scale));
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.pdf-viewer-meta {
+  flex: 0 0 auto;
+  padding: 6px 12px;
+  color: var(--ui-content-tertiary);
+  font-size: calc(11px * var(--ui-font-scale));
+  text-align: center;
+}
+
+.pdf-viewer-pages {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  min-height: 0;
+  /* Zoomed-in pages widen beyond the viewport; scroll both ways to move the view.
+     align-items: flex-start (not center) so an overflowing page does not clip
+     its left edge unreachably; pages center themselves via margin auto.
+     Grab cursor while dragging to pan, same as the image/video viewer. */
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  cursor: grab;
+}
+
+.pdf-viewer-pages:active {
+  cursor: grabbing;
+}
+
+.pdf-viewer-page-wrap,
+.pdf-viewer-page-placeholder {
+  margin-left: auto;
+  margin-right: auto;
+  /* Explicit pixel height (--pdf-page-height) is the blinds fix. flex-shrink
+     plus min-height:0 and overflow:hidden collapsed aspect-ratio pages into
+     rounded strips (Serpent-8ca259). */
+  box-sizing: border-box;
+  flex: 0 0 var(--pdf-page-height, auto);
+  flex-shrink: 0;
+  align-self: stretch;
+  width: 100%;
+  max-width: none;
+  height: var(--pdf-page-height, auto);
+  min-height: var(--pdf-page-height, auto);
+  max-height: none;
+  background: var(--ui-viewer-document-page);
+  border-radius: calc(4px * var(--ui-radius-scale, 1));
+  box-shadow: var(--ui-shadow-card);
+  overflow: hidden;
+}
+
+.pdf-viewer-page {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.pdf-viewer-page-placeholder {
+  background: color-mix(in srgb, var(--ui-surface-hover) 40%, transparent);
+  box-shadow: none;
+}
+
+.pdf-viewer-error {
+  padding: 16px;
+  color: var(--ui-status-warning);
+  font-size: calc(12px * var(--ui-font-scale));
+  text-align: center;
+}
+
+/* Serpent-8ca259: HTML viewer — sandboxed iframe. */
+
+.html-viewer {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  background: var(--ui-surface-canvas);
+}
+
+.html-viewer-iframe {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  border: 0;
+  background: white;
+}
+
+/* 复合选择器提高优先级：本块在 .preview-zoom-controls 之前，单类会被它的
+   position:absolute 覆盖。字体查看器控件多，改为在流内居中并允许换行，
+   否则窄窗口下 B/I/U 会被挤出可视区而点不到。 */
+
+.preview-zoom-controls.font-viewer-controls {
+  align-self: center;
+  gap: 8px;
+}
+
+/* 工具条上图标、输入框、下拉、滑杆、按钮的行高/内边距各不相同，曾出现看起来
+   没对齐（2026-09-19 反馈）。这里统一 24px 高并显式居中，让所有控件共用同一条
+   中心线；E2E 会量各控件的竖直中心并要求偏差 <= 1px。 */
+
+.preview-zoom-controls.font-viewer-controls {
+  position: static;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 0 16px 12px;
+  max-width: min(760px, calc(100% - 24px));
+  padding: 5px 12px;
+  transform: none;
+  align-items: center;
+}
+
+.html-viewer-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ui-surface-canvas);
+  color: var(--ui-content-tertiary);
+  font-size: calc(13px * var(--ui-font-scale));
+}
+
+.html-viewer-error {
+  padding: 16px;
+  color: var(--ui-status-warning);
+  font-size: calc(12px * var(--ui-font-scale));
+  text-align: center;
+}
+
+.preview-image-full {
+  visibility: hidden;
+}
+
+.preview-image-full.is-hidden {
+  visibility: hidden;
+}
+
+.preview-image-full.is-visible {
+  visibility: visible;
+}
+
+.preview-image-placeholder.is-hidden {
+  visibility: hidden;
+}
+
+.preview-chrome-fade {
+  opacity: 1;
+  transition: opacity 280ms ease;
+}
+
+.workspace-viewer.is-chrome-idle .preview-chrome-fade {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Volume/scrub chrome must stay interactive while idle-faded (Serpent-jy9z).
+   In fullscreen, pointer movement wakes the whole viewer; focus alone must
+   not keep the transport bar visible after the idle timer expires. */
+
+.workspace-viewer.is-chrome-idle .preview-chrome-fade:hover,
+.workspace-viewer-transition:not(:fullscreen) .workspace-viewer.is-chrome-idle:not(:fullscreen) .preview-chrome-fade:focus-within,
+.workspace-viewer.is-chrome-idle .preview-chrome-fade:has(.preview-viewer-volume.is-adjusting),
+.workspace-viewer.is-chrome-idle .preview-chrome-fade:has(.preview-video-rate-host.is-open) {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Keyboard focus on chrome must remain visible even while idle-faded (Serpent-vvn). */
+
+.workspace-viewer.is-chrome-idle:has(.preview-chrome-fade:focus-visible) .preview-chrome-fade {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.workspace-viewer.is-text-viewer.is-chrome-idle .preview-chrome-fade {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.workspace-viewer.is-nav-proximity .preview-nav.preview-chrome-fade {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.workspace-viewer.is-nav-proximity.is-nav-near-prev:not(.is-chrome-idle) .preview-nav.is-prev.preview-chrome-fade:not(:disabled),
+.workspace-viewer.is-nav-proximity.is-nav-near-next:not(.is-chrome-idle) .preview-nav.is-next.preview-chrome-fade:not(:disabled),
+.workspace-viewer.is-nav-proximity .preview-nav.preview-chrome-fade:focus-visible:not(:disabled) {
+  opacity: 0.55;
+  pointer-events: auto;
+}
+
+.workspace-viewer.is-nav-proximity.is-nav-near-prev:not(.is-chrome-idle) .preview-nav.is-prev.preview-chrome-fade:disabled,
+.workspace-viewer.is-nav-proximity.is-nav-near-next:not(.is-chrome-idle) .preview-nav.is-next.preview-chrome-fade:disabled,
+.workspace-viewer.is-nav-proximity .preview-nav.preview-chrome-fade:focus-visible:disabled {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.workspace-viewer.is-nav-proximity .preview-nav.preview-chrome-fade:hover:not(:disabled),
+.workspace-viewer.is-nav-proximity .preview-nav.preview-chrome-fade:focus-visible:not(:disabled) {
+  opacity: 1;
+}
+
+/* Video drawer slides off the bottom. Focus or hover inside the bar must not
+   pin it on screen after an asset change — the bar lives on the stable
+   transition host, not the viewer that remounts per asset. */
+
+.workspace-viewer.is-chrome-idle .preview-video-controls.preview-chrome-fade.is-drawer,
+.workspace-viewer-transition:not(.is-drawer-open) .preview-video-controls.preview-chrome-fade.is-drawer,
+.workspace-viewer-transition:not(.is-drawer-open) .preview-video-controls.preview-chrome-fade.is-drawer:hover,
+.workspace-viewer-transition:not(.is-drawer-open) .preview-video-controls.preview-chrome-fade.is-drawer:focus-within {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(calc(100% + 24px));
+}
+
+.preview-zoom-controls,
+.model-viewer-toolbar {
+  transition: transform 220ms ease, opacity 220ms ease;
+}
+
+.workspace-viewer-transition.is-toolbar-proximity:not(.is-toolbar-near) .preview-zoom-controls.is-approach-toolbar,
+.workspace-viewer-transition.is-toolbar-proximity:not(.is-toolbar-near) .model-viewer-toolbar.is-approach-toolbar,
+.workspace-viewer-transition.is-toolbar-proximity:not(.is-toolbar-near) .preview-zoom-controls.is-approach-toolbar:hover,
+.workspace-viewer-transition.is-toolbar-proximity:not(.is-toolbar-near) .model-viewer-toolbar.is-approach-toolbar:hover,
+.workspace-viewer-transition.is-toolbar-proximity:not(.is-toolbar-near) .preview-zoom-controls.is-approach-toolbar:focus-within,
+.workspace-viewer-transition.is-toolbar-proximity:not(.is-toolbar-near) .model-viewer-toolbar.is-approach-toolbar:focus-within {
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, calc(100% + 24px));
+}
+
+.preview-zoom-controls {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  background: var(--ui-viewer-chrome-bg);
+  box-shadow: 0 1px 6px rgb(0 0 0 / 10%);
+  backdrop-filter: blur(10px);
+  transform: translateX(-50%);
+}
+
+.preview-zoom-controls input[type="range"] {
+  width: 96px;
+  height: 4px;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.preview-color-space-control {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  color: var(--ui-content-secondary);
+  font-size: calc(11px * var(--ui-font-scale));
+  white-space: nowrap;
+}
+
+.preview-color-space-control:focus-within {
+  border-radius: calc(4px * var(--ui-radius-scale, 1));
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.preview-zoom-controls .preview-zoom-label,
+.preview-zoom-controls button:not(.ui-select-trigger) {
+  min-width: 0;
+  padding: 3px 7px;
+  border: 0;
+  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: var(--ui-content-primary);
+  font-size: calc(11px * var(--ui-font-scale));
+  line-height: 1.2;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.preview-zoom-controls button:not(.ui-select-trigger) {
+  display: grid;
+  padding: 0;
+  place-items: center;
+}
+
+.preview-zoom-controls .preview-zoom-label {
+  font-variant-numeric: tabular-nums;
+}
+
+.preview-plugin-actions {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  background: var(--ui-viewer-chrome-bg);
+  box-shadow: 0 1px 6px rgb(0 0 0 / 10%);
+  backdrop-filter: blur(10px);
+}
+
+.preview-plugin-actions button {
+  padding: 4px 10px;
+  border: 0;
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: var(--ui-content-primary);
+  font-size: calc(11px * var(--ui-font-scale));
+  cursor: pointer;
+}
+
+.preview-plugin-actions button:hover,
+.preview-plugin-actions button:focus-visible {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.preview-sequence-controls button {
+  display: grid;
+  width: 28px;
+  height: 26px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: var(--ui-content-primary);
+  cursor: pointer;
+}
+
+.preview-sequence-controls button:hover,
+.preview-sequence-controls button:focus-visible {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.preview-sequence-stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.preview-sequence-play-stage {
+  position: absolute;
+  inset: 0;
+  background: var(--ui-canvas);
+}
+
+.preview-sequence-controls {
+  position: absolute;
+  z-index: 3;
+  bottom: 52px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(9px * var(--ui-radius-scale, 1));
+  background: var(--ui-viewer-chrome-bg);
+  box-shadow: 0 1px 6px rgb(0 0 0 / 10%);
+  color: var(--ui-content-secondary);
+  font-size: calc(10px * var(--ui-font-scale));
+  font-variant-numeric: tabular-nums;
+  backdrop-filter: blur(10px);
+  transform: translateX(-50%);
+}
+
+.preview-sequence-controls input[type="range"] {
+  width: min(220px, 30vw);
+  accent-color: var(--accent);
+}
+
+.preview-nav {
+  position: absolute;
+  z-index: 2;
+  justify-content: flex-start;
+  border: 0;
+  color: var(--ui-content-primary);
+  cursor: pointer;
+}
+
+.preview-nav-glyph {
+  display: grid;
+  place-items: center;
+}
+
+.preview-exr-plane-selector {
+  position: absolute;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  background: var(--ui-viewer-chrome-bg);
+  box-shadow: 0 1px 6px rgb(0 0 0 / 10%);
+  color: var(--ui-content-secondary);
+  font-size: calc(11px * var(--ui-font-scale));
+  backdrop-filter: blur(10px);
+}
+
+.preview-exr-plane-selector:focus-within {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.preview-nav.is-on-dark {
+  color: var(--ui-preview-nav-on-dark-fill);
+}
+
+.preview-nav.is-on-light {
+  color: var(--ui-preview-nav-on-light-fill);
+}
+
+.preview-nav:hover:not(:disabled),
+.preview-nav:focus-visible:not(:disabled) {
+  color: inherit;
+  outline: none;
+}
+
+.preview-nav:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.preview-state {
+  display: flex;
+  max-width: 520px;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  padding: 32px;
+  color: var(--ui-content-secondary);
+  text-align: center;
+}
+
+.preview-state.is-viewer-notice {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: 28px;
+  max-width: min(520px, calc(100% - 32px));
+  transform: translateX(-50%);
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  background: color-mix(in srgb, var(--ui-pane) 92%, transparent);
+}
+
+.preview-state strong {
+  color: var(--ui-content-primary);
+  font-size: calc(15px * var(--ui-font-scale));
+}
+
+.preview-state p {
+  margin: 0;
+  color: var(--ui-content-tertiary);
+  font-size: calc(11px * var(--ui-font-scale));
+  line-height: 1.65;
+}
+
+.preview-state.is-error strong,
+.preview-state.is-error p {
+  color: var(--ui-status-warning-content);
+}
+
+.preview-playback-error {
+  position: absolute;
+  right: 12px;
+  bottom: 58px;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 11px;
+  border: 1px solid color-mix(in srgb, var(--ui-status-warning) 35%, var(--ui-border-divider));
+  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  background: color-mix(in srgb, var(--ui-status-warning-surface) 88%, var(--ui-pane));
+  color: var(--ui-status-warning-content);
+  font-size: calc(11px * var(--ui-font-scale));
+}
+
+/* Serpent-cljb: the fallback explanation is intentionally quiet. It stays
+   in the viewer rather than becoming a blocking error. Hiding it is final
+   for the current asset; looping must not bring it back. */
+
+.preview-proxy-notice {
+  position: absolute;
+  z-index: 3;
+  top: 12px;
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: min(520px, calc(100% - 32px));
+  padding: 5px 8px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  background: color-mix(in srgb, var(--ui-pane) 92%, transparent);
+  color: var(--ui-content-secondary);
+  font-size: calc(11px * var(--ui-font-scale));
+  transform: translateX(-50%);
+}
+
+.preview-proxy-notice button {
+  padding: 2px 4px;
+  border: 0;
+  background: transparent;
+  color: var(--ui-content-tertiary);
+  font-size: calc(10px * var(--ui-font-scale));
+  cursor: pointer;
+}
+
+.preview-proxy-notice button:hover {
+  color: var(--ui-content-primary);
+}
+
+/* Serpent-e56a1f: 代理生成中/加载中的状态提示（非警告样式）。 */
+
+.preview-proxy-status {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: min(520px, calc(100% - 32px));
+  padding: 5px 10px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  background: color-mix(in srgb, var(--ui-pane) 92%, transparent);
+  color: var(--ui-content-secondary);
+  font-size: calc(12px * var(--ui-font-scale));
+  transform: translateX(-50%);
+}
+
+.media-jobs-section-title {
+  margin: 0 0 5px;
+  font-size: calc(13px * var(--ui-font-scale));
+  font-weight: 590;
+}
+
+.media-jobs-grid-cell {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.video-seek-jump-amount {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ui-content-secondary);
+  font-size: calc(12px * var(--ui-font-scale));
+}
+
+.media-jobs-grid {
+  font-size: calc(11px * var(--ui-font-scale));
+}
+
+.image-sequence-dialog-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.image-sequence-dialog-section:first-of-type {
+  margin-top: 4px;
+}
+
+.image-sequence-range-caption {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Serpent-866c20：序列帧确认面板的播放预览（只用主题 token，亮/暗一致）。 */
+
+.image-sequence-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.image-sequence-preview-frame {
+  width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  background: var(--ui-surface-raised-subtle);
+}
+
+.image-sequence-preview-caption {
+  font-variant-numeric: tabular-nums;
+}
+
+.image-sequence-range-track {
+  position: relative;
+  height: 28px;
+  margin: 4px 0 2px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ui-border-divider) 70%, transparent);
+}
+
+.image-sequence-range-track::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: var(--range-start, 0%);
+  right: calc(100% - var(--range-end, 100%));
+  height: 6px;
+  transform: translateY(-50%);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 72%, var(--ui-border-divider));
+  pointer-events: none;
+}
+
+.image-sequence-range-thumb {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  margin: 0;
+  background: transparent;
+  pointer-events: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.image-sequence-range-thumb::-webkit-slider-runnable-track {
+  height: 6px;
+  background: transparent;
+}
+
+.image-sequence-range-thumb::-moz-range-track {
+  height: 6px;
+  background: transparent;
+}
+
+.image-sequence-range-thumb::-webkit-slider-thumb {
+  pointer-events: auto;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -5px;
+  border: 2px solid var(--ui-canvas);
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.28);
+  cursor: pointer;
+}
+
+.image-sequence-range-thumb::-moz-range-thumb {
+  pointer-events: auto;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--ui-canvas);
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.28);
+  cursor: pointer;
+}
+
+.image-sequence-range-thumb.is-start {
+  z-index: 2;
+}
+
+.image-sequence-range-thumb.is-end {
+  z-index: 3;
+}
+
+.preview-state.is-silent {
+  max-width: none;
+  min-height: 0;
+  padding: 0;
+  gap: 0;
+  /* Serpent-xkzf: no pulse, no copy — silent wait only. */
+  background: transparent;
+  color: transparent;
+}
+
+.preview-video-controls,
+.preview-zoom-controls,
+.preview-exr-plane-selector,
+.preview-plugin-actions,
+.model-viewer-toolbar {
+  border-color: var(--ui-border-subtle);
+  border-radius: var(--ui-radius-overlay);
+  background: var(--ui-viewer-chrome-bg);
+  box-shadow: var(--ui-viewer-chrome-shadow);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.preview-video-controls {
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  gap: 12px;
+  padding: 8px 14px;
+}
+
+.preview-zoom-controls {
+  bottom: 16px;
+  gap: 8px;
+  padding: 6px 12px;
+}
+
+.preview-exr-plane-selector {
+  top: 14px;
+  left: 14px;
+  gap: 8px;
+  padding: 6px 10px;
+}
+
+.preview-plugin-actions {
+  top: 14px;
+  left: 14px;
+  gap: 6px;
+  padding: 5px;
+}
+
+.preview-video-playpause,
+.preview-video-fit,
+.preview-video-fullscreen {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--ui-radius-control);
+  color: var(--ui-content-secondary);
+}
+
+.preview-video-playpause:hover,
+.preview-video-fit:hover,
+.preview-video-fullscreen:hover,
+.preview-video-rate:hover {
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-primary);
+}
+
+.preview-zoom-controls button:not(.ui-select-trigger) {
+  width: 28px;
+  height: 26px;
+  border-radius: var(--ui-radius-control);
+  color: var(--ui-content-secondary);
+}
+
+.preview-zoom-controls button:not(.ui-select-trigger):hover,
+.preview-zoom-controls button:not(.ui-select-trigger):focus-visible {
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-primary);
+}
+
+.preview-zoom-controls .preview-zoom-label {
+  color: var(--ui-content-tertiary);
+  font-size: calc(11px * var(--ui-font-scale));
+}
+
+.preview-nav {
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  width: 22%;
+  max-width: 320px;
+  height: auto;
+  padding: 0 12px;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  opacity: 0.45;
+}
+
+.preview-nav:hover:not(:disabled),
+.preview-nav:focus-visible:not(:disabled) {
+  background: transparent;
+  box-shadow: none;
+  opacity: 1;
+}
+
+.preview-nav.is-prev {
+  left: 0;
+  justify-content: flex-start;
+}
+
+.preview-nav.is-next {
+  right: 0;
+  justify-content: flex-end;
+}
+
+.model-viewer-toolbar {
+  /* inherits shared chrome tokens above when class is present */
+  gap: 8px;
+  padding: 6px 12px;
+}
+
+.pdf-viewer-toolbar {
+  border-color: var(--ui-border-subtle);
+  border-radius: var(--ui-radius-overlay);
+  background: var(--ui-viewer-chrome-bg);
+  box-shadow: var(--ui-viewer-chrome-shadow);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* The edge nav zones span the full viewer height and become clickable when the
+   pointer comes near; keep the text viewer's top bar (save, close) above them
+   so a click on 关闭 does not land on 下一项. The PDF toolbar sits there too. */
+
+.preview-text-topbar,
+.pdf-viewer-toolbar {
+  position: relative;
+  z-index: 3;
+}

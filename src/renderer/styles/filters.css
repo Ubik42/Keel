@@ -1,0 +1,2104 @@
+/* filters: rules whose subject element belongs to this area (P5). */
+
+.scope-history-button,
+.scope-crumb-button,
+.filter-preset-chip,
+.filter-tag-options button {
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.scope-trace {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  height: 100%;
+}
+
+.scope-trace {
+  line-height: 1.35;
+}
+
+.discovery-filters {
+  position: relative;
+  /* Keep the summary pill at content size; the search input absorbs slack. */
+  flex: 0 0 auto;
+}
+
+.discovery-filters > summary {
+  display: inline-flex;
+  height: var(--ui-shell-control-height);
+  align-items: center;
+  gap: 5px;
+  padding: 0 10px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  color: var(--ui-content-secondary);
+  cursor: pointer;
+  font-size: calc(12px * var(--ui-font-scale));
+  list-style: none;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease,
+    box-shadow 120ms ease;
+  white-space: nowrap;
+}
+
+.discovery-filters > summary::-webkit-details-marker {
+  display: none;
+}
+
+.discovery-filters > summary:hover {
+  background: var(--ui-surface-hover);
+  border-color: color-mix(in srgb, var(--ui-border-divider) 70%, var(--ui-content-primary));
+  color: var(--ui-content-primary);
+}
+
+.discovery-filters[open] > summary {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--ui-border-divider));
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
+}
+
+/* REQ-FILTER-001: Eagle-style dimension filter bar */
+
+.dimension-filter-bar {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+}
+
+.dimension-filter-dims {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  min-height: var(--ui-shell-control-height);
+}
+
+.dimension-filter-dim {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.dimension-filter-btn {
+  display: inline-flex;
+  height: var(--ui-shell-control-height);
+  align-items: center;
+  gap: 5px;
+  padding: 0 10px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: var(--ui-content-secondary);
+  font-size: calc(12px * var(--ui-font-scale));
+  cursor: pointer;
+}
+
+/* Serpent-49f / FILTER-025: hover + open settings = neutral wash only.
+   Accent-soft is reserved for is-active (filter actually enabled). */
+
+.dimension-filter-btn:hover:not(:disabled):not(.is-active),
+.dimension-filter-btn.is-open:not(:disabled):not(.is-active) {
+  background: var(--ui-surface-hover);
+  border-color: var(--ui-border-divider);
+  color: var(--ui-content-primary);
+}
+
+.dimension-filter-btn.is-active:not(:disabled) {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--ui-border-divider));
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
+}
+
+.dimension-filter-btn.is-active:hover:not(:disabled),
+.dimension-filter-btn.is-active.is-open:not(:disabled) {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--ui-border-divider));
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
+}
+
+.dimension-filter-btn:disabled {
+  color: var(--ui-content-tertiary);
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.dimension-filter-popover {
+  position: absolute;
+  z-index: var(--ui-layer-popover);
+  top: calc(100% + 6px);
+  left: 0;
+  display: flex;
+  width: min(320px, 70vw);
+  max-height: min(420px, 60vh);
+  flex-direction: column;
+  gap: 10px;
+  overflow: auto;
+  padding: 12px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(10px * var(--ui-radius-scale, 1));
+  background: var(--ui-pane);
+  box-shadow: var(--ui-shadow-panel);
+  isolation: isolate;
+}
+
+.dimension-filter-popover.is-wide {
+  width: min(360px, 78vw);
+}
+
+/* REQ-FILTER-020 / Serpent-77c919: the tag picker has two visible sections
+   and two fixed footer rows. Only the complete tag collection scrolls; the
+   recent shortcuts and footer remain readable while the list moves. */
+
+.dimension-filter-popover.is-tag-filter {
+  width: min(400px, 84vw);
+  max-height: min(600px, calc(100vh - 120px));
+  overflow: hidden;
+}
+
+.dimension-filter-popover.is-tag-filter > .filter-tag-picker {
+  display: flex;
+  min-height: 0;
+  flex: 0 0 auto;
+}
+
+.dimension-filter-popover.is-tag-filter > .dimension-filter-check,
+.dimension-filter-popover.is-tag-filter > .dimension-filter-hint {
+  flex: 0 0 auto;
+}
+
+.dimension-filter-popover label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: calc(11px * var(--ui-font-scale));
+  color: var(--ui-content-secondary);
+}
+
+.dimension-filter-check {
+  flex-direction: row !important;
+  align-items: center;
+  gap: 6px !important;
+}
+
+.dimension-filter-check-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 0 0 auto;
+  margin-top: 8px;
+}
+
+.dimension-rating-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.dimension-rating-chip {
+  padding: 4px 8px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: var(--ui-content-secondary);
+  font-size: calc(12px * var(--ui-font-scale));
+  cursor: pointer;
+}
+
+.dimension-rating-chip:hover:not(:disabled) {
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-primary);
+}
+
+.dimension-rating-chip.is-active:not(:disabled) {
+  border-color: color-mix(in srgb, var(--accent) 72%, var(--ui-border-divider));
+  background: color-mix(in srgb, var(--accent) 24%, transparent);
+  color: var(--accent);
+  font-weight: 650;
+}
+
+.dimension-rating-chip:disabled {
+  color: var(--ui-content-tertiary);
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.dimension-filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  min-height: var(--ui-shell-chip-height);
+}
+
+.dimension-filter-dim-sep {
+  width: 1px;
+  height: 18px;
+  margin: 0 4px;
+  align-self: center;
+  background: var(--ui-border-divider);
+}
+
+.sort-mode-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sort-mode-popover {
+  width: min(220px, 60vw);
+  gap: 4px;
+  padding: 8px;
+}
+
+.sort-mode-section-label {
+  margin-top: 4px;
+  padding: 4px 8px 2px;
+  color: var(--ui-content-secondary);
+  font-size: calc(10px * var(--ui-font-scale));
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.sort-mode-section-label:first-child {
+  margin-top: 0;
+}
+
+.sort-mode-order-group .sort-mode-section-label,
+.sort-mode-field-list .sort-mode-section-label:first-of-type {
+  margin-top: 0;
+}
+
+.sort-mode-option {
+  display: block;
+  width: 100%;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: var(--ui-content-primary);
+  font-size: calc(12px * var(--ui-font-scale));
+  text-align: left;
+  cursor: pointer;
+}
+
+.sort-mode-order-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sort-mode-option:hover {
+  background: var(--ui-surface-hover);
+}
+
+.sort-mode-popover.is-keyboard-navigation .sort-mode-option:focus-visible,
+.sort-mode-option:focus-visible {
+  background: var(--ui-surface-hover);
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.sort-mode-option.is-active {
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
+}
+
+.sort-order-glyph {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  font-size: calc(13px * var(--ui-font-scale));
+  line-height: 1;
+  opacity: 0.85;
+}
+
+.dimension-active-chip {
+  display: inline-flex;
+  max-width: 100%;
+  height: var(--ui-shell-chip-height);
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ui-canvas) 80%, var(--ui-pane));
+  color: var(--ui-content-primary);
+  font-size: calc(11px * var(--ui-font-scale));
+  line-height: 1;
+  cursor: pointer;
+}
+
+.dimension-active-chip span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dimension-active-chip.is-clear-all {
+  color: var(--ui-content-secondary);
+}
+
+.dimension-active-chip:hover:not(:disabled) {
+  border-color: var(--ui-content-secondary);
+}
+
+.dimension-active-chip:disabled {
+  color: var(--ui-content-tertiary);
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.numeric-filter-range {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 5px;
+}
+
+.numeric-filter-range > span {
+  color: var(--ui-content-tertiary);
+  text-align: center;
+}
+
+.search-control,
+.scope-history-button,
+.scope-crumb-button,
+.discovery-filters > summary {
+  -webkit-app-region: no-drag;
+}
+
+.search-syntax-tip-line {
+  display: block;
+}
+
+.search-syntax-tip-line + .search-syntax-tip-line {
+  margin-top: 2px;
+}
+
+.search-syntax-tip-line:first-child {
+  margin-bottom: 5px;
+  color: var(--ui-content-primary);
+  font-weight: 620;
+}
+
+.search-syntax-tip-line strong {
+  color: var(--ui-content-primary);
+  font-weight: 650;
+}
+
+.scope-trace {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+  padding: 0;
+  font-size: calc(11px * var(--ui-font-scale));
+  color: var(--ui-content-tertiary);
+  user-select: none;
+}
+
+.scope-history {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-self: center;
+  align-items: center;
+  height: var(--ui-shell-control-height);
+  gap: 2px;
+}
+
+/* Sized to match .tool-button so the pair aligns with the other controls in
+   the browse toolbar cluster. */
+
+.scope-history-button {
+  display: grid;
+  width: var(--ui-shell-control-height);
+  height: var(--ui-shell-control-height);
+  padding: 0;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: var(--ui-content-secondary);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.scope-history-button:hover:not(:disabled) {
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-primary);
+}
+
+.scope-history-button:disabled {
+  color: var(--ui-content-tertiary);
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.scope-breadcrumbs {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  overflow: hidden;
+}
+
+.scope-crumb {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 5px;
+}
+
+.scope-sep {
+  color: var(--ui-content-tertiary);
+  font-size: calc(11px * var(--ui-font-scale));
+  user-select: none;
+}
+
+.scope-crumb-button,
+.scope-crumb-label {
+  overflow: hidden;
+  max-width: 160px;
+  height: var(--ui-shell-control-height);
+  padding: 0 4px;
+  border: 0;
+  border-radius: calc(3px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: var(--ui-content-secondary);
+  font-size: calc(11px * var(--ui-font-scale));
+  line-height: var(--ui-shell-control-height);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.scope-crumb-button {
+  cursor: pointer;
+}
+
+/* Serpent-xwi1: breadcrumb hover must use the same hover token as every other
+   clickable shell control (.nav-row, .tool-button, .scope-history-button,
+   .nav-disclosure all use --hover). Using --raised painted a solid panel
+   surface (opaque white in the light theme) under the crumb, which read as a
+   stark block inconsistent with the subtle --hover tint used everywhere else. */
+
+.scope-crumb-button:hover {
+  color: var(--ui-content-primary);
+  background: var(--ui-surface-hover);
+}
+
+.scope-crumb-label.is-current {
+  color: var(--ui-content-primary);
+  font-weight: 560;
+}
+
+.search-control-wrap {
+  position: relative;
+  display: flex;
+  flex: 0 1 360px;
+  width: min(360px, 100%);
+  min-width: 200px;
+  height: var(--ui-shell-control-height);
+  align-self: center;
+  align-items: center;
+  border: 1px solid var(--ui-border-divider);
+  color: var(--ui-content-tertiary);
+  line-height: 1;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.search-expression-error {
+  position: absolute;
+  top: calc(100% + 3px);
+  left: 0;
+  z-index: var(--ui-layer-popover, 20);
+  max-width: min(420px, 80vw);
+  padding: 5px 8px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  background: var(--ui-surface-raised-subtle);
+  color: var(--ui-status-danger);
+  font-size: 11px;
+  line-height: 1.35;
+  white-space: normal;
+}
+
+.search-control-wrap.is-semantic {
+  border-color: color-mix(in srgb, var(--accent) 38%, var(--ui-border-divider));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ui-action-accent-soft) 80%, transparent);
+}
+
+.search-control-wrap.is-semantic:focus-within,
+.search-control-wrap:focus-within {
+  border-color: color-mix(in srgb, var(--accent) 62%, var(--ui-border-divider));
+  box-shadow: 0 0 0 3px var(--ui-action-accent-soft);
+}
+
+.search-control-wrap .search-control {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  max-width: none;
+  padding: 0 56px 0 7px;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: var(--ui-content-primary);
+}
+
+.search-control-wrap.has-value .search-control {
+  padding-right: 80px;
+}
+
+.search-semantic-toggle {
+  position: absolute;
+  top: 50%;
+  right: 28px;
+  display: inline-grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--ui-border-subtle) 66%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ui-surface-raised) 54%, transparent);
+  color: var(--ui-content-tertiary);
+  cursor: pointer;
+  line-height: 1;
+  transform: translateY(-50%);
+}
+
+.search-control-wrap.has-value .search-semantic-toggle {
+  right: 52px;
+}
+
+.search-semantic-toggle:hover:not(:disabled) {
+  border-color: var(--ui-border-subtle);
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-secondary);
+}
+
+.search-semantic-toggle.is-active {
+  border-color: var(--accent);
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
+}
+
+.search-semantic-toggle.is-active:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
+}
+
+.search-semantic-toggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ui-action-accent-soft);
+}
+
+.search-semantic-toggle:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.search-syntax-help {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  display: inline-grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--ui-border-subtle) 66%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ui-surface-raised) 54%, transparent);
+  color: var(--ui-content-tertiary);
+  cursor: pointer;
+  font-family: var(--ui-font-ui);
+  font-size: calc(12px * var(--ui-font-scale));
+  font-weight: 650;
+  line-height: 1;
+  transform: translateY(-50%);
+}
+
+.search-control-wrap.has-value .search-syntax-help {
+  right: 28px;
+}
+
+.search-history-popover {
+  right: 0;
+  width: max(100%, 280px);
+  gap: 8px;
+  padding: 10px;
+}
+
+.search-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+.search-history-header span {
+  color: var(--ui-content-tertiary);
+  font-size: calc(12px * var(--ui-font-scale));
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.search-history-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 6px;
+  max-height: calc(4 * var(--ui-shell-chip-height) + 18px);
+  overflow: hidden;
+}
+
+.search-history-item {
+  display: inline-flex;
+  max-width: 100%;
+  height: var(--ui-shell-chip-height);
+  align-items: center;
+  overflow: hidden;
+  padding: 0 8px;
+  border: 1px solid var(--ui-border-subtle);
+  border-radius: var(--ui-radius-control);
+  background: transparent;
+  color: var(--ui-content-secondary);
+  cursor: pointer;
+  font-size: calc(12px * var(--ui-font-scale));
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-history-item:hover:not(.is-highlighted) {
+  border-color: var(--ui-border-subtle);
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-primary);
+}
+
+.search-history-item.is-highlighted {
+  border-color: color-mix(in srgb, var(--accent) 28%, transparent);
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
+}
+
+.search-history-clear {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ui-content-secondary);
+  cursor: pointer;
+  font-size: calc(12px * var(--ui-font-scale));
+}
+
+.search-history-clear:hover {
+  color: var(--ui-content-primary);
+}
+
+.search-syntax-help:hover {
+  border-color: color-mix(in srgb, var(--ui-border-divider) 78%, transparent);
+  background: color-mix(in srgb, var(--ui-surface-raised-subtle) 74%, transparent);
+  color: var(--ui-content-secondary);
+}
+
+.search-syntax-help:focus-visible,
+.search-clear-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ui-action-accent-soft);
+}
+
+.search-clear-btn {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  display: inline-grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border: 0;
+  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: var(--ui-content-secondary);
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.search-clear-btn:hover:not(:disabled) {
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-primary);
+}
+
+.search-clear-btn:disabled {
+  color: var(--ui-content-tertiary);
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.dimension-filter-popover.is-color-filter {
+  width: min(380px, 90vw);
+  max-height: min(560px, 72vh);
+}
+
+.dimension-color-presets {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 12px;
+  padding: 2px 2px 4px;
+}
+
+.dimension-color-presets .dimension-color-swatch {
+  flex: 0 0 22px;
+}
+
+.dimension-color-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.dimension-filter-hint {
+  margin: 6px 0 0;
+  color: var(--ui-content-tertiary);
+  font-size: calc(10px * var(--ui-font-scale));
+  line-height: 1.3;
+}
+
+.dimension-filter-btn.is-excluding:not(:disabled) {
+  border-color: var(--ui-filter-exclude-border);
+  background: var(--ui-filter-exclude-soft);
+  color: var(--ui-filter-exclude-fg);
+}
+
+.dimension-filter-btn.is-excluding.is-active:not(:disabled) {
+  border-color: var(--ui-status-danger);
+  background: var(--ui-filter-exclude-active-bg);
+  color: var(--ui-status-danger);
+}
+
+.dimension-color-swatch {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--ui-content-inverse) 22%, transparent);
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: none;
+  transition:
+    transform 100ms ease,
+    box-shadow 100ms ease,
+    outline-color 100ms ease;
+}
+
+.dimension-color-swatch.is-neutral {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ui-content-inverse) 18%, transparent);
+}
+
+/* Serpent-aj6: modest selection ring (retest: slightly thicker), no scale. */
+
+.dimension-color-swatch.is-active:not(:disabled) {
+  border-color: transparent;
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  transform: none;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ui-canvas) 80%, transparent);
+}
+
+.dimension-color-swatch:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.dimension-color-custom {
+  position: relative;
+  display: inline-flex;
+}
+
+.dimension-color-remove {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ui-surface-raised-subtle);
+  color: var(--ui-content-primary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dimension-color-add {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px dashed color-mix(in srgb, var(--ui-content-inverse) 28%, transparent);
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--ui-content-secondary);
+  cursor: pointer;
+}
+
+.dimension-color-add:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.dimension-color-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  background: var(--ui-surface-raised-subtle);
+  user-select: none;
+}
+
+.dimension-color-picker:focus {
+  outline: none;
+}
+
+.dimension-color-picker-sv {
+  position: relative;
+  width: 100%;
+  height: 148px;
+  overflow: hidden;
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  cursor: crosshair;
+}
+
+.dimension-color-picker-hue-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dimension-color-picker-preview {
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  border: 1px solid color-mix(in srgb, var(--ui-content-inverse) 22%, transparent);
+  border-radius: 999px;
+}
+
+.dimension-color-picker-hue {
+  position: relative;
+  flex: 1 1 auto;
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    hsl(0 100% 50%),
+    hsl(60 100% 50%),
+    hsl(120 100% 50%),
+    hsl(180 100% 50%),
+    hsl(240 100% 50%),
+    hsl(300 100% 50%),
+    hsl(360 100% 50%)
+  );
+  cursor: pointer;
+}
+
+.dimension-color-picker-thumb {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--ui-canvas);
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ui-content-inverse) 40%, transparent);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.dimension-color-picker-rgb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dimension-color-picker-channel {
+  display: flex;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  flex: 1 1 0;
+}
+
+.dimension-color-picker-channel input {
+  width: 100%;
+  min-width: 0;
+  height: var(--ui-size-control-sm);
+  padding: 0 6px;
+  border: 1px solid var(--ui-border-control);
+  border-radius: var(--ui-radius-control);
+  background: var(--ui-surface-raised);
+  color: var(--ui-content-primary);
+  font: inherit;
+  font-size: var(--ui-font-size-micro);
+}
+
+.dimension-color-picker-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.search-control {
+  font-size: calc(12px * var(--ui-font-scale));
+  line-height: 1.2;
+  text-align: left;
+}
+
+.search-control:focus {
+  outline: none;
+}
+
+.search-control::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+.search-control:disabled {
+  color: var(--ui-content-tertiary);
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.search-control:disabled::placeholder {
+  color: var(--ui-content-tertiary);
+}
+
+/* REQ-TAG-002: multi-tag filter picker (chips + inline suggestion sections
+   with counts). REQ-FILTER-020: this used to set `flex: 1 1 220px`, which —
+   inside the column-direction `.dimension-filter-popover` flex container —
+   forced the picker to a 220px hypothetical main size (height) regardless of
+   its actual content, leaving a large blank gap between the input and the
+   exclude checkbox below whenever the (then-floating) suggestion dropdown
+   was closed. The picker is a normal block-flow child now that the
+   suggestion list renders inline instead of overlaying, so no flex sizing
+   hint is needed here. */
+
+.filter-tag-picker {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filter-tag-expression-input {
+  display: flex;
+  align-items: center;
+  height: var(--ui-shell-control-height);
+  padding-right: 4px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+  background: var(--ui-canvas);
+}
+
+.filter-tag-expression-input:focus-within {
+  border-color: color-mix(in srgb, var(--accent) 62%, var(--ui-border-divider));
+  box-shadow: 0 0 0 3px var(--ui-action-accent-soft);
+}
+
+.filter-tag-expression-input .search-syntax-help {
+  position: static;
+  flex: 0 0 auto;
+  transform: none;
+}
+
+.filter-tag-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.filter-tag-chip {
+  display: inline-flex;
+  height: var(--ui-shell-chip-height);
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px 0 8px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: 999px;
+  background: var(--ui-surface-raised);
+  font-size: calc(11px * var(--ui-font-scale));
+  line-height: 1;
+}
+
+.filter-tag-chip.is-selected {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--ui-border-divider));
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
+}
+
+.filter-tag-chip.is-selected button,
+.filter-tag-chip.is-selected button:hover {
+  color: var(--ui-content-accent);
+}
+
+.filter-tag-chip.is-excluding {
+  border-color: var(--ui-filter-exclude-border);
+  background: var(--ui-filter-exclude-soft);
+  color: var(--ui-filter-exclude-fg);
+}
+
+.filter-tag-chip.is-excluding button,
+.filter-tag-chip.is-excluding button:hover {
+  color: var(--ui-filter-exclude-fg);
+}
+
+.filter-tag-chip button {
+  display: inline-flex;
+  padding: 2px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ui-content-secondary);
+  cursor: pointer;
+}
+
+.filter-tag-chip button:hover {
+  color: var(--ui-content-primary);
+}
+
+/* REQ-FILTER-020: default-view section wrapper (all / recently-filtered
+   tags) and section labels. The suggestion area renders inline; only the
+   complete tag collection gets its own scroll region. */
+
+.filter-tag-suggestions {
+  display: flex;
+  min-height: 0;
+  flex: 0 0 auto;
+  flex-direction: column;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.filter-tag-sort {
+  flex-wrap: wrap;
+}
+
+.filter-tag-section {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.filter-tag-recent-section {
+  flex: 0 0 auto;
+}
+
+.filter-tag-recent-options {
+  max-height: calc(var(--ui-shell-chip-height) * 2 + 8px);
+  overflow: hidden;
+}
+
+.filter-tag-all-section {
+  min-height: 0;
+  flex: 0 1 auto;
+}
+
+.filter-tag-all-scroll {
+  min-height: 0;
+  flex: 0 1 auto;
+  max-height: calc(var(--ui-shell-chip-height) * 6 + 24px);
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-gutter: stable both-edges;
+}
+
+.filter-tag-section-label {
+  padding: 0 4px;
+  color: var(--ui-content-tertiary);
+  font-size: calc(10px * var(--ui-font-scale));
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.filter-tag-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.filter-tag-options > li {
+  flex: 0 1 auto;
+  max-width: 100%;
+}
+
+.filter-tag-options button {
+  display: inline-flex;
+  max-width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 3px 8px;
+  border: 1px solid var(--ui-border-subtle);
+  border-radius: 999px;
+  background: var(--ui-pane);
+  color: var(--ui-content-primary);
+  font-size: calc(11px * var(--ui-font-scale));
+  line-height: 1.3;
+  text-align: left;
+  cursor: pointer;
+}
+
+.filter-tag-options button:hover {
+  background: var(--ui-surface-raised);
+  border-color: var(--ui-border-divider);
+}
+
+.filter-tag-options button > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filter-tag-count {
+  color: var(--ui-content-tertiary);
+  font-size: calc(10px * var(--ui-font-scale));
+}
+
+/* REQ-FILTER-009/010: dimension preset chips beside the custom range inputs. */
+
+/* FILTER-001 / Serpent-yc9n: category checkboxes + aligned chip rows. */
+
+.format-filter-popover {
+  width: min(480px, 90vw);
+  gap: 12px;
+}
+
+.format-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.format-filter-group-check {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 8px !important;
+  margin: 0;
+  font-size: calc(12px * var(--ui-font-scale));
+  font-weight: var(--ui-font-weight-medium);
+  line-height: 1.2;
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.format-filter-group-check input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.format-filter-group .filter-presets {
+  margin: 0;
+  padding-left: 24px;
+}
+
+.filter-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 2px 0 4px;
+}
+
+.filter-preset-chip {
+  display: inline-flex;
+  height: var(--ui-shell-chip-height);
+  align-items: center;
+  padding: 0 10px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ui-content-secondary);
+  font-size: calc(11px * var(--ui-font-scale));
+  line-height: 1;
+  cursor: pointer;
+}
+
+.filter-preset-chip:hover {
+  color: var(--ui-content-primary);
+  border-color: var(--ui-content-secondary);
+}
+
+.filter-preset-chip.is-active {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--ui-border-divider));
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--ui-content-primary);
+}
+
+/* Semantic search settings: tabs + install card + separate batch group. */
+
+.semantic-search-layout {
+  display: grid;
+  gap: 12px;
+}
+
+.semantic-enable-card,
+.semantic-search-card,
+.semantic-batch-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.semantic-search-card.is-dimmed {
+  opacity: 0.72;
+}
+
+.semantic-default-model-select {
+  min-width: 200px;
+  max-width: min(280px, 100%);
+}
+
+.semantic-settings-tabs {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 2px;
+  padding: 3px;
+  width: fit-content;
+  max-width: 100%;
+  border: 1px solid color-mix(in srgb, var(--ui-border-divider) 88%, transparent);
+  border-radius: calc(10px * var(--ui-radius-scale, 1));
+  background: color-mix(in srgb, var(--ui-surface-raised) 70%, var(--ui-pane));
+}
+
+.semantic-settings-tab {
+  min-width: 72px;
+  padding: 7px 14px;
+  border: 0;
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: var(--ui-content-secondary);
+  font-size: calc(12px * var(--ui-font-scale));
+  font-weight: 560;
+  cursor: pointer;
+}
+
+.semantic-settings-tab:hover:not(.is-active) {
+  color: var(--ui-content-primary);
+  background: color-mix(in srgb, var(--ui-surface-hover) 80%, transparent);
+}
+
+.semantic-settings-tab.is-active {
+  background: var(--ui-pane);
+  color: var(--ui-content-primary);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--ui-content-primary) 12%, transparent);
+}
+
+.semantic-settings-tabpanel {
+  display: grid;
+  gap: 10px;
+}
+
+.semantic-settings-toolbar {
+  align-items: center;
+  gap: 16px;
+}
+
+.semantic-custom-header {
+  align-items: flex-start;
+}
+
+.semantic-custom-header .semantic-install-icon-button {
+  flex: 0 0 auto;
+  align-self: flex-start;
+  margin-top: 1px;
+}
+
+.semantic-settings-segment {
+  flex: 0 0 auto;
+  margin-top: 0;
+  align-self: center;
+}
+
+.semantic-model-list {
+  display: grid;
+  gap: 8px;
+}
+
+.semantic-model-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--ui-border-divider) 88%, transparent);
+  border-radius: calc(10px * var(--ui-radius-scale, 1));
+  background: color-mix(in srgb, var(--ui-surface-raised) 55%, var(--ui-pane));
+}
+
+.semantic-model-card-copy {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.semantic-model-card-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.semantic-model-card-title-row strong {
+  color: var(--ui-content-primary);
+  font-size: calc(13px * var(--ui-font-scale));
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.semantic-model-card-copy > span {
+  color: var(--ui-content-secondary);
+  font-size: calc(11px * var(--ui-font-scale));
+  line-height: 1.45;
+}
+
+.semantic-model-size {
+  color: var(--ui-content-tertiary) !important;
+  font-variant-numeric: tabular-nums;
+}
+
+.semantic-model-card-action {
+  display: inline-flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-top: 0;
+}
+
+.semantic-install-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  background: var(--accent);
+  color: var(--ui-content-on-accent);
+  cursor: pointer;
+}
+
+.semantic-install-icon-button:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+
+.semantic-install-icon-button.is-secondary {
+  border-color: var(--ui-border-divider);
+  background: transparent;
+  color: var(--ui-content-primary);
+}
+
+.semantic-install-icon-button.is-secondary:hover:not(:disabled) {
+  background: var(--ui-surface-hover);
+  filter: none;
+}
+
+.semantic-install-icon-button.is-danger {
+  border-color: color-mix(in srgb, var(--ui-status-danger) 35%, var(--ui-border-divider));
+  background: transparent;
+  color: var(--ui-status-danger);
+}
+
+.semantic-install-icon-button.is-danger:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ui-status-danger) 12%, transparent);
+  filter: none;
+}
+
+.semantic-install-icon-button:disabled,
+.semantic-install-icon-button:disabled:hover {
+  opacity: 1;
+  cursor: default;
+  filter: none;
+  background: color-mix(in srgb, var(--ui-surface-raised) 82%, var(--ui-pane));
+  color: color-mix(in srgb, var(--ui-content-tertiary) 88%, var(--ui-content-secondary));
+  border-color: color-mix(in srgb, var(--ui-border-divider) 92%, transparent);
+  box-shadow: none;
+}
+
+.semantic-modality-row {
+  margin-top: 2px;
+  gap: 4px 16px;
+  justify-content: flex-start;
+}
+
+.semantic-service-url {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: calc(11px * var(--ui-font-scale)) !important;
+  color: var(--ui-content-tertiary) !important;
+}
+
+.semantic-install-progress {
+  display: grid;
+  gap: 6px;
+  margin-top: 6px;
+  padding: 10px 11px;
+  border: 1px solid color-mix(in srgb, var(--ui-border-divider) 88%, transparent);
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  background: color-mix(in srgb, var(--ui-surface-raised-subtle) 70%, var(--ui-pane));
+}
+
+.semantic-install-progress-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--ui-content-primary);
+  font-size: calc(11px * var(--ui-font-scale));
+  font-weight: 560;
+}
+
+.semantic-install-progress-bar {
+  width: 100%;
+  height: 6px;
+  accent-color: var(--accent);
+}
+
+.semantic-service-status-label {
+  color: var(--ui-content-primary);
+  font-weight: 560;
+}
+
+.semantic-service-status-reason {
+  min-width: 0;
+  max-width: 280px;
+  overflow: hidden;
+  color: var(--ui-content-tertiary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.semantic-custom-panel {
+  display: grid;
+  gap: 10px;
+}
+
+.semantic-service-form {
+  display: grid;
+  gap: 12px;
+  padding: 14px 14px 13px;
+  border: 1px solid color-mix(in srgb, var(--ui-border-divider) 88%, transparent);
+  border-radius: calc(10px * var(--ui-radius-scale, 1));
+  background: color-mix(in srgb, var(--ui-surface-raised) 55%, var(--ui-pane));
+}
+
+.semantic-service-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+@media (max-width: 560px) {
+  .semantic-settings-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .semantic-settings-segment {
+    align-self: stretch;
+  }
+
+  .semantic-settings-tabs {
+    width: 100%;
+  }
+
+  .semantic-settings-tab {
+    flex: 1 1 0;
+  }
+
+  .semantic-model-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .semantic-model-card-action {
+    justify-content: flex-end;
+  }
+}
+
+.find-similar-banner {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  margin: 8px 12px 0;
+  padding: 8px 8px 8px 10px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: calc(10px * var(--ui-radius-scale, 1));
+  background: var(--ui-surface-raised);
+  color: var(--ui-content-primary);
+}
+
+.find-similar-banner-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  border: 0;
+  border-radius: calc(8px * var(--ui-radius-scale, 1));
+  background: transparent;
+  color: var(--ui-content-primary);
+  padding: 6px 8px;
+  font: inherit;
+  font-size: calc(12px * var(--ui-font-scale));
+  cursor: pointer;
+}
+
+.find-similar-banner-back:hover {
+  background: var(--ui-surface-hover);
+}
+
+.find-similar-banner-thumb {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  object-fit: cover;
+  border-radius: calc(4px * var(--ui-radius-scale, 1));
+  background: var(--ui-surface-raised-subtle);
+}
+
+.find-similar-banner-copy {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.find-similar-banner-copy strong {
+  font-size: calc(13px * var(--ui-font-scale));
+  font-weight: 560;
+}
+
+.find-similar-banner-copy span {
+  overflow: hidden;
+  color: var(--ui-content-secondary);
+  font-size: calc(12px * var(--ui-font-scale));
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.asset-caption .search-snippet {
+  display: block;
+  overflow: hidden;
+  color: var(--ui-content-secondary);
+  line-height: 1.45;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-snippet mark {
+  border-radius: calc(2px * var(--ui-radius-scale, 1));
+  background: color-mix(in srgb, var(--ui-status-warning) 24%, transparent);
+  color: var(--ui-status-warning-content);
+}
+
+.search-text-highlight {
+  padding: 0;
+  border-radius: calc(2px * var(--ui-radius-scale, 1));
+  background: color-mix(in srgb, var(--ui-status-warning) 26%, transparent);
+  color: inherit;
+}
+
+@media (max-width: 800px) {
+
+  .scope-sep {
+    display: none;
+  }
+
+  .search-control-wrap {
+    flex-basis: 132px;
+    min-width: 132px;
+  }
+}
+
+:root[data-platform="windows"] .search-snippet {
+  /* These fields can contain localized prose, so they must not inherit the
+     technical monospace styling used for machine-oriented values. */
+  font-family: var(--ui-font-ui);
+}
+
+.dimension-filter-btn,
+.discovery-filters > summary {
+  border-radius: var(--ui-radius-control);
+}
+
+/* Search: restrained field, not pill / halo */
+
+.search-control-wrap {
+  border-radius: var(--ui-radius-control);
+  border-color: var(--ui-border-subtle);
+  background: color-mix(in srgb, var(--ui-canvas) 70%, var(--ui-surface-raised));
+  box-shadow: none;
+}
+
+.search-control-wrap:hover,
+.search-control-wrap:focus-within {
+  border-color: color-mix(in srgb, var(--ui-border-divider) 70%, var(--ui-content-primary));
+  background: var(--ui-surface-raised);
+  box-shadow: none;
+}
+
+.search-control-wrap:focus-within {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--ui-border-divider));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+/* --- Filter chips: modest rounded rects, restrained active --- */
+
+.dimension-filter-btn,
+.discovery-filters > summary {
+  border-radius: var(--ui-radius-control);
+  border-color: var(--ui-border-subtle);
+  background: transparent;
+  font-weight: 500;
+}
+
+.dimension-filter-btn:hover:not(:disabled):not(.is-active),
+.dimension-filter-btn.is-open:not(:disabled):not(.is-active),
+.discovery-filters > summary:hover {
+  border-color: var(--ui-border-subtle);
+  background: transparent;
+}
+
+.dimension-filter-btn.is-active {
+  border-color: color-mix(in srgb, var(--accent) 32%, transparent);
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
+}
+
+.search-control-wrap:hover {
+  border-color: var(--ui-border-subtle);
+  background: color-mix(in srgb, var(--ui-canvas) 70%, var(--ui-surface-raised));
+  box-shadow: none;
+}
+
+.dimension-filter-btn,
+.discovery-filters > summary {
+  border-radius: var(--ui-radius-control);
+}
+
+.dimension-filter-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
+.dimension-filter-btn,
+.discovery-filters > summary {
+  min-height: 28px;
+  padding-inline: 10px;
+}
+
+.app-shell.app-shell .search-control-wrap {
+  height: var(--ui-shell-control-height);
+  align-self: center;
+}
+
+.app-shell.app-shell .scope-history-button {
+  align-self: center;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.app-shell.app-shell .workspace-title .scope-crumb-label.is-current {
+  letter-spacing: -0.02em;
+}
+
+.app-shell.app-shell .dimension-filter-btn {
+  padding: 0 11px;
+  border: none;
+  background: transparent;
+  color: var(--ui-content-secondary);
+  font-weight: 450;
+}
+
+.app-shell.app-shell .dimension-filter-btn:hover:not(:disabled) {
+  background: var(--island-segment-hover);
+  color: var(--ui-content-primary);
+}
+
+.app-shell.app-shell .dimension-filter-btn[aria-pressed="true"] {
+  background: var(--island-segment-pill);
+  color: var(--ui-content-primary);
+  font-weight: 510;
+  box-shadow: var(--island-segment-pill-shadow);
+}
+
+.app-shell.app-shell .dimension-active-chip:not(.is-clear-all) {
+  gap: 5px;
+  min-height: 22px;
+  padding: 0 8px 0 9px;
+  border: 0;
+  font-size: calc(11.5px * var(--ui-font-scale));
+  font-weight: 480;
+  line-height: 22px;
+  letter-spacing: -0.005em;
+}
+
+.app-shell.app-shell .dimension-active-chip:not(.is-clear-all):hover {
+  background: color-mix(in srgb, var(--ui-content-primary) 9%, transparent);
+}
+
+/* ---- a18: workspace tabs fuse with the toolstrip; icon-only filter segments ---- */
+
+/* The active tab + its scoops paint var(--ui-canvas); rebinding it on the tab
+   (not self-referential: value comes from the island token) makes tab, scoops
+   and toolstrip one continuous surface in both themes. */
+
+.app-shell.app-shell .dimension-filter-dims .dimension-filter-btn {
+  padding: 0;
+  gap: 0;
+}
+
+.app-shell.app-shell .dimension-filter-dims .dimension-filter-btn-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* .workspace-tabs-list scrolls horizontally (overflow-x:auto ⇒ y clips), which
+   cut off the active tab's 1px overlap; extend its box by that 1px. */
+
+/* Sort trigger keeps its text (it shows the current sort key). */
+
+.app-shell.app-shell .dimension-filter-dims .sort-mode-control .dimension-filter-btn {
+  width: auto;
+  min-width: 0;
+}
+
+/* Active workspace-tab glyph: soft secondary, not accent. */
+
+/* Filter summary chip ("标签 · …"): neutral pill, not accent wash. */
+
+:root[data-theme="dark"] .app-shell.app-shell .dimension-active-chip:not(.is-clear-all) {
+  background: color-mix(in srgb, white 8%, transparent);
+  color: var(--ui-content-secondary);
+}
+
+/* Secondary focus: soft hairline, not accent ring. */
+
+.app-shell.app-shell .dimension-filter-btn:focus-visible:not(.is-active),
+.app-shell.app-shell .search-control-wrap:focus-within {
+  outline: none;
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--ui-content-primary) 18%, transparent);
+}
+
+.app-shell.app-shell .dimension-active-chip:not(.is-clear-all) {
+  background: var(--island-surface-soft);
+  color: var(--ui-content-secondary);
+  box-shadow: none;
+}
+
+.app-shell.app-shell .workspace-title .scope-crumb-label.is-current {
+  font-size: calc(13px * var(--ui-font-scale));
+  font-weight: 600;
+}
+
+.app-shell.app-shell .dimension-filter-dims {
+  gap: 1px;
+  padding: 2px;
+  border-radius: calc(7px * var(--ui-radius-scale, 1));
+  background: var(--island-segment-track);
+  box-shadow: none;
+}
+
+.app-shell.app-shell .dimension-filter-btn {
+  min-height: 24px;
+  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  font-size: calc(11px * var(--ui-font-scale));
+  box-shadow: none;
+}
+
+.app-shell.app-shell .dimension-filter-dims .dimension-filter-btn {
+  justify-content: center;
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+}
+
+/* Applied filter: LOUD accent — the rare splash */
+
+.app-shell.app-shell .dimension-filter-btn.is-active:not(:disabled),
+.app-shell.app-shell .dimension-filter-btn.is-active[aria-pressed="true"] {
+  background: var(--island-accent-loud);
+  color: var(--ui-content-inverse);
+  font-weight: 600;
+  box-shadow: none;
+}
+
+:root[data-theme="dark"] .app-shell.app-shell .dimension-filter-btn.is-active:not(:disabled) {
+  background: var(--island-accent-loud);
+  color: var(--ui-content-inverse);
+}
+
+/* Pressed open filter (not applied): neutral pill */
+
+.app-shell.app-shell .dimension-filter-btn[aria-pressed="true"]:not(.is-active) {
+  background: var(--island-segment-pill);
+  color: var(--ui-content-primary);
+  box-shadow: inset 0 0 0 1px var(--ui-island-hairline);
+}
+
+.app-shell.app-shell .dimension-active-chip:not(.is-clear-all) {
+  background: var(--island-surface-soft);
+  color: var(--ui-content-secondary);
+  box-shadow: none;
+}
+
+.app-shell.app-shell .dimension-active-chip:not(.is-clear-all) {
+  border: var(--island-hairline-w) solid var(--ui-island-hairline);
+  border-radius: calc(6px * var(--ui-radius-scale, 1));
+}
+
+.app-shell.app-shell .filter-tag-chip {
+  --tag-hairline: 28%;
+  --tag-hairline-hover: 36%;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 var(--tag-tip-w) 0 8px;
+  height: 22px;
+  min-height: 22px;
+  line-height: 1;
+}
+
+.app-shell.app-shell .filter-tag-chip::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--tag-chip-fill);
+  z-index: 0;
+}
+
+.app-shell.app-shell .filter-tag-chip::after {
+  content: none;
+}
+
+.app-shell.app-shell .filter-tag-chip {
+  height: var(--ui-shell-chip-height);
+  color: var(--ui-content-secondary);
+}
+
+.app-shell.app-shell .filter-tag-chip button {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: -4px;
+  line-height: 0;
+  transform: translateY(-0.5px);
+}
+
+.app-shell.app-shell .filter-tag-chip.is-selected {
+  color: color-mix(in srgb, var(--accent) 55%, var(--ui-content-primary));
+}
+
+:root[data-theme="dark"] .app-shell.app-shell .filter-tag-chip.is-selected {
+  color: color-mix(in srgb, var(--accent) 45%, white);
+}
+
+.app-shell.app-shell .dimension-rating-chip.is-active:not(:disabled) {
+  border-color: color-mix(in srgb, var(--accent) 75%, transparent);
+  background: color-mix(in srgb, var(--accent) 26%, transparent);
+  color: var(--accent);
+  font-weight: 650;
+}
+
+.app-shell.app-shell .filter-tag-expression-input,
+.app-shell.app-shell .search-control-wrap,
+.app-shell.app-shell .dimension-filter-popover,
+.app-shell.app-shell .filter-preset-chip:not(.is-active),
+.app-shell.app-shell .dimension-active-chip:not(.is-clear-all) {
+  border-color: var(--ui-island-hairline);
+}
+
+.app-shell.app-shell .filter-tag-expression-input:focus-within,
+.app-shell.app-shell .search-control-wrap:focus-within {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--ui-island-hairline));
+}
+
+/* ==== a75: filter wrap, create-lib radii, quieter sort, card truncate/title,
+   browser padding, selected hover, card top flush, restore card type sizes ===
+   Keep a70 accents, a72 borders, a65–a67 tags. */
+
+/* 1) Filter chips wrap within their own row (row pin is a79) */
+
+.app-shell.app-shell .dimension-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  min-width: 0;
+}
+
+.app-shell.app-shell .dimension-filter-dims {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* 3) Sort: quieter than full accent filter highlight */
+
+.app-shell.app-shell .sort-mode-control .dimension-filter-btn.is-active:not(:disabled),
+.app-shell.app-shell .sort-mode-control .dimension-filter-btn.is-active[aria-pressed="true"] {
+  background: var(--island-pressed-wash);
+  color: var(--ui-content-primary);
+  font-weight: 510;
+  box-shadow: none;
+}
+
+:root[data-theme="dark"] .app-shell.app-shell .sort-mode-control .dimension-filter-btn.is-active:not(:disabled) {
+  background: var(--island-pressed-wash);
+  color: var(--ui-content-primary);
+}
+
+.app-shell.app-shell .sort-mode-option.is-active {
+  background: var(--island-pressed-wash);
+  color: var(--ui-content-primary);
+}
+
+/* ==== a81: sort trigger matches icon-button height ========================
+   It read as tall as the whole filter row. Pin it to the same 24px rhythm as
+   the icon buttons and never stretch; quiet (no fill unless hover/active). */
+
+.app-shell.app-shell .dimension-filter-dims .sort-mode-control,
+.app-shell.app-shell .dimension-filter-dims .sort-mode-control .dimension-filter-dim {
+  align-self: center;
+  height: auto;
+}
+
+.app-shell.app-shell .dimension-filter-dims .sort-mode-control .dimension-filter-btn {
+  align-self: center;
+  box-sizing: border-box;
+  height: 24px;
+  min-height: 24px;
+  max-height: 24px;
+  padding: 0 8px 0 6px;
+  gap: 4px;
+  border-radius: calc(5px * var(--ui-radius-scale, 1));
+  line-height: 1;
+}
+
+.app-shell.app-shell .dimension-filter-dims .sort-mode-control .sort-order-glyph {
+  opacity: 1;
+}
+
+.app-shell.app-shell .filter-tag-chip {
+  --tag-tip-w: 16px;
+  --tag-base: white;
+  --tag-neutral: color-mix(in oklab, black 55%, white);
+  --tag-fill-tint: 9%;
+  --tag-fill-tint-hover: 13%;
+  --tag-fill-solid: color-mix(
+    in oklab,
+    var(--tag-chip-color, var(--tag-neutral)) var(--tag-fill-tint),
+    var(--tag-base)
+  );
+  --tag-chip-fill: var(--tag-fill-solid);
+  filter: drop-shadow(0 0 0.5px rgb(0 0 0 / 22%));
+}
+
+.app-shell.app-shell .filter-tag-chip {
+  --tag-fill-solid: color-mix(in oklab, var(--tag-neutral) var(--tag-fill-tint), var(--tag-base));
+}
+
+.app-shell.app-shell .filter-tag-chip.is-selected {
+  --tag-fill-solid: color-mix(in oklab, var(--accent) 11%, var(--tag-base));
+}
+
+.app-shell.app-shell .filter-tag-chip.is-excluding {
+  --tag-fill-solid: color-mix(in oklab, var(--ui-status-danger) 16%, var(--tag-base));
+  color: var(--ui-filter-exclude-fg);
+}
+
+:root[data-theme="dark"] .app-shell.app-shell .filter-tag-chip {
+  --tag-hairline: 10%;
+  --tag-hairline-hover: 15%;
+  --tag-base: var(--island-surface-soft);
+  --tag-neutral: color-mix(in oklab, white 70%, black);
+  --tag-fill-tint: 4%;
+  --tag-fill-tint-hover: 7%;
+  --tag-chip-fill: color-mix(in oklab, var(--tag-fill-solid) 78%, transparent);
+  filter: drop-shadow(0 0 0.5px rgb(255 255 255 / 12%));
+}
+
+:root[data-theme="dark"] .app-shell.app-shell .filter-tag-chip.is-selected {
+  --tag-fill-solid: color-mix(in oklab, var(--accent) 16%, var(--tag-base));
+}
+
+:root[data-theme="dark"] .app-shell.app-shell .filter-tag-chip.is-excluding {
+  --tag-fill-solid: color-mix(in oklab, var(--ui-status-danger) 22%, var(--tag-base));
+  color: var(--ui-filter-exclude-fg);
+}
+
+.app-shell.app-shell .filter-tag-chip::before {
+  pointer-events: none;
+  -webkit-mask-box-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2780%27%20height%3D%2722%27%20viewBox%3D%270%200%2080%2022%27%3E%3Cpath%20fill%3D%27black%27%20d%3D%27M6%200H66.35A6%206%200%200%201%2070.79%201.96L77.47%209.32A2.5%202.5%200%200%201%2077.47%2012.68L70.79%2020.04A6%206%200%200%201%2066.35%2022H6A6%206%200%200%201%200%2016V6A6%206%200%200%201%206%200Z%27%2F%3E%3C%2Fsvg%3E") 0 16 0 6 fill / 0 var(--tag-tip-w) 0 6px / 0 stretch;
+  mask-border: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2780%27%20height%3D%2722%27%20viewBox%3D%270%200%2080%2022%27%3E%3Cpath%20fill%3D%27black%27%20d%3D%27M6%200H66.35A6%206%200%200%201%2070.79%201.96L77.47%209.32A2.5%202.5%200%200%201%2077.47%2012.68L70.79%2020.04A6%206%200%200%201%2066.35%2022H6A6%206%200%200%201%200%2016V6A6%206%200%200%201%206%200Z%27%2F%3E%3C%2Fsvg%3E") 0 16 0 6 fill / 0 var(--tag-tip-w) 0 6px / 0 stretch;
+}
+
+.app-shell .dimension-filter-bar .dimension-filter-dims .dimension-filter-btn { min-width: 34px; min-height: 34px; }
+
+.dimension-filter-more-section { grid-column: 1 / -1; min-width: 0; }
+
+.dimension-filter-more-section > summary { padding: 10px 0; font-weight: 600; cursor: pointer; }

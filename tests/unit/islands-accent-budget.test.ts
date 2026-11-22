@@ -59,14 +59,11 @@ describe("islands accent budget + Codex transfer tokens (a27/a28)", () => {
   });
 
   it("routes canvas-controls pressed state through pressed-wash", () => {
-    expect(a27).toMatch(/\.canvas-controls \.tool-button\[aria-pressed="true"\]/);
-    expect(a27).toMatch(/var\(--island-pressed-wash\)/);
-    const pressedIdx = a27.indexOf(
-      '.canvas-controls .tool-button[aria-pressed="true"]',
+    // The rule that styles the pressed canvas control paints the pressed wash.
+    const rule = [...css.matchAll(/([^{}]*)\{([^}]*)\}/g)].find(
+      (match) => match[1]!.includes('.canvas-controls .tool-button[aria-pressed="true"]') && match[2]!.includes("var(--island-pressed-wash)"),
     );
-    const washIdx = a27.indexOf("var(--island-pressed-wash)", pressedIdx);
-    expect(washIdx).toBeGreaterThan(pressedIdx);
-    expect(washIdx - pressedIdx).toBeLessThan(900);
+    expect(rule).toBeDefined();
   });
 
   it("paints islands primary CTAs with content ink, not action accent fill", () => {
