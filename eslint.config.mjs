@@ -55,11 +55,11 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'error',
     },
   },
-  // P4: splitting AppInner lets the React Compiler rules analyze code they
-  // skipped while the component was one 15k-line function. The ref reads,
-  // late function reads in effects and Date.now calls they report are
-  // pre-existing; they are fixed as the hooks become
-  // components. Remove this override when P4 ends.
+  // The app/ hooks keep "latest value" refs that are written during render
+  // (about 55 places, see docs/进度.md 2026-11-22). Moving those writes into
+  // effects changes when other effects see the new value; a change of that
+  // kind caused the P3 restore regression. The React Compiler does not build
+  // this code, so these advisory rules stay off here.
   {
     files: ['src/renderer/App.tsx', 'src/renderer/app/**/*.{ts,tsx}'],
     rules: {
