@@ -1,3 +1,4 @@
+import { navigationFields } from "../stores/navigation-store";
 import { isMacPlatform, type CommandPlatform } from "../workbench/menu/command-types";
 import { usesWindowsStyleShell } from "../renderer-platform";
 import { type KeelLibraryApi } from "../../shared/library-api";
@@ -260,4 +261,16 @@ export function highlightSnippet(value: string): ReactNode {
       <span key={index}>{segment}</span>
     );
   });
+}
+
+// A view of the navigation store; stable across renders.
+export const folderRecursiveRef = navigationFields.ref("folderRecursive");
+
+/**
+ * Pass a function that AppInner declares further down (P4 hook extraction).
+ * Function declarations were hoisted before; after extraction they become
+ * hook results, so callers get a forwarder that resolves the function on call.
+ */
+export function late<F extends (...args: never[]) => unknown>(get: () => F): F {
+  return ((...args: Parameters<F>) => get()(...args)) as F;
 }
