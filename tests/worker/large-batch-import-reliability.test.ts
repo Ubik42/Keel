@@ -7,6 +7,9 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { isImportCompletion, isImportConflictPlan } from '../../src/shared/import-outcome';
 import { LibraryService } from '../../src/worker/library-service';
 
+// Stress test: run with KEEL_STRESS=1 before a release (docs/进度.md P2).
+const STRESS = process.env.KEEL_STRESS === '1';
+
 const temporaryRoots: string[] = [];
 const LARGE_BATCH_COUNT = Number.parseInt(process.env.KEEL_LARGE_BATCH_COUNT ?? '50000', 10);
 
@@ -26,7 +29,7 @@ afterEach(() => {
   }
 }, 180_000);
 
-describe('large-batch import reliability', () => {
+describe.skipIf(!STRESS)('large-batch import reliability', () => {
   it(`imports ${LARGE_BATCH_COUNT} tiny files then tag and trash them`, () => {
     expect(Number.isSafeInteger(LARGE_BATCH_COUNT) && LARGE_BATCH_COUNT > 900).toBe(true);
     const root = temporaryRoot();

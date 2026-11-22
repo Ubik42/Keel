@@ -8,6 +8,9 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import { LibraryService } from '../../src/worker/library-service';
 
+// Stress test: run with KEEL_STRESS=1 before a release (docs/进度.md P2).
+const STRESS = process.env.KEEL_STRESS === '1';
+
 /** Perf-log 的 tmpdir 在 CI runner 上可能不存在（TEMP 指向被清理/未创建的
  * 目录，如 D:\tmp）；writeFileSync 不创建父目录会 ENOENT。先确保目录存在。 */
 function appendPerfLog(line: string): void {
@@ -269,6 +272,7 @@ function seedAssetsAndFiles(libraryPath: string, folderName: string, folderId: s
 // ── Setup / Teardown ─────────────────────────────────────────────────────
 
 beforeAll(() => {
+  if (!STRESS) return;
   const root = mkdtempSync(path.join(tmpdir(), 'serpent-soak-export-import-'));
   const noObservers = () => ({ close() {} });
   const service = new LibraryService({ observerFactory: noObservers });
@@ -578,7 +582,7 @@ function verifyRoundTripIntegrity(
 
 // ── Tests ────────────────────────────────────────────────────────────────
 
-describe('Library import/export soak (20k assets)', () => {
+describe.skipIf(!STRESS)('Library import/export soak (20k assets)', () => {
   it(
     'folder export/import round-trip preserves counts and sampled asset data, and tags',
     async () => {
