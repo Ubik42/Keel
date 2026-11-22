@@ -321,6 +321,7 @@ import { AppSettingsEntry } from "./AppSettingsEntry";
 import type { AppSettingsCategoryId } from "./app-settings-sections";
 import type { AiUiPreferences } from "./ai-ui-preferences";
 import { usePrefsStore } from "./stores/prefs-store";
+import { useDialogField } from "./stores/dialogs-store";
 import {
   imageSequenceImportFlags,
 } from "./image-sequence-preferences";
@@ -886,11 +887,7 @@ function AppInner() {
     name: string;
     rules: LinkedFolderRule[];
   } | null>(null);
-  const [convertLinkedDialog, setConvertLinkedDialog] = useState<{
-    folderId: string;
-    name: string;
-    targetFolderId: string;
-  }>({ folderId: "", name: "", targetFolderId: "" });
+  const [convertLinkedDialog, setConvertLinkedDialog] = useDialogField("convertLinkedDialog");
   const [assets, setAssets] = useState<AssetSummary[]>([]);
   const [findSimilarSource, setFindSimilarSource] = useState<FindSimilarSource | null>(null);
   const findSimilarTokenRef = useRef(0);
@@ -936,8 +933,8 @@ function AppInner() {
   >(null);
   const [masonryGridWidth, setMasonryGridWidth] = useState(0);
   const assetGridRef = useRef<HTMLDivElement | null>(null);
-  const [fatalDialogTitle, setFatalDialogTitle] = useState<string | null>(null);
-  const [fatalAlertAlreadyOpen, setFatalAlertAlreadyOpen] = useState(false);
+  const [fatalDialogTitle, setFatalDialogTitle] = useDialogField("fatalDialogTitle");
+  const [fatalAlertAlreadyOpen, setFatalAlertAlreadyOpen] = useDialogField("fatalAlertAlreadyOpen");
   const pendingAlreadyOpenPathRef = useRef<string | null>(null);
   const [selectedFolderIds, setSelectedFolderIds] = useState<string[]>([]);
   const managedImportTargetFolderIdRef = useRef<string | undefined>(undefined);
@@ -1351,7 +1348,7 @@ function AppInner() {
     libraryId: string;
     queries: string[];
   } | null>(null);
-  const [searchHistoryOpen, setSearchHistoryOpen] = useState(false);
+  const [searchHistoryOpen, setSearchHistoryOpen] = useDialogField("searchHistoryOpen");
   const searchHistoryDismissedUntilInputRef = useRef(false);
   const [searchHistoryActiveIndex, setSearchHistoryActiveIndex] = useState(-1);
   const searchHistoryLibraryId = library?.libraryId ?? null;
@@ -1660,17 +1657,8 @@ function AppInner() {
     () => undefined,
   );
 
-  const [restoreDialog, setRestoreDialog] = useState<{
-    assetIds: string[];
-    target: "original" | "root" | string;
-    conflictStrategy: "keep-both" | "replace" | "skip";
-  } | null>(null);
-  const [moveDialog, setMoveDialog] = useState<{
-    assetIds: string[];
-    folderIds: string[];
-    targetFolderId: string | null;
-    conflictStrategy: "keep-both" | "replace" | "skip";
-  } | null>(null);
+  const [restoreDialog, setRestoreDialog] = useDialogField("restoreDialog");
+  const [moveDialog, setMoveDialog] = useDialogField("moveDialog");
   const [operationHistory, setOperationHistory] = useState<HistoryStatus | null>(null);
   const [editableTextFocused, setEditableTextFocused] = useState(false);
   useEffect(() => {
@@ -1714,15 +1702,7 @@ function AppInner() {
     }, 0);
     return () => window.clearTimeout(refreshTimer);
   }, [refreshOperationHistory]);
-  const [imageSequenceDialog, setImageSequenceDialog] = useState<{
-    assetIds: string[];
-    mode: "create" | "update";
-    sequenceId?: string;
-    frameCount?: number;
-    fps: number;
-    submitting: boolean;
-    error: string | null;
-  } | null>(null);
+  const [imageSequenceDialog, setImageSequenceDialog] = useDialogField("imageSequenceDialog");
   const [batchRelinkPreview, setBatchRelinkPreview] =
     useState<BatchRelinkPreviewSession | null>(null);
   const [batchRelinkKeepMetadata, setBatchRelinkKeepMetadata] = useState(true);
@@ -1786,9 +1766,8 @@ function AppInner() {
   const [libraryTransferName, setLibraryTransferName] = useState("");
 
   // REQ-PREF-001: browse-area general settings panel (theme/language/canvas).
-  const [appSettingsOpen, setAppSettingsOpen] = useState(false);
-  const [appSettingsCategory, setAppSettingsCategory] =
-    useState<AppSettingsCategoryId>("general");
+  const [appSettingsOpen, setAppSettingsOpen] = useDialogField("appSettingsOpen");
+  const [appSettingsCategory, setAppSettingsCategory] = useDialogField("appSettingsCategory");
   const [pluginContributionEpoch, setPluginContributionEpoch] = useState(0);
   const pluginContributionRefreshKey = `${appSettingsOpen ? "settings" : "browse"}:${pluginContributionEpoch}`;
   const pluginSidebarRefreshKey = pluginContributionRefreshKey;
@@ -1811,16 +1790,16 @@ function AppInner() {
     [activePluginSidebarViewId, pluginSidebarViews],
   );
   const showPluginSidebarView = activePluginSidebarView !== undefined;
-  const [appLogOpen, setAppLogOpen] = useState(false);
+  const [appLogOpen, setAppLogOpen] = useDialogField("appLogOpen");
   const [libraryRecoveryDialogOpen, setLibraryRecoveryDialogOpen] =
     useState(false);
-  const [automaticTasksOpen, setAutomaticTasksOpen] = useState(false);
+  const [automaticTasksOpen, setAutomaticTasksOpen] = useDialogField("automaticTasksOpen");
   const [automaticTaskEditorId,setAutomaticTaskEditorId]=useState<string|null|undefined>(undefined);
-  const [scriptSandboxPreviewOpen, setScriptSandboxPreviewOpen] = useState(false);
-  const [aboutOpen, setAboutOpen] = useState(false);
-  const [openSourceLicensesOpen, setOpenSourceLicensesOpen] = useState(false);
-  const [librarySettingsOpen, setLibrarySettingsOpen] = useState(false);
-  const [openSyncLibraryOpen, setOpenSyncLibraryOpen] = useState(false);
+  const [scriptSandboxPreviewOpen, setScriptSandboxPreviewOpen] = useDialogField("scriptSandboxPreviewOpen");
+  const [aboutOpen, setAboutOpen] = useDialogField("aboutOpen");
+  const [openSourceLicensesOpen, setOpenSourceLicensesOpen] = useDialogField("openSourceLicensesOpen");
+  const [librarySettingsOpen, setLibrarySettingsOpen] = useDialogField("librarySettingsOpen");
+  const [openSyncLibraryOpen, setOpenSyncLibraryOpen] = useDialogField("openSyncLibraryOpen");
   const [gitignoreContent, setGitignoreContent] = useState("");
   /** 同步传输进度（手动/自动），供资源库设置同步页显示进度条与速度。 */
   const [syncProgress, setSyncProgress] = useState<SyncProgressEvent | null>(null);
@@ -2267,10 +2246,10 @@ function AppInner() {
   const setAiUiPrefs = usePrefsStore((state) => state.setAiUi);
   const [importValidated, setImportValidated] =
     useState<ImportValidatedResult | null>(null);
-  const [exportDialogOpen, setExportDialogOpen] = useState(false);
+  const [exportDialogOpen, setExportDialogOpen] = useDialogField("exportDialogOpen");
   const [importLibraryChooserOpen, setImportLibraryChooserOpen] =
     useState(false);
-  const [openLibraryChooserOpen, setOpenLibraryChooserOpen] = useState(false);
+  const [openLibraryChooserOpen, setOpenLibraryChooserOpen] = useDialogField("openLibraryChooserOpen");
 
   // Thumbnail / Preview state
   const [previewAsset, setPreviewAsset] = useState<AssetSummary | null>(null);
@@ -2681,11 +2660,11 @@ function AppInner() {
     window.addEventListener("keydown", handleDragCancel);
     return () => window.removeEventListener("keydown", handleDragCancel);
   }, []);
-  const [pluginUiDialogOpen, setPluginUiDialogOpen] = useState(false);
+  const [pluginUiDialogOpen, setPluginUiDialogOpen] = useDialogField("pluginUiDialogOpen");
   const [thumbnailFailures, setThumbnailFailures] = useState<
     Map<string, string>
   >(new Map());
-  const [mediaJobsOpen, setMediaJobsOpen] = useState(false);
+  const [mediaJobsOpen, setMediaJobsOpen] = useDialogField("mediaJobsOpen");
   const mediaJobsOpenRef = useRef(false);
   const loadMediaJobsRef = useRef<(quiet?: boolean) => Promise<void>>(async () => undefined);
   const [mediaJobs, setMediaJobs] = useState<MediaJobStatus | null>(null);
