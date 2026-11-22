@@ -137,6 +137,8 @@ export const zhCN = {
     mainMenuSettings: "设置",
     mainMenuUndo: "撤销上次操作",
     mainMenuUndoCount: "撤回操作（{count} 项）",
+    mainMenuUndoRule: "撤回规则“{rule}”（{count} 项）",
+    mainMenuRedoRule: "重做规则“{rule}”（{count} 项）",
     mainMenuRedo: "重做",
     mainMenuRedoCount: "重做操作（{count} 项）",
     mainMenuCut: "剪切",

@@ -6777,6 +6777,8 @@ export class LibraryService {
    * history-group handshake from invalidating an approved file-operation plan.
    */
   readonly openOperationHistoryGroups = new Map<string, string>();
+  /** Rule that owns an open history group, keyed by history entry id. */
+  readonly openOperationHistoryGroupRules = new Map<string, { ruleId: string; name: string; version: string }>();
   /** Prevent a replayed history recipe from creating a second history entry. */
   historyReplayDepth = 0;
   /** User-scoped disposable read snapshots for network libraries. */

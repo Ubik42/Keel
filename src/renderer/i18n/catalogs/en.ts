@@ -149,6 +149,8 @@ export const en = {
     mainMenuSettings: "Settings",
     mainMenuUndo: "Undo last operation",
     mainMenuUndoCount: "Undo operation ({count} items)",
+    mainMenuUndoRule: "Undo rule “{rule}” ({count} items)",
+    mainMenuRedoRule: "Redo rule “{rule}” ({count} items)",
     mainMenuRedo: "Redo",
     mainMenuRedoCount: "Redo operation ({count} items)",
     mainMenuCut: "Cut",

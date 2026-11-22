@@ -1591,6 +1591,12 @@ export const workerCommandSchema = z.discriminatedUnion('type', [
   z.strictObject({
     type: z.literal('history.group.begin'),
     libraryId: identifierSchema,
+    /** Set when a rule runs the script; the entry is labeled with the rule. */
+    rule: z.strictObject({
+      ruleId: identifierSchema,
+      name: z.string().trim().min(1).max(120),
+      version: z.string().min(1).max(128),
+    }).optional(),
   }),
   z.strictObject({
     type: z.literal('history.group.complete'),

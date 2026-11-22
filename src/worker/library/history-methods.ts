@@ -591,6 +591,7 @@ export function beginOperationHistoryGroup(this: LibraryService, input: {
     libraryId: string;
     source: HistorySource;
     sourceReference: string;
+    rule?: { ruleId: string; name: string; version: string };
   }): HistoryOperationReceipt {
   const openLibrary = this.requireOpenLibrary(input.libraryId);
   const key = this.operationHistoryGroupKey(input.libraryId, input.source, input.sourceReference);
@@ -608,6 +609,7 @@ export function beginOperationHistoryGroup(this: LibraryService, input: {
   }
   const historyEntryId = randomUUID();
   this.openOperationHistoryGroups.set(key, historyEntryId);
+  if (input.rule) this.openOperationHistoryGroupRules.set(historyEntryId, input.rule);
   return { historyEntryId, undoable: false, redoable: false, policy: 'reversible' };
 }
 
@@ -625,6 +627,7 @@ export function appendOperationHistoryGroupStep(this: LibraryService, input: {
   }
   const updatedAt = new Date().toISOString();
   const affectedEntities = input.input.affectedEntities ?? [];
+  const rule = this.openOperationHistoryGroupRules.get(input.historyEntryId);
   openLibrary.connection.transaction(() => {
     const row = openLibrary.connection.prepare(
       "SELECT source, source_reference, state FROM operation_history WHERE history_entry_id = ?",
@@ -650,12 +653,15 @@ export function appendOperationHistoryGroupStep(this: LibraryService, input: {
            (history_entry_id, source, source_reference, label_key, label_args_json,
             policy, state, applied_sequence, redo_sequence, stale_code,
             affected_count, created_at, updated_at)
-         VALUES (?, ?, ?, 'history.automation.script', ?, 'reversible', 'open', ?, 0, NULL, 0, ?, ?)`,
+         VALUES (?, ?, ?, ?, ?, 'reversible', 'open', ?, 0, NULL, 0, ?, ?)`,
       ).run(
         input.historyEntryId,
         expectedSource,
         expectedSourceReference,
-        JSON.stringify({ commands: 0 }),
+        rule ? 'history.rule.run' : 'history.automation.script',
+        JSON.stringify(rule
+          ? { commands: 0, rule: rule.name, ruleId: rule.ruleId, ruleVersion: rule.version.slice(0, 12) }
+          : { commands: 0 }),
         appliedSequence,
         updatedAt,
         updatedAt,
@@ -686,11 +692,11 @@ export function appendOperationHistoryGroupStep(this: LibraryService, input: {
     openLibrary.connection.prepare(
       `UPDATE operation_history
           SET affected_count = affected_count + ?,
-              label_args_json = ?, updated_at = ?
+              label_args_json = json_set(label_args_json, '$.commands', ?), updated_at = ?
         WHERE history_entry_id = ?`,
     ).run(
       input.input.affectedCount,
-      JSON.stringify({ commands: step.ordinal + 2 }),
+      step.ordinal + 2,
       updatedAt,
       input.historyEntryId,
     );
@@ -852,6 +858,7 @@ export function completeOperationHistoryGroup(this: LibraryService, libraryId: s
   for (const [key, id] of this.openOperationHistoryGroups) {
     if (id === historyEntryId) this.openOperationHistoryGroups.delete(key);
   }
+  this.openOperationHistoryGroupRules.delete(historyEntryId);
   const status = this.getOperationHistoryStatus(libraryId);
   return {
     historyEntryId,
@@ -869,6 +876,7 @@ export function discardOperationHistoryGroup(this: LibraryService, libraryId: st
   for (const [key, id] of this.openOperationHistoryGroups) {
     if (id === historyEntryId) this.openOperationHistoryGroups.delete(key);
   }
+  this.openOperationHistoryGroupRules.delete(historyEntryId);
 }
 
 export function markOperationHistoryGroupStale(this: LibraryService, libraryId: string, historyEntryId: string, staleCode: string): void {

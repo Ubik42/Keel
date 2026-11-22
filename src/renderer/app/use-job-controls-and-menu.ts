@@ -1,6 +1,7 @@
 import type { Dispatch, RefObject, SetStateAction } from "react";
 import type { KeelLibraryApi } from "../../shared/library-api";
 import type { TranslateFn } from "../i18n/LocaleProvider";
+import type { HistoryEntrySummary } from "../../shared/protocol/responses";
 import type { AppLocale } from "../i18n/types";
 import type { BrowsePasteDestination } from "../browse-paste-target";
 import type { KeelShellApi } from "../../shared/external-url";
@@ -167,12 +168,8 @@ export function useJobControlsAndMenu({ api, library, setError, t, locale, aiBat
         || (operationHistory?.undoTop !== null && operationHistory?.undoTop !== undefined),
       hasRedoableOperation: editableTextFocused
         || (operationHistory?.redoTop !== null && operationHistory?.redoTop !== undefined),
-      undoLabel: operationHistory?.undoTop === null || operationHistory?.undoTop === undefined
-        ? undefined
-        : t("shell.mainMenuUndoCount", { count: operationHistory.undoTop.affectedCount }),
-      redoLabel: operationHistory?.redoTop === null || operationHistory?.redoTop === undefined
-        ? undefined
-        : t("shell.mainMenuRedoCount", { count: operationHistory.redoTop.affectedCount }),
+      undoLabel: historyMenuLabel(operationHistory?.undoTop, "undo", t),
+      redoLabel: historyMenuLabel(operationHistory?.redoTop, "redo", t),
       hasSelectedAssets: selectedAssetIds.length > 0,
       hasPasteTarget: browsePasteDestination !== undefined,
       hasBrowseAssets: browseScopeAssetIds.length > 0,
@@ -455,4 +452,18 @@ export function useJobControlsAndMenu({ api, library, setError, t, locale, aiBat
   const folderCardRowVisible =
     library !== null && folderRowEntries.length > 0;
   return { folderCardRowVisible, folderRowEntries, searchActive, mainMenuSections, controlAiJobs };
+}
+
+/** Undo/redo menu label; a rule run names its rule (provenance). */
+function historyMenuLabel(
+  entry: HistoryEntrySummary | null | undefined,
+  direction: "undo" | "redo",
+  t: TranslateFn,
+): string | undefined {
+  if (!entry) return undefined;
+  const rule = entry.labelKey === "history.rule.run" ? entry.labelArgs.rule : undefined;
+  if (typeof rule === "string") {
+    return t(direction === "undo" ? "shell.mainMenuUndoRule" : "shell.mainMenuRedoRule", { rule, count: entry.affectedCount });
+  }
+  return t(direction === "undo" ? "shell.mainMenuUndoCount" : "shell.mainMenuRedoCount", { count: entry.affectedCount });
 }

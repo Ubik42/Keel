@@ -1536,8 +1536,10 @@ export function closeLibrary(this: LibraryService, libraryId: string): void {
   this.browseSessionStore.invalidateLibrary(libraryId);
   this.dropPreparedStatementCache(libraryId);
   this.clearTextAssetPreviewCache(libraryId);
-  for (const [key] of this.openOperationHistoryGroups) {
-    if (key.startsWith(`${libraryId}\u0000`)) this.openOperationHistoryGroups.delete(key);
+  for (const [key, historyEntryId] of this.openOperationHistoryGroups) {
+    if (!key.startsWith(`${libraryId}\u0000`)) continue;
+    this.openOperationHistoryGroups.delete(key);
+    this.openOperationHistoryGroupRules.delete(historyEntryId);
   }
   this.autoRepairAttemptedByLibrary.delete(libraryId);
   this.autoRepairProbeFailedAtByLibrary.delete(libraryId);

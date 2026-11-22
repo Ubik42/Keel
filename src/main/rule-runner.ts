@@ -121,6 +121,7 @@ export class RuleRunner {
     const output: string[] = [];
     const changes: RuleRun['changes'] = [];
     const processed = new Set<string>();
+    let historyEntryId: string | null = null;
     const finish = async (status: RuleRun['status'], error: RuleRun['error']): Promise<RuleRun> => {
       const run: RuleRun = {
         runId: randomUUID(),
@@ -135,7 +136,7 @@ export class RuleRunner {
         changes: changes.slice(0, 500),
         output: output.slice(0, MAX_OUTPUT_LINES),
         error,
-        historyEntryId: null,
+        historyEntryId,
       };
       try {
         await this.#options.workerClient()?.request({ type: 'rule.run.record', libraryId, run });
@@ -195,6 +196,16 @@ ${rule.source}`,
       return finish('failed', { code: 'RUNTIME_UNAVAILABLE', message: '执行记录不可用。' });
     }
 
+    // Label the run's history entry with this rule and version (provenance).
+    gateway.setExecutionHistoryRule?.(executionId, { ruleId: rule.manifest.id, name: rule.manifest.name, version: rule.version });
+    const completeHistory = async (): Promise<void> => {
+      if (gateway.completeExecutionHistoryEntry) {
+        historyEntryId = (await gateway.completeExecutionHistoryEntry(executionId)).historyEntryId;
+      } else {
+        await gateway.completeExecutionHistoryGroup(executionId);
+      }
+    };
+
     const execute = async (commandId: AutomationScriptCommandId, rawInput: unknown): Promise<unknown> => {
       if (!permissions.has(commandId)) {
         output.push(`规则没有声明权限 ${commandId}；请把它加入 rule.json 的 permissions。`);
@@ -232,7 +243,7 @@ ${rule.source}`,
         },
         host: { execute },
       });
-      await gateway.completeExecutionHistoryGroup(executionId);
+      await completeHistory();
       if (result.ok) {
         output.push(...result.output);
         if (result.value !== undefined) output.push(`→ ${JSON.stringify(result.value).slice(0, 2000)}`);
@@ -255,7 +266,7 @@ ${rule.source}`,
       });
     } catch (error) {
       this.#options.logger()?.error('rule.run.failed', error, { ruleId: rule.manifest.id });
-      await gateway.completeExecutionHistoryGroup(executionId).catch(() => false);
+      await completeHistory().catch(() => undefined);
       const failure = automationScriptHostFailureFromError(error);
       const current = journal.get(executionId);
       if (current?.status === 'running') {

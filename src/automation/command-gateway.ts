@@ -381,6 +381,23 @@ export interface AutomationCommandGateway {
   }): Promise<AutomationGatewayResult>;
   /** Complete the Worker-owned group opened for one script/console execution. */
   completeExecutionHistoryGroup(executionId: string): Promise<boolean>;
+  /**
+   * Label the history group of an execution with the rule that runs it.
+   * Call before the first command; the label applies when the group begins.
+   */
+  setExecutionHistoryRule?(executionId: string, rule: AutomationHistoryRule): void;
+  /**
+   * Like completeExecutionHistoryGroup, and returns the history entry the
+   * execution wrote (null when it changed nothing).
+   */
+  completeExecutionHistoryEntry?(executionId: string): Promise<{ ok: boolean; historyEntryId: string | null }>;
+}
+
+/** The rule recorded on a history entry (docs/进度.md 3.5: provenance). */
+export interface AutomationHistoryRule {
+  ruleId: string;
+  name: string;
+  version: string;
 }
 
 function gatewayFailure(code: AutomationGatewayErrorCode): AutomationGatewayFailure {
@@ -462,6 +479,7 @@ export function createAutomationCommandGateway(
     source: 'script' | 'desktop';
   };
   const executionHistoryGroups = new Map<string, ExecutionHistoryGroup>();
+  const executionHistoryRules = new Map<string, AutomationHistoryRule>();
   /** Serialize the first group handshake when a script dispatches commands concurrently. */
   const pendingHistoryGroupBegins = new Map<string, Promise<ExecutionHistoryGroup | undefined>>();
   // Serpent-8b5b.4 review: cap idempotency retention so a chatty client with
@@ -504,7 +522,8 @@ export function createAutomationCommandGateway(
 
     const start = (async (): Promise<ExecutionHistoryGroup | undefined> => {
       try {
-        const result = await workerClient.request({ type: 'history.group.begin', libraryId }, {
+        const rule = executionHistoryRules.get(executionId);
+        const result = await workerClient.request({ type: 'history.group.begin', libraryId, ...(rule ? { rule } : {}) }, {
           historyContext: {
             source,
             sourceReference: executionId,
@@ -535,11 +554,12 @@ export function createAutomationCommandGateway(
     return start;
   };
 
-  const completeExecutionHistoryGroup = async (executionId: string): Promise<boolean> => {
+  const completeExecutionHistoryGroup = async (executionId: string): Promise<{ ok: boolean; historyEntryId: string | null }> => {
+    executionHistoryRules.delete(executionId);
     const pending = pendingHistoryGroupBegins.get(executionId);
     if (pending !== undefined) await pending;
     const group = executionHistoryGroups.get(executionId);
-    if (group === undefined) return true;
+    if (group === undefined) return { ok: true, historyEntryId: null };
     try {
       const result = await workerClient.request({
         type: 'history.group.complete',
@@ -558,21 +578,30 @@ export function createAutomationCommandGateway(
           executionId,
           historyEntryId: group.historyEntryId,
         });
-        return false;
+        return { ok: false, historyEntryId: null };
       }
       executionHistoryGroups.delete(executionId);
-      return true;
+      // The worker drops a group that changed nothing; a recorded group is
+      // the new undo top when it completes.
+      const recorded = result.status.undoTop?.historyEntryId === group.historyEntryId;
+      return { ok: true, historyEntryId: recorded ? group.historyEntryId : null };
     } catch (error) {
       auditLogger?.error('automation.history-group.complete-failed', error, {
         executionId,
         historyEntryId: group.historyEntryId,
       });
-      return false;
+      return { ok: false, historyEntryId: null };
     }
   };
 
   return {
     async completeExecutionHistoryGroup(executionId: string): Promise<boolean> {
+      return (await completeExecutionHistoryGroup(executionId)).ok;
+    },
+    setExecutionHistoryRule(executionId: string, rule: AutomationHistoryRule): void {
+      executionHistoryRules.set(executionId, rule);
+    },
+    completeExecutionHistoryEntry(executionId: string) {
       return completeExecutionHistoryGroup(executionId);
     },
     async execute(

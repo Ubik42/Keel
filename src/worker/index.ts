@@ -2350,6 +2350,7 @@ async function handleRequest(request: WorkerRequest): Promise<WorkerResult> {
           libraryId: request.command.libraryId,
           source: historyContext.source,
           sourceReference: historyContext.sourceReference,
+          ...(request.command.rule ? { rule: request.command.rule } : {}),
         });
         return { ok: true, type: 'history.group.begun', historyEntryId: result.historyEntryId };
       }

@@ -148,7 +148,10 @@ export function RuleDetailDialog(props: {
                       </ul>
                     )}
                     {run.output.length > 0 && <pre className="rule-run-output">{run.output.join("\n")}</pre>}
-                    {!run.dryRun && run.changes.length > 0 && <p className="nav-empty">这次运行的改动可以在“编辑 → 撤销”中撤销。</p>}
+                    <p className="nav-empty">
+                      规则版本 {run.ruleVersion.slice(0, 12)}{rule && run.ruleVersion !== rule.version ? "（之后规则已修改）" : ""}
+                      {!run.dryRun && run.historyEntryId ? "。改动已记入操作历史，标注为这条规则，可在“编辑 → 撤销”中撤销。" : ""}
+                    </p>
                   </div>
                 )}
               </li>
