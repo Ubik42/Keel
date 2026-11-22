@@ -36,7 +36,7 @@ import {
   applyFontSizePreferences,
   loadFontSizePreferences,
 } from './font-size-preferences';
-import './styles.css';
+import './styles/index.css';
 import './workbench/ui/tokens.css';
 import './workbench/ui/ui.css';
 import './workbench/ui/islands-surfaces.css';

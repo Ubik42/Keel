@@ -1,8 +1,9 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
+import { readRendererStyles } from "../support/renderer-styles";
 
-const css = readFileSync(path.resolve(__dirname, "../../src/renderer/styles.css"), "utf8");
+const css = readRendererStyles();
 
 /** Slice from the a27 marker so earlier mute rules cannot confuse assertions. */
 const a27 = (() => {
@@ -48,9 +49,11 @@ describe("islands accent budget + Codex transfer tokens (a27/a28)", () => {
   });
 
   it("keeps selected card ring on loud accent (not pressed-wash)", () => {
-    expect(a27).toMatch(
-      /\.asset-card\.is-selected[\s\S]{0,220}border-color:\s*var\(--island-accent-loud\)/,
-    );
+    // The last rule for the selected card decides its ring (earlier layers are overridden).
+    const rules = [...css.matchAll(/(?:^|\n)\.app-shell\[data-shell-layout="islands"\] \.asset-card\.is-selected,[^{]*\{([^}]*)\}/g)];
+    // Since a87 the ring is an outline on the whole card; the border stays transparent.
+    const ring = rules.map((m) => /outline:\s*([^;]+);/.exec(m[1] ?? "")?.[1]).filter(Boolean).at(-1);
+    expect(ring).toMatch(/solid var\(--(island-accent-loud|accent)\)/);
   });
 
   it("keeps applied filter segments on loud accent", () => {

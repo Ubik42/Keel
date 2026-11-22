@@ -19,6 +19,7 @@ import { queryFields } from "../../src/renderer/stores/query-store";
 import { selectionFields } from "../../src/renderer/stores/selection-store";
 import { sessionFields, type SessionState } from "../../src/renderer/stores/session-store";
 import { NAV_TREE_PREF_KEY } from "../../src/renderer/nav-tree-preferences";
+import { readRendererStyles } from "../support/renderer-styles";
 
 function createDragTransfer(
   types: string[],
@@ -373,10 +374,7 @@ describe("NavigationSidebar virtual library root", () => {
   });
 
   it("reserves one trailing grid column for the asset count", () => {
-    const styles = readFileSync(
-      resolve(process.cwd(), "src/renderer/styles.css"),
-      "utf8",
-    );
+    const styles = readRendererStyles();
 
     expect(styles).toMatch(
       /\.nav-row\s*\{[\s\S]*?grid-template-columns:\s*17px minmax\(0, 1fr\) auto;/,

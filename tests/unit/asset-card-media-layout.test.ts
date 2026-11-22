@@ -2,13 +2,11 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import { describe, expect, it } from "vitest";
+import { readRendererStyles } from "../support/renderer-styles";
 
 describe("asset-card media fallback layout", () => {
   it("centers a fallback icon inside the preview frame", () => {
-    const styles = readFileSync(
-      resolve(process.cwd(), "src/renderer/styles.css"),
-      "utf8",
-    );
+    const styles = readRendererStyles();
 
     expect(styles).toMatch(
       /\.asset-card-media\s*\{[\s\S]*?display:\s*grid;[\s\S]*?place-items:\s*center;/,
@@ -16,10 +14,7 @@ describe("asset-card media fallback layout", () => {
   });
 
   it("uses a thin pill progress bar for hover scrub", () => {
-    const styles = readFileSync(
-      resolve(process.cwd(), "src/renderer/styles.css"),
-      "utf8",
-    );
+    const styles = readRendererStyles();
     expect(styles).toMatch(
       /\.asset-card-hover-progress\s*\{[\s\S]*?height:\s*10px;[\s\S]*?background:\s*rgb\(255 255 255 \/ 35%\);/,
     );
@@ -36,10 +31,7 @@ describe("asset-card media fallback layout", () => {
   });
 
   it("uses the pointing-hand cursor on browse cards", () => {
-    const styles = readFileSync(
-      resolve(process.cwd(), "src/renderer/styles.css"),
-      "utf8",
-    );
+    const styles = readRendererStyles();
     expect(styles).toMatch(/\.asset-card\s*\{[\s\S]*?cursor:\s*pointer;/);
     expect(styles).toMatch(
       /\.asset-card\[draggable="true"\]\s*\{[\s\S]*?cursor:\s*pointer;/,

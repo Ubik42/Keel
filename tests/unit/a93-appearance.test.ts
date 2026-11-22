@@ -6,8 +6,9 @@ import {
   CUSTOM_THEME_ISLAND_TOKENS,
   customThemeOverridesSchema,
 } from "../../src/renderer/theme/custom-theme";
+import { readRendererStyles } from "../support/renderer-styles";
 
-const css = readFileSync("src/renderer/styles.css", "utf8");
+const css = readRendererStyles();
 
 describe("a93 radius scale", () => {
   it("maps tiers to a monotonic scale with 0 = square", () => {

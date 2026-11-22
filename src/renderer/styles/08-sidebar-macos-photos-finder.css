@@ -1,0 +1,222 @@
+/* ---- Sidebar: macOS Photos / Finder ------------------------------------ */
+.app-shell[data-shell-layout="islands"] .navigation-scroll {
+  /* Equal L/R inset; selection spans the full tree-row so the disclosure
+     gutter does not leave a one-sided blank. */
+}
+.app-shell[data-shell-layout="islands"] .nav-tree-row:has(> .nav-row.is-active) {
+  background: var(--island-select);
+}
+.app-shell[data-shell-layout="islands"] .nav-tree-row:has(> .nav-row.is-active) > .nav-row.is-active {
+  background: transparent;
+  box-shadow: none;
+}
+.app-shell[data-shell-layout="islands"] .nav-section-heading {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+.app-shell[data-shell-layout="islands"] .nav-section {
+  margin-top: var(--island-group-gap);
+}
+.app-shell[data-shell-layout="islands"] .nav-row {
+  border-color: transparent;
+  box-shadow: none;
+}
+.app-shell[data-shell-layout="islands"] .nav-row.is-active {
+  background: var(--island-select);
+  color: var(--text);
+  box-shadow: none;
+  border-color: transparent;
+  font-weight: 510;
+}
+.app-shell[data-shell-layout="islands"] .nav-empty {
+  margin: 2px 0 6px;
+  padding: 2px 8px 2px 50px;
+  color: var(--tertiary);
+  font-size: calc(11px * var(--ui-font-scale));
+}
+
+/* ---- Canvas toolstrip (inside island) — Photos-like unified chrome ------ */
+.app-shell[data-shell-layout="islands"] .workspace-toolstrip {
+  flex: 0 0 auto;
+}
+.app-shell[data-shell-layout="islands"] .workspace-toolstrip.is-viewing {
+  display: none;
+}
+.app-shell[data-shell-layout="islands"] .workspace-toolstrip .workspace-bar,
+.app-shell[data-shell-layout="islands"] .workspace-toolstrip .workspace-discovery {
+  border-bottom: none;
+  background: transparent;
+}
+.app-shell[data-shell-layout="islands"] .workspace-title {
+  gap: 8px;
+}
+.app-shell[data-shell-layout="islands"] .workspace-title .scope-crumb-label.is-current {
+  letter-spacing: -0.02em;
+}
+
+/* SF-style segmented filter track — soft Apple materials */
+:root[data-theme="dark"] .app-shell[data-shell-layout="islands"] {
+  --island-segment-pill-shadow: 0 0.5px 1px rgb(0 0 0 / 35%), 0 0 0 0.5px rgb(255 255 255 / 8%);
+}
+.app-shell[data-shell-layout="islands"] .dimension-filter-btn {
+  padding: 0 11px;
+  border: none;
+  background: transparent;
+  color: var(--secondary);
+  font-weight: 450;
+}
+.app-shell[data-shell-layout="islands"] .dimension-filter-btn:hover:not(:disabled) {
+  background: var(--island-segment-hover);
+  color: var(--text);
+}
+.app-shell[data-shell-layout="islands"] .dimension-filter-btn[aria-pressed="true"] {
+  background: var(--island-segment-pill);
+  color: var(--text);
+  font-weight: 510;
+  box-shadow: var(--island-segment-pill-shadow);
+}
+.app-shell[data-shell-layout="islands"] .dimension-filter-btn[aria-pressed="true"] .icon {
+  color: var(--accent);
+}
+/* Active (filter applied) segment: accent-tinted pill + accent label. */
+
+/* Tag chips (inspector + filter summary): refined tinted capsules. */
+.app-shell[data-shell-layout="islands"] .tag-chips-container {
+  gap: 6px;
+}
+.app-shell[data-shell-layout="islands"] .tag-chip,
+.app-shell[data-shell-layout="islands"] .dimension-active-chip:not(.is-clear-all) {
+  gap: 5px;
+  min-height: 22px;
+  padding: 0 8px 0 9px;
+  border: 0;
+  font-size: calc(11.5px * var(--ui-font-scale));
+  font-weight: 480;
+  line-height: 22px;
+  letter-spacing: -0.005em;
+}
+.app-shell[data-shell-layout="islands"] .tag-chip:hover,
+.app-shell[data-shell-layout="islands"] .dimension-active-chip:not(.is-clear-all):hover {
+  background: color-mix(in srgb, var(--text) 9%, transparent);
+}
+.app-shell[data-shell-layout="islands"] .tag-chip-dot {
+  width: 7px;
+  height: 7px;
+}
+
+/* Selected ring: must beat the islands .asset-card border-color rule so the
+   accent stroke replaces the hairline (no gap) and follows border-radius. */
+/* Ring = the card's own 1px border painted accent + 1px outer shadow, so the
+   stroke hugs the media with no light sliver of card background between. */
+.app-shell[data-shell-layout="islands"] .asset-card.is-selected,
+.app-shell[data-shell-layout="islands"] .asset-card:focus-visible {
+  border-radius: var(--island-card-radius);
+}
+
+/* ---- Gallery: Photos air + softer card chrome --------------------------- */
+.app-shell[data-shell-layout="islands"] .workspace-canvas {
+  /* Equal L/R; stable gutter so the scrollbar does not steal only the right inset. */
+}
+.app-shell[data-shell-layout="islands"] .justified-row {
+  /* Matches the 14px horizontal card gap (ASSET_GRID_GAP_PX). */
+}
+/* Concentric corners: the card clips its own content, and the media layers sit
+   1px inside the card border, so their radius is card radius - border width.
+   (Was 14px inside a 14px/1px card → corners flattened with a sliver gap.) */
+.app-shell[data-shell-layout="islands"] .asset-preview {
+  margin: 0;
+  box-shadow: none;
+}
+/* Preserve every source edge when integer slot rounding or the minimum aspect
+   clamp gives the slot a slightly different ratio from the source image. */
+.app-shell[data-shell-layout="islands"] .justified-card-slot .asset-card .asset-thumbnail {
+  object-fit: var(--justified-thumbnail-fit, contain);
+}
+.app-shell[data-shell-layout="islands"] .justified-card-slot .asset-caption,
+.app-shell[data-shell-layout="islands"] .masonry-card-slot .asset-caption {
+  /* Must fit the band reserved by justified-caption-band.ts / asset-caption-band.ts:
+     8px pad + name 13px + 3px gap + meta 12px (+ dims 14px) + 8px pad. */
+}
+/* Very narrow thumbnails: the source badge would cover the image. */
+@container (max-width: 96px) {
+  .app-shell[data-shell-layout="islands"] .asset-source-badge {
+    display: none;
+  }
+}
+
+/* ---- Inspector: frosted Info panel -------------------------------------- */
+.app-shell[data-shell-layout="islands"] > .inspector-pane {
+  background: color-mix(in srgb, var(--ui-surface-raised) 78%, transparent);
+  backdrop-filter: blur(28px) saturate(1.35);
+  -webkit-backdrop-filter: blur(28px) saturate(1.35);
+}
+.app-shell[data-shell-layout="islands"] .inspector-section-label,
+.app-shell[data-shell-layout="islands"] .inspector-content .micro-label {
+  font-family: var(--font-ui);
+}
+.app-shell[data-shell-layout="islands"] .inspector-content .editor-field {
+  margin-top: 14px;
+}
+.app-shell[data-shell-layout="islands"] .inspector-quick-row {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--island-hairline);
+}
+.app-shell[data-shell-layout="islands"] .inspector-quick-row + .editor-field {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--island-hairline);
+}
+.app-shell[data-shell-layout="islands"] .inspector-tech-bar {
+  margin-top: 16px;
+  padding: 12px 0 4px;
+  border-top: 1px solid var(--island-hairline);
+  gap: 8px 10px;
+}
+.app-shell[data-shell-layout="islands"] .inspector-raw-tech-label { color: var(--tertiary); }
+.app-shell[data-shell-layout="islands"] .inspector-raw-tech-value {
+  color: var(--secondary);
+  font-variant-numeric: tabular-nums;
+}
+.app-shell[data-shell-layout="islands"] .inspector-hero-preview {
+  border-radius: calc(12px * var(--ui-radius-scale, 1));
+  overflow: hidden;
+}
+
+/* Empty states — quiet squircle */
+.app-shell[data-shell-layout="islands"] .empty-orbit {
+  width: 52px;
+  height: 52px;
+  margin-bottom: 14px;
+  border: 1px solid var(--divider-soft);
+  border-radius: calc(14px * var(--ui-radius-scale, 1));
+  box-shadow: none;
+}
+.app-shell[data-shell-layout="islands"] .empty-library h1 {
+  margin: 0 0 6px;
+  font-size: calc(18px * var(--ui-font-scale));
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.app-shell[data-shell-layout="islands"] .empty-library p {
+  max-width: 340px;
+  color: var(--tertiary);
+  font-size: calc(12px * var(--ui-font-scale));
+}
+.app-shell[data-shell-layout="islands"] .inspector-empty-frame {
+  border: 1px solid var(--divider-soft);
+  border-radius: calc(10px * var(--ui-radius-scale, 1));
+  background: var(--raised);
+}
+.app-shell[data-shell-layout="islands"] .inspector-empty > .icon,
+.app-shell[data-shell-layout="islands"] .inspector-empty > svg {
+  box-sizing: content-box;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid var(--divider-soft);
+  border-radius: calc(10px * var(--ui-radius-scale, 1));
+  background: var(--raised);
+  color: var(--tertiary);
+}
+
+

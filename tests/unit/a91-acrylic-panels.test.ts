@@ -1,7 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { readRendererStyles } from "../support/renderer-styles";
 
-const css = readFileSync('src/renderer/styles.css', 'utf8');
+const css = readRendererStyles();
 
 describe('a91 acrylic menus + wallpaper panels', () => {
   it('gives every menu surface (incl. the main menu) a translucent blurred fill per acrylic level', () => {

@@ -1,8 +1,9 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
+import { readRendererStyles } from "../support/renderer-styles";
 
-const css = readFileSync(path.resolve(__dirname, "../../src/renderer/styles.css"), "utf8");
+const css = readRendererStyles();
 
 describe("islands side panels share one surface", () => {
   it("derives --island-side from the theme profile pane token", () => {

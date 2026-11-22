@@ -4,8 +4,9 @@ import { describe, expect, it } from "vitest";
 import { APPEARANCE_ADJUST_SETTLE_MS } from "../../src/renderer/use-appearance-adjusting";
 import { CUSTOM_THEME_EDITOR_FIELDS } from "../../src/renderer/theme/ThemeColorSettings";
 import { CUSTOM_THEME_ISLAND_TOKENS } from "../../src/renderer/theme/custom-theme";
+import { readRendererStyles } from "../support/renderer-styles";
 
-const css = readFileSync("src/renderer/styles.css", "utf8");
+const css = readRendererStyles();
 const tokens = readFileSync("src/renderer/workbench/ui/tokens.css", "utf8");
 const bg = readFileSync("src/renderer/theme/background-preferences.ts", "utf8");
 

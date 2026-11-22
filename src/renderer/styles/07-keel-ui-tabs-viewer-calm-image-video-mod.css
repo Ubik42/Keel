@@ -1,0 +1,355 @@
+/* === Keel ui-tabs-viewer: calm image / video / model viewer chrome ===
+   Quieter floating bars, softer contrast, tighter spacing. No library-
+   settings / semantic-settings. */
+:root {
+  --viewer-chrome-bg: color-mix(in srgb, var(--raised) 90%, transparent);
+  --viewer-chrome-shadow: 0 6px 20px rgb(0 0 0 / 10%), 0 1px 3px rgb(0 0 0 / 5%);
+}
+
+[data-theme="light"] {
+  --canvas: var(--ui-surface-canvas, #f0f1f3);
+  --pane: var(--ui-surface-pane, #f7f7f8);
+  --raised: var(--ui-surface-raised, #ffffff);
+  --raised-2: var(--ui-surface-raised-subtle, #fafafa);
+  --divider: var(--ui-border-divider, #e1e2e6);
+  --divider-soft: var(--ui-border-subtle, #ebecef);
+  --text: var(--ui-content-primary, #1a1b1e);
+  --secondary: var(--ui-content-secondary, #5c5f69);
+  --tertiary: var(--ui-content-tertiary, #8b8f99);
+  --accent: #3b82f6;
+  --accent-dark: color-mix(in srgb, var(--accent) 78%, black);
+  --warning: var(--ui-status-warning, #b45309);
+  --hover: var(--ui-surface-hover, rgb(0 0 0 / 5.5%));
+  --active: var(--ui-surface-pressed, rgb(0 0 0 / 9%));
+  --accent-soft: var(--ui-action-accent-soft, color-mix(in srgb, var(--accent) 9%, #ffffff));
+  --accent-soft-fg: var(--ui-content-accent, color-mix(in srgb, var(--accent) 72%, black));
+  --accent-ring: color-mix(in srgb, var(--ui-action-accent, var(--accent)) 50%, transparent);
+  --rating-star: var(--accent);
+  --appearance-color-blue: #2f6fad;
+  --appearance-color-indigo: #4c5fd0;
+  --appearance-color-purple: #7c4db8;
+  --appearance-color-pink: #c45d86;
+  --appearance-color-orange: #c46a2a;
+  --appearance-color-green: #3d8f45;
+  --appearance-color-teal: #2a8a82;
+  --appearance-color-red: #c44545;
+  --success: var(--ui-status-success, #16a34a);
+  --danger: var(--ui-status-danger, #dc2626);
+  --danger-muted: var(--ui-status-danger-surface, #fde8e8);
+  --danger-soft: var(--ui-status-danger-content, #f87171);
+  --filter-exclude: var(--ui-status-danger, #c24e4e);
+  --filter-exclude-soft: color-mix(in srgb, var(--filter-exclude) 14%, var(--canvas));
+  --filter-exclude-border: color-mix(in srgb, var(--filter-exclude) 50%, var(--divider));
+  --filter-exclude-fg: color-mix(in srgb, var(--filter-exclude) 75%, var(--text));
+  --filter-exclude-active-bg: color-mix(in srgb, var(--filter-exclude) 20%, var(--canvas));
+  --warning-fg: var(--ui-status-warning-content, #9a3412);
+  --warning-muted: var(--ui-status-warning-surface, #ffedd5);
+  --ink: var(--ui-content-inverse, #0f1010);
+  --viewer-stage: var(--ui-surface-canvas, #f0f1f3);
+  --viewer-document-page: #fff;
+  --border: var(--divider);
+  --shadow-toolbar:
+    0 calc(1px * var(--elev-size)) calc(4px * var(--elev-size))
+    rgb(0 0 0 / calc(0.04 * var(--elev-intensity)));
+  --shadow-pane-east:
+    calc(2px * var(--elev-size)) 0 calc(8px * var(--elev-size))
+    rgb(0 0 0 / calc(0.05 * var(--elev-intensity)));
+  --shadow-pane-west:
+    calc(-2px * var(--elev-size)) 0 calc(8px * var(--elev-size))
+    rgb(0 0 0 / calc(0.05 * var(--elev-intensity)));
+  --shadow-card:
+    0 calc(1px * var(--elev-size)) calc(2px * var(--elev-size))
+    rgb(0 0 0 / calc(0.05 * var(--elev-intensity)));
+  --shadow-workspace-tab:
+    0 0 calc(4px * var(--elev-size))
+    rgb(0 0 0 / calc(0.05 * var(--elev-intensity)));
+  --shadow-menu: 0 6px 18px rgb(0 0 0 / 10%), 0 1px 3px rgb(0 0 0 / 5%);
+  --shadow-elevated: 0 18px 48px rgb(0 0 0 / 16%);
+  --shadow-panel: 0 12px 28px rgb(0 0 0 / 12%);
+  --shadow-toast: 0 8px 20px rgb(0 0 0 / 10%);
+  --viewer-chrome-bg: color-mix(in srgb, var(--raised) 94%, transparent);
+  --viewer-chrome-shadow: 0 8px 22px rgb(0 0 0 / 8%), 0 1px 2px rgb(0 0 0 / 4%);
+}
+
+.preview-video-controls,
+.preview-zoom-controls,
+.preview-speed-control,
+.preview-fullscreen-chip,
+.preview-exr-plane-selector,
+.preview-plugin-actions,
+.model-viewer-toolbar,
+.plugin-viewer-overlay-toggle {
+  border-color: var(--viewer-chrome-border);
+  border-radius: var(--viewer-chrome-radius);
+  background: var(--viewer-chrome-bg);
+  box-shadow: var(--viewer-chrome-shadow);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.preview-video-controls {
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  gap: 12px;
+  padding: 8px 14px;
+}
+
+.preview-zoom-controls {
+  bottom: 16px;
+  gap: 8px;
+  padding: 6px 12px;
+}
+
+.preview-speed-control {
+  right: 16px;
+  bottom: 56px;
+  gap: 8px;
+  padding: 6px 10px;
+  color: var(--secondary);
+  font-size: calc(11px * var(--ui-font-scale));
+}
+
+.preview-fullscreen-chip {
+  right: 16px;
+  bottom: 16px;
+  padding: 6px 10px;
+  color: var(--secondary);
+}
+
+.preview-fullscreen-chip:hover {
+  background: color-mix(in srgb, var(--raised) 96%, var(--hover));
+  color: var(--text);
+}
+
+.preview-exr-plane-selector {
+  top: 14px;
+  left: 14px;
+  gap: 8px;
+  padding: 6px 10px;
+}
+
+.preview-plugin-actions {
+  top: 14px;
+  left: 14px;
+  gap: 6px;
+  padding: 5px;
+}
+
+.preview-video-playpause,
+.preview-video-fit,
+.preview-video-fullscreen {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--ui-radius-control);
+  color: var(--secondary);
+}
+
+.preview-video-playpause:hover,
+.preview-video-fit:hover,
+.preview-video-fullscreen:hover,
+.preview-video-rate:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+
+.preview-zoom-controls button:not(.ui-select-trigger) {
+  width: 28px;
+  height: 26px;
+  border-radius: var(--ui-radius-control);
+  color: var(--secondary);
+}
+
+.preview-zoom-controls button:not(.ui-select-trigger):hover,
+.preview-zoom-controls button:not(.ui-select-trigger):focus-visible {
+  background: var(--hover);
+  color: var(--text);
+}
+
+.preview-zoom-controls .preview-zoom-label {
+  color: var(--tertiary);
+  font-size: calc(11px * var(--ui-font-scale));
+}
+
+.preview-nav {
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  width: 22%;
+  max-width: 320px;
+  height: auto;
+  padding: 0 12px;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  opacity: 0.45;
+}
+
+.preview-nav:hover:not(:disabled),
+.preview-nav:focus-visible:not(:disabled) {
+  background: transparent;
+  box-shadow: none;
+  opacity: 1;
+}
+
+.preview-nav.is-prev {
+  left: 0;
+  justify-content: flex-start;
+}
+
+.preview-nav.is-next {
+  right: 0;
+  justify-content: flex-end;
+}
+
+.model-viewer-toolbar {
+  /* inherits shared chrome tokens above when class is present */
+  gap: 8px;
+  padding: 6px 12px;
+}
+
+.pdf-viewer-toolbar {
+  border-color: var(--viewer-chrome-border);
+  border-radius: var(--viewer-chrome-radius);
+  background: var(--viewer-chrome-bg);
+  box-shadow: var(--viewer-chrome-shadow);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+
+/* === Keel ui-card-caption: caption alignment + micro polish === */
+.justified-card-slot .asset-caption,
+.masonry-card-slot .asset-caption {
+  gap: calc(4px * var(--ui-font-scale));
+  padding: calc(6px * var(--ui-font-scale)) 12px;
+  justify-content: center;
+}
+
+.asset-caption-skeleton-line.is-name {
+  margin-top: 0;
+}
+
+.asset-caption-skeleton-line.is-meta {
+  margin-top: 0;
+}
+
+/* Discovery filter strip: slightly airier chip row (minimal modern). */
+.workspace-discovery {
+  gap: 8px;
+  padding: 8px 14px 10px;
+}
+
+.dimension-filter-btn,
+.discovery-filters > summary {
+  min-height: 28px;
+  padding-inline: 10px;
+}
+
+/* Inspector section labels a touch quieter. */
+.inspector-section h2 {
+  letter-spacing: 0.02em;
+  color: var(--tertiary);
+  font-weight: 600;
+}
+
+/* ==== Shell layout: Islands + bold Apple/Photos materials ================
+   Floating islands kept; visual language pushed toward macOS Photos / Finder /
+   Info. Scoped to [data-shell-layout="islands"]. Import/drop stays on-dev. */
+:root {
+  --island-gap: 12px;
+  --island-radius: calc(22px * var(--ui-radius-scale, 1));
+  --island-backdrop: color-mix(in srgb, var(--ui-surface-pane) 82%, var(--ui-surface-raised));
+  --island-border: rgb(0 0 0 / 5%);
+  --island-shadow: 0 1px 2px rgb(0 0 0 / 4%), 0 4px 16px -6px rgb(0 0 0 / 8%);
+  --island-select: color-mix(in srgb, var(--accent) 16%, transparent);
+  --island-hairline: rgb(0 0 0 / 6%);
+  --island-group-gap: 20px;
+  --island-card-radius: calc(14px * var(--ui-radius-scale, 1));
+  --island-toolstrip-bg: color-mix(in srgb, var(--ui-surface-raised) 72%, transparent);
+  /* Opaque equivalent of the toolstrip over the canvas island: the active tab
+     must be exactly this so it fuses with the toolstrip it attaches to. */
+  --island-tab-fill: color-mix(in srgb, var(--ui-surface-raised) 72%, var(--ui-surface-canvas));
+}
+:root[data-theme="dark"] {
+  --island-backdrop: color-mix(in srgb, var(--ui-surface-canvas) 78%, black);
+  --island-border: rgb(255 255 255 / 7%);
+  --island-shadow: 0 6px 20px -8px rgb(0 0 0 / 45%);
+  --island-select: color-mix(in srgb, var(--accent) 28%, transparent);
+  --island-hairline: rgb(255 255 255 / 8%);
+  --island-toolstrip-bg: color-mix(in srgb, var(--ui-surface-raised) 55%, transparent);
+  --island-tab-fill: color-mix(in srgb, var(--ui-surface-raised) 55%, var(--ui-surface-canvas));
+}
+
+/* Quieter window chrome: transparent title bar (backdrop shows through). */
+.app-shell[data-shell-layout="islands"] > .app-toolbar {
+  border-bottom-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Title-bar controls align to island edges (grid columns are full-bleed;
+   islands are inset by --island-gap). Search was overhanging the canvas
+   island by one gap into the inspector column. No soft title-bar fill. */
+.app-shell[data-shell-layout="islands"] .toolbar-nav-cluster {
+  align-items: center;
+}
+.app-shell[data-shell-layout="islands"] .toolbar-workspace-cluster {
+  align-items: center;
+  gap: 10px;
+}
+/* workspace-tabs.css zeroes L/R padding when tabs exist (higher specificity).
+   Re-assert island-gap so search lines up with the canvas island edges. */
+.app-shell[data-shell-layout="islands"] .toolbar-inspector-cluster {
+  /* Sit at the inspector island's leading edge so search | gap | toggle read
+     as one aligned control row (captions stay reserved on the right). */
+  justify-content: flex-start;
+  padding-left: var(--island-gap);
+  align-items: center;
+  gap: 8px;
+}
+.app-shell[data-shell-layout="islands"] .toolbar-workspace-search,
+.app-shell[data-shell-layout="islands"] .search-control-wrap {
+  height: var(--shell-control-height);
+  align-self: center;
+}
+.app-shell[data-shell-layout="islands"] .toolbar-workspace-search {
+  margin-left: auto;
+}
+/* Shared vertical center for search neighbors: settings/main-menu, panel
+   toggles, history, library switcher. */
+.app-shell[data-shell-layout="islands"] .toolbar-nav-cluster > .tool-button,
+.app-shell[data-shell-layout="islands"] .library-switcher-trigger,
+.app-shell[data-shell-layout="islands"] .scope-history-button,
+.app-shell[data-shell-layout="islands"] .main-menu-trigger,
+.app-shell[data-shell-layout="islands"] .app-settings-entry,
+.app-shell[data-shell-layout="islands"] .app-settings-entry .tool-button,
+.app-shell[data-shell-layout="islands"] .toolbar-inspector-cluster .tool-button {
+  align-self: center;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.app-shell[data-shell-layout="islands"] .toolbar-workspace-leading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: var(--shell-toolbar-height);
+}
+
+.app-shell[data-shell-layout="islands"] > .navigation-pane,
+.app-shell[data-shell-layout="islands"] > .inspector-pane,
+.app-shell[data-shell-layout="islands"] > .workspace {
+  overflow: hidden;
+}
+
+.app-shell[data-shell-layout="islands"].left-collapsed > .navigation-pane,
+.app-shell[data-shell-layout="islands"].right-collapsed > .inspector-pane {
+  border-width: 0;
+  box-shadow: none;
+}
+.app-shell[data-shell-layout="islands"] > .navigation-pane::before,
+.app-shell[data-shell-layout="islands"] > .inspector-pane::before {
+  content: none;
+}
+

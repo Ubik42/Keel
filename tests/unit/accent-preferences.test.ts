@@ -10,6 +10,7 @@ import {
   setStoredAccentHex,
   type AccentPreferencesStorage,
 } from '../../src/renderer/theme/accent-preferences';
+import { readRendererStyles } from "../support/renderer-styles";
 
 function memoryStorage(
   initial: Record<string, string> = {},
@@ -49,10 +50,7 @@ describe('accent-preferences (Serpent-qw6x / THEME-018)', () => {
 });
 
 describe('accent CSS derivation (Serpent-gnus)', () => {
-  const css = readFileSync(
-    resolve(__dirname, '../../src/renderer/styles.css'),
-    'utf8',
-  );
+  const css = readRendererStyles();
   const foundationCss = readFileSync(
     resolve(__dirname, '../../src/renderer/workbench/ui/tokens.css'),
     'utf8',

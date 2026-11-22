@@ -1,8 +1,9 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
+import { readRendererStyles } from "../support/renderer-styles";
 
-const css = readFileSync(path.resolve(__dirname, "../../src/renderer/styles.css"), "utf8");
+const css = readRendererStyles();
 
 function lastIndex(pattern: RegExp): number {
   const matches = [...css.matchAll(pattern)];
@@ -18,7 +19,8 @@ function lastIndex(pattern: RegExp): number {
 // 同一条行只有一条高亮矩形，且按钮不自己画底色。
 describe("sidebar nav row states share one highlight rectangle", () => {
   it("defines the selected wash once on the pane so row and tree-row agree", () => {
-    expect(css).toMatch(/\.navigation-pane \{\s*--nav-selected-wash:[^;]+;\s*\}/);
+    expect(css).toMatch(/\.navigation-pane \{[^}]*--nav-selected-wash:[^;]+;/);
+    expect(css.match(/--nav-selected-wash:/g)).toHaveLength(1);
     expect(css).toMatch(
       /\.nav-row\.is-multi-selected \{\s*background: var\(--nav-selected-wash\);\s*color: var\(--text\);\s*\}/,
     );
