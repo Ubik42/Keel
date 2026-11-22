@@ -7,7 +7,7 @@ import {
   resolveDraggedFolderIdsForTrash,
   resolveFolderOntoFolderDrop,
   type FolderDragFact,
-} from './folder-drag-drop';
+} from './workbench/tree/folder-drag-drop';
 import { isBrowseScopeAffectedByFolderTrash } from './folder-trash-scope';
 import { useLocale, useT } from './i18n';
 

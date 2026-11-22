@@ -11,10 +11,10 @@ import {
   type ReactNode,
   type RefObject,
 } from "react";
-import { createShellPortal } from "./ui/ShellStyleScope";
+import { createShellPortal } from "../ui/ShellStyleScope";
 
-import { layerCssVar, type UiLayerName } from "./ui/foundation";
-import { PopoverSurface, type PopoverSurfaceProps } from "./ui/patterns";
+import { layerCssVar, type UiLayerName } from "../ui/foundation";
+import { PopoverSurface, type PopoverSurfaceProps } from "../ui/patterns";
 import {
   placeOverlayInViewport,
   readOverlayViewport,

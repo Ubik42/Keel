@@ -2,7 +2,7 @@ import { Icon } from "./Icons";
 import { iconActionAttrs } from "./icon-action-attrs";
 import { useT } from "./i18n";
 import type { RelinkBatchPreviewResult } from "../shared/library-api";
-import { DialogShell } from "./ui/patterns";
+import { DialogShell } from "./workbench/ui/patterns";
 
 export interface BatchRelinkPreviewSession {
   preview: RelinkBatchPreviewResult;

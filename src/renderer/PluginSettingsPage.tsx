@@ -23,8 +23,8 @@ import { iconActionAttrs } from './icon-action-attrs';
 import { pluginRequiresTrustedCssDisclosure } from '../plugins/plugin-themes';
 import { resolvePluginDisplayCopy } from '../plugins/plugin-localized-copy';
 import { PluginUninstallDialog } from './PluginUninstallDialog';
-import { DialogShell } from './ui/patterns';
-import { Select } from './ui/primitives';
+import { DialogShell } from './workbench/ui/patterns';
+import { Select } from './workbench/ui/primitives';
 import { useLocale, useT } from './i18n';
 
 type PluginSettingsPageProps = {

@@ -8,11 +8,11 @@ import {
 
 import { iconActionAttrs } from "./icon-action-attrs";
 import { useT } from "./i18n";
-import { isImeKeyboardEvent } from "./ime-safe-dismiss";
+import { isImeKeyboardEvent } from "./workbench/overlay/ime-safe-dismiss";
 import {
   handleRovingListKeyDown,
   ROVING_OPTION_SELECTOR,
-} from "./roving-list-keyboard";
+} from "./workbench/overlay/roving-list-keyboard";
 import { VIEWER_CHROME_TAB_INDEX } from "./viewer-focus-policy";
 import {
   playbackRateAfterWheelSteps,

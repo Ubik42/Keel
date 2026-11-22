@@ -5,7 +5,7 @@ import {
   normalizeVisibleWindowAssetIds,
   preserveVisibleWindowAssetIds,
   visibleWindowReportKey,
-} from '../../src/renderer/visible-window';
+} from '../../src/renderer/workbench/collection/visible-window';
 
 describe('visible-window reporting', () => {
   it('normalizes DOM traversal order into a stable bounded set', () => {

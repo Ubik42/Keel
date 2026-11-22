@@ -7,7 +7,7 @@ import {
   captureWorkspaceNavViewport,
   resolveWorkspaceScrollTop,
   shouldRestoreViewportAfterBrowseReload,
-} from "../../src/renderer/workspace-scroll-position";
+} from "../../src/renderer/workbench/workspace/workspace-scroll-position";
 
 /**
  * VIEWER-001 / Serpent-bd481f — session log 2026-09-16:

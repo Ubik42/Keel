@@ -9,7 +9,7 @@ import {
 } from "react";
 
 import { Icon } from "./Icons";
-import { Select } from "./ui/primitives/Select";
+import { Select } from "./workbench/ui/primitives/Select";
 import { iconActionAttrs } from "./icon-action-attrs";
 import { useT } from "./i18n";
 import { useViewerZoomPan } from "./use-viewer-zoom-pan";
@@ -26,7 +26,7 @@ import {
   type ViewerDisplayTransform,
 } from "./viewer-display-transform";
 import { isViewerFitShortcut } from "./viewer-fit-shortcut";
-import { listenForShortcutInputs } from "./shortcut-runtime";
+import { listenForShortcutInputs } from "./workbench/shortcuts/shortcut-runtime";
 import type { ShortcutEventLike } from "../shared/shortcut-resolution";
 import {
   VIEWER_MAX_SCALE,

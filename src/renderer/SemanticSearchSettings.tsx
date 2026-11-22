@@ -21,8 +21,8 @@ import {
   saveSemanticSearchPreferences,
   type SemanticSearchPageSize,
 } from "./semantic-search-preferences";
-import { SettingsCard } from "./ui/patterns";
-import { Switch, Select } from "./ui/primitives";
+import { SettingsCard } from "./workbench/ui/patterns";
+import { Switch, Select } from "./workbench/ui/primitives";
 
 type InstallSnapshot = {
   runtimeInstalled: boolean;

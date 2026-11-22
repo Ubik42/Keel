@@ -55,4 +55,41 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'error',
     },
   },
+  // Directory layering (docs/进度.md 3.1).
+  {
+    files: ['src/renderer/workbench/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': ['error', {
+        patterns: [
+          { group: ['**/features/**', '**/stores/**', '**/app/**'], message: 'workbench/ does not depend on features/, stores/ or app/.' },
+          { group: ['**/shared/asset-types'], message: 'workbench/ does not know asset business types.' },
+        ],
+      }],
+      'no-restricted-properties': ['error',
+        { object: 'window', property: 'keel', message: 'workbench/ does not call the backend.' },
+        { object: 'window', property: 'serpent', message: 'workbench/ does not call the backend.' },
+      ],
+    },
+  },
+  {
+    files: ['src/renderer/stores/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': ['error', {
+        patterns: [
+          { group: ['**/features/**'], message: 'stores/ does not depend on features/.' },
+          { group: ['**/*.tsx'], message: 'stores/ does not import React components.' },
+        ],
+      }],
+    },
+  },
+  {
+    files: ['src/worker/library/**/*.ts'],
+    rules: {
+      'no-restricted-imports': ['error', {
+        patterns: [
+          { group: ['**/media/**', '**/integrations/**'], message: 'worker/library/ does not depend on worker/media/ or worker/integrations/.' },
+        ],
+      }],
+    },
+  },
 );

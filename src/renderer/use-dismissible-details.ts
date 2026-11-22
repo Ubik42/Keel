@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { isImeKeyboardEvent } from "./ime-safe-dismiss";
+import { isImeKeyboardEvent } from "./workbench/overlay/ime-safe-dismiss";
 
 /**
  * 让原生 <details> 披露控件具备现代浮层行为：指针在面板外按下或按 Escape

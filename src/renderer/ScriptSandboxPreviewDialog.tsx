@@ -14,8 +14,8 @@ import type {
 import { Icon } from './Icons';
 import { iconActionAttrs } from './icon-action-attrs';
 import { useT } from './i18n';
-import { isImeKeyboardEvent } from './ime-safe-dismiss';
-import { DialogShell } from './ui/patterns';
+import { isImeKeyboardEvent } from './workbench/overlay/ime-safe-dismiss';
+import { DialogShell } from './workbench/ui/patterns';
 
 type PreviewResult =
   | { kind: 'completed'; value: unknown; output: string[]; logId: string }

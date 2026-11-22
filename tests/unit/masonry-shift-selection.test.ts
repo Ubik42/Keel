@@ -12,7 +12,7 @@ import {
 import {
   buildBrowseSelectionOrder,
   resolveShiftBrowseRange,
-} from "../../src/renderer/browse-selection-order";
+} from "../../src/renderer/workbench/selection/browse-selection-order";
 import {
   orderMasonryShiftAssetIds,
   readMasonryShiftAssetOrder,

@@ -15,7 +15,7 @@ import {
 } from "./tag-management-model";
 import { Icon } from "./Icons";
 import { useT } from "./i18n";
-import { isImeKeyboardEvent } from "./ime-safe-dismiss";
+import { isImeKeyboardEvent } from "./workbench/overlay/ime-safe-dismiss";
 import { parseSearchExpressionDetailed } from "../shared/search-expression";
 import { searchExpressionReasonKey } from "./search-expression";
 import { replaceTagExpressionTerm, tagExpressionTermAt } from "./tag-expression-editor";

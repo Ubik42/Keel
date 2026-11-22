@@ -6,7 +6,7 @@ import {
   getPluginJobDisplayProgress,
 } from "./plugin-job-display";
 import { useT } from "./i18n";
-import { Activity } from "./ui/patterns";
+import { Activity } from "./workbench/ui/patterns";
 
 export function PluginJobActivityBanner({
   job,

@@ -7,11 +7,11 @@ import {
   resolvePanelIntentWidth,
   shouldAutoHidePanel,
   shouldRestorePanelFromEdge,
-} from "../../src/renderer/panel-auto-hide";
+} from "../../src/renderer/workbench/shell/panel-auto-hide";
 import {
   INSPECTOR_PANEL_WIDTH_MIN,
   NAV_PANEL_WIDTH_MIN,
-} from "../../src/renderer/shell-preferences";
+} from "../../src/renderer/workbench/shell/shell-preferences";
 
 describe("panel-auto-hide", () => {
   it("computes unclamped intent widths", () => {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { invertSelection } from "../../src/renderer/invert-selection";
+import { invertSelection } from "../../src/renderer/workbench/selection/invert-selection";
 
 describe("invertSelection (Serpent-5fq)", () => {
   it("selects all when nothing is selected", () => {

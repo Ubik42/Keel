@@ -15,7 +15,7 @@ import {
   isAtFitScale,
 } from "./viewer-fit";
 import { isViewerPanPointerButton } from "./viewer-pointer-pan";
-import { listenForShortcutInputs } from "./shortcut-runtime";
+import { listenForShortcutInputs } from "./workbench/shortcuts/shortcut-runtime";
 import type { ShortcutEventLike } from "../shared/shortcut-resolution";
 import {
   classifyViewerWheel,

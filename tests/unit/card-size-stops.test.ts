@@ -4,7 +4,7 @@ import {
   ASSET_GRID_GAP_PX,
   countFittingColumns,
   leftoverWidthPx,
-} from "../../src/renderer/asset-grid-layout";
+} from "../../src/renderer/workbench/collection/asset-grid-layout";
 import {
   BROWSE_CARD_PINCH_GAIN,
   cardSizeFillingColumns,

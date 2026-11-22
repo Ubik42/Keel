@@ -11,8 +11,8 @@ import {
   type ViewerVolumePreferences,
 } from "./viewer-volume-preferences";
 import type { ShortcutEventLike } from "../shared/shortcut-resolution";
-import { listenForShortcutInputs } from "./shortcut-runtime";
-import { hasActiveModalDialog } from "./use-dialog-focus-trap";
+import { listenForShortcutInputs } from "./workbench/shortcuts/shortcut-runtime";
+import { hasActiveModalDialog } from "./workbench/overlay/use-dialog-focus-trap";
 
 const VIEWER_VOLUME_UPDATED_EVENT = "keel:viewer-volume-updated";
 

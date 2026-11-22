@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 
 import { useT } from '../i18n';
-import { SettingsDisclosure } from '../ui/patterns';
-import { Button, TextField } from '../ui/primitives';
+import { SettingsDisclosure } from '../workbench/ui/patterns';
+import { Button, TextField } from '../workbench/ui/primitives';
 import { useTheme } from './ThemeProvider';
 import { cssColorToHex, sampleThemeColors, type SampledThemeColors } from './sample-theme-colors';
 import { USER_THEME_NAME_MAX } from './user-themes';

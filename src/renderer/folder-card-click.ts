@@ -1,5 +1,5 @@
-import type { SelectionPlatform } from "./selection-modifiers";
-import { isToggleSelectionModifier } from "./selection-modifiers";
+import type { SelectionPlatform } from "./workbench/selection/selection-modifiers";
+import { isToggleSelectionModifier } from "./workbench/selection/selection-modifiers";
 
 export type FolderCardClickModifiers = {
   readonly shiftKey: boolean;

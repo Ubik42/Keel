@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { createShellPortal } from "./ui/ShellStyleScope";
+import { createShellPortal } from "./workbench/ui/ShellStyleScope";
 
 import {
   AI_OUTPUT_STYLES,
@@ -26,8 +26,8 @@ import { AiConfigNumberInput } from "./ai-config-number-input";
 import { buildAiModelsFetchKey } from "./ai-model-fetch-key";
 import { iconActionAttrs } from "./icon-action-attrs";
 import { useT } from "./i18n";
-import { DialogShell } from "./ui/patterns";
-import { Select } from "./ui/primitives/Select";
+import { DialogShell } from "./workbench/ui/patterns";
+import { Select } from "./workbench/ui/primitives/Select";
 
 export type AiConnectionState =
   | "idle"

@@ -5,7 +5,7 @@ import {
   orderedIdsAroundVisible,
   type ViewportPriorityBands,
 } from "../shared/viewport-priority";
-import { preserveVisibleWindowAssetIds } from "./visible-window";
+import { preserveVisibleWindowAssetIds } from "./workbench/collection/visible-window";
 
 export type ViewportPriorityCanvas = {
   getBoundingClientRect(): Pick<DOMRect, "top" | "bottom">;

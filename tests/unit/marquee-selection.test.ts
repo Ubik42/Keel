@@ -4,7 +4,7 @@ import {
   computeMarqueeSelection,
   isMarqueeAdditive,
   type MarqueeModifierSnapshot,
-} from '../../src/renderer/marquee-selection';
+} from '../../src/renderer/workbench/selection/marquee-selection';
 
 const NONE: MarqueeModifierSnapshot = { metaKey: false, ctrlKey: false, shiftKey: false };
 const META: MarqueeModifierSnapshot = { metaKey: true, ctrlKey: false, shiftKey: false };

@@ -1,4 +1,4 @@
-import { ContextMenuItem } from './context-menu';
+import { ContextMenuItem } from './workbench/menu/context-menu';
 import { COMMON_IMAGE_COLOR_SPACE_OPTIONS } from '../shared/image-color-space';
 import { Icon } from './Icons';
 import { useT } from './i18n';

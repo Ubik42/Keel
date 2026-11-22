@@ -4,7 +4,7 @@ import { isImeKeyboardEvent } from "./ime-safe-dismiss";
 import {
   getDialogDefaultAction,
   shouldActivateDialogDefaultAction,
-} from "./ui/patterns/dialog";
+} from "../ui/patterns/dialog";
 
 const FOCUSABLE_SELECTOR =
   'button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [href], [tabindex]:not([tabindex="-1"])';

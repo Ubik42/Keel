@@ -6,7 +6,7 @@ import type {
   AutomaticTaskConfig,
 } from "../shared/automatic-tasks";
 import { automaticTaskToConfig } from "../shared/automatic-tasks";
-import { DialogShell } from "./ui/patterns";
+import { DialogShell } from "./workbench/ui/patterns";
 
 function describeConditions(value: string): string {
   try {

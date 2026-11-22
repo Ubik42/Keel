@@ -11,7 +11,7 @@ import {
   distributeMasonryItems,
   layoutJustifiedRows,
   type JustifiedRow,
-} from "./asset-grid-layout";
+} from "./workbench/collection/asset-grid-layout";
 import {
   resolveJustifiedCaptionBandPx,
 } from "./justified-caption-band";
@@ -19,11 +19,11 @@ import type {
   CanvasScrollOffset,
   CanvasViewport,
   MarqueeRect,
-} from "./marquee-geometry";
+} from "./workbench/selection/marquee-geometry";
 import {
   rectsIntersect,
   viewportRectToContent,
-} from "./marquee-geometry";
+} from "./workbench/selection/marquee-geometry";
 import { estimateMasonryPreviewHeightPx } from "./masonry-preview-frame";
 
 const DEFAULT_JUSTIFIED_CAPTION_BAND_PX = resolveJustifiedCaptionBandPx({

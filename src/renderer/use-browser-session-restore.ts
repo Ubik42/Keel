@@ -36,7 +36,7 @@ import {
   seedRestoreLeafLocation,
   type WorkspaceNavHistory,
   type WorkspaceNavLocation,
-} from "./workspace-nav-history";
+} from "./workbench/workspace/workspace-nav-history";
 
 export type UseBrowserSessionRestoreArgs = {
   api: KeelLibraryApi | null;

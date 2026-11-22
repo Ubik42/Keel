@@ -9,15 +9,15 @@ import {
 import type { ImportMenuCopy } from "./browse-empty-state";
 import { iconActionAttrs } from "./icon-action-attrs";
 import { useLocale } from "./i18n";
-import { isImeKeyboardEvent } from "./ime-safe-dismiss";
+import { isImeKeyboardEvent } from "./workbench/overlay/ime-safe-dismiss";
 import {
   focusFirstRovingItem,
   handleRovingListKeyDown,
-} from "./roving-list-keyboard";
+} from "./workbench/overlay/roving-list-keyboard";
 import { Icon, type IconName } from "./Icons";
-import { Tooltip } from "./ui/primitives/Tooltip";
-import { PortaledPopover } from "./PortaledPopover";
-import { MenuSurface, resolveMenuNodes } from "./ui/patterns";
+import { Tooltip } from "./workbench/ui/primitives/Tooltip";
+import { PortaledPopover } from "./workbench/overlay/PortaledPopover";
+import { MenuSurface, resolveMenuNodes } from "./workbench/ui/patterns";
 
 const MENU_ITEM_SELECTOR = '[role="menuitem"], [role="menuitemradio"]';
 

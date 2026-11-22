@@ -14,7 +14,7 @@ import {
   aspectRatioForAsset,
   countFittingColumns,
   distributeIntegerRowWidths,
-} from "../asset-grid-layout";
+} from "../workbench/collection/asset-grid-layout";
 import {
   resolveCaptionBandSource,
   type CaptionBandAsset,
@@ -30,7 +30,7 @@ import {
   itemIntersectsVisibleRange,
   readCanvasLocalViewportSnapshot,
   useCanvasLocalViewport,
-} from "../viewport-window";
+} from "../workbench/collection/viewport-window";
 import { canvasHasPreviewScrollHold, logBrowseScrollWrite } from "../browse-scroll-debug";
 import { isCanvasReflowRestorationPending } from "../canvas-reflow-restore";
 import {
@@ -38,13 +38,13 @@ import {
   virtualLayoutEntryAt,
   virtualLayoutPublishedId,
 } from "./virtual-browse-layout";
-import { registerVirtualScrollAnchorCapture } from "./virtual-scroll-anchor-signal";
+import { registerVirtualScrollAnchorCapture } from "../workbench/collection/virtual-scroll-anchor-signal";
 import {
   captureVirtualScrollAnchor,
   virtualScrollAnchorDelta,
   type VirtualScrollAnchor,
   type VirtualScrollAnchorModel,
-} from "./virtual-scroll-anchor-model";
+} from "../workbench/collection/virtual-scroll-anchor-model";
 
 type VirtualCanvasAssetLayoutIndex = CanvasAssetLayoutIndex & VirtualScrollAnchorModel;
 

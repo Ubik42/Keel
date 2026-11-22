@@ -5,7 +5,7 @@ import {
   SELECT_ALL_SHORTCUT,
   dispatchSelectionKeyboardAction,
   matchSelectionKeyboardAction,
-} from "../../src/renderer/selection-keyboard";
+} from "../../src/renderer/workbench/selection/selection-keyboard";
 import { formatShortcut, matchesShortcut } from "../../src/renderer/commands/command-types";
 
 function event(

@@ -20,10 +20,10 @@ import {
   ContextMenuBackdrop,
   ContextMenuItem,
   ContextMenuSection,
-} from "./context-menu";
+} from "./workbench/menu/context-menu";
 import { Icon } from "./Icons";
 import { useLocale, useT } from "./i18n";
-import { isImeKeyboardEvent } from "./ime-safe-dismiss";
+import { isImeKeyboardEvent } from "./workbench/overlay/ime-safe-dismiss";
 import {
   applyTagSelectionClick,
   filterTagsByQuery,
@@ -33,8 +33,8 @@ import {
   type TagSortDirection,
   type TagSortKey,
 } from "./tag-management-model";
-import { useDialogFocusTrap } from "./use-dialog-focus-trap";
-import { DialogShell } from "./ui/patterns";
+import { useDialogFocusTrap } from "./workbench/overlay/use-dialog-focus-trap";
+import { DialogShell } from "./workbench/ui/patterns";
 
 export type TagManagementWorkspaceProps = {
   tags: readonly TagSummary[];

@@ -28,7 +28,7 @@ import {
 } from "./preview-poll";
 import { waitForMediaArtifactRetry } from "./media-retry";
 import { Icon } from "./Icons";
-import { Select } from "./ui/primitives";
+import { Select } from "./workbench/ui/primitives";
 import type { ViewerChromeActivitySource } from "./viewer-chrome-idle";
 import {
   INITIAL_VIEWER_DRAWER_STATE,
@@ -85,12 +85,12 @@ import {
 } from "./ProxyPlaybackNotice";
 import { shouldCopyAssetOnShortcut } from "./viewer-copy-shortcut";
 import { matchAssetActionKeyboardCommand } from "./asset-action-keyboard";
-import { formatRuntimeShortcut } from "./shortcut-runtime";
+import { formatRuntimeShortcut } from "./workbench/shortcuts/shortcut-runtime";
 import {
   ViewerSessionController,
   type ViewerSessionIdentity,
 } from "./viewer/viewer-session-controller";
-import { ShellSurface, ViewerSurface } from "./ui/surfaces";
+import { ShellSurface, ViewerSurface } from "./workbench/ui/surfaces";
 import { ModelViewerSurface } from "./3d-viewer/viewer-surface";
 import { isMacPlatform } from "./commands/command-types";
 import { isBakeableStillImageFile } from "../shared/bakeable-still-image";

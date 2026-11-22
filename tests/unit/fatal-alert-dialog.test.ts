@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { FatalAlertDialog } from "../../src/renderer/FatalAlertDialog";
 import { LocaleProvider } from "../../src/renderer/i18n";
-import { useDialogFocusTrap } from "../../src/renderer/use-dialog-focus-trap";
+import { useDialogFocusTrap } from "../../src/renderer/workbench/overlay/use-dialog-focus-trap";
 
 function FocusTrapHarness({ children }: { children: ReactNode }) {
   useDialogFocusTrap(true);

@@ -19,7 +19,7 @@ import {
   virtualSummaryAssetIds,
   type VirtualBrowseLayout,
 } from "./virtual-browse-layout";
-import { captureVirtualScrollAnchorsBeforeGeometryChange } from "./virtual-scroll-anchor-signal";
+import { captureVirtualScrollAnchorsBeforeGeometryChange } from "../workbench/collection/virtual-scroll-anchor-signal";
 
 /**
  * Largest scope whose complete compact index is fetched in one request.

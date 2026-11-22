@@ -9,9 +9,9 @@
 import {
   type CommandPlatform,
   type ShortcutSpec,
-} from "./commands/command-types";
-import { matchesRuntimeShortcut } from "./shortcut-runtime";
-import type { ShortcutEventLike } from "../shared/shortcut-resolution";
+} from "../../commands/command-types";
+import { matchesRuntimeShortcut } from "../shortcuts/shortcut-runtime";
+import type { ShortcutEventLike } from "../../../shared/shortcut-resolution";
 
 /** Select all visible assets: ⌘A / Ctrl+A. */
 export const SELECT_ALL_SHORTCUT: ShortcutSpec = {

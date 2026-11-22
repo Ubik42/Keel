@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { isImeKeyboardEvent } from "./ime-safe-dismiss";
+import { isImeKeyboardEvent } from "./workbench/overlay/ime-safe-dismiss";
 
 export type AiConfigNumberInputProps = {
   id: string;

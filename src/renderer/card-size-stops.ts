@@ -10,7 +10,7 @@ import {
   ASSET_GRID_GAP_PX,
   countFittingColumns,
   leftoverWidthPx,
-} from "./asset-grid-layout";
+} from "./workbench/collection/asset-grid-layout";
 import {
   CARD_SIZE_MAX,
   CARD_SIZE_MIN,

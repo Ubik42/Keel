@@ -6,7 +6,7 @@
  * Windows: toggle uses Ctrl (Finder/Explorer parity).
  */
 
-import { isMacPlatform } from "./commands/command-types";
+import { isMacPlatform } from "../../commands/command-types";
 
 export type SelectionPlatform = "mac" | "windows";
 

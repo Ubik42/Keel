@@ -2,7 +2,7 @@ import {
   ContextMenu,
   ContextMenuBackdrop,
   ContextMenuItem,
-} from "./context-menu";
+} from "./workbench/menu/context-menu";
 import { useEffect, useRef, useState, type DragEvent } from "react";
 import type { KeelLibraryApi } from "../shared/library-api";
 import {

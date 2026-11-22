@@ -9,7 +9,7 @@ import {
   NavigationSidebar,
   type NavigationSidebarProps,
 } from "../../src/renderer/NavigationSidebar";
-import { MANAGED_FOLDERS_DRAG_TYPE } from "../../src/renderer/folder-drag-drop";
+import { MANAGED_FOLDERS_DRAG_TYPE } from "../../src/renderer/workbench/tree/folder-drag-drop";
 import { LocaleProvider } from "../../src/renderer/i18n";
 import { NAV_TREE_PREF_KEY } from "../../src/renderer/nav-tree-preferences";
 

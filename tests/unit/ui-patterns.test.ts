@@ -10,13 +10,13 @@ import {
   getTopmostDialog,
   shouldActivateDialogDefaultAction,
   type DialogStackEntry,
-} from "../../src/renderer/ui/patterns/dialog";
+} from "../../src/renderer/workbench/ui/patterns/dialog";
 import {
   resolveMenuNodes,
   type MenuNode,
-} from "../../src/renderer/ui/patterns/menu";
+} from "../../src/renderer/workbench/ui/patterns/menu";
 import { renderToStaticMarkup } from 'react-dom/server';
-import { PopoverSurface, SettingsCard } from '../../src/renderer/ui/patterns';
+import { PopoverSurface, SettingsCard } from '../../src/renderer/workbench/ui/patterns';
 
 describe("UI patterns: modal focus boundary", () => {
   it("only the topmost dialog consumes Escape", () => {

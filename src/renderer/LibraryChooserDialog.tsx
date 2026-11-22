@@ -3,8 +3,8 @@ import { useState, type ReactNode } from "react";
 import { Icon } from "./Icons";
 import { iconActionAttrs } from "./icon-action-attrs";
 import { useT } from "./i18n";
-import { DialogShell } from "./ui/patterns";
-import { cx } from "./ui/primitives/cx";
+import { DialogShell } from "./workbench/ui/patterns";
+import { cx } from "./workbench/ui/primitives/cx";
 
 export type ImportLibraryChooserExternalKind = "open" | "import";
 

@@ -8,7 +8,7 @@ import {
   type UseViewerZoomPanApi,
 } from "../../src/renderer/use-viewer-zoom-pan";
 import { DEFAULT_SHORTCUT_BINDINGS } from "../../src/shared/shortcut-bindings";
-import { setShortcutRuntime } from "../../src/renderer/shortcut-runtime";
+import { setShortcutRuntime } from "../../src/renderer/workbench/shortcuts/shortcut-runtime";
 
 type HarnessProps = {
   onApi: (api: UseViewerZoomPanApi) => void;

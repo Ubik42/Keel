@@ -11,7 +11,7 @@ import type { EntityAppearance } from "../shared/entity-appearance";
 import type { FolderBrowseEntry } from "../shared/asset-types";
 import { FolderInspectorBody } from "./folder-inspector";
 import { Icon } from "./Icons";
-import { ContextMenuProvider } from "./context-menu";
+import { ContextMenuProvider } from "./workbench/menu/context-menu";
 import { useInspectorTagEdit } from "./use-inspector-tag-edit";
 import { InspectorTagChip } from "./InspectorTagChip";
 import { InspectorCardFeelMotion } from "./inspector-card-feel-motion";
@@ -29,7 +29,7 @@ import {
 } from "./inspector-multi-edit";
 import { toOpenableExternalUrl } from "../shared/external-url";
 import { shouldShowAutoPaletteSection } from "../shared/palette-visibility";
-import { isImeKeyboardEvent, shouldHoldDismissForIme } from "./ime-safe-dismiss";
+import { isImeKeyboardEvent, shouldHoldDismissForIme } from "./workbench/overlay/ime-safe-dismiss";
 import { TextAssetPreviewTile } from "./TextAssetPreviewTile";
 import {
   buildTagSuggestions,
@@ -73,7 +73,7 @@ import { SequenceFrameCanvas } from "./SequenceFrameCanvas";
 import { advanceImageSequenceFrame } from "./image-sequence-playback";
 import { sequencePreviewIntervalMs } from "./image-sequence-preview";
 import { inspectorHeroPreviewKind } from "./inspector-hero-preview";
-import { PaneSurface } from "./ui/surfaces";
+import { PaneSurface } from "./workbench/ui/surfaces";
 import { isCorruptAsset } from "./availability-affordance";
 import {
   buildRawImageMetadataRows,

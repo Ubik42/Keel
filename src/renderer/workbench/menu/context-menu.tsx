@@ -14,9 +14,9 @@ import {
   type ReactNode,
 } from "react";
 import { createPortal } from "react-dom";
-import { useT } from "./i18n";
-import { isImeKeyboardEvent } from "./ime-safe-dismiss";
-import { MenuSurface, resolveMenuNodes } from "./ui/patterns";
+import { useT } from "../../i18n";
+import { isImeKeyboardEvent } from "../overlay/ime-safe-dismiss";
+import { MenuSurface, resolveMenuNodes } from "../ui/patterns";
 
 // ---------------------------------------------------------------------------
 // Types

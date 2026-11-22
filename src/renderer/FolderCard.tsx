@@ -5,7 +5,7 @@ import { coverSrc } from "./asset-card-hover-preview";
 import { folderAutomaticCoverSrc, folderCoverImageSrc } from "./folder-cover";
 import { useT } from "./i18n";
 import type { FolderBrowseEntry } from "../shared/asset-types";
-import { CardSurface } from "./ui/surfaces";
+import { CardSurface } from "./workbench/ui/surfaces";
 
 interface FolderCardProps {
   entry: FolderBrowseEntry;

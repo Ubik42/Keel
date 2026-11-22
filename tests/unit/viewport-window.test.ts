@@ -8,7 +8,7 @@ import {
   measureCanvasLocalViewport,
   quantizeCanvasViewportOffsetPx,
   viewportOverscanPx,
-} from "../../src/renderer/viewport-window";
+} from "../../src/renderer/workbench/collection/viewport-window";
 
 describe("cached canvas-local viewport", () => {
   it("tracks scrolling without layout measurements when the container origin is stable", () => {

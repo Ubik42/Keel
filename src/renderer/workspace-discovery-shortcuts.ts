@@ -13,7 +13,7 @@ import {
 import {
   asLegacyKeyboardShortcutEvent,
   matchesRuntimeShortcut,
-} from "./shortcut-runtime";
+} from "./workbench/shortcuts/shortcut-runtime";
 import type { ShortcutEventLike } from "../shared/shortcut-resolution";
 
 /** Focus the library search field: ⌘F / Ctrl+F. */

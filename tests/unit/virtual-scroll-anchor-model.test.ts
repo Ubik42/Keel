@@ -4,7 +4,7 @@ import {
   captureVirtualScrollAnchor,
   virtualScrollAnchorDelta,
   type VirtualScrollAnchorModel,
-} from "../../src/renderer/browse/virtual-scroll-anchor-model";
+} from "../../src/renderer/workbench/collection/virtual-scroll-anchor-model";
 
 function model(rects: Array<{ top: number; height: number }>): VirtualScrollAnchorModel {
   return {

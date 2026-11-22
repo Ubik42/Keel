@@ -8,8 +8,8 @@ import {
 
 import { Icon } from "./Icons";
 import { useT } from "./i18n";
-import { isImeKeyboardEvent } from "./ime-safe-dismiss";
-import { PopoverSurface } from "./ui/patterns";
+import { isImeKeyboardEvent } from "./workbench/overlay/ime-safe-dismiss";
+import { PopoverSurface } from "./workbench/ui/patterns";
 import { VIEWER_CHROME_TAB_INDEX } from "./viewer-focus-policy";
 import {
   ViewerQuickSettingsMenu,

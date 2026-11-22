@@ -2,7 +2,7 @@ import { DEFAULT_COLOR_SIMILARITY } from "../shared/color-filter-presets";
 import {
   type WorkspaceNavLocation,
   type WorkspaceNavViewport,
-} from "./workspace-nav-history";
+} from "./workbench/workspace/workspace-nav-history";
 import { resolveTagFilterSets } from "./dimension-filter-selection";
 
 export interface WorkspaceTabBrowseFilters {

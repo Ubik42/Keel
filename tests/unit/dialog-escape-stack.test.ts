@@ -4,7 +4,7 @@ import {
   isDialogEscapeLayerActive,
   resolveDialogEscapeAction,
   type DialogEscapeSnapshot,
-} from "../../src/renderer/dialog-escape-stack";
+} from "../../src/renderer/workbench/overlay/dialog-escape-stack";
 
 const empty: DialogEscapeSnapshot = {
   assetRenameOpen: false,

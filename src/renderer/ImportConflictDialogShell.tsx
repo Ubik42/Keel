@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 import { useT } from "./i18n";
-import { DialogShell } from "./ui/patterns";
+import { DialogShell } from "./workbench/ui/patterns";
 
 export type ImportConflictDialogShellProps = {
   titleId: string;

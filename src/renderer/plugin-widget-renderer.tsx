@@ -11,8 +11,8 @@ import {
   Slider,
   Switch,
   TextField,
-} from './ui/primitives';
-import { SettingsCard } from './ui/patterns';
+} from './workbench/ui/primitives';
+import { SettingsCard } from './workbench/ui/patterns';
 
 function listCellText(value: PluginWidgetListCell): string {
   return typeof value === 'string'

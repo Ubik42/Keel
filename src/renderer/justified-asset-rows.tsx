@@ -19,7 +19,7 @@ import {
   aspectRatioForAsset,
   layoutJustifiedRows,
   type JustifiedPlacement,
-} from "./asset-grid-layout";
+} from "./workbench/collection/asset-grid-layout";
 import {
   justifyRowCaptionBandPx,
   layoutJustifiedAssetRects,
@@ -31,7 +31,7 @@ import {
   resolveJustifiedCaptionBandPx,
 } from "./justified-caption-band";
 import { useFontSize } from "./FontSizeProvider";
-import { columnWindow, useCanvasLocalViewport } from "./viewport-window";
+import { columnWindow, useCanvasLocalViewport } from "./workbench/collection/viewport-window";
 import type { VirtualBrowseLayout } from "./browse/virtual-browse-layout";
 import { resolveBrowseCanvasLayout } from "./browse-window-slots";
 import {

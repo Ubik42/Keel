@@ -10,7 +10,7 @@ import { notifyEmbeddingCatalogChanged, subscribeEmbeddingCatalog } from "./embe
 import { useT } from "./i18n";
 import { loadSemanticSearchPreferences } from "./semantic-search-preferences";
 import { embeddingIndexCopyKey } from "./semantic-index-copy";
-import { Select } from "./ui/primitives";
+import { Select } from "./workbench/ui/primitives";
 
 const MODEL_LABEL_KEYS = {
   "embeddinggemma-2-compact": "settings.semanticSearch.modelCompact",

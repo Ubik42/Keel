@@ -8,14 +8,14 @@ import {
 
 import { Icon } from "./Icons";
 import { useT } from "./i18n";
-import { isImeKeyboardEvent } from "./ime-safe-dismiss";
+import { isImeKeyboardEvent } from "./workbench/overlay/ime-safe-dismiss";
 import type { SortDefinition } from "../shared/asset-types";
-import { PortaledPopover } from "./PortaledPopover";
+import { PortaledPopover } from "./workbench/overlay/PortaledPopover";
 import {
   focusFirstRovingItem,
   handleRovingListKeyDown,
   ROVING_OPTION_SELECTOR,
-} from "./roving-list-keyboard";
+} from "./workbench/overlay/roving-list-keyboard";
 
 /** Field options + in-panel order radios share one arrow-key roving set. */
 const SORT_PANEL_ROVING_SELECTOR = `${ROVING_OPTION_SELECTOR}, [role="radio"]`;

@@ -15,8 +15,8 @@ import type { CommandLocale, CommandPlatform } from "./commands/command-types";
 import { Icon, type IconName } from "./Icons";
 import { iconActionAttrs } from "./icon-action-attrs";
 import { translateForLocale } from "./i18n";
-import { Slider } from "./ui/primitives";
-import { ShellSurface } from "./ui/surfaces";
+import { Slider } from "./workbench/ui/primitives";
+import { ShellSurface } from "./workbench/ui/surfaces";
 
 const FIELD_BUTTONS: readonly {
   readonly id:

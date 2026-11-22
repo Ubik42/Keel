@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import type { KeelShellApi } from '../shared/external-url';
-import type { DialogEscapeSnapshot } from './dialog-escape-stack';
+import type { DialogEscapeSnapshot } from './workbench/overlay/dialog-escape-stack';
 import {
   isPluginInputCaptureSystemModalDomOpen,
   resolvePluginInputCaptureSystemModalActive,

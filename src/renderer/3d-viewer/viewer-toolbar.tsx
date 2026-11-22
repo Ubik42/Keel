@@ -8,10 +8,10 @@
  */
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { createShellPortal } from '../ui/ShellStyleScope';
-import { Select } from '../ui/primitives/Select';
+import { createShellPortal } from '../workbench/ui/ShellStyleScope';
+import { Select } from '../workbench/ui/primitives/Select';
 import { useLocale } from '../i18n';
-import { isImeKeyboardEvent } from '../ime-safe-dismiss';
+import { isImeKeyboardEvent } from '../workbench/overlay/ime-safe-dismiss';
 import { Icon } from '../Icons';
 import { LIGHT_INTENSITY_MAX, LIGHT_INTENSITY_MIN } from './light-intensity';
 import {

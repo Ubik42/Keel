@@ -9,7 +9,7 @@
 import {
   ASSET_GRID_GAP_PX,
   countFittingColumns,
-} from "./asset-grid-layout";
+} from "./workbench/collection/asset-grid-layout";
 import { cardSizeFillingColumns } from "./card-size-stops";
 
 /** Horizontal padding on `.folder-card-row` / `.asset-grid` (each side). */

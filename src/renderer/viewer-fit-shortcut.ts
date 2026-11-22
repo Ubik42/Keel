@@ -1,5 +1,5 @@
 /** Viewer-wide keyboard gesture for returning media to contain-fit. */
-import { matchesRuntimeShortcut } from "./shortcut-runtime";
+import { matchesRuntimeShortcut } from "./workbench/shortcuts/shortcut-runtime";
 import type { ShortcutEventLike } from "../shared/shortcut-resolution";
 import {
   isTypingKeyboardTarget,

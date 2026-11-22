@@ -6,7 +6,7 @@ import { sidebarCommandDefinitions } from "../../src/renderer/commands/sidebar-c
 import { toolbarCommandDefinitions } from "../../src/renderer/commands/toolbar-commands";
 import type { ShortcutSpec } from "../../src/renderer/commands/command-types";
 import { PLATFORM_SHORTCUT_TABLE } from "../../src/shared/platform-shortcut-table";
-import { SELECT_ALL_SHORTCUT, INVERT_SELECTION_SHORTCUT } from "../../src/renderer/selection-keyboard";
+import { SELECT_ALL_SHORTCUT, INVERT_SELECTION_SHORTCUT } from "../../src/renderer/workbench/selection/selection-keyboard";
 import { FOCUS_SEARCH_SHORTCUT } from "../../src/renderer/workspace-discovery-shortcuts";
 
 function expectBothPlatforms(id: string, shortcut: ShortcutSpec | undefined) {

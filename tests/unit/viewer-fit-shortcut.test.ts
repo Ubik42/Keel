@@ -4,7 +4,7 @@ import {
   isViewerFitShortcut,
   shouldHandleViewerFitKeyboardEvent,
 } from "../../src/renderer/viewer-fit-shortcut";
-import { setShortcutRuntime } from "../../src/renderer/shortcut-runtime";
+import { setShortcutRuntime } from "../../src/renderer/workbench/shortcuts/shortcut-runtime";
 import {
   DEFAULT_SHORTCUT_BINDINGS,
   setShortcutOverride,

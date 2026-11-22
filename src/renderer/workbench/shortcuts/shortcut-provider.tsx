@@ -8,8 +8,8 @@ import {
   type ReactNode,
 } from "react";
 
-import { isMacPlatform } from "./commands/command-types";
-import type { ShortcutPlatform } from "../shared/shortcut-catalog";
+import { isMacPlatform } from "../../commands/command-types";
+import type { ShortcutPlatform } from "../../../shared/shortcut-catalog";
 import {
   DEFAULT_SHORTCUT_BINDINGS,
   platformBindings,
@@ -17,8 +17,8 @@ import {
   type ShortcutBindings,
   type ShortcutOverride,
   type ShortcutPlatformBindings,
-} from "../shared/shortcut-bindings";
-import type { KeelShortcutsApi } from "../shared/shortcut-api";
+} from "../../../shared/shortcut-bindings";
+import type { KeelShortcutsApi } from "../../../shared/shortcut-api";
 import { setShortcutRuntime } from "./shortcut-runtime";
 
 type ShortcutsWindow = Window & {

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { ContextMenuSubmenu } from "./context-menu";
+import { ContextMenuSubmenu } from "./workbench/menu/context-menu";
 import { Icon } from "./Icons";
 import { useT } from "./i18n";
 import { VIEWER_CHROME_TAB_INDEX } from "./viewer-focus-policy";

@@ -5,7 +5,7 @@
  * from the active tab's location.
  */
 
-import { type WorkspaceNavLocation } from "./workspace-nav-history";
+import { type WorkspaceNavLocation } from "./workbench/workspace/workspace-nav-history";
 import { resolveSessionStorage, type SessionStorage } from "./session-storage";
 import type { WorkspaceTabsState } from "./workspace-tabs";
 

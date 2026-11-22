@@ -9,7 +9,7 @@ import {
 
 import { Icon } from "./Icons";
 import { useT } from "./i18n";
-import { isImeKeyboardEvent } from "./ime-safe-dismiss";
+import { isImeKeyboardEvent } from "./workbench/overlay/ime-safe-dismiss";
 import {
   buildShortcutRows,
   countShortcutRows,
@@ -20,7 +20,7 @@ import {
   type ShortcutGroupModel,
   type ShortcutRowModel,
 } from "./shortcut-settings-model";
-import { useShortcutSettings } from "./shortcut-provider";
+import { useShortcutSettings } from "./workbench/shortcuts/shortcut-provider";
 import { findShortcutAction } from "../shared/shortcut-catalog";
 import type { ShortcutScope } from "../shared/shortcut-catalog";
 import {
@@ -32,9 +32,9 @@ import {
   type ShortcutConflict,
 } from "../shared/shortcut-resolution";
 import type { ShortcutChord } from "../shared/shortcut-catalog";
-import { shortcutInputFromMouseEvent } from "./shortcut-runtime";
+import { shortcutInputFromMouseEvent } from "./workbench/shortcuts/shortcut-runtime";
 import { IconActionButton } from "./icon-action-button";
-import { SettingsCard } from "./ui/patterns";
+import { SettingsCard } from "./workbench/ui/patterns";
 
 const SCOPE_LABEL_KEYS: Record<ShortcutScope, string> = {
   app: "shortcuts.scope.app",

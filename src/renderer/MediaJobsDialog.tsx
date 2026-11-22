@@ -2,8 +2,8 @@ import { Icon } from "./Icons";
 import { iconActionAttrs } from "./icon-action-attrs";
 import { useLocale, useT } from "./i18n";
 import { displayAiJobFailure } from "./ai-job-error-message";
-import { DialogShell } from "./ui/patterns";
-import { Tooltip } from "./ui/primitives/Tooltip";
+import { DialogShell } from "./workbench/ui/patterns";
+import { Tooltip } from "./workbench/ui/primitives/Tooltip";
 import {
   formatPluginJobError,
   formatPluginJobProgressMessage,

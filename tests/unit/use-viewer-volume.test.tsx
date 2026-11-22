@@ -4,7 +4,7 @@ import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useViewerVolume } from "../../src/renderer/use-viewer-volume";
-import { setShortcutRuntime } from "../../src/renderer/shortcut-runtime";
+import { setShortcutRuntime } from "../../src/renderer/workbench/shortcuts/shortcut-runtime";
 import {
   DEFAULT_SHORTCUT_BINDINGS,
   setShortcutOverride,

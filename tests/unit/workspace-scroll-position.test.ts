@@ -5,7 +5,7 @@ import {
   pendingWorkspaceViewportAction,
   restoreWorkspaceNavViewport,
   resolveWorkspaceScrollTop,
-} from "../../src/renderer/workspace-scroll-position";
+} from "../../src/renderer/workbench/workspace/workspace-scroll-position";
 
 afterEach(() => vi.unstubAllGlobals());
 

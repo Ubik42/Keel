@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { AppSettingsShortcutsPage } from "../../src/renderer/AppSettingsShortcutsPage";
 import { LocaleProvider } from "../../src/renderer/i18n";
-import { ShortcutProvider } from "../../src/renderer/shortcut-provider";
+import { ShortcutProvider } from "../../src/renderer/workbench/shortcuts/shortcut-provider";
 import { DEFAULT_SHORTCUT_BINDINGS } from "../../src/shared/shortcut-bindings";
 
 type SetRequest = {

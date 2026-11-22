@@ -10,7 +10,7 @@ import {
   asLegacyKeyboardShortcutEvent,
   listenForShortcutInputs,
   matchesRuntimeShortcut,
-} from "./shortcut-runtime";
+} from "./workbench/shortcuts/shortcut-runtime";
 import type { ShortcutEventLike } from "../shared/shortcut-resolution";
 import {
   sidebarCommandDefinitions,

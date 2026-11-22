@@ -30,7 +30,7 @@ import { iconActionAttrs } from "./icon-action-attrs";
 import { useT } from "./i18n";
 import type { KeelPluginManagerApi } from "../shared/plugin-manager-api";
 import type { KeelMcpSettingsApi } from "../shared/mcp";
-import { DialogShell } from "./ui/patterns";
+import { DialogShell } from "./workbench/ui/patterns";
 
 export interface AppSettingsDialogProps {
   open: boolean;

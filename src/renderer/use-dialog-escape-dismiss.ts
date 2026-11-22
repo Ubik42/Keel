@@ -6,9 +6,9 @@ import {
   isDialogEscapeLayerActive,
   resolveDialogEscapeAction,
   type DialogEscapeSnapshot,
-} from "./dialog-escape-stack";
+} from "./workbench/overlay/dialog-escape-stack";
 import { LibraryOperationError, toMessage } from "./error-utils";
-import { isImeKeyboardEvent } from "./ime-safe-dismiss";
+import { isImeKeyboardEvent } from "./workbench/overlay/ime-safe-dismiss";
 import { useLocale, useT } from "./i18n";
 
 export type UseDialogEscapeDismissParams = {

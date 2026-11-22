@@ -3,7 +3,7 @@ import { useState, type ReactNode } from "react";
 import type { ImportSourceFailurePlan } from "../shared/protocol/responses";
 import { shouldShowApplyToRest } from "./image-sequence-import-dialog";
 import { useT } from "./i18n";
-import { DialogShell } from "./ui/patterns";
+import { DialogShell } from "./workbench/ui/patterns";
 
 export type ImportSourceFailureDialogProps = {
   plan: ImportSourceFailurePlan | null;

@@ -3,7 +3,7 @@ import { act, createElement } from 'react';
 import { createRoot } from 'react-dom/client';
 import { expect, it, vi } from 'vitest';
 import { InspectorTagChip } from '../../src/renderer/InspectorTagChip';
-import { ContextMenuProvider } from '../../src/renderer/context-menu';
+import { ContextMenuProvider } from '../../src/renderer/workbench/menu/context-menu';
 import { LocaleProvider } from '../../src/renderer/i18n';
 
 it('hides removal until editing and filters only with a modifier click', async () => {

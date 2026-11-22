@@ -1,4 +1,4 @@
-import { Select, type SelectOption } from './ui/primitives/Select';
+import { Select, type SelectOption } from './workbench/ui/primitives/Select';
 
 export type PluginWidgetSelectOption = SelectOption;
 

@@ -7,7 +7,7 @@ import {
   contentRectToViewport,
   rectsIntersect,
   viewportRectToContent,
-} from "../../src/renderer/marquee-geometry";
+} from "../../src/renderer/workbench/selection/marquee-geometry";
 
 const viewport = {
   left: 100,

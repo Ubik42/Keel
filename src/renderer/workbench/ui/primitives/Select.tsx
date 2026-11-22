@@ -8,13 +8,13 @@ import {
   type ReactNode,
 } from 'react';
 
-import { isImeKeyboardEvent } from '../../ime-safe-dismiss';
-import { PortaledPopover } from '../../PortaledPopover';
+import { isImeKeyboardEvent } from '../../overlay/ime-safe-dismiss';
+import { PortaledPopover } from '../../overlay/PortaledPopover';
 import {
   focusFirstRovingItem,
   handleRovingListKeyDown,
   ROVING_OPTION_SELECTOR,
-} from '../../roving-list-keyboard';
+} from '../../overlay/roving-list-keyboard';
 import type { UiLayerName } from '../foundation';
 import {
   Field,

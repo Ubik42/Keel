@@ -12,10 +12,10 @@ import {
   ContextMenuSubmenu,
   useContextMenu,
   type ContextMenuSubmenuChildren,
-} from "./context-menu";
+} from "./workbench/menu/context-menu";
 import { Icon } from "./Icons";
 import { useT } from "./i18n";
-import { isImeKeyboardEvent } from "./ime-safe-dismiss";
+import { isImeKeyboardEvent } from "./workbench/overlay/ime-safe-dismiss";
 import { moveTagSuggestionIndex } from "./tag-suggestions";
 import {
   buildTagAssignCandidates,

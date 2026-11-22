@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { placeOverlayInViewport, type OverlayAnchor } from "../../src/renderer/place-overlay";
+import { placeOverlayInViewport, type OverlayAnchor } from "../../src/renderer/workbench/overlay/place-overlay";
 
 const viewport = { width: 800, height: 600 };
 

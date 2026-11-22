@@ -1,12 +1,12 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { Icon } from "./Icons";
 import { useT } from "./i18n";
-import { isImeKeyboardEvent } from "./ime-safe-dismiss";
+import { isImeKeyboardEvent } from "./workbench/overlay/ime-safe-dismiss";
 import {
   MenuSurface,
   resolveMenuNodes,
   type ResolvedMenuNode,
-} from "./ui/patterns";
+} from "./workbench/ui/patterns";
 
 export type WorkspaceOverflowItem = {
   id: string;

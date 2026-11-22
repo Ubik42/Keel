@@ -18,7 +18,7 @@ import {
   Switch,
   TextField,
   Tooltip,
-} from '../../src/renderer/ui/primitives';
+} from '../../src/renderer/workbench/ui/primitives';
 
 test('cx/ARIA helpers omit empty values and preserve description order', () => {
   expect(mergeAriaDescribedBy(undefined, 'description', '', 'error')).toBe('description error');

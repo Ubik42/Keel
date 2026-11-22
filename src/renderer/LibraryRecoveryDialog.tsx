@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 
 import type { RendererLibrarySummary } from "../shared/protocol/responses";
 import { useT } from "./i18n";
-import { DialogShell } from "./ui/patterns";
+import { DialogShell } from "./workbench/ui/patterns";
 
 export type LibraryRecoveryDialogProps = {
   open: boolean;

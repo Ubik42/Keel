@@ -6,7 +6,7 @@ import { CUSTOM_THEME_EDITOR_FIELDS } from "../../src/renderer/theme/ThemeColorS
 import { CUSTOM_THEME_ISLAND_TOKENS } from "../../src/renderer/theme/custom-theme";
 
 const css = readFileSync("src/renderer/styles.css", "utf8");
-const tokens = readFileSync("src/renderer/ui/tokens.css", "utf8");
+const tokens = readFileSync("src/renderer/workbench/ui/tokens.css", "utf8");
 const bg = readFileSync("src/renderer/theme/background-preferences.ts", "utf8");
 
 describe("a94 window background wiring", () => {

@@ -3,7 +3,7 @@ import { type ReactNode } from "react";
 import { Icon } from "./Icons";
 import { iconActionAttrs } from "./icon-action-attrs";
 import { useT } from "./i18n";
-import { DialogShell } from "./ui/patterns";
+import { DialogShell } from "./workbench/ui/patterns";
 
 /** 组件名与许可证是专有名词，无需本地化；完整清单见 THIRD_PARTY_NOTICES.md。 */
 const NOTICED_COMPONENTS: ReadonlyArray<{ name: string; license: string }> = [

@@ -26,7 +26,7 @@ import {
   ContextMenuSubmenu,
   useContextMenu,
   type ContextMenuDescriptor,
-} from "./context-menu";
+} from "./workbench/menu/context-menu";
 import { canFindSimilarForAsset } from "./find-similar";
 import { isSemanticSearchModelId } from "../shared/embedding/profile";
 import {
@@ -36,7 +36,7 @@ import {
 } from "../shared/embedding/modalities";
 import type { EmbeddingHttpAdapter } from "../shared/embedding/http-service";
 import { Icon, type IconName } from "./Icons";
-import { formatRuntimeShortcut } from "./shortcut-runtime";
+import { formatRuntimeShortcut } from "./workbench/shortcuts/shortcut-runtime";
 import { TagPickerEntry, TagPickerMenu } from "./TagPickerMenu";
 import { ColorSpaceSubmenuItems } from "./ColorSpacePickerMenu";
 import { isMacPlatform } from "./commands/command-types";

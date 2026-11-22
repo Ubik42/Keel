@@ -7,7 +7,7 @@ import {
   isImeFocusDeparture,
   isImeKeyboardEvent,
   shouldHoldDismissForIme,
-} from "../../src/renderer/ime-safe-dismiss";
+} from "../../src/renderer/workbench/overlay/ime-safe-dismiss";
 
 describe("ime-safe-dismiss (Serpent-fb30ca)", () => {
   it("treats composing / Process / keyCode 229 as IME key events", () => {

@@ -12,7 +12,7 @@ import {
 import {
   hasActiveModalDialog,
   useDialogFocusTrap,
-} from "../../src/renderer/use-dialog-focus-trap";
+} from "../../src/renderer/workbench/overlay/use-dialog-focus-trap";
 
 describe("plugin widget dialog keyboard focus", () => {
   it("steals OS focus only when the document is inactive", () => {

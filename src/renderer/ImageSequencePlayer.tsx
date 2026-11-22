@@ -6,7 +6,7 @@ import { iconActionAttrs } from "./icon-action-attrs";
 import { Icon } from "./Icons";
 import { useT } from "./i18n";
 import { SequenceFrameCanvas } from "./SequenceFrameCanvas";
-import { Slider } from "./ui/primitives";
+import { Slider } from "./workbench/ui/primitives";
 import { advanceImageSequenceFrame } from "./image-sequence-playback";
 import type { ViewerDisplayTransform } from "./viewer-display-transform";
 import { ZoomableImage } from "./zoomable-preview-image";

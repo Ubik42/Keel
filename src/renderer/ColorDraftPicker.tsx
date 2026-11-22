@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type PointerEvent } from "react";
 
-import { Button } from "./ui/primitives";
+import { Button } from "./workbench/ui/primitives";
 import { useT } from "./i18n";
 import {
   clampByte,

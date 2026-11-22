@@ -12,7 +12,7 @@
 
 export const VIDEO_PLAYBACK_RATES = [0.25, 0.5, 1, 1.5, 2, 4] as const;
 
-import { matchesRuntimeShortcut } from "./shortcut-runtime";
+import { matchesRuntimeShortcut } from "./workbench/shortcuts/shortcut-runtime";
 import type { ShortcutEventLike } from "../shared/shortcut-resolution";
 import {
   DEFAULT_VIDEO_SEEK_JUMP_PREFERENCES,

@@ -19,7 +19,7 @@ import {
   BROWSE_PAGE_SIZE,
   registerBrowseSearchPage,
 } from "./use-browse-pagination";
-import type { WorkspaceNavLocation } from "./workspace-nav-history";
+import type { WorkspaceNavLocation } from "./workbench/workspace/workspace-nav-history";
 
 export type SessionAssetPage = {
   items: AssetSummary[];

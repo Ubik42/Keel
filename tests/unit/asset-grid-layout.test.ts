@@ -10,7 +10,7 @@ import {
   layoutJustifiedRows,
   leftoverWidthPx,
   masonryVisualReadingOrderIds,
-} from "../../src/renderer/asset-grid-layout";
+} from "../../src/renderer/workbench/collection/asset-grid-layout";
 import { resolveMasonryTabTarget } from "../../src/renderer/masonry-focus-order";
 
 describe("masonry keyboard focus order", () => {

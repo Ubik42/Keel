@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import type { KeyboardTargetLike } from "./video-player-controls";
 import { isEditableKeyboardTarget } from "./video-player-controls";
-import { matchesRuntimeShortcut } from "./shortcut-runtime";
+import { matchesRuntimeShortcut } from "./workbench/shortcuts/shortcut-runtime";
 import type { ShortcutEventLike } from "../shared/shortcut-resolution";
 
 export interface ViewerVolumePreferences {

@@ -2,8 +2,8 @@ import { Fragment, useEffect, useMemo, useRef, useState, type DragEvent } from '
 import type { TagSummary } from '../shared/asset-types';
 import { Icon } from './Icons';
 import { useT } from './i18n';
-import { isImeKeyboardEvent } from './ime-safe-dismiss';
-import { ContextMenu, ContextMenuBackdrop, ContextMenuItem, ContextMenuSection } from './context-menu';
+import { isImeKeyboardEvent } from './workbench/overlay/ime-safe-dismiss';
+import { ContextMenu, ContextMenuBackdrop, ContextMenuItem, ContextMenuSection } from './workbench/menu/context-menu';
 import { resolveInternalAssetDropIds, resolveManagedDropEffect, supportsManagedAssetDrag } from './asset-drag-drop';
 import { descendantTagIds, tagTreeRows } from './tag-tree-model';
 

@@ -9,7 +9,7 @@ import {
   PaneSurface,
   ShellSurface,
   ViewerSurface,
-} from '../../src/renderer/ui/surfaces';
+} from '../../src/renderer/workbench/ui/surfaces';
 
 describe('UI surfaces', () => {
   it('provides a semantic shell marker without owning content', () => {

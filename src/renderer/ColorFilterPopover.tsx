@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 
 import { Icon } from "./Icons";
-import { Slider } from "./ui/primitives";
+import { Slider } from "./workbench/ui/primitives";
 import { ColorDraftPicker } from "./ColorDraftPicker";
 import { applyDimensionSelectionClick } from "./dimension-filter-selection";
 import {

@@ -19,7 +19,7 @@ import {
   ASSET_GRID_GAP_PX,
   countFittingColumns,
   distributeMasonryItems,
-} from "./asset-grid-layout";
+} from "./workbench/collection/asset-grid-layout";
 import {
   estimateMasonryCardBodyPx,
   layoutMasonryAssetRects,
@@ -31,7 +31,7 @@ import {
 import { isCanvasReflowRestorationPending } from "./canvas-reflow-restore";
 import { canvasHasPreviewScrollHold } from "./browse-scroll-debug";
 import { estimateMasonryPreviewHeightPx } from "./masonry-preview-frame";
-import { columnWindow, useCanvasLocalViewport } from "./viewport-window";
+import { columnWindow, useCanvasLocalViewport } from "./workbench/collection/viewport-window";
 import { useFontSize } from "./FontSizeProvider";
 import type { VirtualBrowseLayout } from "./browse/virtual-browse-layout";
 import { resolveBrowseCanvasLayout } from "./browse-window-slots";

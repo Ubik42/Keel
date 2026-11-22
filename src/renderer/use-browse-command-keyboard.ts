@@ -22,7 +22,7 @@ import {
   isEditableAssetActionKeyboardTarget,
 } from "./asset-action-keyboard";
 import type { CommandPlatform } from "./commands/command-types";
-import { listenForShortcutInputs, matchesRuntimeShortcut } from "./shortcut-runtime";
+import { listenForShortcutInputs, matchesRuntimeShortcut } from "./workbench/shortcuts/shortcut-runtime";
 import {
   isLibrarySearchInput,
   matchFocusSearchShortcut,

@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { buildBrowseSelectionOrder, resolveShiftBrowseRange } from '../../src/renderer/browse-selection-order';
+import { buildBrowseSelectionOrder, resolveShiftBrowseRange } from '../../src/renderer/workbench/selection/browse-selection-order';
 import { orderMasonryShiftAssetIds } from '../../src/renderer/masonry-shift-selection';
 import {
   assetBrowseAnchor,
   resolveShiftBrowseAnchor,
-} from '../../src/renderer/selection-anchor';
+} from '../../src/renderer/workbench/selection/selection-anchor';
 import type { AssetSummary } from '../../src/shared/asset-types';
 
 function asset(id: string): AssetSummary {

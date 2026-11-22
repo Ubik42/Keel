@@ -3,7 +3,7 @@ import { Icon } from "./Icons";
 import { iconActionAttrs } from "./icon-action-attrs";
 import { useT } from "./i18n";
 import type { RecentLibraryMenuEntry } from "./LibrarySwitcher";
-import { DialogShell } from "./ui/patterns";
+import { DialogShell } from "./workbench/ui/patterns";
 
 export type CreateLibraryPhase = "start" | "form" | "eagle" | "billfish";
 

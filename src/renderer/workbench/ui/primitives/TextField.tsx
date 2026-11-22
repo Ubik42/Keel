@@ -12,7 +12,7 @@ import {
   useFieldId,
 } from './Field';
 import { cx } from './cx';
-import { isImeKeyboardEvent } from '../../ime-safe-dismiss';
+import { isImeKeyboardEvent } from '../../overlay/ime-safe-dismiss';
 
 export type TextFieldProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> & {
   readonly label?: ReactNode;

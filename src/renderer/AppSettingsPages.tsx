@@ -1,6 +1,6 @@
 import { OpenWithSettingsCard } from "./OpenWithSettingsCard";
 import { loadInterfaceScale, saveInterfaceScale } from './interface-scale';
-import { isImeKeyboardEvent } from "./ime-safe-dismiss";
+import { isImeKeyboardEvent } from "./workbench/overlay/ime-safe-dismiss";
 import { useState, type ReactNode } from "react";
 
 import {
@@ -66,8 +66,8 @@ import {
   MENU_ACRYLIC_LEVEL_MIN,
   clampMenuAcrylicLevel,
 } from "./menu-acrylic-preferences";
-import { SettingsCard, SettingsDisclosure } from "./ui/patterns";
-import { Slider, Switch } from "./ui/primitives";
+import { SettingsCard, SettingsDisclosure } from "./workbench/ui/patterns";
+import { Slider, Switch } from "./workbench/ui/primitives";
 import {
   BackgroundSettings,
   ThemeAccentPicker,

@@ -7,7 +7,7 @@ import {
 } from "react";
 
 import { Icon, type IconName } from "./Icons";
-import { Select } from "./ui/primitives";
+import { Select } from "./workbench/ui/primitives";
 import { FilterTagPicker } from "./FilterTagPicker";
 import { FilterPresetChips } from "./FilterPresetChips";
 import {
@@ -55,11 +55,11 @@ import { SortModeControl, type SortFieldOption } from "./SortModeControl";
 import { useT } from "./i18n";
 import type { TagSummary } from "../shared/asset-types";
 import type { SortDefinition } from "../shared/asset-types";
-import { PortaledPopover } from "./PortaledPopover";
+import { PortaledPopover } from "./workbench/overlay/PortaledPopover";
 import {
   attachCompositionLock,
   shouldHoldDismissForIme,
-} from "./ime-safe-dismiss";
+} from "./workbench/overlay/ime-safe-dismiss";
 
 export type DimensionId =
   | "color"

@@ -14,9 +14,9 @@ import {
 import type { CommandPlatform } from "./commands/command-types";
 import { clampViewerScale } from "./viewer-fit";
 import { isEditableKeyboardTarget } from "./video-player-controls";
-import { matchesRuntimeShortcut } from "./shortcut-runtime";
+import { matchesRuntimeShortcut } from "./workbench/shortcuts/shortcut-runtime";
 import type { ShortcutEventLike } from "../shared/shortcut-resolution";
-import { hasActiveModalDialog } from "./use-dialog-focus-trap";
+import { hasActiveModalDialog } from "./workbench/overlay/use-dialog-focus-trap";
 
 export type GlobalZoomAction = "in" | "out" | "reset";
 

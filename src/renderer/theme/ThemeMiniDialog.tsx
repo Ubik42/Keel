@@ -1,9 +1,9 @@
 import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react';
-import { createShellPortal } from '../ui/ShellStyleScope';
+import { createShellPortal } from '../workbench/ui/ShellStyleScope';
 
-import { isImeKeyboardEvent } from '../ime-safe-dismiss';
-import { DialogShell } from '../ui/patterns';
-import { Button } from '../ui/primitives';
+import { isImeKeyboardEvent } from '../workbench/overlay/ime-safe-dismiss';
+import { DialogShell } from '../workbench/ui/patterns';
+import { Button } from '../workbench/ui/primitives';
 
 /**
  * Small modal stacked over the settings dialog (a94): new-theme name and

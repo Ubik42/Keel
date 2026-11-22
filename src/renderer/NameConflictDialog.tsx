@@ -4,7 +4,7 @@ import { useT } from "./i18n";
 import type { ImportConflictPlan } from "../shared/protocol/responses";
 import type { RememberedNameConflictDecision } from "./import-conflict-preferences";
 import { ImportConflictDialogShell } from "./ImportConflictDialogShell";
-import { Select } from "./ui/primitives";
+import { Select } from "./workbench/ui/primitives";
 
 export interface NameConflictDialogProps {
   conflicts: ImportConflictPlan;

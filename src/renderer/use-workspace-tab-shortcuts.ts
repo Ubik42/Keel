@@ -11,9 +11,9 @@ import { useEffect, useRef } from "react";
 import type { ShortcutPlatform } from "../shared/shortcut-catalog";
 import type { ShortcutEventLike } from "../shared/shortcut-resolution";
 import { isEditableAssetActionKeyboardTarget } from "./asset-action-keyboard";
-import { isImeKeyboardEvent } from "./ime-safe-dismiss";
-import { listenForShortcutInputs, matchesRuntimeShortcut } from "./shortcut-runtime";
-import { hasActiveModalDialog } from "./use-dialog-focus-trap";
+import { isImeKeyboardEvent } from "./workbench/overlay/ime-safe-dismiss";
+import { listenForShortcutInputs, matchesRuntimeShortcut } from "./workbench/shortcuts/shortcut-runtime";
+import { hasActiveModalDialog } from "./workbench/overlay/use-dialog-focus-trap";
 
 export type WorkspaceTabShortcutCommand = "new" | "close";
 

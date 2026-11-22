@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   isDialogEscapeLayerActive,
   type DialogEscapeSnapshot,
-} from '../../src/renderer/dialog-escape-stack';
+} from '../../src/renderer/workbench/overlay/dialog-escape-stack';
 import {
   resolvePluginInputCaptureSystemModalActive,
 } from '../../src/renderer/plugin-input-capture-modal-seam';

@@ -3,7 +3,7 @@ import {
   createPluginContributionContext,
   type PluginContributionContext,
 } from "../plugins/plugin-context";
-import type { ContextMenuDescriptor } from "./context-menu";
+import type { ContextMenuDescriptor } from "./workbench/menu/context-menu";
 
 type MenuAsset = Pick<
   AssetSummary,

@@ -2,8 +2,8 @@ import { useEffect, useLayoutEffect, useSyncExternalStore } from 'react';
 
 import { CriticalConfirmationDialog } from './CriticalConfirmationDialog';
 import { useT } from './i18n';
-import { isImeKeyboardEvent } from './ime-safe-dismiss';
-import { createShellPortal } from './ui/ShellStyleScope';
+import { isImeKeyboardEvent } from './workbench/overlay/ime-safe-dismiss';
+import { createShellPortal } from './workbench/ui/ShellStyleScope';
 
 type LocalConfirmation = {
   readonly id: string;

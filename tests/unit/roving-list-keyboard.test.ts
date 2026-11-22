@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 
-import { resolveRovingTargetIndex } from "../../src/renderer/roving-list-keyboard";
+import { resolveRovingTargetIndex } from "../../src/renderer/workbench/overlay/roving-list-keyboard";
 
 test("resolveRovingTargetIndex wraps Arrow keys and jumps Home/End", () => {
   expect(resolveRovingTargetIndex("ArrowDown", -1, 3)).toBe(0);

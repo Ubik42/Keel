@@ -15,7 +15,7 @@ import {
   type GlobalZoomAction,
   shouldIgnoreGlobalZoomShortcut,
 } from "./global-zoom-shortcuts";
-import { listenForShortcutInputs } from "./shortcut-runtime";
+import { listenForShortcutInputs } from "./workbench/shortcuts/shortcut-runtime";
 import type { ShortcutEventLike } from "../shared/shortcut-resolution";
 import { useT } from "./i18n";
 import type { PdfZoomAnchor } from "./pdf-viewer-layout";

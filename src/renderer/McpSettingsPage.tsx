@@ -7,11 +7,11 @@ import {
   type KeelMcpSettingsApi,
 } from "../shared/mcp";
 import { Icon } from "./Icons";
-import { isImeKeyboardEvent } from "./ime-safe-dismiss";
+import { isImeKeyboardEvent } from "./workbench/overlay/ime-safe-dismiss";
 import { useT } from "./i18n";
 import { formatMcpSettingsFailure } from "./mcp-settings-error";
-import { SettingsCard, SettingsDisclosure } from "./ui/patterns";
-import { Select, Switch } from "./ui/primitives";
+import { SettingsCard, SettingsDisclosure } from "./workbench/ui/patterns";
+import { Select, Switch } from "./workbench/ui/primitives";
 
 function CredentialLabel({
   label,

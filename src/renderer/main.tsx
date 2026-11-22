@@ -10,14 +10,14 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import { App } from './App';
-import { installImeCompositionGuard } from './ime-safe-dismiss';
+import { installImeCompositionGuard } from './workbench/overlay/ime-safe-dismiss';
 import { ElevationProvider } from './ElevationProvider';
 import { FontSizeProvider } from './FontSizeProvider';
 import { InspectorCardFeelProvider } from './InspectorCardFeelProvider';
 import { LocaleProvider } from './i18n';
 import { MenuAcrylicProvider } from './MenuAcrylicProvider';
 import { RadiusProvider } from './RadiusProvider';
-import { ShortcutProvider } from './shortcut-provider';
+import { ShortcutProvider } from './workbench/shortcuts/shortcut-provider';
 import { applyRendererPlatform } from './renderer-platform';
 import {
   applyMenuAcrylicPreferences,
@@ -37,9 +37,9 @@ import {
   loadFontSizePreferences,
 } from './font-size-preferences';
 import './styles.css';
-import './ui/tokens.css';
-import './ui/ui.css';
-import './ui/islands-surfaces.css';
+import './workbench/ui/tokens.css';
+import './workbench/ui/ui.css';
+import './workbench/ui/islands-surfaces.css';
 
 applyRendererPlatform(document.documentElement, navigator.userAgent);
 installImeCompositionGuard();

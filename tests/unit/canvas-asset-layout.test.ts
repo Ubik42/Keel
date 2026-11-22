@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { AssetSummary } from "../../src/shared/asset-types";
 import { createCaptionBandResolver } from "../../src/renderer/asset-caption-band";
-import { countFittingColumns } from "../../src/renderer/asset-grid-layout";
+import { countFittingColumns } from "../../src/renderer/workbench/collection/asset-grid-layout";
 import { resolveJustifiedCaptionBandPx } from "../../src/renderer/justified-caption-band";
 import { estimateMasonryPreviewHeightPx } from "../../src/renderer/masonry-preview-frame";
 import {

@@ -42,8 +42,8 @@ import {
   type ViewerDisplayTransform,
 } from "./viewer-display-transform";
 import { shouldHandleViewerFitKeyboardEvent } from "./viewer-fit-shortcut";
-import { listenForShortcutInputs } from "./shortcut-runtime";
-import { hasActiveModalDialog } from "./use-dialog-focus-trap";
+import { listenForShortcutInputs } from "./workbench/shortcuts/shortcut-runtime";
+import { hasActiveModalDialog } from "./workbench/overlay/use-dialog-focus-trap";
 import type { ShortcutEventLike } from "../shared/shortcut-resolution";
 import { ZoomableImage } from "./zoomable-preview-image";
 

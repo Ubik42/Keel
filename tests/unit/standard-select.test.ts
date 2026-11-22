@@ -3,7 +3,7 @@ import { act, createElement } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, expect, test, vi } from 'vitest';
 
-import { Select } from '../../src/renderer/ui/primitives/Select';
+import { Select } from '../../src/renderer/workbench/ui/primitives/Select';
 
 let root: Root | undefined;
 let container: HTMLDivElement | undefined;

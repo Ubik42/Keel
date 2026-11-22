@@ -1,9 +1,9 @@
-import type { WorkspaceNavigationHistoryMode } from "./workspace-navigation-coordinator";
+import type { WorkspaceNavigationHistoryMode } from "./workbench/workspace/workspace-navigation-coordinator";
 import type { WorkspaceTabBrowseState } from "./workspace-tabs";
 import {
   workspaceNavLocationsEqual,
   type WorkspaceNavLocation,
-} from "./workspace-nav-history";
+} from "./workbench/workspace/workspace-nav-history";
 
 /**
  * Discovery (search + format/color/tag filters) belongs to the tab, not to a

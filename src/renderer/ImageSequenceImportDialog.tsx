@@ -18,7 +18,7 @@ import type { SequencePreviewSource } from "./image-sequence-preview";
 import { isPostImportSequenceOfferId } from "./post-import-image-sequences";
 import { iconActionAttrs } from "./icon-action-attrs";
 import { useT } from "./i18n";
-import { DialogShell } from "./ui/patterns";
+import { DialogShell } from "./workbench/ui/patterns";
 
 export interface ImageSequenceImportDialogProps {
   error?: string | null;

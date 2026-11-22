@@ -8,7 +8,7 @@ import {
 import { Icon } from "./Icons";
 import { iconActionAttrs } from "./icon-action-attrs";
 import { useT } from "./i18n";
-import { SettingsCard } from "./ui/patterns";
+import { SettingsCard } from "./workbench/ui/patterns";
 import { openWithBridge, useOpenWithSettings } from "./use-open-with-settings";
 
 function targetValue(target: OpenWithTarget): string {

@@ -1,11 +1,11 @@
 import { useEffect, useId, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 
-import { isImeKeyboardEvent } from "./ime-safe-dismiss";
-import { PortaledPopover } from "./PortaledPopover";
+import { isImeKeyboardEvent } from "./workbench/overlay/ime-safe-dismiss";
+import { PortaledPopover } from "./workbench/overlay/PortaledPopover";
 import {
   handleRovingListKeyDown,
   ROVING_OPTION_SELECTOR,
-} from "./roving-list-keyboard";
+} from "./workbench/overlay/roving-list-keyboard";
 
 /**
  * Font-viewer toolbar list. Native `<select>` popups stay on the OS theme,

@@ -4,7 +4,7 @@ import {
   buildBrowseSelectionOrder,
   resolveShiftBrowseRange,
   type BrowseSelectionAnchor,
-} from "./browse-selection-order";
+} from "./workbench/selection/browse-selection-order";
 import { resolveFolderCardClickIntent } from "./folder-card-click";
 import {
   collectPublishedAssetHits,
@@ -18,14 +18,14 @@ import {
   rectsIntersect,
   type MarqueeRect,
   viewportRectToContent,
-} from "./marquee-geometry";
-import { computeMarqueeSelection, isMarqueeAdditive } from "./marquee-selection";
-import { resolveShiftBrowseAnchor } from "./selection-anchor";
+} from "./workbench/selection/marquee-geometry";
+import { computeMarqueeSelection, isMarqueeAdditive } from "./workbench/selection/marquee-selection";
+import { resolveShiftBrowseAnchor } from "./workbench/selection/selection-anchor";
 import { readMasonryShiftAssetOrder } from "./masonry-shift-selection";
 import {
   isToggleSelectionModifier,
   resolveSelectionPlatform,
-} from "./selection-modifiers";
+} from "./workbench/selection/selection-modifiers";
 import { isPointerNearScrollbarTrack } from "./scrollbar-visibility";
 
 export interface UseAssetSelectionParams {

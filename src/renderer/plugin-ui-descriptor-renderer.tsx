@@ -17,7 +17,7 @@ import {
   StatusBadge,
   type MenuNode,
   type ResolvedMenuNode,
-} from './ui/patterns';
+} from './workbench/ui/patterns';
 import {
   Button as PrimitiveButton,
   Field as PrimitiveField,
@@ -25,7 +25,7 @@ import {
   Slider as PrimitiveSlider,
   Switch as PrimitiveSwitch,
   TextField as PrimitiveTextField,
-} from './ui/primitives';
+} from './workbench/ui/primitives';
 import {
   resolvePluginContributionConditions,
 } from './plugin-menu-contributions';

@@ -27,12 +27,12 @@ import {
   type WorkspaceNavHistory,
   type WorkspaceNavLocation,
   type WorkspaceNavViewport,
-} from "./workspace-nav-history";
+} from "./workbench/workspace/workspace-nav-history";
 import {
   createWorkspaceNavigationCoordinator,
   type WorkspaceNavigationHistoryMode,
   type WorkspaceNavigationToken,
-} from "./workspace-navigation-coordinator";
+} from "./workbench/workspace/workspace-navigation-coordinator";
 import {
   createWorkspaceRenderSnapshotCache,
   type WorkspaceRenderSnapshot,

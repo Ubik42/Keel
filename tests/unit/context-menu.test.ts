@@ -7,7 +7,7 @@ import {
   ContextMenu,
   ContextMenuItem,
   ContextMenuProvider,
-} from "../../src/renderer/context-menu";
+} from "../../src/renderer/workbench/menu/context-menu";
 import { LocaleProvider } from "../../src/renderer/i18n";
 
 describe("ContextMenu focus lifecycle", () => {

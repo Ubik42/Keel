@@ -33,7 +33,7 @@ import {
 import {
   parseManagedFolderDrag,
   supportsManagedFolderDrag,
-} from "./folder-drag-drop";
+} from "./workbench/tree/folder-drag-drop";
 import {
   parseManagedAssetDrag,
   resolveDragDropMode,

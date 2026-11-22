@@ -3,8 +3,8 @@ import { Icon } from "./Icons";
 import { iconActionAttrs } from "./icon-action-attrs";
 import { useT } from "./i18n";
 import type { LinkedFolderRule } from "../shared/asset-types";
-import { DialogShell } from "./ui/patterns";
-import { Select } from "./ui/primitives";
+import { DialogShell } from "./workbench/ui/patterns";
+import { Select } from "./workbench/ui/primitives";
 
 export interface LinkedRulesDialogProps {
   name: string;

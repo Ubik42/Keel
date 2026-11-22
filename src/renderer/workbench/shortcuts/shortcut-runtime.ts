@@ -9,18 +9,18 @@
 import {
   findShortcutAction,
   type ShortcutPlatform,
-} from "../shared/shortcut-catalog";
+} from "../../../shared/shortcut-catalog";
 import {
   DEFAULT_SHORTCUT_BINDINGS,
   type ShortcutBindings,
-} from "../shared/shortcut-bindings";
+} from "../../../shared/shortcut-bindings";
 import {
   formatActionShortcut,
   matchesActionShortcut,
   type ShortcutMouseEventLike,
   type ShortcutEventLike,
-} from "../shared/shortcut-resolution";
-import type { ShortcutEvent } from "./commands/command-types";
+} from "../../../shared/shortcut-resolution";
+import type { ShortcutEvent } from "../../commands/command-types";
 
 let runtimePlatform: ShortcutPlatform = "windows";
 let runtimeBindings: ShortcutBindings = DEFAULT_SHORTCUT_BINDINGS;

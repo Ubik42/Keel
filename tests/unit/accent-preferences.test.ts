@@ -54,7 +54,7 @@ describe('accent CSS derivation (Serpent-gnus)', () => {
     'utf8',
   );
   const foundationCss = readFileSync(
-    resolve(__dirname, '../../src/renderer/ui/tokens.css'),
+    resolve(__dirname, '../../src/renderer/workbench/ui/tokens.css'),
     'utf8',
   );
 

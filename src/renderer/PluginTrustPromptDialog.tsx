@@ -3,7 +3,7 @@ import { iconActionAttrs } from './icon-action-attrs';
 import { useT } from './i18n';
 import { pluginRequiresTrustedCssDisclosure } from '../plugins/plugin-themes';
 import type { PendingLibraryPluginTrust } from './plugin-trust-prompt';
-import { DialogShell } from './ui/patterns';
+import { DialogShell } from './workbench/ui/patterns';
 
 export type PluginTrustPromptDialogProps = {
   plugins: readonly PendingLibraryPluginTrust[];

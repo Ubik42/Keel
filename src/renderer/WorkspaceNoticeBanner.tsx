@@ -2,7 +2,7 @@ import { Icon } from "./Icons";
 import { IconActionButton } from "./icon-action-button";
 import { useT } from "./i18n";
 import type { ToastMessage } from './toast-notifications';
-import { Notice } from './ui/patterns';
+import { Notice } from './workbench/ui/patterns';
 
 export interface WorkspaceNoticeBannerProps {
   readonly message: ToastMessage;

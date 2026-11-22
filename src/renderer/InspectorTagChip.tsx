@@ -2,10 +2,10 @@ import { AppearanceGlyph } from './AppearanceGlyph';
 import { TAG_DRAG_TYPE } from './tag-drag-drop';
 import type { EntityAppearance } from '../shared/entity-appearance';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { ContextMenu, ContextMenuBackdrop, ContextMenuItem, useContextMenu } from './context-menu';
+import { ContextMenu, ContextMenuBackdrop, ContextMenuItem, useContextMenu } from './workbench/menu/context-menu';
 import { Icon } from './Icons';
 import { useLocale } from './i18n';
-import { isImeKeyboardEvent } from './ime-safe-dismiss';
+import { isImeKeyboardEvent } from './workbench/overlay/ime-safe-dismiss';
 
 export interface InspectorTagChipProps {
   id: string;

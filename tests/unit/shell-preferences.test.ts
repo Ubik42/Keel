@@ -14,8 +14,8 @@ import {
   loadShellPreferences,
   saveShellPreferences,
   type ShellPreferencesStorage,
-} from '../../src/renderer/shell-preferences';
-import { resolvePanelWidth } from '../../src/renderer/use-panel-resize';
+} from '../../src/renderer/workbench/shell/shell-preferences';
+import { resolvePanelWidth } from '../../src/renderer/workbench/shell/use-panel-resize';
 
 function memoryStorage(initial?: Record<string, string>): ShellPreferencesStorage & {
   data: Map<string, string>;

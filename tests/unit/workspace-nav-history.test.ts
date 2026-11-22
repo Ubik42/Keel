@@ -6,7 +6,7 @@ import {
   seedRestoreLeafLocation,
   workspaceNavLocationsEqual,
   type WorkspaceNavLocation,
-} from "../../src/renderer/workspace-nav-history";
+} from "../../src/renderer/workbench/workspace/workspace-nav-history";
 
 describe("workspaceNavLocationsEqual", () => {
   it("compares location fields by kind", () => {

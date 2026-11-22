@@ -8,7 +8,7 @@ import type { EntityAppearance } from "../shared/entity-appearance";
 import type { IconName } from "./Icons";
 import type { TranslateFn } from "./i18n";
 import type { PluginSidebarViewDescriptor } from "./plugin-sidebar-views";
-import type { WorkspaceNavLocation } from "./workspace-nav-history";
+import type { WorkspaceNavLocation } from "./workbench/workspace/workspace-nav-history";
 import type { WorkspaceTabSession } from "./workspace-tabs";
 
 export interface WorkspaceTabPresentation {

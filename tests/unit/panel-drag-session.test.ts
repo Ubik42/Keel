@@ -2,12 +2,12 @@ import { describe, expect, it } from "vitest";
 import {
   PANEL_AUTO_HIDE_DEAD_ZONE_PX,
   PANEL_EDGE_RESTORE_PX,
-} from "../../src/renderer/panel-auto-hide";
-import { resolvePanelDragMove } from "../../src/renderer/panel-drag-session";
+} from "../../src/renderer/workbench/shell/panel-auto-hide";
+import { resolvePanelDragMove } from "../../src/renderer/workbench/shell/panel-drag-session";
 import {
   INSPECTOR_PANEL_WIDTH_MIN,
   NAV_PANEL_WIDTH_MIN,
-} from "../../src/renderer/shell-preferences";
+} from "../../src/renderer/workbench/shell/shell-preferences";
 
 describe("panel-drag-session (continuous hide/restore)", () => {
   it("keeps resize phase while dragging within the dead zone below min", () => {

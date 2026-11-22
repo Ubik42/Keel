@@ -8,7 +8,7 @@ import {
 import type { IconName } from "./Icons";
 import type { CommandPlatform } from "./commands/command-types";
 import type { ApplicationMenuCommand } from "../shared/application-menu";
-import { formatRuntimeShortcut } from "./shortcut-runtime";
+import { formatRuntimeShortcut } from "./workbench/shortcuts/shortcut-runtime";
 
 export const KEEL_VERSION = packageJson.version;
 

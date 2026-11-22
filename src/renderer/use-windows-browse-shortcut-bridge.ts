@@ -7,7 +7,7 @@
  */
 
 import { useEffect } from "react";
-import { hasActiveModalDialog } from "./use-dialog-focus-trap";
+import { hasActiveModalDialog } from "./workbench/overlay/use-dialog-focus-trap";
 
 import {
   BROWSE_KEYBOARD_ACTIONS,

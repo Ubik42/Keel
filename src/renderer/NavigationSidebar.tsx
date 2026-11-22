@@ -19,12 +19,12 @@ import {
   linkedFolderNavAffordance,
 } from "./availability-affordance";
 import { useT } from "./i18n";
-import { isImeKeyboardEvent, shouldHoldDismissForIme } from "./ime-safe-dismiss";
+import { isImeKeyboardEvent, shouldHoldDismissForIme } from "./workbench/overlay/ime-safe-dismiss";
 import type {
   LinkedFolderSummary,
   ManagedFolderSummary,
 } from "../shared/asset-types";
-import type { ContextMenuDescriptor } from "./context-menu";
+import type { ContextMenuDescriptor } from "./workbench/menu/context-menu";
 import type { RendererLibrarySummary } from "../shared/protocol/responses";
 import {
   parseManagedAssetDrag,
@@ -42,7 +42,7 @@ import {
   resolveFolderOntoFolderDrop,
   supportsManagedFolderDrag,
   type FolderDragFact,
-} from "./folder-drag-drop";
+} from "./workbench/tree/folder-drag-drop";
 import {
   externalImportPayload,
   shouldConsumeManagedAssetDrop,
@@ -56,7 +56,7 @@ import {
 import {
   isToggleSelectionModifier,
   resolveSelectionPlatform,
-} from "./selection-modifiers";
+} from "./workbench/selection/selection-modifiers";
 import { isLibraryRootFolderId } from "../shared/library-root-folder";
 import {
   buildUnifiedDirectoryNavEntries,
@@ -73,7 +73,7 @@ import {
   focusFirstRovingItem,
   handleRovingListKeyDown,
   ROVING_OPTION_SELECTOR,
-} from "./roving-list-keyboard";
+} from "./workbench/overlay/roving-list-keyboard";
 import {
   isAllAssetsNavActive,
   isManagedFolderNavActive,
@@ -95,8 +95,8 @@ import {
   type FolderSortOrder,
   type FolderSortPreferences,
 } from "./folder-sort-preferences";
-import { PortaledPopover } from "./PortaledPopover";
-import { PaneSurface } from "./ui/surfaces";
+import { PortaledPopover } from "./workbench/overlay/PortaledPopover";
+import { PaneSurface } from "./workbench/ui/surfaces";
 import {
   applyFolderSiblingOrder,
   insertBesideSibling,

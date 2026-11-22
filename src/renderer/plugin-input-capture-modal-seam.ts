@@ -1,7 +1,7 @@
 import {
   isDialogEscapeLayerActive,
   type DialogEscapeSnapshot,
-} from './dialog-escape-stack';
+} from './workbench/overlay/dialog-escape-stack';
 import { isModalDialogOpen } from './workspace-mouse-navigation';
 
 /**

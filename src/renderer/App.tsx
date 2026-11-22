@@ -24,7 +24,7 @@ import { Icon, type IconName } from "./Icons";
 import { isCurrentAiConnectionProbe } from "./ai-connection-probe-guard";
 import { iconActionAttrs } from "./icon-action-attrs";
 import { EditTextContextMenuHost } from "./edit-text-context-menu";
-import { HoverTipHost } from "./hover-tip";
+import { HoverTipHost } from "./workbench/overlay/hover-tip";
 import {
   corruptAssetAffordance,
   isCorruptAsset,
@@ -93,12 +93,12 @@ import {
   searchHistoryNavigationDirection,
 } from "./search-history";
 import { useWindowsBrowseShortcutBridge } from "./use-windows-browse-shortcut-bridge";
-import { useShortcutRuntimeVersion } from "./shortcut-provider";
+import { useShortcutRuntimeVersion } from "./workbench/shortcuts/shortcut-provider";
 import {
   listenForMouseShortcutInputs,
   listenForShortcutInputs,
   matchesRuntimeShortcut,
-} from "./shortcut-runtime";
+} from "./workbench/shortcuts/shortcut-runtime";
 import type { ShortcutEventLike } from "../shared/shortcut-resolution";
 import { ExportDialog } from "./ExportDialog";
 import { ImportDialog } from "./ImportDialog";
@@ -218,11 +218,11 @@ import {
   type WorkspaceNavLocation,
   type WorkspaceNavViewport,
   workspaceNavLocationsEqual,
-} from "./workspace-nav-history";
+} from "./workbench/workspace/workspace-nav-history";
 import type {
   WorkspaceNavigationHistoryMode,
   WorkspaceNavigationToken,
-} from "./workspace-navigation-coordinator";
+} from "./workbench/workspace/workspace-navigation-coordinator";
 import type {
   WorkspaceRenderSnapshot,
   WorkspaceVirtualLayoutSnapshot,
@@ -247,7 +247,7 @@ import {
   resolveWorkspaceScrollTop,
   restoreWorkspaceNavViewport,
   shouldRestoreViewportAfterBrowseReload,
-} from "./workspace-scroll-position";
+} from "./workbench/workspace/workspace-scroll-position";
 import { mergeAssetSummaries } from "./merge-asset-summaries";
 import {
   RelinkPreview,
@@ -367,7 +367,7 @@ import { splitFilenameForDisplay } from "./filename-display";
 import {
   ContextMenuProvider,
   useContextMenu,
-} from "./context-menu";
+} from "./workbench/menu/context-menu";
 import { resolveBrowseContextMenuIntent } from "./browse-selection-menu";
 import { buildMultiAssetMenuSkipReport, browseScopeFromVirtualLayout } from "./menu-skip-report";
 import { useAssetSelection } from "./useAssetSelection";
@@ -411,7 +411,7 @@ import { useInspectorAssetMetadata } from "./use-inspector-asset-metadata";
 import { useInspectorFieldHandlers } from "./use-inspector-field-handlers";
 import { useAssetDragDropHandlers } from "./use-asset-drag-drop-handlers";
 import { useDialogEscapeDismiss } from "./use-dialog-escape-dismiss";
-import { isImeKeyboardEvent } from "./ime-safe-dismiss";
+import { isImeKeyboardEvent } from "./workbench/overlay/ime-safe-dismiss";
 import { PluginToolbarButtons } from "./plugin-toolbar-contributions";
 import { usePluginShortcutKeyboard } from "./plugin-shortcut-contributions";
 import { usePluginInputCaptureFanIn } from "./use-plugin-input-capture-fanin";
@@ -429,18 +429,18 @@ import { WorkspaceNoticeBanner } from "./WorkspaceNoticeBanner";
 import {
   MANAGED_FOLDERS_DRAG_TYPE,
   resolveDraggedFolderIds,
-} from "./folder-drag-drop";
+} from "./workbench/tree/folder-drag-drop";
 import { importSummaryMessage } from "./import-summary";
 import { automationCommandToast } from "./automation-command-toast";
 import {
   resolveDialogEscapeAction,
   type DialogEscapeSnapshot,
-} from "./dialog-escape-stack";
+} from "./workbench/overlay/dialog-escape-stack";
 import { splitAssetFileName, useAssetRename } from "./useAssetRename";
 import { useInlineFolderEdit } from "./use-inline-folder-edit";
-import { usePanelResize } from "./use-panel-resize";
+import { usePanelResize } from "./workbench/shell/use-panel-resize";
 import { useToastNotifications } from "./useToastNotifications";
-import { Notice } from "./ui/patterns";
+import { Notice } from "./workbench/ui/patterns";
 import {
   AI_CONNECTION_HEARTBEAT_MS,
   aiAnalyzeConnectionReady,
@@ -472,7 +472,7 @@ import {
   filterTrashedAssetsAtTombstone,
   filterTrashedFoldersAtTombstone,
 } from "./trash-browse";
-import { invertSelection } from "./invert-selection";
+import { invertSelection } from "./workbench/selection/invert-selection";
 import { trashedFoldersToBrowseEntries } from "./trashed-folder-entries";
 import { computeMasonrySelectionAssetIds } from "./masonry-selection-order";
 import { resolveMasonryTabTarget } from "./masonry-focus-order";
@@ -575,7 +575,7 @@ import { WindowEdgeResizeHandles } from "./WindowEdgeResizeHandles";
 import { WindowsWindowControls } from "./WindowsWindowControls";
 import { useViewerChromeIdle } from "./use-viewer-chrome-idle";
 import { useViewerVolume } from "./use-viewer-volume";
-import { hasActiveModalDialog, useDialogFocusTrap } from "./use-dialog-focus-trap";
+import { hasActiveModalDialog, useDialogFocusTrap } from "./workbench/overlay/use-dialog-focus-trap";
 import { AssetContextMenu } from "./AssetContextMenu";
 import {
   buildPluginBrowseScope,
@@ -638,7 +638,7 @@ import {
   nextDiscreteCardSizeFromWheelDelta,
   stepDiscreteCardSize,
 } from "./card-size-stops";
-import { assetGridLayoutStyle } from "./asset-grid-layout";
+import { assetGridLayoutStyle } from "./workbench/collection/asset-grid-layout";
 import { JustifiedAssetRows } from "./justified-asset-rows";
 import { MasonryColumns } from "./masonry-columns";
 import {

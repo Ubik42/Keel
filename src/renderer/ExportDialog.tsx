@@ -3,7 +3,7 @@ import { useState, type ReactNode } from "react";
 import { Icon } from "./Icons";
 import { iconActionAttrs } from "./icon-action-attrs";
 import { useT } from "./i18n";
-import { DialogShell } from "./ui/patterns";
+import { DialogShell } from "./workbench/ui/patterns";
 
 export interface ExportDialogProps {
   open: boolean;

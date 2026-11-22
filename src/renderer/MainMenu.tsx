@@ -12,9 +12,9 @@ import {
 import { Icon } from "./Icons";
 import { iconActionAttrs } from "./icon-action-attrs";
 import { useT } from "./i18n";
-import { isImeKeyboardEvent } from "./ime-safe-dismiss";
+import { isImeKeyboardEvent } from "./workbench/overlay/ime-safe-dismiss";
 import type { MainMenuItem, MainMenuSection } from "./main-menu-items";
-import { MenuSurface, resolveMenuNodes } from "./ui/patterns";
+import { MenuSurface, resolveMenuNodes } from "./workbench/ui/patterns";
 
 const MENU_ITEM_SELECTOR = '[role="menuitem"]:not([aria-disabled="true"])';
 const MAIN_MENU_SURFACE_NODES = resolveMenuNodes([

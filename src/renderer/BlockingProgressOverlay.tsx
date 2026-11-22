@@ -1,8 +1,8 @@
 import { Fragment, type ReactNode } from "react";
-import { ShellStyleScope } from "./ui/ShellStyleScope";
+import { ShellStyleScope } from "./workbench/ui/ShellStyleScope";
 
-import { Progress } from "./ui/primitives";
-import { DialogShell } from "./ui/patterns";
+import { Progress } from "./workbench/ui/primitives";
+import { DialogShell } from "./workbench/ui/patterns";
 
 export type BlockingProgressOverlayProps = {
   readonly title: string;

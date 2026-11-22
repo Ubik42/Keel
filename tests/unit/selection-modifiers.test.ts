@@ -5,7 +5,7 @@ import {
   isMarqueeToggleModifier,
   isToggleSelectionModifier,
   resolveSelectionPlatform,
-} from "../../src/renderer/selection-modifiers";
+} from "../../src/renderer/workbench/selection/selection-modifiers";
 
 describe("resolveSelectionPlatform (Serpent-b44c)", () => {
   it("detects mac vs windows from user agent", () => {

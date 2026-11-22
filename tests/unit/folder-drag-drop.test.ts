@@ -6,7 +6,7 @@ import {
   resolveDraggedFolderIds,
   resolveDraggedFolderIdsForTrash,
   resolveFolderOntoFolderDrop,
-} from "../../src/renderer/folder-drag-drop";
+} from "../../src/renderer/workbench/tree/folder-drag-drop";
 
 const folders = [
   { folderId: "root-child", parentFolderId: null },

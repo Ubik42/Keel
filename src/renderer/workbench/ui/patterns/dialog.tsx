@@ -1,5 +1,5 @@
 import type { HTMLAttributes, ReactNode } from "react";
-import { isImeKeyboardEvent } from "../../ime-safe-dismiss";
+import { isImeKeyboardEvent } from "../../overlay/ime-safe-dismiss";
 
 /** A stable entry in the host's modal stack. */
 export interface DialogStackEntry {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { createWorkspaceNavigationCoordinator } from "../../src/renderer/workspace-navigation-coordinator";
+import { createWorkspaceNavigationCoordinator } from "../../src/renderer/workbench/workspace/workspace-navigation-coordinator";
 
 describe("workspace navigation coordinator", () => {
   it("invalidates an older request when a newer request starts in the same tab", () => {

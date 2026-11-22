@@ -5,7 +5,7 @@ import type {
   CriticalConfirmationDecision,
   CriticalConfirmationPrompt,
 } from "../shared/critical-confirmation";
-import { DialogShell } from "./ui/patterns";
+import { DialogShell } from "./workbench/ui/patterns";
 
 export function CriticalConfirmationDialog({
   request,

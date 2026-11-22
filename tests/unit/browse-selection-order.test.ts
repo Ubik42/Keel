@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   buildBrowseSelectionOrder,
   resolveShiftBrowseRange,
-} from '../../src/renderer/browse-selection-order';
+} from '../../src/renderer/workbench/selection/browse-selection-order';
 
 describe('browse-selection-order', () => {
   const items = buildBrowseSelectionOrder(['f1', 'f2'], ['a1', 'a2', 'a3']);

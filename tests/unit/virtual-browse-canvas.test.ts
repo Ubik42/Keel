@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { createCaptionBandResolver } from "../../src/renderer/asset-caption-band";
-import { ASSET_GRID_GAP_PX } from "../../src/renderer/asset-grid-layout";
+import { ASSET_GRID_GAP_PX } from "../../src/renderer/workbench/collection/asset-grid-layout";
 import {
   MASONRY_CAPTION_BAND_PX,
   MASONRY_DIMENSIONS_CAPTION_BAND_PX,

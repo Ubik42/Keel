@@ -8,8 +8,8 @@ import {
 
 import { Icon } from '../Icons';
 import { useT } from '../i18n';
-import { Button, Progress } from '../ui/primitives';
-import { cx } from '../ui/primitives/cx';
+import { Button, Progress } from '../workbench/ui/primitives';
+import { cx } from '../workbench/ui/primitives/cx';
 import { formatBackgroundBytes } from './background-image-compression';
 import type { BackgroundImageSource } from './background-preferences';
 

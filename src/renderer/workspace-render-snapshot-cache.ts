@@ -3,7 +3,7 @@ import type {
   BrowseLayoutEntry,
   TrashedFolderSummary,
 } from "../shared/asset-types";
-import type { WorkspaceNavLocation } from "./workspace-nav-history";
+import type { WorkspaceNavLocation } from "./workbench/workspace/workspace-nav-history";
 
 export interface WorkspaceBrowsePageDescriptor {
   readonly sessionId: string | null;

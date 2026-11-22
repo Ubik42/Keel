@@ -2,12 +2,12 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { expect, test } from 'vitest';
 
-import { UI_LAYER } from '../../src/renderer/ui/foundation';
+import { UI_LAYER } from '../../src/renderer/workbench/ui/foundation';
 import {
   Activity,
   Notice,
   StatusBadge,
-} from '../../src/renderer/ui/patterns';
+} from '../../src/renderer/workbench/ui/patterns';
 
 test('Notice exposes a tone, live-region semantics, message, and dismiss action', () => {
   const html = renderToStaticMarkup(createElement(Notice, {

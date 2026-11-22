@@ -1,5 +1,5 @@
 import type { WorkspaceNavViewport } from "./workspace-nav-history";
-import { logBrowseScrollWrite } from "./browse-scroll-debug";
+import { logBrowseScrollWrite } from "../../browse-scroll-debug";
 
 export function captureWorkspaceNavViewport(
   element: Pick<HTMLElement, "scrollTop" | "scrollHeight" | "clientHeight"> | null,

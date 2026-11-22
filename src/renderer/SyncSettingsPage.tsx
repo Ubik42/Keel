@@ -4,8 +4,8 @@ import type { SyncCapabilities } from "../shared/library-api";
 import { Icon } from "./Icons";
 import { iconActionAttrs } from "./icon-action-attrs";
 import { useT } from "./i18n";
-import { SettingsCard } from "./ui/patterns";
-import { Switch } from "./ui/primitives";
+import { SettingsCard } from "./workbench/ui/patterns";
+import { Switch } from "./workbench/ui/primitives";
 import { syncUnavailableMessageKey, type SyncServerSummary } from "./sync-settings-types";
 
 export interface SyncServerSettingsCallbacks {

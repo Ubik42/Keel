@@ -22,7 +22,7 @@ import {
   Switch,
   TextField,
   Tooltip,
-} from './ui/primitives';
+} from './workbench/ui/primitives';
 
 type PluginHostSettingsFieldsProps = {
   readonly api: KeelPluginManagerApi | undefined;

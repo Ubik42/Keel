@@ -4,7 +4,7 @@ import { useT } from "./i18n";
 import type { ImportConflictPlan } from "../shared/protocol/responses";
 import type { RememberedDuplicateDecision } from "./import-conflict-preferences";
 import { ImportConflictDialogShell } from "./ImportConflictDialogShell";
-import { Select } from "./ui/primitives";
+import { Select } from "./workbench/ui/primitives";
 
 export interface ContentDuplicateDialogProps {
   conflicts: ImportConflictPlan;

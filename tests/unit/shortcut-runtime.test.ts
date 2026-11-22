@@ -6,7 +6,7 @@ import {
   matchesRuntimeShortcut,
   listenForShortcutInputs,
   setShortcutRuntime,
-} from "../../src/renderer/shortcut-runtime";
+} from "../../src/renderer/workbench/shortcuts/shortcut-runtime";
 import {
   DEFAULT_SHORTCUT_BINDINGS,
   setShortcutOverride,

@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { CriticalConfirmationDialog } from "../../src/renderer/CriticalConfirmationDialog";
 import { LocaleProvider } from "../../src/renderer/i18n";
 import type { CriticalConfirmationPrompt } from "../../src/shared/critical-confirmation";
-import { useDialogFocusTrap } from "../../src/renderer/use-dialog-focus-trap";
+import { useDialogFocusTrap } from "../../src/renderer/workbench/overlay/use-dialog-focus-trap";
 
 const request: CriticalConfirmationPrompt = {
   requestId: "11111111-1111-4111-8111-111111111111",

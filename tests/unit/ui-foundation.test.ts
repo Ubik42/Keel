@@ -6,11 +6,11 @@ import {
   UI_LAYER,
   cssVar,
   layerCssVar,
-} from '../../src/renderer/ui/foundation';
+} from '../../src/renderer/workbench/ui/foundation';
 
 describe('UI foundation contract', () => {
   it('defines the same semantic token contract for dark and light themes', () => {
-    const tokens = readFileSync(new URL('../../src/renderer/ui/tokens.css', import.meta.url), 'utf8');
+    const tokens = readFileSync(new URL('../../src/renderer/workbench/ui/tokens.css', import.meta.url), 'utf8');
     expect(tokens).toContain(':root[data-theme="dark"]');
     expect(tokens).toContain('[data-theme="light"]');
     expect(tokens).toContain('--ui-action-accent: var(--accent, #3b82f6);');

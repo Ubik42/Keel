@@ -7,7 +7,7 @@ import type { AssetSummary } from '../shared/asset-types';
 import {
   countFittingColumns,
   masonryVisualReadingOrderIds,
-} from './asset-grid-layout';
+} from './workbench/collection/asset-grid-layout';
 import { estimateMasonryPreviewHeightPx } from './masonry-preview-frame';
 
 export function computeMasonrySelectionAssetIds(

@@ -5,7 +5,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { createShellPortal } from './ui/ShellStyleScope';
+import { createShellPortal } from './workbench/ui/ShellStyleScope';
 import {
   isPluginUiWidgetDialogRequest,
   pluginDialogContributionMatches,
@@ -29,7 +29,7 @@ import {
 import { PluginWidgetRenderer, usePluginWidgetForm } from './plugin-widget-renderer';
 import { useT } from './i18n';
 import { usePluginWidgetDialogKeyboardFocus } from './plugin-ui-dialog-focus';
-import { DialogShell } from './ui/patterns';
+import { DialogShell } from './workbench/ui/patterns';
 
 /**
  * Host for plugin modal dialogs (Serpent-a3de58).
