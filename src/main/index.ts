@@ -179,7 +179,6 @@ import {
 import {
   mapSystemLocaleToAppLocale,
   tryParseAppLocaleSync,
-  type AppLocale,
 } from "../shared/native-dialog-i18n";
 import {
   applyStartupLoginItem,
@@ -241,7 +240,6 @@ import {
 } from "./renderer-keyboard-focus";
 import {
   createWindowsTray,
-  type WindowsTrayController,
 } from "./windows-tray";
 import {
   ASSET_CHANGE_CHANNEL,
@@ -298,7 +296,6 @@ import {
 } from "../shared/protocol/channels";
 import {
   createAutomationCommandGateway,
-  type AutomationCommandGateway,
 } from '../automation/command-gateway';
 import {
   PLUGIN_UI_DIALOG_PATCH_CHANNEL,
@@ -347,7 +344,6 @@ import { registerAutomationScriptIpc } from './automation-script-ipc';
 import { AutomationScriptFileService } from './automation-script-file-service';
 import {
   createJsonFileAutomationRecentScriptsStore,
-  type AutomationRecentScriptsStore,
 } from './automation-recent-scripts-store';
 import { ScriptRuntimeSupervisor } from './script-runtime-supervisor';
 import { PluginRuntimeSupervisor, type PluginRuntimeHostCommandHandler, type PluginRuntimeInputCaptureStartHandler, type PluginRuntimeJobControlHandler, type PluginRuntimeJobEnqueueHandler, type PluginRuntimeJobProgressHandler, type PluginRuntimeStorageHandler } from './plugin-runtime-supervisor';
@@ -512,7 +508,6 @@ import {
   createOffscreenThumbnailRenderer,
   packagedRendererOutDir,
   resolveOffscreenPageUrl,
-  type OffscreenThumbnailRenderer,
 } from "./offscreen-thumbnail-renderer";
 import { renderDocumentThumbnail } from "./document-thumbnail-renderer";
 import {
@@ -522,7 +517,6 @@ import {
 } from "./model-thumbnail-source-cache";
 import {
   createExtensionServer,
-  type ExtensionServer,
   type SaveIntent,
   type SaveIntentDisposition,
   type SaveUploadDisposition,
@@ -558,6 +552,8 @@ import {
 // KEEL_SOFTWARE_GL=1 is the same explicit opt-in for users on GPU-less
 // hosts (Linux VMs / remote desktops without a usable GL driver), so the 3D
 // viewer and model thumbnails can render via SwiftShader. Off by default.
+import { state } from './main-state';
+
 if (
   (process.env.KEEL_E2E === "1" &&
     process.env.KEEL_E2E_ENABLE_SWIFTSHADER === "1") ||
@@ -623,24 +619,17 @@ app.enableSandbox();
 const hasSingleInstanceLock = allowMultiInstance
   ? true
   : app.requestSingleInstanceLock();
-
-let mainWindow: BrowserWindow | undefined;
 const mainProcessSessionId = randomUUID();
-/** Effective UI locale for native dialogs; synced from Renderer (Serpent-bwb). */
-let appLocale: AppLocale = "en";
-let workerClient: LibraryWorkerClient | undefined;
-let embeddingTestIndex: EmbeddingTestIndex | undefined;
-let embeddingHttpIndex: EmbeddingHttpIndex | undefined;
 
 function embeddingIndex(): EmbeddingTestIndex {
-  embeddingTestIndex ??= new EmbeddingTestIndex({
+  state.embeddingTestIndex ??= new EmbeddingTestIndex({
     configDirectories: [process.cwd(), app.getAppPath()],
     ...(process.platform === "win32"
       ? { koffiPath: createRequire(path.join(app.getAppPath(), "package.json")).resolve("koffi") }
       : {}),
     requestWorker: (command) => {
-      if (!workerClient) return Promise.reject(new Error("Library Worker is unavailable."));
-      return workerClient.request(command);
+      if (!state.workerClient) return Promise.reject(new Error("Library Worker is unavailable."));
+      return state.workerClient.request(command);
     },
     installedLayout: (modelId) => resolveInstalledEmbeddingLayout(
       inspectManagedEmbeddingInstall(app.getPath("userData")),
@@ -648,14 +637,14 @@ function embeddingIndex(): EmbeddingTestIndex {
     ),
     resolveMediaBinaries: resolveHostMediaBinaries,
   });
-  return embeddingTestIndex;
+  return state.embeddingTestIndex;
 }
 
 function embeddingHttp(): EmbeddingHttpIndex {
-  embeddingHttpIndex ??= new EmbeddingHttpIndex({
+  state.embeddingHttpIndex ??= new EmbeddingHttpIndex({
     requestWorker: (command) => {
-      if (!workerClient) return Promise.reject(new Error("Library Worker is unavailable."));
-      return workerClient.request(command);
+      if (!state.workerClient) return Promise.reject(new Error("Library Worker is unavailable."));
+      return state.workerClient.request(command);
     },
     loadService: (id) => parseEmbeddingServiceCatalog(readEmbeddingServices()).services.find((service) => service.id === id) ?? null,
     readKey: readEmbeddingServiceKey,
@@ -673,10 +662,8 @@ function embeddingHttp(): EmbeddingHttpIndex {
       }) === serviceId;
     },
   });
-  return embeddingHttpIndex;
+  return state.embeddingHttpIndex;
 }
-/** 自动同步调度器（Serpent-bfsb 后续），随 Worker 生命周期启停。 */
-let syncAutoScheduler: SyncAutoScheduler | undefined;
 const manualSyncRuns = new Map<string, {
   count: number;
   serverId: string;
@@ -739,7 +726,7 @@ function resolveArtifactPathBatched(
     setTimeout(() => {
       const pending = artifactPathBatches.get(key) ?? [];
       artifactPathBatches.delete(key);
-      const client = workerClient;
+      const client = state.workerClient;
       if (!client) {
         const error = new Error("Library Worker is unavailable.");
         for (const waiter of pending) waiter.reject(error);
@@ -801,16 +788,16 @@ const lastVisibleDragAssetIds = new Map<string, string[]>();
  */
 const nativeAssetDragPrimer = new NativeAssetDragPrimeScheduler({
   fetchEntries: async (libraryId, assetIds) => {
-    if (!workerClient) return null;
+    if (!state.workerClient) return null;
     try {
-      const result = await workerClient.request({
+      const result = await state.workerClient.request({
         type: "media.get-asset-drag-infos",
         libraryId,
         assetIds: [...assetIds],
       });
       return result.ok && result.type === "media.asset-drag-infos" ? result.entries : null;
     } catch (error) {
-      logger?.info("main.native-asset-drag-cache", "Could not preheat native drag entries.", {
+      state.logger?.info("main.native-asset-drag-cache", "Could not preheat native drag entries.", {
         libraryId,
         assetCount: assetIds.length,
         error: error instanceof Error ? error.message : String(error),
@@ -824,7 +811,7 @@ const nativeAssetDragPrimer = new NativeAssetDragPrimeScheduler({
     } else {
       nativeAssetDragCache.upsert(libraryId, entries as Parameters<NativeAssetDragCache["upsert"]>[1]);
     }
-    const dragWindow = mainWindow;
+    const dragWindow = state.mainWindow;
     if (dragWindow && !dragWindow.isDestroyed()) {
       if (mode === "replace") {
         dragWindow.webContents.send(ASSET_NATIVE_DRAG_READINESS_CHANNEL, {
@@ -844,21 +831,13 @@ function clearNativeAssetDragCache(libraryId: string): void {
   lastVisibleDragAssetIds.delete(libraryId);
   nativeAssetDragCache.clear(libraryId);
   nativeAssetDragPrimer.invalidate(libraryId);
-  const dragWindow = mainWindow;
+  const dragWindow = state.mainWindow;
   if (dragWindow && !dragWindow.isDestroyed()) {
     dragWindow.webContents.send(ASSET_NATIVE_DRAG_READINESS_CHANNEL, {
       type: "clear", libraryId,
     });
   }
 }
-/**
- * Serpent-1e3d4f: Chromium never persists custom-protocol responses on disk,
- * so every session re-reads preview bytes from (possibly remote) origin.
- * Mirror served image previews into userData and serve later sessions from
- * there. Image mimes only — video proxies/posters would thrash the budget
- * with Range-streamed large files.
- */
-let previewCache: PreviewCache | undefined;
 function initializePreviewCache(): void {
   if (process.env.KEEL_PREVIEW_CACHE_DISABLED === "1") return;
   // E2E suites manipulate artifact files and rows directly; a mirror would
@@ -868,56 +847,25 @@ function initializePreviewCache(): void {
   }
   const budgetBytes = Number(process.env.KEEL_PREVIEW_CACHE_BUDGET_BYTES ?? "");
   const cacheLogEnabled = process.env.KEEL_PREVIEW_CACHE_LOG === "1";
-  previewCache = new PreviewCache({
+  state.previewCache = new PreviewCache({
     rootDir: path.join(app.getPath("userData"), "preview-cache"),
     budgetBytes: Number.isFinite(budgetBytes) && budgetBytes > 0 ? budgetBytes : 2 * 1024 * 1024 * 1024,
     onEvent: cacheLogEnabled
-      ? (event) => logger?.info("preview-cache", `${event.kind} ${event.libraryId} ${event.artifactId}${event.detail ? ` ${event.detail}` : ""}`)
+      ? (event) => state.logger?.info("preview-cache", `${event.kind} ${event.libraryId} ${event.artifactId}${event.detail ? ` ${event.detail}` : ""}`)
       : undefined,
   });
-  void previewCache.evictToBudget();
+  void state.previewCache.evictToBudget();
 }
-/** Slice E: shared offscreen window that renders model thumbnails (Serpent-hnmg). */
-let offscreenThumbnailRenderer: OffscreenThumbnailRenderer | undefined;
-let quitAfterShutdown = false;
-let applicationQuitting = false;
-let applicationShutdownPromise: Promise<void> | null = null;
-let startupComplete = false;
-let logger: AppLogger | undefined;
 const VIEWER_TIMING_LOG = process.env.KEEL_VIEWER_TIMING_LOG === "1";
-let appLogPath: string | undefined;
-let automationExecutionJournal: AutomationExecutionJournal | undefined;
-let embeddedMcpServer: EmbeddedMcpServer | undefined;
-let embeddedMcpInitializationFailure: McpCredentialStoreError | undefined;
-let automationCommandGateway: AutomationCommandGateway | undefined;
-let mcpPermissionPolicyStore: McpPermissionPolicyStore | undefined;
-let mcpOperationChallengeStore: McpOperationChallengeStore | undefined;
-let mcpPermissionBroker: McpPermissionBroker | undefined;
-let criticalConfirmationWindowManager: CriticalConfirmationWindowManager | undefined;
-let criticalConfirmationBroker: RendererCriticalConfirmationBroker | undefined;
-let scriptRuntimeSupervisor: ScriptRuntimeSupervisor | undefined;
-/** PR: runs rule scripts (docs/进度.md 3.5). */
-let ruleRunner: RuleRunner | undefined;
 const ruleTriggerSequence = new Map<string, number>();
-const ruleMcpTools = createRuleMcpTools({ ruleRunner: () => ruleRunner, workerClient: () => workerClient });
+const ruleMcpTools = createRuleMcpTools({ ruleRunner: () => state.ruleRunner, workerClient: () => state.workerClient });
 const ruleLibraryChangeTimers = new Map<string, ReturnType<typeof setTimeout>>();
 const ruleContinuousTimers = new Map<string, ReturnType<typeof setTimeout>>();
 const ruleScheduleLastRun = new Map<string, number>();
-let pluginRuntimeSupervisor: PluginRuntimeSupervisor | undefined;
-let pluginTrustedRuntimeSupervisor: PluginTrustedRuntimeSupervisor | undefined;
-let pluginInputCaptureBroker: PluginInputCaptureBroker | undefined;
-let pluginInputCaptureFlushTimer: NodeJS.Timeout | undefined;
-let pluginActivationCoordinator: PluginActivationCoordinator | undefined;
-let pluginJobScheduler: PluginJobScheduler | undefined;
-let pluginProviderScheduler: PluginProviderScheduler | undefined;
-let automationScriptFiles: AutomationScriptFileService | undefined;
-let automationRecentScripts: AutomationRecentScriptsStore | undefined;
-let pluginPackageManager: PluginPackageManager | undefined;
-let pluginMcpToolProvider: PluginMcpToolProvider | undefined;
 const pluginAutomationContexts = new Map<string, AutomationExecutionContext>();
 
 function buildPluginInputCaptureSessionsPayload(): PluginInputCaptureSessionsPayload {
-  const sessions = pluginInputCaptureBroker?.activeSessions() ?? [];
+  const sessions = state.pluginInputCaptureBroker?.activeSessions() ?? [];
   return {
     sessions: sessions.map((session) => ({
       sessionId: session.sessionId,
@@ -930,21 +878,20 @@ function buildPluginInputCaptureSessionsPayload(): PluginInputCaptureSessionsPay
 }
 
 function publishPluginInputCaptureSessionsToRenderer(): void {
-  if (!mainWindow) return;
-  mainWindow.webContents.send(
+  if (!state.mainWindow) return;
+  state.mainWindow.webContents.send(
     PLUGIN_INPUT_CAPTURE_SESSIONS_CHANNEL,
     buildPluginInputCaptureSessionsPayload(),
   );
 }
 
 function schedulePluginInputCaptureFlush(): void {
-  if (pluginInputCaptureFlushTimer !== undefined) return;
-  pluginInputCaptureFlushTimer = setTimeout(() => {
-    pluginInputCaptureFlushTimer = undefined;
-    pluginInputCaptureBroker?.flush();
+  if (state.pluginInputCaptureFlushTimer !== undefined) return;
+  state.pluginInputCaptureFlushTimer = setTimeout(() => {
+    state.pluginInputCaptureFlushTimer = undefined;
+    state.pluginInputCaptureBroker?.flush();
   }, 0);
 }
-let windowsTray: WindowsTrayController | undefined;
 
 /**
  * Known libraries for the native 资源库 menu, most recently opened first.
@@ -953,7 +900,7 @@ let windowsTray: WindowsTrayController | undefined;
  */
 function nativeMenuRecentLibraries(): { path: string; name: string }[] {
   return readRecentLibraryEntries(recentLibraryPath(), (error) => {
-    logger?.error("recent-library.read", error);
+    state.logger?.error("recent-library.read", error);
   }).map((entry) => ({ path: entry.path, name: entry.name }));
 }
 
@@ -972,9 +919,6 @@ function pendingLibraryCleanupPath(): string {
 // stays persisted and is retried on the next app launch.
 const PENDING_CLEANUP_RETRY_DELAYS_MS = [1_000, 2_000, 4_000, 8_000, 16_000, 30_000];
 
-let pendingCleanupRetry = 0;
-let pendingCleanupRetryTimer: NodeJS.Timeout | undefined;
-
 /**
  * Fire-and-forget: tells the Worker to remove every persisted `.del-*` aside
  * root, drops the paths that succeeded from the store, and keeps retrying the
@@ -982,21 +926,21 @@ let pendingCleanupRetryTimer: NodeJS.Timeout | undefined;
  * pending aside, and after the Worker becomes ready at startup.
  */
 function retryPendingLibraryCleanups(): void {
-  if (pendingCleanupRetryTimer) return;
+  if (state.pendingCleanupRetryTimer) return;
   void runPendingLibraryCleanups(0);
 }
 
 async function runPendingLibraryCleanups(round: number): Promise<void> {
   const pendingPath = pendingLibraryCleanupPath();
   const asidePaths = readPendingCleanupAsidePaths(pendingPath, (error) => {
-    logger?.error("pending-library-cleanup.read", error);
+    state.logger?.error("pending-library-cleanup.read", error);
   });
   if (asidePaths.length === 0) return;
-  if (!workerClient) return;
+  if (!state.workerClient) return;
   let cleanedPaths: string[];
   let remainingPaths: string[];
   try {
-    const outcome = await workerClient.request({
+    const outcome = await state.workerClient.request({
       type: "system.cleanup-pending-deletions",
       asidePaths,
     });
@@ -1010,41 +954,41 @@ async function runPendingLibraryCleanups(round: number): Promise<void> {
   } catch (error) {
     cleanedPaths = [];
     remainingPaths = asidePaths;
-    logger?.error(
+    state.logger?.error(
       "pending-library-cleanup.run",
       error instanceof Error ? error : new Error(String(error)),
     );
   }
   const stillPersisted = readPendingCleanupAsidePaths(pendingPath, (error) => {
-    logger?.error("pending-library-cleanup.read", error);
+    state.logger?.error("pending-library-cleanup.read", error);
   });
   const remainingSet = new Set(remainingPaths);
   const next = stillPersisted.filter((sidePath) => remainingSet.has(sidePath));
   if (next.length === 0) {
     writePendingCleanupAsidePaths(pendingPath, [], (error) => {
-      logger?.error("pending-library-cleanup.write", error);
+      state.logger?.error("pending-library-cleanup.write", error);
     });
     return;
   }
   writePendingCleanupAsidePaths(pendingPath, next, (error) => {
-    logger?.error("pending-library-cleanup.write", error);
+    state.logger?.error("pending-library-cleanup.write", error);
   });
   if (cleanedPaths.length > 0) {
-    logger?.info("pending-library-cleanup.deferred", "Removed leftover library roots.", {
+    state.logger?.info("pending-library-cleanup.deferred", "Removed leftover library roots.", {
       cleanedCount: cleanedPaths.length,
     });
   }
   const delay = PENDING_CLEANUP_RETRY_DELAYS_MS[round];
   if (delay === undefined) {
-    logger?.info("pending-library-cleanup.still-pending", "Pending cleanup will retry on next launch.", {
+    state.logger?.info("pending-library-cleanup.still-pending", "Pending cleanup will retry on next launch.", {
       remaining: next.length,
     });
     return;
   }
-  pendingCleanupRetry = round + 1;
-  pendingCleanupRetryTimer = setTimeout(() => {
-    pendingCleanupRetryTimer = undefined;
-    void runPendingLibraryCleanups(pendingCleanupRetry);
+  state.pendingCleanupRetry = round + 1;
+  state.pendingCleanupRetryTimer = setTimeout(() => {
+    state.pendingCleanupRetryTimer = undefined;
+    void runPendingLibraryCleanups(state.pendingCleanupRetry);
   }, delay);
 }
 
@@ -1066,7 +1010,7 @@ function rememberOpenedLibrary(libraryPath: string, displayName: string, library
     { path: libraryPath, name: displayName, ...(libraryId === undefined ? {} : { libraryId }) },
     {
       onError: (error) => {
-        logger?.error("recent-library.write", error);
+        state.logger?.error("recent-library.write", error);
       },
     },
   );
@@ -1080,14 +1024,11 @@ function rememberOpenedLibrary(libraryPath: string, displayName: string, library
 function refreshApplicationMenuRecentLibraries(): void {
   if (process.platform !== "darwin") return;
   installApplicationMenu({
-    locale: appLocale,
+    locale: state.appLocale,
     recentLibraries: nativeMenuRecentLibraries(),
     shortcutBindings: readShortcutBindingsSnapshot(),
   });
 }
-
-let extensionServer: ExtensionServer | undefined;
-let extensionBrowseFoldersStorePath: string | undefined;
 const aiQueueScheduler = new AiQueueScheduler(processAiQueueBatch, {
   batchSize: AI_ANALYSIS_QUEUE_BATCH_SIZE,
   baseRetryDelayMs: DEFAULT_AI_RELIABILITY_SETTINGS.retryBaseDelayMs,
@@ -1100,8 +1041,6 @@ const focusedContexts = new Map<
   number,
   { libraryId: string | null; selectedFolderId?: string }
 >();
-// Last Keel window that published browse context or received OS focus.
-let lastExtensionTargetWindowId: number | undefined;
 
 // Keeps selected roots in Main. Renderer receives only an opaque, one-shot token.
 const pendingRelinkPreviews = new RelinkPreviewStore();
@@ -1109,17 +1048,7 @@ const sourcePathCache = new SourcePathCache();
 
 // Pending import source path (importId -> sourceFolderPath), remembered after validation.
 const pendingImportSources = new Map<string, string>();
-
-// External-library source chosen and validated; Renderer never receives the
-// path. For archive sources this is the extracted temporary root. Cleared
-// after destination is chosen, on inspect cancel, or when a new inspect starts.
-let pendingEagleOpenSourcePath: string | undefined;
-let pendingBillfishOpenSourcePath: string | undefined;
-type ActiveLibraryOpenCancellation = { cancelled: boolean };
-let activeLibraryOpenCancellation: ActiveLibraryOpenCancellation | undefined;
-// A corrupt plugin trust file is recovered before the first window is loaded;
-// keep a one-shot notice until Renderer has subscribed to shell notifications.
-let pendingPluginDeviceStateRecoveryNotice = false;
+import type { ActiveLibraryOpenCancellation } from "./main-state";
 
 // Archive-backed external libraries are extracted into Main-owned temporary
 // directories. The Worker only receives the extracted root; these callbacks
@@ -1134,23 +1063,23 @@ function externalLibraryStagingStorePath(): string {
 function persistExternalLibraryStagingRoot(root: string): void {
   const storePath = externalLibraryStagingStorePath();
   const current = readExternalLibraryStagingRoots(storePath, (error) => {
-    logger?.error("external-library.staging-store.read", error);
+    state.logger?.error("external-library.staging-store.read", error);
   });
   writeExternalLibraryStagingRoots(storePath, [...current, root], (error) => {
-    logger?.error("external-library.staging-store.write", error);
+    state.logger?.error("external-library.staging-store.write", error);
   });
 }
 
 function forgetExternalLibraryStagingRoot(root: string): void {
   const storePath = externalLibraryStagingStorePath();
   const current = readExternalLibraryStagingRoots(storePath, (error) => {
-    logger?.error("external-library.staging-store.read", error);
+    state.logger?.error("external-library.staging-store.read", error);
   });
   writeExternalLibraryStagingRoots(
     storePath,
     current.filter((value) => value !== root),
     (error) => {
-      logger?.error("external-library.staging-store.write", error);
+      state.logger?.error("external-library.staging-store.write", error);
     },
   );
 }
@@ -1168,7 +1097,7 @@ async function cleanupExternalSource(sourceRootPath: string | undefined): Promis
     await cleanup();
     externalSourceCleanups.delete(sourceRootPath);
   } catch (error) {
-    logger?.error("external-library.archive-cleanup", error);
+    state.logger?.error("external-library.archive-cleanup", error);
   }
 }
 
@@ -1200,12 +1129,12 @@ async function materializeSelectedExternalLibrary(input: {
 
 function fallbackDirectoryForLibraryId(libraryId: string): string | undefined {
   const entries = readRecentLibraryEntries(recentLibraryPath(), (error) => {
-    logger?.error("recent-library.read", error);
+    state.logger?.error("recent-library.read", error);
   });
   const match = entries.find((entry) => entry.libraryId === libraryId);
   if (match?.path) return path.dirname(path.resolve(match.path));
   const active = readActiveLibraryPath(recentLibraryPath(), (error) => {
-    logger?.error("recent-library.read", error);
+    state.logger?.error("recent-library.read", error);
   });
   return active ? path.dirname(path.resolve(active)) : undefined;
 }
@@ -1213,7 +1142,7 @@ function fallbackDirectoryForLibraryId(libraryId: string): string | undefined {
 async function sweepOrphanExternalLibraryStagingOnStartup(): Promise<void> {
   const storePath = externalLibraryStagingStorePath();
   const registered = readExternalLibraryStagingRoots(storePath, (error) => {
-    logger?.error("external-library.staging-store.read", error);
+    state.logger?.error("external-library.staging-store.read", error);
   });
   try {
     const result = await sweepOrphanExternalLibraryStaging({
@@ -1222,22 +1151,22 @@ async function sweepOrphanExternalLibraryStagingOnStartup(): Promise<void> {
       liveRoots: liveExternalLibraryStagingRoots,
     });
     writeExternalLibraryStagingRoots(storePath, result.remaining, (error) => {
-      logger?.error("external-library.staging-store.write", error);
+      state.logger?.error("external-library.staging-store.write", error);
     });
     if (result.removed.length > 0) {
-      logger?.info("external-library.staging-sweep", "Removed leftover extract directories.", {
+      state.logger?.info("external-library.staging-sweep", "Removed leftover extract directories.", {
         removedCount: result.removed.length,
       });
     }
     if (result.failed.length > 0) {
-      logger?.error(
+      state.logger?.error(
         "external-library.staging-sweep",
         new Error("Could not remove leftover extract directories."),
         { failedCount: result.failed.length },
       );
     }
   } catch (error) {
-    logger?.error("external-library.staging-sweep", error);
+    state.logger?.error("external-library.staging-sweep", error);
   }
 }
 
@@ -1585,7 +1514,7 @@ function cleanupOrphanAiProfileCredentials(catalog: AiProfileCatalog): void {
   try {
     entries = readdirSync(directory, { withFileTypes: true });
   } catch (error) {
-    logger?.error("ai.profile-keys.orphan-cleanup", error);
+    state.logger?.error("ai.profile-keys.orphan-cleanup", error);
     return;
   }
 
@@ -1598,7 +1527,7 @@ function cleanupOrphanAiProfileCredentials(catalog: AiProfileCatalog): void {
       rmSync(path.join(directory, entry.name), { force: true });
     } catch (error) {
       // Migration is still usable; this runs on every load so failed removals retry.
-      logger?.error("ai.profile-keys.orphan-cleanup", error);
+      state.logger?.error("ai.profile-keys.orphan-cleanup", error);
     }
   }
 }
@@ -1673,7 +1602,7 @@ function cleanupLegacyAiConfig(): void {
     rmSync(aiConfigPath(), { force: true });
     rmSync(aiKeyPath(), { force: true });
   } catch (error) {
-    logger?.error("ai.profile-migration.cleanup", error);
+    state.logger?.error("ai.profile-migration.cleanup", error);
   }
 }
 
@@ -1805,25 +1734,23 @@ function getDecryptedProfileApiKey(profileId: string): string {
 
 function focusMainWindow(): boolean {
   return focusKeelWindow(
-    mainWindow && !mainWindow.isDestroyed() ? mainWindow.id : undefined,
+    state.mainWindow && !state.mainWindow.isDestroyed() ? state.mainWindow.id : undefined,
   );
 }
 
-let loopbackRelease: Promise<void> | undefined;
-
 function releaseLoopbackListeners(): Promise<void> {
-  if (loopbackRelease !== undefined) return loopbackRelease;
+  if (state.loopbackRelease !== undefined) return state.loopbackRelease;
   try {
-    extensionServer?.server.close();
+    state.extensionServer?.server.close();
   } catch (error) {
-    logger?.error("extension-server", error);
+    state.logger?.error("extension-server", error);
   }
-  extensionServer = undefined;
-  const mcpClose = embeddedMcpServer?.close() ?? Promise.resolve();
-  loopbackRelease = mcpClose.catch((error: unknown) => {
-    logger?.error("automation.mcp.close", error);
+  state.extensionServer = undefined;
+  const mcpClose = state.embeddedMcpServer?.close() ?? Promise.resolve();
+  state.loopbackRelease = mcpClose.catch((error: unknown) => {
+    state.logger?.error("automation.mcp.close", error);
   });
-  return loopbackRelease;
+  return state.loopbackRelease;
 }
 
 function startupPreferencesPath(): string {
@@ -1839,7 +1766,7 @@ function readShortcutBindingsSnapshot() {
 }
 
 async function exportShortcutBindingsFile(): Promise<ShortcutFileExportResult> {
-  const copy = resolveNativeDialogCopy(appLocale, "exportShortcuts");
+  const copy = resolveNativeDialogCopy(state.appLocale, "exportShortcuts");
   try {
     const e2ePath =
       process.env.KEEL_E2E === "1"
@@ -1853,8 +1780,8 @@ async function exportShortcutBindingsFile(): Promise<ShortcutFileExportResult> {
         defaultPath: "keel-shortcuts.json",
         filters: [{ name: copy.filterName ?? "JSON", extensions: ["json"] }],
       };
-      const result = mainWindow
-        ? await dialog.showSaveDialog(mainWindow, options)
+      const result = state.mainWindow
+        ? await dialog.showSaveDialog(state.mainWindow, options)
         : await dialog.showSaveDialog(options);
       if (result.canceled || !result.filePath) {
         return { ok: false, error: "canceled", canceled: true };
@@ -1865,10 +1792,10 @@ async function exportShortcutBindingsFile(): Promise<ShortcutFileExportResult> {
     writeFileSync(filePath, `${JSON.stringify(bindings, null, 2)}\n`, "utf8");
     return { ok: true, path: filePath };
   } catch (error) {
-    logger?.error("shortcuts.export", error);
+    state.logger?.error("shortcuts.export", error);
     return { ok: false, error: "shortcut-export-failed" };
   } finally {
-    ensureRendererKeyboardFocus(mainWindow, {
+    ensureRendererKeyboardFocus(state.mainWindow, {
       reattachHwnd: true,
       reason: "shortcuts.export",
     });
@@ -1876,7 +1803,7 @@ async function exportShortcutBindingsFile(): Promise<ShortcutFileExportResult> {
 }
 
 async function importShortcutBindingsFile(): Promise<ShortcutFileImportResult> {
-  const copy = resolveNativeDialogCopy(appLocale, "importShortcuts");
+  const copy = resolveNativeDialogCopy(state.appLocale, "importShortcuts");
   try {
     const e2ePath =
       process.env.KEEL_E2E === "1"
@@ -1890,8 +1817,8 @@ async function importShortcutBindingsFile(): Promise<ShortcutFileImportResult> {
         properties: ["openFile"],
         filters: [{ name: copy.filterName ?? "JSON", extensions: ["json"] }],
       };
-      const result = mainWindow
-        ? await dialog.showOpenDialog(mainWindow, options)
+      const result = state.mainWindow
+        ? await dialog.showOpenDialog(state.mainWindow, options)
         : await dialog.showOpenDialog(options);
       selected = result.filePaths[0];
       if (result.canceled || !selected) {
@@ -1928,16 +1855,16 @@ async function importShortcutBindingsFile(): Promise<ShortcutFileImportResult> {
     );
     writeShortcutBindings(shortcutBindingsPath(), bindings);
     installApplicationMenu({
-      locale: appLocale,
+      locale: state.appLocale,
       recentLibraries: nativeMenuRecentLibraries(),
       shortcutBindings: bindings,
     });
     return { ok: true, bindings };
   } catch (error) {
-    logger?.error("shortcuts.import", error);
+    state.logger?.error("shortcuts.import", error);
     return { ok: false, error: "shortcut-import-failed" };
   } finally {
-    ensureRendererKeyboardFocus(mainWindow, {
+    ensureRendererKeyboardFocus(state.mainWindow, {
       reattachHwnd: true,
       reason: "shortcuts.import",
     });
@@ -2002,7 +1929,7 @@ function storeShortcutBindings(input: unknown): ShortcutBindingsSetResult {
   }
   writeShortcutBindings(shortcutBindingsPath(), candidate);
   installApplicationMenu({
-    locale: appLocale,
+    locale: state.appLocale,
     recentLibraries: nativeMenuRecentLibraries(),
     shortcutBindings: candidate,
   });
@@ -2033,7 +1960,7 @@ function readStartupPreferencesSnapshot(): StartupPreferencesSnapshot {
     e2e: process.env.KEEL_E2E === "1",
     preferences,
     getLoginItemState: getOSLoginItemState,
-    onReadError: (error) => logger?.error("startup.login-item", error),
+    onReadError: (error) => state.logger?.error("startup.login-item", error),
   });
 }
 
@@ -2071,14 +1998,14 @@ const launchedForMcp = process.argv.includes(MCP_START_FLAG);
 
 async function startMcpForLauncher(): Promise<void> {
   try {
-    if (embeddedMcpServer?.snapshot().runtime.status !== "running") await embeddedMcpServer?.start();
+    if (state.embeddedMcpServer?.snapshot().runtime.status !== "running") await state.embeddedMcpServer?.start();
   } catch (error) {
-    logger?.error("mcp.server.launcher-start", error);
+    state.logger?.error("mcp.server.launcher-start", error);
   }
 }
 
 function handleSecondInstance(_event: Electron.Event, argv: string[]): void {
-  if (!shouldHandleSecondaryLaunch({ applicationQuitting })) return;
+  if (!shouldHandleSecondaryLaunch({ applicationQuitting: state.applicationQuitting })) return;
   if (argv.includes(MCP_START_FLAG)) {
     void startMcpForLauncher();
     return;
@@ -2089,10 +2016,10 @@ function handleSecondInstance(_event: Electron.Event, argv: string[]): void {
 }
 
 function focusKeelWindow(windowId?: number): boolean {
-  if (!shouldHandleSecondaryLaunch({ applicationQuitting })) return false;
+  if (!shouldHandleSecondaryLaunch({ applicationQuitting: state.applicationQuitting })) return false;
   const target =
     windowId === undefined
-      ? mainWindow
+      ? state.mainWindow
       : BrowserWindow.getAllWindows().find((window) => window.id === windowId);
   if (!target || target.isDestroyed()) return false;
   if (target.isMinimized()) target.restore();
@@ -2128,7 +2055,7 @@ function resolveE2eIsolatedPlacement(
   );
 
   if (placement) {
-    logger?.info(
+    state.logger?.info(
       "e2e.isolated-window",
       "Placing the E2E window on a secondary display so it does not steal foreground focus.",
       { ...placement },
@@ -2136,7 +2063,7 @@ function resolveE2eIsolatedPlacement(
     return placement;
   }
 
-  logger?.info(
+  state.logger?.info(
     "e2e.isolated-window",
     "KEEL_E2E_ISOLATED=1 was set but no secondary display was detected; " +
       "falling back to the primary display. The E2E window will steal " +
@@ -2151,7 +2078,7 @@ function attachRendererDiagnostics(window: BrowserWindow): void {
     "console-message",
     (details) => {
       logRendererConsoleMessage(
-        logger,
+        state.logger,
         details.level,
         details.message,
         details.lineNumber,
@@ -2160,13 +2087,13 @@ function attachRendererDiagnostics(window: BrowserWindow): void {
     },
   );
   window.webContents.on("render-process-gone", (_event, details) => {
-    logRendererProcessGone(logger, window.id, details);
+    logRendererProcessGone(state.logger, window.id, details);
   });
   window.webContents.on("unresponsive", () => {
-    logRendererUnresponsive(logger, window.id);
+    logRendererUnresponsive(state.logger, window.id);
   });
   window.webContents.on("responsive", () => {
-    logRendererResponsive(logger, window.id);
+    logRendererResponsive(state.logger, window.id);
   });
 }
 
@@ -2221,7 +2148,7 @@ async function createMainWindow(): Promise<void> {
     },
   });
 
-  mainWindow = window;
+  state.mainWindow = window;
   if (linuxRoundedCorners) attachLinuxRoundedCorners(window);
   const mainContentsId = window.webContents.id;
   // Keep renderer diagnostics active in both development and packaged builds.
@@ -2235,7 +2162,7 @@ async function createMainWindow(): Promise<void> {
     const e2eShowInactive = process.env.KEEL_E2E === "1"
       && process.env.KEEL_E2E_SHOW_INACTIVE === "1";
     if (shouldShowMainWindowOnReady({
-      applicationQuitting,
+      applicationQuitting: state.applicationQuitting,
       e2eHideWindow: process.env.KEEL_E2E === "1"
         && process.env.KEEL_E2E_HIDE_WINDOW === "1"
         && !e2eShowInactive,
@@ -2255,9 +2182,9 @@ async function createMainWindow(): Promise<void> {
     clearViewerVideoShortcutCapture(mainContentsId);
   });
   window.on("closed", () => {
-    if (mainWindow === window) {
+    if (state.mainWindow === window) {
       focusedContexts.delete(window.id);
-      mainWindow = undefined;
+      state.mainWindow = undefined;
     }
   });
   window.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
@@ -2270,7 +2197,7 @@ async function createMainWindow(): Promise<void> {
   window.webContents.on("before-input-event", (event, input) => {
     if (input.type !== 'keyDown' && input.type !== 'keyUp') return;
     const captureType = input.type === 'keyUp' ? 'keyup' : 'keydown';
-    const captureResult = pluginInputCaptureBroker?.publish({
+    const captureResult = state.pluginInputCaptureBroker?.publish({
       target: { scope: 'application' },
       event: {
         type: captureType,
@@ -2405,7 +2332,7 @@ async function createMainWindow(): Promise<void> {
   const publishWindowFocus = () => {
     if (window.isDestroyed()) return;
     if (window.isFocused()) {
-      lastExtensionTargetWindowId = window.id;
+      state.lastExtensionTargetWindowId = window.id;
     }
     sendToLiveWebContents(window.webContents, WINDOW_FOCUS_CHANNEL, {
       focused: window.isFocused(),
@@ -2413,14 +2340,14 @@ async function createMainWindow(): Promise<void> {
   };
   window.on("focus", publishWindowFocus);
   window.on("blur", () => {
-    pluginInputCaptureBroker?.releaseForWindowBlur();
+    state.pluginInputCaptureBroker?.releaseForWindowBlur();
     publishWindowFocus();
   });
   window.once("ready-to-show", publishWindowFocus);
   window.webContents.once("did-finish-load", () => {
     publishPluginInputCaptureSessionsToRenderer();
-    if (pendingPluginDeviceStateRecoveryNotice) {
-      pendingPluginDeviceStateRecoveryNotice = false;
+    if (state.pendingPluginDeviceStateRecoveryNotice) {
+      state.pendingPluginDeviceStateRecoveryNotice = false;
       window.webContents.send(SHELL_NOTIFY_CHANNEL, {
         severity: 'warning',
         mode: 'toast',
@@ -2456,11 +2383,11 @@ async function createMainWindow(): Promise<void> {
       ]
         .filter(Boolean)
         .join("\n");
-      logger?.error("main.window.load", detail);
+      state.logger?.error("main.window.load", detail);
       dialog.showErrorBox("Keel renderer failed to load", detail);
     });
     try {
-      await loadRendererDevUrl(window, MAIN_WINDOW_VITE_DEV_SERVER_URL, logger, {
+      await loadRendererDevUrl(window, MAIN_WINDOW_VITE_DEV_SERVER_URL, state.logger, {
         consumeNetworkChange: () => {
           const changed = devModuleNetworkChanged;
           devModuleNetworkChanged = false;
@@ -2472,14 +2399,14 @@ async function createMainWindow(): Promise<void> {
         onNavigated: () => {
           const visibleBefore = window.isVisible();
           showMainWindowIfAllowed();
-          logger?.info("main.window.dev-navigation", "Renderer navigation completed.", {
+          state.logger?.info("main.window.dev-navigation", "Renderer navigation completed.", {
             visibleBefore,
             visibleAfter: window.isVisible(),
           });
         },
       });
     } catch (error) {
-      logger?.error("main.window.dev-load", error);
+      state.logger?.error("main.window.dev-load", error);
       dialog.showErrorBox(
         "Keel renderer failed to load",
         error instanceof Error ? error.message : String(error),
@@ -2510,9 +2437,9 @@ function getExtensionSaveRouting() {
   return resolveExtensionSaveRouting({
     focusedWindowId: focusedWindow?.id ?? null,
     contexts: focusedContexts,
-    lastTargetWindowId: lastExtensionTargetWindowId ?? null,
+    lastTargetWindowId: state.lastExtensionTargetWindowId ?? null,
     mainWindowId:
-      mainWindow && !mainWindow.isDestroyed() ? mainWindow.id : null,
+      state.mainWindow && !state.mainWindow.isDestroyed() ? state.mainWindow.id : null,
   });
 }
 
@@ -2521,7 +2448,7 @@ function getExtensionSaveContext() {
 }
 
 async function handleListFolders(): Promise<ListFoldersDisposition> {
-  if (!workerClient) {
+  if (!state.workerClient) {
     return { ok: false, status: 503, reason: "worker unavailable" };
   }
 
@@ -2530,7 +2457,7 @@ async function handleListFolders(): Promise<ListFoldersDisposition> {
     return { ok: false, status: 503, reason: "no active library" };
   }
 
-  const result = await workerClient.request({
+  const result = await state.workerClient.request({
     type: "folder.list",
     libraryId: saveContext.libraryId,
   });
@@ -2546,7 +2473,7 @@ async function handleListFolders(): Promise<ListFoldersDisposition> {
   }
 
   let libraryDisplayName = "Keel";
-  const librariesResult = await workerClient.request({ type: "library.list" });
+  const librariesResult = await state.workerClient.request({ type: "library.list" });
   if (librariesResult.ok && librariesResult.type === "library.list") {
     const match = librariesResult.libraries.find(
       (library) => library.libraryId === saveContext.libraryId,
@@ -2563,7 +2490,7 @@ async function handleListFolders(): Promise<ListFoldersDisposition> {
     relativePath: string;
     assetCount: number;
   }> = [];
-  const linkedResult = await workerClient.request({
+  const linkedResult = await state.workerClient.request({
     type: "linked-folder.list",
     libraryId: saveContext.libraryId,
   });
@@ -2594,9 +2521,9 @@ async function handleListFolders(): Promise<ListFoldersDisposition> {
     ok: true,
     libraryDisplayName,
     recentBrowsedFolderIds: (() => {
-      let ids = extensionBrowseFoldersStorePath
+      let ids = state.extensionBrowseFoldersStorePath
         ? readExtensionBrowseFolderIds(
-            extensionBrowseFoldersStorePath,
+            state.extensionBrowseFoldersStorePath,
             saveContext.libraryId,
           )
         : [];
@@ -2623,23 +2550,23 @@ async function handleListFolders(): Promise<ListFoldersDisposition> {
 async function handleSaveIntent(
   intent: SaveIntent,
 ): Promise<SaveIntentDisposition> {
-  if (!workerClient) {
+  if (!state.workerClient) {
     return { accepted: false, status: 503, reason: "worker unavailable" };
   }
 
   const focusedWindow = BrowserWindow.getFocusedWindow();
   const saveContext = getExtensionSaveContext();
   if (!saveContext) {
-    logger?.info(
+    state.logger?.info(
       "extension-server.save",
       focusedWindow
         ? "No active library in focused window; dropping save intent."
         : "No focused Keel window and no fallback browse context; dropping save intent.",
       {
         focusedWindowId: focusedWindow?.id ?? null,
-        lastTargetWindowId: lastExtensionTargetWindowId ?? null,
+        lastTargetWindowId: state.lastExtensionTargetWindowId ?? null,
         mainWindowId:
-          mainWindow && !mainWindow.isDestroyed() ? mainWindow.id : null,
+          state.mainWindow && !state.mainWindow.isDestroyed() ? state.mainWindow.id : null,
         contextWindowCount: focusedContexts.size,
       },
     );
@@ -2661,9 +2588,9 @@ async function handleSaveIntent(
   };
 
   try {
-    const result = await workerClient.request(command);
+    const result = await state.workerClient.request(command);
     if (!result.ok) {
-      logger?.error(
+      state.logger?.error(
         "extension-server.save",
         new Error(`Save failed: ${result.error.message}`),
         {
@@ -2677,7 +2604,7 @@ async function handleSaveIntent(
         reason: result.error.reason ?? result.error.code,
       };
     }
-    logger?.info("extension-server.save", "Asset saved successfully.", {
+    state.logger?.info("extension-server.save", "Asset saved successfully.", {
       type: result.type,
     });
     if (result.type === "extension.asset-saved") {
@@ -2687,7 +2614,7 @@ async function handleSaveIntent(
     }
     return { accepted: true };
   } catch (error) {
-    logger?.error("extension-server.save", error);
+    state.logger?.error("extension-server.save", error);
     throw error;
   }
 }
@@ -2695,7 +2622,7 @@ async function handleSaveIntent(
 async function handleSaveUpload(
   upload: SaveUploadRequest,
 ): Promise<SaveUploadDisposition> {
-  if (!workerClient) {
+  if (!state.workerClient) {
     return { accepted: false, status: 503, reason: "worker unavailable" };
   }
 
@@ -2703,16 +2630,16 @@ async function handleSaveUpload(
   const saveRouting = getExtensionSaveRouting();
   const saveContext = saveRouting.context;
   if (!saveContext) {
-    logger?.info(
+    state.logger?.info(
       "extension-server.save-upload",
       focusedWindow
         ? "No active library in focused window; dropping upload."
         : "No focused Keel window and no fallback browse context; dropping upload.",
       {
         focusedWindowId: focusedWindow?.id ?? null,
-        lastTargetWindowId: lastExtensionTargetWindowId ?? null,
+        lastTargetWindowId: state.lastExtensionTargetWindowId ?? null,
         mainWindowId:
-          mainWindow && !mainWindow.isDestroyed() ? mainWindow.id : null,
+          state.mainWindow && !state.mainWindow.isDestroyed() ? state.mainWindow.id : null,
         contextWindowCount: focusedContexts.size,
       },
     );
@@ -2736,9 +2663,9 @@ async function handleSaveUpload(
   };
 
   try {
-    const result = await workerClient.request(command);
+    const result = await state.workerClient.request(command);
     if (!result.ok) {
-      logger?.error(
+      state.logger?.error(
         "extension-server.save-upload",
         new Error(`Upload save failed: ${result.error.message}`),
         {
@@ -2755,7 +2682,7 @@ async function handleSaveUpload(
     if (result.type !== "extension.asset-saved") {
       return { accepted: false, status: 500, reason: "unexpected worker response" };
     }
-    logger?.info("extension-server.save-upload", "Asset saved successfully.", {
+    state.logger?.info("extension-server.save-upload", "Asset saved successfully.", {
       type: result.type,
       byteLength: upload.byteLength,
       assetId: result.asset.assetId,
@@ -2775,20 +2702,20 @@ async function handleSaveUpload(
     ]);
     return { accepted: true };
   } catch (error) {
-    logger?.error("extension-server.save-upload", error);
+    state.logger?.error("extension-server.save-upload", error);
     throw error;
   } finally {
     try {
       rmSync(upload.stagingDirectory, { recursive: true, force: true });
     } catch (error) {
-      logger?.error("extension-server.save-upload-cleanup", error);
+      state.logger?.error("extension-server.save-upload-cleanup", error);
     }
   }
 }
 
 function publishLifecycle(event: RendererLifecycleEvent): void {
-  if (!mainWindow || mainWindow.isDestroyed()) return;
-  mainWindow.webContents.send(
+  if (!state.mainWindow || state.mainWindow.isDestroyed()) return;
+  state.mainWindow.webContents.send(
     LIBRARY_LIFECYCLE_CHANNEL,
     parseRendererLifecycleEvent(event),
   );
@@ -2796,34 +2723,34 @@ function publishLifecycle(event: RendererLifecycleEvent): void {
 
 async function closeOpenLibrariesBeforeReplacement(): Promise<string[]> {
   const previousPaths: string[] = [];
-  if (!workerClient) return previousPaths;
+  if (!state.workerClient) return previousPaths;
   try {
-    const listed = await workerClient.request({ type: "library.list" });
+    const listed = await state.workerClient.request({ type: "library.list" });
     if (!listed.ok || listed.type !== "library.list") return previousPaths;
     for (const library of listed.libraries) {
       previousPaths.push(library.libraryPath);
       try {
-        const closed = await workerClient.request({
+        const closed = await state.workerClient.request({
           type: "library.close",
           libraryId: library.libraryId,
         });
         if (!closed.ok || closed.type !== "library.closed") continue;
         clearNativeAssetDragCache(library.libraryId);
         clearActiveRecentLibrary(recentLibraryPath(), (error) => {
-          logger?.error("recent-library.clear", error);
+          state.logger?.error("recent-library.clear", error);
         });
         publishLifecycle({
           type: "library.closed",
           libraryId: library.libraryId,
         });
       } catch (error) {
-        logger?.error("external-library-open.close-previous", error, {
+        state.logger?.error("external-library-open.close-previous", error, {
           libraryId: library.libraryId,
         });
       }
     }
   } catch (error) {
-    logger?.error("external-library-open.list-previous", error);
+    state.logger?.error("external-library-open.list-previous", error);
   }
   return previousPaths;
 }
@@ -2831,10 +2758,10 @@ async function closeOpenLibrariesBeforeReplacement(): Promise<string[]> {
 async function reopenLibrariesAfterFailedReplacement(
   libraryPaths: readonly string[],
 ): Promise<void> {
-  if (!workerClient || libraryPaths.length === 0) return;
+  if (!state.workerClient || libraryPaths.length === 0) return;
   for (const selectedLibraryPath of libraryPaths) {
     try {
-      const opened = await workerClient.request({
+      const opened = await state.workerClient.request({
         type: "library.open",
         selectedLibraryPath,
       });
@@ -2850,7 +2777,7 @@ async function reopenLibrariesAfterFailedReplacement(
         source: "replacement-restore",
       });
     } catch (error) {
-      logger?.error("external-library-open.restore-previous", error, {
+      state.logger?.error("external-library-open.restore-previous", error, {
         selectedLibraryPath,
       });
     }
@@ -2872,9 +2799,9 @@ function publishAssetChange(event: AssetChangeEvent): void {
       nativeAssetDragPrimer.scheduleVisible(parsed.libraryId, visibleDragIds);
     }
   }
-  embeddingTestIndex?.catchUp(parsed.libraryId);
-  embeddingHttpIndex?.catchUp(parsed.libraryId);
-  pluginActivationCoordinator?.fanOutDomainEvent(createPluginDomainEvent({
+  state.embeddingTestIndex?.catchUp(parsed.libraryId);
+  state.embeddingHttpIndex?.catchUp(parsed.libraryId);
+  state.pluginActivationCoordinator?.fanOutDomainEvent(createPluginDomainEvent({
     kind: 'asset.changed',
     libraryId: parsed.libraryId,
     summary: {
@@ -2883,8 +2810,8 @@ function publishAssetChange(event: AssetChangeEvent): void {
       ...(parsed.source === undefined ? {} : { source: parsed.source }),
     },
   }));
-  if (!mainWindow || mainWindow.isDestroyed()) return;
-  mainWindow.webContents.send(
+  if (!state.mainWindow || state.mainWindow.isDestroyed()) return;
+  state.mainWindow.webContents.send(
     ASSET_CHANGE_CHANNEL,
     parsed,
   );
@@ -2899,15 +2826,15 @@ function publishLibraryChanged(event: LibraryChangedEvent): void {
   // sees a transient protocol failure and permanently replaces the image with
   // its broken-file fallback. Asset/source mutations use asset.changed and
   // explicitly clear this cache; close/reopen paths clear it as well.
-  pluginActivationCoordinator?.fanOutDomainEvent(createPluginDomainEvent({
+  state.pluginActivationCoordinator?.fanOutDomainEvent(createPluginDomainEvent({
     kind: 'library.changed',
     libraryId: parsed.libraryId,
     summary: {
       changeSequence: parsed.changeSequence,
     },
   }));
-  if (!mainWindow || mainWindow.isDestroyed()) return;
-  mainWindow.webContents.send(
+  if (!state.mainWindow || state.mainWindow.isDestroyed()) return;
+  state.mainWindow.webContents.send(
     LIBRARY_CHANGED_CHANNEL,
     parsed,
   );
@@ -2919,7 +2846,7 @@ function publishExtensionSaveCompleted(
 ): void {
   const target =
     windowId === null
-      ? mainWindow
+      ? state.mainWindow
       : BrowserWindow.getAllWindows().find((window) => window.id === windowId);
   if (!target || target.isDestroyed()) return;
   target.webContents.send(
@@ -2929,26 +2856,26 @@ function publishExtensionSaveCompleted(
 }
 
 function publishProgress(event: ProgressEvent): void {
-  if (!mainWindow || mainWindow.isDestroyed()) return;
-  mainWindow.webContents.send(PROGRESS_CHANNEL, event);
+  if (!state.mainWindow || state.mainWindow.isDestroyed()) return;
+  state.mainWindow.webContents.send(PROGRESS_CHANNEL, event);
 }
 
 function publishAiProgress(event: AiProgressEvent): void {
-  if (!mainWindow || mainWindow.isDestroyed()) return;
-  mainWindow.webContents.send(AI_PROGRESS_CHANNEL, parseAiProgressEvent(event));
+  if (!state.mainWindow || state.mainWindow.isDestroyed()) return;
+  state.mainWindow.webContents.send(AI_PROGRESS_CHANNEL, parseAiProgressEvent(event));
 }
 
 function publishAiCompleted(event: AiAnalysisCompletedEvent): void {
-  if (!mainWindow || mainWindow.isDestroyed()) return;
-  mainWindow.webContents.send(
+  if (!state.mainWindow || state.mainWindow.isDestroyed()) return;
+  state.mainWindow.webContents.send(
     AI_COMPLETED_CHANNEL,
     parseAiAnalysisCompletedEvent(event),
   );
 }
 
 function publishAiCleared(event: AiContentClearedEvent): void {
-  if (!mainWindow || mainWindow.isDestroyed()) return;
-  mainWindow.webContents.send(
+  if (!state.mainWindow || state.mainWindow.isDestroyed()) return;
+  state.mainWindow.webContents.send(
     AI_CLEARED_CHANNEL,
     parseAiContentClearedEvent(event),
   );
@@ -2960,18 +2887,18 @@ function publishAiCleared(event: AiContentClearedEvent): void {
  * seen after the batch are ignored.
  */
 async function runRulesFor(libraryId: string, kind: 'after-import' | 'library-change' | 'schedule' | 'continuous'): Promise<void> {
-  if (!ruleRunner || !workerClient) return;
+  if (!state.ruleRunner || !state.workerClient) return;
   try {
     const runs = kind === 'continuous'
-      ? await ruleRunner.runContinuous(libraryId)
-      : await ruleRunner.runTriggered(libraryId, kind);
+      ? await state.ruleRunner.runContinuous(libraryId)
+      : await state.ruleRunner.runTriggered(libraryId, kind);
     if (runs.length === 0) return;
-    const sequence = await workerClient.request({ type: 'library.change-sequence', libraryId });
+    const sequence = await state.workerClient.request({ type: 'library.change-sequence', libraryId });
     if (sequence.ok && 'changeSequence' in sequence && typeof sequence.changeSequence === 'number') {
       ruleTriggerSequence.set(libraryId, sequence.changeSequence);
     }
   } catch (error) {
-    logger?.error('rule.trigger-failed', error, { libraryId, kind });
+    state.logger?.error('rule.trigger-failed', error, { libraryId, kind });
   }
 }
 
@@ -2994,9 +2921,9 @@ function scheduleLibraryChangeRules(event: LibraryChangedEvent): void {
 
 /** Once a minute: run "schedule" rules whose interval has passed. */
 async function runScheduledRules(): Promise<void> {
-  if (!ruleRunner || !pluginActivationCoordinator) return;
-  for (const libraryId of pluginActivationCoordinator.trackedOpenLibraryIds()) {
-    const list = await ruleRunner.listRules(libraryId).catch(() => undefined);
+  if (!state.ruleRunner || !state.pluginActivationCoordinator) return;
+  for (const libraryId of state.pluginActivationCoordinator.trackedOpenLibraryIds()) {
+    const list = await state.ruleRunner.listRules(libraryId).catch(() => undefined);
     const due = list?.rules.some((rule) => {
       if (!rule.enabled || rule.manifest.trigger.kind !== 'schedule') return false;
       const last = ruleScheduleLastRun.get(rule.manifest.id) ?? (rule.lastRun ? Date.parse(rule.lastRun.startedAt) : 0);
@@ -3020,23 +2947,23 @@ async function enqueueAutoAnalyzeAfterImport(
   try {
     const config = loadAiConfig();
     if (!config.autoAnalyzeEnabled || !config.hasKey || !config.apiFormat) return;
-    if ((importedAssetIds.length === 0 && !folderId) || !workerClient) return;
+    if ((importedAssetIds.length === 0 && !folderId) || !state.workerClient) return;
 
-    const result = await workerClient.request({
+    const result = await state.workerClient.request({
       type: "ai.enqueue-analysis",
       libraryId,
       ...(importedAssetIds.length > 0 ? { assetIds: importedAssetIds } : {}),
       ...(folderId ? { folderId } : {}),
     });
     if (result.ok && result.type === "ai.jobs.enqueued") {
-      logger?.info(
+      state.logger?.info(
         "auto-analyze",
         `Enqueued ${result.enqueued} AI analysis jobs after import.`,
       );
       await processAiQueue(libraryId);
     }
   } catch (error) {
-    logger?.error("auto-analyze", error);
+    state.logger?.error("auto-analyze", error);
     // Non-blocking: import succeeded regardless of AI enqueue failure.
   }
 }
@@ -3047,17 +2974,14 @@ async function processAiQueue(libraryId: string): Promise<void> {
     aiQueueScheduler.setRetryPolicy(config.reliabilitySettings);
     await aiQueueScheduler.trigger(libraryId);
   } catch (error) {
-    logger?.error("ai.queue.config", error, { libraryId });
+    state.logger?.error("ai.queue.config", error, { libraryId });
   }
 }
-
-/** Global menu preference: linked-folder assets with a missing source stay listed. */
-let showMissingLinkedFiles = true;
 
 /** Shared post-open hook for dialog opens and startup recent-library restore. */
 function pluginThumbnailExtensionsFor(libraryId: string): string[] {
   const extensions = new Set<string>();
-  for (const provider of pluginActivationCoordinator?.listActiveProviders(libraryId) ?? []) {
+  for (const provider of state.pluginActivationCoordinator?.listActiveProviders(libraryId) ?? []) {
     if (provider.kind !== 'thumbnail') continue;
     for (const raw of provider.extensions ?? []) {
       const extension = raw.replace(/^\./u, '').toLowerCase();
@@ -3068,7 +2992,7 @@ function pluginThumbnailExtensionsFor(libraryId: string): string[] {
 }
 
 async function syncPluginThumbnailExtensions(): Promise<void> {
-  const client = workerClient;
+  const client = state.workerClient;
   if (!client) return;
   const listed = await client.request({ type: 'library.list' });
   if (!listed.ok || listed.type !== 'library.list') return;
@@ -3085,15 +3009,15 @@ async function syncPluginThumbnailExtensions(): Promise<void> {
  * Worker keeps one process-wide set, so send the union over open libraries.
  */
 async function syncPluginCompanionExtensions(): Promise<void> {
-  const coordinator = pluginActivationCoordinator;
-  if (!coordinator || !workerClient) return;
+  const coordinator = state.pluginActivationCoordinator;
+  if (!coordinator || !state.workerClient) return;
   const libraryIds = coordinator.trackedOpenLibraryIds();
   if (libraryIds.length === 0) return;
   const extensions = [...new Set(libraryIds.flatMap((id) => coordinator.listCompanionExtensions(id)))];
   try {
-    await workerClient.request({ type: "library.companion-extensions.set", libraryId: libraryIds[0]!, extensions });
+    await state.workerClient.request({ type: "library.companion-extensions.set", libraryId: libraryIds[0]!, extensions });
   } catch (error) {
-    logger?.error("plugin.companion-extensions", error);
+    state.logger?.error("plugin.companion-extensions", error);
   }
 }
 
@@ -3103,22 +3027,22 @@ async function notifyLibraryOpenedSideEffects(input: {
 }): Promise<void> {
   void processAiQueue(input.libraryId);
   try {
-    await pluginActivationCoordinator?.onLibraryOpened({
+    await state.pluginActivationCoordinator?.onLibraryOpened({
       libraryId: input.libraryId,
       libraryDirectory: input.libraryDirectory,
     });
     await syncPluginCompanionExtensions();
   } catch (error) {
-    logger?.error("plugin.activation.library-opened", error, {
+    state.logger?.error("plugin.activation.library-opened", error, {
       libraryId: input.libraryId,
     });
   }
   // Global plugin activation uses an internal pseudo-library. Once the real
   // library is open, tick only jobs explicitly enqueued or retried in this
   // application session; interrupted rows are never auto-recovered.
-  pluginJobScheduler?.tick(input.libraryId);
+  state.pluginJobScheduler?.tick(input.libraryId);
   await syncPluginThumbnailExtensions();
-  workerClient?.publishShowMissingLinkedFiles(showMissingLinkedFiles);
+  state.workerClient?.publishShowMissingLinkedFiles(state.showMissingLinkedFiles);
 }
 
 async function processAiQueueBatch(
@@ -3129,7 +3053,7 @@ async function processAiQueueBatch(
   try {
     config = loadAiConfig();
   } catch (error) {
-    logger?.error("ai.queue.config", error, { libraryId });
+    state.logger?.error("ai.queue.config", error, { libraryId });
     return { processed: 0, requeued: 0 };
   }
   const activeProfile = config.profiles.find(
@@ -3138,7 +3062,7 @@ async function processAiQueueBatch(
   const legacyFallbackAvailable = !activeProfile
     && !hasCompletedAiProfileMigration()
     && Boolean(config.apiFormat);
-  if (!config.hasKey || !workerClient || (!activeProfile && !legacyFallbackAvailable)) {
+  if (!config.hasKey || !state.workerClient || (!activeProfile && !legacyFallbackAvailable)) {
     return { processed: 0, requeued: 0 };
   }
   try {
@@ -3159,7 +3083,7 @@ async function processAiQueueBatch(
     let requeued = 0;
     while (processed < maxJobs) {
       const requested = Math.min(sliceSize, maxJobs - processed);
-      const result = await workerClient.request({
+      const result = await state.workerClient.request({
         type: "ai.process-queue",
         libraryId,
         apiFormat: connection.apiFormat,
@@ -3180,14 +3104,14 @@ async function processAiQueueBatch(
         maxJobs: requested,
       });
       if (!result.ok) {
-        logger?.error(
+        state.logger?.error(
           "ai.queue.process",
           new Error(`Worker rejected AI queue batch: ${result.error.code}`),
         );
         break;
       }
       if (result.type !== "ai.jobs.processed") {
-        logger?.error(
+        state.logger?.error(
           "ai.queue.process",
           new Error(`Unexpected AI queue result: ${result.type}`),
         );
@@ -3200,15 +3124,15 @@ async function processAiQueueBatch(
     }
     return { processed, requeued };
   } catch (error) {
-    logger?.error("ai.queue.process", error);
+    state.logger?.error("ai.queue.process", error);
     return { processed: 0, requeued: 0 };
   }
 }
 
 function createNativeDialogHost(): NativeDialogHost {
   return {
-    getLocale: () => appLocale,
-    getMainWindow: () => mainWindow ?? null,
+    getLocale: () => state.appLocale,
+    getMainWindow: () => state.mainWindow ?? null,
     isE2e: () => !app.isPackaged && process.env.KEEL_E2E === "1",
   };
 }
@@ -3256,16 +3180,14 @@ async function selectPluginPackageForInstall(
   );
 }
 
-let cachedSyncDeviceId: string | undefined;
-
 /** Serpent-xffq：每台设备的稳定同步身份（userData 持久化，非敏感）。 */
 function syncDeviceId(): string {
-  if (cachedSyncDeviceId) return cachedSyncDeviceId;
+  if (state.cachedSyncDeviceId) return state.cachedSyncDeviceId;
   const file = path.join(app.getPath('userData'), 'sync-device.json');
   try {
     const parsed = JSON.parse(readFileSync(file, 'utf-8')) as { deviceId?: string };
     if (typeof parsed.deviceId === 'string' && parsed.deviceId.length > 0) {
-      cachedSyncDeviceId = parsed.deviceId;
+      state.cachedSyncDeviceId = parsed.deviceId;
       return parsed.deviceId;
     }
   } catch {
@@ -3277,7 +3199,7 @@ function syncDeviceId(): string {
   } catch {
     // 写入失败仍返回本次进程内稳定 ID。
   }
-  cachedSyncDeviceId = deviceId;
+  state.cachedSyncDeviceId = deviceId;
   return deviceId;
 }
 
@@ -3313,10 +3235,10 @@ async function commandFor(
         selectDirectory,
         createNativeDialogHost,
         cleanupExternalSource,
-        getPendingEagleOpenSourcePath: () => pendingEagleOpenSourcePath,
-        setPendingEagleOpenSourcePath: (value) => { pendingEagleOpenSourcePath = value; },
-        getPendingBillfishOpenSourcePath: () => pendingBillfishOpenSourcePath,
-        setPendingBillfishOpenSourcePath: (value) => { pendingBillfishOpenSourcePath = value; },
+        getPendingEagleOpenSourcePath: () => state.pendingEagleOpenSourcePath,
+        setPendingEagleOpenSourcePath: (value) => { state.pendingEagleOpenSourcePath = value; },
+        getPendingBillfishOpenSourcePath: () => state.pendingBillfishOpenSourcePath,
+        setPendingBillfishOpenSourcePath: (value) => { state.pendingBillfishOpenSourcePath = value; },
         materializeSelectedExternalLibrary,
         rememberExternalSource,
       }, callbacks);
@@ -3603,7 +3525,7 @@ async function handleLibraryRequest(
   options: { consumerId: string },
 ): Promise<RendererResult> {
   if (libraryRequestTraceEnabled()) {
-    logger?.info("diag.library-request.enter", "Library request entered Main.", {
+    state.logger?.info("diag.library-request.enter", "Library request entered Main.", {
       requestType: (input as { type?: unknown } | null)?.type,
     });
   }
@@ -3631,7 +3553,7 @@ async function handleLibraryRequest(
     fields: Record<string, unknown> = {},
   ): void => {
     if (!navigationTraceEnabled || !navigationTrace) return;
-    logger?.info("performance.navigation", "Browse navigation performance stage.", {
+    state.logger?.info("performance.navigation", "Browse navigation performance stage.", {
       navigationId: navigationTrace.navigationId,
       stage,
       ...fields,
@@ -3663,12 +3585,12 @@ async function handleLibraryRequest(
     }
 
     const libraryOwnedResult = await tryHandleLibraryOwnedRequest(request, {
-      getActiveLibraryOpenCancellation: () => activeLibraryOpenCancellation,
+      getActiveLibraryOpenCancellation: () => state.activeLibraryOpenCancellation,
       logInfo: (scope, message) => {
-        logger?.info(scope, message);
+        state.logger?.info(scope, message);
       },
       logError: (scope, error) => {
-        logger?.error(scope, error);
+        state.logger?.error(scope, error);
       },
       selectDirectory,
       recentLibraryPath,
@@ -3676,19 +3598,19 @@ async function handleLibraryRequest(
       removeRecentLibrary,
       refreshApplicationMenuRecentLibraries,
       cleanupExternalSource,
-      getPendingEagleOpenSourcePath: () => pendingEagleOpenSourcePath,
-      setPendingEagleOpenSourcePath: (value) => { pendingEagleOpenSourcePath = value; },
-      getPendingBillfishOpenSourcePath: () => pendingBillfishOpenSourcePath,
-      setPendingBillfishOpenSourcePath: (value) => { pendingBillfishOpenSourcePath = value; },
+      getPendingEagleOpenSourcePath: () => state.pendingEagleOpenSourcePath,
+      setPendingEagleOpenSourcePath: (value) => { state.pendingEagleOpenSourcePath = value; },
+      getPendingBillfishOpenSourcePath: () => state.pendingBillfishOpenSourcePath,
+      setPendingBillfishOpenSourcePath: (value) => { state.pendingBillfishOpenSourcePath = value; },
     });
     if (libraryOwnedResult) return libraryOwnedResult;
     openCancellation = isLibraryOpenRequest(request)
       ? { cancelled: false }
       : undefined;
-    if (openCancellation) activeLibraryOpenCancellation = openCancellation;
+    if (openCancellation) state.activeLibraryOpenCancellation = openCancellation;
 
     if (criticalRendererRequest(request)) {
-      logger?.info(
+      state.logger?.info(
         'critical-confirmation.route',
         'Routing a renderer request through the critical confirmation window.',
         { requestType: request.type },
@@ -3706,7 +3628,7 @@ async function handleLibraryRequest(
 
     const ingestionOwnedResult = await tryHandleIngestionOwnedRequest(request, {
       logError: (scope, error, context) => {
-        logger?.error(scope, error, context);
+        state.logger?.error(scope, error, context);
       },
     });
     if (ingestionOwnedResult) return ingestionOwnedResult;
@@ -3726,13 +3648,13 @@ async function handleLibraryRequest(
           // The in-flight manual run already covers this binding. A rebind to
           // another remote still needs one run after the manual one finishes.
           if (bindingNeedsRunAfterManual(binding, manual)) {
-            syncAutoScheduler?.syncNow(libraryId);
+            state.syncAutoScheduler?.syncNow(libraryId);
           } else {
             manual.savedBindingDuringRun = true;
           }
           return;
         }
-        syncAutoScheduler?.syncNow(libraryId);
+        state.syncAutoScheduler?.syncNow(libraryId);
       },
     });
     if (syncOwnedResult) return syncOwnedResult;
@@ -3754,15 +3676,15 @@ async function handleLibraryRequest(
       writeBindings: writeEmbeddingBindings,
       embeddingIndex: embeddingIndex(),
       embeddingHttpIndex: embeddingHttp(),
-      stopGemmaIndex: () => { void embeddingTestIndex?.close(); },
-      stopHttpIndex: async () => { await embeddingHttpIndex?.close(); },
+      stopGemmaIndex: () => { void state.embeddingTestIndex?.close(); },
+      stopHttpIndex: async () => { await state.embeddingHttpIndex?.close(); },
       onInstallProgress: (event) => {
-        if (mainWindow && !mainWindow.isDestroyed()) {
-          mainWindow.webContents.send(EMBEDDING_INSTALL_PROGRESS_CHANNEL, event);
+        if (state.mainWindow && !state.mainWindow.isDestroyed()) {
+          state.mainWindow.webContents.send(EMBEDDING_INSTALL_PROGRESS_CHANNEL, event);
         }
       },
       logError: (scope, error, context) => {
-        logger?.error(scope, error, context);
+        state.logger?.error(scope, error, context);
       },
     });
     if (embeddingModelResult) return embeddingModelResult;
@@ -3775,24 +3697,24 @@ async function handleLibraryRequest(
       saveConnectionProfile: saveAiConnectionProfile,
       activateConnectionProfile: activateAiConnectionProfile,
       deleteConnectionProfile: deleteAiConnectionProfile,
-      workerAvailable: () => workerClient?.available ?? false,
+      workerAvailable: () => state.workerClient?.available ?? false,
       requestWorker: (command) => {
-        if (!workerClient) throw new Error("Library Worker is unavailable.");
-        return workerClient.request(command);
+        if (!state.workerClient) throw new Error("Library Worker is unavailable.");
+        return state.workerClient.request(command);
       },
       processAiQueue,
       logInfo: (scope, message, context) => {
-        logger?.info(scope, message, context);
+        state.logger?.info(scope, message, context);
       },
       logError: (scope, error, context) => {
-        logger?.error(scope, error, context);
+        state.logger?.error(scope, error, context);
       },
     });
     if (aiOwnedResult) return aiOwnedResult;
 
     const previewOwnedResult = await tryHandlePreviewOwnedRequest(request, {
       logError: (scope, error, context) => {
-        logger?.error(scope, error, context);
+        state.logger?.error(scope, error, context);
       },
     });
     if (previewOwnedResult) return previewOwnedResult;
@@ -3805,12 +3727,12 @@ async function handleLibraryRequest(
     if (relinkOwnedResult) return relinkOwnedResult;
 
     const openRecent = tryBuildOpenRecentCommand(request, {
-      getActiveLibraryOpenCancellation: () => activeLibraryOpenCancellation,
+      getActiveLibraryOpenCancellation: () => state.activeLibraryOpenCancellation,
       logInfo: (scope, message) => {
-        logger?.info(scope, message);
+        state.logger?.info(scope, message);
       },
       logError: (scope, error) => {
-        logger?.error(scope, error);
+        state.logger?.error(scope, error);
       },
       selectDirectory,
       recentLibraryPath,
@@ -3818,10 +3740,10 @@ async function handleLibraryRequest(
       removeRecentLibrary,
       refreshApplicationMenuRecentLibraries,
       cleanupExternalSource,
-      getPendingEagleOpenSourcePath: () => pendingEagleOpenSourcePath,
-      setPendingEagleOpenSourcePath: (value) => { pendingEagleOpenSourcePath = value; },
-      getPendingBillfishOpenSourcePath: () => pendingBillfishOpenSourcePath,
-      setPendingBillfishOpenSourcePath: (value) => { pendingBillfishOpenSourcePath = value; },
+      getPendingEagleOpenSourcePath: () => state.pendingEagleOpenSourcePath,
+      setPendingEagleOpenSourcePath: (value) => { state.pendingEagleOpenSourcePath = value; },
+      getPendingBillfishOpenSourcePath: () => state.pendingBillfishOpenSourcePath,
+      setPendingBillfishOpenSourcePath: (value) => { state.pendingBillfishOpenSourcePath = value; },
     });
     if (openRecent?.kind === "result") return openRecent.result;
     if (openRecent?.kind === "command") {
@@ -3830,16 +3752,16 @@ async function handleLibraryRequest(
       const ingestion = await tryBuildIngestionCommand(request, {
         isUnpackagedE2e: () => !app.isPackaged && process.env.KEEL_E2E === "1",
         e2eEnv: (name) => process.env[name],
-        workerAvailable: () => workerClient?.available ?? false,
+        workerAvailable: () => state.workerClient?.available ?? false,
         requestWorker: (workerCommand) => {
-          if (!workerClient) throw new Error("Library Worker is unavailable.");
-          return workerClient.request(workerCommand);
+          if (!state.workerClient) throw new Error("Library Worker is unavailable.");
+          return state.workerClient.request(workerCommand);
         },
         logInfo: (scope, message, context) => {
-          logger?.info(scope, message, context);
+          state.logger?.info(scope, message, context);
         },
         logError: (scope, error, context) => {
-          logger?.error(scope, error, context);
+          state.logger?.error(scope, error, context);
         },
         getPendingSequenceOffer: (offerId) => pendingImageSequenceOffers.get(offerId),
         deletePendingSequenceOffer: (offerId) => {
@@ -3887,10 +3809,10 @@ async function handleLibraryRequest(
     if (!command || openCancellation?.cancelled) return cancelled();
     const sequenceProbe = await maybeProbeImportSequences(request, command, {
       isUnpackagedE2e: () => !app.isPackaged && process.env.KEEL_E2E === "1",
-      workerAvailable: () => workerClient?.available ?? false,
+      workerAvailable: () => state.workerClient?.available ?? false,
       requestWorker: (workerCommand) => {
-        if (!workerClient) throw new Error("Library Worker is unavailable.");
-        return workerClient.request(workerCommand);
+        if (!state.workerClient) throw new Error("Library Worker is unavailable.");
+        return state.workerClient.request(workerCommand);
       },
       rememberSequenceOffer: rememberImageSequenceOffer,
     });
@@ -3901,7 +3823,7 @@ async function handleLibraryRequest(
       command,
       (libraryId, newRootPath) => pendingRelinkPreviews.create(libraryId, newRootPath),
     );
-    if (!workerClient) throw new Error("Library Worker is unavailable.");
+    if (!state.workerClient) throw new Error("Library Worker is unavailable.");
     const lifecycle = await prepareLibraryLifecycle(command, {
       operation,
       lifecyclePublished,
@@ -3915,8 +3837,8 @@ async function handleLibraryRequest(
     command = lifecycle.command;
     operation = lifecycle.operation;
     previousLibraryPaths = lifecycle.previousLibraryPaths;
-    if (lifecycle.clearPendingEagle) pendingEagleOpenSourcePath = undefined;
-    if (lifecycle.clearPendingBillfish) pendingBillfishOpenSourcePath = undefined;
+    if (lifecycle.clearPendingEagle) state.pendingEagleOpenSourcePath = undefined;
+    if (lifecycle.clearPendingBillfish) state.pendingBillfishOpenSourcePath = undefined;
 
     await maybeDelayE2eTrash(command, {
       isUnpackagedE2e: () => !app.isPackaged && process.env.KEEL_E2E === "1",
@@ -3933,13 +3855,13 @@ async function handleLibraryRequest(
     const navigationWorkerStartedAt = navigationTrace ? performance.now() : 0;
     const workerResult = command.type === "sync.probe"
       ? await runSyncProbeWithRetry(command, (probe) => {
-        if (!workerClient) throw new Error("Library Worker is unavailable.");
-        return workerClient.request(probe);
+        if (!state.workerClient) throw new Error("Library Worker is unavailable.");
+        return state.workerClient.request(probe);
       })
       : await (async () => {
         const traceLibraryRequest = libraryRequestTraceEnabled();
         if (traceLibraryRequest) {
-          logger?.info(
+          state.logger?.info(
             "diag.library-request.dispatch",
             "Dispatching the library command to the Worker.",
             { workerCommand: command.type },
@@ -3958,7 +3880,8 @@ async function handleLibraryRequest(
         }
         let result: WorkerResult | undefined;
         try {
-          result = await workerClient.request(command, { consumerId: options.consumerId });
+          if (!state.workerClient) throw new Error("Library Worker is unavailable.");
+          result = await state.workerClient.request(command, { consumerId: options.consumerId });
         } finally {
           if (manualLibraryId !== undefined) {
             const active = manualSyncRuns.get(manualLibraryId);
@@ -3966,7 +3889,7 @@ async function handleLibraryRequest(
               manualSyncRuns.set(manualLibraryId, { ...active, count: active.count - 1 });
             } else {
               manualSyncRuns.delete(manualLibraryId);
-              syncAutoScheduler?.manualSyncFinished(
+              state.syncAutoScheduler?.manualSyncFinished(
                 manualLibraryId,
                 Boolean(active?.savedBindingDuringRun && (!result || !result.ok)),
               );
@@ -3974,7 +3897,7 @@ async function handleLibraryRequest(
           }
         }
         if (traceLibraryRequest) {
-          logger?.info(
+          state.logger?.info(
             "diag.library-request.dispatched",
             "The Worker answered the library command.",
             { workerCommand: command.type, ok: result.ok, resultType: result.ok ? result.type : undefined },
@@ -3992,7 +3915,7 @@ async function handleLibraryRequest(
       });
     }
     if (viewerWorkerStartedAt > 0) {
-      logger?.info("viewer.preview-worker-timing", "Preview request resolved.", {
+      state.logger?.info("viewer.preview-worker-timing", "Preview request resolved.", {
         libraryId: viewerRequest?.libraryId,
         assetId: viewerRequest?.assetId,
         workerMs: Math.round(performance.now() - viewerWorkerStartedAt),
@@ -4006,14 +3929,14 @@ async function handleLibraryRequest(
       operation,
     }, {
       closeOpenedLibrary: async (libraryId) => {
-        if (!workerClient) throw new Error("Library Worker is unavailable.");
-        await workerClient.request({
+        if (!state.workerClient) throw new Error("Library Worker is unavailable.");
+        await state.workerClient.request({
           type: "library.close",
           libraryId,
         }, { consumerId: options.consumerId });
       },
       logError: (scope, error, context) => {
-        logger?.error(scope, error, context);
+        state.logger?.error(scope, error, context);
       },
       reopenLibrariesAfterFailedReplacement,
       publishLifecycle,
@@ -4044,16 +3967,16 @@ async function handleLibraryRequest(
       removeRecentLibrary,
       recentLibraryPath,
       logError: (scope, error, context) => {
-        logger?.error(scope, error, context);
+        state.logger?.error(scope, error, context);
       },
       setPendingEagleOpenSourcePath: (value) => {
-        pendingEagleOpenSourcePath = value;
+        state.pendingEagleOpenSourcePath = value;
       },
       setPendingBillfishOpenSourcePath: (value) => {
-        pendingBillfishOpenSourcePath = value;
+        state.pendingBillfishOpenSourcePath = value;
       },
       purgePreviewLibrary: (libraryId) => {
-        void previewCache?.purgeLibrary(libraryId);
+        void state.previewCache?.purgeLibrary(libraryId);
       },
       pendingCleanupPath: pendingLibraryCleanupPath,
       readPendingCleanupAsidePaths,
@@ -4076,13 +3999,13 @@ async function handleLibraryRequest(
       },
       notifyLibraryOpened: (input) => {
         notifyLibraryOpenedSideEffects(input).catch((error) => {
-          logger?.error("plugin.activation.library-opened", error, {
+          state.logger?.error("plugin.activation.library-opened", error, {
             libraryId: input.libraryId,
           });
         });
       },
       onLibraryClosed: (libraryId) => {
-        pluginActivationCoordinator?.onLibraryClosed(libraryId);
+        state.pluginActivationCoordinator?.onLibraryClosed(libraryId);
         for (const [executionId, context] of pluginAutomationContexts) {
           if (context.libraryId === libraryId) {
             pluginAutomationContexts.delete(executionId);
@@ -4099,10 +4022,10 @@ async function handleLibraryRequest(
 
     const mediaShellResult = await tryHandleMediaShellWorkerResult(request, workerResult, {
       logInfo: (scope, message, context) => {
-        logger?.info(scope, message, context);
+        state.logger?.info(scope, message, context);
       },
       logError: (scope, error, context) => {
-        logger?.error(scope, error, context);
+        state.logger?.error(scope, error, context);
       },
       openPath: (absolutePath) => shell.openPath(absolutePath),
       showItemInFolder: (absolutePath) => {
@@ -4116,7 +4039,7 @@ async function handleLibraryRequest(
       openWith: (absolutePath) =>
         openPathWithOtherApplication(
           absolutePath,
-          createOpenWithDeps(appLocale, () => mainWindow ?? null),
+          createOpenWithDeps(state.appLocale, () => state.mainWindow ?? null),
         ),
       openWithProgram: (absolutePath, programId) => {
         const program = readOpenWithSettings(openWithSettingsFilePath(app.getPath("userData")))
@@ -4129,11 +4052,11 @@ async function handleLibraryRequest(
     const importPostProcess = await applyImportWorkerResult(request, workerResult, {
       pendingImportLibraries,
       logError: (scope, error, context) => {
-        logger?.error(scope, error, context);
+        state.logger?.error(scope, error, context);
       },
       requestWorker: (workerCommand) => {
-        if (!workerClient) throw new Error("Library Worker is unavailable.");
-        return workerClient.request(workerCommand);
+        if (!state.workerClient) throw new Error("Library Worker is unavailable.");
+        return state.workerClient.request(workerCommand);
       },
       enqueueAutoAnalyzeAfterImport: (libraryId, assetIds, importedFolderId) => {
         void enqueueAutoAnalyzeAfterImport(libraryId, assetIds, importedFolderId);
@@ -4146,7 +4069,7 @@ async function handleLibraryRequest(
         shell.showItemInFolder(absolutePath);
       },
       logError: (scope, error) => {
-        logger?.error(scope, error);
+        state.logger?.error(scope, error);
       },
     });
     if (recoveryReport) return recoveryReport;
@@ -4171,7 +4094,7 @@ async function handleLibraryRequest(
       removeRecentLibrary,
       recentLibraryPath,
       logError: (scope, error) => {
-        logger?.error(scope, error);
+        state.logger?.error(scope, error);
       },
       unblockLibraryMediaReads,
       publishLifecycle,
@@ -4192,7 +4115,7 @@ async function handleLibraryRequest(
         relinkPreviewContext.previewId,
       );
     }
-    logger?.error("main.library-request", error);
+    state.logger?.error("main.library-request", error);
     if (previousLibraryPaths.length > 0) {
       await reopenLibrariesAfterFailedReplacement(previousLibraryPaths);
     }
@@ -4212,8 +4135,8 @@ async function handleLibraryRequest(
     }
     return { ok: false, error: publicError };
   } finally {
-    if (activeLibraryOpenCancellation === openCancellation) {
-      activeLibraryOpenCancellation = undefined;
+    if (state.activeLibraryOpenCancellation === openCancellation) {
+      state.activeLibraryOpenCancellation = undefined;
     }
     if (deleteFromDiskLibraryId) {
       endLibraryDeleteMediaFence(deleteFromDiskLibraryId);
@@ -4225,7 +4148,7 @@ async function handleLibraryRequest(
       try {
         cleanupClipboardImage(clipboardStageDirectory);
       } catch (error) {
-        logger?.error("desktop-ingestion.clipboard-cleanup", error);
+        state.logger?.error("desktop-ingestion.clipboard-cleanup", error);
       }
     }
   }
@@ -4233,9 +4156,9 @@ async function handleLibraryRequest(
 
 /** PR: first run of a new or edited rule. */
 async function confirmRuleRun(rule: { name: string; purpose: string; permissions: readonly string[] }): Promise<boolean> {
-  if (!mainWindow || mainWindow.isDestroyed()) return false;
+  if (!state.mainWindow || state.mainWindow.isDestroyed()) return false;
   if (!app.isPackaged && process.env.KEEL_E2E === '1' && process.env.KEEL_E2E_AUTOMATION_CONFIRM === '1') return true;
-  const response = await dialog.showMessageBox(mainWindow, {
+  const response = await dialog.showMessageBox(state.mainWindow, {
     type: 'warning',
     buttons: ['取消', '运行规则'],
     defaultId: 1,
@@ -4249,12 +4172,12 @@ async function confirmRuleRun(rule: { name: string; purpose: string; permissions
       '确认后，这一版规则会按它的触发方式自动运行；规则文件改动后需要再确认一次。每次运行都记录在规则的触发历史中，改动可以撤销。',
     ].join('\n'),
   });
-  ensureRendererKeyboardFocus(mainWindow, { reattachHwnd: true, reason: 'rule.confirm' });
+  ensureRendererKeyboardFocus(state.mainWindow, { reattachHwnd: true, reason: 'rule.confirm' });
   return response.response === 1;
 }
 
 async function confirmDesktopAutomationWrite(): Promise<boolean> {
-  if (!mainWindow || mainWindow.isDestroyed()) return false;
+  if (!state.mainWindow || state.mainWindow.isDestroyed()) return false;
   // Native modal dialogs are not controllable through Playwright. Restrict
   // this deterministic test seam to an unpackaged, isolated E2E process; it
   // can never be enabled by a shipped build or normal `npm start` session.
@@ -4263,7 +4186,7 @@ async function confirmDesktopAutomationWrite(): Promise<boolean> {
     && process.env.KEEL_E2E_AUTOMATION_CONFIRM === '1') {
     return true;
   }
-  const response = await dialog.showMessageBox(mainWindow, {
+  const response = await dialog.showMessageBox(state.mainWindow, {
     type: 'warning',
     buttons: ['取消', '运行脚本'],
     defaultId: 1,
@@ -4272,14 +4195,12 @@ async function confirmDesktopAutomationWrite(): Promise<boolean> {
     message: '此脚本可以读取资产、标签与合集，修改评分与元数据，创建标签或空文件夹，整理合集，入队 AI 分析，复制文件路径，以及重命名或移入回收站。',
     detail: '脚本只会获得受限自动化能力；新建资源库和批量导入仍需单独的本机计划确认，不会获得网络下载、磁盘直读、数据库或永久删除权限。每次运行都会记录到应用日志。',
   });
-  ensureRendererKeyboardFocus(mainWindow, {
+  ensureRendererKeyboardFocus(state.mainWindow, {
     reattachHwnd: true,
     reason: "native-dialog.message-box",
   });
   return response.response === 1;
 }
-
-let e2eAutomationFilePlanConfirmationCount = 0;
 
 async function confirmDesktopAutomationFilePlan(
   plan: DesktopAutomationFilePlanSummary,
@@ -4295,8 +4216,8 @@ async function confirmDesktopAutomationFilePlan(
   if (!app.isPackaged
     && process.env.KEEL_E2E === '1'
     && process.env.KEEL_E2E_AUTOMATION_CANCEL_ONCE === '1') {
-    e2eAutomationFilePlanConfirmationCount += 1;
-    if (e2eAutomationFilePlanConfirmationCount === 1) return false;
+    state.e2eAutomationFilePlanConfirmationCount += 1;
+    if (state.e2eAutomationFilePlanConfirmationCount === 1) return false;
   }
   if (!app.isPackaged
     && process.env.KEEL_E2E === '1'
@@ -4343,10 +4264,10 @@ async function confirmDesktopAutomationFilePlan(
         : []),
     ].join('\n'),
   };
-  const response = mainWindow && !mainWindow.isDestroyed()
-    ? await dialog.showMessageBox(mainWindow, dialogOptions)
+  const response = state.mainWindow && !state.mainWindow.isDestroyed()
+    ? await dialog.showMessageBox(state.mainWindow, dialogOptions)
     : await dialog.showMessageBox(dialogOptions);
-  ensureRendererKeyboardFocus(mainWindow, {
+  ensureRendererKeyboardFocus(state.mainWindow, {
     reattachHwnd: true,
     reason: "native-dialog.message-box",
   });
@@ -4356,19 +4277,19 @@ async function confirmDesktopAutomationFilePlan(
 function askCriticalConfirmation(
   input: Parameters<RendererCriticalConfirmationBroker['request']>[0],
 ): Promise<boolean> {
-  const broker = criticalConfirmationBroker;
+  const broker = state.criticalConfirmationBroker;
   if (broker === undefined) return Promise.resolve(false);
   return broker.request(input);
 }
 
 async function confirmCriticalLibraryDeletion(libraryId: string): Promise<boolean> {
-  const client = workerClient;
+  const client = state.workerClient;
   if (client === undefined) return false;
   const listed = await client.request({ type: 'library.list' });
   if (!listed.ok || listed.type !== 'library.list') return false;
   const library = listed.libraries.find((candidate) => candidate.libraryId === libraryId);
   if (library === undefined) return false;
-  const english = appLocale === 'en';
+  const english = state.appLocale === 'en';
   return askCriticalConfirmation({
     title: english ? 'Confirm critical operation' : '确认危险操作',
     heading: english ? 'Delete this library from disk?' : '从磁盘删除这个资源库？',
@@ -4387,11 +4308,11 @@ async function confirmCriticalLibraryDeletion(libraryId: string): Promise<boolea
 async function confirmEnableAllMcpPermissions(label: string): Promise<boolean> {
   const copy = mcpFullAccessConfirmationCopy(
     label,
-    appLocale === 'en' ? 'en' : 'zh-CN',
+    state.appLocale === 'en' ? 'en' : 'zh-CN',
   );
   return askCriticalConfirmation({
     ...copy,
-    cancelLabel: appLocale === 'en' ? 'Cancel' : '取消',
+    cancelLabel: state.appLocale === 'en' ? 'Cancel' : '取消',
     initialFocus: 'cancel',
   });
 }
@@ -4510,7 +4431,7 @@ async function confirmCriticalRendererRequest(request: RendererRequest): Promise
   if (request.type === 'library.delete-from-disk.request') {
     return confirmCriticalLibraryDeletion(request.libraryId);
   }
-  const english = appLocale === 'en';
+  const english = state.appLocale === 'en';
   const count = request.type === 'asset.delete-from-disk.request'
     || request.type === 'asset.delete-permanent.request'
     ? request.assetIds.length
@@ -4539,14 +4460,14 @@ async function executeMcpLibraryContextCommand(input: {
 }): Promise<unknown> {
   if (input.commandId === 'library.list-recent') {
     return readRecentLibraryEntries(recentLibraryPath(), (error) => {
-      logger?.error('recent-library.read', error);
+      state.logger?.error('recent-library.read', error);
     }).map((entry) => ({
       libraryId: entry.libraryId ?? null,
       displayName: entry.name,
     }));
   }
-  const journal = automationExecutionJournal;
-  const client = workerClient;
+  const journal = state.automationExecutionJournal;
+  const client = state.workerClient;
   if (!journal || !client) {
     throw new AutomationLibraryContextError('AUTOMATION_LIBRARY_OPEN_FAILED');
   }
@@ -4574,7 +4495,7 @@ async function executeMcpLibraryContextCommand(input: {
   let needsOpen = false;
   if (input.commandId === 'library.open' && selected === undefined && commandInput.libraryId !== undefined) {
     const recent = readRecentLibraryEntries(recentLibraryPath(), (error) => {
-      logger?.error('recent-library.read', error);
+      state.logger?.error('recent-library.read', error);
     }).find((entry) => entry.libraryId === commandInput.libraryId);
     if (recent === undefined) {
       throw new AutomationLibraryContextError('AUTOMATION_LIBRARY_NOT_OPEN');
@@ -4686,28 +4607,28 @@ async function startApplication(): Promise<void> {
   } else {
     app.setAppLogsPath();
   }
-  appLogPath = chooseUniqueSessionLogPath(app.getPath("logs"), new Date());
-  logger = new AppLogger(appLogPath);
-  bindRendererKeyboardFocusLogger(logger);
+  state.appLogPath = chooseUniqueSessionLogPath(app.getPath("logs"), new Date());
+  state.logger = new AppLogger(state.appLogPath);
+  bindRendererKeyboardFocusLogger(state.logger);
   void sweepOrphanExternalLibraryStagingOnStartup();
   // Serpent-wgmy: 会话日志最多保留最近 100 份，启动时清理最旧；
   // 清理失败不得阻断启动。
   try {
     pruneSessionLogs(app.getPath("logs"));
   } catch (error) {
-    logger?.error("session-log.prune", error);
+    state.logger?.error("session-log.prune", error);
   }
-  criticalConfirmationWindowManager = new CriticalConfirmationWindowManager({
-    getParentWindow: () => mainWindow ?? null,
+  state.criticalConfirmationWindowManager = new CriticalConfirmationWindowManager({
+    getParentWindow: () => state.mainWindow ?? null,
     createWindow: (options) => new BrowserWindow(options),
     ipcMain,
     preloadPath: path.join(__dirname, 'critical-confirmation.js'),
-    logger,
+    logger: state.logger,
   });
-  criticalConfirmationBroker = new RendererCriticalConfirmationBroker({
+  state.criticalConfirmationBroker = new RendererCriticalConfirmationBroker({
     getTarget: () => {
-      if (!mainWindow || mainWindow.isDestroyed()) return null;
-      const contents = mainWindow.webContents;
+      if (!state.mainWindow || state.mainWindow.isDestroyed()) return null;
+      const contents = state.mainWindow.webContents;
       return {
         id: contents.id,
         isDestroyed: () => contents.isDestroyed(),
@@ -4723,15 +4644,15 @@ async function startApplication(): Promise<void> {
       };
     },
     ipcMain,
-    logger,
+    logger: state.logger,
   });
   app.on("child-process-gone", (_event, details) => {
-    logRendererChildProcessGone(logger, undefined, details);
+    logRendererChildProcessGone(state.logger, undefined, details);
   });
   applyDevAppIcon();
   const staleClipboardCount = cleanupStaleClipboardImages(app.getPath("temp"));
   if (staleClipboardCount > 0) {
-    logger.info(
+    state.logger.info(
       "desktop-ingestion.clipboard-cleanup",
       "Removed stale clipboard staging directories.",
       {
@@ -4739,9 +4660,9 @@ async function startApplication(): Promise<void> {
       },
     );
   }
-  workerClient = new LibraryWorkerClient(
+  state.workerClient = new LibraryWorkerClient(
     path.join(__dirname, "library_worker.js"),
-    logger,
+    state.logger,
     {
       ...process.env,
       KEEL_LIBRARY_METADATA_CACHE_PATH: path.join(
@@ -4752,14 +4673,14 @@ async function startApplication(): Promise<void> {
       KEEL_MAIN_PROCESS_SESSION_ID: mainProcessSessionId,
     },
   );
-  await workerClient.start();
-  workerClient.publishShowMissingLinkedFiles(showMissingLinkedFiles);
+  await state.workerClient.start();
+  state.workerClient.publishShowMissingLinkedFiles(state.showMissingLinkedFiles);
   // Serpent-65d837: remove any `.del-*` aside roots that could not be deleted
   // during a previous session (deferred-cleanup store, backoff loop).
   retryPendingLibraryCleanups();
-  const activeWorkerClient = workerClient;
+  const activeWorkerClient = state.workerClient;
   let workerRecoveryEpoch = 0;
-  workerClient.onRecovery((event) => {
+  state.workerClient.onRecovery((event) => {
     if (event.state === 'recovering') {
       workerRecoveryEpoch += 1;
       publishLifecycle({ type: 'worker.recovering' });
@@ -4787,14 +4708,14 @@ async function startApplication(): Promise<void> {
         pluginThumbnailExtensionsFor(library.libraryId),
       );
     }
-    activeWorkerClient.publishShowMissingLinkedFiles(showMissingLinkedFiles);
+    activeWorkerClient.publishShowMissingLinkedFiles(state.showMissingLinkedFiles);
     // Plugin activation and AI queue scheduling can call client.request(), so
     // run them after the gate is released while retaining the epoch guard.
     setTimeout(() => {
       void (async () => {
         if (recoveryEpoch !== workerRecoveryEpoch || !activeWorkerClient.available) return;
         for (const libraryId of event.failedLibraryIds) {
-          pluginActivationCoordinator?.onLibraryClosed(libraryId);
+          state.pluginActivationCoordinator?.onLibraryClosed(libraryId);
           publishLifecycle({ type: 'library.closed', libraryId });
         }
         for (const library of event.libraries) {
@@ -4805,7 +4726,7 @@ async function startApplication(): Promise<void> {
               libraryDirectory: library.libraryPath,
             });
           } catch (error) {
-            logger?.error('worker.recovery.library-side-effects', error, {
+            state.logger?.error('worker.recovery.library-side-effects', error, {
               libraryId: library.libraryId,
             });
           }
@@ -4817,7 +4738,7 @@ async function startApplication(): Promise<void> {
           failedLibraryIds: event.failedLibraryIds,
         });
       })().catch((error) => {
-        logger?.error('worker.recovery.main-state', error);
+        state.logger?.error('worker.recovery.main-state', error);
         if (recoveryEpoch === workerRecoveryEpoch && activeWorkerClient.available) {
           publishLifecycle({
             type: 'worker.recovered',
@@ -4832,19 +4753,19 @@ async function startApplication(): Promise<void> {
   // model thumbnails. The worker enqueues model jobs and asks Main to render;
   // Main replies with PNG bytes (or a typed failure) that the worker persists
   // as the standard `thumbnail` artifact.
-  offscreenThumbnailRenderer = createOffscreenThumbnailRenderer({
+  state.offscreenThumbnailRenderer = createOffscreenThumbnailRenderer({
     createWindow: (options) => {
       const offscreenWindow = new BrowserWindow(options);
       offscreenWindow.webContents.on(
         "console-message",
         (_event, level, message, line, sourceId) => {
-          logRendererConsoleMessage(logger, level, message, line, sourceId);
+          logRendererConsoleMessage(state.logger, level, message, line, sourceId);
         },
       );
       offscreenWindow.webContents.on(
         "did-fail-load",
         (_event, errorCode, errorDescription, validatedURL, isMainFrame) => {
-          logger?.error(
+          state.logger?.error(
             "offscreen-thumbnail.page-load-failed",
             new Error(`${errorCode}: ${errorDescription}`),
             { errorCode, validatedURL, isMainFrame },
@@ -4852,7 +4773,7 @@ async function startApplication(): Promise<void> {
         },
       );
       offscreenWindow.webContents.on("did-finish-load", () => {
-        logger?.info(
+        state.logger?.info(
           "offscreen-thumbnail.page-finished-load",
           "Offscreen renderer page finished loading.",
         );
@@ -4861,14 +4782,14 @@ async function startApplication(): Promise<void> {
             "({ readyState: document.readyState, body: document.body.innerHTML, hasBridge: Boolean(window.offscreenThumbnail), debug: window.__keelOffscreenThumbnailDebug })",
           )
           .then((state) => {
-            logger?.info(
+            state.logger?.info(
               "offscreen-thumbnail.page-state",
               "Inspected offscreen renderer page state.",
               { state },
             );
           })
           .catch((error: unknown) => {
-            logger?.error("offscreen-thumbnail.page-state", error);
+            state.logger?.error("offscreen-thumbnail.page-state", error);
           });
       });
       return offscreenWindow;
@@ -4882,8 +4803,8 @@ async function startApplication(): Promise<void> {
         ipcMain.removeListener(OFFSCREEN_THUMBNAIL_FRAME_CHANNEL, onFrameMessage);
     },
     logger: {
-      error: (scope, error, context) => logger?.error(scope, error, context),
-      info: (scope, message, context) => logger?.info(scope, message, context),
+      error: (scope, error, context) => state.logger?.error(scope, error, context),
+      info: (scope, message, context) => state.logger?.info(scope, message, context),
     },
     pageUrl: resolveOffscreenPageUrl({
       devServerUrl: MAIN_WINDOW_VITE_DEV_SERVER_URL ?? null,
@@ -4891,8 +4812,8 @@ async function startApplication(): Promise<void> {
     }),
     preloadPath: path.join(__dirname, "offscreen.js"),
   });
-  workerClient.onModelThumbnailRenderRequest((request, sourceAuthorizations) => {
-    const renderer = offscreenThumbnailRenderer;
+  state.workerClient.onModelThumbnailRenderRequest((request, sourceAuthorizations) => {
+    const renderer = state.offscreenThumbnailRenderer;
     if (!renderer) {
       return Promise.resolve({
         status: "failed" as const,
@@ -4905,43 +4826,43 @@ async function startApplication(): Promise<void> {
       clearModelThumbnailSourceAuthorizations(sourceAuthorizations);
     });
   });
-  workerClient.onModelThumbnailRenderCancel((requestId) => {
-    offscreenThumbnailRenderer?.cancelModelThumbnail(requestId);
+  state.workerClient.onModelThumbnailRenderCancel((requestId) => {
+    state.offscreenThumbnailRenderer?.cancelModelThumbnail(requestId);
   });
   // Serpent-8ca259: HTML document thumbnails capture the source in a fresh
   // offscreen window in Main; the Worker persists the artifact bytes.
-  workerClient.onDocumentThumbnailRenderRequest((request) =>
-    renderDocumentThumbnail(request, logger!),
+  state.workerClient.onDocumentThumbnailRenderRequest((request) =>
+    renderDocumentThumbnail(request, state.logger!),
   );
-  automationExecutionJournal = new AutomationExecutionJournal({
+  state.automationExecutionJournal = new AutomationExecutionJournal({
     store: createJsonFileAutomationExecutionStore(
       path.join(app.getPath('userData'), 'automation-executions.json'),
     ),
-    logger,
+    logger: state.logger,
   });
   const automationIdempotencyStore = createJsonFileAutomationIdempotencyStore(
     path.join(app.getPath('userData'), 'automation-idempotency.json'),
   );
-  mcpPermissionPolicyStore = new McpPermissionPolicyStore(app.getPath('userData'));
-  mcpOperationChallengeStore = new McpOperationChallengeStore();
-  mcpPermissionBroker = new McpPermissionBroker({
-    policyStore: mcpPermissionPolicyStore,
-    challengeStore: mcpOperationChallengeStore,
-    audit: logger,
+  state.mcpPermissionPolicyStore = new McpPermissionPolicyStore(app.getPath('userData'));
+  state.mcpOperationChallengeStore = new McpOperationChallengeStore();
+  state.mcpPermissionBroker = new McpPermissionBroker({
+    policyStore: state.mcpPermissionPolicyStore,
+    challengeStore: state.mcpOperationChallengeStore,
+    audit: state.logger,
   });
-  automationRecentScripts = createJsonFileAutomationRecentScriptsStore(
+  state.automationRecentScripts = createJsonFileAutomationRecentScriptsStore(
     path.join(app.getPath('userData'), 'automation-recent-scripts.json'),
   );
-  const automationWorkerAdapter = new AutomationLibraryWorkerAdapter(workerClient, {
+  const automationWorkerAdapter = new AutomationLibraryWorkerAdapter(state.workerClient, {
     onAiEnqueued: (libraryId) => processAiQueue(libraryId),
     onAiEnqueueError: (error, libraryId) => {
-      logger?.error('automation.ai-queue.trigger-failed', error, { libraryId });
+      state.logger?.error('automation.ai-queue.trigger-failed', error, { libraryId });
     },
   });
-  automationScriptFiles = new AutomationScriptFileService({
+  state.automationScriptFiles = new AutomationScriptFileService({
     selectOpenScript: selectAutomationScriptToOpen,
     selectSaveScript: selectAutomationScriptToSave,
-    recentScripts: automationRecentScripts,
+    recentScripts: state.automationRecentScripts,
   });
   const pendingPluginUiDialogs = new Map<string, {
     resolve: (result: unknown | null) => void;
@@ -4973,29 +4894,29 @@ async function startApplication(): Promise<void> {
       nodeId: parsed.data.nodeId,
       value: parsed.data.value,
     };
-    pluginRuntimeSupervisor?.deliverWidgetEvent(
+    state.pluginRuntimeSupervisor?.deliverWidgetEvent(
       pending.pluginInstanceId,
       parsed.data.sessionId,
       event,
     );
-    pluginTrustedRuntimeSupervisor?.deliverWidgetEvent(
+    state.pluginTrustedRuntimeSupervisor?.deliverWidgetEvent(
       pending.pluginInstanceId,
       parsed.data.sessionId,
       event,
     );
   });
-  automationCommandGateway = createAutomationCommandGateway(
+  state.automationCommandGateway = createAutomationCommandGateway(
     automationWorkerAdapter,
     {
       resolve: (executionId) => {
         const pluginContext = pluginAutomationContexts.get(executionId);
         if (pluginContext !== undefined) return pluginContext;
-        return automationExecutionJournal?.resolve(executionId);
+        return state.automationExecutionJournal?.resolve(executionId);
       },
     },
     {
-      auditSink: automationExecutionJournal,
-      auditLogger: logger,
+      auditSink: state.automationExecutionJournal,
+      auditLogger: state.logger,
       idempotencyStore: automationIdempotencyStore,
       externalEffectHandler: {
         apply: ({ commandId, workerResult }) => {
@@ -5021,7 +4942,7 @@ async function startApplication(): Promise<void> {
       },
       uiDialogHandler: {
         open: (input, context) => new Promise((resolve, reject) => {
-          const window = mainWindow;
+          const window = state.mainWindow;
           if (!window || window.isDestroyed()) {
             reject(new Error('DIALOG_WINDOW_UNAVAILABLE'));
             return;
@@ -5094,7 +5015,7 @@ async function startApplication(): Promise<void> {
           if (requestId === undefined) {
             throw new Error('DIALOG_SESSION_NOT_FOUND');
           }
-          const window = mainWindow;
+          const window = state.mainWindow;
           if (!window || window.isDestroyed()) {
             throw new Error('DIALOG_WINDOW_UNAVAILABLE');
           }
@@ -5106,12 +5027,12 @@ async function startApplication(): Promise<void> {
       },
       uiNotifyHandler: {
         notify: (input) => {
-          if (!mainWindow || mainWindow.isDestroyed()) {
+          if (!state.mainWindow || state.mainWindow.isDestroyed()) {
             throw new Error('The Keel window is not available to show a notification.');
           }
           // Keel review: ui.notify is strictly non-blocking (toast only);
           // the dialog mode was removed from the registry input schema.
-          mainWindow.webContents.send(SHELL_NOTIFY_CHANNEL, {
+          state.mainWindow.webContents.send(SHELL_NOTIFY_CHANNEL, {
             severity: input.severity,
             mode: 'toast',
             message: input.message.trim().slice(0, 500),
@@ -5123,14 +5044,14 @@ async function startApplication(): Promise<void> {
       },
       filePlanApprovalHandler: createDesktopAutomationFilePlanApprovalHandler({
         workerClient: automationWorkerAdapter,
-        audit: { info: (scope, message, context) => logger?.info(scope, message, context) },
+        audit: { info: (scope, message, context) => state.logger?.info(scope, message, context) },
         confirm: confirmDesktopAutomationFilePlan,
         runWillHooks: async ({ commandId, libraryId, commandInput, planSummary }) => {
-          if (commandId !== 'asset.trash' || pluginActivationCoordinator === undefined) {
+          if (commandId !== 'asset.trash' || state.pluginActivationCoordinator === undefined) {
             return { warnings: [] };
           }
           const input = commandInput as { assetIds?: readonly string[] };
-          const result = await pluginActivationCoordinator.runWillHooks({
+          const result = await state.pluginActivationCoordinator.runWillHooks({
             event: 'asset.trash',
             libraryId,
             summary: {
@@ -5144,7 +5065,7 @@ async function startApplication(): Promise<void> {
           return { warnings: result.warnings };
         },
       }),
-      permissionBroker: mcpPermissionBroker,
+      permissionBroker: state.mcpPermissionBroker,
       // Plugin executions are library-scoped Host calls, not Automation
       // Executions owned by the journal. They still use the Gateway for
       // domain access, but must not enter the journal's active-context CAS;
@@ -5155,7 +5076,7 @@ async function startApplication(): Promise<void> {
           if (pluginAutomationContexts.has(executionId)) {
             return { release: () => undefined };
           }
-          return automationExecutionJournal!.beginCommand(executionId, contextRevision);
+          return state.automationExecutionJournal!.beginCommand(executionId, contextRevision);
         },
       },
       libraryContextHandler: {
@@ -5166,8 +5087,8 @@ async function startApplication(): Promise<void> {
       // converging on the exact function the desktop import IPC uses.
       onImportCompleted: ({ libraryId, importedAssetIds }) => {
         if (importedAssetIds.length === 0) return;
-        if (mainWindow && !mainWindow.isDestroyed()) {
-          mainWindow.webContents.send(SHELL_NOTIFY_CHANNEL, {
+        if (state.mainWindow && !state.mainWindow.isDestroyed()) {
+          state.mainWindow.webContents.send(SHELL_NOTIFY_CHANNEL, {
             severity: 'info',
             mode: 'toast',
             message: `已导入 ${importedAssetIds.length} 项资源`,
@@ -5181,7 +5102,7 @@ async function startApplication(): Promise<void> {
           // path-free receipt so the script compatibility route can undo all
           // mutations made by one execution without maintaining a second
           // inverse-operation journal.
-          automationExecutionJournal?.appendHistoryEntry(executionId, historyEntryId);
+          state.automationExecutionJournal?.appendHistoryEntry(executionId, historyEntryId);
         },
       },
       mcpInputNormalizer: normalizeMcpCommandInput,
@@ -5204,12 +5125,12 @@ async function startApplication(): Promise<void> {
           });
         },
         onLibraryClosed: async ({ source, libraryId }) => {
-          pluginActivationCoordinator?.onLibraryClosed(libraryId);
+          state.pluginActivationCoordinator?.onLibraryClosed(libraryId);
           for (const [executionId, context] of pluginAutomationContexts) {
             if (context.libraryId === libraryId) pluginAutomationContexts.delete(executionId);
           }
           clearActiveRecentLibrary(recentLibraryPath(), (error) => {
-            logger?.error('recent-library.clear', error);
+            state.logger?.error('recent-library.clear', error);
           });
           publishLifecycle({
             type: 'library.closed',
@@ -5231,12 +5152,12 @@ async function startApplication(): Promise<void> {
           });
         },
         onLibraryDeleted: async ({ source, libraryId, displayName, libraryPath }) => {
-          pluginActivationCoordinator?.onLibraryClosed(libraryId);
+          state.pluginActivationCoordinator?.onLibraryClosed(libraryId);
           for (const [executionId, context] of pluginAutomationContexts) {
             if (context.libraryId === libraryId) pluginAutomationContexts.delete(executionId);
           }
           removeRecentLibrary(recentLibraryPath(), libraryPath, (error) => {
-            logger?.error('recent-library.remove', error);
+            state.logger?.error('recent-library.remove', error);
           });
           refreshApplicationMenuRecentLibraries();
           publishLifecycle({
@@ -5244,8 +5165,8 @@ async function startApplication(): Promise<void> {
             libraryId,
             ...(source === 'mcp' ? { source } : {}),
           });
-          if (mainWindow && !mainWindow.isDestroyed()) {
-            mainWindow.webContents.send(SHELL_NOTIFY_CHANNEL, {
+          if (state.mainWindow && !state.mainWindow.isDestroyed()) {
+            state.mainWindow.webContents.send(SHELL_NOTIFY_CHANNEL, {
               severity: 'info',
               mode: 'toast',
               message: `已删除资源库“${displayName}”`,
@@ -5267,8 +5188,8 @@ async function startApplication(): Promise<void> {
               displayPath: libraryPath,
             },
           });
-          if (mainWindow && !mainWindow.isDestroyed()) {
-            mainWindow.webContents.send(SHELL_NOTIFY_CHANNEL, {
+          if (state.mainWindow && !state.mainWindow.isDestroyed()) {
+            state.mainWindow.webContents.send(SHELL_NOTIFY_CHANNEL, {
               severity: 'info',
               mode: 'toast',
               message: `资源库“${displayName}”已导入`,
@@ -5284,8 +5205,8 @@ async function startApplication(): Promise<void> {
           if (!boundLibrary) {
             throw new AutomationLibraryContextError('AUTOMATION_LIBRARY_OPEN_FAILED');
           }
-          const bound = automationExecutionJournal?.authorizeLibrary(executionId, libraryId);
-          const transitioned = automationExecutionJournal?.transitionLibraryContext({
+          const bound = state.automationExecutionJournal?.authorizeLibrary(executionId, libraryId);
+          const transitioned = state.automationExecutionJournal?.transitionLibraryContext({
             executionId,
             libraryId,
             ...(displayName === undefined ? {} : { displayName }),
@@ -5317,26 +5238,26 @@ async function startApplication(): Promise<void> {
       },
       undoGroupHandler: {
         create: ({ executionId, libraryId }) => {
-          if (!automationExecutionJournal) {
+          if (!state.automationExecutionJournal) {
             throw new Error('The automation execution journal is unavailable.');
           }
-          const group = automationExecutionJournal.createUndoGroup({ executionId, libraryId });
+          const group = state.automationExecutionJournal.createUndoGroup({ executionId, libraryId });
           return { undoGroupId: group.undoGroupId };
         },
         append: ({ undoGroupId, item }) => {
-          if (!automationExecutionJournal) {
+          if (!state.automationExecutionJournal) {
             throw new Error('The automation execution journal is unavailable.');
           }
-          const group = automationExecutionJournal.appendUndoGroupItems(undoGroupId, [item]);
+          const group = state.automationExecutionJournal.appendUndoGroupItems(undoGroupId, [item]);
           if (!group) {
             throw new Error(`Undo group ${undoGroupId} was not found while appending recovery items.`);
           }
         },
         complete: ({ undoGroupId, status, failureReason }) => {
-          if (!automationExecutionJournal) {
+          if (!state.automationExecutionJournal) {
             throw new Error('The automation execution journal is unavailable.');
           }
-          const group = automationExecutionJournal.completeUndoGroup(undoGroupId, { status, failureReason });
+          const group = state.automationExecutionJournal.completeUndoGroup(undoGroupId, { status, failureReason });
           if (!group) {
             throw new Error(`Undo group ${undoGroupId} was not found while completing the group.`);
           }
@@ -5344,7 +5265,7 @@ async function startApplication(): Promise<void> {
       },
       executionStatusHandler: {
         getStatus: (executionId) => {
-          const record = automationExecutionJournal?.get(executionId);
+          const record = state.automationExecutionJournal?.get(executionId);
           if (!record) return undefined;
           return {
             projection: projectAutomationExecutionStatus(record),
@@ -5354,29 +5275,29 @@ async function startApplication(): Promise<void> {
       },
     },
   );
-  scriptRuntimeSupervisor = new ScriptRuntimeSupervisor({
+  state.scriptRuntimeSupervisor = new ScriptRuntimeSupervisor({
     modulePath: path.join(__dirname, 'script_runtime_utility.js'),
     fork: (modulePath) => utilityProcess.fork(modulePath, [], {
       serviceName: 'Keel Script Runtime',
       stdio: 'pipe',
     }),
-    logger,
+    logger: state.logger,
   });
-  ruleRunner = new RuleRunner({
-    workerClient: () => workerClient,
-    journal: () => automationExecutionJournal,
-    gateway: () => automationCommandGateway,
-    runtime: () => scriptRuntimeSupervisor,
+  state.ruleRunner = new RuleRunner({
+    workerClient: () => state.workerClient,
+    journal: () => state.automationExecutionJournal,
+    gateway: () => state.automationCommandGateway,
+    runtime: () => state.scriptRuntimeSupervisor,
     confirmDesktopWrite: confirmRuleRun,
-    logger: () => logger,
+    logger: () => state.logger,
     onRunRecorded: (libraryId, run) => {
-      if (!mainWindow || mainWindow.isDestroyed()) return;
-      mainWindow.webContents.send(RULE_RUN_RECORDED_CHANNEL, { libraryId, ruleId: run.ruleId, runId: run.runId });
+      if (!state.mainWindow || state.mainWindow.isDestroyed()) return;
+      state.mainWindow.webContents.send(RULE_RUN_RECORDED_CHANNEL, { libraryId, ruleId: run.ruleId, runId: run.runId });
     },
   });
   setInterval(() => { void runScheduledRules(); }, 60_000).unref?.();
   const executePluginHostCommand: PluginRuntimeHostCommandHandler = async (commandId, input, context) => {
-    const gateway = automationCommandGateway;
+    const gateway = state.automationCommandGateway;
     if (gateway === undefined) throw new Error('Automation Gateway is unavailable.');
     const cause = validatePluginCauseChain(context.causeChain);
     if (!cause.ok) {
@@ -5390,7 +5311,7 @@ async function startApplication(): Promise<void> {
     if (!resolvedTarget.ok) {
       throw new Error(resolvedTarget.message);
     }
-    const activeInstance = pluginActivationCoordinator?.findActiveInstance(context.instanceId);
+    const activeInstance = state.pluginActivationCoordinator?.findActiveInstance(context.instanceId);
     if (activeInstance === undefined) {
       throw new Error('The plugin instance is no longer active.');
     }
@@ -5400,7 +5321,7 @@ async function startApplication(): Promise<void> {
         && activeInstance.activationLibraryId !== boundLibraryId) {
         throw new Error('A library-scoped plugin cannot target another library.');
       }
-      const libraries = await workerClient?.request({ type: 'library.list' });
+      const libraries = await state.workerClient?.request({ type: 'library.list' });
       const libraryIsOpen = libraries?.ok === true
         && libraries.type === 'library.list'
         && libraries.libraries.some((library) => library.libraryId === boundLibraryId);
@@ -5440,7 +5361,7 @@ async function startApplication(): Promise<void> {
       const failure = 'challenge' in result && result.challenge !== undefined
         ? { code: 'AUTOMATION_CHALLENGE_REQUIRED', message: 'Dangerous operation requires agent confirmation.' }
         : (result as { error: { code: string; message: string } }).error;
-      logger?.error('plugin.host-command.gateway-failed', new Error(failure.message ?? failure.code), {
+      state.logger?.error('plugin.host-command.gateway-failed', new Error(failure.message ?? failure.code), {
         instanceId: context.instanceId,
         pluginId: context.pluginId,
         commandId,
@@ -5458,15 +5379,15 @@ async function startApplication(): Promise<void> {
     packageHash: string;
     failureCode: string;
   }): void => {
-    pluginInputCaptureBroker?.releaseForInstance(crash.instanceId, 'plugin-crashed');
-    void pluginPackageManager?.recordRuntimeCrash({
+    state.pluginInputCaptureBroker?.releaseForInstance(crash.instanceId, 'plugin-crashed');
+    void state.pluginPackageManager?.recordRuntimeCrash({
       libraryId: crash.libraryId,
       libraryDirectory: crash.libraryDirectory,
       pluginId: crash.pluginId,
       packageHash: crash.packageHash,
       failureCode: crash.failureCode,
     }).catch((error) => {
-      logger?.error('plugin.runtime.crash-record', error, crash);
+      state.logger?.error('plugin.runtime.crash-record', error, crash);
     });
   };
   const pluginStorageStore = new PluginStorageStore(app.getPath('userData'));
@@ -5495,8 +5416,8 @@ async function startApplication(): Promise<void> {
     requestedTargetLibraryId?: string;
     ambientLibraryId: string;
   }): Promise<{ record: NonNullable<ReturnType<PluginActivationCoordinator['findActiveInstance']>>; libraryId: string }> => {
-    const coordinator = pluginActivationCoordinator;
-    const client = workerClient;
+    const coordinator = state.pluginActivationCoordinator;
+    const client = state.workerClient;
     if (coordinator === undefined || client === undefined) {
       throw Object.assign(new Error('Plugin jobs are unavailable in this session.'), { code: 'JOBS_UNAVAILABLE' });
     }
@@ -5529,7 +5450,7 @@ async function startApplication(): Promise<void> {
     return { record, libraryId: parsedTarget.data };
   };
   const handlePluginJobEnqueue: PluginRuntimeJobEnqueueHandler = async (input) => {
-    const client = workerClient;
+    const client = state.workerClient;
     if (client === undefined) {
       throw Object.assign(new Error('Plugin jobs are unavailable in this session.'), { code: 'JOBS_UNAVAILABLE' });
     }
@@ -5538,7 +5459,7 @@ async function startApplication(): Promise<void> {
       requestedTargetLibraryId: input.targetLibraryId,
       ambientLibraryId: input.context.libraryId,
     });
-    const coordinator = pluginActivationCoordinator;
+    const coordinator = state.pluginActivationCoordinator;
     if (coordinator === undefined) {
       throw Object.assign(new Error('Plugin jobs are unavailable in this session.'), { code: 'JOBS_UNAVAILABLE' });
     }
@@ -5568,11 +5489,11 @@ async function startApplication(): Promise<void> {
         { code: result.ok ? 'JOB_ENQUEUE_FAILED' : result.error.code },
       );
     }
-    pluginJobScheduler?.tick(libraryId);
+    state.pluginJobScheduler?.tick(libraryId);
     return { jobId: result.job.jobId };
   };
   const handlePluginJobProgress: PluginRuntimeJobProgressHandler = async (input) => {
-    const client = workerClient;
+    const client = state.workerClient;
     if (client === undefined) {
       throw Object.assign(new Error('Plugin jobs are unavailable in this session.'), { code: 'JOBS_UNAVAILABLE' });
     }
@@ -5600,8 +5521,8 @@ async function startApplication(): Promise<void> {
     }
   };
   const handlePluginJobControl: PluginRuntimeJobControlHandler = async (input) => {
-    const client = workerClient;
-    const coordinator = pluginActivationCoordinator;
+    const client = state.workerClient;
+    const coordinator = state.pluginActivationCoordinator;
     if (client === undefined || coordinator === undefined) {
       throw Object.assign(new Error('Plugin jobs are unavailable in this session.'), { code: 'JOBS_UNAVAILABLE' });
     }
@@ -5668,24 +5589,24 @@ async function startApplication(): Promise<void> {
       });
     }
     if ((input.action === 'cancel' || input.action === 'pause') && result.job !== null) {
-      if (record.mode === 'restricted') pluginRuntimeSupervisor?.signalJob(record.instanceId, input.jobId, input.action, input.reason);
-      else pluginTrustedRuntimeSupervisor?.signalJob(record.instanceId, input.jobId, input.action, input.reason);
+      if (record.mode === 'restricted') state.pluginRuntimeSupervisor?.signalJob(record.instanceId, input.jobId, input.action, input.reason);
+      else state.pluginTrustedRuntimeSupervisor?.signalJob(record.instanceId, input.jobId, input.action, input.reason);
     }
-    if (input.action === 'resume' || input.action === 'retry') pluginJobScheduler?.tick(libraryId);
+    if (input.action === 'resume' || input.action === 'retry') state.pluginJobScheduler?.tick(libraryId);
     return { job: result.job };
   };
   const onPluginInstanceActivated = (input: { libraryId: string }): void => {
-    pluginJobScheduler?.tick(input.libraryId);
+    state.pluginJobScheduler?.tick(input.libraryId);
   };
   const handlePluginInputCaptureStart: PluginRuntimeInputCaptureStartHandler = (input) => {
-    if (pluginInputCaptureBroker === undefined) {
+    if (state.pluginInputCaptureBroker === undefined) {
       return {
         ok: false,
         code: 'CAPTURE_UNAVAILABLE',
         message: 'Input capture is unavailable in this session.',
       };
     }
-    return pluginInputCaptureBroker.start({
+    return state.pluginInputCaptureBroker.start({
       ...input.options,
       instanceId: input.instanceId,
       pluginId: input.pluginId,
@@ -5693,21 +5614,21 @@ async function startApplication(): Promise<void> {
       permissions: input.permissions,
     });
   };
-  pluginInputCaptureBroker = new PluginInputCaptureBroker({
+  state.pluginInputCaptureBroker = new PluginInputCaptureBroker({
     onStart: () => {
       publishPluginInputCaptureSessionsToRenderer();
     },
     onEvent: (session, event) => {
-      pluginRuntimeSupervisor?.deliverInputCaptureEvent(session.instanceId, session.sessionId, event);
-      pluginTrustedRuntimeSupervisor?.deliverInputCaptureEvent(session.instanceId, session.sessionId, event);
+      state.pluginRuntimeSupervisor?.deliverInputCaptureEvent(session.instanceId, session.sessionId, event);
+      state.pluginTrustedRuntimeSupervisor?.deliverInputCaptureEvent(session.instanceId, session.sessionId, event);
     },
     onEnd: (session, reason) => {
-      pluginRuntimeSupervisor?.endInputCapture(session.instanceId, session.sessionId, reason);
-      pluginTrustedRuntimeSupervisor?.endInputCapture(session.instanceId, session.sessionId, reason);
+      state.pluginRuntimeSupervisor?.endInputCapture(session.instanceId, session.sessionId, reason);
+      state.pluginTrustedRuntimeSupervisor?.endInputCapture(session.instanceId, session.sessionId, reason);
       publishPluginInputCaptureSessionsToRenderer();
     },
   });
-  pluginRuntimeSupervisor = new PluginRuntimeSupervisor({
+  state.pluginRuntimeSupervisor = new PluginRuntimeSupervisor({
     modulePath: path.join(__dirname, 'plugin_standard_host.js'),
     fork: (modulePath) => utilityProcess.fork(modulePath, [], {
       serviceName: 'Keel Plugin Standard Host',
@@ -5720,19 +5641,19 @@ async function startApplication(): Promise<void> {
     handleJobControl: handlePluginJobControl,
     handleInputCaptureStart: handlePluginInputCaptureStart,
     handleInputCaptureRelease: (instanceId, sessionId) => {
-      pluginInputCaptureBroker?.release(sessionId);
+      state.pluginInputCaptureBroker?.release(sessionId);
     },
     onInstanceDeactivated: (instanceId) => {
-      pluginInputCaptureBroker?.releaseForInstance(instanceId, 'plugin-deactivated');
+      state.pluginInputCaptureBroker?.releaseForInstance(instanceId, 'plugin-deactivated');
     },
     onInstanceCrashed: ({ instanceId, failureCode }) => {
-      pluginActivationCoordinator?.onInstanceCrashed({ instanceId, failureCode });
+      state.pluginActivationCoordinator?.onInstanceCrashed({ instanceId, failureCode });
     },
     onCrash: recordPluginRuntimeCrash,
     onInstanceActivated: onPluginInstanceActivated,
-    logger,
+    logger: state.logger,
   });
-  pluginTrustedRuntimeSupervisor = new PluginTrustedRuntimeSupervisor({
+  state.pluginTrustedRuntimeSupervisor = new PluginTrustedRuntimeSupervisor({
     modulePath: path.join(__dirname, 'plugin_trusted_host.js'),
     fork: (modulePath) => utilityProcess.fork(modulePath, [], {
       serviceName: 'Keel Plugin Trusted Host',
@@ -5745,43 +5666,43 @@ async function startApplication(): Promise<void> {
     handleJobControl: handlePluginJobControl,
     handleInputCaptureStart: handlePluginInputCaptureStart,
     handleInputCaptureRelease: (instanceId, sessionId) => {
-      pluginInputCaptureBroker?.release(sessionId);
+      state.pluginInputCaptureBroker?.release(sessionId);
     },
     onInstanceDeactivated: (instanceId) => {
-      pluginInputCaptureBroker?.releaseForInstance(instanceId, 'plugin-deactivated');
+      state.pluginInputCaptureBroker?.releaseForInstance(instanceId, 'plugin-deactivated');
     },
     onInstanceCrashed: ({ instanceId, failureCode }) => {
-      pluginActivationCoordinator?.onInstanceCrashed({ instanceId, failureCode });
+      state.pluginActivationCoordinator?.onInstanceCrashed({ instanceId, failureCode });
     },
     onInstanceActivated: onPluginInstanceActivated,
     onCrash: recordPluginRuntimeCrash,
-    logger,
+    logger: state.logger,
   });
   const pluginCompatibility = currentPluginCompatibilityPlatform();
   const nodeAbi = Number(process.versions.modules);
   if (pluginCompatibility === undefined || !Number.isSafeInteger(nodeAbi) || nodeAbi <= 0) {
-    logger.error('plugin.platform', new Error('This platform cannot run the plugin package manager.'), {
+    state.logger.error('plugin.platform', new Error('This platform cannot run the plugin package manager.'), {
       platform: process.platform,
       arch: process.arch,
       nodeAbi: process.versions.modules,
     });
   } else {
-    pluginPackageManager = new PluginPackageManager({
+    state.pluginPackageManager = new PluginPackageManager({
       userDataDirectory: app.getPath('userData'),
       deviceId: await loadOrCreatePluginDeviceId(app.getPath('userData')),
       keelVersion: app.getVersion(),
       pluginApiVersion: PLUGIN_API_VERSION,
       ...pluginCompatibility,
       nodeAbi,
-      logger,
+      logger: state.logger,
       onDeviceStateRecovered: () => {
-        pendingPluginDeviceStateRecoveryNotice = true;
+        state.pendingPluginDeviceStateRecoveryNotice = true;
       },
     });
-    pluginActivationCoordinator = new PluginActivationCoordinator({
-      packageManager: pluginPackageManager,
-      supervisor: pluginRuntimeSupervisor,
-      trustedSupervisor: pluginTrustedRuntimeSupervisor,
+    state.pluginActivationCoordinator = new PluginActivationCoordinator({
+      packageManager: state.pluginPackageManager,
+      supervisor: state.pluginRuntimeSupervisor,
+      trustedSupervisor: state.pluginTrustedRuntimeSupervisor,
       globalRuntimeContext: {
         libraryId: '__serpent_global_runtime__',
         libraryDirectory: app.getPath('userData'),
@@ -5795,7 +5716,7 @@ async function startApplication(): Promise<void> {
         nodeAbi,
       },
       pausePluginJobs: async ({ libraryId, owners }) => {
-        const client = workerClient;
+        const client = state.workerClient;
         if (client === undefined) return;
         const result = await client.request({
           type: 'plugin.jobs.pause-owners',
@@ -5809,33 +5730,33 @@ async function startApplication(): Promise<void> {
         }
       },
       onInstanceActivated: ({ libraryId }) => {
-        pluginJobScheduler?.tick(libraryId);
+        state.pluginJobScheduler?.tick(libraryId);
       },
       onContributionsRegistered: ({ libraryId }) => {
-        void pluginProviderScheduler?.materializeLibrary(libraryId).catch((error) => {
-          logger?.error('plugin.providers.materialize', error, { libraryId });
+        void state.pluginProviderScheduler?.materializeLibrary(libraryId).catch((error) => {
+          state.logger?.error('plugin.providers.materialize', error, { libraryId });
         });
-        embeddedMcpServer?.notifyToolsChanged();
+        state.embeddedMcpServer?.notifyToolsChanged();
         void syncPluginThumbnailExtensions().catch((error) => {
-          logger?.error('plugin.thumbnail-extensions', error, { libraryId });
+          state.logger?.error('plugin.thumbnail-extensions', error, { libraryId });
         });
       },
       onProvidersChanged: () => {
         void syncPluginThumbnailExtensions().catch((error) => {
-          logger?.error('plugin.thumbnail-extensions', error);
+          state.logger?.error('plugin.thumbnail-extensions', error);
         });
       },
-      logger,
+      logger: state.logger,
     });
-    pluginMcpToolProvider = new PluginMcpToolProvider({
-      activationCoordinator: pluginActivationCoordinator,
+    state.pluginMcpToolProvider = new PluginMcpToolProvider({
+      activationCoordinator: state.pluginActivationCoordinator,
       exposureStore: pluginMcpExposureStore,
     });
-    pluginJobScheduler = new PluginJobScheduler({
-      supervisor: pluginRuntimeSupervisor,
-      trustedSupervisor: pluginTrustedRuntimeSupervisor,
+    state.pluginJobScheduler = new PluginJobScheduler({
+      supervisor: state.pluginRuntimeSupervisor,
+      trustedSupervisor: state.pluginTrustedRuntimeSupervisor,
       requestWorker: async (command) => {
-        const client = workerClient;
+        const client = state.workerClient;
         if (client === undefined) return { ok: false };
         const result = await client.request(command);
         if (!result.ok) return { ok: false };
@@ -5848,11 +5769,11 @@ async function startApplication(): Promise<void> {
         return { ok: false };
       },
       resolveInstances: (libraryId) => {
-        const coordinator = pluginActivationCoordinator;
+        const coordinator = state.pluginActivationCoordinator;
         if (coordinator === undefined) return [];
         const bindings = coordinator.listActiveInstances(libraryId);
-        const standard = pluginRuntimeSupervisor?.listActiveInstances(libraryId) ?? [];
-        const trusted = pluginTrustedRuntimeSupervisor?.listActiveInstances(libraryId) ?? [];
+        const standard = state.pluginRuntimeSupervisor?.listActiveInstances(libraryId) ?? [];
+        const trusted = state.pluginTrustedRuntimeSupervisor?.listActiveInstances(libraryId) ?? [];
         return bindings.map((binding) => {
           const source = binding.mode === 'restricted'
             ? standard.find((item) => item.instanceId === binding.instanceId)
@@ -5863,14 +5784,14 @@ async function startApplication(): Promise<void> {
           };
         });
       },
-      logger,
+      logger: state.logger,
     });
-    pluginProviderScheduler = new PluginProviderScheduler({
-      coordinator: pluginActivationCoordinator,
-      supervisor: pluginRuntimeSupervisor,
-      trustedSupervisor: pluginTrustedRuntimeSupervisor,
+    state.pluginProviderScheduler = new PluginProviderScheduler({
+      coordinator: state.pluginActivationCoordinator,
+      supervisor: state.pluginRuntimeSupervisor,
+      trustedSupervisor: state.pluginTrustedRuntimeSupervisor,
       requestWorker: async (command) => {
-        const client = workerClient;
+        const client = state.workerClient;
         if (client === undefined) return { ok: false };
         const result = await client.request(command);
         if (!result.ok) return { ok: false };
@@ -5897,10 +5818,10 @@ async function startApplication(): Promise<void> {
         }
         return { ok: false };
       },
-      logger,
+      logger: state.logger,
     });
-    workerClient.onPluginMediaProviderRequest(async (input) => {
-      const scheduler = pluginProviderScheduler;
+    state.workerClient.onPluginMediaProviderRequest(async (input) => {
+      const scheduler = state.pluginProviderScheduler;
       if (scheduler === undefined) {
         return {
           status: 'native-fallback',
@@ -5912,7 +5833,7 @@ async function startApplication(): Promise<void> {
       try {
         return await scheduler.resolveMediaProvider(input);
       } catch (error) {
-        logger?.error('plugin.media-provider.request', error, {
+        state.logger?.error('plugin.media-provider.request', error, {
           libraryId: input.libraryId,
           assetId: input.assetId,
           kind: input.kind,
@@ -5926,32 +5847,32 @@ async function startApplication(): Promise<void> {
       }
     });
   }
-  if (!automationExecutionJournal || !automationCommandGateway || !workerClient || !logger) {
+  if (!state.automationExecutionJournal || !state.automationCommandGateway || !state.workerClient || !state.logger) {
     throw new Error('Embedded MCP server requires journal, gateway, worker, and logger.');
   }
   try {
-    embeddedMcpServer = new EmbeddedMcpServer({
+    state.embeddedMcpServer = new EmbeddedMcpServer({
       userDataPath: app.getPath('userData'),
-      journal: automationExecutionJournal,
-      gateway: automationCommandGateway,
-      workerClient,
-      logger,
-      getPluginTools: () => pluginMcpToolProvider,
+      journal: state.automationExecutionJournal,
+      gateway: state.automationCommandGateway,
+      workerClient: state.workerClient,
+      logger: state.logger,
+      getPluginTools: () => state.pluginMcpToolProvider,
       getHostTools: () => ruleMcpTools,
-      permissionPolicyStore: mcpPermissionPolicyStore,
-      permissionBroker: mcpPermissionBroker,
+      permissionPolicyStore: state.mcpPermissionPolicyStore,
+      permissionBroker: state.mcpPermissionBroker,
       // Serpent-fmbr: MCP operations speak through the SAME human-facing toasts
       // as manual operations — the renderer composes them from the structured
       // result. No separate "MCP client completed X" notification system.
       onCommandCompleted: ({ commandId, result }) => {
-        if (!mainWindow || mainWindow.isDestroyed()) return;
-        mainWindow.webContents.send(COMMAND_COMPLETED_CHANNEL, { commandId, result });
+        if (!state.mainWindow || state.mainWindow.isDestroyed()) return;
+        state.mainWindow.webContents.send(COMMAND_COMPLETED_CHANNEL, { commandId, result });
       },
     });
-    embeddedMcpServer.onSnapshot((snapshot) => {
-      if (mainWindow && !mainWindow.isDestroyed()) {
+    state.embeddedMcpServer.onSnapshot((snapshot) => {
+      if (state.mainWindow && !state.mainWindow.isDestroyed()) {
         const validatedSnapshot = mcpSettingsSnapshotSchema.parse(snapshot);
-        mainWindow.webContents.send(MCP_SETTINGS_EVENT_CHANNEL, validatedSnapshot);
+        state.mainWindow.webContents.send(MCP_SETTINGS_EVENT_CHANNEL, validatedSnapshot);
       }
     });
   } catch (error) {
@@ -5959,19 +5880,19 @@ async function startApplication(): Promise<void> {
     // credential pepper ACL cannot be restricted on Windows) must disable the
     // MCP service, never the whole app — the settings IPC answers
     // MCP_SETTINGS_UNAVAILABLE while embeddedMcpServer stays undefined.
-    embeddedMcpInitializationFailure = error instanceof McpCredentialStoreError ? error : undefined;
-    logger?.error('mcp.embedded-server.construction-failed', error);
+    state.embeddedMcpInitializationFailure = error instanceof McpCredentialStoreError ? error : undefined;
+    state.logger?.error('mcp.embedded-server.construction-failed', error);
   }
   ipcMain.handle(MCP_SETTINGS_REQUEST_CHANNEL, async (event, input: unknown) => {
-    const server = embeddedMcpServer;
+    const server = state.embeddedMcpServer;
     const response = (value: unknown) => mcpSettingsResponseSchema.parse(value);
-    if (!mainWindow || event.sender !== mainWindow.webContents) {
-      logger?.info('mcp.settings', 'Rejected MCP settings request.', { code: 'unauthorized_sender' });
+    if (!state.mainWindow || event.sender !== state.mainWindow.webContents) {
+      state.logger?.info('mcp.settings', 'Rejected MCP settings request.', { code: 'unauthorized_sender' });
       return response({ ok: false, code: 'unauthorized_sender', message: 'The MCP settings request sender is not authorized.' });
     }
     if (!server) {
-      const failure = embeddedMcpInitializationFailure;
-      logger?.info('mcp.settings', 'MCP service is unavailable after initialization failed.', {
+      const failure = state.embeddedMcpInitializationFailure;
+      state.logger?.info('mcp.settings', 'MCP service is unavailable after initialization failed.', {
         code: failure?.code ?? 'MCP_SETTINGS_UNAVAILABLE',
         ...(failure?.systemCode === undefined ? {} : { systemCode: failure.systemCode }),
       });
@@ -6045,7 +5966,7 @@ async function startApplication(): Promise<void> {
       return response({ ok: true, copied: true, credentialId: config.credentialId, snapshot: config.snapshot });
     } catch (error) {
       const code = error instanceof EmbeddedMcpServerError ? error.code : 'MCP_SERVER_START_FAILED';
-      logger?.error('mcp.settings', error, { code });
+      state.logger?.error('mcp.settings', error, { code });
       return response({
         ok: false,
         code,
@@ -6056,34 +5977,34 @@ async function startApplication(): Promise<void> {
   });
   // Global user-scoped plugins have an application lifetime and must be set up
   // before recent-library restore, including when no library can be reopened.
-  await pluginActivationCoordinator?.refreshGlobal();
-  workerClient.onAssetsChanged(publishAssetChange);
-  workerClient.onLibraryChanged(publishLibraryChanged);
-  workerClient.onLibraryChanged(scheduleLibraryChangeRules);
-  workerClient.onProgress(publishProgress);
-  workerClient.onAiProgress(publishAiProgress);
-  workerClient.onAiAnalysisCompleted(publishAiCompleted);
-  workerClient.onAiContentCleared(publishAiCleared);
+  await state.pluginActivationCoordinator?.refreshGlobal();
+  state.workerClient.onAssetsChanged(publishAssetChange);
+  state.workerClient.onLibraryChanged(publishLibraryChanged);
+  state.workerClient.onLibraryChanged(scheduleLibraryChangeRules);
+  state.workerClient.onProgress(publishProgress);
+  state.workerClient.onAiProgress(publishAiProgress);
+  state.workerClient.onAiAnalysisCompleted(publishAiCompleted);
+  state.workerClient.onAiContentCleared(publishAiCleared);
   // 视频 contact sheet / 模型缩略图就绪 = 自动分析的视觉输入边界；导入时
   // 入队可能与该媒体队列竞争，输入就绪时重入队该资产（worker 去重已排队/
   // 运行中/已分析）。8-09 WIP 恢复：worker 解析事件但此前 main 无消费者。
-  workerClient.onAiInputReady((event) => {
+  state.workerClient.onAiInputReady((event) => {
     void enqueueAutoAnalyzeAfterImport(event.libraryId, [event.assetId]);
   });
 
   // Serpent-bfsb 后续：自动同步调度器。打开同步资源库后自动绑定并开启
   // （见 handleLibraryRequest 的 sync.open-remote-library.request 成功分支）；
   // 本地资产变更 5 秒防抖后自动同步；轮询间隔只用于检查云端。
-  syncAutoScheduler = new SyncAutoScheduler({
-    workerClient,
+  state.syncAutoScheduler = new SyncAutoScheduler({
+    workerClient: state.workerClient,
     deviceId: () => syncDeviceId(),
     readBindings: () => readSyncBindings() as unknown as Record<string, SyncBindingLike>,
     writeBindings: (bindings) => writeSyncBindings(bindings as unknown as Record<string, SyncBindingRecord>),
     resolveCredentials: (serverId) => resolveSyncServerCredentials(serverId),
     isManualSyncActive: (libraryId) => manualSyncRuns.has(libraryId),
-    logger,
+    logger: state.logger,
   });
-  syncAutoScheduler.start();
+  state.syncAutoScheduler.start();
 
   // Serpent-85a9b0：生产启动自动打开上次使用的资源库（记住上次打开的库与
   // 文件夹——库打开后 renderer 的 browser-session 会恢复上次浏览的文件夹）。
@@ -6091,16 +6012,16 @@ async function startApplication(): Promise<void> {
   // 另选库；E2E 隔离重启测试由 recentLibraryAutoOpenEnabled 显式门控。
   const recentPath = recentLibraryAutoOpenEnabled()
     ? readActiveLibraryPath(recentLibraryPath(), (error) => {
-        logger?.error("recent-library.read", error);
+        state.logger?.error("recent-library.read", error);
       })
     : null;
   if (recentPath) {
-    const restored = await workerClient.request({
+    const restored = await state.workerClient.request({
       type: "library.open",
       selectedLibraryPath: recentPath,
     });
     if (!restored.ok || restored.type !== "library.opened") {
-      logger.info(
+      state.logger.info(
         "recent-library.unavailable",
         "The recent library could not be reopened.",
         {
@@ -6115,7 +6036,7 @@ async function startApplication(): Promise<void> {
         libraryId: restored.library.libraryId,
         libraryDirectory: restored.library.libraryPath,
       });
-      logger.info(
+      state.logger.info(
         "recent-library.restored",
         "Reopened the recent library and completed plugin activation request.",
         {
@@ -6126,14 +6047,14 @@ async function startApplication(): Promise<void> {
   }
 
   // Forward thumbnail events to the renderer
-  workerClient.onThumbnailEvent((event) => {
+  state.workerClient.onThumbnailEvent((event) => {
     if (
       event.type === "asset.thumbnail.ready"
       || (event.type === "asset.thumbnail.batch-ready" && event.ready.length > 0)
     ) {
       // Cover-only video semantics skips a clip until its poster exists.
       // A ready cover is the cue to encode that clip; there is no frame-sampling fallback.
-      embeddingTestIndex?.catchUp(event.libraryId);
+      state.embeddingTestIndex?.catchUp(event.libraryId);
     }
     if (
       event.type === "asset.thumbnail.ready" ||
@@ -6145,7 +6066,7 @@ async function startApplication(): Promise<void> {
       // requests in a pure browse profile; the first screen is warmed by the
       // browse response itself and anything else resolves on demand.
     }
-    sendToLiveWebContents(mainWindow?.webContents, THUMBNAIL_CHANNEL, event);
+    sendToLiveWebContents(state.mainWindow?.webContents, THUMBNAIL_CHANNEL, event);
   });
 
   // Register keel:// custom protocol for serving thumbnail/preview artifacts.
@@ -6164,7 +6085,7 @@ async function startApplication(): Promise<void> {
           isPackaged: app.isPackaged,
         });
         if (!response) {
-          logger?.info(
+          state.logger?.info(
             "keel-protocol.app-asset-missing",
             "Rejected unknown or unverified app-asset route.",
             { route: url.pathname },
@@ -6188,9 +6109,9 @@ async function startApplication(): Promise<void> {
         if (isLibraryMediaReadBlocked(folderLibraryId)) {
           return new Response("Library unavailable", { status: 410 });
         }
-        if (!workerClient) return new Response("Worker unavailable", { status: 503 });
+        if (!state.workerClient) return new Response("Worker unavailable", { status: 503 });
         try {
-          const resolved = await workerClient.request({
+          const resolved = await state.workerClient.request({
             type: "folder.cover.resolve",
             libraryId: folderLibraryId,
             folderId,
@@ -6205,13 +6126,13 @@ async function startApplication(): Promise<void> {
               rangeHeader: request.headers.get("range"),
               signal: bindLibraryMediaReadSignal(folderLibraryId, request.signal),
               onStreamError: (error) =>
-                logger?.error("keel-protocol.folder-cover-stream", error, {
+                state.logger?.error("keel-protocol.folder-cover-stream", error, {
                   libraryId: folderLibraryId,
                 }),
             },
           );
         } catch (error) {
-          logger?.error("keel-protocol.folder-cover-read", error, {
+          state.logger?.error("keel-protocol.folder-cover-read", error, {
             libraryId: folderLibraryId,
           });
           return new Response("Folder cover unreadable", { status: 404 });
@@ -6223,7 +6144,7 @@ async function startApplication(): Promise<void> {
         url.hostname !== "source" &&
         url.hostname !== "import-frame"
       ) {
-        logger?.info(
+        state.logger?.info(
           "keel-protocol.invalid-host",
           "Rejected unsupported artifact protocol host.",
         );
@@ -6276,14 +6197,14 @@ async function startApplication(): Promise<void> {
               rangeHeader: request.headers.get("range"),
               signal: request.signal,
               onStreamError: (error) =>
-                logger?.error("keel-protocol.import-frame-stream", error, {
+                state.logger?.error("keel-protocol.import-frame-stream", error, {
                   sequenceIndex,
                   frameNumber,
                 }),
             },
           );
         } catch (error) {
-          logger?.error("keel-protocol.import-frame-read", error, {
+          state.logger?.error("keel-protocol.import-frame-read", error, {
             sequenceIndex,
             frameNumber,
           });
@@ -6292,7 +6213,7 @@ async function startApplication(): Promise<void> {
       }
       const parts = url.pathname.replace(/^\/+/, "").split("/");
       if (parts.length !== 2) {
-        logger?.info(
+        state.logger?.info(
           "keel-protocol.invalid-path",
           "Rejected malformed artifact protocol URL.",
         );
@@ -6306,7 +6227,7 @@ async function startApplication(): Promise<void> {
         libraryId.includes("..") ||
         artifactId.includes("..")
       ) {
-        logger?.info(
+        state.logger?.info(
           "keel-protocol.invalid-identifiers",
           "Rejected malformed artifact identifiers.",
         );
@@ -6316,8 +6237,8 @@ async function startApplication(): Promise<void> {
         return new Response("Library unavailable", { status: 410 });
       }
 
-      if (!workerClient) {
-        logger?.error(
+      if (!state.workerClient) {
+        state.logger?.error(
           "keel-protocol.worker-unavailable",
           new Error("Library Worker is unavailable."),
         );
@@ -6325,11 +6246,11 @@ async function startApplication(): Promise<void> {
       }
 
       if (url.hostname === "source") {
-        const sourceWorkerClient = workerClient;
+        const sourceWorkerClient = state.workerClient;
         if (!sourceWorkerClient) {
           return new Response("Worker unavailable", { status: 503 });
         }
-        logger?.info(
+        state.logger?.info(
           "keel-protocol.source-request",
           "Resolving a source asset request.",
           { libraryId, assetId: artifactId },
@@ -6359,7 +6280,7 @@ async function startApplication(): Promise<void> {
         }
         const revisionId = url.searchParams.get("revision");
         if (!revisionId || !/^[A-Za-z0-9_-]{1,255}$/.test(revisionId)) {
-          logger?.info(
+          state.logger?.info(
             "keel-protocol.invalid-revision",
             "Rejected malformed source revision token.",
           );
@@ -6382,14 +6303,14 @@ async function startApplication(): Promise<void> {
                 rangeHeader: request.headers.get("range"),
                 signal: bindLibraryMediaReadSignal(libraryId, request.signal),
                 onStreamError: (error) =>
-                  logger?.error("keel-protocol.model-source-stream", error, {
+                  state.logger?.error("keel-protocol.model-source-stream", error, {
                     libraryId,
                     assetId: artifactId,
                   }),
               },
             );
           } catch (error) {
-            logger?.error("keel-protocol.model-source-read", error, {
+            state.logger?.error("keel-protocol.model-source-read", error, {
               libraryId,
               assetId: artifactId,
             });
@@ -6427,13 +6348,13 @@ async function startApplication(): Promise<void> {
           });
         } catch (error) {
           sourcePathCache.delete(libraryId, artifactId, revisionId);
-          logger?.info(
+          state.logger?.info(
             "keel-protocol.source-stale",
             "Rejected missing or stale source token.",
             { libraryId, assetId: artifactId },
           );
           if (VIEWER_TIMING_LOG) {
-            logger?.info("viewer.source-timing", "Source lookup failed.", {
+            state.logger?.info("viewer.source-timing", "Source lookup failed.", {
               libraryId,
               assetId: artifactId,
               revisionId,
@@ -6455,14 +6376,14 @@ async function startApplication(): Promise<void> {
               rangeHeader: request.headers.get("range"),
               signal: bindLibraryMediaReadSignal(libraryId, request.signal),
               onStreamError: (error) =>
-                logger?.error("keel-protocol.source-stream", error, {
+                state.logger?.error("keel-protocol.source-stream", error, {
                   libraryId,
                   assetId: artifactId,
                 }),
             },
           );
           if (VIEWER_TIMING_LOG) {
-            logger?.info("viewer.source-timing", "Source response ready.", {
+            state.logger?.info("viewer.source-timing", "Source response ready.", {
               libraryId,
               assetId: artifactId,
               revisionId,
@@ -6475,7 +6396,7 @@ async function startApplication(): Promise<void> {
           return response;
         } catch (error) {
           sourcePathCache.delete(libraryId, artifactId, revisionId);
-          logger?.error("keel-protocol.source-read", error, {
+          state.logger?.error("keel-protocol.source-read", error, {
             libraryId,
             assetId: artifactId,
           });
@@ -6501,7 +6422,7 @@ async function startApplication(): Promise<void> {
       // are large and Range-streamed.
       const isCacheableImageMime = mimeType.startsWith("image/");
       const cachedMirror = isCacheableImageMime
-        ? previewCache?.locateSync(libraryId, artifactId, ext)
+        ? state.previewCache?.locateSync(libraryId, artifactId, ext)
         : null;
       if (cachedMirror) {
         try {
@@ -6512,7 +6433,7 @@ async function startApplication(): Promise<void> {
               rangeHeader: request.headers.get("range"),
               signal: bindLibraryMediaReadSignal(libraryId, request.signal),
               onStreamError: (error) =>
-                logger?.error("preview-cache.stream", error, {
+                state.logger?.error("preview-cache.stream", error, {
                   libraryId,
                   artifactId,
                 }),
@@ -6532,18 +6453,18 @@ async function startApplication(): Promise<void> {
             rangeHeader: request.headers.get("range"),
             signal: bindLibraryMediaReadSignal(libraryId, request.signal),
             onStreamError: (error) =>
-              logger?.error("keel-protocol.stream", error, {
+              state.logger?.error("keel-protocol.stream", error, {
                 libraryId,
                 artifactId,
               }),
           },
         );
         if (isCacheableImageMime && !request.headers.get("range")) {
-          void previewCache?.store(libraryId, artifactId, absoluteArtifactPath, ext);
+          void state.previewCache?.store(libraryId, artifactId, absoluteArtifactPath, ext);
         }
         return response;
       } catch (error) {
-        logger?.error("keel-protocol.read", error, {
+        state.logger?.error("keel-protocol.read", error, {
           libraryId,
           artifactId,
         });
@@ -6555,7 +6476,7 @@ async function startApplication(): Promise<void> {
         return new Response("Artifact file missing", { status: 404 });
       }
     } catch (error) {
-      logger?.error("keel-protocol", error, { url: request.url });
+      state.logger?.error("keel-protocol", error, { url: request.url });
       return new Response("Internal error", { status: 500 });
     }
   });
@@ -6568,9 +6489,9 @@ async function startApplication(): Promise<void> {
     if (parsed === undefined) {
       return new Response("Invalid plugin UI URL", { status: 400 });
     }
-    const resolved = pluginActivationCoordinator?.resolvePluginUiAsset(parsed);
+    const resolved = state.pluginActivationCoordinator?.resolvePluginUiAsset(parsed);
     if (resolved === undefined) {
-      logger?.info("plugin-ui.protocol-rejected", "Rejected an inactive or unallowlisted plugin UI asset.", {
+      state.logger?.info("plugin-ui.protocol-rejected", "Rejected an inactive or unallowlisted plugin UI asset.", {
         pluginId: parsed.pluginId,
         instanceId: parsed.instanceId,
         contributionId: parsed.contributionId,
@@ -6608,7 +6529,7 @@ async function startApplication(): Promise<void> {
         },
       });
     } catch (error) {
-      logger?.error("plugin-ui.protocol-read", error, {
+      state.logger?.error("plugin-ui.protocol-read", error, {
         pluginId: parsed.pluginId,
         contributionId: parsed.contributionId,
         relativePath: parsed.relativePath,
@@ -6627,13 +6548,13 @@ async function startApplication(): Promise<void> {
       const driftMs = now - lagWindowStart - 1_000;
       lagWindowStart = now;
       if (driftMs >= 200) {
-        logger?.info("main.eventLoop.lag", "Main event loop was blocked.", { driftMs });
+        state.logger?.info("main.eventLoop.lag", "Main event loop was blocked.", { driftMs });
       }
     }, 1_000);
     lagTimer.unref?.();
   }
   ipcMain.handle(LIBRARY_REQUEST_CHANNEL, (event, input: unknown) => {
-    if (!mainWindow || event.sender !== mainWindow.webContents) {
+    if (!state.mainWindow || event.sender !== state.mainWindow.webContents) {
       return {
         ok: false,
         error: createPublicError("INTERNAL_ERROR"),
@@ -6645,7 +6566,7 @@ async function startApplication(): Promise<void> {
   });
 
   ipcMain.on(ASSET_NATIVE_DRAG_CHANNEL, (event, input: unknown) => {
-    const dragWindow = mainWindow;
+    const dragWindow = state.mainWindow;
     if (
       !dragWindow ||
       dragWindow.isDestroyed() ||
@@ -6670,7 +6591,7 @@ async function startApplication(): Promise<void> {
         },
       });
     } catch (error) {
-      logger?.info(
+      state.logger?.info(
         "main.native-asset-drag",
         "Native asset drag was not started.",
         { error: error instanceof Error ? error.message : String(error) },
@@ -6680,9 +6601,9 @@ async function startApplication(): Promise<void> {
 
   ipcMain.on(ASSET_NATIVE_DRAG_PRIME_CHANNEL, (event, input: unknown) => {
     if (
-      !mainWindow ||
-      mainWindow.isDestroyed() ||
-      event.sender !== mainWindow.webContents
+      !state.mainWindow ||
+      state.mainWindow.isDestroyed() ||
+      event.sender !== state.mainWindow.webContents
     ) {
       return;
     }
@@ -6694,7 +6615,7 @@ async function startApplication(): Promise<void> {
         "upsert",
       );
     } catch (error) {
-      logger?.info(
+      state.logger?.info(
         "main.native-asset-drag",
         "Native asset drag was not primed.",
         { error: error instanceof Error ? error.message : String(error) },
@@ -6704,14 +6625,14 @@ async function startApplication(): Promise<void> {
 
   registerAutomationScriptIpc({
     ipcMain,
-    isAuthorizedSender: (sender) => Boolean(mainWindow && sender === mainWindow.webContents),
-    workerClient: () => workerClient,
-    journal: () => automationExecutionJournal,
-    gateway: () => automationCommandGateway,
-    runtime: () => scriptRuntimeSupervisor,
-    scriptFiles: () => automationScriptFiles,
+    isAuthorizedSender: (sender) => Boolean(state.mainWindow && sender === state.mainWindow.webContents),
+    workerClient: () => state.workerClient,
+    journal: () => state.automationExecutionJournal,
+    gateway: () => state.automationCommandGateway,
+    runtime: () => state.scriptRuntimeSupervisor,
+    scriptFiles: () => state.automationScriptFiles,
     confirmDesktopWrite: confirmDesktopAutomationWrite,
-    logger: () => logger,
+    logger: () => state.logger,
     undoGroup: () => ({
       recover: async ({ libraryId, items }) => {
         let undoneCount = 0;
@@ -6749,52 +6670,52 @@ async function startApplication(): Promise<void> {
     }),
   });
 
-  const pluginPackageRequest = pluginPackageManager === undefined
+  const pluginPackageRequest = state.pluginPackageManager === undefined
     ? undefined
     : createPluginPackageRequestHandler({
-      manager: pluginPackageManager,
-      activationCoordinator: pluginActivationCoordinator,
+      manager: state.pluginPackageManager,
+      activationCoordinator: state.pluginActivationCoordinator,
       settingsStore: pluginSettingsStore,
       storageStore: pluginStorageStore,
       mcpExposureStore: pluginMcpExposureStore,
       searchProviders: async (input) => {
-        if (pluginProviderScheduler === undefined) {
+        if (state.pluginProviderScheduler === undefined) {
           throw new Error('Plugin search providers are unavailable.');
         }
-        return pluginProviderScheduler.searchAssets(input);
+        return state.pluginProviderScheduler.searchAssets(input);
       },
       mediaProvider: async (input) => {
-        if (pluginProviderScheduler === undefined) {
+        if (state.pluginProviderScheduler === undefined) {
           throw new Error('Plugin media providers are unavailable.');
         }
-        return pluginProviderScheduler.resolveMediaProvider(input);
+        return state.pluginProviderScheduler.resolveMediaProvider(input);
       },
       metadataProvider: async (input) => {
-        if (pluginProviderScheduler === undefined) {
+        if (state.pluginProviderScheduler === undefined) {
           throw new Error('Plugin metadata providers are unavailable.');
         }
-        return pluginProviderScheduler.resolveMetadataProvider(input);
+        return state.pluginProviderScheduler.resolveMetadataProvider(input);
       },
       importProvider: async (input) => {
-        if (pluginProviderScheduler === undefined) {
+        if (state.pluginProviderScheduler === undefined) {
           throw new Error('Plugin import providers are unavailable.');
         }
-        return pluginProviderScheduler.resolveImportProvider(input);
+        return state.pluginProviderScheduler.resolveImportProvider(input);
       },
       exportProvider: async (input) => {
-        if (pluginProviderScheduler === undefined) {
+        if (state.pluginProviderScheduler === undefined) {
           throw new Error('Plugin export providers are unavailable.');
         }
-        return pluginProviderScheduler.resolveExportProvider(input);
+        return state.pluginProviderScheduler.resolveExportProvider(input);
       },
       aiProvider: async (input) => {
-        if (pluginProviderScheduler === undefined) {
+        if (state.pluginProviderScheduler === undefined) {
           throw new Error('Plugin AI providers are unavailable.');
         }
-        return pluginProviderScheduler.resolveAiProvider(input);
+        return state.pluginProviderScheduler.resolveAiProvider(input);
       },
       resolveLibraryDirectory: async (libraryId) => {
-        const client = workerClient;
+        const client = state.workerClient;
         if (client === undefined) return undefined;
         const result = await client.request({ type: 'library.list' });
         if (!result.ok || result.type !== 'library.list') return undefined;
@@ -6802,15 +6723,15 @@ async function startApplication(): Promise<void> {
       },
       chooseLocalPackage: selectPluginPackageForInstall,
       notifyInstallProgress: (event) => {
-        if (mainWindow && !mainWindow.isDestroyed()) {
-          mainWindow.webContents.send(PLUGIN_INSTALL_PROGRESS_CHANNEL, event);
+        if (state.mainWindow && !state.mainWindow.isDestroyed()) {
+          state.mainWindow.webContents.send(PLUGIN_INSTALL_PROGRESS_CHANNEL, event);
         }
       },
       revealPackageDirectory: (absoluteDirectory) => {
         shell.showItemInFolder(absoluteDirectory);
       },
       afterMutation: async ({ requestType, libraryId, libraryDirectory }) => {
-        const coordinator = pluginActivationCoordinator;
+        const coordinator = state.pluginActivationCoordinator;
         if (coordinator === undefined) return;
         try {
           if (requestType === 'plugin-manager.resolve'
@@ -6827,22 +6748,22 @@ async function startApplication(): Promise<void> {
             await coordinator.refreshLibrary({ libraryId, libraryDirectory });
           }
           await syncPluginCompanionExtensions();
-          if (mainWindow && !mainWindow.isDestroyed()) {
-            mainWindow.webContents.send(PLUGIN_CONTRIBUTIONS_CHANGED_CHANNEL, {
+          if (state.mainWindow && !state.mainWindow.isDestroyed()) {
+            state.mainWindow.webContents.send(PLUGIN_CONTRIBUTIONS_CHANGED_CHANNEL, {
               libraryId: libraryId ?? null,
               requestType,
             });
           }
-          embeddedMcpServer?.notifyToolsChanged();
+          state.embeddedMcpServer?.notifyToolsChanged();
         } catch (error) {
-          logger?.error('plugin.activation.after-mutation', error, { requestType, libraryId });
+          state.logger?.error('plugin.activation.after-mutation', error, { requestType, libraryId });
         }
       },
-      logger,
+      logger: state.logger,
     });
   ipcMain.handle(PLUGIN_MANAGER_CHANNEL, (event, input: unknown) => {
-    if (!mainWindow || event.sender !== mainWindow.webContents || pluginPackageRequest === undefined) {
-      logger?.info('plugin.ipc', 'Rejected plugin manager request.', {
+    if (!state.mainWindow || event.sender !== state.mainWindow.webContents || pluginPackageRequest === undefined) {
+      state.logger?.info('plugin.ipc', 'Rejected plugin manager request.', {
         reason: pluginPackageRequest === undefined ? 'unavailable' : 'unauthorized-sender',
       });
       return { ok: false, code: 'operation-failed' };
@@ -6851,14 +6772,14 @@ async function startApplication(): Promise<void> {
   });
 
   ipcMain.handle(STARTUP_PREFERENCES_GET_CHANNEL, (event): StartupPreferencesSnapshot => {
-    if (!mainWindow || event.sender !== mainWindow.webContents) {
+    if (!state.mainWindow || event.sender !== state.mainWindow.webContents) {
       return readStartupPreferencesSnapshot();
     }
     return readStartupPreferencesSnapshot();
   });
 
   ipcMain.handle(SHORTCUT_BINDINGS_GET_CHANNEL, (event) => {
-    if (!mainWindow || event.sender !== mainWindow.webContents) {
+    if (!state.mainWindow || event.sender !== state.mainWindow.webContents) {
       return readShortcutBindingsSnapshot();
     }
     return readShortcutBindingsSnapshot();
@@ -6867,7 +6788,7 @@ async function startApplication(): Promise<void> {
   ipcMain.handle(
     SHORTCUT_BINDINGS_EXPORT_CHANNEL,
     async (event): Promise<ShortcutFileExportResult> => {
-      if (!mainWindow || event.sender !== mainWindow.webContents) {
+      if (!state.mainWindow || event.sender !== state.mainWindow.webContents) {
         return { ok: false, error: "unauthorized-sender" };
       }
       return exportShortcutBindingsFile();
@@ -6877,7 +6798,7 @@ async function startApplication(): Promise<void> {
   ipcMain.handle(
     SHORTCUT_BINDINGS_IMPORT_CHANNEL,
     async (event): Promise<ShortcutFileImportResult> => {
-      if (!mainWindow || event.sender !== mainWindow.webContents) {
+      if (!state.mainWindow || event.sender !== state.mainWindow.webContents) {
         return { ok: false, error: "unauthorized-sender" };
       }
       return importShortcutBindingsFile();
@@ -6887,8 +6808,8 @@ async function startApplication(): Promise<void> {
   ipcMain.handle(
     SHORTCUT_BINDINGS_SET_CHANNEL,
     (event, input: unknown): ShortcutBindingsSetResult => {
-      if (!mainWindow || event.sender !== mainWindow.webContents) {
-        logger?.info("ipc.shortcuts", "Rejected shortcut update.", {
+      if (!state.mainWindow || event.sender !== state.mainWindow.webContents) {
+        state.logger?.info("ipc.shortcuts", "Rejected shortcut update.", {
           code: "unauthorized-sender",
         });
         return {
@@ -6900,7 +6821,7 @@ async function startApplication(): Promise<void> {
       try {
         return storeShortcutBindings(input);
       } catch (error) {
-        logger?.error("shortcuts.store", error);
+        state.logger?.error("shortcuts.store", error);
         return {
           ok: false,
           bindings: readShortcutBindingsSnapshot(),
@@ -6912,24 +6833,24 @@ async function startApplication(): Promise<void> {
 
   // PF: open-with settings. Only the main window may read or change them.
   ipcMain.handle(OPEN_WITH_SETTINGS_GET_CHANNEL, (event) => {
-    if (!mainWindow || event.sender !== mainWindow.webContents) return DEFAULT_OPEN_WITH_SETTINGS;
+    if (!state.mainWindow || event.sender !== state.mainWindow.webContents) return DEFAULT_OPEN_WITH_SETTINGS;
     return readOpenWithSettings(openWithSettingsFilePath(app.getPath("userData")));
   });
   ipcMain.handle(OPEN_WITH_SETTINGS_SET_CHANNEL, (event, input: unknown) => {
     const filePath = openWithSettingsFilePath(app.getPath("userData"));
-    if (!mainWindow || event.sender !== mainWindow.webContents) return readOpenWithSettings(filePath);
+    if (!state.mainWindow || event.sender !== state.mainWindow.webContents) return readOpenWithSettings(filePath);
     try {
       return writeOpenWithSettings(filePath, input);
     } catch (error) {
-      logger?.error("open-with.settings", error);
+      state.logger?.error("open-with.settings", error);
       return readOpenWithSettings(filePath);
     }
   });
   // PR: rule list, switch, order, run, history, files and the AI prompt.
   ipcMain.handle(RULE_INVOKE_CHANNEL, async (event, input: unknown): Promise<RuleIpcResult> => {
-    if (!mainWindow || event.sender !== mainWindow.webContents) return { ok: false, message: "Unauthorized." };
+    if (!state.mainWindow || event.sender !== state.mainWindow.webContents) return { ok: false, message: "Unauthorized." };
     const parsed = ruleIpcRequestSchema.safeParse(input);
-    if (!parsed.success || !workerClient || !ruleRunner) return { ok: false, message: "规则服务不可用。" };
+    if (!parsed.success || !state.workerClient || !state.ruleRunner) return { ok: false, message: "规则服务不可用。" };
     const request = parsed.data;
     const listResult = (response: Awaited<ReturnType<LibraryWorkerClient["request"]>>): RuleIpcResult =>
       response.ok && response.type === "rule.list.result"
@@ -6938,16 +6859,16 @@ async function startApplication(): Promise<void> {
     try {
       switch (request.action) {
         case "list":
-          return listResult(await workerClient.request({ type: "rule.list", libraryId: request.libraryId }));
+          return listResult(await state.workerClient.request({ type: "rule.list", libraryId: request.libraryId }));
         case "set-enabled":
-          return listResult(await workerClient.request({ type: "rule.set-enabled", libraryId: request.libraryId, ruleId: request.ruleId, enabled: request.enabled }));
+          return listResult(await state.workerClient.request({ type: "rule.set-enabled", libraryId: request.libraryId, ruleId: request.ruleId, enabled: request.enabled }));
         case "set-layout":
-          return listResult(await workerClient.request({ type: "rule.layout.set", libraryId: request.libraryId, layout: request.layout }));
+          return listResult(await state.workerClient.request({ type: "rule.layout.set", libraryId: request.libraryId, layout: request.layout }));
         case "delete":
-          return listResult(await workerClient.request({ type: "rule.delete", libraryId: request.libraryId, ruleId: request.ruleId }));
+          return listResult(await state.workerClient.request({ type: "rule.delete", libraryId: request.libraryId, ruleId: request.ruleId }));
         case "create": {
           const id = randomUUID();
-          return listResult(await workerClient.request({
+          return listResult(await state.workerClient.request({
             type: "rule.save",
             libraryId: request.libraryId,
             manifest: {
@@ -6970,7 +6891,7 @@ async function startApplication(): Promise<void> {
           }));
         }
         case "run": {
-          const run = await ruleRunner.run({
+          const run = await state.ruleRunner.run({
             libraryId: request.libraryId,
             ruleId: request.ruleId,
             reason: request.dryRun ? "dry-run" : "manual",
@@ -6979,12 +6900,12 @@ async function startApplication(): Promise<void> {
           return run ? { ok: true, run } : { ok: false, message: "找不到这条规则。" };
         }
         case "history": {
-          const response = await workerClient.request({ type: "rule.runs.list", libraryId: request.libraryId, ruleId: request.ruleId, limit: 50 });
+          const response = await state.workerClient.request({ type: "rule.runs.list", libraryId: request.libraryId, ruleId: request.ruleId, limit: 50 });
           return response.ok && response.type === "rule.runs.result" ? { ok: true, runs: response.runs } : { ok: false, message: "无法读取运行历史。" };
         }
         case "reveal":
         case "copy-for-ai": {
-          const response = await workerClient.request({ type: "rule.list", libraryId: request.libraryId });
+          const response = await state.workerClient.request({ type: "rule.list", libraryId: request.libraryId });
           if (!response.ok || response.type !== "rule.list.result") return { ok: false, message: "规则服务不可用。" };
           const list = response.result;
           const rule = request.ruleId ? list.rules.find((r) => r.manifest.id === request.ruleId) ?? null : null;
@@ -6998,13 +6919,13 @@ async function startApplication(): Promise<void> {
         }
       }
     } catch (error) {
-      logger?.error("rule.ipc", error, { action: request.action });
+      state.logger?.error("rule.ipc", error, { action: request.action });
       return { ok: false, message: error instanceof Error ? error.message : String(error) };
     }
   });
   ipcMain.handle(OPEN_WITH_CHOOSE_PROGRAM_CHANNEL, async (event) => {
-    if (!mainWindow || event.sender !== mainWindow.webContents) return null;
-    const result = await dialog.showOpenDialog(mainWindow, {
+    if (!state.mainWindow || event.sender !== state.mainWindow.webContents) return null;
+    const result = await dialog.showOpenDialog(state.mainWindow, {
       properties: ["openFile"],
       ...(process.platform === "win32"
         ? { filters: [{ name: "Programs", extensions: ["exe", "bat", "cmd"] }] }
@@ -7016,8 +6937,8 @@ async function startApplication(): Promise<void> {
   });
 
   ipcMain.handle(STARTUP_PREFERENCES_SET_CHANNEL, (event, input: unknown): StartupPreferencesSnapshot => {
-    if (!mainWindow || event.sender !== mainWindow.webContents) {
-      logger?.info("ipc.startup-preferences", "Rejected startup preference update.", {
+    if (!state.mainWindow || event.sender !== state.mainWindow.webContents) {
+      state.logger?.info("ipc.startup-preferences", "Rejected startup preference update.", {
         code: "unauthorized-sender",
       });
       return readStartupPreferencesSnapshot();
@@ -7025,7 +6946,7 @@ async function startApplication(): Promise<void> {
     try {
       return storeStartupPreferences(input);
     } catch (error) {
-      logger?.error("startup.login-item", error);
+      state.logger?.error("startup.login-item", error);
       return {
         ...readStartupPreferencesSnapshot(),
         registrationFailed: true,
@@ -7038,15 +6959,15 @@ async function startApplication(): Promise<void> {
   ipcMain.handle(
     OPEN_EXTERNAL_URL_CHANNEL,
     async (event, input: unknown): Promise<OpenExternalUrlResult> => {
-      if (!mainWindow || event.sender !== mainWindow.webContents) {
-        logger?.info("ipc.open-external-url", "Rejected open-external-url request.", {
+      if (!state.mainWindow || event.sender !== state.mainWindow.webContents) {
+        state.logger?.info("ipc.open-external-url", "Rejected open-external-url request.", {
           code: "unauthorized_sender",
         });
         return { ok: false, code: "unauthorized_sender" };
       }
       const resolved = resolveOpenExternalUrlTarget(input);
       if (!resolved.ok) {
-        logger?.info("ipc.open-external-url", "Rejected open-external-url request.", {
+        state.logger?.info("ipc.open-external-url", "Rejected open-external-url request.", {
           code: resolved.code,
         });
         return resolved;
@@ -7055,7 +6976,7 @@ async function startApplication(): Promise<void> {
         await shell.openExternal(resolved.url);
         return { ok: true };
       } catch (error) {
-        logger?.error("ipc.open-external-url", error, { code: "shell_failure" });
+        state.logger?.error("ipc.open-external-url", error, { code: "shell_failure" });
         return { ok: false, code: "shell_failure" };
       }
     },
@@ -7065,23 +6986,23 @@ async function startApplication(): Promise<void> {
   ipcMain.handle(
     REVEAL_APP_LOG_CHANNEL,
     (event): RevealAppLogResult => {
-      if (!mainWindow || event.sender !== mainWindow.webContents) {
-        logger?.info("ipc.reveal-app-log", "Rejected reveal-app-log request.", {
+      if (!state.mainWindow || event.sender !== state.mainWindow.webContents) {
+        state.logger?.info("ipc.reveal-app-log", "Rejected reveal-app-log request.", {
           code: "unauthorized_sender",
         });
         return { ok: false, code: "unauthorized_sender" };
       }
-      if (!appLogPath || !existsSync(appLogPath)) {
-        logger?.info("ipc.reveal-app-log", "App log file missing.", {
+      if (!state.appLogPath || !existsSync(state.appLogPath)) {
+        state.logger?.info("ipc.reveal-app-log", "App log file missing.", {
           code: "log_missing",
         });
         return { ok: false, code: "log_missing" };
       }
       try {
-        shell.showItemInFolder(appLogPath);
+        shell.showItemInFolder(state.appLogPath);
         return { ok: true };
       } catch (error) {
-        logger?.error("ipc.reveal-app-log", error, { code: "shell_failure" });
+        state.logger?.error("ipc.reveal-app-log", error, { code: "shell_failure" });
         return { ok: false, code: "shell_failure" };
       }
     },
@@ -7092,21 +7013,21 @@ async function startApplication(): Promise<void> {
   ipcMain.handle(
     READ_APP_LOG_CHANNEL,
     (event, input: unknown): ReadAppLogResult => {
-      if (!mainWindow || event.sender !== mainWindow.webContents) {
-        logger?.info("ipc.read-app-log", "Rejected read-app-log request.", {
+      if (!state.mainWindow || event.sender !== state.mainWindow.webContents) {
+        state.logger?.info("ipc.read-app-log", "Rejected read-app-log request.", {
           code: "unauthorized_sender",
         });
         return { ok: false, code: "unauthorized_sender" };
       }
       const request = parseReadAppLogRequest(input);
       if (!request) {
-        logger?.info("ipc.read-app-log", "Rejected malformed app-log filter.", {
+        state.logger?.info("ipc.read-app-log", "Rejected malformed app-log filter.", {
           code: "malformed_request",
         });
         return { ok: false, code: "malformed_request" };
       }
-      if (!appLogPath || !existsSync(appLogPath)) {
-        logger?.info("ipc.read-app-log", "App log file missing.", {
+      if (!state.appLogPath || !existsSync(state.appLogPath)) {
+        state.logger?.info("ipc.read-app-log", "App log file missing.", {
           code: "log_missing",
         });
         return { ok: false, code: "log_missing" };
@@ -7114,14 +7035,14 @@ async function startApplication(): Promise<void> {
       try {
         return {
           ok: true,
-          entries: logger?.readRecent(500, {
+          entries: state.logger?.readRecent(500, {
             redactPaths: true,
             automationCorrelationId: request.automationCorrelationId,
           }) ?? [],
-          fileName: path.basename(appLogPath),
+          fileName: path.basename(state.appLogPath),
         };
       } catch (error) {
-        logger?.error("ipc.read-app-log", error, { code: "read_failure" });
+        state.logger?.error("ipc.read-app-log", error, { code: "read_failure" });
         return { ok: false, code: "read_failure" };
       }
     },
@@ -7131,15 +7052,15 @@ async function startApplication(): Promise<void> {
   ipcMain.handle(
     SHOW_EDIT_CONTEXT_MENU_CHANNEL,
     (event, input: unknown): ShowEditContextMenuResult => {
-      if (!mainWindow || event.sender !== mainWindow.webContents) {
-        logger?.info("ipc.show-edit-context-menu", "Rejected edit context menu.", {
+      if (!state.mainWindow || event.sender !== state.mainWindow.webContents) {
+        state.logger?.info("ipc.show-edit-context-menu", "Rejected edit context menu.", {
           code: "unauthorized_sender",
         });
         return { ok: false, code: "unauthorized_sender" };
       }
       const result = popupEditContextMenu(event.sender, input);
       if (!result.ok) {
-        logger?.info("ipc.show-edit-context-menu", "Rejected edit context menu.", {
+        state.logger?.info("ipc.show-edit-context-menu", "Rejected edit context menu.", {
           code: result.code,
         });
       }
@@ -7149,54 +7070,54 @@ async function startApplication(): Promise<void> {
 
   // Serpent-166q: text-field ⌘C fallback when Edit menu routes through renderer.
   ipcMain.handle(NATIVE_EDIT_COPY_CHANNEL, (event): void => {
-    if (!mainWindow || event.sender !== mainWindow.webContents) return;
+    if (!state.mainWindow || event.sender !== state.mainWindow.webContents) return;
     event.sender.copy();
   });
   ipcMain.handle(NATIVE_EDIT_COMMAND_CHANNEL, (event, input: unknown): void => {
-    if (!mainWindow || event.sender !== mainWindow.webContents) return;
+    if (!state.mainWindow || event.sender !== state.mainWindow.webContents) return;
     if (input === "paste") event.sender.paste();
     if (input === "select-all") event.sender.selectAll();
   });
 
   // Bootstrap dialog locale from OS before Renderer syncs (Serpent-bwb).
-  appLocale = mapSystemLocaleToAppLocale(app.getLocale());
+  state.appLocale = mapSystemLocaleToAppLocale(app.getLocale());
 
   ipcMain.on(APP_LOCALE_CHANNEL, (event, input: unknown) => {
-    if (!mainWindow || event.sender !== mainWindow.webContents) {
-      logger?.info("ipc.app-locale", "Rejected app-locale update.", {
+    if (!state.mainWindow || event.sender !== state.mainWindow.webContents) {
+      state.logger?.info("ipc.app-locale", "Rejected app-locale update.", {
         code: "unauthorized_sender",
       });
       return;
     }
     const parsed = tryParseAppLocaleSync(input);
     if (!parsed.ok) {
-      logger?.info("ipc.app-locale", "Dropped malformed app-locale update.", {
+      state.logger?.info("ipc.app-locale", "Dropped malformed app-locale update.", {
         code: parsed.code,
         issuePaths: parsed.issuePaths,
       });
       return;
     }
-    appLocale = parsed.locale;
+    state.appLocale = parsed.locale;
     installApplicationMenu({
-      locale: appLocale,
+      locale: state.appLocale,
       recentLibraries: nativeMenuRecentLibraries(),
       shortcutBindings: readShortcutBindingsSnapshot(),
     });
-    windowsTray?.updateLocale(appLocale);
+    state.windowsTray?.updateLocale(state.appLocale);
   });
 
   // Serpent-q0b1: the renderer syncs native menu item enabled-state (business
   // undo/redo availability). Only commands from the real window are accepted.
   ipcMain.handle(LINKED_MISSING_VISIBILITY_CHANNEL, (event, input: unknown) => {
-    if (!mainWindow || event.sender !== mainWindow.webContents) return;
+    if (!state.mainWindow || event.sender !== state.mainWindow.webContents) return;
     if (typeof input !== "boolean") return;
-    showMissingLinkedFiles = input;
-    workerClient?.publishShowMissingLinkedFiles(input);
+    state.showMissingLinkedFiles = input;
+    state.workerClient?.publishShowMissingLinkedFiles(input);
     setApplicationMenuCommandChecked("library.show-missing-linked", input);
   });
 
   ipcMain.handle(APPLICATION_MENU_ITEM_STATE_CHANNEL, (event, input: unknown) => {
-    if (!mainWindow || event.sender !== mainWindow.webContents) {
+    if (!state.mainWindow || event.sender !== state.mainWindow.webContents) {
       return;
     }
     const record = input as { command?: unknown; enabled?: unknown; label?: unknown } | null;
@@ -7211,15 +7132,15 @@ async function startApplication(): Promise<void> {
   });
 
   ipcMain.on(ACTIVE_CONTEXT_CHANNEL, (event, input: unknown) => {
-    if (!mainWindow || event.sender !== mainWindow.webContents) {
-      logger?.info("ipc.active-context", "Rejected active-context update.", {
+    if (!state.mainWindow || event.sender !== state.mainWindow.webContents) {
+      state.logger?.info("ipc.active-context", "Rejected active-context update.", {
         code: "unauthorized_sender",
       });
       return;
     }
     const parsed = tryParseActiveContext(input);
     if (!parsed.ok) {
-      logger?.info("ipc.active-context", "Dropped malformed active-context update.", {
+      state.logger?.info("ipc.active-context", "Dropped malformed active-context update.", {
         code: parsed.code,
         issuePaths: parsed.issuePaths,
       });
@@ -7229,15 +7150,15 @@ async function startApplication(): Promise<void> {
     if (windowId !== undefined) {
       focusedContexts.set(windowId, parsed.context);
       if (parsed.context.libraryId) {
-        lastExtensionTargetWindowId = windowId;
+        state.lastExtensionTargetWindowId = windowId;
       }
       if (
-        extensionBrowseFoldersStorePath &&
+        state.extensionBrowseFoldersStorePath &&
         parsed.context.libraryId &&
         parsed.context.selectedFolderId
       ) {
         recordExtensionBrowseFolder(
-          extensionBrowseFoldersStorePath,
+          state.extensionBrowseFoldersStorePath,
           parsed.context.libraryId,
           parsed.context.selectedFolderId,
         );
@@ -7255,7 +7176,7 @@ async function startApplication(): Promise<void> {
   });
 
   ipcMain.on(APPLICATION_SHORTCUTS_ENABLED_CHANNEL, (event, input: unknown) => {
-    if (!mainWindow || event.sender !== mainWindow.webContents) return;
+    if (!state.mainWindow || event.sender !== state.mainWindow.webContents) return;
     const enabled =
       typeof input === "object" &&
       input !== null &&
@@ -7283,43 +7204,43 @@ async function startApplication(): Promise<void> {
   });
 
   ipcMain.on(PLUGIN_INPUT_CAPTURE_EVENT_CHANNEL, (event, payload: unknown) => {
-    if (!mainWindow || event.sender !== mainWindow.webContents) {
-      logger?.info('ipc.plugin-input-capture', 'Rejected input capture event.', {
+    if (!state.mainWindow || event.sender !== state.mainWindow.webContents) {
+      state.logger?.info('ipc.plugin-input-capture', 'Rejected input capture event.', {
         code: 'unauthorized_sender',
       });
       return;
     }
     const parsed = parsePluginInputCapturePublishPayload(payload);
     if (parsed === null) return;
-    const result = pluginInputCaptureBroker?.publish(parsed);
+    const result = state.pluginInputCaptureBroker?.publish(parsed);
     if (result === 'queued') schedulePluginInputCaptureFlush();
     if (result === 'released') publishPluginInputCaptureSessionsToRenderer();
   });
 
   ipcMain.on(PLUGIN_INPUT_CAPTURE_SYSTEM_MODAL_CHANNEL, (event, payload: unknown) => {
-    if (!mainWindow || event.sender !== mainWindow.webContents) {
-      logger?.info('ipc.plugin-input-capture', 'Rejected system modal seam.', {
+    if (!state.mainWindow || event.sender !== state.mainWindow.webContents) {
+      state.logger?.info('ipc.plugin-input-capture', 'Rejected system modal seam.', {
         code: 'unauthorized_sender',
       });
       return;
     }
     const parsed = parsePluginInputCaptureSystemModalPayload(payload);
     if (parsed === null) return;
-    pluginInputCaptureBroker?.setSystemModalActive(parsed.active);
+    state.pluginInputCaptureBroker?.setSystemModalActive(parsed.active);
   });
 
   // Install before the first window so macOS does not keep Electron's default
   // View→Zoom accelerators that steal Cmd+=/-/0 (Serpent-46i9).
   // Windows: hides menu bar for frameless shell (Serpent-znex).
   installApplicationMenu({
-    locale: appLocale,
+    locale: state.appLocale,
     recentLibraries: nativeMenuRecentLibraries(),
     shortcutBindings: readShortcutBindingsSnapshot(),
   });
 
   registerWindowControls({
-    getMainWindow: () => mainWindow,
-    logger,
+    getMainWindow: () => state.mainWindow,
+    logger: state.logger,
   });
 
   const startupPreferences = readStartupPreferences(startupPreferencesPath());
@@ -7339,50 +7260,50 @@ async function startApplication(): Promise<void> {
         },
       });
     } catch (error) {
-      logger?.error("startup.login-item", error);
+      state.logger?.error("startup.login-item", error);
     }
   }
 
   await createMainWindow();
   try {
-    await embeddedMcpServer?.initialize();
+    await state.embeddedMcpServer?.initialize();
   } catch (error) {
-    logger?.error('mcp.server.initialize', error);
+    state.logger?.error('mcp.server.initialize', error);
   }
   if (launchedForMcp) await startMcpForLauncher();
-  windowsTray = createWindowsTray({
-    getMainWindow: () => mainWindow,
+  state.windowsTray = createWindowsTray({
+    getMainWindow: () => state.mainWindow,
     onQuit: () => app.quit(),
-    locale: appLocale,
+    locale: state.appLocale,
   });
 
-  extensionBrowseFoldersStorePath = path.join(
+  state.extensionBrowseFoldersStorePath = path.join(
     app.getPath("userData"),
     "extension-recent-browse-folders.json",
   );
 
   // Start the browser-extension HTTP server on 127.0.0.1.
   try {
-    extensionServer = await createExtensionServer({
+    state.extensionServer = await createExtensionServer({
       port: 19876,
       uploadStagingRoot: app.getPath("temp"),
       onListFolders: handleListFolders,
       onSaveIntent: handleSaveIntent,
       onSaveUpload: handleSaveUpload,
-      onError: (err) => logger?.error("extension-server", err),
+      onError: (err) => state.logger?.error("extension-server", err),
     });
-    logger?.info(
+    state.logger?.info(
       "extension-server",
-      `Browser extension server started on port ${extensionServer.port}.`,
+      `Browser extension server started on port ${state.extensionServer.port}.`,
     );
   } catch (error) {
-    logger?.error("extension-server", error);
+    state.logger?.error("extension-server", error);
     // Extension server failure is non-fatal; the app continues without it.
   }
 
   initializePreviewCache();
 
-  startupComplete = true;
+  state.startupComplete = true;
 }
 
 // Serpent-tluf: must run before app ready — the macOS application menu's
@@ -7399,7 +7320,7 @@ if (!hasSingleInstanceLock) {
     .whenReady()
     .then(startApplication)
     .catch((error: unknown) => {
-      logger?.error("main.startup", error);
+      state.logger?.error("main.startup", error);
       dialog.showErrorBox(
         "Keel could not start",
         toPublicError(error).message,
@@ -7408,8 +7329,8 @@ if (!hasSingleInstanceLock) {
     });
 
   app.on("activate", () => {
-    if (!shouldHandleSecondaryLaunch({ applicationQuitting })) return;
-    if (!startupComplete) return;
+    if (!shouldHandleSecondaryLaunch({ applicationQuitting: state.applicationQuitting })) return;
+    if (!state.startupComplete) return;
     if (BrowserWindow.getAllWindows().length === 0) void createMainWindow();
     else focusMainWindow();
   });
@@ -7419,65 +7340,65 @@ if (!hasSingleInstanceLock) {
   });
 
   app.on("will-quit", () => {
-    void embeddingTestIndex?.close().catch((error) => {
-      logger?.error('embedding.local-index.close', error, { reason: 'application-quit' });
+    void state.embeddingTestIndex?.close().catch((error) => {
+      state.logger?.error('embedding.local-index.close', error, { reason: 'application-quit' });
     });
-    void embeddingHttpIndex?.close().catch((error) => {
-      logger?.error('embedding.http-index.close', error, { reason: 'application-quit' });
+    void state.embeddingHttpIndex?.close().catch((error) => {
+      state.logger?.error('embedding.http-index.close', error, { reason: 'application-quit' });
     });
     void cleanupAllExternalSources();
-    syncAutoScheduler?.stop();
-    syncAutoScheduler = undefined;
-    windowsTray?.destroy();
-    windowsTray = undefined;
+    state.syncAutoScheduler?.stop();
+    state.syncAutoScheduler = undefined;
+    state.windowsTray?.destroy();
+    state.windowsTray = undefined;
   });
 
   app.on("before-quit", (event) => {
-    applicationQuitting = true;
+    state.applicationQuitting = true;
     aiQueueScheduler.clearAll();
-    criticalConfirmationWindowManager?.dispose();
-    criticalConfirmationWindowManager = undefined;
-    criticalConfirmationBroker?.dispose();
-    criticalConfirmationBroker = undefined;
-    if (quitAfterShutdown || (!workerClient && !embeddingTestIndex && !embeddingHttpIndex)) return;
+    state.criticalConfirmationWindowManager?.dispose();
+    state.criticalConfirmationWindowManager = undefined;
+    state.criticalConfirmationBroker?.dispose();
+    state.criticalConfirmationBroker = undefined;
+    if (state.quitAfterShutdown || (!state.workerClient && !state.embeddingTestIndex && !state.embeddingHttpIndex)) return;
     event.preventDefault();
-    if (applicationShutdownPromise) return;
+    if (state.applicationShutdownPromise) return;
 
     // Slice E: fail in-flight model thumbnail renders and destroy the window.
-    offscreenThumbnailRenderer?.dispose();
-    offscreenThumbnailRenderer = undefined;
+    state.offscreenThumbnailRenderer?.dispose();
+    state.offscreenThumbnailRenderer = undefined;
 
-    pluginActivationCoordinator?.dispose('supervisor-shutdown');
+    state.pluginActivationCoordinator?.dispose('supervisor-shutdown');
 
     // Close loopback listeners before the worker drain so an update handoff
     // does not keep a port open while the installer starts the next process.
     const mcpClose = releaseLoopbackListeners();
     // Stop model processes before app.exit(), which bypasses will-quit.
-    applicationShutdownPromise = (async (): Promise<void> => {
+    state.applicationShutdownPromise = (async (): Promise<void> => {
       const results = await Promise.allSettled([
         mcpClose,
-        embeddingTestIndex?.close(),
-        embeddingHttpIndex?.close(),
+        state.embeddingTestIndex?.close(),
+        state.embeddingHttpIndex?.close(),
       ]);
       for (const [index, result] of results.entries()) {
         if (result.status !== "rejected") continue;
         const source = ["automation.mcp.close", "embedding.local-index.close", "embedding.http-index.close"][index]
           ?? "application.shutdown.close";
-        logger?.error(source, result.reason, { reason: "application-quit" });
+        state.logger?.error(source, result.reason, { reason: "application-quit" });
       }
       try {
-        await workerClient?.shutdown();
+        await state.workerClient?.shutdown();
       } catch (error) {
-        logger?.error("library.worker.shutdown", error, { reason: "application-quit" });
+        state.logger?.error("library.worker.shutdown", error, { reason: "application-quit" });
       }
-      quitAfterShutdown = true;
+      state.quitAfterShutdown = true;
       // The first app.quit() is intentionally intercepted above while owned
       // processes and the Worker drain. app.exit() then completes that quit.
       app.exit(0);
     })();
-    void applicationShutdownPromise.catch((error: unknown) => {
-      logger?.error("application.shutdown", error);
-      quitAfterShutdown = true;
+    void state.applicationShutdownPromise.catch((error: unknown) => {
+      state.logger?.error("application.shutdown", error);
+      state.quitAfterShutdown = true;
       app.exit(0);
     });
   });
