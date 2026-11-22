@@ -1,5 +1,5 @@
 import { spawn } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { createReadStream, createWriteStream, readFileSync } from 'node:fs';
 import path from 'node:path';
 
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
@@ -71,7 +71,10 @@ export async function runMcpStdioLauncher(input: {
   const upstream = new StreamableHTTPClientTransport(new URL(connection.endpoint), {
     requestInit: { headers: { Authorization: `Bearer ${connection.token}` } },
   });
-  const downstream = new StdioServerTransport();
+  // Electron's process.stdin does not read a pipe on Windows; use fd 0/1 directly.
+  const stdinStream = createReadStream('', { fd: 0 });
+  const output = createWriteStream('', { fd: 1 });
+  const downstream = new StdioServerTransport(stdinStream, output);
   let closed = false;
   const close = (code: number): void => {
     if (closed) return;
@@ -80,8 +83,10 @@ export async function runMcpStdioLauncher(input: {
     void downstream.close().catch(() => undefined);
     process.exit(code);
   };
+  // Forward in order: the session id arrives with the initialize answer.
+  let sending: Promise<void> = Promise.resolve();
   downstream.onmessage = (message) => {
-    void upstream.send(message).catch((error: unknown) => {
+    sending = sending.then(() => upstream.send(message)).catch((error: unknown) => {
       process.stderr.write(`keel-mcp: ${error instanceof Error ? error.message : String(error)}\n`);
     });
   };
@@ -92,5 +97,5 @@ export async function runMcpStdioLauncher(input: {
   upstream.onerror = (error) => process.stderr.write(`keel-mcp: ${error.message}\n`);
   await upstream.start();
   await downstream.start();
-  process.stdin.on('end', () => close(0));
+  stdinStream.on('end', () => close(0));
 }

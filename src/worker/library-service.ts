@@ -16127,6 +16127,8 @@ export class LibraryService {
    * sequence tells whether pairs can be stale. Relations of trashed
    * companions are kept so a restore can bring them back with the primary.
    */
+  readonly #companionIndexState = new WeakMap<OpenLibrary, { sequence: number; extensionKey: string; hasRows: boolean }>();
+
   ensureCompanionIndex(openLibrary: OpenLibrary): boolean {
     const connection = openLibrary.connection;
     if (!hasTable(connection, 'asset_companions') || !hasTable(connection, 'browse_change_sequence')) return false;
@@ -16134,11 +16136,12 @@ export class LibraryService {
     const sequenceRow = connection.prepare('SELECT sequence FROM browse_change_sequence WHERE library_id = ?')
       .get(openLibrary.summary.libraryId) as { sequence: number } | undefined;
     const sequence = sequenceRow?.sequence ?? 0;
-    const state = connection.prepare('SELECT browse_sequence, extensions FROM asset_companion_index_state WHERE id = 1')
-      .get() as { browse_sequence: number; extensions: string } | undefined;
+    // The marker lives in memory: a write that changes nothing would still
+    // drop a network metadata snapshot and advance browse_change_sequence.
+    const state = this.#companionIndexState.get(openLibrary);
     const extensionKey = extensions.join(',');
-    if (openLibrary.readOnly || (state && state.browse_sequence === sequence && state.extensions === extensionKey)) {
-      return this.catalogTableHasRows(connection, 'asset_companions');
+    if (openLibrary.readOnly || (state && state.sequence === sequence && state.extensionKey === extensionKey)) {
+      return state?.hasRows ?? this.catalogTableHasRows(connection, 'asset_companions');
     }
     const candidates = extensions.length === 0
       ? []
@@ -16162,20 +16165,32 @@ export class LibraryService {
       rows.push(...siblingsQuery.all(candidate.location_kind, candidate.linked_folder_id, `${prefix}%`, `${prefix}%/%`) as CompanionCandidateRow[]);
     }
     const pairs = pairCompanions(rows, extensions);
-    connection.transaction(() => {
-      connection.prepare(
-        `DELETE FROM asset_companions
-          WHERE asset_id IN (SELECT asset_id FROM assets WHERE deleted_at IS NULL)
-             OR asset_id NOT IN (SELECT asset_id FROM assets)`,
-      ).run();
-      const insert = connection.prepare('INSERT OR REPLACE INTO asset_companions (asset_id, primary_asset_id) VALUES (?, ?)');
-      for (const [assetId, primaryId] of pairs) insert.run(assetId, primaryId);
-      connection.prepare(
-        `INSERT INTO asset_companion_index_state (id, browse_sequence, extensions) VALUES (1, ?, ?)
-         ON CONFLICT(id) DO UPDATE SET browse_sequence = excluded.browse_sequence, extensions = excluded.extensions`,
-      ).run(sequence, extensionKey);
-    })();
-    return pairs.size > 0 || this.catalogTableHasRows(connection, 'asset_companions');
+    // Relations of trashed companions stay so that restore brings them back.
+    const stored = connection.prepare(
+      `SELECT companion.asset_id, companion.primary_asset_id FROM asset_companions companion
+        LEFT JOIN assets a ON a.asset_id = companion.asset_id
+        WHERE a.asset_id IS NULL OR a.deleted_at IS NULL`,
+    ).all() as Array<{ asset_id: string; primary_asset_id: string }>;
+    const unchanged = stored.length === pairs.size
+      && stored.every((row) => pairs.get(row.asset_id) === row.primary_asset_id);
+    if (!unchanged) {
+      connection.transaction(() => {
+        connection.prepare(
+          `DELETE FROM asset_companions
+            WHERE asset_id IN (SELECT asset_id FROM assets WHERE deleted_at IS NULL)
+               OR asset_id NOT IN (SELECT asset_id FROM assets)`,
+        ).run();
+        const insert = connection.prepare('INSERT OR REPLACE INTO asset_companions (asset_id, primary_asset_id) VALUES (?, ?)');
+        for (const [assetId, primaryId] of pairs) insert.run(assetId, primaryId);
+      })();
+    }
+    const afterSequence = unchanged
+      ? sequence
+      : Number((connection.prepare('SELECT sequence FROM browse_change_sequence WHERE library_id = ?')
+        .get(openLibrary.summary.libraryId) as { sequence: number } | undefined)?.sequence ?? 0);
+    const hasRows = pairs.size > 0 || this.catalogTableHasRows(connection, 'asset_companions');
+    this.#companionIndexState.set(openLibrary, { sequence: afterSequence, extensionKey, hasRows });
+    return hasRows;
   }
 
   /** Companion asset ids for the given primaries, including trashed ones. */

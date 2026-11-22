@@ -147,7 +147,8 @@ if (missingAsarEntries.length > 0) {
 
 const mainEntry = asarFiles.find((entry) => {
   const normalized = String(entry).replaceAll('\\', '/').replace(/^\.\//u, '');
-  return normalized.endsWith('/main.js') || normalized === 'main.js';
+  // main.js is a thin entry (src/main/entry.ts); the app body is a main-*.js chunk.
+  return /(^|\/)main-[^/]+\.js$/u.test(normalized) && normalized.includes('.vite/build/');
 });
 if (!mainEntry) {
   throw new Error('Package ASAR is missing the Main process entry.');
