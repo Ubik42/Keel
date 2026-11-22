@@ -873,7 +873,7 @@ function AppInner() {
   // when the current browse parent is a managed folder or the managed root.
   const [folderBrowseEntries, setFolderBrowseEntries] = useBrowseField("folderBrowseEntries");
   const [folderNavigationCovers, setFolderNavigationCovers] = useBrowseField("folderNavigationCovers");
-  const [folderCustomCoverIds, setFolderCustomCoverIds] = useBrowseField("folderCustomCoverIds");
+  const setFolderCustomCoverIds = browseFields.setterFor("folderCustomCoverIds");
   const [folderCoverPicker, setFolderCoverPicker] = useState<{
     folderIds: string[];
     assetId: string;
@@ -893,7 +893,7 @@ function AppInner() {
   const [selectedFolderIds, setSelectedFolderIds] = useSelectionField("selectedFolderIds");
   const managedImportTargetFolderIdRef = useRef<string | undefined>(undefined);
   const [allAssetCount, setAllAssetCount] = useBrowseField("allAssetCount");
-  const [rootAssetCount, setRootAssetCount] = useBrowseField("rootAssetCount");
+  const setRootAssetCount = browseFields.setterFor("rootAssetCount");
   const [selectedAssetId, setSelectedAssetId] = useSelectionField("selectedAssetId");
   const [selectedAssetIds, setSelectedAssetIds] = useSelectionField("selectedAssetIds");
   const selectedNativeDragReady = useMemo(
