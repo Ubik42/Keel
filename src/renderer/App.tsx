@@ -993,7 +993,6 @@ function AppInner() {
       setNotice(t("library.metaDirMigrationBoth"));
     }
   }, [library, setNotice, setWarning, t]);
-  const workerRecoveryStateRef = useRef<'ready' | 'recovering' | 'failed'>('ready');
   const [workerRecoveryState, setWorkerRecoveryState] = useSessionField("workerRecoveryState");
   const topVisibleToastId = renderedToastStack.find(
     (entry) => !entry.closing,
@@ -1052,7 +1051,6 @@ function AppInner() {
   const [conflicts, setConflicts] = useTransfersField("conflicts");
   const [importSourceFailurePlan, setImportSourceFailurePlan] = useTransfersField("importSourceFailurePlan");
   const [importDecisionSubmitting, setImportDecisionSubmitting] = useTransfersField("importDecisionSubmitting");
-  const importDecisionSubmittingRef = useRef(false);
   const completedImportIdRef = useRef<string | null>(null);
   const retiredImportIdsRef = useRef<Set<string>>(new Set());
   const [imageSequenceImportOffer, setImageSequenceImportOffer] = useTransfersField("imageSequenceImportOffer");
@@ -1589,13 +1587,11 @@ function AppInner() {
   const exportStartedAtRef = useRef<number | null>(null);
   const [importProgress, setImportProgress] = useTransfersField("importProgress");
   const importRpcDepthRef = useRef(0);
-  const importOverlayDismissedRef = useRef(false);
   const activeImportIdRef = useRef<string | null>(null);
   const [importRpcInFlight, setImportRpcInFlight] = useTransfersField("importRpcInFlight");
   const [importOverlayDismissed, setImportOverlayDismissed] = useTransfersField("importOverlayDismissed");
   const beginImportRpc = useCallback(() => {
     importRpcDepthRef.current += 1;
-    importOverlayDismissedRef.current = false;
     setImportOverlayDismissed(false);
     setImportRpcInFlight(true);
   }, [setImportOverlayDismissed, setImportRpcInFlight]);
@@ -1608,7 +1604,6 @@ function AppInner() {
       );
       activeImportIdRef.current = null;
       setImportProgress(null);
-      importOverlayDismissedRef.current = false;
       setImportOverlayDismissed(false);
       setImportRpcInFlight(false);
     }
@@ -1623,11 +1618,9 @@ function AppInner() {
   const dismissImportOverlay = useCallback(() => {
     const importId = transfersFields.get("importProgress")?.importId;
     addRetiredImportId(retiredImportIdsRef.current, importId);
-    importOverlayDismissedRef.current = true;
     setImportOverlayDismissed(true);
   }, [setImportOverlayDismissed]);
   const importAwaitingUserDecisionRef = useRef(false);
-  const importInterruptRef = useRef<"abandon" | "stop" | null>(null);
   const [importInterrupt, setImportInterrupt] = useTransfersField("importInterrupt");
   const [deleteProgress, setDeleteProgress] = useTransfersField("deleteProgress");
   const [libraryTransferKind, setLibraryTransferKind] = useTransfersField("libraryTransferKind");
@@ -1943,10 +1936,8 @@ function AppInner() {
   const [aiHasKey, setAiHasKey] = useAiField("aiHasKey");
   const [aiProfiles, setAiProfiles] = useAiField("aiProfiles");
   const [aiActiveProfileId, setAiActiveProfileId] = useAiField("aiActiveProfileId");
-  const aiActiveProfileIdRef = useRef<string | null>(null);
   const aiConnectionProbeGenerationRef = useRef(0);
   const updateAiActiveProfileId = useCallback((profileId: string | null) => {
-    aiActiveProfileIdRef.current = profileId;
     setAiActiveProfileId(profileId);
   }, [setAiActiveProfileId]);
   const [aiProfileDraftId, setAiProfileDraftId] = useAiField("aiProfileDraftId");
@@ -2022,7 +2013,6 @@ function AppInner() {
     aiTagsEnabled,
   ]);
   const [aiAnalyzing, setAiAnalyzing] = useAiField("aiAnalyzing");
-  const aiAnalyzingRef = useRef(false);
   const [aiProgressBannerVisible, setAiProgressBannerVisible] = useAiField("aiProgressBannerVisible");
   const [aiContent, setAiContent] = useInspectorField("aiContent");
   /** Description editor is showing AI-layer text (human description empty). */
@@ -2706,7 +2696,6 @@ function AppInner() {
     analyzingBatchSizeRef.current = retryJobIds.length;
     setAiBatchProgress(computeAiBatchProgressForJobs(retryJobIds, []));
     flushSync(() => {
-      aiAnalyzingRef.current = true;
       setAiAnalyzing(true);
       setAiProgressBannerVisible(true);
     });
@@ -4695,18 +4684,15 @@ function AppInner() {
     if (!api) return;
     return api.onLifecycle((event) => {
       if (event.type === 'worker.recovering') {
-        workerRecoveryStateRef.current = 'recovering';
         setWorkerRecoveryState('recovering');
         setWorkspaceNavigationPending(false);
         return;
       }
       if (event.type === 'worker.failed') {
-        workerRecoveryStateRef.current = 'failed';
         setWorkerRecoveryState('failed');
         return;
       }
       if (event.type === 'worker.recovered') {
-        workerRecoveryStateRef.current = 'ready';
         setWorkerRecoveryState('ready');
         if (event.failedLibraryIds.length > 0) setError(t('toast.workerRestoreFailed'));
         const currentLibrary = sessionFields.get("library");
@@ -8412,7 +8398,7 @@ function AppInner() {
       setNotice(null);
     } catch (caught) {
       if (request.isCurrent()) {
-        if (workerRecoveryStateRef.current === 'ready') setError(toMessage(caught, t("toast.searchFailed"), locale));
+        if (sessionFields.get("workerRecoveryState") === 'ready') setError(toMessage(caught, t("toast.searchFailed"), locale));
         if (!silent) setWorkspaceNavigationPending(false);
       }
     } finally {
@@ -8496,7 +8482,7 @@ function AppInner() {
         onPreparing: () => setNotice(t("settings.semanticSearch.similarPreparing")),
       });
     } catch (caught) {
-      if (polling() && workerRecoveryStateRef.current === 'ready') setError(toMessage(caught, t("toast.searchFailed"), locale));
+      if (polling() && sessionFields.get("workerRecoveryState") === 'ready') setError(toMessage(caught, t("toast.searchFailed"), locale));
       return;
     }
     if (!page || !polling()) return;
@@ -8546,7 +8532,7 @@ function AppInner() {
       }
     } catch (caught) {
       if (request.isCurrent()) {
-        if (workerRecoveryStateRef.current === 'ready') setError(toMessage(caught, t("toast.searchFailed"), locale));
+        if (sessionFields.get("workerRecoveryState") === 'ready') setError(toMessage(caught, t("toast.searchFailed"), locale));
         if (!navigation) setWorkspaceNavigationPending(false);
       }
     } finally {
@@ -8559,7 +8545,7 @@ function AppInner() {
     opts?: { silent?: boolean },
   ) {
     event?.preventDefault();
-    if (workerRecoveryStateRef.current !== 'ready') return;
+    if (sessionFields.get("workerRecoveryState") !== 'ready') return;
     if (
       (searchValue.trim() && !parseSearchExpressionDetailed(searchValue).ok) ||
       (tagFilterMode === "expression" && tagFilterExpression.trim()
@@ -8588,7 +8574,7 @@ function AppInner() {
           deferReveal: true,
         });
       } catch (caught) {
-        if (workerRecoveryStateRef.current === 'ready') setError(toMessage(caught, t("toast.searchFailed"), locale));
+        if (sessionFields.get("workerRecoveryState") === 'ready') setError(toMessage(caught, t("toast.searchFailed"), locale));
       } finally {
         setUiState("ready");
       }
@@ -8614,7 +8600,7 @@ function AppInner() {
       }
     } catch (caught) {
       if (request.isCurrent()) {
-        if (workerRecoveryStateRef.current === 'ready') setError(toMessage(caught, t("toast.searchFailed"), locale));
+        if (sessionFields.get("workerRecoveryState") === 'ready') setError(toMessage(caught, t("toast.searchFailed"), locale));
         setWorkspaceNavigationPending(false);
       }
     } finally {
@@ -9066,8 +9052,7 @@ function AppInner() {
     duplicate: RememberedDuplicateDecision,
   ) {
     if (!api || !library) return;
-    if (!canBeginImportDecisionSubmit(importDecisionSubmittingRef.current)) return;
-    importDecisionSubmittingRef.current = true;
+    if (!canBeginImportDecisionSubmit(transfersFields.get("importDecisionSubmitting"))) return;
     setImportDecisionSubmitting(true);
     const startedAt = Date.now();
     setUiState("importing");
@@ -9109,7 +9094,6 @@ function AppInner() {
         toMessage(caught, t("toast.continueImportFailed"), locale),
       );
     } finally {
-      importDecisionSubmittingRef.current = false;
       setImportDecisionSubmitting(false);
       setUiState("ready");
     }
@@ -9120,9 +9104,8 @@ function AppInner() {
     applyToRest: boolean;
   }) {
     if (!api || !library || !importSourceFailurePlan) return;
-    if (!canBeginImportDecisionSubmit(importDecisionSubmittingRef.current)) return;
+    if (!canBeginImportDecisionSubmit(transfersFields.get("importDecisionSubmitting"))) return;
     const plan = importSourceFailurePlan;
-    importDecisionSubmittingRef.current = true;
     setImportDecisionSubmitting(true);
     const startedAt = Date.now();
     setUiState("importing");
@@ -9177,7 +9160,6 @@ function AppInner() {
         toMessage(caught, t("toast.continueImportFailed"), locale),
       );
     } finally {
-      importDecisionSubmittingRef.current = false;
       setImportDecisionSubmitting(false);
       setUiState("ready");
     }
@@ -10379,7 +10361,6 @@ function AppInner() {
     if (!api) return;
     if (conflicts) {
       await abandonConflicts();
-      importInterruptRef.current = null;
       setImportInterrupt(null);
       setImportProgress(null);
       return;
@@ -10387,24 +10368,21 @@ function AppInner() {
     if (imageSequenceImportOffer) {
       setImageSequenceImportOffer(null);
       setImageSequenceImportError(null);
-      importInterruptRef.current = null;
       setImportInterrupt(null);
       setImportProgress(null);
       return;
     }
     if (!importProgress?.importId) {
-      importInterruptRef.current = null;
       setImportInterrupt(null);
       setImportProgress(null);
       setLibraryTransferKind("import");
       setLibraryTransferName("");
       return;
     }
-    const current = importInterruptRef.current;
+    const current = transfersFields.get("importInterrupt");
     if (current === "abandon") return;
     if (current === "stop" && mode === "stop") return;
     const firstRequest = current === null;
-    importInterruptRef.current = mode;
     setImportInterrupt(mode);
     if (firstRequest || mode === "abandon") {
       setNotice(
@@ -10428,14 +10406,12 @@ function AppInner() {
           isInFlightRequest: true,
         })
       ) {
-        importInterruptRef.current = null;
         setImportInterrupt(null);
         setImportProgress(null);
         setLibraryTransferKind("import");
         return;
       }
       setError(toMessage(caught, t("toast.cancelImportFailed"), locale));
-      importInterruptRef.current = null;
       setImportInterrupt(null);
     }
   }
@@ -10863,7 +10839,6 @@ function AppInner() {
         }
         if (["complete", "cancelled", "failed"].includes(event.phase)) {
           addRetiredImportId(retiredImportIdsRef.current, event.importId);
-          importInterruptRef.current = null;
           setImportInterrupt(null);
           setImportProgress(null);
           setLibraryTransferKind("import");
@@ -11887,7 +11862,7 @@ function AppInner() {
       capturedGeneration: generation,
       latestGeneration: aiConnectionProbeGenerationRef.current,
       capturedProfileId,
-      activeProfileId: aiActiveProfileIdRef.current,
+      activeProfileId: aiFields.get("aiActiveProfileId"),
     });
     if (!api) return;
     if (!shouldRunAiConnectionHeartbeat(aiHasKey)) {
@@ -12064,7 +12039,6 @@ function AppInner() {
         computeAiBatchProgressForJobs(jobIds, [], { skipped: skippedCount }),
       );
       flushSync(() => {
-        aiAnalyzingRef.current = true;
         setAiAnalyzing(true);
         setAiProgressBannerVisible(true);
       });
@@ -12178,7 +12152,6 @@ function AppInner() {
     aiBatchStatusRequestRef.current++;
     const pendingAssetId = analyzingAssetIdRef.current;
     const batchSize = analyzingBatchSizeRef.current;
-    aiAnalyzingRef.current = false;
     analyzingAssetIdRef.current = null;
     analyzingBatchSizeRef.current = 0;
     setAiAnalyzing(false);
@@ -12248,7 +12221,7 @@ function AppInner() {
     failed: number;
     changedJobs?: AiProgressJobUpdate[];
   }): void {
-    if (!aiAnalyzingRef.current) return;
+    if (!aiFields.get("aiAnalyzing")) return;
     const jobIds = aiBatchJobIdsRef.current;
     if (jobIds.length === 0) return;
     const applied = progressFromAiProgressEvent({
@@ -12455,7 +12428,6 @@ function AppInner() {
           lastAiBatchJobIdsRef.current = [];
           lastAiBatchAssetIdRef.current = null;
           aiBatchStatusRequestRef.current++;
-          aiAnalyzingRef.current = false;
           analyzingAssetIdRef.current = null;
           analyzingBatchSizeRef.current = 0;
           setAiAnalyzing(false);
