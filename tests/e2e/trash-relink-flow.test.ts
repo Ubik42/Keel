@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import { _electron as electron, expect, test } from '@playwright/test';
 
-import { assetCard, resolveElectronExecutablePath } from './electron-test-helpers';
+import { assetCard, resolveElectronExecutablePath, chooseAssetsLayout } from './electron-test-helpers';
 
 test('cancels a batch relink preview and later applies a fresh preview', async () => {
   const temporaryRoot = mkdtempSync(path.join(tmpdir(), 'serpent-relink-e2e-'));
@@ -24,6 +24,7 @@ test('cancels a batch relink preview and later applies a fresh preview', async (
     env: {
       ...process.env,
       KEEL_E2E: '1',
+      KEEL_E2E_SHOW_TEXT: '1',
       KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
       KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
       KEEL_E2E_IMPORT_FILES: sourcePath,
@@ -35,6 +36,7 @@ test('cancels a batch relink preview and later applies a fresh preview', async (
     const window = await application.firstWindow();
     await window.getByRole('button', { name: '创建资源库' }).click();
     await window.getByRole('textbox', { name: '名称' }).fill(libraryName);
+    await chooseAssetsLayout(window);
     await window.getByRole('button', { name: '创建', exact: true }).click();
     await window.getByRole('button', { name: '导入文件', exact: true }).first().click();
     await expect(assetCard(window, 'missing.txt')).toBeVisible();

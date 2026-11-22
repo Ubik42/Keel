@@ -1,3 +1,4 @@
+import { defaultFormatFilter } from "../default-format-filter";
 import type { Dispatch, RefObject, SetStateAction } from "react";
 import type { KeelLibraryApi } from "../../shared/library-api";
 import type { TranslateFn } from "../i18n/LocaleProvider";
@@ -424,8 +425,8 @@ export function useLibraryOpening({ api, t, dialogValue, useExistingCreateFolder
   function clearDiscoveryControls() {
     setPinnedTagId(null);
     setSearchValue("");
-    setFormatFilter("text");
-    setExcludeFormatFilter(true);
+    setFormatFilter(defaultFormatFilter().formatFilter);
+    setExcludeFormatFilter(defaultFormatFilter().excludeFormatFilter);
     setColorFilter("");
     setExcludeColorFilter(false);
     setTagFilter("");

@@ -1,3 +1,4 @@
+import { defaultFormatFilter } from "./default-format-filter";
 import { DEFAULT_COLOR_SIMILARITY } from "../shared/color-filter-presets";
 import {
   type WorkspaceNavLocation,
@@ -130,8 +131,7 @@ export function createDefaultWorkspaceTabBrowseState(
   return {
     searchValue: "",
     filters: {
-      formatFilter: "text",
-      excludeFormatFilter: true,
+      ...defaultFormatFilter(),
       colorFilter: "",
       excludeColorFilter: false,
       colorSimilarity: DEFAULT_COLOR_SIMILARITY,

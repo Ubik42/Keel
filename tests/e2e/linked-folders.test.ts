@@ -52,6 +52,7 @@ test('imports a linked folder, reconciles external changes, and relinks after th
     env: {
       ...process.env,
       KEEL_E2E: '1',
+      KEEL_E2E_SHOW_TEXT: '1',
       KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
       KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
       KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
@@ -222,6 +223,7 @@ test('removes a linked folder without touching sources, then force-deletes it wi
     env: {
       ...process.env,
       KEEL_E2E: '1',
+      KEEL_E2E_SHOW_TEXT: '1',
       KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
       KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
       KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
@@ -457,6 +459,7 @@ test('restores a linked library after a full app restart', async () => {
       env: {
         ...process.env,
         KEEL_E2E: '1',
+        KEEL_E2E_SHOW_TEXT: '1',
         KEEL_E2E_RESTORE_RECENT: '1',
         KEEL_E2E_USER_DATA_PATH: profilePath,
         KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
@@ -566,6 +569,7 @@ test('applies default ignore rules — .git and node_modules are not registered 
     env: {
       ...process.env,
       KEEL_E2E: '1',
+      KEEL_E2E_SHOW_TEXT: '1',
       KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
       KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
       KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
@@ -634,6 +638,7 @@ test('imports a linked folder as a child of a managed folder', async () => {
     env: {
       ...process.env,
       KEEL_E2E: '1',
+      KEEL_E2E_SHOW_TEXT: '1',
       KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
       KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
       KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,

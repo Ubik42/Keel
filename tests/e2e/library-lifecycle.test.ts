@@ -33,6 +33,7 @@ test("creates, closes, and reopens a library through the sandboxed UI", async ()
     env: {
       ...process.env,
       KEEL_E2E: "1",
+      KEEL_E2E_SHOW_TEXT: "1",
       KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, "user-data"),
       KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
       KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
@@ -190,6 +191,7 @@ test("restores the recent library and focuses the last browsed asset after a ful
       env: {
         ...process.env,
         KEEL_E2E: "1",
+        KEEL_E2E_SHOW_TEXT: "1",
         KEEL_E2E_RESTORE_RECENT: "1",
         KEEL_E2E_USER_DATA_PATH: profilePath,
         KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
@@ -312,6 +314,7 @@ test("falls back to the start screen when the recent library no longer exists", 
     env: {
       ...process.env,
       KEEL_E2E: "1",
+      KEEL_E2E_SHOW_TEXT: "1",
       KEEL_E2E_RESTORE_RECENT: "1",
       KEEL_E2E_USER_DATA_PATH: profilePath,
     },

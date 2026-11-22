@@ -1,3 +1,4 @@
+import { defaultFormatFilter } from "../default-format-filter";
 import { createFieldStore } from './create-field-store';
 import { type SortDefinition } from '../../shared/asset-types';
 import { loadBrowseSortPreferences } from '../browse-sort-preferences';
@@ -50,8 +51,8 @@ export const queryFields = createFieldStore<QueryState>(() => ({
     searchValue: "",
     storedSearchHistory: null,
     searchHistoryActiveIndex: -1,
-    formatFilter: "text",
-    excludeFormatFilter: true,
+    formatFilter: defaultFormatFilter().formatFilter,
+    excludeFormatFilter: defaultFormatFilter().excludeFormatFilter,
     colorFilter: "",
     colorSimilarity: loadColorFilterPreferences().similarity,
     colorFilterPrefs: loadColorFilterPreferences(),

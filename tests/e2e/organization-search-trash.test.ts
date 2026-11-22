@@ -8,6 +8,7 @@ import {
   assetCard as locateAssetCard,
   chooseStandardOption,
   resolveElectronExecutablePath,
+  useTagPicker,
 } from './electron-test-helpers';
 
 test.describe.configure({ timeout: 120_000 });
@@ -122,6 +123,7 @@ test('organizes, finds, trashes, and restores an imported asset through the UI',
     env: {
       ...process.env,
       KEEL_E2E: '1',
+      KEEL_E2E_SHOW_TEXT: '1',
       KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
       KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
       KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
@@ -210,6 +212,7 @@ test('organizes, finds, trashes, and restores an imported asset through the UI',
     // The sidebar no longer enumerates tags (REQ-TAG-001); enter the
     // tag-filtered view through the retained 标签过滤 entry instead.
     await window.getByRole('button', { name: '标签', exact: true }).click();
+    await useTagPicker(window);
     await window.getByRole('textbox', { name: '标签过滤' }).fill('角色');
     await window.getByRole("option", { name: /角色/ }).click();
     await expect(locateAssetCard(window, 'hero.png')).toBeVisible();
@@ -308,6 +311,7 @@ test('organizes, finds, trashes, and restores an imported asset through the UI',
     await window.getByRole('button', { name: '更多', exact: true }).click();
     await chooseStandardOption(window.getByLabel('喜欢过滤'), 'yes');
     await window.getByRole('button', { name: '标签', exact: true }).click();
+    await useTagPicker(window);
     await window.getByRole('textbox', { name: '标签过滤' }).fill('临时');
     await window.getByRole("option", { name: /临时/ }).click();
     // Search auto-runs on debounce (no 「搜索」 button since c60d890); the
@@ -369,6 +373,7 @@ test('multi-select performs batch organization, trash, restore, and permanent de
     env: {
       ...process.env,
       KEEL_E2E: '1',
+      KEEL_E2E_SHOW_TEXT: '1',
       KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
       KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
       KEEL_E2E_IMPORT_FILES: [firstSource, secondSource].join(path.delimiter),
@@ -436,6 +441,7 @@ test('multi-select performs batch organization, trash, restore, and permanent de
     // The sidebar no longer enumerates tags (REQ-TAG-001); enter the
     // tag-filtered view through the retained 标签过滤 entry instead.
     await window.getByRole('button', { name: '标签', exact: true }).click();
+    await useTagPicker(window);
     await window.getByRole('textbox', { name: '标签过滤' }).fill('批量标签');
     await window.getByRole("option", { name: /批量标签/ }).click();
     await expect.poll(searchRequestCount).toBeGreaterThan(tagSearchCount);
@@ -532,6 +538,7 @@ test('critical confirmation windows focus cancel and require red confirmation', 
     env: {
       ...process.env,
       KEEL_E2E: '1',
+      KEEL_E2E_SHOW_TEXT: '1',
       KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
       KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
       KEEL_E2E_IMPORT_FILES: sourcePath,

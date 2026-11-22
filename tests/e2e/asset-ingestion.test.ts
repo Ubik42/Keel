@@ -23,6 +23,7 @@ import {
   resolveElectronExecutablePath,
   resolveSessionLogPath,
   waitForLibraryLoadingToFinish,
+  chooseAssetsLayout,
 } from './electron-test-helpers';
 
 test.describe.configure({ timeout: 120_000 });
@@ -67,6 +68,7 @@ test('imports files and a directory hierarchy, then reconciles external changes'
     env: {
       ...process.env,
       KEEL_E2E: '1',
+      KEEL_E2E_SHOW_TEXT: '1',
       KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
       KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
       KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
@@ -79,6 +81,7 @@ test('imports files and a directory hierarchy, then reconciles external changes'
     const window = await application.firstWindow();
     await window.getByRole('button', { name: '创建资源库' }).click();
     await window.getByRole("textbox", { name: "名称" }).fill(libraryName);
+    await chooseAssetsLayout(window);
     await window.getByRole('button', { name: '创建', exact: true }).click();
     await expect(window.getByRole('heading', { name: '导入资产以开始整理' })).toBeVisible();
 
@@ -221,6 +224,7 @@ test('imports into the library root after leaving a folder scope', async () => {
     env: {
       ...process.env,
       KEEL_E2E: '1',
+      KEEL_E2E_SHOW_TEXT: '1',
       KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
       KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
       KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
@@ -232,6 +236,7 @@ test('imports into the library root after leaving a folder scope', async () => {
     const window = await application.firstWindow();
     await window.getByRole('button', { name: '创建资源库' }).click();
     await window.getByRole('textbox', { name: '名称' }).fill(libraryName);
+    await chooseAssetsLayout(window);
     await window.getByRole('button', { name: '创建', exact: true }).click();
     await window.getByRole('button', { name: '添加文件夹' }).click();
     const folderNameInput = window.locator('.nav-inline-edit input');
@@ -276,6 +281,7 @@ test('shows a specific safe import reason and persists the complete Worker error
     env: {
       ...process.env,
       KEEL_E2E: '1',
+      KEEL_E2E_SHOW_TEXT: '1',
       KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
       KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
       KEEL_E2E_IMPORT_FOLDER: sourceDirectory,
@@ -286,6 +292,7 @@ test('shows a specific safe import reason and persists the complete Worker error
     const window = await application.firstWindow();
     await window.getByRole('button', { name: '创建资源库' }).click();
     await window.getByRole("textbox", { name: "名称" }).fill(libraryName);
+    await chooseAssetsLayout(window);
     await window.getByRole('button', { name: '创建', exact: true }).click();
     await window.getByRole('button', { name: '导入文件夹', exact: true }).first().click();
     await expect(window.getByRole('alertdialog')).toContainText(
@@ -319,6 +326,7 @@ test('maps a real filesystem permission failure and logs its complete cause chai
     env: {
       ...process.env,
       KEEL_E2E: '1',
+      KEEL_E2E_SHOW_TEXT: '1',
       KEEL_E2E_USER_DATA_PATH: path.join(temporaryRoot, 'user-data'),
       KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
       KEEL_E2E_IMPORT_FOLDER: sourceDirectory,
@@ -332,6 +340,7 @@ test('maps a real filesystem permission failure and logs its complete cause chai
     const window = await application.firstWindow();
     await window.getByRole('button', { name: '创建资源库' }).click();
     await window.getByRole("textbox", { name: "名称" }).fill(libraryName);
+    await chooseAssetsLayout(window);
     await window.getByRole('button', { name: '创建', exact: true }).click();
     chmodSync(sourceDirectory, 0o000);
     await window.getByRole('button', { name: '导入文件夹', exact: true }).first().click();
@@ -651,6 +660,7 @@ test('keeps same-name imported PNGs and decoded previews across a full restart',
     executablePath,
     env: electronLaunchEnv({
       KEEL_E2E: '1',
+      KEEL_E2E_SHOW_TEXT: '1',
       KEEL_E2E_HIDE_WINDOW: '1',
       // Enables recent-library persistence as well as restore; set it before first library creation.
       KEEL_E2E_RESTORE_RECENT: '1',
@@ -673,6 +683,7 @@ test('keeps same-name imported PNGs and decoded previews across a full restart',
     )).toBe(false);
     await window.getByRole('button', { name: '创建资源库' }).click();
     await window.getByRole('textbox', { name: '名称' }).fill(libraryName);
+    await chooseAssetsLayout(window);
     await window.getByRole('button', { name: '创建', exact: true }).click();
     await expect(window.getByRole('heading', { name: '导入资产以开始整理' })).toBeVisible();
 

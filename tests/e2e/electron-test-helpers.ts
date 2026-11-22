@@ -325,3 +325,17 @@ export async function showAllFormats(window: Page): Promise<void> {
   await clear.click();
   await clear.waitFor({ state: 'hidden', timeout: 5_000 }).catch(() => undefined);
 }
+
+/**
+ * New libraries store files at the root by default; fixtures written for the
+ * former `Assets/` layout choose it in the create dialog (CLAUDE.md).
+ */
+export async function chooseAssetsLayout(window: Page): Promise<void> {
+  await window.locator('#library-storage-layout').selectOption('assets');
+}
+
+/** The tag dimension opens in expression mode; switch to picking tags. */
+export async function useTagPicker(window: Page): Promise<void> {
+  const simple = window.getByRole('button', { name: '选择标签', exact: true });
+  if (await simple.isVisible().catch(() => false)) await simple.click();
+}
