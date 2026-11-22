@@ -1045,8 +1045,8 @@ function AppInner() {
   const [dialog, setDialog] = useDialogField("dialog");
   const [createLibraryPhase, setCreateLibraryPhase] =
     useState<CreateLibraryPhase>("start");
-  const [useExistingCreateFolder, setUseExistingCreateFolder] = useDialogField("useExistingCreateFolder");
-  const [createStorageLayout, setCreateStorageLayout] = useDialogField("createStorageLayout");
+  const [useExistingCreateFolder] = useDialogField("useExistingCreateFolder");
+  const [createStorageLayout] = useDialogField("createStorageLayout");
   const hadLibraryRef = useRef(false);
   const [dialogValue, setDialogValue] = useState(() => t("shell.myLibrary"));
   const [conflicts, setConflicts] = useTransfersField("conflicts");
