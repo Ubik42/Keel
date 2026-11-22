@@ -116,7 +116,7 @@
   border-radius: calc(6px * var(--ui-radius-scale, 1));
   border: none;
   background: transparent;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-family: inherit;
   font-size: var(--menu-item-font-size);
   line-height: var(--menu-item-line-height);
@@ -131,7 +131,7 @@
 
 .context-menu:not(.is-keyboard-navigation) .context-menu-item:hover {
   background: var(--menu-item-hover-background);
-  color: var(--text);
+  color: var(--ui-content-primary);
 }
 
 .context-menu.is-keyboard-navigation .context-menu-item:focus {
@@ -196,7 +196,7 @@
 
 .context-menu-selection-summary {
   padding: 7px 10px 6px;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(12px * var(--ui-font-scale));
   font-weight: 650;
   letter-spacing: 0.01em;
@@ -215,7 +215,7 @@
   max-width: 310px;
   margin: 0 6px 5px;
   padding: 7px 8px;
-  border: 1px solid var(--divider-soft, var(--divider-soft));
+  border: 1px solid var(--ui-border-subtle);
   border-radius: calc(5px * var(--ui-radius-scale, 1));
   background: color-mix(in srgb, var(--raised-2, var(--raised-2)) 72%, transparent);
   color: var(--secondary, var(--secondary));
@@ -229,7 +229,7 @@
 }
 
 .context-menu-section + .context-menu-section {
-  border-top: 1px solid var(--divider-soft, var(--divider-soft));
+  border-top: 1px solid var(--ui-border-subtle);
   margin-top: 2px;
   padding-top: 6px;
 }
@@ -260,7 +260,7 @@
 }
 
 .tag-picker-title {
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(11px * var(--ui-font-scale));
   font-weight: 650;
   letter-spacing: 0.01em;
@@ -272,7 +272,7 @@
   gap: 6px;
   margin: 0 2px 4px;
   padding: 4px 8px;
-  border: 1px solid var(--divider-soft, var(--divider-soft));
+  border: 1px solid var(--ui-border-subtle);
   border-radius: calc(5px * var(--ui-radius-scale, 1));
   background: color-mix(in srgb, var(--raised-2, var(--raised-2)) 72%, transparent);
   color: var(--tertiary, var(--tertiary));
@@ -283,7 +283,7 @@
   min-width: 0;
   border: none;
   background: transparent;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-family: inherit;
   font-size: calc(12px * var(--ui-font-scale));
 }
@@ -313,7 +313,7 @@
   border: none;
   border-radius: calc(4px * var(--ui-radius-scale, 1));
   background: transparent;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-family: inherit;
   font-size: calc(13px * var(--ui-font-scale));
   line-height: 1.4;
@@ -326,7 +326,7 @@
 }
 
 .tag-picker-option.is-active {
-  background: color-mix(in srgb, var(--text) 11%, transparent);
+  background: color-mix(in srgb, var(--ui-content-primary) 11%, transparent);
 }
 
 .tag-picker-option-icon {
@@ -384,7 +384,7 @@
   width: 16px;
   height: 16px;
   padding: 0;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: 50%;
   background: transparent;
   cursor: pointer;
@@ -442,13 +442,13 @@
   border: 1px solid transparent;
   border-radius: calc(6px * var(--ui-radius-scale, 1));
   background: transparent;
-  color: var(--text);
+  color: var(--ui-content-primary);
   cursor: pointer;
 }
 
 .appearance-picker-cell:hover,
 .appearance-picker-swatch:hover {
-  background: var(--hover);
+  background: var(--ui-surface-hover);
 }
 
 .appearance-picker-cell .nav-entity-glyph-emoji {
@@ -461,7 +461,7 @@
   justify-content: space-between;
   gap: 8px;
   padding-top: 4px;
-  border-top: 1px solid var(--divider-soft);
+  border-top: 1px solid var(--ui-border-subtle);
 }
 
 .appearance-picker-clear {
@@ -476,8 +476,8 @@
 }
 
 .appearance-picker-clear:hover:not(:disabled) {
-  background: var(--hover);
-  color: var(--text);
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-primary);
 }
 
 .appearance-picker-clear:disabled {
@@ -508,13 +508,13 @@
 .color-space-picker-back:hover,
 .color-space-picker-back:focus-visible {
   background: var(--raised-2);
-  color: var(--text);
+  color: var(--ui-content-primary);
   outline: none;
 }
 
 .color-space-picker-title {
   padding: 5px 8px 4px;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(11px * var(--ui-font-scale));
   font-weight: 650;
 }
@@ -592,10 +592,10 @@
 .preview-state button,
 .preview-playback-error button {
   padding: 6px 10px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(4px * var(--ui-radius-scale, 1));
-  background: var(--raised);
-  color: var(--text);
+  background: var(--ui-surface-raised);
+  color: var(--ui-content-primary);
   font-size: calc(10px * var(--ui-font-scale));
   cursor: pointer;
 }
@@ -629,7 +629,7 @@
 .workspace-viewer-transition:fullscreen .preview-content {
   background-color: color-mix(
     in srgb,
-    var(--viewer-stage) var(--ui-background-surface-opacity, 100%),
+    var(--ui-surface-canvas) var(--ui-background-surface-opacity, 100%),
     transparent
   );
   background-image: var(--ui-backdrop-image, none);
@@ -674,7 +674,7 @@
   width: 100%;
   height: min(240px, 42vh);
   flex: 0 0 auto;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
   overflow: hidden;
   background: var(--pane);
@@ -697,7 +697,7 @@
 }
 .preview-audio-waveform.is-placeholder {
   background:
-    linear-gradient(90deg, transparent 0%, var(--hover) 50%, transparent 100%),
+    linear-gradient(90deg, transparent 0%, var(--ui-surface-hover) 50%, transparent 100%),
     var(--pane);
 }
 /* Serpent-r8a: full-height star-yellow playhead; trail = separate particles. */
@@ -753,11 +753,11 @@
   min-width: 0;
   min-height: 0;
   background: var(--canvas);
-  color: var(--text);
+  color: var(--ui-content-primary);
 }
 .zip-archive-list {
   overflow: auto;
-  border-right: 1px solid var(--divider);
+  border-right: 1px solid var(--ui-border-divider);
   padding: 8px 0;
 }
 .zip-archive-file {
@@ -769,7 +769,7 @@
   padding: 8px 12px;
   border: 0;
   background: transparent;
-  color: var(--text);
+  color: var(--ui-content-primary);
   text-align: left;
   cursor: pointer;
 }
@@ -809,7 +809,7 @@
   width: 100%;
   margin: 0;
   white-space: pre-wrap;
-  color: var(--text);
+  color: var(--ui-content-primary);
 }
 .preview-content.is-document-mode > .pdf-viewer,
 .preview-content.is-document-mode > .html-viewer {
@@ -828,7 +828,7 @@
   min-height: 0;
   overflow: hidden;
   align-self: stretch;
-  background: var(--viewer-stage);
+  background: var(--ui-surface-canvas);
 }
 .preview-text-topbar {
   display: flex;
@@ -862,8 +862,8 @@
   overflow: hidden;
   border: 0;
   border-radius: calc(6px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--warning) 14%, var(--viewer-stage));
-  color: var(--warning-fg, var(--text));
+  background: color-mix(in srgb, var(--warning) 14%, var(--ui-surface-canvas));
+  color: var(--ui-status-warning-content);
   font-size: calc(12px * var(--ui-font-scale));
   line-height: 1.4;
   text-align: left;
@@ -873,7 +873,7 @@
 }
 .preview-text-error-btn:hover,
 .preview-text-error-btn:focus-visible {
-  background: color-mix(in srgb, var(--warning) 22%, var(--viewer-stage));
+  background: color-mix(in srgb, var(--warning) 22%, var(--ui-surface-canvas));
   outline: none;
 }
 .preview-text-error-btn:focus-visible {
@@ -894,7 +894,7 @@
   border: 0;
   border-radius: calc(8px * var(--ui-radius-scale, 1));
   background: transparent;
-  color: var(--text);
+  color: var(--ui-content-primary);
   cursor: pointer;
   opacity: 0.85;
 }
@@ -929,8 +929,8 @@
   cursor: not-allowed;
 }
 .preview-text-action.is-active {
-  background: var(--accent-soft);
-  color: var(--accent-soft-fg);
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
   opacity: 1;
 }
 .preview-text-scroll {
@@ -960,8 +960,8 @@
   margin: 0;
   padding: 12px 8px 12px 12px;
   overflow: visible;
-  border-right: 1px solid var(--divider);
-  background: var(--raised);
+  border-right: 1px solid var(--ui-border-divider);
+  background: var(--ui-surface-raised);
   color: var(--tertiary);
   font-family: var(--font-ui);
   font-size: calc(12px * var(--ui-font-scale));
@@ -981,7 +981,7 @@
   outline: none;
   overflow: hidden;
   background: transparent;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-family: var(--font-ui);
   font-size: calc(12px * var(--ui-font-scale));
   line-height: 1.55;
@@ -999,9 +999,9 @@
   aspect-ratio: 4 / 3;
   max-height: none;
   overflow: hidden;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: var(--raised);
+  background: var(--ui-surface-raised);
 }
 
 :root:not([data-elevation="0"]) .inspector-hero-preview.inspector-hero-text-preview,
@@ -1115,7 +1115,7 @@
   height: auto;
   max-width: 100%;
   max-height: 100%;
-  background: var(--viewer-stage);
+  background: var(--ui-surface-canvas);
   object-fit: contain;
 }
 /* Custom video transport (REQ-VIEW-005 / Serpent-60k): one unified bar so
@@ -1126,11 +1126,11 @@
   z-index: 4;
   display: flex;
   align-items: center;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(10px * var(--ui-radius-scale, 1));
   background: var(--viewer-chrome-bg);
   box-shadow: 0 1px 6px rgb(0 0 0 / 10%);
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(11px * var(--ui-font-scale));
   backdrop-filter: blur(10px);
   /* Rate listbox is position:absolute above this bar; do not clip it. */
@@ -1196,7 +1196,7 @@
   right: 0;
   height: 4px;
   border-radius: calc(2px * var(--ui-radius-scale, 1));
-  background: var(--divider);
+  background: var(--ui-border-divider);
   transform: translateY(-50%);
 }
 .preview-video-track-fill {
@@ -1240,7 +1240,7 @@
   border: 0;
   border-radius: calc(6px * var(--ui-radius-scale, 1));
   background: transparent;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(11px * var(--ui-font-scale));
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -1282,7 +1282,7 @@
   right: 0;
   height: 4px;
   border-radius: calc(2px * var(--ui-radius-scale, 1));
-  background: var(--divider);
+  background: var(--ui-border-divider);
   transform: translateY(-50%);
 }
 .preview-viewer-volume-track-fill {
@@ -1363,7 +1363,7 @@
   gap: 10px;
   padding: 24px;
   overflow: hidden;
-  background: var(--viewer-stage);
+  background: var(--ui-surface-canvas);
   color: var(--tertiary);
   text-align: center;
 }
@@ -1390,8 +1390,8 @@
   min-width: 0;
   min-height: 0;
   overflow: hidden;
-  background: var(--viewer-stage);
-  color: var(--text);
+  background: var(--ui-surface-canvas);
+  color: var(--ui-content-primary);
 }
 
 .pdf-viewer-placeholder {
@@ -1426,10 +1426,10 @@
   min-width: 28px;
   height: 26px;
   padding: 0 8px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(4px * var(--ui-radius-scale, 1));
-  background: var(--raised);
-  color: var(--text);
+  background: var(--ui-surface-raised);
+  color: var(--ui-content-primary);
   font-size: calc(14px * var(--ui-font-scale));
   line-height: 1;
   cursor: pointer;
@@ -1508,7 +1508,7 @@
 }
 
 .pdf-viewer-page-placeholder {
-  background: color-mix(in srgb, var(--hover) 40%, transparent);
+  background: color-mix(in srgb, var(--ui-surface-hover) 40%, transparent);
   box-shadow: none;
 }
 
@@ -1528,7 +1528,7 @@
   height: 100%;
   min-width: 0;
   min-height: 0;
-  background: var(--viewer-stage);
+  background: var(--ui-surface-canvas);
 }
 
 .html-viewer-iframe {
@@ -1557,7 +1557,7 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-  color: var(--text);
+  color: var(--ui-content-primary);
   word-break: break-word;
 }
 
@@ -1645,10 +1645,10 @@
 .font-viewer-text-input {
   width: min(200px, 28vw);
   padding: 3px 6px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(5px * var(--ui-radius-scale, 1));
   background: transparent;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font: inherit;
 }
 
@@ -1659,7 +1659,7 @@
 
 .font-viewer-controls button.is-active {
   background: color-mix(in srgb, var(--accent) 20%, transparent);
-  color: var(--text);
+  color: var(--ui-content-primary);
 }
 
 /* 预览文字撤回：只在有自定义文字时可点。 */
@@ -1698,7 +1698,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--viewer-stage);
+  background: var(--ui-surface-canvas);
   color: var(--tertiary);
   font-size: calc(13px * var(--ui-font-scale));
 }
@@ -1810,7 +1810,7 @@
   left: 50%;
   display: flex;
   align-items: center;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
   background: var(--viewer-chrome-bg);
   box-shadow: 0 1px 6px rgb(0 0 0 / 10%);
@@ -1844,7 +1844,7 @@
   border: 0;
   outline: 0;
   background: transparent;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-family: var(--font-ui);
   font-size: inherit;
   font-weight: 400;
@@ -1864,7 +1864,7 @@
   border: 0;
   border-radius: calc(5px * var(--ui-radius-scale, 1));
   background: transparent;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(11px * var(--ui-font-scale));
   line-height: 1.2;
   cursor: pointer;
@@ -1887,16 +1887,16 @@
 .plugin-inspector-section-action {
   flex-shrink: 0;
   padding: 4px 10px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
-  background: var(--raised);
-  color: var(--text);
+  background: var(--ui-surface-raised);
+  color: var(--ui-content-primary);
   font-size: calc(11px * var(--ui-font-scale));
   cursor: pointer;
 }
 .plugin-inspector-section-action:hover,
 .plugin-inspector-section-action:focus-visible {
-  background: var(--hover);
+  background: var(--ui-surface-hover);
 }
 .plugin-workspace-views {
   display: flex;
@@ -1915,7 +1915,7 @@
   width: 100%;
   min-height: 280px;
   flex: 1 1 280px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
   /* Transparent: the rounded corners show the workspace veil (same backdrop
      opacity as the canvas); the iframe document covers it once loaded. */
@@ -1972,7 +1972,7 @@
 .plugin-inspector-view-frame {
   width: 100%;
   min-height: 200px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
   background: var(--canvas);
 }
@@ -1994,10 +1994,10 @@
 }
 .plugin-viewer-overlay-toggle {
   padding: 6px 10px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
   background: var(--viewer-chrome-bg);
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(11px * var(--ui-font-scale));
   cursor: pointer;
   box-shadow: 0 1px 6px rgb(0 0 0 / 10%);
@@ -2009,7 +2009,7 @@
   gap: 8px;
   width: min(400px, calc(100vw - 48px));
   padding: 8px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(10px * var(--ui-radius-scale, 1));
   background: color-mix(in srgb, var(--pane) 92%, transparent);
   box-shadow: 0 8px 24px rgb(0 0 0 / 18%);
@@ -2023,7 +2023,7 @@
 .plugin-viewer-overlay-frame {
   width: 100%;
   min-height: 180px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
   background: var(--canvas);
 }
@@ -2045,7 +2045,7 @@
 .plugin-settings-page-frame {
   width: 100%;
   min-height: 280px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
   background: var(--canvas);
 }
@@ -2053,7 +2053,7 @@
   position: absolute;
   z-index: 3;
   display: flex;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
   background: var(--viewer-chrome-bg);
   box-shadow: 0 1px 6px rgb(0 0 0 / 10%);
@@ -2064,7 +2064,7 @@
   border: 0;
   border-radius: calc(6px * var(--ui-radius-scale, 1));
   background: transparent;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(11px * var(--ui-font-scale));
   cursor: pointer;
 }
@@ -2081,7 +2081,7 @@
   border: 0;
   border-radius: calc(6px * var(--ui-radius-scale, 1));
   background: transparent;
-  color: var(--text);
+  color: var(--ui-content-primary);
   cursor: pointer;
 }
 .preview-sequence-controls button:hover,
@@ -2113,7 +2113,7 @@
   align-items: center;
   gap: 8px;
   padding: 5px 10px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(9px * var(--ui-radius-scale, 1));
   background: var(--viewer-chrome-bg);
   box-shadow: 0 1px 6px rgb(0 0 0 / 10%);
@@ -2135,7 +2135,7 @@
   z-index: 2;
   justify-content: flex-start;
   border: 0;
-  color: var(--text);
+  color: var(--ui-content-primary);
   cursor: pointer;
 }
 .preview-nav-glyph {
@@ -2178,7 +2178,7 @@
   z-index: 3;
   display: inline-flex;
   align-items: center;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
   background: var(--viewer-chrome-bg);
   box-shadow: 0 1px 6px rgb(0 0 0 / 10%);
@@ -2191,7 +2191,7 @@
   border: 0;
   outline: 0;
   background: transparent;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font: inherit;
 }
 .preview-exr-plane-selector:focus-within {
@@ -2250,12 +2250,12 @@
   bottom: 28px;
   max-width: min(520px, calc(100% - 32px));
   transform: translateX(-50%);
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(5px * var(--ui-radius-scale, 1));
   background: color-mix(in srgb, var(--pane) 92%, transparent);
 }
 .preview-state strong {
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(15px * var(--ui-font-scale));
 }
 .preview-state p {
@@ -2266,7 +2266,7 @@
 }
 .preview-state.is-error strong,
 .preview-state.is-error p {
-  color: var(--warning-fg);
+  color: var(--ui-status-warning-content);
 }
 
 .preview-playback-error {
@@ -2279,10 +2279,10 @@
   justify-content: space-between;
   gap: 12px;
   padding: 9px 11px;
-  border: 1px solid color-mix(in srgb, var(--warning) 35%, var(--divider));
+  border: 1px solid color-mix(in srgb, var(--warning) 35%, var(--ui-border-divider));
   border-radius: calc(5px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--warning-muted) 88%, var(--pane));
-  color: var(--warning-fg);
+  background: color-mix(in srgb, var(--ui-status-warning-surface) 88%, var(--pane));
+  color: var(--ui-status-warning-content);
   font-size: calc(11px * var(--ui-font-scale));
 }
 
@@ -2299,7 +2299,7 @@
   gap: 8px;
   max-width: min(520px, calc(100% - 32px));
   padding: 5px 8px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(5px * var(--ui-radius-scale, 1));
   background: color-mix(in srgb, var(--pane) 92%, transparent);
   color: var(--secondary);
@@ -2317,7 +2317,7 @@
 }
 
 .preview-proxy-notice button:hover {
-  color: var(--text);
+  color: var(--ui-content-primary);
 }
 
 /* Serpent-e56a1f: 代理生成中/加载中的状态提示（非警告样式）。 */
@@ -2330,7 +2330,7 @@
   gap: 8px;
   max-width: min(520px, calc(100% - 32px));
   padding: 5px 10px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(5px * var(--ui-radius-scale, 1));
   background: color-mix(in srgb, var(--pane) 92%, transparent);
   color: var(--secondary);
@@ -2343,7 +2343,7 @@
   flex: 0 0 auto;
   margin: auto;
   padding: 20px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(12px * var(--ui-radius-scale, 1));
   background: var(--pane);
   box-shadow: var(--shadow-elevated);
@@ -2414,14 +2414,14 @@
 .app-log-list {
   min-height: 0;
   overflow: auto;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--raised) 70%, var(--pane));
+  background: color-mix(in srgb, var(--ui-surface-raised) 70%, var(--pane));
 }
 
 .app-log-entry {
   padding: 10px 12px;
-  border-bottom: 1px solid var(--divider);
+  border-bottom: 1px solid var(--ui-border-divider);
   font-size: calc(11px * var(--ui-font-scale));
   line-height: 1.45;
 }
@@ -2431,7 +2431,7 @@
 }
 
 .app-log-entry.is-error {
-  background: color-mix(in srgb, var(--warning-muted) 25%, transparent);
+  background: color-mix(in srgb, var(--ui-status-warning-surface) 25%, transparent);
 }
 
 .app-log-entry-heading {
@@ -2443,7 +2443,7 @@
 }
 
 .app-log-entry-heading strong {
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-weight: var(--ui-font-weight-semibold);
 }
 
@@ -2454,7 +2454,7 @@
 }
 
 .app-log-error-detail {
-  color: var(--warning-fg);
+  color: var(--ui-status-warning-content);
 }
 
 .app-log-entry details {
@@ -2472,7 +2472,7 @@
   padding: 8px;
   overflow: auto;
   border-radius: calc(5px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--canvas) 65%, var(--raised));
+  background: color-mix(in srgb, var(--canvas) 65%, var(--ui-surface-raised));
   color: var(--secondary);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: calc(10px * var(--ui-font-scale));
@@ -2507,10 +2507,10 @@
   min-height: 220px;
   margin: 0;
   padding: 12px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--canvas) 72%, var(--raised));
-  color: var(--text);
+  background: color-mix(in srgb, var(--canvas) 72%, var(--ui-surface-raised));
+  color: var(--ui-content-primary);
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: calc(12px * var(--ui-font-scale));
   line-height: 1.55;
@@ -2522,8 +2522,8 @@
 }
 
 .script-sandbox-preview-editor:focus {
-  border-color: color-mix(in srgb, var(--accent) 62%, var(--divider));
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent) 62%, var(--ui-border-divider));
+  box-shadow: 0 0 0 3px var(--ui-action-accent-soft);
   outline: 0;
 }
 
@@ -2534,7 +2534,7 @@
 
 .script-sandbox-preview-file-error {
   margin: -5px 0 10px;
-  color: var(--warning-fg);
+  color: var(--ui-status-warning-content);
 }
 
 .script-sandbox-preview-result {
@@ -2544,21 +2544,21 @@
   padding: 11px 12px;
   overflow: auto;
   min-height: 260px;
-  border: 1px solid var(--divider-soft);
+  border: 1px solid var(--ui-border-subtle);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--raised) 72%, var(--pane));
+  background: color-mix(in srgb, var(--ui-surface-raised) 72%, var(--pane));
   color: var(--secondary);
   font-size: calc(11px * var(--ui-font-scale));
   line-height: 1.5;
 }
 
 .script-sandbox-preview-result[data-state="running"] {
-  color: var(--accent-soft-fg);
+  color: var(--ui-content-accent);
 }
 
 .script-sandbox-preview-result[data-state="failed"] {
-  border-color: color-mix(in srgb, var(--warning) 45%, var(--divider));
-  color: var(--warning-fg);
+  border-color: color-mix(in srgb, var(--warning) 45%, var(--ui-border-divider));
+  color: var(--ui-status-warning-content);
 }
 
 .script-sandbox-preview-result p {
@@ -2607,14 +2607,14 @@
   gap: 8px;
   min-height: 32px;
   padding: 5px 8px;
-  border: 1px solid var(--divider-soft);
+  border: 1px solid var(--ui-border-subtle);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--raised) 70%, transparent);
+  background: color-mix(in srgb, var(--ui-surface-raised) 70%, transparent);
   color: var(--secondary);
 }
 
 .script-sandbox-preview-history-status {
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-weight: var(--ui-font-weight-semibold);
 }
 
@@ -2628,7 +2628,7 @@
 .script-sandbox-preview-history-action {
   min-height: 26px;
   padding: 3px 8px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(5px * var(--ui-radius-scale, 1));
   background: transparent;
   color: var(--secondary);
@@ -2637,16 +2637,16 @@
 }
 
 .script-sandbox-preview-history-action:hover {
-  border-color: color-mix(in srgb, var(--accent) 48%, var(--divider));
-  background: var(--accent-soft);
-  color: var(--accent-soft-fg);
+  border-color: color-mix(in srgb, var(--accent) 48%, var(--ui-border-divider));
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
 }
 
 .script-sandbox-preview-dialog .dialog-actions {
   gap: 8px;
   margin-top: 14px;
   padding-top: 12px;
-  border-top: 1px solid var(--divider-soft);
+  border-top: 1px solid var(--ui-border-subtle);
 }
 
 .script-sandbox-preview-dialog .dialog-actions > button {
@@ -2767,7 +2767,7 @@
 }
 
 .ai-connection-indicator[data-state="connected"] .ai-connection-dot {
-  background: var(--success);
+  background: var(--ui-status-success);
 }
 
 .ai-connection-indicator[data-state="disconnected"] .ai-connection-dot,
@@ -2776,7 +2776,7 @@
 }
 
 .ai-connection-label {
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-weight: 560;
 }
 
@@ -2829,9 +2829,9 @@
   padding: 3px;
   width: fit-content;
   max-width: 100%;
-  border: 1px solid color-mix(in srgb, var(--divider) 88%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ui-border-divider) 88%, transparent);
   border-radius: calc(10px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--raised) 70%, var(--pane));
+  background: color-mix(in srgb, var(--ui-surface-raised) 70%, var(--pane));
 }
 
 .semantic-settings-tab {
@@ -2847,14 +2847,14 @@
 }
 
 .semantic-settings-tab:hover:not(.is-active) {
-  color: var(--text);
-  background: color-mix(in srgb, var(--hover) 80%, transparent);
+  color: var(--ui-content-primary);
+  background: color-mix(in srgb, var(--ui-surface-hover) 80%, transparent);
 }
 
 .semantic-settings-tab.is-active {
   background: var(--pane);
-  color: var(--text);
-  box-shadow: 0 1px 2px color-mix(in srgb, var(--text) 12%, transparent);
+  color: var(--ui-content-primary);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--ui-content-primary) 12%, transparent);
 }
 
 .semantic-settings-tabpanel {
@@ -2904,9 +2904,9 @@
   justify-content: space-between;
   gap: 12px;
   padding: 12px 14px;
-  border: 1px solid color-mix(in srgb, var(--divider) 88%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ui-border-divider) 88%, transparent);
   border-radius: calc(10px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--raised) 55%, var(--pane));
+  background: color-mix(in srgb, var(--ui-surface-raised) 55%, var(--pane));
 }
 
 .semantic-model-card-copy {
@@ -2925,7 +2925,7 @@
 }
 
 .semantic-model-card-title-row strong {
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(13px * var(--ui-font-scale));
   font-weight: 600;
   line-height: 1.35;
@@ -2971,18 +2971,18 @@
 }
 
 .semantic-install-icon-button.is-secondary {
-  border-color: var(--divider);
+  border-color: var(--ui-border-divider);
   background: transparent;
-  color: var(--text);
+  color: var(--ui-content-primary);
 }
 
 .semantic-install-icon-button.is-secondary:hover:not(:disabled) {
-  background: var(--hover);
+  background: var(--ui-surface-hover);
   filter: none;
 }
 
 .semantic-install-icon-button.is-danger {
-  border-color: color-mix(in srgb, var(--danger) 35%, var(--divider));
+  border-color: color-mix(in srgb, var(--danger) 35%, var(--ui-border-divider));
   background: transparent;
   color: var(--danger);
 }
@@ -2997,9 +2997,9 @@
   opacity: 1;
   cursor: default;
   filter: none;
-  background: color-mix(in srgb, var(--raised) 82%, var(--pane));
+  background: color-mix(in srgb, var(--ui-surface-raised) 82%, var(--pane));
   color: color-mix(in srgb, var(--tertiary) 88%, var(--secondary));
-  border-color: color-mix(in srgb, var(--divider) 92%, transparent);
+  border-color: color-mix(in srgb, var(--ui-border-divider) 92%, transparent);
   box-shadow: none;
 }
 
@@ -3023,7 +3023,7 @@
   gap: 6px;
   margin-top: 6px;
   padding: 10px 11px;
-  border: 1px solid color-mix(in srgb, var(--divider) 88%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ui-border-divider) 88%, transparent);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
   background: color-mix(in srgb, var(--raised-2, var(--raised)) 70%, var(--pane));
 }
@@ -3032,7 +3032,7 @@
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(11px * var(--ui-font-scale));
   font-weight: 560;
 }
@@ -3050,7 +3050,7 @@
 }
 
 .semantic-service-status-label {
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-weight: 560;
 }
 
@@ -3120,9 +3120,9 @@
   display: grid;
   gap: 12px;
   padding: 14px 14px 13px;
-  border: 1px solid color-mix(in srgb, var(--divider) 88%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ui-border-divider) 88%, transparent);
   border-radius: calc(10px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--raised) 55%, var(--pane));
+  background: color-mix(in srgb, var(--ui-surface-raised) 55%, var(--pane));
 }
 
 .semantic-service-form .ai-config-field {
@@ -3194,7 +3194,7 @@
 }
 
 .sync-status-indicator[data-state="connected"] .sync-status-dot {
-  background: var(--success);
+  background: var(--ui-status-success);
 }
 
 .sync-status-indicator[data-state="failed"] .sync-status-dot {
@@ -3256,10 +3256,10 @@
   min-width: 52px;
   height: 24px;
   padding: 0 10px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
   background: var(--pane);
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(12px * var(--ui-font-scale));
 }
 
@@ -3296,13 +3296,13 @@
   flex-shrink: 0;
   margin-top: 0;
   padding: 12px 20px 20px;
-  border-top: 1px solid var(--divider);
+  border-top: 1px solid var(--ui-border-divider);
 }
 
 .ai-config-embedded .ai-config-actions {
   margin-top: 12px;
   padding: 12px 0 0;
-  border-top: 1px solid var(--divider);
+  border-top: 1px solid var(--ui-border-divider);
 }
 
 .ai-config-field {
@@ -3385,13 +3385,13 @@
 }
 
 .visibility-toggle:hover {
-  background: var(--hover);
-  color: var(--text);
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-primary);
 }
 
 .visibility-toggle:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px var(--accent-soft);
+  box-shadow: 0 0 0 2px var(--ui-action-accent-soft);
 }
 
 .ai-config-hint {
@@ -3464,7 +3464,7 @@
   padding: 4px;
   overflow: auto;
   list-style: none;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
   background: var(--pane);
   box-shadow: var(--shadow-menu);
@@ -3483,7 +3483,7 @@
   border: 0;
   border-radius: calc(5px * var(--ui-radius-scale, 1));
   background: transparent;
-  color: var(--text);
+  color: var(--ui-content-primary);
   cursor: pointer;
   font: inherit;
   font-size: calc(12px * var(--ui-font-scale));
@@ -3492,7 +3492,7 @@
 
 .ai-config-model-picker-option:hover,
 .ai-config-model-picker-option.is-selected {
-  background: var(--hover);
+  background: var(--ui-surface-hover);
 }
 
 .ai-config-model-picker-empty {
@@ -3536,7 +3536,7 @@ select.ai-config-input {
   align-items: center;
   gap: 8px;
   padding: 3px 0;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(12px * var(--ui-font-scale));
   cursor: pointer;
 }
@@ -3558,13 +3558,13 @@ select.ai-config-input {
 .ai-config-consent {
   margin-top: 14px;
   padding-top: 12px;
-  border-top: 1px solid var(--divider);
+  border-top: 1px solid var(--ui-border-divider);
 }
 
 .ai-config-advanced {
   margin-top: 14px;
   border: none;
-  border-top: 1px solid var(--divider);
+  border-top: 1px solid var(--ui-border-divider);
   border-radius: 0;
   background: transparent;
   padding-top: 4px;
@@ -3639,7 +3639,7 @@ select.ai-config-input {
 }
 
 .ai-config-test-inline[data-ok="true"] {
-  color: var(--success);
+  color: var(--ui-status-success);
 }
 
 .ai-config-test-inline[data-ok="false"] {
@@ -3667,7 +3667,7 @@ select.ai-config-input {
   padding: 2px 0;
   border: 1px solid transparent;
   border-radius: calc(6px * var(--ui-radius-scale, 1));
-  color: var(--text);
+  color: var(--ui-content-primary);
 }
 
 .asset-inline-rename-input.text-field,
@@ -3683,7 +3683,7 @@ select.ai-config-input {
   font: inherit;
   font-size: calc(12px * var(--ui-font-scale));
   line-height: 1.3;
-  color: var(--text);
+  color: var(--ui-content-primary);
   user-select: text;
   cursor: text;
   pointer-events: auto;
@@ -3721,8 +3721,8 @@ select.ai-config-input {
 }
 
 .app-settings-entry:hover:not(:disabled) {
-  background: var(--hover);
-  color: var(--text);
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-primary);
 }
 
 .app-settings-entry:disabled {
@@ -3752,12 +3752,12 @@ select.ai-config-input {
   flex-direction: column;
   gap: 8px;
   padding: 14px 10px;
-  border-right: 1px solid var(--divider);
+  border-right: 1px solid var(--ui-border-divider);
   background:
     linear-gradient(
       180deg,
-      color-mix(in srgb, var(--raised) 92%, var(--accent-soft)) 0%,
-      var(--raised) 100%
+      color-mix(in srgb, var(--ui-surface-raised) 92%, var(--ui-action-accent-soft)) 0%,
+      var(--ui-surface-raised) 100%
     );
 }
 
@@ -3848,8 +3848,8 @@ select.ai-config-input {
   padding: 0 var(--ui-space-1);
   border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
   border-radius: calc(5px * var(--ui-radius-scale, 1));
-  background: var(--accent-soft);
-  color: var(--accent-soft-fg);
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
   font-size: calc(var(--ui-font-size-micro) - 2px);
   font-weight: var(--ui-font-weight-semibold);
   line-height: 1;
@@ -3877,14 +3877,14 @@ select.ai-config-input {
 }
 
 .app-settings-nav-item:hover {
-  background: var(--hover);
-  color: var(--text);
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-primary);
 }
 
 .app-settings-nav-item.is-active {
-  border-color: color-mix(in srgb, var(--accent) 28%, var(--divider));
-  background: color-mix(in srgb, var(--accent) 14%, var(--raised));
-  color: var(--text);
+  border-color: color-mix(in srgb, var(--accent) 28%, var(--ui-border-divider));
+  background: color-mix(in srgb, var(--accent) 14%, var(--ui-surface-raised));
+  color: var(--ui-content-primary);
 }
 
 .app-settings-nav-item.is-active .icon {
@@ -3893,7 +3893,7 @@ select.ai-config-input {
 
 .app-settings-nav-item:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px var(--accent-soft);
+  box-shadow: 0 0 0 2px var(--ui-action-accent-soft);
 }
 
 .app-settings-content {
@@ -3924,7 +3924,7 @@ select.ai-config-input {
 
 .app-settings-page-heading h3 {
   margin: 0;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(19px * var(--ui-font-scale));
   font-weight: 590;
   letter-spacing: -0.025em;
@@ -3934,9 +3934,9 @@ select.ai-config-input {
 .app-settings-card {
   min-width: 0;
   padding: 14px 15px;
-  border: 1px solid color-mix(in srgb, var(--divider) 92%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ui-border-divider) 92%, transparent);
   border-radius: calc(10px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--raised) 92%, var(--pane));
+  background: color-mix(in srgb, var(--ui-surface-raised) 92%, var(--pane));
   box-shadow: inset 0 1px rgb(255 255 255 / 2%);
 }
 
@@ -3995,9 +3995,9 @@ select.ai-config-input {
 
 .mcp-permission-client {
   padding: 10px 11px;
-  border: 1px solid color-mix(in srgb, var(--divider) 88%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ui-border-divider) 88%, transparent);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--raised) 55%, var(--pane));
+  background: color-mix(in srgb, var(--ui-surface-raised) 55%, var(--pane));
 }
 
 .mcp-permission-client .app-settings-card-divider {
@@ -4016,7 +4016,7 @@ select.ai-config-input {
   border: 1px solid transparent;
   border-radius: calc(6px * var(--ui-radius-scale, 1));
   background: transparent;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font: inherit;
   font-size: calc(13px * var(--ui-font-scale));
   font-weight: 590;
@@ -4024,7 +4024,7 @@ select.ai-config-input {
 }
 
 .mcp-client-name:hover {
-  border-color: var(--divider);
+  border-color: var(--ui-border-divider);
 }
 
 .mcp-client-name:focus {
@@ -4051,7 +4051,7 @@ select.ai-config-input {
   width: 30px;
   height: 30px;
   padding: 0;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
   background: transparent;
   color: var(--secondary);
@@ -4059,7 +4059,7 @@ select.ai-config-input {
 }
 
 .mcp-client-action:hover:not(:disabled) {
-  color: var(--text);
+  color: var(--ui-content-primary);
   background: color-mix(in srgb, var(--pane) 55%, transparent);
 }
 
@@ -4115,7 +4115,7 @@ select.ai-config-input {
   gap: 8px;
   max-width: 100%;
   padding: 5px 8px 5px 11px;
-  border: 1px solid var(--divider-soft);
+  border: 1px solid var(--ui-border-subtle);
   border-radius: var(--ui-radius-pill);
   background: var(--pane);
   color: var(--secondary);
@@ -4139,7 +4139,7 @@ select.ai-config-input {
 }
 
 .app-settings-memory-chip-label {
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-weight: 560;
 }
 
@@ -4164,8 +4164,8 @@ select.ai-config-input {
 
 .app-settings-memory-chip-remove:hover,
 .app-settings-memory-chip-remove:focus-visible {
-  background: var(--hover);
-  color: var(--text);
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-primary);
 }
 
 .app-settings-memory-chip-remove:focus-visible {
@@ -4181,7 +4181,7 @@ select.ai-config-input {
 }
 
 .app-settings-row-copy strong {
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(12px * var(--ui-font-scale));
   font-weight: 590;
   line-height: 1.35;
@@ -4196,7 +4196,7 @@ select.ai-config-input {
 .app-settings-card-divider {
   height: 1px;
   margin: 15px 0;
-  background: var(--divider);
+  background: var(--ui-border-divider);
 }
 
 .app-settings-card > .app-settings-toggle-row + .app-settings-toggle-row {
@@ -4292,7 +4292,7 @@ select.ai-config-input {
   display: grid;
   gap: 10px;
   min-width: 0;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(12px * var(--ui-font-scale));
   line-height: 1.55;
 }
@@ -4301,7 +4301,7 @@ select.ai-config-input {
 .plugin-readme-markdown h5,
 .plugin-readme-markdown h6 {
   margin: 0;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-weight: var(--ui-font-weight-semibold);
   line-height: 1.35;
 }
@@ -4332,14 +4332,14 @@ select.ai-config-input {
 
 .plugin-readme-markdown blockquote {
   padding-left: 10px;
-  border-left: 2px solid var(--divider);
+  border-left: 2px solid var(--ui-border-divider);
   color: var(--secondary);
 }
 
 .plugin-readme-markdown hr {
   margin: 4px 0;
   border: 0;
-  border-top: 1px solid var(--divider);
+  border-top: 1px solid var(--ui-border-divider);
 }
 
 .plugin-readme-markdown > * {
@@ -4362,7 +4362,7 @@ select.ai-config-input {
 .plugin-readme-markdown th,
 .plugin-readme-markdown td {
   padding: 6px 10px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   vertical-align: top;
   text-align: left;
 }
@@ -4378,8 +4378,8 @@ select.ai-config-input {
 }
 
 .plugin-readme-markdown th {
-  background: var(--raised);
-  color: var(--text);
+  background: var(--ui-surface-raised);
+  color: var(--ui-content-primary);
   font-weight: var(--ui-font-weight-semibold);
 }
 
@@ -4429,7 +4429,7 @@ select.ai-config-input {
 
 .plugin-settings-package.has-divider {
   padding-top: 16px;
-  border-top: 1px solid var(--divider);
+  border-top: 1px solid var(--ui-border-divider);
 }
 
 .plugin-settings-package-title-row {
@@ -4462,7 +4462,7 @@ select.ai-config-input {
 .plugin-settings-package-name {
   font-size: calc(13px * var(--ui-font-scale));
   font-weight: var(--ui-font-weight-semibold);
-  color: var(--text);
+  color: var(--ui-content-primary);
   line-height: 1.35;
 }
 
@@ -4480,7 +4480,7 @@ select.ai-config-input {
   align-items: flex-start;
   gap: 5px;
   margin: 0;
-  color: var(--warning-fg);
+  color: var(--ui-status-warning-content);
   font-size: calc(11px * var(--ui-font-scale));
   line-height: 1.4;
 }
@@ -4488,7 +4488,7 @@ select.ai-config-input {
 .plugin-settings-unrestricted-warning .icon {
   flex: 0 0 auto;
   margin-top: 1px;
-  color: var(--warning-fg);
+  color: var(--ui-status-warning-content);
 }
 
 .plugin-settings-permissions-info {
@@ -4527,8 +4527,8 @@ select.ai-config-input {
 }
 
 .plugin-settings-icon-action:hover:not(:disabled) {
-  color: var(--text);
-  background: color-mix(in srgb, var(--text) 6%, transparent);
+  color: var(--ui-content-primary);
+  background: color-mix(in srgb, var(--ui-content-primary) 6%, transparent);
 }
 
 .plugin-settings-icon-action:disabled {
@@ -4551,20 +4551,20 @@ select.ai-config-input {
 .plugin-settings-safe-mode {
   padding-top: 16px;
   padding-bottom: 16px;
-  border-top: 1px solid var(--divider);
+  border-top: 1px solid var(--ui-border-divider);
 }
 
 .plugin-settings-global-auto-update {
   padding-top: 16px;
-  border-top: 1px solid var(--divider);
+  border-top: 1px solid var(--ui-border-divider);
 }
 
 .plugin-runtime-mode-unrestricted {
-  color: var(--warning-fg);
+  color: var(--ui-status-warning-content);
 }
 
 .plugin-runtime-mode-unrestricted-hint {
-  color: var(--warning-fg);
+  color: var(--ui-status-warning-content);
 }
 
 .plugin-install-dialog-backdrop {
@@ -4594,10 +4594,10 @@ select.ai-config-input {
   gap: 12px;
   width: 100%;
   padding: 13px 14px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: var(--ui-radius-surface);
-  background: var(--raised);
-  color: var(--text);
+  background: var(--ui-surface-raised);
+  color: var(--ui-content-primary);
   text-align: left;
   cursor: pointer;
   transition: border-color 120ms ease, background 120ms ease, transform 120ms ease;
@@ -4631,8 +4631,8 @@ select.ai-config-input {
 }
 
 .plugin-install-choice-icon.github {
-  background: color-mix(in srgb, var(--text) 10%, var(--raised-2));
-  color: var(--text);
+  background: color-mix(in srgb, var(--ui-content-primary) 10%, var(--raised-2));
+  color: var(--ui-content-primary);
 }
 
 .plugin-install-choice-copy {
@@ -4673,7 +4673,7 @@ select.ai-config-input {
 }
 
 .plugin-install-back:hover:not(:disabled) {
-  color: var(--text);
+  color: var(--ui-content-primary);
 }
 
 .plugin-install-github-intro {
@@ -4696,7 +4696,7 @@ select.ai-config-input {
   display: grid;
   gap: 7px;
   padding: 11px 12px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: var(--ui-radius-control);
   background: var(--raised-2);
 }
@@ -4705,7 +4705,7 @@ select.ai-config-input {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(11px * var(--ui-font-scale));
   font-weight: 560;
 }
@@ -4728,7 +4728,7 @@ select.ai-config-input {
 }
 
 .plugin-install-stop-button:hover:not(:disabled) {
-  background: var(--danger-muted);
+  background: var(--ui-status-danger-surface);
 }
 
 .plugin-install-scope-field {
@@ -4826,8 +4826,8 @@ select.ai-config-input {
   width: 100%;
   height: 100%;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--tertiary) 52%, var(--divider));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 10%, transparent);
+  background: color-mix(in srgb, var(--tertiary) 52%, var(--ui-border-divider));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ui-content-inverse) 10%, transparent);
   transition:
     background-color 120ms ease,
     box-shadow 120ms ease;
@@ -4855,7 +4855,7 @@ select.ai-config-input {
 }
 
 .app-settings-toggle-control input:focus-visible + .app-settings-toggle-track {
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  box-shadow: 0 0 0 3px var(--ui-action-accent-soft);
 }
 
 .app-settings-inline-checks {
@@ -4869,7 +4869,7 @@ select.ai-config-input {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--text);
+  color: var(--ui-content-primary);
   cursor: pointer;
   font-size: calc(12px * var(--ui-font-scale));
 }
@@ -4947,7 +4947,7 @@ select.ai-config-input {
 .app-settings-elevation-slider::-webkit-slider-runnable-track {
   height: 3px;
   border-radius: calc(2px * var(--ui-radius-scale, 1));
-  background: var(--divider);
+  background: var(--ui-border-divider);
 }
 
 .app-settings-elevation-slider::-webkit-slider-thumb {
@@ -4962,13 +4962,13 @@ select.ai-config-input {
 
 .app-settings-elevation-slider:hover::-webkit-slider-thumb,
 .app-settings-elevation-slider:focus-visible::-webkit-slider-thumb {
-  background: var(--text);
+  background: var(--ui-content-primary);
 }
 
 .app-settings-elevation-slider::-moz-range-track {
   height: 3px;
   border-radius: calc(2px * var(--ui-radius-scale, 1));
-  background: var(--divider);
+  background: var(--ui-border-divider);
 }
 
 .app-settings-elevation-slider::-moz-range-thumb {
@@ -5017,11 +5017,11 @@ select.ai-config-input {
   flex: 0 0 auto;
   width: 1px;
   height: 7px;
-  background: var(--divider);
+  background: var(--ui-border-divider);
 }
 
 .app-settings-elevation-tick.is-active {
-  color: var(--text);
+  color: var(--ui-content-primary);
 }
 
 .app-settings-elevation-tick.is-active .app-settings-elevation-tick-mark {
@@ -5071,22 +5071,22 @@ select.ai-config-input {
 
 .app-settings-option {
   padding: 6px 12px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
   background: transparent;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(12px * var(--ui-font-scale));
   cursor: pointer;
 }
 
 .app-settings-option:hover:not([aria-checked="true"]) {
-  background: var(--hover);
+  background: var(--ui-surface-hover);
 }
 
 .app-settings-option[aria-checked="true"] {
   border-color: var(--accent);
-  background: var(--accent-soft);
-  color: var(--accent-soft-fg);
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
 }
 
 .embedding-api-options {
@@ -5134,7 +5134,7 @@ select.ai-config-input {
 }
 
 .settings-success-message {
-  color: var(--success, var(--accent));
+  color: var(--ui-status-success);
 }
 
 .text-button {
@@ -5451,7 +5451,7 @@ select.ai-config-input {
   flex-direction: column;
   gap: 2px;
   min-width: 0;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(12px * var(--ui-font-scale));
 }
 
@@ -5469,7 +5469,7 @@ select.ai-config-input {
 }
 
 .dialog-close:hover {
-  background: var(--hover);
+  background: var(--ui-surface-hover);
 }
 
 .field-label {
@@ -5488,10 +5488,10 @@ select.ai-config-input {
   width: 100%;
   height: 34px;
   padding: 0 10px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
   background: var(--canvas);
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(12px * var(--ui-font-scale));
   transition:
     border-color 120ms ease,
@@ -5499,8 +5499,8 @@ select.ai-config-input {
 }
 
 .text-field:focus {
-  border-color: color-mix(in srgb, var(--accent) 62%, var(--divider));
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent) 62%, var(--ui-border-divider));
+  box-shadow: 0 0 0 3px var(--ui-action-accent-soft);
   outline: 0;
 }
 
@@ -5605,7 +5605,7 @@ select.ai-config-input {
   gap: 8px;
   margin-top: 24px;
   padding-top: 14px;
-  border-top: 1px solid var(--divider-soft);
+  border-top: 1px solid var(--ui-border-subtle);
 }
 
 .dialog-actions.is-stacked {
@@ -5642,19 +5642,19 @@ select.ai-config-input {
   align-items: center;
   gap: 6px;
   padding: 0 10px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
   background: transparent;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(12px * var(--ui-font-scale));
   white-space: nowrap;
   cursor: pointer;
 }
 
 .compact-action:hover:not(:disabled) {
-  border-color: var(--divider);
-  background: var(--hover);
-  color: var(--text);
+  border-color: var(--ui-border-divider);
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-primary);
 }
 .compact-action:disabled {
   color: var(--tertiary);
@@ -5665,19 +5665,19 @@ select.ai-config-input {
 /* Primary action of a cluster (e.g. 搜索提交): a quiet accent fill that
    draws the eye without the weight of a solid accent button. */
 .compact-action.is-accent {
-  border-color: color-mix(in srgb, var(--accent) 42%, var(--divider));
-  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent) 42%, var(--ui-border-divider));
+  background: var(--ui-action-accent-soft);
   color: color-mix(in srgb, var(--accent) 55%, white);
 }
 
 .compact-action.is-accent:hover:not(:disabled) {
-  border-color: color-mix(in srgb, var(--accent) 60%, var(--divider));
+  border-color: color-mix(in srgb, var(--accent) 60%, var(--ui-border-divider));
   background: color-mix(in srgb, var(--accent) 20%, transparent);
   color: color-mix(in srgb, var(--accent) 45%, white);
 }
 
 .compact-action.is-accent:disabled {
-  border-color: var(--divider);
+  border-color: var(--ui-border-divider);
   background: transparent;
   color: var(--tertiary);
 }
@@ -5935,9 +5935,9 @@ select.ai-config-input {
   height: 22px;
   flex: 0 0 auto;
   place-items: center;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: 50%;
-  background: var(--raised);
+  background: var(--ui-surface-raised);
   color: var(--text-secondary);
   font-size: calc(12px * var(--ui-font-scale));
   font-weight: var(--ui-font-weight-bold);
@@ -5954,7 +5954,7 @@ select.ai-config-input {
   margin: 0;
   padding: 9px 11px;
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: var(--hover);
+  background: var(--ui-surface-hover);
   color: var(--tertiary);
   font-size: calc(11px * var(--ui-font-scale));
   line-height: 1.5;
@@ -5966,10 +5966,10 @@ select.ai-config-input {
   width: 100%;
   resize: vertical;
   padding: 12px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
   background: var(--canvas);
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-family: var(--font-mono);
   font-size: calc(12px * var(--ui-font-scale));
   line-height: 1.55;
@@ -5978,7 +5978,7 @@ select.ai-config-input {
 .library-settings-gitignore-editor:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px var(--accent-soft);
+  box-shadow: 0 0 0 2px var(--ui-action-accent-soft);
 }
 
 .library-settings-gitignore-actions {
@@ -6000,8 +6000,8 @@ select.ai-config-input {
   flex-direction: column;
   overflow: hidden;
   padding: 0;
-  border: 1px solid color-mix(in srgb, var(--accent) 16%, var(--divider));
-  background: var(--raised);
+  border: 1px solid color-mix(in srgb, var(--accent) 16%, var(--ui-border-divider));
+  background: var(--ui-surface-raised);
   box-shadow: var(--shadow-elevated);
 }
 
@@ -6024,8 +6024,8 @@ select.ai-config-input {
 
 .about-dialog-close:hover,
 .about-dialog-close:focus-visible {
-  background: var(--hover);
-  color: var(--text);
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-primary);
   outline: none;
 }
 
@@ -6034,15 +6034,15 @@ select.ai-config-input {
   justify-items: center;
   gap: 8px;
   padding: 34px 32px 24px;
-  background: linear-gradient(145deg, color-mix(in srgb, var(--accent-soft) 72%, var(--raised)), var(--raised));
-  border-bottom: 1px solid var(--divider-soft);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--ui-action-accent-soft) 72%, var(--ui-surface-raised)), var(--ui-surface-raised));
+  border-bottom: 1px solid var(--ui-border-subtle);
 }
 
 .about-dialog-brand img {
   width: 76px;
   height: 76px;
   margin-bottom: 4px;
-  border: 1px solid color-mix(in srgb, var(--divider) 72%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ui-border-divider) 72%, transparent);
   border-radius: calc(18px * var(--ui-radius-scale, 1));
   box-shadow: var(--shadow-panel);
   object-fit: cover;
@@ -6050,7 +6050,7 @@ select.ai-config-input {
 
 .about-dialog-brand h2 {
   margin: 0;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(24px * var(--ui-font-scale));
   font-weight: var(--ui-font-weight-bold);
   letter-spacing: -0.03em;
@@ -6094,7 +6094,7 @@ select.ai-config-input {
   height: 34px;
   place-items: center;
   padding: 0;
-  border: 1px solid var(--divider-soft);
+  border: 1px solid var(--ui-border-subtle);
   border-radius: 50%;
   background: var(--raised-2);
   color: var(--secondary);
@@ -6103,8 +6103,8 @@ select.ai-config-input {
 
 .about-dialog-social-button:hover,
 .about-dialog-social-button:focus-visible {
-  background: var(--hover);
-  color: var(--text);
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-primary);
   outline: none;
 }
 
@@ -6155,13 +6155,13 @@ select.ai-config-input {
   display: grid;
   gap: 3px;
   padding: 10px 12px;
-  border: 1px solid var(--divider-soft);
+  border: 1px solid var(--ui-border-subtle);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
   background: var(--raised-2);
 }
 
 .open-source-dialog-content li strong {
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(12px * var(--ui-font-scale));
 }
 
@@ -6190,7 +6190,7 @@ select.ai-config-input {
 
 .workspace-notice-undo:hover,
 .workspace-notice-undo:focus-visible {
-  color: var(--text);
+  color: var(--ui-content-primary);
   background: transparent;
   outline: none;
 }
@@ -6221,7 +6221,7 @@ select.ai-config-input {
 .import-progress-bar {
   margin-top: 0;
   height: 4px;
-  background: color-mix(in srgb, var(--text) 10%, transparent);
+  background: color-mix(in srgb, var(--ui-content-primary) 10%, transparent);
 }
 
 .activity-pulse {
@@ -6474,7 +6474,7 @@ select.ai-config-input {
 /* REQ-DND-006 / Serpent-12mb: external import drop target on folder cards. */
 .folder-card.is-drop-target,
 .folder-card.is-drop-target:hover {
-  background: color-mix(in srgb, var(--accent) 20%, var(--active));
+  background: color-mix(in srgb, var(--accent) 20%, var(--ui-surface-pressed));
   box-shadow: 0 0 0 2px var(--accent);
 }
 
@@ -6520,7 +6520,7 @@ select.ai-config-input {
   inset: 0;
   border-radius: var(--folder-card-radius);
   background: color-mix(in srgb, var(--canvas) 55%, var(--pane));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ui-content-primary) 12%, transparent);
 }
 
 .folder-card-front {
@@ -6538,7 +6538,7 @@ select.ai-config-input {
 
 .folder-card-front-shape {
   fill: var(--pane);
-  stroke: color-mix(in srgb, var(--text) 12%, transparent);
+  stroke: color-mix(in srgb, var(--ui-content-primary) 12%, transparent);
   stroke-width: 1.25;
   vector-effect: non-scaling-stroke;
 }
@@ -6558,7 +6558,7 @@ select.ai-config-input {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ui-content-inverse) 14%, transparent);
   border-radius: calc(7px * var(--ui-radius-scale, 1));
   background: var(--raised-2);
   box-shadow:
@@ -6608,7 +6608,7 @@ select.ai-config-input {
 
 .folder-cover-picker-cell.is-selected {
   border-color: var(--accent);
-  background: var(--accent-soft);
+  background: var(--ui-action-accent-soft);
 }
 
 .folder-cover-picker-thumb {
@@ -6645,9 +6645,9 @@ select.ai-config-input {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ui-content-inverse) 14%, transparent);
   border-radius: calc(7px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--ink) 14%, var(--raised-2));
+  background: color-mix(in srgb, var(--ui-content-inverse) 14%, var(--raised-2));
   box-shadow:
     0 1px 2px rgb(0 0 0 / 12%),
     0 3px 8px rgb(0 0 0 / 10%);
@@ -6693,7 +6693,7 @@ select.ai-config-input {
 .folder-card-name {
   width: 100%;
   overflow: hidden;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(11px * var(--ui-font-scale));
   font-weight: var(--ui-font-weight-medium);
   letter-spacing: 0.01em;
@@ -6742,7 +6742,7 @@ select.ai-config-input {
 .asset-size-control input[type="range"]::-webkit-slider-runnable-track {
   height: 3px;
   border-radius: calc(2px * var(--ui-radius-scale, 1));
-  background: var(--divider);
+  background: var(--ui-border-divider);
 }
 .asset-size-control input[type="range"]::-webkit-slider-thumb {
   width: 10px;
@@ -6755,7 +6755,7 @@ select.ai-config-input {
 }
 .asset-size-control input[type="range"]:hover::-webkit-slider-thumb,
 .asset-size-control input[type="range"]:focus-visible::-webkit-slider-thumb {
-  background: var(--text);
+  background: var(--ui-content-primary);
 }
 
 .external-drop-overlay {
@@ -6793,7 +6793,7 @@ select.ai-config-input {
   color: var(--ui-action-accent);
 }
 .external-drop-overlay strong {
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(16px * var(--ui-font-scale));
 }
 .external-drop-overlay span {
@@ -6871,7 +6871,7 @@ select.ai-config-input {
   height: 72px;
   place-items: center;
   overflow: hidden;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(9px * var(--ui-radius-scale, 1));
   background: var(--raised-2);
   box-shadow: 0 6px 18px rgb(0 0 0 / 45%);
@@ -6889,7 +6889,7 @@ select.ai-config-input {
   max-width: 100%;
   padding: 0 8px;
   overflow: hidden;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(10px * var(--ui-font-scale));
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -6903,7 +6903,7 @@ select.ai-config-input {
   padding: 1px 4px;
   border-radius: calc(8px * var(--ui-radius-scale, 1));
   background: var(--accent);
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-family: "IBM Plex Mono", monospace;
   font-size: calc(9px * var(--ui-font-scale));
   text-align: center;
@@ -6920,7 +6920,7 @@ select.ai-config-input {
   place-items: center;
   border-radius: 50%;
   background: var(--accent);
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-family: "IBM Plex Mono", monospace;
   font-size: calc(12px * var(--ui-font-scale));
   font-weight: var(--ui-font-weight-semibold);
@@ -6977,7 +6977,7 @@ select.ai-config-input {
   display: block;
   flex-shrink: 0;
   border-radius: calc(3px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--text) 10%, var(--raised-2));
+  background: color-mix(in srgb, var(--ui-content-primary) 10%, var(--raised-2));
 }
 
 .asset-caption-skeleton-line.is-name {
@@ -7052,7 +7052,7 @@ select.ai-config-input {
   height: 28px;
   margin: 4px 0 2px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--divider) 70%, transparent);
+  background: color-mix(in srgb, var(--ui-border-divider) 70%, transparent);
 }
 
 .image-sequence-range-track::before {
@@ -7064,7 +7064,7 @@ select.ai-config-input {
   height: 6px;
   transform: translateY(-50%);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--accent) 72%, var(--divider));
+  background: color-mix(in srgb, var(--accent) 72%, var(--ui-border-divider));
   pointer-events: none;
 }
 
@@ -7247,7 +7247,7 @@ select.ai-config-input {
   padding: 2px 6px;
   border-radius: calc(5px * var(--ui-radius-scale, 1));
   background: var(--raised-2);
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-family: "IBM Plex Mono", monospace;
   font-size: calc(9px * var(--ui-font-scale));
   line-height: 1.45;
@@ -7262,10 +7262,10 @@ select.ai-config-input {
   min-width: 0;
   margin: 8px 12px 0;
   padding: 8px 8px 8px 10px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(10px * var(--ui-radius-scale, 1));
-  background: var(--raised);
-  color: var(--text);
+  background: var(--ui-surface-raised);
+  color: var(--ui-content-primary);
 }
 
 .find-similar-banner-back {
@@ -7276,7 +7276,7 @@ select.ai-config-input {
   border: 0;
   border-radius: calc(8px * var(--ui-radius-scale, 1));
   background: transparent;
-  color: var(--text);
+  color: var(--ui-content-primary);
   padding: 6px 8px;
   font: inherit;
   font-size: calc(12px * var(--ui-font-scale));
@@ -7325,7 +7325,7 @@ select.ai-config-input {
   padding: 2px 6px;
   border-radius: calc(5px * var(--ui-radius-scale, 1));
   background: var(--raised-2);
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-family: "IBM Plex Mono", monospace;
   font-size: calc(9px * var(--ui-font-scale));
   letter-spacing: 0.04em;
@@ -7351,7 +7351,7 @@ select.ai-config-input {
   pointer-events: auto;
 }
 .asset-sync-status[data-state="syncing"] {
-  --asset-sync-status-color: var(--success);
+  --asset-sync-status-color: var(--ui-status-success);
 }
 .asset-sync-status[data-state="conflict"] {
   --asset-sync-status-color: var(--rating-star);
@@ -7392,12 +7392,12 @@ select.ai-config-input {
   -webkit-mask: radial-gradient(
     farthest-side,
     transparent calc(100% - 2px),
-    var(--text) calc(100% - 1.5px)
+    var(--ui-content-primary) calc(100% - 1.5px)
   );
   mask: radial-gradient(
     farthest-side,
     transparent calc(100% - 2px),
-    var(--text) calc(100% - 1.5px)
+    var(--ui-content-primary) calc(100% - 1.5px)
   );
   animation: plugin-view-spin 1.15s linear infinite;
 }
@@ -7438,13 +7438,13 @@ select.ai-config-input {
 /* Light surfaces need a subtle edge against bright covers. */
 [data-theme="light"] .asset-extension,
 [data-theme="light"] .asset-source-badge {
-  box-shadow: 0 0 0 1px var(--divider-soft);
+  box-shadow: 0 0 0 1px var(--ui-border-subtle);
   color: var(--secondary);
 }
 [data-theme="light"] .asset-duration-badge,
 [data-theme="light"] .asset-type-badge {
-  box-shadow: 0 0 0 1px var(--divider-soft);
-  color: var(--text);
+  box-shadow: 0 0 0 1px var(--ui-border-subtle);
+  color: var(--ui-content-primary);
 }
 
 .missing-banner {
@@ -7456,8 +7456,8 @@ select.ai-config-input {
   gap: 4px;
   padding: 3px 6px;
   border-radius: calc(5px * var(--ui-radius-scale, 1));
-  background: var(--warning-muted);
-  color: var(--warning-fg);
+  background: var(--ui-status-warning-surface);
+  color: var(--ui-status-warning-content);
   font-size: calc(9px * var(--ui-font-scale));
 }
 .asset-caption {
@@ -7498,7 +7498,7 @@ select.ai-config-input {
 }
 .asset-caption strong {
   overflow: hidden;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(11px * var(--ui-font-scale));
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -7547,7 +7547,7 @@ select.ai-config-input {
 .search-snippet mark {
   border-radius: calc(2px * var(--ui-radius-scale, 1));
   background: color-mix(in srgb, var(--warning) 24%, transparent);
-  color: var(--warning-fg);
+  color: var(--ui-status-warning-content);
 }
 
 .search-text-highlight {
@@ -7614,7 +7614,7 @@ select.ai-config-input {
   border-radius: 50%;
   background: radial-gradient(
     circle at 40% 35%,
-    color-mix(in srgb, var(--accent-soft) 55%, var(--raised-2)),
+    color-mix(in srgb, var(--ui-action-accent-soft) 55%, var(--raised-2)),
     var(--pane) 70%
   );
   color: var(--accent);
@@ -7640,9 +7640,9 @@ select.ai-config-input {
   padding: 9px 9px 9px 11px;
   border: 0;
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: var(--raised);
+  background: var(--ui-surface-raised);
   box-shadow: var(--shadow-toast);
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(11px * var(--ui-font-scale));
   /* REQ-SHELL-010: dismissal adds .is-closing and unmounts only after this
      exit transition ends (see toast-notifications.ts). */
@@ -7659,8 +7659,8 @@ select.ai-config-input {
   /* Serpent-4ojz: warning + error share one amber family (icon/text/close).
      Do not tint warnings with --accent blue — that recreates the beige+blue+
      orange clash fixed for error toasts in Serpent-k9g. */
-  background: var(--warning-muted);
-  color: var(--warning-fg);
+  background: var(--ui-status-warning-surface);
+  color: var(--ui-status-warning-content);
   border: 1px solid color-mix(in srgb, var(--warning) 28%, transparent);
   box-shadow: var(--shadow-toast);
 }
@@ -7670,7 +7670,7 @@ select.ai-config-input {
 .toast.is-warning > :first-child,
 .toast.is-warning .icon,
 .toast.is-warning button {
-  color: var(--warning-fg);
+  color: var(--ui-status-warning-content);
 }
 .toast button {
   display: grid;
@@ -7695,7 +7695,7 @@ select.ai-config-input {
   flex-shrink: 0;
   gap: 8px;
   padding: 4px 0 12px;
-  border-bottom: 1px solid var(--divider-soft);
+  border-bottom: 1px solid var(--ui-border-subtle);
   min-height: min-content;
   /* Allow hero preview card shadow to paint (Serpent-zcyg). */
   overflow: visible;
@@ -7798,9 +7798,9 @@ select.ai-config-input {
 .inspector-hero-preview-fallback {
   min-height: 112px;
   width: 100%;
-  border: 1px solid var(--divider-soft);
+  border: 1px solid var(--ui-border-subtle);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--canvas) 86%, var(--ink));
+  background: color-mix(in srgb, var(--canvas) 86%, var(--ui-content-inverse));
 }
 
 .inspector-hero-image {
@@ -8086,12 +8086,12 @@ select.ai-config-input {
   inset: 0;
   overflow: hidden;
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--canvas) 90%, var(--ink));
+  background: color-mix(in srgb, var(--canvas) 90%, var(--ui-content-inverse));
   /* REQ-INSPECT-004: soft layered shadows so stacked multi-select previews stay separable. */
   box-shadow:
-    0 1px 2px color-mix(in srgb, var(--ink) 18%, transparent),
-    0 6px 14px color-mix(in srgb, var(--ink) 16%, transparent),
-    0 0 0 1px color-mix(in srgb, var(--ink) 8%, transparent);
+    0 1px 2px color-mix(in srgb, var(--ui-content-inverse) 18%, transparent),
+    0 6px 14px color-mix(in srgb, var(--ui-content-inverse) 16%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--ui-content-inverse) 8%, transparent);
 }
 
 .inspector-hero-stack-image {
@@ -8145,7 +8145,7 @@ select.ai-config-input {
   gap: 6px 10px;
   margin-top: 12px;
   padding: 10px 12px;
-  border-top: 1px solid var(--divider-soft);
+  border-top: 1px solid var(--ui-border-subtle);
   color: var(--secondary);
   font-size: calc(11px * var(--ui-font-scale));
   line-height: 1.35;
@@ -8271,12 +8271,12 @@ select.ai-config-input {
 }
 
 .inspector-status-row[data-tone="ok"] .inspector-status-dot {
-  background: var(--success);
+  background: var(--ui-status-success);
   box-shadow: 0 0 0 3px rgb(109 184 93 / 14%);
 }
 
 .inspector-status-row[data-tone="missing"] {
-  color: var(--danger-soft);
+  color: var(--ui-status-danger-content);
 }
 
 .inspector-status-row[data-tone="missing"] .inspector-status-dot {
@@ -8526,7 +8526,7 @@ select.ai-config-input {
 }
 
 .source-url-open:hover:not(:disabled):not([aria-disabled="true"]) {
-  background: var(--hover);
+  background: var(--ui-surface-hover);
   color: var(--accent);
 }
 
@@ -8577,7 +8577,7 @@ select.ai-config-input {
   gap: 8px;
   margin-top: 10px;
   padding: 8px 10px;
-  border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--divider));
+  border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--ui-border-divider));
   border-radius: calc(8px * var(--ui-radius-scale, 1));
   background: color-mix(in srgb, var(--accent) 8%, var(--pane));
   color: var(--secondary);
@@ -8585,11 +8585,11 @@ select.ai-config-input {
 }
 
 .inspector-textarea.is-ai-sourced {
-  border-color: color-mix(in srgb, var(--accent) 28%, var(--divider));
+  border-color: color-mix(in srgb, var(--accent) 28%, var(--ui-border-divider));
 }
 
 .tag-chip[data-source="ai"] {
-  border-color: color-mix(in srgb, var(--accent) 35%, var(--divider-soft));
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--ui-border-subtle));
 }
 
 /* Section label — replaces h2 headings (INSPECT-003) */
@@ -8620,7 +8620,7 @@ select.ai-config-input {
   align-items: center;
   gap: 4px;
   padding: 2px 9px;
-  border: 1px solid var(--divider-soft);
+  border: 1px solid var(--ui-border-subtle);
   border-radius: 999px;
   background: var(--pane);
   color: var(--secondary);
@@ -8632,7 +8632,7 @@ select.ai-config-input {
 }
 
 .tag-chip:hover {
-  background: var(--raised);
+  background: var(--ui-surface-raised);
 }
 
 .tag-chip-dot {
@@ -8667,7 +8667,7 @@ select.ai-config-input {
 }
 
 .tag-chip-remove:hover {
-  background: var(--danger-muted);
+  background: var(--ui-status-danger-surface);
   color: var(--danger);
 }
 
@@ -8692,9 +8692,9 @@ select.ai-config-input {
   align-items: center;
   gap: 6px;
   padding: 3px 9px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--raised) 55%, var(--canvas));
+  background: color-mix(in srgb, var(--ui-surface-raised) 55%, var(--canvas));
   color: var(--secondary);
   transition: border-color 120ms ease, background 120ms ease;
 }
@@ -8708,8 +8708,8 @@ select.ai-config-input {
 }
 
 .tag-input-chip:focus-within {
-  border-color: color-mix(in srgb, var(--accent) 72%, var(--divider));
-  background: color-mix(in srgb, var(--raised) 72%, var(--canvas));
+  border-color: color-mix(in srgb, var(--accent) 72%, var(--ui-border-divider));
+  background: color-mix(in srgb, var(--ui-surface-raised) 72%, var(--canvas));
 }
 
 .tag-add-input {
@@ -8720,7 +8720,7 @@ select.ai-config-input {
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(11px * var(--ui-font-scale));
   outline: none;
   box-sizing: border-box;
@@ -8745,9 +8745,9 @@ select.ai-config-input {
   max-height: 184px;
   padding: 4px;
   overflow-y: auto;
-  border: 1px solid color-mix(in srgb, var(--divider) 82%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ui-border-divider) 82%, transparent);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--raised) 90%, var(--canvas));
+  background: color-mix(in srgb, var(--ui-surface-raised) 90%, var(--canvas));
   box-shadow: 0 10px 28px rgb(0 0 0 / 30%);
 }
 
@@ -8769,8 +8769,8 @@ select.ai-config-input {
 
 .tag-suggestion-item:hover,
 .tag-suggestion-item.is-active {
-  background: color-mix(in srgb, var(--text) 7%, transparent);
-  color: var(--text);
+  background: color-mix(in srgb, var(--ui-content-primary) 7%, transparent);
+  color: var(--ui-content-primary);
 }
 
 .tag-suggestion-name {
@@ -8789,7 +8789,7 @@ select.ai-config-input {
 
 .tag-suggestion-create {
   color: var(--accent);
-  border-top: 1px solid color-mix(in srgb, var(--divider-soft) 70%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--ui-border-subtle) 70%, transparent);
   border-radius: 0 0 calc(5px * var(--ui-radius-scale, 1)) calc(5px * var(--ui-radius-scale, 1));
 }
 
@@ -8850,8 +8850,8 @@ select.ai-config-input {
 }
 
 .inspector-tag-chip .inspector-tag-rename::selection {
-  color: var(--text);
-  background: var(--accent-soft);
+  color: var(--ui-content-primary);
+  background: var(--ui-action-accent-soft);
 }
 
 .inspector-tags-section .tag-chips-container.is-editing-tags {
@@ -8868,7 +8868,7 @@ select.ai-config-input {
   height: 14px;
   margin: 0;
   transform: none;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: 50%;
   background: var(--pane);
   color: var(--secondary);
@@ -8877,7 +8877,7 @@ select.ai-config-input {
 
 .inspector-tags-section .tag-chips-container .inspector-tag-chip.is-editing > .tag-chip-remove:hover {
   color: var(--danger);
-  background: var(--danger-muted);
+  background: var(--ui-status-danger-surface);
 }
 
 .inspector-tags-section {
@@ -8889,7 +8889,7 @@ select.ai-config-input {
   flex: 0 0 auto;
   margin: auto;
   padding: 20px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(12px * var(--ui-radius-scale, 1));
   background: var(--pane);
   box-shadow: var(--shadow-elevated);
@@ -8951,7 +8951,7 @@ select.ai-config-input {
   width: 40px;
   height: 40px;
   flex: 0 0 auto;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
   object-fit: cover;
   background: var(--canvas);
@@ -8979,7 +8979,7 @@ select.ai-config-input {
 }
 
 .conflict-duplicate-incoming {
-  color: var(--text);
+  color: var(--ui-content-primary);
 }
 
 .conflict-duplicate-existing {
@@ -8995,9 +8995,9 @@ select.ai-config-input {
   gap: 1px;
   overflow: hidden;
   margin-bottom: 18px;
-  border: 1px solid var(--divider-soft);
+  border: 1px solid var(--ui-border-subtle);
   border-radius: calc(4px * var(--ui-radius-scale, 1));
-  background: var(--divider-soft);
+  background: var(--ui-border-subtle);
 }
 .conflict-summary div {
   display: flex;
@@ -9008,7 +9008,7 @@ select.ai-config-input {
   background: var(--pane);
 }
 .conflict-summary strong {
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-family: "IBM Plex Mono", monospace;
   font-size: calc(17px * var(--ui-font-scale));
   font-weight: var(--ui-font-weight-medium);
@@ -9035,14 +9035,14 @@ select.ai-config-input {
   width: 100%;
   height: var(--shell-control-height);
   padding: 0 28px 0 8px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
-  background-color: var(--raised);
+  background-color: var(--ui-surface-raised);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' viewBox='0 0 12 12'%3E%3Cpath stroke='%23777c79' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M3 4.5 6 7.5 9 4.5'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 8px center;
   background-size: 12px 12px;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(12px * var(--ui-font-scale));
   cursor: pointer;
   transition:
@@ -9051,12 +9051,12 @@ select.ai-config-input {
 }
 .decision-field select:hover,
 .decision-field .ui-select-trigger:hover {
-  border-color: color-mix(in srgb, var(--text) 16%, var(--divider));
+  border-color: color-mix(in srgb, var(--ui-content-primary) 16%, var(--ui-border-divider));
 }
 .decision-field select:focus,
 .decision-field .ui-select-trigger:focus-visible {
-  border-color: color-mix(in srgb, var(--accent) 62%, var(--divider));
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent) 62%, var(--ui-border-divider));
+  box-shadow: 0 0 0 3px var(--ui-action-accent-soft);
   outline: 0;
 }
 .decision-field .ui-select::after {
@@ -9074,7 +9074,7 @@ select.ai-config-input {
   overflow: auto;
   margin-top: 14px;
   padding: 9px;
-  border: 1px solid var(--divider-soft);
+  border: 1px solid var(--ui-border-subtle);
   border-radius: calc(8px * var(--ui-radius-scale, 1));
   background: var(--pane);
 }

@@ -31,9 +31,9 @@
 }
 
 .nav-inline-edit:focus-within {
-  border-color: color-mix(in srgb, var(--accent) 62%, var(--divider));
+  border-color: color-mix(in srgb, var(--accent) 62%, var(--ui-border-divider));
   background: var(--canvas);
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  box-shadow: 0 0 0 3px var(--ui-action-accent-soft);
 }
 
 /* 类型化失败（非法名/同名冲突）内联呈现在编辑行下方，行保持打开供修正。 */
@@ -117,13 +117,13 @@
 
 :root[data-platform="windows"] .app-shell.app-shell .library-switcher-item:not(.is-danger):not(:disabled) {
   font-size: calc(12px * var(--ui-font-scale));
-  color: var(--text);
+  color: var(--ui-content-primary);
 }
 
 :root[data-platform="windows"] :where(
     .inspector-badge
   ) {
-  color: var(--accent-soft-fg);
+  color: var(--ui-content-accent);
 }
 
 [data-theme="light"] .inspector-badge {
@@ -174,7 +174,7 @@
   height: 4px;
   margin-top: 4px;
   border-radius: calc(2px * var(--ui-radius-scale, 1));
-  background: var(--hover);
+  background: var(--ui-surface-hover);
   overflow: hidden;
 }
 

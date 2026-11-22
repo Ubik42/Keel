@@ -1,37 +1,37 @@
 /* --- Hover: soft wash only on nav (no border/outline/shadow) --- */
 
 .tool-button:hover:not(:disabled):not([aria-pressed="true"]) {
-  background: var(--hover);
+  background: var(--ui-surface-hover);
   border-color: transparent;
-  color: var(--text);
+  color: var(--ui-content-primary);
 }
 
 .tiny-action:hover {
-  background: var(--hover);
+  background: var(--ui-surface-hover);
   border-color: transparent;
-  color: var(--text);
+  color: var(--ui-content-primary);
 }
 
 .nav-disclosure:hover:not(:disabled) {
-  background: var(--hover);
+  background: var(--ui-surface-hover);
   border-color: transparent;
-  color: var(--text);
+  color: var(--ui-content-primary);
 }
 
 .windows-caption-button:hover:not(.windows-caption-button-close) {
-  background: var(--hover);
+  background: var(--ui-surface-hover);
   border-color: transparent;
 }
 
 .main-menu-trigger:hover:not(:disabled):not([aria-expanded="true"]) {
-  background: var(--hover);
+  background: var(--ui-surface-hover);
   border-color: transparent;
-  color: var(--text);
+  color: var(--ui-content-primary);
 }
 
 .search-control-wrap:hover {
-  border-color: var(--divider-soft);
-  background: color-mix(in srgb, var(--canvas) 70%, var(--raised));
+  border-color: var(--ui-border-subtle);
+  background: color-mix(in srgb, var(--canvas) 70%, var(--ui-surface-raised));
   box-shadow: none;
 }
 
@@ -86,7 +86,7 @@
 
 .app-settings-dialog:not(.library-settings-dialog) .app-settings-card-divider {
   margin: 18px 0;
-  background: var(--divider-soft);
+  background: var(--ui-border-subtle);
 }
 
 .app-settings-dialog:not(.library-settings-dialog) .app-settings-option-group {
@@ -141,14 +141,14 @@
 
 .main-menu-section.is-active,
 .main-menu-item.is-active {
-  background: var(--accent-soft);
-  color: var(--accent-soft-fg);
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
 }
 
 .main-menu-trigger:hover:not(:disabled),
 .main-menu-trigger[aria-expanded="true"]:not(:disabled) {
-  background: var(--accent-soft);
-  color: var(--accent-soft-fg);
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
   border-color: color-mix(in srgb, var(--accent) 24%, transparent);
 }
 
@@ -162,19 +162,19 @@
 }
 
 .nav-row:hover:not(:disabled):not(.is-active) {
-  background: color-mix(in srgb, var(--text) 5%, transparent);
+  background: color-mix(in srgb, var(--ui-content-primary) 5%, transparent);
   border-color: transparent;
   box-shadow: none;
   outline: none;
-  color: var(--text);
+  color: var(--ui-content-primary);
 }
 
 .nav-row.is-active,
 .nav-row.is-active:hover:not(:disabled) {
-  background: var(--accent-soft);
+  background: var(--ui-action-accent-soft);
   border-color: transparent;
   box-shadow: none;
-  color: var(--accent-soft-fg);
+  color: var(--ui-content-accent);
 }
 
 .nav-row:focus-visible {

@@ -23,7 +23,7 @@
 }
 .app-shell.app-shell .nav-row.is-active {
   background: var(--island-select);
-  color: var(--text);
+  color: var(--ui-content-primary);
   box-shadow: none;
   border-color: transparent;
   font-weight: 510;
@@ -67,11 +67,11 @@
 }
 .app-shell.app-shell .dimension-filter-btn:hover:not(:disabled) {
   background: var(--island-segment-hover);
-  color: var(--text);
+  color: var(--ui-content-primary);
 }
 .app-shell.app-shell .dimension-filter-btn[aria-pressed="true"] {
   background: var(--island-segment-pill);
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-weight: 510;
   box-shadow: var(--island-segment-pill-shadow);
 }
@@ -97,7 +97,7 @@
 }
 .app-shell.app-shell .tag-chip:hover,
 .app-shell.app-shell .dimension-active-chip:not(.is-clear-all):hover {
-  background: color-mix(in srgb, var(--text) 9%, transparent);
+  background: color-mix(in srgb, var(--ui-content-primary) 9%, transparent);
 }
 .app-shell.app-shell .tag-chip-dot {
   width: 7px;
@@ -188,7 +188,7 @@
   width: 52px;
   height: 52px;
   margin-bottom: 14px;
-  border: 1px solid var(--divider-soft);
+  border: 1px solid var(--ui-border-subtle);
   border-radius: calc(14px * var(--ui-radius-scale, 1));
   box-shadow: none;
 }
@@ -208,9 +208,9 @@
   box-sizing: content-box;
   padding: 10px;
   margin-bottom: 12px;
-  border: 1px solid var(--divider-soft);
+  border: 1px solid var(--ui-border-subtle);
   border-radius: calc(10px * var(--ui-radius-scale, 1));
-  background: var(--raised);
+  background: var(--ui-surface-raised);
   color: var(--tertiary);
 }
 

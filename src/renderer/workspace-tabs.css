@@ -19,7 +19,7 @@
   z-index: 1;
   height: 1px;
   pointer-events: none;
-  background: var(--divider-soft);
+  background: var(--ui-border-subtle);
 }
 
 .toolbar-workspace-main:has(.workspace-tabs) {
@@ -92,8 +92,8 @@
 }
 
 .workspace-tab:not(.is-active):hover {
-  background: var(--hover);
-  color: var(--text);
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-primary);
 }
 
 .workspace-tab.is-active {
@@ -106,7 +106,7 @@
   background: transparent;
   border-color: transparent;
   border-radius: var(--workspace-tab-curve) var(--workspace-tab-curve) 0 0;
-  color: var(--text);
+  color: var(--ui-content-primary);
   box-shadow: 0 2px 0 0 var(--canvas);
 }
 
@@ -176,7 +176,7 @@
   translate: 0 -2px;
 }
 .workspace-tab.is-active .workspace-tab-select > .icon,
-.workspace-tab.is-active .workspace-tab-select > .nav-entity-glyph { color: var(--accent-soft-fg); }
+.workspace-tab.is-active .workspace-tab-select > .nav-entity-glyph { color: var(--ui-content-accent); }
 
 .workspace-tab-title {
   overflow: hidden;
@@ -213,7 +213,7 @@
 .workspace-tab-close:hover,
 .workspace-tab-add:hover:not(:disabled) {
   background: var(--menu-item-hover-background);
-  color: var(--text);
+  color: var(--ui-content-primary);
 }
 
 .workspace-tab-add:disabled,

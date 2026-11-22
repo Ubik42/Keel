@@ -200,7 +200,7 @@
   min-width: 0;
   min-inline-size: 0;
   margin: 0;
-  color: var(--text);
+  color: var(--ui-content-primary);
 }
 .plugin-widget-group__content {
   display: flex;
@@ -232,11 +232,11 @@
 .plugin-widget-tabs__tab:hover,
 .plugin-widget-tabs__tab:focus-visible {
   background: var(--menu-item-hover-background);
-  color: var(--text);
+  color: var(--ui-content-primary);
 }
 .plugin-widget-tabs__tab.is-active {
   border-bottom-color: var(--accent);
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-weight: var(--ui-font-weight-medium);
 }
 .plugin-widget-tabs__panel {
@@ -251,7 +251,7 @@
 }
 .plugin-widget-heading {
   margin: 0.65rem 0 0;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(12px * var(--ui-font-scale));
   font-weight: 600;
   line-height: 1.3;
@@ -270,7 +270,7 @@
   overflow: hidden;
   border: 1px solid var(--border-subtle);
   border-radius: var(--ui-radius-control);
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(12px * var(--ui-font-scale));
 }
 .plugin-widget-group:has(.plugin-widget-list) .plugin-widget-list {
@@ -285,7 +285,7 @@
   min-width: 0;
 }
 .plugin-widget-list__header {
-  background: var(--raised);
+  background: var(--ui-surface-raised);
   color: var(--secondary);
   font-weight: 600;
 }
@@ -298,7 +298,7 @@
   background: var(--raised-2);
 }
 .plugin-widget-list__row:nth-child(even) {
-  background: var(--raised);
+  background: var(--ui-surface-raised);
 }
 .plugin-widget-list__row + .plugin-widget-list__row {
   border-top: 1px solid var(--border-subtle);
@@ -325,7 +325,7 @@
 }
 .plugin-widget-list__highlight--change {
   background: color-mix(in srgb, var(--warning) 28%, transparent);
-  color: var(--warning-fg);
+  color: var(--ui-status-warning-content);
 }
 .plugin-widget-toggle {
   flex: 0 0 auto;
@@ -335,7 +335,7 @@
   padding: 0.35rem 0.55rem;
   border: 1px solid var(--border-subtle);
   border-radius: 0.35rem;
-  background: var(--raised);
+  background: var(--ui-surface-raised);
   color: var(--secondary);
   font: inherit;
   font-size: calc(12px * var(--ui-font-scale));
@@ -343,12 +343,12 @@
   cursor: pointer;
 }
 .plugin-widget-toggle:hover {
-  background: var(--hover);
-  color: var(--text);
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-primary);
 }
 .plugin-widget-toggle[aria-pressed="true"] {
   border-color: color-mix(in srgb, var(--accent) 55%, var(--border-subtle));
-  background: var(--accent-soft);
+  background: var(--ui-action-accent-soft);
   color: var(--accent);
 }
 .plugin-widget-switch-row {

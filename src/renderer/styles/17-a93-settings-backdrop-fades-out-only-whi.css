@@ -157,10 +157,10 @@
   min-width: 160px;
   height: 30px;
   padding: 0 10px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
-  background: var(--raised);
-  color: var(--text);
+  background: var(--ui-surface-raised);
+  color: var(--ui-content-primary);
   font-size: calc(12px * var(--ui-font-scale));
 }
 
@@ -181,7 +181,7 @@
   align-items: center;
   gap: 6px;
   padding: 0 10px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
   background: transparent;
   color: var(--secondary);
@@ -190,13 +190,13 @@
 }
 
 .shortcut-settings-filter:hover {
-  background: var(--hover);
+  background: var(--ui-surface-hover);
 }
 
 .shortcut-settings-filter.is-active {
   border-color: var(--accent);
-  background: var(--accent-soft);
-  color: var(--accent-soft-fg);
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
 }
 
 .shortcut-settings-filter-count {
@@ -217,7 +217,7 @@
   align-items: center;
   gap: 10px;
   padding: 5px 0;
-  border-top: 1px solid color-mix(in srgb, var(--divider) 70%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--ui-border-divider) 70%, transparent);
 }
 
 .shortcut-settings-row:first-child {
@@ -232,7 +232,7 @@
 }
 
 .shortcut-settings-row.has-conflict .shortcut-keycap {
-  border-color: color-mix(in srgb, var(--danger) 55%, var(--divider));
+  border-color: color-mix(in srgb, var(--danger) 55%, var(--ui-border-divider));
 }
 
 .shortcut-settings-row-copy {
@@ -260,7 +260,7 @@
 
 .shortcut-settings-row-copy strong {
   overflow: hidden;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(12.5px * var(--ui-font-scale));
   font-weight: 400;
   text-overflow: ellipsis;
@@ -286,10 +286,10 @@
   min-width: 42px;
   height: 26px;
   padding: 0 9px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(5px * var(--ui-radius-scale, 1));
-  background: var(--raised);
-  color: var(--text);
+  background: var(--ui-surface-raised);
+  color: var(--ui-content-primary);
   font-family: inherit;
   font-size: calc(11px * var(--ui-font-scale));
   cursor: pointer;
@@ -302,10 +302,10 @@
   align-items: center;
   justify-content: center;
   padding: 0 10px;
-  border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--divider));
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--ui-border-divider));
   border-radius: calc(5px * var(--ui-radius-scale, 1));
-  background: var(--raised);
-  color: var(--text);
+  background: var(--ui-surface-raised);
+  color: var(--ui-content-primary);
   font-family: inherit;
   font-size: calc(11px * var(--ui-font-scale));
   white-space: nowrap;
@@ -318,18 +318,18 @@
 }
 
 .shortcut-capture-input.is-waiting {
-  border-color: var(--divider);
+  border-color: var(--ui-border-divider);
   color: var(--tertiary);
 }
 
 .shortcut-capture-input.is-conflict {
-  border-color: color-mix(in srgb, var(--danger) 70%, var(--divider));
-  background: color-mix(in srgb, var(--danger) 14%, var(--raised));
-  color: var(--text);
+  border-color: color-mix(in srgb, var(--danger) 70%, var(--ui-border-divider));
+  background: color-mix(in srgb, var(--danger) 14%, var(--ui-surface-raised));
+  color: var(--ui-content-primary);
 }
 
 .shortcut-keycap:hover {
-  background: var(--hover);
+  background: var(--ui-surface-hover);
 }
 
 .shortcut-keycap.is-unassigned {
@@ -344,7 +344,7 @@
   align-items: center;
   padding: 0 6px;
   border-radius: calc(4px * var(--ui-radius-scale, 1));
-  background: var(--hover);
+  background: var(--ui-surface-hover);
   color: var(--secondary);
   font-size: calc(10px * var(--ui-font-scale));
   white-space: nowrap;
@@ -376,7 +376,7 @@
 }
 
 .shortcut-settings-icon-button:hover:not(:disabled) {
-  background: var(--hover);
+  background: var(--ui-surface-hover);
   color: var(--accent);
 }
 
@@ -405,7 +405,7 @@
 }
 
 .shortcut-settings-text-button:hover:not(:disabled) {
-  background: var(--hover);
+  background: var(--ui-surface-hover);
 }
 
 .shortcut-settings-text-button.is-muted {
@@ -421,15 +421,15 @@
   min-width: 68px;
   height: 27px;
   padding: 0 10px;
-  border-color: color-mix(in srgb, var(--accent) 45%, var(--divider));
-  background: color-mix(in srgb, var(--accent) 8%, var(--raised));
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--ui-border-divider));
+  background: color-mix(in srgb, var(--accent) 8%, var(--ui-surface-raised));
   cursor: default;
   font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
   text-align: center;
 }
 
 .shortcut-keycap.is-preview.is-waiting {
-  border-color: var(--divider);
+  border-color: var(--ui-border-divider);
   background: transparent;
   color: var(--tertiary);
   font-family: inherit;
@@ -458,13 +458,13 @@
 
 .shortcut-conflict p {
   margin: 0;
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(11.5px * var(--ui-font-scale));
 }
 
 .shortcut-conflict {
   padding: 8px 10px;
-  border: 1px solid color-mix(in srgb, var(--danger) 35%, var(--divider));
+  border: 1px solid color-mix(in srgb, var(--danger) 35%, var(--ui-border-divider));
   border-radius: calc(6px * var(--ui-radius-scale, 1));
   order: 4;
   grid-column: 1 / -1;
@@ -510,7 +510,7 @@
   align-items: center;
   gap: 5px;
   padding: 0 8px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(5px * var(--ui-radius-scale, 1));
   background: transparent;
   color: var(--secondary);
@@ -519,7 +519,7 @@
 }
 
 .shortcut-settings-file-button:hover {
-  background: var(--hover);
+  background: var(--ui-surface-hover);
   color: var(--accent);
 }
 
@@ -539,7 +539,7 @@
   justify-content: space-between;
   gap: 10px;
   padding: 8px 10px;
-  border: 1px solid color-mix(in srgb, var(--danger) 35%, var(--divider));
+  border: 1px solid color-mix(in srgb, var(--danger) 35%, var(--ui-border-divider));
   border-radius: calc(6px * var(--ui-radius-scale, 1));
   color: var(--danger);
   font-size: calc(11px * var(--ui-font-scale));
@@ -563,9 +563,9 @@
 .app-settings-dialog .ui-field__control:not(textarea),
 .app-shell.app-shell .app-settings-dialog .ui-field__control:not(textarea) {
   height: 30px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
-  background: var(--raised);
+  background: var(--ui-surface-raised);
   box-shadow: none;
   font-weight: 400;
 }
@@ -578,7 +578,7 @@
 .app-settings-dialog .ui-field__control:not(textarea):focus-visible,
 .app-shell.app-shell .app-settings-dialog .ui-field__control:not(textarea):focus,
 .app-shell.app-shell .app-settings-dialog .ui-field__control:not(textarea):focus-visible {
-  border-color: color-mix(in srgb, var(--accent) 55%, var(--divider));
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--ui-border-divider));
   outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
   outline-offset: 1px;
   box-shadow: none;
@@ -591,7 +591,7 @@
   height: 28px;
   min-height: 28px;
   padding: 0 10px;
-  border: 1px solid var(--divider);
+  border: 1px solid var(--ui-border-divider);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
   background: transparent;
   color: var(--secondary);
@@ -604,8 +604,8 @@
 .app-settings-dialog .ui-button:not(.ui-button--primary):not(.ui-button--danger):hover:not(:disabled),
 .app-shell.app-shell .app-settings-dialog .secondary-button:hover:not(:disabled),
 .app-shell.app-shell .app-settings-dialog .ui-button:not(.ui-button--primary):not(.ui-button--danger):hover:not(:disabled) {
-  border-color: var(--divider);
-  background: var(--hover);
+  border-color: var(--ui-border-divider);
+  background: var(--ui-surface-hover);
   color: var(--secondary);
 }
 
@@ -619,8 +619,8 @@
   padding: 0 10px;
   border: 1px solid var(--accent);
   border-radius: calc(6px * var(--ui-radius-scale, 1));
-  background: var(--accent-soft);
-  color: var(--accent-soft-fg);
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
   box-shadow: none;
   font-size: calc(11px * var(--ui-font-scale));
   font-weight: 400;
@@ -632,8 +632,8 @@
 .app-shell.app-shell .app-settings-dialog .dialog-actions .primary-button:hover:not(:disabled),
 .app-shell.app-shell .app-settings-dialog .ui-button.ui-button--primary:hover:not(:disabled) {
   border-color: var(--accent);
-  background: var(--accent-soft);
-  color: var(--accent-soft-fg);
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
 }
 
 .app-settings-dialog .plugin-install-stop-button,
@@ -645,7 +645,7 @@
 .app-settings-dialog .plugin-install-stop-button:hover:not(:disabled),
 .app-shell.app-shell .app-settings-dialog .plugin-install-stop-button:hover:not(:disabled) {
   border-color: var(--danger);
-  background: var(--danger-muted);
+  background: var(--ui-status-danger-surface);
   color: var(--danger);
 }
 
@@ -737,7 +737,7 @@
 .rule-detail-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
 .rule-detail-heading { margin: 12px 0 6px; font-size: inherit; }
 .rule-run-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
-.rule-run { border: 1px solid var(--divider-soft); border-radius: calc(6px * var(--ui-radius-scale, 1)); }
+.rule-run { border: 1px solid var(--ui-border-subtle); border-radius: calc(6px * var(--ui-radius-scale, 1)); }
 .rule-run.is-failed { border-color: color-mix(in srgb, var(--danger) 45%, transparent); }
 .rule-run-summary { display: flex; justify-content: space-between; gap: 12px; width: 100%; padding: 6px 8px; background: none; border: 0; color: inherit; text-align: left; cursor: pointer; }
 .rule-run.is-dry-run .rule-run-summary { color: var(--text-secondary); }

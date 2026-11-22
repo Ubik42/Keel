@@ -2,7 +2,7 @@
 .dimension-filter-btn,
 .discovery-filters > summary {
   border-radius: var(--ui-radius-control);
-  border-color: var(--divider-soft);
+  border-color: var(--ui-border-subtle);
   background: transparent;
   font-weight: 500;
 }
@@ -10,20 +10,20 @@
 .dimension-filter-btn:hover:not(:disabled):not(.is-active),
 .dimension-filter-btn.is-open:not(:disabled):not(.is-active),
 .discovery-filters > summary:hover {
-  border-color: var(--divider-soft);
+  border-color: var(--ui-border-subtle);
   background: transparent;
 }
 
 .dimension-filter-btn.is-active {
   border-color: color-mix(in srgb, var(--accent) 32%, transparent);
-  background: var(--accent-soft);
-  color: var(--accent-soft-fg);
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
 }
 
 .tool-button[aria-pressed="true"]:not(:disabled) {
   border-radius: var(--ui-radius-control);
-  background: var(--accent-soft);
-  color: var(--accent-soft-fg);
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
   border-color: color-mix(in srgb, var(--accent) 28%, transparent);
 }
 
@@ -46,13 +46,13 @@
 
 .inspector-content .text-field {
   border-radius: var(--ui-radius-control);
-  border-color: var(--divider-soft);
-  background: color-mix(in srgb, var(--canvas) 40%, var(--raised));
+  border-color: var(--ui-border-subtle);
+  background: color-mix(in srgb, var(--canvas) 40%, var(--ui-surface-raised));
   box-shadow: none;
 }
 
 .inspector-content .text-field:focus {
-  border-color: color-mix(in srgb, var(--accent) 58%, var(--divider));
+  border-color: color-mix(in srgb, var(--accent) 58%, var(--ui-border-divider));
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
 }
 
@@ -77,7 +77,7 @@
 /* --- App settings chrome only (exclude library-settings / sync-binding) --- */
 .app-settings-dialog:not(.library-settings-dialog) {
   border-radius: var(--ui-radius-dialog);
-  border-color: var(--divider-soft);
+  border-color: var(--ui-border-subtle);
   background: color-mix(in srgb, var(--canvas) 55%, var(--pane));
   box-shadow: var(--ui-shadow-modal);
 }
@@ -85,13 +85,13 @@
 /* DialogShell header (data-dialog-header) — was reading as bright raised white. */
 .app-settings-dialog:not(.library-settings-dialog) > [data-dialog-header="true"] {
   padding: 12px 16px 11px 18px;
-  border-bottom: 1px solid var(--divider-soft);
-  background: color-mix(in srgb, var(--text) 7%, var(--canvas));
-  color: var(--text);
+  border-bottom: 1px solid var(--ui-border-subtle);
+  background: color-mix(in srgb, var(--ui-content-primary) 7%, var(--canvas));
+  color: var(--ui-content-primary);
 }
 
 .app-settings-dialog:not(.library-settings-dialog) > [data-dialog-header="true"] h2 {
-  color: var(--text);
+  color: var(--ui-content-primary);
   font-size: calc(14px * var(--ui-font-scale));
   font-weight: 600;
   letter-spacing: -0.015em;
@@ -104,7 +104,7 @@
 .app-settings-dialog:not(.library-settings-dialog) .app-settings-nav {
   padding: 12px 10px;
   background: color-mix(in srgb, var(--canvas) 62%, var(--pane));
-  border-right: 1px solid var(--divider-soft);
+  border-right: 1px solid var(--ui-border-subtle);
 }
 
 .app-settings-dialog:not(.library-settings-dialog) .app-settings-nav-item {
@@ -115,8 +115,8 @@
 
 .app-settings-dialog:not(.library-settings-dialog) .app-settings-nav-item.is-active {
   border-color: transparent;
-  background: var(--accent-soft);
-  color: var(--accent-soft-fg);
+  background: var(--ui-action-accent-soft);
+  color: var(--ui-content-accent);
   font-weight: 600;
   box-shadow: none;
 }
@@ -132,9 +132,9 @@
 }
 
 .app-settings-dialog:not(.library-settings-dialog) .app-settings-card {
-  border: 1px solid var(--divider-soft);
+  border: 1px solid var(--ui-border-subtle);
   border-radius: var(--ui-radius-surface);
-  background: color-mix(in srgb, var(--raised) 62%, var(--canvas));
+  background: color-mix(in srgb, var(--ui-surface-raised) 62%, var(--canvas));
   box-shadow: none;
 }
 
@@ -142,7 +142,7 @@
 .empty-orbit {
   width: 56px;
   height: 56px;
-  border: 1.5px solid color-mix(in srgb, var(--accent) 48%, var(--divider));
+  border: 1.5px solid color-mix(in srgb, var(--accent) 48%, var(--ui-border-divider));
   box-shadow:
     0 0 0 10px color-mix(in srgb, var(--accent) 10%, transparent);
 }
@@ -158,9 +158,9 @@
 
 .empty-state,
 .library-state {
-  border: 1px solid var(--divider-soft);
+  border: 1px solid var(--ui-border-subtle);
   border-radius: var(--ui-radius-surface);
-  background: var(--raised);
+  background: var(--ui-surface-raised);
   padding: 4px;
   box-shadow: none;
 }
@@ -170,7 +170,7 @@
 /* Workspace bar must share --canvas with the active tab face so the tab
    joins the browse chrome without a tint seam under the tab. */
 .workspace-bar {
-  border-bottom: 1px solid var(--divider-soft);
+  border-bottom: 1px solid var(--ui-border-subtle);
   background: var(--canvas);
   box-shadow: none;
 }
@@ -181,21 +181,21 @@
 
 .folder-card {
   --folder-card-radius: calc(var(--folder-card-size, 160px) * 0.05);
-  border: 1px solid var(--divider-soft);
+  border: 1px solid var(--ui-border-subtle);
   border-radius: var(--ui-radius-surface);
-  background: color-mix(in srgb, var(--raised) 42%, var(--canvas));
+  background: color-mix(in srgb, var(--ui-surface-raised) 42%, var(--canvas));
   box-shadow: none;
 }
 
 .folder-card:hover {
-  background: color-mix(in srgb, var(--raised) 42%, var(--canvas));
-  border-color: var(--divider-soft);
+  background: color-mix(in srgb, var(--ui-surface-raised) 42%, var(--canvas));
+  border-color: var(--ui-border-subtle);
 }
 
 .folder-card.is-selected {
-  background: color-mix(in srgb, var(--accent) 6%, color-mix(in srgb, var(--raised) 42%, var(--canvas)));
+  background: color-mix(in srgb, var(--accent) 6%, color-mix(in srgb, var(--ui-surface-raised) 42%, var(--canvas)));
   border-color: transparent;
-  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--accent) 82%, var(--divider));
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--accent) 82%, var(--ui-border-divider));
 }
 
 .navigation-pane,

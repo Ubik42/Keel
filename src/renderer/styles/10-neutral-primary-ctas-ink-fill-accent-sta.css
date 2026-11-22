@@ -130,7 +130,7 @@
    用户 2026-10-17：选中态不要描边，只用背景色；既在浏览又被选中时仍显示选中的
    accent 轻染（中性 .is-active 底色不得把它盖掉）。 */
 .app-shell.app-shell .nav-tree-row:has(> .nav-row:hover:not(:disabled):not(.is-active):not(.is-multi-selected):not(.is-drop-target)) {
-  background: color-mix(in srgb, var(--text) 5%, transparent);
+  background: color-mix(in srgb, var(--ui-content-primary) 5%, transparent);
 }
 
 .app-shell.app-shell .nav-tree-row:has(> .nav-row.is-multi-selected) {
@@ -138,7 +138,7 @@
 }
 
 .app-shell.app-shell .nav-tree-row:has(> .nav-row.is-drop-target) {
-  background: color-mix(in srgb, var(--accent) 20%, var(--active));
+  background: color-mix(in srgb, var(--accent) 20%, var(--ui-surface-pressed));
 }
 
 /* 行的所有状态底色都由 .nav-tree-row 提供；按钮自己再画一层就会在同一条行里

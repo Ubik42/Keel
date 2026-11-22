@@ -20,7 +20,7 @@ describe("sidebar nav row states share one highlight rectangle", () => {
     expect(css).toMatch(/\.navigation-pane \{[^}]*--nav-selected-wash:[^;]+;/);
     expect(css.match(/--nav-selected-wash:/g)).toHaveLength(1);
     expect(css).toMatch(
-      /\.nav-row\.is-multi-selected \{\s*background: var\(--nav-selected-wash\);\s*color: var\(--text\);\s*\}/,
+      /\.nav-row\.is-multi-selected \{\s*background: var\(--nav-selected-wash\);\s*color: var\(--ui-content-primary\);\s*\}/,
     );
   });
 

@@ -1,12 +1,6 @@
 /* ==== a76: soften accent-soft button fills ================================
    Accent text on soft accent wash was eye-searing. Quieter soft fills;
    keep accent-soft-fg readable; keep full --accent for scores (a70). */
-:root {
-  --accent-soft: var(--ui-action-accent-soft, color-mix(in srgb, var(--accent) 10%, transparent));
-}
-:root[data-theme="light"] {
-  --accent-soft: var(--ui-action-accent-soft, color-mix(in srgb, var(--accent) 9%, #ffffff));
-}
 
 /* ==== a77: match window corner radii ======================================
    Window chrome (Linux rounded #root / Win11-like) uses 8px
@@ -32,14 +26,14 @@
   --preview-nav-on-light-disabled-fill: #8a8a8a;
   --elev-size: 0.9;
   --elev-intensity: 0.8;
-  --menu-surface-background: var(--raised);
-  --menu-surface-border: color-mix(in srgb, var(--divider) 82%, transparent);
+  --menu-surface-background: var(--ui-surface-raised);
+  --menu-surface-border: color-mix(in srgb, var(--ui-border-divider) 82%, transparent);
   --menu-surface-radius: calc(8px * var(--ui-radius-scale, 1));
   --menu-surface-shadow: var(--shadow-menu);
-  --menu-item-hover-background: var(--hover);
-  --menu-item-focus-background: color-mix(in srgb, var(--text) 11%, transparent);
+  --menu-item-hover-background: var(--ui-surface-hover);
+  --menu-item-focus-background: color-mix(in srgb, var(--ui-content-primary) 11%, transparent);
   --menu-item-disabled-opacity: 0.4;
-  --menu-danger-color: color-mix(in srgb, var(--danger) 78%, var(--text));
+  --menu-danger-color: color-mix(in srgb, var(--danger) 78%, var(--ui-content-primary));
   --menu-danger-hover-background: color-mix(in srgb, var(--danger) 14%, var(--menu-item-hover-background));
   --menu-item-padding: 6px 10px;
   --menu-item-font-size: calc(12.5px * var(--ui-font-scale));
@@ -49,8 +43,7 @@
   --shell-control-height: 28px;
   --shell-chip-height: 22px;
   --shell-library-switcher-width: 170px;
-  --viewer-chrome-border: var(--divider-soft);
-  --viewer-chrome-radius: var(--ui-radius-overlay);
+  --viewer-chrome-border: var(--ui-border-subtle);
   --window-corner-radius: 8px;
 }
 html.keel-window-square {

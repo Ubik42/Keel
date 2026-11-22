@@ -10,13 +10,8 @@ describe('theme CSS tokens (REQ-THEME-002)', () => {
     for (const token of [
       '--canvas',
       '--pane',
-      '--text',
       '--accent',
       '--danger',
-      '--success',
-      '--warning-fg',
-      '--ink',
-      '--accent-soft-fg',
       '--rating-star',
       '--elev-size',
       '--elev-intensity',

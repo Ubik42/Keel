@@ -61,7 +61,8 @@ describe('accent CSS derivation (Serpent-gnus)', () => {
       /--accent-dark:\s*color-mix\(in srgb,\s*var\(--accent\)/,
     );
     expect(css).not.toMatch(/--accent-soft-fg:\s*#1d4ed8/);
-    expect(css).toMatch(/--accent-soft-fg:\s*var\(--ui-content-accent/);
+    // Accent-tinted text uses --ui-content-accent directly (the --accent-soft-fg alias is gone).
+    expect(css).toContain('var(--ui-content-accent)');
     expect(foundationCss).toContain('--ui-content-accent: color-mix(in srgb, var(--ui-action-accent)');
     // Default leaf may still declare --accent: #3b82f6 in :root / light.
     expect(css).toContain('--accent: #3b82f6');

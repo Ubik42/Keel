@@ -2,27 +2,19 @@
    Quieter floating bars, softer contrast, tighter spacing. No library-
    settings / semantic-settings. */
 :root {
-  --viewer-chrome-bg: color-mix(in srgb, var(--raised) 90%, transparent);
+  --viewer-chrome-bg: color-mix(in srgb, var(--ui-surface-raised) 90%, transparent);
   --viewer-chrome-shadow: 0 6px 20px rgb(0 0 0 / 10%), 0 1px 3px rgb(0 0 0 / 5%);
 }
 
 [data-theme="light"] {
   --canvas: var(--ui-surface-canvas, #f0f1f3);
   --pane: var(--ui-surface-pane, #f7f7f8);
-  --raised: var(--ui-surface-raised, #ffffff);
   --raised-2: var(--ui-surface-raised-subtle, #fafafa);
-  --divider: var(--ui-border-divider, #e1e2e6);
-  --divider-soft: var(--ui-border-subtle, #ebecef);
-  --text: var(--ui-content-primary, #1a1b1e);
   --secondary: var(--ui-content-secondary, #5c5f69);
   --tertiary: var(--ui-content-tertiary, #8b8f99);
   --accent: #3b82f6;
   --accent-dark: color-mix(in srgb, var(--accent) 78%, black);
   --warning: var(--ui-status-warning, #b45309);
-  --hover: var(--ui-surface-hover, rgb(0 0 0 / 5.5%));
-  --active: var(--ui-surface-pressed, rgb(0 0 0 / 9%));
-  --accent-soft: var(--ui-action-accent-soft, color-mix(in srgb, var(--accent) 9%, #ffffff));
-  --accent-soft-fg: var(--ui-content-accent, color-mix(in srgb, var(--accent) 72%, black));
   --accent-ring: color-mix(in srgb, var(--ui-action-accent, var(--accent)) 50%, transparent);
   --rating-star: var(--accent);
   --appearance-color-blue: #2f6fad;
@@ -33,21 +25,14 @@
   --appearance-color-green: #3d8f45;
   --appearance-color-teal: #2a8a82;
   --appearance-color-red: #c44545;
-  --success: var(--ui-status-success, #16a34a);
   --danger: var(--ui-status-danger, #dc2626);
-  --danger-muted: var(--ui-status-danger-surface, #fde8e8);
-  --danger-soft: var(--ui-status-danger-content, #f87171);
   --filter-exclude: var(--ui-status-danger, #c24e4e);
   --filter-exclude-soft: color-mix(in srgb, var(--filter-exclude) 14%, var(--canvas));
-  --filter-exclude-border: color-mix(in srgb, var(--filter-exclude) 50%, var(--divider));
-  --filter-exclude-fg: color-mix(in srgb, var(--filter-exclude) 75%, var(--text));
+  --filter-exclude-border: color-mix(in srgb, var(--filter-exclude) 50%, var(--ui-border-divider));
+  --filter-exclude-fg: color-mix(in srgb, var(--filter-exclude) 75%, var(--ui-content-primary));
   --filter-exclude-active-bg: color-mix(in srgb, var(--filter-exclude) 20%, var(--canvas));
-  --warning-fg: var(--ui-status-warning-content, #9a3412);
-  --warning-muted: var(--ui-status-warning-surface, #ffedd5);
-  --ink: var(--ui-content-inverse, #0f1010);
-  --viewer-stage: var(--ui-surface-canvas, #f0f1f3);
   --viewer-document-page: #fff;
-  --border: var(--divider);
+  --border: var(--ui-border-divider);
   --shadow-toolbar:
     0 calc(1px * var(--elev-size)) calc(4px * var(--elev-size))
     rgb(0 0 0 / calc(0.04 * var(--elev-intensity)));
@@ -67,7 +52,7 @@
   --shadow-elevated: 0 18px 48px rgb(0 0 0 / 16%);
   --shadow-panel: 0 12px 28px rgb(0 0 0 / 12%);
   --shadow-toast: 0 8px 20px rgb(0 0 0 / 10%);
-  --viewer-chrome-bg: color-mix(in srgb, var(--raised) 94%, transparent);
+  --viewer-chrome-bg: color-mix(in srgb, var(--ui-surface-raised) 94%, transparent);
   --viewer-chrome-shadow: 0 8px 22px rgb(0 0 0 / 8%), 0 1px 2px rgb(0 0 0 / 4%);
 }
 
@@ -78,7 +63,7 @@
 .model-viewer-toolbar,
 .plugin-viewer-overlay-toggle {
   border-color: var(--viewer-chrome-border);
-  border-radius: var(--viewer-chrome-radius);
+  border-radius: var(--ui-radius-overlay);
   background: var(--viewer-chrome-bg);
   box-shadow: var(--viewer-chrome-shadow);
   backdrop-filter: blur(14px);
@@ -126,8 +111,8 @@
 .preview-video-fit:hover,
 .preview-video-fullscreen:hover,
 .preview-video-rate:hover {
-  background: var(--hover);
-  color: var(--text);
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-primary);
 }
 
 .preview-zoom-controls button:not(.ui-select-trigger) {
@@ -139,8 +124,8 @@
 
 .preview-zoom-controls button:not(.ui-select-trigger):hover,
 .preview-zoom-controls button:not(.ui-select-trigger):focus-visible {
-  background: var(--hover);
-  color: var(--text);
+  background: var(--ui-surface-hover);
+  color: var(--ui-content-primary);
 }
 
 .preview-zoom-controls .preview-zoom-label {
@@ -188,7 +173,7 @@
 
 .pdf-viewer-toolbar {
   border-color: var(--viewer-chrome-border);
-  border-radius: var(--viewer-chrome-radius);
+  border-radius: var(--ui-radius-overlay);
   background: var(--viewer-chrome-bg);
   box-shadow: var(--viewer-chrome-shadow);
   backdrop-filter: blur(14px);
