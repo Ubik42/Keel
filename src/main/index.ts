@@ -16,7 +16,6 @@ import {
   existsSync,
   mkdirSync,
   readFileSync,
-  rmSync,
   writeFileSync,
 } from "node:fs";
 
@@ -170,20 +169,12 @@ import {
   createWindowsTray,
 } from "./windows-tray";
 import {
-  ASSET_CHANGE_CHANNEL,
   ASSET_NATIVE_DRAG_CHANNEL,
   ASSET_NATIVE_DRAG_PRIME_CHANNEL,
-  EXTENSION_SAVE_COMPLETED_CHANNEL,
   THUMBNAIL_CHANNEL,
   ACTIVE_CONTEXT_CHANNEL,
   APP_LOCALE_CHANNEL,
-  LIBRARY_LIFECYCLE_CHANNEL,
-  LIBRARY_CHANGED_CHANNEL,
   LIBRARY_REQUEST_CHANNEL,
-  PROGRESS_CHANNEL,
-  AI_PROGRESS_CHANNEL,
-  AI_COMPLETED_CHANNEL,
-  AI_CLEARED_CHANNEL,
   OPEN_EXTERNAL_URL_CHANNEL,
   STARTUP_PREFERENCES_GET_CHANNEL,
   STARTUP_PREFERENCES_SET_CHANNEL,
@@ -299,13 +290,11 @@ import { createPluginPackageRequestHandler } from './plugin-package-ipc';
 import { PluginPackageManager } from './plugin-package-manager';
 import { PLUGIN_API_VERSION } from '../plugins/plugin-manifest';
 import {
-  createPluginDomainEvent,
   validatePluginCauseChain,
 } from '../plugins/plugin-domain-events';
 import type { AutomationExecutionContext } from '../automation/command-gateway';
 import {
   AUTOMATION_API_VERSION,
-  type AutomationCommandId,
 } from '../automation/command-registry';
 import {
   attachLinuxRoundedCorners,
@@ -339,24 +328,9 @@ import {
   type WorkerCommand,
 } from "../shared/protocol/requests";
 import {
-  parseRendererLifecycleEvent,
-  type RendererLifecycleEvent,
   type RendererResult,
   type WorkerResult,
-  type AssetChangeEvent,
-  parseAssetChangeEvent,
-  type LibraryChangedEvent,
-  parseLibraryChangedEvent,
-  type ExtensionSaveCompletedEvent,
-  parseExtensionSaveCompletedEvent,
-  type ProgressEvent,
-  type AiProgressEvent,
-  type AiAnalysisCompletedEvent,
-  type AiContentClearedEvent,
   type ImageSequenceImportOffer,
-  parseAiProgressEvent,
-  parseAiAnalysisCompletedEvent,
-  parseAiContentClearedEvent,
 } from "../shared/protocol/responses";
 import { LibraryWorkerClient, WorkerRequestTimeoutError } from "./worker-client";
 import { performanceConsumerIdForWindow } from "../shared/performance-contract";
@@ -377,7 +351,6 @@ import {
   recentLibraryAutoOpenEnabled,
   readActiveLibraryPath,
   readRecentLibraryEntries,
-  rememberRecentLibrary,
   removeRecentLibrary,
 } from "./recent-libraries";
 import {
@@ -408,17 +381,10 @@ import {
 } from "./model-thumbnail-source-cache";
 import {
   createExtensionServer,
-  type SaveIntent,
-  type SaveIntentDisposition,
-  type SaveUploadDisposition,
-  type SaveUploadRequest,
-  type ListFoldersDisposition,
 } from "./extension-server";
 import {
-  readExtensionBrowseFolderIds,
   recordExtensionBrowseFolder,
 } from "./extension-recent-browse-folders";
-import { resolveExtensionSaveRouting } from "./extension-save-context";
 import { RelinkPreviewStore } from "./relink-preview-store";
 import {
   cleanupClipboardImage,
@@ -708,49 +674,21 @@ function currentPluginCompatibilityPlatform():
   return { platform, arch };
 }
 
-function rememberOpenedLibrary(libraryPath: string, displayName: string, libraryId?: string): void {
-  rememberRecentLibrary(
-    recentLibraryPath(),
-    { path: libraryPath, name: displayName, ...(libraryId === undefined ? {} : { libraryId }) },
-    {
-      onError: (error) => {
-        state.logger?.error("recent-library.write", error);
-      },
-    },
-  );
-  refreshApplicationMenuRecentLibraries();
-}
-
-/**
- * Re-installs the native menu so its 资源库 → 最近使用的资源库 section tracks the
- * store. Called after any recent-library mutation (open, forget, remove).
- */
-function refreshApplicationMenuRecentLibraries(): void {
-  if (process.platform !== "darwin") return;
-  installApplicationMenu({
-    locale: state.appLocale,
-    recentLibraries: nativeMenuRecentLibraries(),
-    shortcutBindings: readShortcutBindingsSnapshot(),
-  });
-}
-
-// Maps BrowserWindow.id to the active library/folder context for extension save.
-const focusedContexts = new Map<
-  number,
-  { libraryId: string | null; selectedFolderId?: string }
->();
-
 // Keeps selected roots in Main. Renderer receives only an opaque, one-shot token.
 const pendingRelinkPreviews = new RelinkPreviewStore();
 import type { ActiveLibraryOpenCancellation } from "./main-state";
 import { activateAiConnectionProfile, deleteAiConnectionProfile, deleteEmbeddingServiceKey, embeddingServiceKeyPath, getDecryptedApiKey, getDecryptedProfileApiKey, loadAiConfig, readEmbeddingBindings, readEmbeddingModels, readEmbeddingServiceKey, readEmbeddingServices, readSyncBindings, readSyncServers, resolveSyncServerCredentials, saveAiConfig, saveAiConnectionProfile, writeEmbeddingBindings, writeEmbeddingModels, writeEmbeddingServiceKey, writeEmbeddingServices, writeSyncBindings, writeSyncServers } from './ai-settings-files';
 import { cleanupAllExternalSources, cleanupExternalSource, fallbackDirectoryForLibraryId, materializeSelectedExternalLibrary, pendingImportSources, recentLibraryPath, rememberExternalSource, sweepOrphanExternalLibraryStagingOnStartup } from './external-library-staging';
 import { exportShortcutBindingsFile, importShortcutBindingsFile, nativeMenuRecentLibraries, readShortcutBindingsSnapshot, readStartupPreferencesSnapshot, startupPreferencesPath, storeShortcutBindings, storeStartupPreferences } from './app-preference-files';
-import { artifactPathCache, cancelArtifactPathBatches, clearArtifactPathCache, clearNativeAssetDragCache, evictArtifactPathCache, lastVisibleDragAssetIds, nativeAssetDragCache, nativeAssetDragPrimer, resolveArtifactPathBatched, sourcePathCache } from './asset-path-caches';
+import { artifactPathCache, cancelArtifactPathBatches, clearArtifactPathCache, clearNativeAssetDragCache, lastVisibleDragAssetIds, nativeAssetDragCache, nativeAssetDragPrimer, resolveArtifactPathBatched, sourcePathCache } from './asset-path-caches';
 import { confirmCriticalRendererRequest, confirmDesktopAutomationFilePlan, confirmDesktopAutomationWrite, confirmEnableAllMcpPermissions, confirmRuleRun, criticalRendererRequest } from './desktop-confirmations';
 import { runScheduledRules, scheduleLibraryChangeRules } from './rule-triggers';
 import { aiQueueScheduler, enqueueAutoAnalyzeAfterImport, processAiQueue } from './ai-queue';
 import { createNativeDialogHost, selectAutomationScriptToOpen, selectAutomationScriptToSave, selectDirectory, selectImportSources, selectPluginPackageForInstall } from './main-dialogs';
+import { publishAiCleared, publishAiCompleted, publishAiProgress, publishAssetChange, publishLibraryChanged, publishLifecycle, publishProgress } from './renderer-events';
+import { focusKeelWindow, focusedContexts, handleListFolders, handleSaveIntent, handleSaveUpload } from './extension-save';
+import { notifyLibraryOpenedSideEffects, pluginThumbnailExtensionsFor, refreshApplicationMenuRecentLibraries, rememberOpenedLibrary, syncPluginCompanionExtensions, syncPluginThumbnailExtensions } from './library-opened';
+import { executeMcpLibraryContextCommand, normalizeMcpCommandInput } from './mcp-library-context';
 
 // Pending import libraryId (importId -> libraryId), for auto-analyze after import.
 const pendingImportLibraries = new Map<string, string>();
@@ -839,19 +777,6 @@ function handleSecondInstance(_event: Electron.Event, argv: string[]): void {
   // A second launch while Vite is preparing its first module graph must not
   // reload the still-loading window and reset its mount deadline.
   focusMainWindow();
-}
-
-function focusKeelWindow(windowId?: number): boolean {
-  if (!shouldHandleSecondaryLaunch({ applicationQuitting: state.applicationQuitting })) return false;
-  const target =
-    windowId === undefined
-      ? state.mainWindow
-      : BrowserWindow.getAllWindows().find((window) => window.id === windowId);
-  if (!target || target.isDestroyed()) return false;
-  if (target.isMinimized()) target.restore();
-  target.show();
-  target.focus();
-  return true;
 }
 
 /**
@@ -1258,295 +1183,6 @@ function isLibraryOpenRequest(request: RendererRequest): boolean {
     || request.type === "library.open-billfish.request";
 }
 
-function getExtensionSaveRouting() {
-  const focusedWindow = BrowserWindow.getFocusedWindow();
-  return resolveExtensionSaveRouting({
-    focusedWindowId: focusedWindow?.id ?? null,
-    contexts: focusedContexts,
-    lastTargetWindowId: state.lastExtensionTargetWindowId ?? null,
-    mainWindowId:
-      state.mainWindow && !state.mainWindow.isDestroyed() ? state.mainWindow.id : null,
-  });
-}
-
-function getExtensionSaveContext() {
-  return getExtensionSaveRouting().context;
-}
-
-async function handleListFolders(): Promise<ListFoldersDisposition> {
-  if (!state.workerClient) {
-    return { ok: false, status: 503, reason: "worker unavailable" };
-  }
-
-  const saveContext = getExtensionSaveContext();
-  if (!saveContext) {
-    return { ok: false, status: 503, reason: "no active library" };
-  }
-
-  const result = await state.workerClient.request({
-    type: "folder.list",
-    libraryId: saveContext.libraryId,
-  });
-  if (!result.ok) {
-    return {
-      ok: false,
-      status: result.error.code === "LIBRARY_NOT_OPEN" ? 503 : 422,
-      reason: result.error.reason ?? result.error.code,
-    };
-  }
-  if (result.type !== "folder.list") {
-    return { ok: false, status: 500, reason: "unexpected worker response" };
-  }
-
-  let libraryDisplayName = "Keel";
-  const librariesResult = await state.workerClient.request({ type: "library.list" });
-  if (librariesResult.ok && librariesResult.type === "library.list") {
-    const match = librariesResult.libraries.find(
-      (library) => library.libraryId === saveContext.libraryId,
-    );
-    if (match?.displayName) libraryDisplayName = match.displayName;
-  }
-
-  // 链接文件夹与 managed 文件夹并列作为扩展保存目标：worker 的 folder.list
-  // 只列 managed，这里额外取 linked-folder.list 并按链接根 displayName 做
-  // 命名空间前缀，避免与 managed 的 relativePath 撞树（Serpent-f6f779）。
-  let linkedExtensionFolders: Array<{
-    folderId: string;
-    name: string;
-    relativePath: string;
-    assetCount: number;
-  }> = [];
-  const linkedResult = await state.workerClient.request({
-    type: "linked-folder.list",
-    libraryId: saveContext.libraryId,
-  });
-  if (linkedResult.ok && linkedResult.type === "linked-folder.list") {
-    const rootNames = new Map(
-      linkedResult.folders
-        .filter((folder) => (folder.relativePath ?? "") === "")
-        .map((folder) => [folder.folderId, folder.displayName]),
-    );
-    linkedExtensionFolders = linkedResult.folders.map((folder) => {
-      const rootName =
-        (folder.linkedFolderId
-          ? rootNames.get(folder.linkedFolderId)
-          : undefined) ?? folder.displayName;
-      return {
-        folderId: folder.folderId,
-        name: folder.displayName,
-        relativePath:
-          (folder.relativePath ?? "") === ""
-            ? rootName
-            : `${rootName}/${folder.relativePath}`,
-        assetCount: folder.assetCount,
-      };
-    });
-  }
-
-  return {
-    ok: true,
-    libraryDisplayName,
-    recentBrowsedFolderIds: (() => {
-      let ids = state.extensionBrowseFoldersStorePath
-        ? readExtensionBrowseFolderIds(
-            state.extensionBrowseFoldersStorePath,
-            saveContext.libraryId,
-          )
-        : [];
-      if (saveContext.selectedFolderId) {
-        ids = [
-          saveContext.selectedFolderId,
-          ...ids.filter((id) => id !== saveContext.selectedFolderId),
-        ];
-      }
-      return ids;
-    })(),
-    folders: [
-      ...result.folders.map((folder) => ({
-        folderId: folder.folderId,
-        name: folder.name,
-        relativePath: folder.relativePath,
-        assetCount: folder.directAssetCount,
-      })),
-      ...linkedExtensionFolders,
-    ],
-  };
-}
-
-async function handleSaveIntent(
-  intent: SaveIntent,
-): Promise<SaveIntentDisposition> {
-  if (!state.workerClient) {
-    return { accepted: false, status: 503, reason: "worker unavailable" };
-  }
-
-  const focusedWindow = BrowserWindow.getFocusedWindow();
-  const saveContext = getExtensionSaveContext();
-  if (!saveContext) {
-    state.logger?.info(
-      "extension-server.save",
-      focusedWindow
-        ? "No active library in focused window; dropping save intent."
-        : "No focused Keel window and no fallback browse context; dropping save intent.",
-      {
-        focusedWindowId: focusedWindow?.id ?? null,
-        lastTargetWindowId: state.lastExtensionTargetWindowId ?? null,
-        mainWindowId:
-          state.mainWindow && !state.mainWindow.isDestroyed() ? state.mainWindow.id : null,
-        contextWindowCount: focusedContexts.size,
-      },
-    );
-    return { accepted: false, status: 503, reason: "no active library" };
-  }
-
-  const targetFolderId =
-    intent.targetFolderId !== undefined
-      ? intent.targetFolderId ?? undefined
-      : saveContext.selectedFolderId;
-
-  const command: WorkerCommand = {
-    type: "extension.save-from-url",
-    libraryId: saveContext.libraryId,
-    targetFolderId,
-    sourcePageUrl: intent.sourcePageUrl,
-    mediaUrl: intent.mediaUrl,
-    mediaType: intent.mediaType,
-  };
-
-  try {
-    const result = await state.workerClient.request(command);
-    if (!result.ok) {
-      state.logger?.error(
-        "extension-server.save",
-        new Error(`Save failed: ${result.error.message}`),
-        {
-          code: result.error.code,
-          reason: result.error.reason,
-        },
-      );
-      return {
-        accepted: false,
-        status: result.error.code === "LIBRARY_NOT_OPEN" ? 503 : 422,
-        reason: result.error.reason ?? result.error.code,
-      };
-    }
-    state.logger?.info("extension-server.save", "Asset saved successfully.", {
-      type: result.type,
-    });
-    if (result.type === "extension.asset-saved") {
-      void enqueueAutoAnalyzeAfterImport(saveContext.libraryId, [
-        result.asset.assetId,
-      ]);
-    }
-    return { accepted: true };
-  } catch (error) {
-    state.logger?.error("extension-server.save", error);
-    throw error;
-  }
-}
-
-async function handleSaveUpload(
-  upload: SaveUploadRequest,
-): Promise<SaveUploadDisposition> {
-  if (!state.workerClient) {
-    return { accepted: false, status: 503, reason: "worker unavailable" };
-  }
-
-  const focusedWindow = BrowserWindow.getFocusedWindow();
-  const saveRouting = getExtensionSaveRouting();
-  const saveContext = saveRouting.context;
-  if (!saveContext) {
-    state.logger?.info(
-      "extension-server.save-upload",
-      focusedWindow
-        ? "No active library in focused window; dropping upload."
-        : "No focused Keel window and no fallback browse context; dropping upload.",
-      {
-        focusedWindowId: focusedWindow?.id ?? null,
-        lastTargetWindowId: state.lastExtensionTargetWindowId ?? null,
-        mainWindowId:
-          state.mainWindow && !state.mainWindow.isDestroyed() ? state.mainWindow.id : null,
-        contextWindowCount: focusedContexts.size,
-      },
-    );
-    return { accepted: false, status: 503, reason: "no active library" };
-  }
-
-  const targetFolderId =
-    upload.targetFolderId !== undefined
-      ? upload.targetFolderId ?? undefined
-      : saveContext.selectedFolderId;
-
-  const command: WorkerCommand = {
-    type: "extension.save-from-file",
-    libraryId: saveContext.libraryId,
-    targetFolderId,
-    sourcePageUrl: upload.sourcePageUrl,
-    mediaUrl: upload.mediaUrl,
-    stagedFilePath: upload.stagedFilePath,
-    contentType: upload.contentType,
-    filename: upload.filename,
-  };
-
-  try {
-    const result = await state.workerClient.request(command);
-    if (!result.ok) {
-      state.logger?.error(
-        "extension-server.save-upload",
-        new Error(`Upload save failed: ${result.error.message}`),
-        {
-          code: result.error.code,
-          reason: result.error.reason,
-        },
-      );
-      return {
-        accepted: false,
-        status: result.error.code === "LIBRARY_NOT_OPEN" ? 503 : 422,
-        reason: result.error.reason ?? result.error.code,
-      };
-    }
-    if (result.type !== "extension.asset-saved") {
-      return { accepted: false, status: 500, reason: "unexpected worker response" };
-    }
-    state.logger?.info("extension-server.save-upload", "Asset saved successfully.", {
-      type: result.type,
-      byteLength: upload.byteLength,
-      assetId: result.asset.assetId,
-    });
-    if (upload.focusAppAfterSave) {
-      focusKeelWindow(saveRouting.targetWindowId ?? undefined);
-    }
-    if (upload.revealInLibrary) {
-      publishExtensionSaveCompleted(saveRouting.targetWindowId, {
-        type: "extension.save.completed",
-        libraryId: saveContext.libraryId,
-        asset: result.asset,
-      });
-    }
-    void enqueueAutoAnalyzeAfterImport(saveContext.libraryId, [
-      result.asset.assetId,
-    ]);
-    return { accepted: true };
-  } catch (error) {
-    state.logger?.error("extension-server.save-upload", error);
-    throw error;
-  } finally {
-    try {
-      rmSync(upload.stagingDirectory, { recursive: true, force: true });
-    } catch (error) {
-      state.logger?.error("extension-server.save-upload-cleanup", error);
-    }
-  }
-}
-
-function publishLifecycle(event: RendererLifecycleEvent): void {
-  if (!state.mainWindow || state.mainWindow.isDestroyed()) return;
-  state.mainWindow.webContents.send(
-    LIBRARY_LIFECYCLE_CHANNEL,
-    parseRendererLifecycleEvent(event),
-  );
-}
-
 async function closeOpenLibrariesBeforeReplacement(): Promise<string[]> {
   const previousPaths: string[] = [];
   if (!state.workerClient) return previousPaths;
@@ -1608,170 +1244,6 @@ async function reopenLibrariesAfterFailedReplacement(
       });
     }
   }
-}
-
-function publishAssetChange(event: AssetChangeEvent): void {
-  const parsed = parseAssetChangeEvent(event);
-  // Asset changes can invalidate a cached source path (delete, relink, move,
-  // or replacement). Artifact-only library changes use the separate
-  // library.changed channel and do not evict the viewer's hot path.
-  sourcePathCache.clearLibrary(parsed.libraryId);
-  evictArtifactPathCache(parsed.libraryId);
-  if (parsed.nativeDragPathsChanged === true || parsed.source === "watcher") {
-    const visibleDragIds = lastVisibleDragAssetIds.get(parsed.libraryId);
-    clearNativeAssetDragCache(parsed.libraryId);
-    if (visibleDragIds) {
-      lastVisibleDragAssetIds.set(parsed.libraryId, visibleDragIds);
-      nativeAssetDragPrimer.scheduleVisible(parsed.libraryId, visibleDragIds);
-    }
-  }
-  state.embeddingTestIndex?.catchUp(parsed.libraryId);
-  state.embeddingHttpIndex?.catchUp(parsed.libraryId);
-  state.pluginActivationCoordinator?.fanOutDomainEvent(createPluginDomainEvent({
-    kind: 'asset.changed',
-    libraryId: parsed.libraryId,
-    summary: {
-      changedCount: parsed.changedCount,
-      missingCount: parsed.missingCount,
-      ...(parsed.source === undefined ? {} : { source: parsed.source }),
-    },
-  }));
-  if (!state.mainWindow || state.mainWindow.isDestroyed()) return;
-  state.mainWindow.webContents.send(
-    ASSET_CHANGE_CHANNEL,
-    parsed,
-  );
-}
-
-function publishLibraryChanged(event: LibraryChangedEvent): void {
-  const parsed = parseLibraryChangedEvent(event);
-  // `library.changed` is also emitted for immutable derived-artifact writes.
-  // Advancing the Main-side path-cache generation here races a thumbnail
-  // response that is already resolving: the path lookup returns a valid new
-  // artifact, but the generation check rejects it as stale. The Renderer then
-  // sees a transient protocol failure and permanently replaces the image with
-  // its broken-file fallback. Asset/source mutations use asset.changed and
-  // explicitly clear this cache; close/reopen paths clear it as well.
-  state.pluginActivationCoordinator?.fanOutDomainEvent(createPluginDomainEvent({
-    kind: 'library.changed',
-    libraryId: parsed.libraryId,
-    summary: {
-      changeSequence: parsed.changeSequence,
-    },
-  }));
-  if (!state.mainWindow || state.mainWindow.isDestroyed()) return;
-  state.mainWindow.webContents.send(
-    LIBRARY_CHANGED_CHANNEL,
-    parsed,
-  );
-}
-
-function publishExtensionSaveCompleted(
-  windowId: number | null,
-  event: ExtensionSaveCompletedEvent,
-): void {
-  const target =
-    windowId === null
-      ? state.mainWindow
-      : BrowserWindow.getAllWindows().find((window) => window.id === windowId);
-  if (!target || target.isDestroyed()) return;
-  target.webContents.send(
-    EXTENSION_SAVE_COMPLETED_CHANNEL,
-    parseExtensionSaveCompletedEvent(event),
-  );
-}
-
-function publishProgress(event: ProgressEvent): void {
-  if (!state.mainWindow || state.mainWindow.isDestroyed()) return;
-  state.mainWindow.webContents.send(PROGRESS_CHANNEL, event);
-}
-
-function publishAiProgress(event: AiProgressEvent): void {
-  if (!state.mainWindow || state.mainWindow.isDestroyed()) return;
-  state.mainWindow.webContents.send(AI_PROGRESS_CHANNEL, parseAiProgressEvent(event));
-}
-
-function publishAiCompleted(event: AiAnalysisCompletedEvent): void {
-  if (!state.mainWindow || state.mainWindow.isDestroyed()) return;
-  state.mainWindow.webContents.send(
-    AI_COMPLETED_CHANNEL,
-    parseAiAnalysisCompletedEvent(event),
-  );
-}
-
-function publishAiCleared(event: AiContentClearedEvent): void {
-  if (!state.mainWindow || state.mainWindow.isDestroyed()) return;
-  state.mainWindow.webContents.send(
-    AI_CLEARED_CHANNEL,
-    parseAiContentClearedEvent(event),
-  );
-}
-
-/** Shared post-open hook for dialog opens and startup recent-library restore. */
-function pluginThumbnailExtensionsFor(libraryId: string): string[] {
-  const extensions = new Set<string>();
-  for (const provider of state.pluginActivationCoordinator?.listActiveProviders(libraryId) ?? []) {
-    if (provider.kind !== 'thumbnail') continue;
-    for (const raw of provider.extensions ?? []) {
-      const extension = raw.replace(/^\./u, '').toLowerCase();
-      if (/^[a-z0-9][a-z0-9+_-]*$/u.test(extension)) extensions.add(extension);
-    }
-  }
-  return [...extensions];
-}
-
-async function syncPluginThumbnailExtensions(): Promise<void> {
-  const client = state.workerClient;
-  if (!client) return;
-  const listed = await client.request({ type: 'library.list' });
-  if (!listed.ok || listed.type !== 'library.list') return;
-  for (const library of listed.libraries) {
-    client.publishPluginThumbnailExtensions(
-      library.libraryId,
-      pluginThumbnailExtensionsFor(library.libraryId),
-    );
-  }
-}
-
-/**
- * PF: tell the Worker which companion extensions active plugins declare. The
- * Worker keeps one process-wide set, so send the union over open libraries.
- */
-async function syncPluginCompanionExtensions(): Promise<void> {
-  const coordinator = state.pluginActivationCoordinator;
-  if (!coordinator || !state.workerClient) return;
-  const libraryIds = coordinator.trackedOpenLibraryIds();
-  if (libraryIds.length === 0) return;
-  const extensions = [...new Set(libraryIds.flatMap((id) => coordinator.listCompanionExtensions(id)))];
-  try {
-    await state.workerClient.request({ type: "library.companion-extensions.set", libraryId: libraryIds[0]!, extensions });
-  } catch (error) {
-    state.logger?.error("plugin.companion-extensions", error);
-  }
-}
-
-async function notifyLibraryOpenedSideEffects(input: {
-  libraryId: string;
-  libraryDirectory: string;
-}): Promise<void> {
-  void processAiQueue(input.libraryId);
-  try {
-    await state.pluginActivationCoordinator?.onLibraryOpened({
-      libraryId: input.libraryId,
-      libraryDirectory: input.libraryDirectory,
-    });
-    await syncPluginCompanionExtensions();
-  } catch (error) {
-    state.logger?.error("plugin.activation.library-opened", error, {
-      libraryId: input.libraryId,
-    });
-  }
-  // Global plugin activation uses an internal pseudo-library. Once the real
-  // library is open, tick only jobs explicitly enqueued or retried in this
-  // application session; interrupted rows are never auto-recovered.
-  state.pluginJobScheduler?.tick(input.libraryId);
-  await syncPluginThumbnailExtensions();
-  state.workerClient?.publishShowMissingLinkedFiles(state.showMissingLinkedFiles);
 }
 
 /** Serpent-xffq：每台设备的稳定同步身份（userData 持久化，非敏感）。 */
@@ -2746,138 +2218,6 @@ async function handleLibraryRequest(
       }
     }
   }
-}
-
-async function executeMcpLibraryContextCommand(input: {
-  commandId: 'library.list-open' | 'library.list-recent' | 'library.open' | 'library.show-in-desktop';
-  executionId: string;
-  context: AutomationExecutionContext;
-  commandInput: unknown;
-}): Promise<unknown> {
-  if (input.commandId === 'library.list-recent') {
-    return readRecentLibraryEntries(recentLibraryPath(), (error) => {
-      state.logger?.error('recent-library.read', error);
-    }).map((entry) => ({
-      libraryId: entry.libraryId ?? null,
-      displayName: entry.name,
-    }));
-  }
-  const journal = state.automationExecutionJournal;
-  const client = state.workerClient;
-  if (!journal || !client) {
-    throw new AutomationLibraryContextError('AUTOMATION_LIBRARY_OPEN_FAILED');
-  }
-  const listed = await client.request({ type: 'library.list' });
-  if (!listed.ok || listed.type !== 'library.list') {
-    throw new AutomationLibraryContextError('AUTOMATION_LIBRARY_OPEN_FAILED');
-  }
-  const libraries = listed.libraries;
-  if (input.commandId === 'library.list-open') {
-    return {
-      libraries: libraries.map((library) => ({
-        libraryId: library.libraryId,
-        displayName: library.displayName,
-        active: false,
-      })),
-      activeLibraryId: null,
-      contextRevision: 0,
-    };
-  }
-
-  const commandInput = input.commandInput as { libraryId?: string };
-  let selected = commandInput.libraryId === undefined
-    ? undefined
-    : libraries.find((library) => library.libraryId === commandInput.libraryId);
-  let needsOpen = false;
-  if (input.commandId === 'library.open' && selected === undefined && commandInput.libraryId !== undefined) {
-    const recent = readRecentLibraryEntries(recentLibraryPath(), (error) => {
-      state.logger?.error('recent-library.read', error);
-    }).find((entry) => entry.libraryId === commandInput.libraryId);
-    if (recent === undefined) {
-      throw new AutomationLibraryContextError('AUTOMATION_LIBRARY_NOT_OPEN');
-    }
-    selected = {
-      libraryId: recent.libraryId!,
-      displayName: recent.name,
-      libraryPath: recent.path,
-    };
-    needsOpen = true;
-  }
-  if (input.commandId === 'library.open' && selected === undefined) {
-    throw new AutomationLibraryContextError('AUTOMATION_LIBRARY_NOT_OPEN');
-  }
-  if (selected === undefined) {
-    throw new AutomationLibraryContextError('AUTOMATION_LIBRARY_NOT_OPEN');
-  }
-  if (input.commandId === 'library.open') {
-    if (selected.libraryId === '' || needsOpen) {
-      publishLifecycle({ type: 'library.opening', operation: 'open', source: 'mcp' });
-      const opened = await client.request({
-        type: 'library.open',
-        selectedLibraryPath: selected.libraryPath,
-      });
-      if (!opened.ok || opened.type !== 'library.opened') {
-        throw new AutomationLibraryContextError('AUTOMATION_LIBRARY_OPEN_FAILED');
-      }
-      selected = opened.library;
-      rememberOpenedLibrary(selected.libraryPath, selected.displayName, selected.libraryId);
-      await notifyLibraryOpenedSideEffects({
-        libraryId: selected.libraryId,
-        libraryDirectory: selected.libraryPath,
-      });
-      publishLifecycle({
-        type: 'library.opened',
-        source: 'mcp',
-        library: {
-          libraryId: selected.libraryId,
-          displayName: selected.displayName,
-          storageLayout: selected.storageLayout,
-          displayPath: selected.libraryPath,
-          ...(selected.readOnly === undefined ? {} : { readOnly: selected.readOnly }),
-          ...(selected.networkStorage === undefined ? {} : { networkStorage: selected.networkStorage }),
-          ...(selected.libraryVersion === undefined ? {} : { libraryVersion: selected.libraryVersion }),
-          ...(selected.supportedSchemaVersion === undefined ? {} : { supportedSchemaVersion: selected.supportedSchemaVersion }),
-          ...(selected.migrationStuck === undefined ? {} : { migrationStuck: selected.migrationStuck }),
-        },
-      });
-    }
-  }
-  if (selected.libraryId === '') {
-    throw new AutomationLibraryContextError('AUTOMATION_LIBRARY_OPEN_FAILED');
-  }
-  if (input.commandId === 'library.show-in-desktop') {
-    publishLifecycle({
-      type: 'library.opened',
-      source: 'mcp',
-      library: {
-        libraryId: selected.libraryId,
-        displayName: selected.displayName,
-        storageLayout: selected.storageLayout,
-        displayPath: selected.libraryPath,
-      },
-    });
-  }
-  return {
-    libraryId: selected.libraryId,
-    displayName: selected.displayName,
-    contextRevision: 0,
-  };
-}
-
-async function normalizeMcpCommandInput(input: {
-  commandId: AutomationCommandId;
-  executionId: string;
-  context: AutomationExecutionContext;
-  commandInput: unknown;
-  signal?: AbortSignal;
-}): Promise<unknown | undefined> {
-  // MCP always supplies explicit paths. Opening a native picker here would
-  // make a supposedly stateless/headless request depend on a human and would
-  // recreate the repeated confirmation failure this adapter is designed to
-  // eliminate. The Registry MCP schemas validate these fields before this
-  // normalizer runs.
-  if (input.signal?.aborted) return input.commandInput;
-  return input.commandInput;
 }
 
 async function startApplication(): Promise<void> {
