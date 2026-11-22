@@ -1,9 +1,9 @@
+import { useNavigationField } from "./stores/navigation-store";
+import { useQueryField } from "./stores/query-store";
 import {
   useEffect,
   useRef,
   useState,
-  type Dispatch,
-  type SetStateAction,
 } from "react";
 
 import { Icon, type IconName } from "./Icons";
@@ -46,14 +46,12 @@ import {
   type DiscoveryFilterSnapshot,
 } from "./active-discovery-filters";
 import { ColorFilterPopover } from "./ColorFilterPopover";
-import type { ColorFilterPreferences } from "./color-filter-preferences";
 import {
   parseColorFilterValues,
 } from "../shared/color-filter-presets";
 import { TechnicalRangeFilter } from "./TechnicalRangeFilter";
 import { SortModeControl, type SortFieldOption } from "./SortModeControl";
 import { useT } from "./i18n";
-import type { TagSummary } from "../shared/asset-types";
 import type { SortDefinition } from "../shared/asset-types";
 import { PortaledPopover } from "./workbench/overlay/PortaledPopover";
 import {
@@ -69,8 +67,6 @@ export type DimensionId =
   | "format"
   | "more";
 
-type RangeState = { min: string; max: string; exclude: boolean };
-
 const HOVER_OPEN_DELAY_MS = 500;
 const HOVER_CLOSE_DELAY_MS = 150;
 
@@ -81,66 +77,11 @@ export type DimensionFilterBarProps = {
    * accept pointer interaction even if buttons are not `disabled`.
    */
   interactionsLocked?: boolean;
-  tags: TagSummary[];
   snapshot: DiscoveryFilterSnapshot;
-  colorFilter: string;
-  setColorFilter: (value: string) => void;
-  excludeColorFilter: boolean;
-  setExcludeColorFilter: (value: boolean) => void;
-  colorSimilarity: number;
-  setColorSimilarity: (value: number) => void;
-  colorFilterPrefs: ColorFilterPreferences;
-  onColorFilterPrefsChange: (prefs: ColorFilterPreferences) => void;
-  formatFilter: string;
-  setFormatFilter: (value: string) => void;
-  excludeFormatFilter: boolean;
-  setExcludeFormatFilter: (value: boolean) => void;
-  tagFilter: string;
-  tagFilterExpression?: string;
-  tagFilterLastValidExpression?: string;
   setTagFilterExpression?: (value: string) => void;
-  tagFilterMode?: "selection" | "expression";
-  setTagFilterMode?: (value: "selection" | "expression") => void;
-  tagFilterMatch?: "any" | "all";
-  setTagFilterMatch?: (value: "any" | "all") => void;
   setTagFilter: (value: string) => void;
-  excludeTagFilter: boolean;
-  setExcludeTagFilter: (value: boolean) => void;
-  excludedTagFilter: string;
-  setExcludedTagFilter: (value: string) => void;
-  includeAiTag: boolean;
-  setIncludeAiTag: (value: boolean) => void;
   onTagNamesChange: (names: string[]) => void;
-  ratingFilter: string;
-  setRatingFilter: (value: string) => void;
-  excludeRatingFilter: boolean;
-  setExcludeRatingFilter: (value: boolean) => void;
-  includeAiRating: boolean;
-  setIncludeAiRating: (value: boolean) => void;
-  favoriteFilter: "any" | "yes" | "no";
-  setFavoriteFilter: (value: "any" | "yes" | "no") => void;
-  sourceUrlFilter: "any" | "yes" | "no";
-  setSourceUrlFilter: (value: "any" | "yes" | "no") => void;
-  availabilityFilter: "any" | "available" | "missing";
-  setAvailabilityFilter: (value: "any" | "available" | "missing") => void;
-  excludeAvailabilityFilter: boolean;
-  setExcludeAvailabilityFilter: (value: boolean) => void;
-  aspectRatioRange: RangeState;
-  setAspectRatioRange: Dispatch<SetStateAction<RangeState>>;
-  /** Selected shape/aspect ranges (OR). Empty → use aspectRatioRange alone. */
-  aspectRatioRanges: readonly RangeStrings[];
-  setAspectRatioRanges: Dispatch<SetStateAction<RangeStrings[]>>;
-  longEdgeRange: RangeState;
-  setLongEdgeRange: Dispatch<SetStateAction<RangeState>>;
-  widthRange: RangeState;
-  setWidthRange: Dispatch<SetStateAction<RangeState>>;
-  heightRange: RangeState;
-  setHeightRange: Dispatch<SetStateAction<RangeState>>;
-  durationRange: RangeState;
-  setDurationRange: Dispatch<SetStateAction<RangeState>>;
-  sortField: SortFieldOption;
   setSortField: (value: SortFieldOption) => void;
-  sortOrder: SortDefinition["order"];
   setSortOrder: (value: SortDefinition["order"]) => void;
   shuffleActive?: boolean;
   onShuffle?: () => void;
@@ -220,69 +161,45 @@ export function DimensionFilterBar(props: DimensionFilterBarProps) {
   const {
     disabled,
     interactionsLocked = false,
-    tags,
     snapshot,
-    colorFilter,
-    setColorFilter,
-    excludeColorFilter,
-    setExcludeColorFilter,
-    colorSimilarity,
-    setColorSimilarity,
-    colorFilterPrefs,
-    onColorFilterPrefsChange,
-    formatFilter,
-    setFormatFilter,
-    excludeFormatFilter,
-    setExcludeFormatFilter,
-    tagFilter,
-    tagFilterExpression = "",
-    tagFilterLastValidExpression = "",
     setTagFilterExpression,
-    tagFilterMode = "expression",
-    setTagFilterMode,
-    tagFilterMatch = "any",
-    setTagFilterMatch,
-    excludeTagFilter,
-    setExcludeTagFilter,
-    excludedTagFilter,
-    setExcludedTagFilter,
-    includeAiTag,
-    setIncludeAiTag,
     onTagNamesChange,
-    ratingFilter,
-    setRatingFilter,
-    excludeRatingFilter,
-    setExcludeRatingFilter,
-    includeAiRating,
-    setIncludeAiRating,
-    favoriteFilter,
-    setFavoriteFilter,
-    sourceUrlFilter,
-    setSourceUrlFilter,
-    availabilityFilter,
-    setAvailabilityFilter,
-    excludeAvailabilityFilter,
-    setExcludeAvailabilityFilter,
-    aspectRatioRange,
-    setAspectRatioRange,
-    aspectRatioRanges,
-    setAspectRatioRanges,
-    longEdgeRange,
-    setLongEdgeRange,
-    widthRange,
-    setWidthRange,
-    heightRange,
-    setHeightRange,
-    durationRange,
-    setDurationRange,
-    sortField,
     setSortField,
-    sortOrder,
     setSortOrder,
     shuffleActive = false,
     onShuffle,
     onClearFilter,
   } = props;
+  const [availabilityFilter, setAvailabilityFilter] = useQueryField("availabilityFilter");
+  const [aspectRatioRange, setAspectRatioRange] = useQueryField("aspectRatioRange");
+  const [aspectRatioRanges, setAspectRatioRanges] = useQueryField("aspectRatioRanges");
+  const [colorFilter, setColorFilter] = useQueryField("colorFilter");
+  const [colorFilterPrefs, onColorFilterPrefsChange] = useQueryField("colorFilterPrefs");
+  const [colorSimilarity, setColorSimilarity] = useQueryField("colorSimilarity");
+  const [durationRange, setDurationRange] = useQueryField("durationRange");
+  const [excludeAvailabilityFilter, setExcludeAvailabilityFilter] = useQueryField("excludeAvailabilityFilter");
+  const [excludeColorFilter, setExcludeColorFilter] = useQueryField("excludeColorFilter");
+  const [excludeFormatFilter, setExcludeFormatFilter] = useQueryField("excludeFormatFilter");
+  const [excludeRatingFilter, setExcludeRatingFilter] = useQueryField("excludeRatingFilter");
+  const [excludeTagFilter, setExcludeTagFilter] = useQueryField("excludeTagFilter");
+  const [excludedTagFilter, setExcludedTagFilter] = useQueryField("excludedTagFilter");
+  const [includeAiRating, setIncludeAiRating] = useQueryField("includeAiRatingFilter");
+  const [includeAiTag, setIncludeAiTag] = useQueryField("includeAiTagFilter");
+  const [favoriteFilter, setFavoriteFilter] = useQueryField("favoriteFilter");
+  const [formatFilter, setFormatFilter] = useQueryField("formatFilter");
+  const [heightRange, setHeightRange] = useQueryField("heightRange");
+  const [longEdgeRange, setLongEdgeRange] = useQueryField("longEdgeRange");
+  const [ratingFilter, setRatingFilter] = useQueryField("ratingFilter");
+  const [sourceUrlFilter, setSourceUrlFilter] = useQueryField("sourceUrlFilter");
+  const [tagFilterExpression] = useQueryField("tagFilterExpression");
+  const [tagFilterLastValidExpression] = useQueryField("tagFilterLastValidExpression");
+  const [tagFilterMode, setTagFilterMode] = useQueryField("tagFilterMode");
+  const [tagFilterMatch, setTagFilterMatch] = useQueryField("tagFilterMatch");
+  const [widthRange, setWidthRange] = useQueryField("widthRange");
+  const [sortField] = useQueryField("sortField");
+  const [sortOrder] = useQueryField("sortOrder");
+  const [tagFilter] = useQueryField("tagFilter");
+  const [tags] = useNavigationField("tags");
 
   const [openDimension, setOpenDimension] = useState<DimensionId | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);

@@ -1293,7 +1293,6 @@ function AppInner() {
   const [excludeFormatFilter, setExcludeFormatFilter] = useQueryField("excludeFormatFilter");
   const [colorFilter, setColorFilter] = useQueryField("colorFilter");
   const [colorSimilarity, setColorSimilarity] = useQueryField("colorSimilarity");
-  const [colorFilterPrefs, setColorFilterPrefs] = useQueryField("colorFilterPrefs");
   const [excludeColorFilter, setExcludeColorFilter] = useQueryField("excludeColorFilter");
   const [tagFilter, setTagFilter] = useQueryField("tagFilter");
   const [tagFilterExpression, setTagFilterExpression] = useQueryField("tagFilterExpression");
@@ -13667,27 +13666,8 @@ function AppInner() {
           className={`workspace-discovery${previewAsset ? " is-viewing" : previewRestoring ? " is-restoring" : ""}`}
         >
           <DimensionFilterBar
-            availabilityFilter={availabilityFilter}
-            aspectRatioRange={aspectRatioRange}
-            aspectRatioRanges={aspectRatioRanges}
-            colorFilter={colorFilter}
-            colorFilterPrefs={colorFilterPrefs}
-            colorSimilarity={colorSimilarity}
             disabled={!library}
             interactionsLocked={dialogFocusTrapActive}
-            durationRange={durationRange}
-            excludeAvailabilityFilter={excludeAvailabilityFilter}
-            excludeColorFilter={excludeColorFilter}
-            excludeFormatFilter={excludeFormatFilter}
-            excludeRatingFilter={excludeRatingFilter}
-            excludeTagFilter={excludeTagFilter}
-            excludedTagFilter={excludedTagFilter}
-            includeAiRating={includeAiRatingFilter}
-            includeAiTag={includeAiTagFilter}
-            favoriteFilter={favoriteFilter}
-            formatFilter={formatFilter}
-            heightRange={heightRange}
-            longEdgeRange={longEdgeRange}
             onClearFilter={clearDiscoveryFilter}
             onTagNamesChange={(names) => {
               // Discovery tag filters overlay the current folder/collection
@@ -13697,26 +13677,6 @@ function AppInner() {
               setTagFilter(names.join(", "));
               setActiveTagId(null);
             }}
-            ratingFilter={ratingFilter}
-            setAspectRatioRange={setAspectRatioRange}
-            setAspectRatioRanges={setAspectRatioRanges}
-            setAvailabilityFilter={setAvailabilityFilter}
-            setColorFilter={setColorFilter}
-            setColorSimilarity={setColorSimilarity}
-            onColorFilterPrefsChange={setColorFilterPrefs}
-            setDurationRange={setDurationRange}
-            setExcludeAvailabilityFilter={setExcludeAvailabilityFilter}
-            setExcludeColorFilter={setExcludeColorFilter}
-            setExcludeFormatFilter={setExcludeFormatFilter}
-            setExcludeRatingFilter={setExcludeRatingFilter}
-            setExcludeTagFilter={setExcludeTagFilter}
-            setIncludeAiRating={setIncludeAiRatingFilter}
-            setIncludeAiTag={setIncludeAiTagFilter}
-            setFavoriteFilter={setFavoriteFilter}
-            setFormatFilter={setFormatFilter}
-            setHeightRange={setHeightRange}
-            setLongEdgeRange={setLongEdgeRange}
-            setRatingFilter={setRatingFilter}
             setSortField={(field) => {
               setShuffleSeed(null);
               setSortField(field);
@@ -13725,26 +13685,17 @@ function AppInner() {
               setShuffleSeed(null);
               setSortOrder(order);
             }}
-            setSourceUrlFilter={setSourceUrlFilter}
             setTagFilter={(value) => {
               // Explicit filter-bar edits leave the tag-management AND mode.
               setTagFilterMatch("any");
               setTagFilter(value);
               setTagFilterExpression("");
             }}
-            tagFilterExpression={tagFilterExpression}
-            tagFilterLastValidExpression={tagFilterLastValidExpression}
-            tagFilterMode={tagFilterMode}
             setTagFilterExpression={(value) => {
               setPinnedTagId(null);
               setTagFilterExpression(value);
               if (parseSearchExpressionDetailed(value, "tags").ok) setTagFilterLastValidExpression(value);
             }}
-            setTagFilterMode={setTagFilterMode}
-            tagFilterMatch={tagFilterMatch}
-            setTagFilterMatch={setTagFilterMatch}
-            setExcludedTagFilter={setExcludedTagFilter}
-            setWidthRange={setWidthRange}
             shuffleActive={shuffleSeed !== null}
             onShuffle={() => {
               setShuffleSeed((prev) => {
@@ -13778,12 +13729,6 @@ function AppInner() {
               longEdgeRange,
               durationRange,
             }}
-            sortField={sortField}
-            sortOrder={sortOrder}
-            sourceUrlFilter={sourceUrlFilter}
-            tagFilter={tagFilter}
-            tags={tags}
-            widthRange={widthRange}
           />
         </div>
         )}

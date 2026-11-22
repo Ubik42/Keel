@@ -9,6 +9,7 @@ import {
   type DimensionFilterBarProps,
 } from "../../src/renderer/DimensionFilterBar";
 import { LocaleProvider } from "../../src/renderer/i18n";
+import { queryFields } from "../../src/renderer/stores/query-store";
 
 const range = () => ({ min: "", max: "", exclude: false });
 
@@ -92,7 +93,8 @@ function props(): DimensionFilterBarProps {
     sortOrder: "asc",
     setSortOrder: vi.fn(),
     onClearFilter: vi.fn(),
-  };
+    // Filter values and setters not listed in the props type come from the query store.
+  } as unknown as DimensionFilterBarProps;
 }
 
 describe("DimensionFilterBar hover opening", () => {
@@ -100,6 +102,7 @@ describe("DimensionFilterBar hover opening", () => {
   let container: HTMLDivElement | undefined;
 
   afterEach(() => {
+    queryFields.reset();
     vi.useRealTimers();
     root?.unmount();
     root = undefined;
@@ -283,9 +286,9 @@ describe("DimensionFilterBar hover opening", () => {
     document.body.append(container);
     root = createRoot(container);
     const current = props();
-    current.favoriteFilter = "yes";
-    current.excludeAvailabilityFilter = true;
-    current.availabilityFilter = "missing";
+    queryFields.setterFor("favoriteFilter")("yes");
+    queryFields.setterFor("excludeAvailabilityFilter")(true);
+    queryFields.setterFor("availabilityFilter")("missing");
 
     await act(async () => {
       root?.render(
