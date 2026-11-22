@@ -92,6 +92,7 @@ import { executeFolderWorkerCommand } from './handlers/folders';
 import { executeLinkedFolderWorkerCommand } from './handlers/linked-folders';
 import { executeAssetIngestionWorkerCommand } from './handlers/asset-ingestion';
 import { executeIgnoreWorkerCommand } from './handlers/ignore';
+import { executeRuleWorkerCommand } from './handlers/rules';
 import { executeTagWorkerCommand } from './handlers/tags';
 import { executeAssetMutationWorkerCommand } from './handlers/asset-mutations';
 import { executePluginJobWorkerCommand } from './handlers/plugin-jobs';
@@ -2681,19 +2682,23 @@ async function handleRequestWithoutWriteLease(request: WorkerRequest): Promise<W
       }
       return result;
     }
-    case 'rule.list':return {ok:true,type:'rule.list.result',result:libraryService.listRules(request.command.libraryId)};
-    case 'rule.save':return {ok:true,type:'rule.list.result',result:libraryService.saveRule(request.command)};
-    case 'rule.delete':return {ok:true,type:'rule.list.result',result:libraryService.deleteRule(request.command)};
-    case 'rule.set-enabled':return {ok:true,type:'rule.list.result',result:libraryService.setRuleEnabled(request.command)};
-    case 'rule.layout.set':return {ok:true,type:'rule.list.result',result:libraryService.setRuleLayout(request.command)};
-    case 'rule.runs.list':return {ok:true,type:'rule.runs.result',runs:libraryService.listRuleRuns(request.command)};
-    case 'rule.run.record':libraryService.recordRuleRun(request.command);return {ok:true,type:'rule.run.recorded'};
-    case 'rule.changed-assets':return {ok:true,type:'rule.changed-assets.result',...libraryService.listRuleChangedAssets(request.command)};
-    case 'automatic-task.layout.get':return {ok:true,type:'automatic-task.layout',layout:libraryService.getAutomaticTaskLayout(request.command.libraryId)};
-    case 'automatic-task.layout.set':return {ok:true,type:'automatic-task.layout',layout:libraryService.setAutomaticTaskLayout(request.command)};
-    case 'automatic-task.list':return {ok:true,type:'automatic-task.result',tasks:libraryService.listAutomaticTasks(request.command.libraryId)};
-    case 'automatic-task.set':return {ok:true,type:'automatic-task.result',tasks:libraryService.setAutomaticTask(request.command)};
-    case 'automatic-task.delete':return {ok:true,type:'automatic-task.result',tasks:libraryService.deleteAutomaticTask(request.command)};
+    case 'rule.list':
+    case 'rule.save':
+    case 'rule.delete':
+    case 'rule.set-enabled':
+    case 'rule.layout.set':
+    case 'rule.runs.list':
+    case 'rule.run.record':
+    case 'rule.changed-assets':
+    case 'automatic-task.layout.get':
+    case 'automatic-task.layout.set':
+    case 'automatic-task.list':
+    case 'automatic-task.set':
+    case 'automatic-task.delete': {
+      const result = executeRuleWorkerCommand(libraryService, request);
+      if (result === undefined) throw new Error(`Unhandled rule command: ${request.command.type}`);
+      return result;
+    }
     case 'automatic-task.run':await libraryService.runAutomaticTasks(request.command.libraryId,request.command.taskId,true,()=>interactiveScheduler.yieldAdmission(request.requestId));return {ok:true,type:'automatic-task.result',tasks:libraryService.listAutomaticTasks(request.command.libraryId)};
     case 'tag.list':
     case 'tag.create':
