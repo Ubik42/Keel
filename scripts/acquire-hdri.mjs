@@ -3,7 +3,7 @@
  * Replay the Poly Haven HDRI acquisition for the bundled 3D preview assets.
  *
  * Downloads the two 1K equirectangular `.hdr` environment maps (studio +
- * natural, CC0) that `src/renderer/3d-viewer/hdri-presets.ts` ships with,
+ * natural, CC0) that `src/renderer/viewer/3d/hdri-presets.ts` ships with,
  * verifying exact byte size and SHA-256 against the recorded receipt. Safe
  * to re-run: files are only written after both checks pass.
  *

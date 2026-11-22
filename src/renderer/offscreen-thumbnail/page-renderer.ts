@@ -37,19 +37,19 @@ import {
 import {
   computeCameraPlacement,
   sphereFromBounds,
-} from '../3d-viewer/camera-policy';
+} from '../viewer/3d/camera-policy';
 
 import {
   buildEnvironment,
   type EnvironmentHandle,
   type PmremGeneratorLike,
-} from '../3d-viewer/environment';
-import { setupGroundShadow } from '../3d-viewer/ground-shadow';
+} from '../viewer/3d/environment';
+import { setupGroundShadow } from '../viewer/3d/ground-shadow';
 import {
   loadModelScene,
   type LoadedModelScene,
-} from '../3d-viewer/loader-registry';
-import { createSceneComposer } from '../3d-viewer/scene-composer';
+} from '../viewer/3d/loader-registry';
+import { createSceneComposer } from '../viewer/3d/scene-composer';
 
 /** Fixed neutral backdrop for model thumbnails (consistent across themes). */
 export const OFFSCREEN_THUMBNAIL_BACKGROUND = 0x1a1c1f;

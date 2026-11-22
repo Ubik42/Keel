@@ -5,7 +5,7 @@
  * This table is the single source of truth for the four Poly Haven CC0 1K
  * equirectangular `.hdr` files bundled with the app (user-selected set,
  * 2026-08-06: product / interior / outdoor / nature):
- * - the renderer viewer toolbar (`src/renderer/3d-viewer/hdri-presets.ts`
+ * - the renderer viewer toolbar (`src/renderer/viewer/3d/hdri-presets.ts`
  *   re-exports from here and adds the `import.meta.glob` runtime URL map);
  * - the Main-process `keel://app-assets` handler (`src/main/app/app-assets.ts`)
  *   whitelists file names and verifies sha256/size against this table, so a

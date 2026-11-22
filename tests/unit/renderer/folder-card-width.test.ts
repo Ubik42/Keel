@@ -1,0 +1,22 @@
+import { describe, expect, it } from "vitest";
+
+import { ASSET_GRID_GAP_PX } from "../../../src/renderer/workbench/collection/asset-grid-layout";
+import { cardSizeFillingColumns } from "../../../src/renderer/browse/card-size-stops";
+import { masonryAlignedFolderWidthPx } from "../../../src/renderer/browse/folder-card-width";
+
+describe("masonryAlignedFolderWidthPx", () => {
+  it("matches the flush masonry column width for the preferred card size", () => {
+    const available = 900;
+    const preferred = 160;
+    const aligned = masonryAlignedFolderWidthPx(available, preferred);
+    const columns = Math.floor(
+      (available + ASSET_GRID_GAP_PX) / (preferred + ASSET_GRID_GAP_PX),
+    );
+    expect(aligned).toBe(cardSizeFillingColumns(available, columns));
+    expect(aligned).toBeGreaterThanOrEqual(preferred);
+  });
+
+  it("falls back to the preferred size when width is unknown", () => {
+    expect(masonryAlignedFolderWidthPx(0, 160)).toBe(160);
+  });
+});

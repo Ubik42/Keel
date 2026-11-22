@@ -91,7 +91,7 @@ import {
   type ViewerSessionIdentity,
 } from "./viewer-session-controller";
 import { ShellSurface, ViewerSurface } from "../workbench/ui/surfaces";
-import { ModelViewerSurface } from "../3d-viewer/viewer-surface";
+import { ModelViewerSurface } from "./3d/viewer-surface";
 import { isMacPlatform } from "../workbench/menu/command-types";
 import { isBakeableStillImageFile } from "../../shared/bakeable-still-image";
 
