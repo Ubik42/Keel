@@ -4221,6 +4221,28 @@ async function handleLibraryRequest(
   }
 }
 
+/** PR: first run of a new or edited rule. */
+async function confirmRuleRun(rule: { name: string; purpose: string; permissions: readonly string[] }): Promise<boolean> {
+  if (!mainWindow || mainWindow.isDestroyed()) return false;
+  if (!app.isPackaged && process.env.KEEL_E2E === '1' && process.env.KEEL_E2E_AUTOMATION_CONFIRM === '1') return true;
+  const response = await dialog.showMessageBox(mainWindow, {
+    type: 'warning',
+    buttons: ['取消', '运行规则'],
+    defaultId: 1,
+    cancelId: 0,
+    title: '运行规则',
+    message: `运行规则“${rule.name}”？`,
+    detail: [
+      rule.purpose || '这条规则没有写用途。',
+      '',
+      `它可以使用：${rule.permissions.join('、') || '无'}。`,
+      '确认后，这一版规则会按它的触发方式自动运行；规则文件改动后需要再确认一次。每次运行都记录在规则的触发历史中，改动可以撤销。',
+    ].join('\n'),
+  });
+  ensureRendererKeyboardFocus(mainWindow, { reattachHwnd: true, reason: 'rule.confirm' });
+  return response.response === 1;
+}
+
 async function confirmDesktopAutomationWrite(): Promise<boolean> {
   if (!mainWindow || mainWindow.isDestroyed()) return false;
   // Native modal dialogs are not controllable through Playwright. Restrict
@@ -5335,7 +5357,7 @@ async function startApplication(): Promise<void> {
     journal: () => automationExecutionJournal,
     gateway: () => automationCommandGateway,
     runtime: () => scriptRuntimeSupervisor,
-    confirmDesktopWrite: confirmDesktopAutomationWrite,
+    confirmDesktopWrite: confirmRuleRun,
     logger: () => logger,
     onRunRecorded: (libraryId, run) => {
       if (!mainWindow || mainWindow.isDestroyed()) return;

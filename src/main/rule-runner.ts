@@ -31,7 +31,7 @@ export interface RuleRunnerOptions {
   gateway(): AutomationCommandGateway | undefined;
   runtime(): ScriptRuntimeExecutor | undefined;
   /** Desktop confirmation for a rule that has not been confirmed in this version. */
-  confirmDesktopWrite(): Promise<boolean>;
+  confirmDesktopWrite(rule: { name: string; purpose: string; permissions: readonly string[] }): Promise<boolean>;
   logger(): AppLogger | undefined;
   /** Called after a run is recorded, so the rule list can refresh. */
   onRunRecorded?(libraryId: string, run: RuleRun): void;
@@ -176,7 +176,7 @@ ${rule.source}`,
     if (started?.status === 'awaiting-authorization') {
       // A dry run declares read access only; Main grants it. A real run of a
       // new or edited rule waits for the person in the desktop window.
-      const allowed = dryRun || (interactive && await this.#options.confirmDesktopWrite());
+      const allowed = dryRun || (interactive && await this.#options.confirmDesktopWrite(rule.manifest));
       if (!allowed) {
         journal.cancel(executionId);
         return finish('cancelled', {
