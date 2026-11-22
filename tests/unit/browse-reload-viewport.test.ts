@@ -23,7 +23,10 @@ import {
 /** App.tsx plus the app/ modules P4 moved its code into. */
 function rendererShellSource(): string {
   const dir = path.join(process.cwd(), "src/renderer/app");
-  return [path.join(process.cwd(), "src/renderer/App.tsx"), ...readdirSync(dir).map((f) => path.join(dir, f))]
+  const files = readdirSync(dir, { recursive: true, withFileTypes: true })
+    .filter((entry) => entry.isFile())
+    .map((entry) => path.join(entry.parentPath, entry.name));
+  return [path.join(process.cwd(), "src/renderer/App.tsx"), ...files]
     .map((f) => readFileSync(f, "utf8")).join("\n");
 }
 

@@ -1,6 +1,6 @@
 import { ContextMenuProvider } from "./workbench/menu/context-menu";
-import { AppView } from "./app/AppView";
-import { useAppController } from "./app/use-app-controller";
+import { AppView } from "./app/shell/AppView";
+import { useAppController } from "./app/shell/use-app-controller";
 
 
 function AppInner() {

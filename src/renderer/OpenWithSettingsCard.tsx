@@ -12,7 +12,7 @@ import { SettingsCard } from "./workbench/ui/patterns";
 import { openWithBridge, useOpenWithSettings } from "./use-open-with-settings";
 import { listPluginOpenWithTargets, type PluginOpenWithTarget } from "./plugin-open-with";
 import { useSessionField } from "./stores/session-store";
-import type { RendererWindow } from "./app/app-shared";
+import type { RendererWindow } from "./app/shared/app-shared";
 
 function targetValue(target: OpenWithTarget): string {
   if (target.kind === "program") return `program:${target.programId}`;

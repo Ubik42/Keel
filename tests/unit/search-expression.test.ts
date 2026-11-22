@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { searchExpressionSchema } from '../../src/shared/asset-types';
 
-import { formatDuration, parseNumericRange } from '../../src/renderer/app/app-shared';
+import { formatDuration, parseNumericRange } from '../../src/renderer/app/shared/app-shared';
 import { parseSearchExpression, parseSearchExpressionDetailed, splitSearchHighlights } from '../../src/renderer/search-expression';
 
 describe('renderer search expression parser', () => {

@@ -20,7 +20,7 @@ import {
   pluginSettingTypeSchema,
   pluginSettingValueSchema,
 } from '../plugins/plugin-manifest';
-import { isGitHubPluginInstallUrl } from '../shared/plugin-github-url';
+import { isGitHubPluginInstallUrl } from './plugin-github-url';
 import {
   pluginInstallControlActionSchema,
   pluginInstallOperationIdSchema,
