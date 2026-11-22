@@ -1,0 +1,2309 @@
+import '../shared/install-legacy-env';
+import { randomUUID } from 'node:crypto';
+import {
+  type AiProgressEvent,
+} from '../shared/protocol/responses';
+import type { ParentPort } from 'electron';
+import {
+  BUNDLED_HDRI_PRESET_IDS,
+} from '../shared/hdri-presets';
+import {
+  MODEL_THUMBNAIL_DEFAULT_EDGE,
+  modelThumbnailFormatForFileName,
+  type ModelThumbnailSourceAuthorization,
+  type ModelThumbnailRenderRequest,
+  type ModelThumbnailRenderResult,
+} from '../shared/model-thumbnail-protocol';
+import {
+  type DocumentThumbnailRenderRequest,
+  type DocumentThumbnailRenderResponse,
+} from '../shared/document-thumbnail-protocol';
+import { isBenignThumbnailErrorCode } from '../shared/thumbnail-support';
+import { ThumbnailCompletionFanout } from '../shared/thumbnail-completion-fanout';
+import {
+  ViewportPriorityOverlay,
+  claimIdsForThumbnailWave,
+  resolveViewportClaimIds,
+} from '../shared/viewport-priority';
+import {
+  LibraryService,
+  LibraryServiceError,
+  THUMBNAIL_VISIBLE_PAGE_SIZE,
+  type ImportFailurePoint,
+  type ModelThumbnailRenderOutcome,
+  type RawMetadataBackfillAdmissionState,
+} from './library-service';
+import { AiJobAbortRegistry } from './integrations/ai/job-abort-registry';
+import { ProviderConcurrencyLimiter } from './integrations/ai/provider-concurrency-limiter';
+import { AiProgressThrottler } from './integrations/ai/progress-throttler';
+import { DEFAULT_AI_ANALYSIS_CONCURRENCY } from '../shared/ai-concurrency';
+import { workerMediaDecodeWaveSize } from './media/media-concurrency';
+import { mediaResourceGuard } from './media/media-resource-guard';
+import {
+  type PluginMediaProviderRequest,
+  type PluginMediaProviderResult,
+} from '../shared/plugin-media-protocol';
+import { handleFbxConvertCommand } from './media/fbx/convert-command';
+import {
+  LatestSearchRequestCoordinator,
+} from './library/search-request-coordinator';
+import {
+  InteractiveScheduler,
+} from './library/interactive-scheduler';
+import { type AiAnalysisControls } from './handlers/ai';
+import { backupSemanticIndexWorkerLibrary } from './handlers/semantic-index';
+import { LibraryGenerationRegistry } from './library/library-generation';
+import {
+  isViewportOnlyThumbnailWave,
+  shouldRunThumbnailBackgroundRepair,
+} from './library/visible-window-policy';
+import {
+  StartupBurstGateRegistry,
+  type StartupBurstGateToken,
+} from './library/startup-burst-gate';
+import { DeferredThumbnailAdmission } from './media/deferred-thumbnail-admission';
+import { RawMetadataBackfillAdmissionGate } from './media/raw-metadata-backfill-gate';
+
+/**
+ * Worker runtime state, created once when the worker starts: the library service, the interactive scheduler, the thumbnail, media and visible-window queues, offscreen render requests to Main and the plugin media provider bridge (split out of index.ts; statements keep their original order).
+ */
+export const parentPort: ParentPort | undefined = process.parentPort;
+
+export const aiJobAbortRegistry = new AiJobAbortRegistry();
+
+export const aiProcessBatchAbortControllers = new Map<string, AbortController>();
+
+export const libraryGenerationRegistry = new LibraryGenerationRegistry();
+
+export const providerConcurrencyLimiter = new ProviderConcurrencyLimiter(
+  DEFAULT_AI_ANALYSIS_CONCURRENCY,
+);
+
+export const aiProgressThrottler = new AiProgressThrottler((event) => parentPort?.postMessage(event));
+
+export const analysisControls = new Map<string, AiAnalysisControls>();
+
+export const activeThumbnailQueues = new Set<string>();
+
+export const rescheduledThumbnailQueues = new Set<string>();
+
+// Serpent-4bdd26 收编 codex/large-library-performance@15f3325c：视口抢占机制。
+export const activeThumbnailQueueControllers = new Map<string, AbortController>();
+
+/**
+ * The active queue's claim scope is mutable because a visible-window report
+ * can arrive while processThumbnailQueue is awaiting native work. Updating
+ * the scope makes the current pump stop claiming stale queued ids without
+ * aborting overlapping native jobs and immediately decoding them again.
+ */
+export const activeThumbnailQueueAssetScopes = new Map<string, {
+  current: string[] | undefined;
+}>();
+
+export const pendingThumbnailQueueAborts = new Set<string>();
+
+export const deferredMediaResourceRetries = new Map<string, ReturnType<typeof setTimeout>>();
+
+/** A failed queue call keeps one bounded-backoff wake so durable jobs regain an owner. */
+export const pendingThumbnailQueueFailureRetries = new Map<string, ReturnType<typeof setTimeout>>();
+
+export const thumbnailQueueFailureAttempts = new Map<string, number>();
+
+/** Keep recovery armed until an unscoped primary pump drains the durable queue. */
+export const pendingThumbnailQueueFailureRecoveries = new Set<string>();
+
+export const THUMBNAIL_QUEUE_FAILURE_RETRY_BASE_MS = 1_000;
+
+export const THUMBNAIL_QUEUE_FAILURE_RETRY_MAX_MS = 30_000;
+
+// Lifecycle admission fence: aborting a queue is cooperative, so its cleanup
+// can run after library.close has been admitted. Keep that cleanup from
+// creating a fresh timer/pump until a later library.open succeeds.
+export const closingLibraryIds = new Set<string>();
+
+/**
+ * A visible-window request can arrive while a low-priority startup wave is
+ * decoding. Priority promotion alone is not enough in that case: the next
+ * batch would still inherit the startup lane's intentionally small wave
+ * size. Remember the largest current viewport until the active queue reaches
+ * its next batch boundary, then let that viewport claim one full wave.
+ */
+export const pendingVisibleThumbnailWaves = new Map<string, {
+  assetIds: string[];
+  waveSize: number;
+}>();
+
+/** Shared with the visible scene config below; cover (400) also owns this lane. */
+export const THUMBNAIL_VISIBLE_PRIORITY = 350;
+
+/** Primary jobs invalidated by reconciliation, waiting for an idle exact pump. */
+export const pendingReconciledPrimaryAssetIds = new Map<string, Set<string>>();
+
+export type ReconciledPrimaryBatch = {
+  assetIds: string[];
+  superseded: boolean;
+};
+
+/** The one exact batch currently owned by a reconciliation-only pump. */
+export const activeReconciledPrimaryBatches = new Map<string, ReconciledPrimaryBatch>();
+
+/** Ordinary queue continuations paused while exact reconciliation batches drain. */
+export const pendingReconciledPrimaryResumes = new Map<string, () => void>();
+
+/** One retry timer per library while viewer activity owns the Worker. */
+export const pendingReconciledPrimaryIdleRetries = new Map<string, ReturnType<typeof setTimeout>>();
+
+/** Stable viewport sets are idempotent until the library changes. */
+export const lastVisibleWindowKeyByLibrary = new Map<string, string>();
+
+/** The key alone cannot distinguish geometry churn from real navigation. */
+export const lastVisibleWindowAssetIdsByLibrary = new Map<string, string[]>();
+
+export const thumbnailCompletionFanout = new ThumbnailCompletionFanout({
+  publish: (event) => parentPort?.postMessage(event),
+});
+
+export const viewportPriorityOverlay = new ViewportPriorityOverlay();
+
+export const lastViewportVisibleChangeAtMs = new Map<string, number>();
+
+export const lastViewportPreemptAtMs = new Map<string, number>();
+
+export const deferredStartupThumbnailGenerations = new Map<string, number>();
+
+export const pendingStartupThumbnailAdmission = new DeferredThumbnailAdmission();
+
+export type VisibleDimensionProbeState = {
+  assetIds: Set<string>;
+  controller: AbortController;
+  running: boolean;
+};
+
+/**
+ * Header probes are useful for correcting masonry geometry, but they are not
+ * part of the visible-window ACK. Keep them cancellable and drain them in
+ * small async batches so a cold source volume cannot queue behind a scroll.
+ */
+export const visibleDimensionProbeStates = new Map<string, VisibleDimensionProbeState>();
+
+// Keep the startup backfill off the primary decoder lane until the renderer
+// has reported its first real viewport. A fixed delay is not sufficient on a
+// large library: opening the shell can take longer than the timer, so the
+// old backfill could claim the decoder just before the first visible-window
+// request arrived.
+export const startupThumbnailVisibleWindows = new Set<string>();
+
+export const latestAssetSearchRequests = new LatestSearchRequestCoordinator();
+
+// Keel: a queue that cannot be admitted is either a short burst or a lane
+// deadlock (a mutation needs a fully idle scheduler, an interactive lane needs
+// no other interactive owner). Report the holder instead of hanging silently.
+export const interactiveScheduler = new InteractiveScheduler({
+  onStall: (info) => {
+    // console.error, not stdout: the worker.cmd diagnostics already land in the
+    // app log through this channel, so a stall report stays attributable.
+    console.error(JSON.stringify({ timestamp: new Date().toISOString(), scope: 'worker.scheduler.stall', ...info }));
+  },
+});
+
+export const pendingPluginMediaProviderRequests = new Map<string, {
+  resolve: (result: PluginMediaProviderResult) => void;
+  timer: ReturnType<typeof setTimeout>;
+}>();
+
+if (!parentPort) {
+  throw new Error('Library Worker must be started by the Electron main process.');
+}
+
+// Serpent-8ca259: Electron's UtilityProcess sets process.type = 'utility'.
+// pdfjs-dist's isNodeJS detection explicitly excludes Electron processes with
+// a non-browser process.type, so pdfjs would take its browser code paths
+// (DOM canvas factory, FontFace font loading, real Worker construction) —
+// none of which exist inside the Library Worker. Neutralizing process.type
+// makes pdfjs load its Node build paths (fake worker, Node canvas factory,
+// embedded-font support), which is what PDF thumbnail generation needs.
+// Nothing else in the Worker branches on process.type.
+Object.defineProperty(process, 'type', { value: undefined, configurable: true });
+
+export const e2eTerminateProcessAt = (() => {
+  if (process.env.KEEL_E2E !== '1') return undefined;
+  const configured = process.env.KEEL_E2E_LIBRARY_TERMINATE_AT;
+  if (configured !== 'crash-after-place') return undefined;
+  return configured as ImportFailurePoint;
+})();
+
+export const libraryService = new LibraryService({
+  backupSemanticIndex: backupSemanticIndexWorkerLibrary,
+  onAssetsChanged: (event) => {
+    lastVisibleWindowKeyByLibrary.delete(event.libraryId);
+    lastVisibleWindowAssetIdsByLibrary.delete(event.libraryId);
+    thumbnailCompletionFanout.setImmediateAssetIds(event.libraryId, []);
+    parentPort.postMessage(event);
+  },
+  onLibraryChanged: (event) => {
+    lastVisibleWindowKeyByLibrary.delete(event.libraryId);
+    lastVisibleWindowAssetIdsByLibrary.delete(event.libraryId);
+    thumbnailCompletionFanout.setImmediateAssetIds(event.libraryId, []);
+    parentPort.postMessage(event);
+  },
+  onProgress: (event) => parentPort.postMessage(event),
+  // Serpent-8ca259: HTML document thumbnails capture offscreen in Main.
+  documentThumbnailRenderer: (input) => renderDocumentThumbnailViaMain(input),
+  ...(e2eTerminateProcessAt === undefined
+    ? {}
+    : {
+        failAt: e2eTerminateProcessAt,
+        terminateProcessAt: e2eTerminateProcessAt,
+      }),
+  onDiagnostic: ({ scope, error, context }) => {
+    try {
+      console.error(JSON.stringify({
+        timestamp: new Date().toISOString(),
+        scope: `worker.${scope}`,
+        context,
+        error: errorForLog(error),
+      }));
+    } catch {
+      // A serialization or stderr failure must not change the background operation.
+    }
+  },
+});
+
+export function automaticMediaAdmissionAllowed(libraryId: string): boolean {
+  return !closingLibraryIds.has(libraryId) && libraryService.hasOpenLibrary(libraryId);
+}
+
+// Electron's ParentPort delivers IPC messages but does not provide a documented
+// event-loop ref. Development builds happen to have other active handles; a
+// packaged utility process can otherwise exit cleanly immediately after ready.
+export const processLifetime = setInterval(() => {}, 60 * 60_000);
+
+export const automaticTaskTimer=setInterval(()=>{
+ for(const libraryId of libraryService.listOpenLibraryIds()){
+  void interactiveScheduler.schedule({requestId:`automatic-tasks:${libraryId}`,lane:'maintenance',libraryId},
+   ()=>libraryService.runAutomaticTasks(libraryId,undefined,false,()=>interactiveScheduler.yieldAdmission(`automatic-tasks:${libraryId}`))).catch(error=>console.error('automatic-tasks',error));
+ }
+},30000);
+
+automaticTaskTimer.unref();
+
+export function requestPluginMediaProvider(input: Omit<PluginMediaProviderRequest, 'type' | 'requestId'>): Promise<PluginMediaProviderResult> {
+  const requestId = randomUUID();
+  return new Promise((resolve) => {
+    const timer = setTimeout(() => {
+      pendingPluginMediaProviderRequests.delete(requestId);
+      resolve({
+        status: 'native-fallback',
+        assetId: input.assetId,
+        kind: input.kind,
+        errorCode: 'PLUGIN_PROVIDER_TIMEOUT',
+      });
+    }, 35_000);
+    timer.unref?.();
+    pendingPluginMediaProviderRequests.set(requestId, { resolve, timer });
+    parentPort?.postMessage({
+      type: 'plugin-media-provider.request',
+      requestId,
+      ...input,
+    });
+  });
+}
+
+// ── Slice E: offscreen model-thumbnail render client (Serpent-hnmg) ────
+
+export const pendingModelThumbnailRenders = new Map<string, {
+  resolve: (result: ModelThumbnailRenderResult) => void;
+  cleanup: () => void;
+}>();
+
+/**
+ * Ask Main to render one model thumbnail in the shared offscreen window.
+ * Resolves with the typed result (never rejects except on abort). Local model
+ * work has no honest wall-clock deadline; lifecycle disposal and the supplied
+ * signal are the cancellation boundaries.
+ */
+export function requestModelThumbnailRender(
+  input: Omit<ModelThumbnailRenderRequest, 'type' | 'requestId'> & {
+    sourceAuthorizations: readonly ModelThumbnailSourceAuthorization[];
+  },
+  signal?: AbortSignal,
+): Promise<ModelThumbnailRenderResult> {
+  const requestId = randomUUID();
+  return new Promise((resolve, reject) => {
+    const onAbort = (): void => {
+      pendingModelThumbnailRenders.delete(requestId);
+      parentPort?.postMessage({
+        type: 'model-thumbnail.render-cancel',
+        requestId,
+      });
+      reject(new DOMException('Model thumbnail render request aborted.', 'AbortError'));
+    };
+    if (signal?.aborted) {
+      onAbort();
+      return;
+    }
+    const cleanup = (): void => signal?.removeEventListener('abort', onAbort);
+    signal?.addEventListener('abort', onAbort, { once: true });
+    pendingModelThumbnailRenders.set(requestId, { resolve, cleanup });
+    parentPort?.postMessage({
+      type: 'model-thumbnail.render-request',
+      requestId,
+      ...input,
+    });
+  });
+}
+
+/**
+ * Process-wide single-flight gate: at most ONE model render is in flight at
+ * any time (the shared offscreen window renders serially in Main; a second
+ * concurrent request would only queue there and compete for the same render
+ * slot). There is no completion deadline for the local render itself.
+ * The acquire waits for the previous render and honors cancellation.
+ */
+export let modelRenderTail: Promise<void> = Promise.resolve();
+
+/**
+ * Serpent-8ca259: ask Main to capture an HTML document thumbnail in a fresh
+ * offscreen window. Resolves with the typed result (never rejects except on
+ * abort). Content size and load time are not converted into an arbitrary
+ * failure; lifecycle cancellation remains available.
+ */
+export const pendingDocumentThumbnailRenders = new Map<string, {
+  resolve: (result: DocumentThumbnailRenderResponse['result']) => void;
+  cleanup: () => void;
+}>();
+
+export function requestDocumentThumbnailRender(
+  input: Omit<DocumentThumbnailRenderRequest, 'type' | 'requestId'>,
+  signal?: AbortSignal,
+): Promise<DocumentThumbnailRenderResponse['result']> {
+  const requestId = randomUUID();
+  return new Promise((resolve, reject) => {
+    const onAbort = (): void => {
+      pendingDocumentThumbnailRenders.delete(requestId);
+      reject(new DOMException('Document thumbnail render request aborted.', 'AbortError'));
+    };
+    const cleanup = (): void => signal?.removeEventListener('abort', onAbort);
+    signal?.addEventListener('abort', onAbort, { once: true });
+    pendingDocumentThumbnailRenders.set(requestId, { resolve, cleanup });
+    parentPort?.postMessage({
+      type: 'document-thumbnail.render-request',
+      requestId,
+      ...input,
+    });
+  });
+}
+
+/** Worker-side handler consumed by the LibraryService documentThumbnailRenderer. */
+export async function renderDocumentThumbnailViaMain(input: {
+  libraryId: string;
+  assetId: string;
+  revisionId: string;
+  url: string;
+  width: number;
+  height?: number;
+  signal?: AbortSignal;
+}): Promise<{ png: Uint8Array; width: number; height: number } | null> {
+  try {
+    const result = await requestDocumentThumbnailRender(
+      {
+        url: input.url,
+        width: input.width,
+        ...(input.height === undefined ? {} : { height: input.height }),
+      },
+      input.signal,
+    );
+    if (result.status === 'ok') {
+      return { png: result.png, width: result.width, height: result.height };
+    }
+    return null;
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') throw error;
+    libraryService.reportDiagnostic('document-thumbnail.orchestrate', error, {
+      libraryId: input.libraryId,
+      assetId: input.assetId,
+    });
+    return null;
+  }
+}
+
+export async function withModelRenderGate<T>(
+  signal: AbortSignal | undefined,
+  fn: () => Promise<T>,
+): Promise<T> {
+  const previous = modelRenderTail;
+  let release!: () => void;
+  modelRenderTail = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  let acquired = false;
+  try {
+    await waitForAbortable(previous, signal);
+    acquired = true;
+    if (signal?.aborted) {
+      throw new DOMException('Model render cancelled before acquiring the render gate.', 'AbortError');
+    }
+    return await fn();
+  } finally {
+    if (acquired) {
+      release();
+    } else {
+      // A queued cancellation must not resolve its tail before the previous
+      // owner releases the gate, otherwise a later request can enter while
+      // that owner is still rendering. Keep the chain intact and settle this
+      // node only after the predecessor (which never rejects) completes.
+      void previous.then(release, release);
+    }
+  }
+}
+
+export function waitForAbortable<T>(promise: Promise<T>, signal?: AbortSignal): Promise<T> {
+  if (!signal) return promise;
+  if (signal.aborted) {
+    return Promise.reject(new DOMException('Operation aborted.', 'AbortError'));
+  }
+  return new Promise<T>((resolve, reject) => {
+    const onAbort = (): void => {
+      cleanup();
+      reject(new DOMException('Operation aborted.', 'AbortError'));
+    };
+    const cleanup = (): void => signal.removeEventListener('abort', onAbort);
+    signal.addEventListener('abort', onAbort, { once: true });
+    promise.then(
+      (value) => {
+        cleanup();
+        resolve(value);
+      },
+      (error) => {
+        cleanup();
+        reject(error);
+      },
+    );
+  });
+}
+
+/** URL builders mirror 3d-viewer/url-remap (kept local to avoid a renderer import). */
+export function modelSourceUrl(libraryId: string, assetId: string, revisionId: string): string {
+  return `keel://source/${libraryId}/${assetId}?revision=${encodeURIComponent(revisionId)}`;
+}
+
+export function modelPreviewUrl(libraryId: string, artifactId: string): string {
+  return `keel://preview/${libraryId}/${artifactId}`;
+}
+
+export async function renderModelThumbnailViaMain(input: {
+  libraryId: string;
+  assetId: string;
+  revisionId: string;
+  relativeFilePath: string;
+  byteSize: number | null;
+  signal: AbortSignal;
+}): Promise<ModelThumbnailRenderOutcome> {
+  // The gate is a global one-render-at-a-time policy, not a per-job failure.
+  return withModelRenderGate(input.signal, async () => {
+    try {
+      return await orchestrateRender(input);
+    } catch (error) {
+      // Cancellation must propagate so the queue's cancelled path runs;
+      // anything else becomes a benign typed failure (card keeps the generic
+      // 3D icon, no badge).
+      if (error instanceof DOMException && error.name === 'AbortError') throw error;
+      libraryService.reportDiagnostic('model-thumbnail.orchestrate', error, {
+        libraryId: input.libraryId,
+        assetId: input.assetId,
+      });
+      return { status: 'failed', errorCode: 'MODEL_LOAD_FAILED' };
+    }
+  });
+}
+
+export async function renderModelAiViewsViaMain(input: {
+  libraryId: string;
+  assetId: string;
+  revisionId: string;
+  relativeFilePath: string;
+  byteSize: number | null;
+  signal: AbortSignal;
+  views?: ReadonlyArray<readonly [number, number, number]>;
+}): Promise<ModelThumbnailRenderOutcome> {
+  return withModelRenderGate(input.signal, async () => {
+    try {
+      return await orchestrateRender({ ...input, views: input.views });
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') throw error;
+      libraryService.reportDiagnostic('model-views.orchestrate', error, {
+        libraryId: input.libraryId,
+        assetId: input.assetId,
+      });
+      return { status: 'failed', errorCode: 'MODEL_LOAD_FAILED' };
+    }
+  });
+}
+
+/**
+ * Offscreen render orchestration for one queued model job: format dispatch,
+ * FBX→GLB conversion first (a conversion failure fails the job with the typed
+ * FBX_* code — the renderer never sees the raw FBX), companion index, then
+ * the Main render request.
+ */
+export async function orchestrateRender(input: {
+  libraryId: string;
+  assetId: string;
+  revisionId: string;
+  relativeFilePath: string;
+  byteSize: number | null;
+  signal: AbortSignal;
+  /** Multi-view render (AI four views) — omitted for the single thumbnail. */
+  views?: ReadonlyArray<readonly [number, number, number]>;
+}): Promise<ModelThumbnailRenderOutcome> {
+    const format = modelThumbnailFormatForFileName(input.relativeFilePath);
+    if (!format) {
+      return { status: 'failed', errorCode: 'MODEL_LOAD_FAILED' };
+    }
+    let effectiveFormat: ModelThumbnailRenderRequest['format'] = format;
+    let renderUrl: string;
+    if (format === 'fbx') {
+      // Slice B single-flight conversion; only the cached GLB is rendered.
+      const conversion = await handleFbxConvertCommand(libraryService, {
+        libraryId: input.libraryId,
+        assetId: input.assetId,
+      }, input.signal);
+      if (conversion.status !== 'ready') {
+        return {
+          status: 'failed',
+          errorCode: conversion.errorCode,
+          ...(conversion.reason === undefined ? {} : { reason: conversion.reason }),
+        };
+      }
+      effectiveFormat = 'glb';
+      renderUrl = modelPreviewUrl(input.libraryId, conversion.glbArtifactId);
+    } else {
+      renderUrl = modelSourceUrl(input.libraryId, input.assetId, input.revisionId);
+    }
+    const companions = libraryService.resolveModelCompanions({
+      libraryId: input.libraryId,
+      assetId: input.assetId,
+    });
+    const sourceAuthorizations: ModelThumbnailSourceAuthorization[] = [
+      authorizeModelSource(libraryService, {
+        libraryId: input.libraryId,
+        assetId: input.assetId,
+        revisionId: input.revisionId,
+      }),
+      ...companions.map((companion) =>
+        authorizeModelSource(libraryService, {
+          libraryId: input.libraryId,
+          assetId: companion.assetId,
+          revisionId: companion.revisionId,
+        })),
+    ];
+    return requestModelThumbnailRender(
+      {
+        libraryId: input.libraryId,
+        assetId: input.assetId,
+        revisionId: input.revisionId,
+        format: effectiveFormat,
+        renderUrl,
+        companionMap: companions.map((companion) => ({
+          relativeFilePath: companion.relativeFilePath,
+          assetId: companion.assetId,
+          revisionId: companion.revisionId,
+          extension: companion.extension,
+        })),
+        hdriPresetId: BUNDLED_HDRI_PRESET_IDS[0]!,
+        enableHdri: false,
+        width: MODEL_THUMBNAIL_DEFAULT_EDGE,
+        height: MODEL_THUMBNAIL_DEFAULT_EDGE,
+        sourceAuthorizations,
+        ...(input.views === undefined
+          ? {}
+          : { views: input.views.map((v) => [v[0], v[1], v[2]] as [number, number, number]) }),
+      },
+      input.signal,
+    );
+}
+
+export function authorizeModelSource(
+  service: LibraryService,
+  input: Pick<ModelThumbnailSourceAuthorization, 'libraryId' | 'assetId' | 'revisionId'>,
+): ModelThumbnailSourceAuthorization {
+  const source = service.getCurrentMediaSource(
+    input.libraryId,
+    input.assetId,
+    input.revisionId,
+  );
+  return {
+    ...input,
+    absolutePath: source.absolutePath,
+    mimeType: source.mimeType,
+  };
+}
+
+export async function writePluginMediaArtifact(input: {
+  libraryId: string;
+  assetId: string;
+  kind: 'preview' | 'thumbnail';
+  asset?: PluginMediaProviderRequest['asset'];
+}): Promise<{ artifactId: string } | null> {
+  const providerAsset = input.asset
+    ?? libraryService.getPluginMediaProviderAsset(input.libraryId, input.assetId);
+  const result = await requestPluginMediaProvider({
+    ...input,
+    ...(providerAsset === undefined ? {} : { asset: providerAsset }),
+  });
+  if (result.status !== 'provided' || result.assetId !== input.assetId || !result.media) {
+    return null;
+  }
+  try {
+    return libraryService.writePluginMediaArtifact({
+      libraryId: input.libraryId,
+      assetId: input.assetId,
+      mimeType: result.media.mimeType,
+      bytesBase64: result.media.bytesBase64,
+      ...(result.providerId === undefined ? {} : { providerId: result.providerId }),
+    });
+  } catch (error) {
+    libraryService.reportDiagnostic('plugin-media-artifact.write', error, {
+      libraryId: input.libraryId,
+      assetId: input.assetId,
+      kind: input.kind,
+    });
+    return null;
+  }
+}
+
+/**
+ * Import planning/copying still has synchronous filesystem sections inside
+ * the Worker. Keep native decoder lanes from claiming another job while that
+ * critical path owns the event loop; existing bounded jobs may finish and
+ * their durable state remains untouched.
+ */
+export async function withMediaSchedulingSuspended<T>(
+  libraryId: string | undefined,
+  operation: () => T | PromiseLike<T>,
+  options: { resumeScheduling?: boolean } = {},
+): Promise<T> {
+  mediaResourceGuard.enterExternalHold();
+  try {
+    return await operation();
+  } finally {
+    mediaResourceGuard.exitExternalHold();
+    // Linked-folder indexing can register tens of thousands of assets. An
+    // unbounded resume here would SELECT/INSERT thumbnail jobs for the whole
+    // catalog before the mutation returns, so browse stays queued. Callers
+    // that need a bounded scene pass resumeScheduling: false and schedule it.
+    const shouldResume = options.resumeScheduling !== false
+      && !mediaResourceGuard.isCoolingDown();
+    if (shouldResume) {
+      const libraryIds = libraryId
+        ? [libraryId]
+        : libraryService.listLibraries().map((library) => library.libraryId);
+      for (const scheduledLibraryId of libraryIds) {
+        if (!libraryService.hasOpenLibrary(scheduledLibraryId)) continue;
+        try {
+          scheduleThumbnailQueue(scheduledLibraryId);
+        } catch (error) {
+          libraryService.reportDiagnostic('thumbnail-schedule.after-import', error, {
+            libraryId: scheduledLibraryId,
+          });
+        }
+      }
+    }
+  }
+}
+
+export function scheduleMediaResourceRetry(libraryId: string): void {
+  if (mediaResourceGuard.hasExternalHold() || !mediaResourceGuard.isCoolingDown()) return;
+  if (deferredMediaResourceRetries.has(libraryId)) return;
+  const delayMs = Math.max(1_000, mediaResourceGuard.remainingMs());
+  const timer = setTimeout(() => {
+    deferredMediaResourceRetries.delete(libraryId);
+    if (!automaticMediaAdmissionAllowed(libraryId)) return;
+    try {
+      scheduleThumbnailQueue(libraryId);
+    } catch (error) {
+      libraryService.reportDiagnostic('thumbnail-schedule.resource-retry', error, { libraryId });
+    }
+  }, delayMs);
+  timer.unref?.();
+  deferredMediaResourceRetries.set(libraryId, timer);
+}
+
+export function cancelMediaResourceRetry(libraryId: string): void {
+  const timer = deferredMediaResourceRetries.get(libraryId);
+  if (timer !== undefined) clearTimeout(timer);
+  deferredMediaResourceRetries.delete(libraryId);
+}
+
+export function cancelThumbnailQueueFailureRetry(libraryId: string): void {
+  const timer = pendingThumbnailQueueFailureRetries.get(libraryId);
+  if (timer !== undefined) clearTimeout(timer);
+  pendingThumbnailQueueFailureRetries.delete(libraryId);
+  thumbnailQueueFailureAttempts.delete(libraryId);
+  pendingThumbnailQueueFailureRecoveries.delete(libraryId);
+}
+
+export function scheduleThumbnailQueueFailureRetry(libraryId: string): void {
+  pendingThumbnailQueueFailureRecoveries.add(libraryId);
+  if (pendingThumbnailQueueFailureRetries.has(libraryId)) return;
+  const attempt = (thumbnailQueueFailureAttempts.get(libraryId) ?? 0) + 1;
+  thumbnailQueueFailureAttempts.set(libraryId, attempt);
+  const delayMs = Math.min(
+    THUMBNAIL_QUEUE_FAILURE_RETRY_MAX_MS,
+    THUMBNAIL_QUEUE_FAILURE_RETRY_BASE_MS * (2 ** Math.min(attempt - 1, 10)),
+  );
+  const timer = setTimeout(() => {
+    pendingThumbnailQueueFailureRetries.delete(libraryId);
+    if (!automaticMediaAdmissionAllowed(libraryId)) {
+      cancelThumbnailQueueFailureRetry(libraryId);
+      return;
+    }
+    // A visible or exact wave can own the queue when this backoff expires.
+    // Keep the wake alive; its successful narrow completion is not proof that
+    // unrelated durable background jobs have an owner.
+    if (activeThumbnailQueues.has(libraryId)) {
+      scheduleThumbnailQueueFailureRetry(libraryId);
+      return;
+    }
+    try {
+      if (drainPendingReconciledPrimaryQueue(libraryId, () => {
+        try {
+          scheduleThumbnailQueue(libraryId);
+        } catch (error) {
+          libraryService.reportDiagnostic('thumbnail-schedule.failure-retry-resume', error, {
+            libraryId,
+          });
+          scheduleThumbnailQueueFailureRetry(libraryId);
+        }
+      })) return;
+      scheduleThumbnailQueue(libraryId);
+    } catch (error) {
+      libraryService.reportDiagnostic('thumbnail-schedule.failure-retry', error, { libraryId });
+      scheduleThumbnailQueueFailureRetry(libraryId);
+    }
+  }, delayMs);
+  timer.unref?.();
+  pendingThumbnailQueueFailureRetries.set(libraryId, timer);
+}
+
+export function isHighPriorityThumbnailQueue(options: {
+  assetIds?: readonly string[];
+  priority?: number;
+}): boolean {
+  return options.assetIds !== undefined
+    && options.priority !== undefined
+    && options.priority >= THUMBNAIL_VISIBLE_PRIORITY;
+}
+
+export function scheduleThumbnailQueue(
+  libraryId: string,
+  options: {
+    assetIds?: string[];
+    limit?: number;
+    priority?: number;
+    repairFailed?: boolean;
+    retryFailed?: boolean;
+    /** Serpent-x9xu light scenes skip stale-artifact invalidation sweeps. */
+    skipStaleRepair?: boolean;
+    /** Serpent-4bdd26: cap in-flight decodes for this scene (startup backfill). */
+    processMaxJobs?: number;
+    /**
+     * A visible-window destination change may preempt the active queue. When
+     * geometry reports overlap the current destination, keep the active wave
+     * running and let the latest visible ids run at the next safe boundary.
+     */
+    preemptVisible?: boolean;
+    /** Resume/retry existing durable jobs before admitting more catalogue work. */
+    skipInitialEnqueue?: boolean;
+    /** Consume only already-enqueued jobs; skip catalogue repair/backfill tails. */
+    skipBackgroundRepair?: boolean;
+    /** Keep this bounded primary pump from handing off to secondary media work. */
+    suppressSecondaryQueue?: boolean;
+    /** Continue a bounded, exact-asset pump after this queue becomes idle. */
+    onQueueIdle?: (outcome?: {
+      aborted: boolean;
+      failed: boolean;
+      rescheduled?: boolean;
+    }) => void;
+  } = {},
+): number {
+  if (!automaticMediaAdmissionAllowed(libraryId)) return 0;
+  let enqueued: number;
+  try {
+    const { skipInitialEnqueue, ...enqueueOptions } = options;
+    enqueued = skipInitialEnqueue
+      ? 0
+      : libraryService.enqueueThumbnailJobs(libraryId, enqueueOptions);
+  } catch (error) {
+    libraryService.reportDiagnostic('thumbnail-schedule.enqueue', error, { libraryId });
+    throw error;
+  }
+
+  if (activeThumbnailQueues.has(libraryId)) {
+    const reconciledBatch = activeReconciledPrimaryBatches.get(libraryId);
+    if (
+      isHighPriorityThumbnailQueue(options)
+    ) {
+      if (reconciledBatch) reconciledBatch.superseded = true;
+      pendingVisibleThumbnailWaves.set(
+        libraryId,
+        {
+          // A new viewport supersedes the previous viewport. Keeping the
+          // latest ids here is stronger than priority promotion: when the
+          // active queue reaches its next claim boundary it cannot spend the
+          // batch on stale startup assets first.
+          assetIds: [...new Set(options.assetIds)].slice(0, 100),
+          waveSize: Math.max(
+            pendingVisibleThumbnailWaves.get(libraryId)?.waveSize ?? 0,
+            options.assetIds?.length ?? 0,
+          ),
+        },
+      );
+      // The current pump may have claimed a large startup/initial-page wave.
+      // Narrow the current pump to the newest visible ids. A destination
+      // change already interrupted running jobs outside that set; aborting
+      // the whole queue here would also requeue overlapping jobs and make the
+      // replacement wave decode the same first cards twice.
+      const assetScope = activeThumbnailQueueAssetScopes.get(libraryId);
+      if (assetScope) {
+        assetScope.current = resolveViewportClaimIds(
+          viewportPriorityOverlay.rankedClaimIds(libraryId),
+          options.assetIds,
+        );
+      }
+    }
+    rescheduledThumbnailQueues.add(libraryId);
+    return enqueued;
+  }
+  activeThumbnailQueues.add(libraryId);
+
+  const runBatch = async (): Promise<void> => {
+    let continueImmediately = false;
+    let pendingVisibleWaveCompleted = false;
+    let queueWasAborted = false;
+    let queueFailed = false;
+    let completedViewportOnlyWave = false;
+    const pendingVisibleWave = pendingVisibleThumbnailWaves.get(libraryId);
+    const queueController = new AbortController();
+    const assetScope = activeThumbnailQueueAssetScopes.get(libraryId)
+      ?? { current: undefined };
+    activeThumbnailQueueControllers.set(libraryId, queueController);
+    activeThumbnailQueueAssetScopes.set(libraryId, assetScope);
+    if (pendingThumbnailQueueAborts.delete(libraryId)) {
+      queueController.abort();
+    }
+    const resumeOrdinaryQueue = () => {
+      try {
+        scheduleThumbnailQueue(libraryId, {
+          ...options,
+          skipInitialEnqueue: true,
+        });
+      } catch (error) {
+        libraryService.reportDiagnostic('thumbnail-schedule.reconciled-resume', error, {
+          libraryId,
+        });
+      }
+    };
+    const resumeBackgroundPrimaryQueue = () => {
+      try {
+        // A viewport report is a bounded request. Once it yields, continue
+        // durable primary work through a fresh background scope instead of
+        // retaining the viewport IDs and options in the old queue closure.
+        scheduleThumbnailQueue(libraryId, {
+          skipInitialEnqueue: true,
+          skipStaleRepair: true,
+        });
+      } catch (error) {
+        libraryService.reportDiagnostic('thumbnail-schedule.background-resume', error, {
+          libraryId,
+        });
+      }
+    };
+    // A completed ordinary wave may have scheduled its next timer before the
+    // reconciliation callback added exact IDs. Hand the queue off before its
+    // next claim boundary, preserving the original options for resumption.
+    if (
+      options.onQueueIdle === undefined
+      && !isHighPriorityThumbnailQueue(options)
+      && !pendingVisibleThumbnailWaves.has(libraryId)
+      && hasPendingReconciledPrimaryAssetIds(libraryId)
+    ) {
+      if (activeThumbnailQueueControllers.get(libraryId) === queueController) {
+        activeThumbnailQueueControllers.delete(libraryId);
+      }
+      if (activeThumbnailQueueAssetScopes.get(libraryId) === assetScope) {
+        activeThumbnailQueueAssetScopes.delete(libraryId);
+      }
+      activeThumbnailQueues.delete(libraryId);
+      rescheduledThumbnailQueues.delete(libraryId);
+      if (drainPendingReconciledPrimaryQueue(libraryId, resumeOrdinaryQueue)) return;
+      resumeOrdinaryQueue();
+      return;
+    }
+    try {
+      const onResult = (result: {
+        assetId: string;
+        artifactId?: string;
+        errorCode?: string;
+        width?: number;
+        height?: number;
+        durationMs?: number;
+        revisionId?: string;
+        previewKind?: 'source' | null;
+        previewRevisionId?: string | null;
+      }) => {
+        if (result.artifactId) {
+          thumbnailCompletionFanout.publishReady({
+            libraryId,
+            assetId: result.assetId,
+            artifactId: result.artifactId,
+            ...(result.width === undefined ? {} : { width: result.width }),
+            ...(result.height === undefined ? {} : { height: result.height }),
+            ...(result.durationMs === undefined ? {} : { durationMs: result.durationMs }),
+          });
+        } else {
+          const errorCode = result.errorCode ?? 'THUMBNAIL_GENERATION_FAILED';
+          if (
+            errorCode === 'SOURCE_DIRECT'
+            && result.width !== undefined
+            && result.height !== undefined
+            && result.revisionId !== undefined
+          ) {
+            parentPort?.postMessage({
+              type: 'asset.dimensions.ready',
+              libraryId,
+              assetId: result.assetId,
+              width: result.width,
+              height: result.height,
+              revisionId: result.revisionId,
+              previewKind: result.previewKind ?? 'source',
+              previewRevisionId: result.previewRevisionId ?? result.revisionId,
+            });
+            return;
+          }
+          if (isBenignThumbnailErrorCode(errorCode)) return;
+          thumbnailCompletionFanout.publishFailed({
+            libraryId,
+            assetId: result.assetId,
+            errorCode,
+            reason: thumbnailFailureReason(errorCode),
+          });
+        }
+      };
+      // Image thumbs share a small Sharp semaphore. Video/OIIO stay separately
+      // bounded. Claim a wave of 2× concurrency so the pool stays
+      // full instead of draining and waiting for the next setTimeout. A light
+      // visible-window request claims the whole reported window in one queue
+      // call; the service still caps actual decoder concurrency, but this
+      // avoids inserting a timer/query boundary between visible thumbnails.
+      const thumbnailWaveSize = workerMediaDecodeWaveSize();
+      // A light explicit wave belongs only to the reported viewport. Falling
+      // back to a 500-row library fill when those ids have no primary work
+      // turns a cheap visible report into a synchronous large-library scan
+      // and can starve browse/page messages in the Worker event loop. A
+      // pending viewport wave keeps the same restriction even when it
+      // arrived while a background queue was active.
+      const viewportOnlyWave = isViewportOnlyThumbnailWave({
+        skipStaleRepair: options.skipStaleRepair,
+        assetIds: options.assetIds,
+        pendingVisibleWindow: pendingVisibleWave !== undefined,
+      });
+      const visibleAssetIds = pendingVisibleWave?.assetIds
+        ?? (options.skipStaleRepair && options.assetIds
+          ? [...new Set(options.assetIds)].slice(0, 100)
+          : undefined);
+      if (assetScope.current === undefined && visibleAssetIds !== undefined) {
+        assetScope.current = visibleAssetIds;
+      }
+      const waveClaimIds = claimIdsForThumbnailWave({
+        viewportOnlyWave,
+        rankedOverlayIds: viewportPriorityOverlay.rankedClaimIds(libraryId),
+        fallbackIds: assetScope.current ?? visibleAssetIds,
+      });
+      if (viewportOnlyWave) {
+        if (waveClaimIds !== undefined) assetScope.current = waveClaimIds;
+      } else if (assetScope.current === undefined) {
+        assetScope.current = waveClaimIds;
+      }
+      const processWaveSize = pendingVisibleWave !== undefined
+        ? Math.max(1, Math.min(100, Math.trunc(pendingVisibleWave.waveSize)))
+        : options.processMaxJobs !== undefined
+          ? Math.max(1, Math.min(100, Math.trunc(options.processMaxJobs)))
+          : options.skipStaleRepair && options.assetIds
+            ? Math.min(100, Math.max(thumbnailWaveSize, options.assetIds.length))
+            : thumbnailWaveSize;
+      const processed = await traceActivity(
+        `thumbnail-wave:${libraryId}`,
+        () => libraryService.processThumbnailQueue(libraryId, {
+          maxJobs: processWaveSize,
+          jobKinds: ['generate_thumbnail', 'generate_video_poster'],
+          interactive: viewportOnlyWave,
+          ...(visibleAssetIds === undefined ? {} : { assetIds: visibleAssetIds }),
+          signal: queueController.signal,
+          claimAssetIdsRef: assetScope,
+          onResult,
+          onAiInputReady: (event) => {
+            parentPort?.postMessage({
+              type: 'asset.ai-input.ready',
+              libraryId,
+            assetId: event.assetId,
+            artifactId: event.artifactId,
+          });
+        },
+        pluginMediaProvider: async ({ assetId, signal, asset }) => {
+          if (signal?.aborted) return null;
+          return (await writePluginMediaArtifact({
+            libraryId,
+            assetId,
+            kind: 'thumbnail',
+            ...(asset === undefined ? {} : { asset }),
+          }))?.artifactId ?? null;
+        },
+        // Slice E (Serpent-hnmg): model jobs render offscreen in Main; the
+        // shared-window gate inside renderModelThumbnailViaMain keeps at
+        // most one render in flight process-wide.
+        modelThumbnailRenderer: (input) => renderModelThumbnailViaMain(input),
+        modelAiViewsRenderer: (input) => renderModelAiViewsViaMain(input),
+        }),
+      );
+      pendingVisibleWaveCompleted = true;
+      queueWasAborted = queueController.signal.aborted;
+      completedViewportOnlyWave = viewportOnlyWave && !queueWasAborted;
+      if (mediaResourceGuard.isCoolingDown()) scheduleMediaResourceRetry(libraryId);
+      // A visible wave must yield after its bounded claim even when it filled
+      // the requested window. Continuing the old closure here would skip the
+      // cleanup below and let a background queue turn the next tick into a
+      // whole-library fill before the latest visible ids are admitted.
+      continueImmediately = !queueWasAborted
+        && !viewportOnlyWave
+        && processed === processWaveSize
+        && !hasPendingReconciledPrimaryAssetIds(libraryId);
+      // A visible report can arrive while a startup/maintenance wave is
+      // awaiting native work. Do not let that older closure launch its
+      // whole-library repair tail before the pending viewport takes over.
+      const visibleWavePending = pendingVisibleThumbnailWaves.has(libraryId);
+      const mayRunBackgroundRepair = () => !options.skipBackgroundRepair
+        && !hasPendingReconciledPrimaryAssetIds(libraryId)
+        && shouldRunThumbnailBackgroundRepair({
+          viewportOnlyWave,
+          queueWasAborted,
+          continueImmediately,
+          visibleWavePending,
+        });
+      if (mayRunBackgroundRepair()) {
+        const filled = await traceActivity(
+          `thumbnail-enqueue:${libraryId}`,
+          async () => libraryService.enqueueThumbnailJobs(libraryId, {
+            limit: 500,
+            priority: 50,
+            skipStaleRepair: true,
+          }),
+        );
+        continueImmediately = filled > 0;
+      }
+      if (mayRunBackgroundRepair()) {
+        try {
+          const dimensions = await traceActivity(
+            `dimension-backfill:${libraryId}`,
+            async () => libraryService.backfillMissingImageDimensions(libraryId, 48),
+          );
+          for (const item of dimensions) {
+            parentPort?.postMessage({
+              type: 'asset.dimensions.ready',
+              libraryId,
+              assetId: item.assetId,
+              width: item.width,
+              height: item.height,
+              revisionId: item.revisionId,
+              previewKind: item.previewKind,
+              previewRevisionId: item.previewRevisionId,
+            });
+          }
+          if (dimensions.length > 0) continueImmediately = true;
+        } catch (dimensionError) {
+          libraryService.reportDiagnostic('thumbnail-schedule.dimensions', dimensionError, {
+            libraryId,
+          });
+        }
+      }
+      // Reconciliation may have completed while a repair tail was awaiting
+      // storage. Yield at this same wave boundary instead of scheduling one
+      // more ordinary claim before the exact IDs take ownership.
+      if (options.onQueueIdle === undefined
+        && hasPendingReconciledPrimaryAssetIds(libraryId)) {
+        continueImmediately = false;
+      }
+    } catch (error) {
+      queueFailed = true;
+      libraryService.reportDiagnostic('thumbnail-schedule.process', error, { libraryId });
+    }
+    if (continueImmediately) {
+      setTimeout(() => void runBatch(), 0);
+      return;
+    }
+    if (activeThumbnailQueueControllers.get(libraryId) === queueController) {
+      activeThumbnailQueueControllers.delete(libraryId);
+    }
+    if (activeThumbnailQueueAssetScopes.get(libraryId) === assetScope) {
+      activeThumbnailQueueAssetScopes.delete(libraryId);
+    }
+    activeThumbnailQueues.delete(libraryId);
+    thumbnailCompletionFanout.flush(libraryId);
+    const completedVisibleWaveIsCurrent = pendingVisibleWaveCompleted
+      && pendingVisibleWave !== undefined
+      && pendingVisibleThumbnailWaves.get(libraryId) === pendingVisibleWave
+      && !queueController.signal.aborted;
+    const queueWasRescheduled = rescheduledThumbnailQueues.delete(libraryId);
+    if (queueFailed) {
+      scheduleThumbnailQueueFailureRetry(libraryId);
+    } else if (
+      pendingThumbnailQueueFailureRecoveries.has(libraryId)
+      && !queueWasAborted
+      && !queueWasRescheduled
+      && !completedVisibleWaveIsCurrent
+      && !completedViewportOnlyWave
+      && options.assetIds === undefined
+      && options.onQueueIdle === undefined
+    ) {
+      try {
+        if (libraryService.hasQueuedPrimaryPreviewJobs(libraryId)) {
+          scheduleThumbnailQueueFailureRetry(libraryId);
+        } else {
+          cancelThumbnailQueueFailureRetry(libraryId);
+        }
+      } catch (error) {
+        libraryService.reportDiagnostic('thumbnail-schedule.failure-retry-check', error, {
+          libraryId,
+        });
+        scheduleThumbnailQueueFailureRetry(libraryId);
+      }
+    }
+    if (completedVisibleWaveIsCurrent) {
+      // The visible wave was the only work requested by the reschedule. Do
+      // not restart the old background closure with its stale viewport scope.
+      // The completion path below creates a fresh background scope after the
+      // interactive wave has yielded.
+      pendingVisibleThumbnailWaves.delete(libraryId);
+    }
+    // A visible report can have arrived while this queue was unwinding. The
+    // primary queue must resume first; otherwise palette/proxy work starts in
+    // the gap and competes with the wave that the user is waiting for.
+    if (queueWasRescheduled) {
+      if (completedVisibleWaveIsCurrent) {
+        if (options.onQueueIdle) {
+          // The reconciliation callback owns the next exact batch. Preserve a
+          // fresh, unscoped background continuation behind that exact work.
+          // Otherwise a visible wave can supersede the exact pump and leave
+          // unrelated durable jobs queued after reconciliation drains.
+          pendingReconciledPrimaryResumes.set(libraryId, resumeBackgroundPrimaryQueue);
+          options.onQueueIdle({
+            aborted: queueWasAborted,
+            failed: queueFailed,
+            rescheduled: true,
+          });
+        } else if (drainPendingReconciledPrimaryQueue(libraryId)) {
+          return;
+        } else if (interactiveThumbnailIdleDelayMs(libraryId) > 0) {
+          pendingReconciledPrimaryResumes.set(libraryId, resumeBackgroundPrimaryQueue);
+          continueReconciledPrimaryWork(libraryId);
+          return;
+        } else if (resumePendingStartupThumbnailAdmission(libraryId)) {
+          return;
+        } else {
+          resumeBackgroundPrimaryQueue();
+        }
+        return;
+      }
+      // An exact reconciliation queue must finalize its in-flight batch before
+      // another exact request can replace it. Visible work is the exception:
+      // keep the closure alive so the pending visible wave runs first.
+      if (options.onQueueIdle && !pendingVisibleThumbnailWaves.has(libraryId)) {
+        options.onQueueIdle({
+          aborted: queueWasAborted,
+          failed: queueFailed,
+          rescheduled: true,
+        });
+        return;
+      }
+      if (options.onQueueIdle === undefined
+        && !pendingVisibleThumbnailWaves.has(libraryId)
+        && drainPendingReconciledPrimaryQueue(libraryId, resumeOrdinaryQueue)) {
+        return;
+      }
+      if (options.onQueueIdle === undefined
+        && !pendingVisibleThumbnailWaves.has(libraryId)
+        && interactiveThumbnailIdleDelayMs(libraryId) > 0) {
+        pendingReconciledPrimaryResumes.set(libraryId, resumeOrdinaryQueue);
+        continueReconciledPrimaryWork(libraryId);
+        return;
+      }
+      activeThumbnailQueues.add(libraryId);
+      setTimeout(() => void runBatch(), 0);
+      return;
+    }
+    if (options.onQueueIdle) {
+      options.onQueueIdle({ aborted: queueWasAborted, failed: queueFailed });
+      return;
+    }
+    if (drainPendingReconciledPrimaryQueue(libraryId, resumeOrdinaryQueue)) {
+      return;
+    }
+    if (interactiveThumbnailIdleDelayMs(libraryId) > 0) {
+      pendingReconciledPrimaryResumes.set(
+        libraryId,
+        completedViewportOnlyWave ? resumeBackgroundPrimaryQueue : resumeOrdinaryQueue,
+      );
+      continueReconciledPrimaryWork(libraryId);
+      return;
+    }
+    if (resumePendingStartupThumbnailAdmission(libraryId)) {
+      return;
+    } else if (completedViewportOnlyWave) {
+      resumeBackgroundPrimaryQueue();
+      return;
+    } else if (!options.suppressSecondaryQueue) {
+      scheduleSecondaryMediaQueue(libraryId);
+    }
+  };
+
+  setTimeout(() => void runBatch(), 0);
+  return enqueued;
+}
+
+export const RECONCILED_PRIMARY_ASSET_BATCH_SIZE = 100;
+
+/**
+ * Drain only the primary assets invalidated by this reconciliation pass.
+ * Each queue owns one exact, bounded ID batch; completion schedules the next
+ * batch, so a large Set never becomes a global catalogue claim or a dropped
+ * tail. The queue is deliberately not allowed to hand off to secondary work.
+ */
+export function drainPendingReconciledPrimaryQueue(
+  libraryId: string,
+  resumeAfterDrain?: () => void,
+): boolean {
+  if (
+    !automaticMediaAdmissionAllowed(libraryId)
+    || (
+      !startupThumbnailVisibleWindows.has(libraryId)
+      && deferredStartupThumbnailGenerations.has(libraryId)
+    )
+    || activeThumbnailQueues.has(libraryId)
+  ) return false;
+  const pending = pendingReconciledPrimaryAssetIds.get(libraryId);
+  if (!pending || pending.size === 0) {
+    pendingReconciledPrimaryAssetIds.delete(libraryId);
+    return false;
+  }
+  if (resumeAfterDrain) {
+    pendingReconciledPrimaryResumes.set(libraryId, resumeAfterDrain);
+  }
+  if (interactiveThumbnailIdleDelayMs(libraryId) > 0) {
+    continueReconciledPrimaryWork(libraryId);
+    return true;
+  }
+  const batch = [...pending].slice(0, RECONCILED_PRIMARY_ASSET_BATCH_SIZE);
+  const batchState: ReconciledPrimaryBatch = { assetIds: batch, superseded: false };
+  try {
+    scheduleThumbnailQueue(libraryId, {
+      assetIds: batch,
+      limit: batch.length,
+      processMaxJobs: batch.length,
+      skipStaleRepair: true,
+      skipInitialEnqueue: true,
+      skipBackgroundRepair: true,
+      suppressSecondaryQueue: true,
+      onQueueIdle: (outcome) => {
+        if (activeReconciledPrimaryBatches.get(libraryId) === batchState) {
+          activeReconciledPrimaryBatches.delete(libraryId);
+          if (outcome?.rescheduled && !pendingReconciledPrimaryResumes.has(libraryId)) {
+            pendingReconciledPrimaryResumes.set(
+              libraryId,
+              () => scheduleQueuedThumbnailWork(libraryId),
+            );
+          }
+          if (outcome?.aborted || outcome?.failed || batchState.superseded) {
+            rememberReconciledPrimaryAssetIds(libraryId, batchState.assetIds);
+          }
+        }
+        continueReconciledPrimaryWork(libraryId);
+      },
+    });
+    // scheduleThumbnailQueue is synchronous up to its timer registration. Set
+    // the owner before the next turn can run so a visible supersession can
+    // replay this exact batch, and only then acknowledge the IDs as owned.
+    activeReconciledPrimaryBatches.set(libraryId, batchState);
+    for (const assetId of batch) pending.delete(assetId);
+    if (pending.size === 0) pendingReconciledPrimaryAssetIds.delete(libraryId);
+  } catch (error) {
+    if (resumeAfterDrain && pendingReconciledPrimaryResumes.get(libraryId) === resumeAfterDrain) {
+      pendingReconciledPrimaryResumes.delete(libraryId);
+    }
+    libraryService.reportDiagnostic('thumbnail-schedule.reconciled-missing-artifacts', error, {
+      libraryId,
+    });
+    return false;
+  }
+  return true;
+}
+
+export function hasPendingReconciledPrimaryAssetIds(libraryId: string): boolean {
+  return (pendingReconciledPrimaryAssetIds.get(libraryId)?.size ?? 0) > 0;
+}
+
+export function scheduleQueuedThumbnailWork(libraryId: string): void {
+  try {
+    scheduleThumbnailQueue(libraryId, {
+      skipInitialEnqueue: true,
+      skipStaleRepair: true,
+    });
+  } catch (error) {
+    libraryService.reportDiagnostic('thumbnail-schedule.reconciled-resume', error, {
+      libraryId,
+    });
+  }
+}
+
+export function interactiveThumbnailIdleDelayMs(libraryId: string): number {
+  return Math.max(0, (secondaryMediaIdleUntil.get(libraryId) ?? 0) - Date.now());
+}
+
+export function continueReconciledPrimaryWork(libraryId: string): void {
+  const delayMs = interactiveThumbnailIdleDelayMs(libraryId);
+  if (delayMs > 0) {
+    if (pendingReconciledPrimaryIdleRetries.has(libraryId)) return;
+    const timer = setTimeout(() => {
+      pendingReconciledPrimaryIdleRetries.delete(libraryId);
+      if (!automaticMediaAdmissionAllowed(libraryId)) return;
+      continueReconciledPrimaryWork(libraryId);
+    }, delayMs);
+    timer.unref?.();
+    pendingReconciledPrimaryIdleRetries.set(libraryId, timer);
+    return;
+  }
+  if (drainPendingReconciledPrimaryQueue(libraryId)) return;
+  const resume = pendingReconciledPrimaryResumes.get(libraryId);
+  if (resume) {
+    pendingReconciledPrimaryResumes.delete(libraryId);
+    setTimeout(resume, 0);
+    return;
+  }
+  resumePendingStartupThumbnailAdmission(libraryId);
+}
+
+export function cancelReconciledPrimaryIdleRetry(libraryId: string): void {
+  const timer = pendingReconciledPrimaryIdleRetries.get(libraryId);
+  if (timer !== undefined) clearTimeout(timer);
+  pendingReconciledPrimaryIdleRetries.delete(libraryId);
+}
+
+export function rememberReconciledPrimaryAssetIds(libraryId: string, assetIds: readonly string[]): void {
+  if (assetIds.length === 0) return;
+  const pending = pendingReconciledPrimaryAssetIds.get(libraryId) ?? new Set<string>();
+  for (const assetId of assetIds) pending.add(assetId);
+  pendingReconciledPrimaryAssetIds.set(libraryId, pending);
+}
+
+export function scheduleReconciledMissingPrimaryQueue(
+  libraryId: string,
+  assetIds: readonly string[],
+): void {
+  rememberReconciledPrimaryAssetIds(libraryId, assetIds);
+  drainPendingReconciledPrimaryQueue(libraryId);
+}
+
+// Serpent-onch/9e1d8d: per-command timing log, off by default.
+export const WORKER_CMD_LOG = process.env.KEEL_WORKER_CMD_LOG === '1';
+
+// Serpent-288cd9: RAW metadata 回填的「扫完即停」游标。置 0 即回到「只按 2 秒节流重扫」
+// 的旧行为，用于同树 A/B 归因（生产不设即启用）。
+export const RAW_METADATA_EXHAUSTION_ENABLED = process.env.KEEL_RAW_METADATA_EXHAUSTION !== '0';
+
+/**
+ * Commands the user is actively waiting on across a library transition. They
+ * take the whole queue's priority so a switch cannot be starved by the
+ * outgoing library's visible-window/media backlog (see LIFECYCLE_PRIORITY).
+ */
+export function isLibraryTransitionCommand(commandType: string): boolean {
+  return commandType === 'library.open'
+    || commandType === 'library.open-eagle'
+    || commandType === 'library.open-billfish'
+    || commandType === 'library.create'
+    || commandType === 'library.close'
+    || commandType === 'library.delete-from-disk';
+}
+
+// 事件循环滞后监控（KEEL_LAG_LOG=1）：被同步工作堵住的 Worker 会推迟接收
+// 消息，此时 `queueMs` 与 `runMs` 都无法区分「在干活」和「根本没被调度」。
+// 每秒测量计时器漂移，只在真正卡顿时输出，并带上当时正在运行的活动名。
+export let currentWorkerActivity = 'idle';
+
+/** The activity named in lag reports; the command loop sets it per request. */
+export function getCurrentWorkerActivity(): string {
+  return currentWorkerActivity;
+}
+
+export function setCurrentWorkerActivity(activity: string): void {
+  currentWorkerActivity = activity;
+}
+
+/** Run `work` while naming it as the Worker's current activity for lag reports. */
+export async function traceActivity<T>(label: string, work: () => Promise<T>): Promise<T> {
+  const previous = currentWorkerActivity;
+  currentWorkerActivity = label;
+  try {
+    return await work();
+  } finally {
+    currentWorkerActivity = previous;
+  }
+}
+
+if (process.env.KEEL_LAG_LOG === '1') {
+  let lagWindowStart = Date.now();
+  const lagTimer = setInterval(() => {
+    const now = Date.now();
+    const driftMs = now - lagWindowStart - 1_000;
+    lagWindowStart = now;
+    if (driftMs >= 200) {
+      console.error(JSON.stringify({
+        timestamp: new Date().toISOString(),
+        scope: 'worker.eventLoop.lag',
+        driftMs,
+        activity: currentWorkerActivity,
+      }));
+    }
+  }, 1_000);
+  lagTimer.unref?.();
+}
+
+// Serpent-2cc492（真实 NAS 生产库事故，2026-08-23）：开库后台对账若与渲染端
+// startup 请求风暴同时运行，SMB 上 21,508 条目的 artifact 枚举实测 ~16.5s，
+// 加上各同步 SQL 步骤，startup 突发曾经撞上主进程的固定请求 deadline，late
+// 响应被丢弃（一次 E2E 记录到 462 条）——画布永远等不到第一页数据。因此
+// 对账必须等首个浏览查询真正服务完毕、且在飞命令清零后才启动；
+// StartupBurstGateRegistry 还按 libraryId + generation 隔离状态，避免多个打开库
+// 互相释放或取消启动门。
+export const startupBurstGates = new StartupBurstGateRegistry();
+
+/** Run the open reconciliation only after the startup burst has drained. */
+export function scheduleOpenBackgroundReconciliation(
+  libraryId: string,
+  libraryGeneration: number,
+): StartupBurstGateToken {
+  // Keep a sentinel until the opened response is posted. This lets the gate
+  // be installed before Main can send the first browse request, while the
+  // registry still keeps all counts scoped to this library and generation.
+  const token = startupBurstGates.open(libraryId, libraryGeneration);
+  void startupBurstGates.waitForDrain(token).then(() => {
+    if (!automaticMediaAdmissionAllowed(libraryId)) return undefined;
+    return interactiveScheduler.schedule(
+      {
+        requestId: `reconciliation:${libraryId}:${libraryGeneration}`,
+        lane: 'maintenance',
+        libraryId,
+        libraryGeneration,
+        isCurrent: () => libraryGenerationRegistry.isCurrent(libraryId, libraryGeneration),
+      },
+      () => traceActivity(
+        `open-reconciliation:${libraryId}`,
+        async () => {
+          const missingPrimaryArtifactIds = new Set<string>();
+          await libraryService.runOpenBackgroundReconciliation(libraryId, {
+            // Serpent-be29a9: this pass runs in 60-asset batches for many seconds.
+            // Release the single background admission between batches whenever an
+            // interactive request or mutation is waiting.
+            admissionYield: () => interactiveScheduler.yieldAdmission(
+              `reconciliation:${libraryId}:${libraryGeneration}`,
+            ),
+            onMissingPrimaryArtifacts: (assetIds) => {
+              // Queue only IDs found missing in this bounded reconciliation
+              // batch. Persist jobs at background priority; after reconciliation,
+              // the existing startup/visible scene can process them without
+              // letting repair work outrank the current viewport.
+              if (assetIds.length === 0) return;
+              for (const assetId of assetIds) missingPrimaryArtifactIds.add(assetId);
+              rememberReconciledPrimaryAssetIds(libraryId, assetIds);
+              try {
+                libraryService.enqueueThumbnailJobs(libraryId, {
+                  assetIds,
+                  limit: assetIds.length,
+                  priority: 50,
+                  skipStaleRepair: true,
+                });
+              } catch (error) {
+                libraryService.reportDiagnostic(
+                  'thumbnail-schedule.reconciled-missing-artifacts',
+                  error,
+                  { libraryId },
+                );
+              }
+            },
+          });
+          if (
+            missingPrimaryArtifactIds.size > 0
+            && (
+              startupThumbnailVisibleWindows.has(libraryId)
+              || !deferredStartupThumbnailGenerations.has(libraryId)
+            )
+          ) {
+            // All exact IDs have already been durably enqueued above. Drain
+            // those IDs in bounded batches; never fall back to a global claim
+            // or hand this reconciliation-only pump to secondary media work.
+            // If another primary queue owns admission, its cleanup drains the
+            // retained exact-ID set before any secondary handoff.
+            scheduleReconciledMissingPrimaryQueue(
+              libraryId,
+              [...missingPrimaryArtifactIds],
+            );
+          }
+        },
+      ),
+      { cancel: () => libraryService.cancelOpenBackgroundReconciliation(libraryId) },
+    );
+  }).catch(() => {
+    // runOpenBackgroundReconciliation diagnoses internally; a gate failure
+    // must never surface as an unhandled rejection.
+  });
+  return token;
+}
+
+/**
+ * Do not let the library-open backfill claim the primary decoder before the
+ * renderer has had a chance to report its first visible window. The pending
+ * generation is released by that event or by library-close cancellation.
+ */
+export function deferStartupThumbnailScene(
+  libraryId: string,
+  libraryGeneration: number,
+): void {
+  deferredStartupThumbnailGenerations.set(libraryId, libraryGeneration);
+  startupThumbnailVisibleWindows.delete(libraryId);
+
+  // Serpent-140fe2 direction (user, 2026-08-22): thumbnails must be queued
+  // for the WHOLE library right after open, not lazily per viewport. The
+  // queue itself provides ordering — visible-window waves boost the current
+  // viewport above the low-priority backfill — so interactive activity no
+  // longer postpones the enqueue (it only ever postponed it forever during
+  // continuous browsing).
+  // Serpent-4bdd26: a cold library can take arbitrarily long to produce its
+  // first viewport on a slow local or network volume. Keep startup work
+  // event-driven instead of polling for a fixed number of seconds; the first
+  // visible-window report starts this scene, and close/open cancellation
+  // removes the pending generation.
+}
+
+export function cancelDeferredStartupThumbnailScene(libraryId: string): void {
+  deferredStartupThumbnailGenerations.delete(libraryId);
+  pendingStartupThumbnailAdmission.cancel(libraryId);
+  startupThumbnailVisibleWindows.delete(libraryId);
+  pendingVisibleThumbnailWaves.delete(libraryId);
+  lastVisibleWindowKeyByLibrary.delete(libraryId);
+  lastVisibleWindowAssetIdsByLibrary.delete(libraryId);
+  thumbnailCompletionFanout.clear(libraryId);
+  viewportPriorityOverlay.clearLibrary(libraryId);
+  lastViewportVisibleChangeAtMs.delete(libraryId);
+  lastViewportPreemptAtMs.delete(libraryId);
+}
+
+export function admitStartupThumbnailScene(libraryId: string, libraryGeneration: number): void {
+  if (
+    !automaticMediaAdmissionAllowed(libraryId)
+    || libraryGenerationRegistry.current(libraryId) !== libraryGeneration
+  ) return;
+  if (activeThumbnailQueues.has(libraryId)) {
+    pendingStartupThumbnailAdmission.defer({ libraryId, generation: libraryGeneration });
+    return;
+  }
+  scheduleThumbnailScene(libraryId, 'startup');
+}
+
+/** Start the one-shot startup fill after the active visible wave releases ownership. */
+export function resumePendingStartupThumbnailAdmission(libraryId: string): boolean {
+  const generation = pendingStartupThumbnailAdmission.takeWhenIdle(
+    libraryId,
+    libraryGenerationRegistry.current(libraryId),
+    activeThumbnailQueues.has(libraryId),
+  );
+  if (generation === undefined) return false;
+  // Let the current runBatch stack finish before the next queue registers itself.
+  setTimeout(() => admitStartupThumbnailScene(libraryId, generation), 0);
+  return true;
+}
+
+export function startDeferredStartupThumbnailScene(
+  libraryId: string,
+  libraryGeneration: number,
+): void {
+  if (deferredStartupThumbnailGenerations.get(libraryId) !== libraryGeneration) return;
+  deferredStartupThumbnailGenerations.delete(libraryId);
+  // Serpent-2cc492: startup enqueue/processing still waits for the first
+  // browse response and in-flight commands to drain, but it no longer has a
+  // time-based viewport wait before this gate is reached.
+  const token = { libraryId, generation: libraryGeneration };
+  void startupBurstGates.waitForDrain(token).then(() => {
+    admitStartupThumbnailScene(libraryId, libraryGeneration);
+    return undefined;
+  }).catch(() => {
+    // Never let automatic media work surface as an unhandled rejection.
+  });
+}
+
+export function enqueueVisibleWindowDimensionProbes(
+  libraryId: string,
+  assetIds: readonly string[],
+): void {
+  let state = visibleDimensionProbeStates.get(libraryId);
+  if (!state) {
+    state = {
+      assetIds: new Set(),
+      controller: new AbortController(),
+      running: false,
+    };
+    visibleDimensionProbeStates.set(libraryId, state);
+  }
+  for (const assetId of assetIds) state.assetIds.add(assetId);
+  if (state.running) return;
+  state.running = true;
+  void drainVisibleWindowDimensionProbes(libraryId, state);
+}
+
+export async function drainVisibleWindowDimensionProbes(
+  libraryId: string,
+  state: VisibleDimensionProbeState,
+): Promise<void> {
+  try {
+    while (state.assetIds.size > 0 && !state.controller.signal.aborted) {
+      const batch: string[] = [];
+      for (const assetId of state.assetIds) {
+        state.assetIds.delete(assetId);
+        batch.push(assetId);
+        if (batch.length >= 16) break;
+      }
+      try {
+        const dimensions = await traceActivity(
+          `dimension-probes:${libraryId}`,
+          () => libraryService.persistVisibleWindowImageDimensionsAsync(
+            libraryId,
+            batch,
+            state.controller.signal,
+          ),
+        );
+        if (state.controller.signal.aborted) return;
+        for (const item of dimensions) {
+          if (state.controller.signal.aborted) return;
+          parentPort?.postMessage({
+            type: 'asset.dimensions.ready',
+            libraryId,
+            assetId: item.assetId,
+            width: item.width,
+            height: item.height,
+            revisionId: item.revisionId,
+            previewKind: item.previewKind,
+            previewRevisionId: item.previewRevisionId,
+          });
+        }
+      } catch (error) {
+        if (!state.controller.signal.aborted) {
+          libraryService.reportDiagnostic('visible-window.dimensions', error, { libraryId });
+        }
+        return;
+      }
+      // Let queued search/preview requests run before the next source batch.
+      // The first browse after open is different: it must claim the Worker
+      // before the sidebar/count burst can run. The per-library startup gate
+      // remains unserved until that response is posted, so the first page is
+      // serviced synchronously while later searches retain the coalescing
+      // yield.
+      if (startupBurstGates.isBrowseServed(libraryId)) {
+        await new Promise<void>((resolve) => setImmediate(resolve));
+      }
+    }
+  } finally {
+    if (visibleDimensionProbeStates.get(libraryId) === state) {
+      visibleDimensionProbeStates.delete(libraryId);
+    }
+  }
+}
+
+export function cancelVisibleWindowDimensionProbes(libraryId: string): void {
+  const state = visibleDimensionProbeStates.get(libraryId);
+  if (!state) return;
+  state.assetIds.clear();
+  state.controller.abort();
+  visibleDimensionProbeStates.delete(libraryId);
+}
+
+export const SECONDARY_MEDIA_JOB_KINDS = [
+  'extract_metadata',
+  'generate_contact_sheet',
+  'generate_webm_proxy',
+  'generate_audio_proxy',
+  'extract_palette',
+] as const;
+
+/**
+ * Secondary derivatives used to claim exactly one job per turn and then wait a
+ * fixed 50 ms before the next turn. Measured against 200 real images
+ * (`npm run test:perf:palette -- <image-directory>`), that capped secondary
+ * throughput at 12.5 jobs/s: each palette job costs ~12 ms, so a 20 000-asset
+ * library needed ~26 minutes of `色卡` work, and a single-job claim also paid
+ * ~8 ms of per-call claim/transaction overhead that a larger claim amortizes.
+ *
+ * The turn now claims a bounded wave, the way the primary preview lane claims
+ * `workerMediaDecodeWaveSize()`. Native concurrency is still capped by
+ * `workerMediaDecodeConcurrency()` (two background tasks, shared with the
+ * primary lane through the Sharp semaphore) and by the per-decoder lanes, so
+ * the wave is a claim budget rather than extra parallelism. A backlog is paced
+ * with a short yield so it actually drains, while a queue that has almost
+ * nothing left keeps the original 50 ms gap. Responsiveness is still governed
+ * by the interactive idle window and the cooperative abort in
+ * `scheduleSecondaryMediaQueue`, the claim-time deferral of secondary work
+ * behind pending primary previews, and the decoder semaphores.
+ */
+export const SECONDARY_MEDIA_BATCH_SIZE = Math.max(1, Math.min(8, workerMediaDecodeWaveSize()));
+
+/** Pacing once a full wave was claimed, i.e. the secondary queue has a backlog. */
+export const SECONDARY_MEDIA_BACKLOG_YIELD_MS = 10;
+
+/** Pacing when the queue is draining and the next turn will find little. */
+export const SECONDARY_MEDIA_IDLE_TURN_MS = 50;
+
+export const activeSecondaryMediaQueues = new Set<string>();
+
+export const activeSecondaryMediaQueueControllers = new Map<string, AbortController>();
+
+export const secondaryMediaIdleUntil = new Map<string, number>();
+
+export const rescheduledSecondaryMediaQueues = new Set<string>();
+
+export const urgentSecondaryMediaQueues = new Set<string>();
+
+export const urgentSecondaryMediaAssetIds = new Map<string, Set<string>>();
+
+export const secondaryMediaRetryTimers = new Map<string, ReturnType<typeof setTimeout>>();
+
+export const secondaryMediaFairnessTurns = new Map<string, number>();
+
+export const rawMetadataBackfillAdmissionGate = new RawMetadataBackfillAdmissionGate();
+
+export const RAW_METADATA_BACKFILL_BATCH_SIZE = 256;
+
+export function cancelSecondaryMediaRetry(libraryId: string): void {
+  const timer = secondaryMediaRetryTimers.get(libraryId);
+  if (timer !== undefined) clearTimeout(timer);
+  secondaryMediaRetryTimers.delete(libraryId);
+}
+
+export function scheduleSecondaryMediaRetry(libraryId: string, delayMs: number): void {
+  if (secondaryMediaRetryTimers.has(libraryId)) return;
+  const timer = setTimeout(() => {
+    secondaryMediaRetryTimers.delete(libraryId);
+    if (automaticMediaAdmissionAllowed(libraryId)) scheduleSecondaryMediaQueue(libraryId);
+  }, Math.max(250, delayMs));
+  timer.unref?.();
+  secondaryMediaRetryTimers.set(libraryId, timer);
+}
+
+export function noteInteractiveMediaRequest(
+  libraryId: string,
+  options: { abortSecondary?: boolean } = {},
+): void {
+  // Serpent-4bdd26 收编 codex/large-library-performance@15f3325c：冷可见波包含
+  // 解码 + artifact 发布 + 渲染协议投递。1 秒的空闲窗允许开库对账在该波仍在
+  // 填充视口时恢复（NAS 上尤其明显）。磁盘维护让出接下来 2 秒的交互；
+  // 另一次 search/viewport 请求会继续延长窗口。
+  const idleUntil = Date.now() + 2_000;
+  secondaryMediaIdleUntil.set(libraryId, idleUntil);
+  libraryService.noteInteractiveActivity(libraryId, 2_000);
+  // The secondary pump may already be inside a palette/proxy job when the
+  // first visible-window report arrives. Pausing only its next claim still
+  // leaves that native work competing with the primary visible wave. Abort
+  // the current derivative cooperatively; its durable job remains queued for
+  // the next idle window.
+  // An explicit viewer fallback is already admitted as an urgent secondary
+  // request. The viewer polls this same Worker while the proxy is queued;
+  // aborting the queue for every poll can starve it forever before its timer
+  // gets a chance to claim the durable job. Keep the urgent, asset-scoped
+  // pump alive and continue pausing only ordinary background derivatives.
+  if (options.abortSecondary !== false && !urgentSecondaryMediaQueues.has(libraryId)) {
+    const controller = activeSecondaryMediaQueueControllers.get(libraryId);
+    if (controller) {
+      rescheduledSecondaryMediaQueues.add(libraryId);
+      controller.abort();
+    }
+  }
+}
+
+/**
+ * Automatic media pumps must yield before an interactive request enters the
+ * single Worker/SQLite owner. Abort is cooperative: a decoder reaches its
+ * safe point and durable state is requeued, while no new background claim can
+ * slip in behind the user request.
+ */
+export function suspendAutomaticMediaForInteractive(libraryId: string): void {
+  const thumbnailController = activeThumbnailQueueControllers.get(libraryId);
+  if (thumbnailController) {
+    thumbnailController.abort();
+  } else if (activeThumbnailQueues.has(libraryId)) {
+    // The queue can be between enqueue and its setTimeout start. Preserve the
+    // pause across that boundary so its first batch cannot claim work.
+    pendingThumbnailQueueAborts.add(libraryId);
+  }
+  // Keep an explicit viewer fallback alive. `media.get-preview-artifact` is
+  // polled while the proxy is generating, and this preemption hook runs before
+  // the request handler's activity note; aborting the urgent pump here would
+  // starve the very job that the viewer is waiting for.
+  if (!urgentSecondaryMediaQueues.has(libraryId)) {
+    const controller = activeSecondaryMediaQueueControllers.get(libraryId);
+    if (controller) {
+      rescheduledSecondaryMediaQueues.add(libraryId);
+      controller.abort();
+    }
+  }
+}
+
+export function cancelAutomaticMediaForLibrary(libraryId: string): void {
+  const thumbnailController = activeThumbnailQueueControllers.get(libraryId);
+  if (thumbnailController) {
+    thumbnailController.abort();
+  } else if (activeThumbnailQueues.has(libraryId)) {
+    pendingThumbnailQueueAborts.add(libraryId);
+  } else {
+    pendingThumbnailQueueAborts.delete(libraryId);
+  }
+  rescheduledThumbnailQueues.delete(libraryId);
+  pendingReconciledPrimaryAssetIds.delete(libraryId);
+  activeReconciledPrimaryBatches.delete(libraryId);
+  pendingReconciledPrimaryResumes.delete(libraryId);
+  cancelReconciledPrimaryIdleRetry(libraryId);
+  cancelThumbnailQueueFailureRetry(libraryId);
+  pendingStartupThumbnailAdmission.cancel(libraryId);
+  const secondaryController = activeSecondaryMediaQueueControllers.get(libraryId);
+  if (secondaryController) secondaryController.abort();
+  rescheduledSecondaryMediaQueues.delete(libraryId);
+  cancelSecondaryMediaRetry(libraryId);
+  secondaryMediaFairnessTurns.delete(libraryId);
+  rawMetadataBackfillAdmissionGate.cancel(libraryId);
+  secondaryMediaIdleUntil.delete(libraryId);
+  urgentSecondaryMediaQueues.delete(libraryId);
+  urgentSecondaryMediaAssetIds.delete(libraryId);
+}
+
+/**
+ * Secondary derivatives remain automatic, but drain one at a time and only
+ * after an interactive idle window. They used to share the CPU-3 preview
+ * wave, allowing palette/proxy work to monopolize a large-library Worker.
+ */
+export function scheduleSecondaryMediaQueue(
+  libraryId: string,
+  options: { urgent?: boolean; assetId?: string } = {},
+): void {
+  if (!automaticMediaAdmissionAllowed(libraryId)) return;
+  cancelSecondaryMediaRetry(libraryId);
+  if (options.urgent) {
+    // An explicit viewer fallback is a user-visible recovery path, not an
+    // automatic derivative. Let it bypass the idle window so a queued proxy
+    // cannot remain behind an import/startup wave while the viewer is already
+    // showing the source codec failure.
+    urgentSecondaryMediaQueues.add(libraryId);
+    if (options.assetId) {
+      const assetIds = urgentSecondaryMediaAssetIds.get(libraryId) ?? new Set<string>();
+      assetIds.add(options.assetId);
+      urgentSecondaryMediaAssetIds.set(libraryId, assetIds);
+    }
+    secondaryMediaIdleUntil.set(libraryId, Date.now());
+  }
+  if (activeSecondaryMediaQueues.has(libraryId)) {
+    // A visible request can abort the old pump between its timer and its
+    // cleanup. Remember the admission so a later primary-wave completion does
+    // not get lost behind the stale active marker.
+    if (activeSecondaryMediaQueueControllers.get(libraryId)?.signal.aborted) {
+      rescheduledSecondaryMediaQueues.add(libraryId);
+    }
+    return;
+  }
+  activeSecondaryMediaQueues.add(libraryId);
+  const queueController = new AbortController();
+  activeSecondaryMediaQueueControllers.set(libraryId, queueController);
+  let resumeNormalAfterUrgentDrain = false;
+  const clearUrgentSecondaryAdmission = (): void => {
+    urgentSecondaryMediaQueues.delete(libraryId);
+    urgentSecondaryMediaAssetIds.delete(libraryId);
+  };
+  const finish = () => {
+    if (activeSecondaryMediaQueueControllers.get(libraryId) === queueController) {
+      activeSecondaryMediaQueueControllers.delete(libraryId);
+      activeSecondaryMediaQueues.delete(libraryId);
+      const shouldReschedule = rescheduledSecondaryMediaQueues.has(libraryId);
+      const shouldKeepOpen = automaticMediaAdmissionAllowed(libraryId);
+      const shouldResumeNormal = resumeNormalAfterUrgentDrain && shouldKeepOpen;
+      // A viewer fallback may arrive while the previous secondary pump is
+      // cooperatively aborting for an interactive request. Keep that urgent
+      // admission alive across the old pump's final cleanup; otherwise the
+      // viewer waits for a proxy that no queue will ever claim.
+      if ((urgentSecondaryMediaQueues.has(libraryId) || shouldReschedule) && shouldKeepOpen) {
+        const urgent = urgentSecondaryMediaQueues.has(libraryId);
+        rescheduledSecondaryMediaQueues.delete(libraryId);
+        setTimeout(() => scheduleSecondaryMediaQueue(
+          libraryId,
+          urgent ? { urgent: true } : {},
+        ), 0);
+      } else {
+        rescheduledSecondaryMediaQueues.delete(libraryId);
+        clearUrgentSecondaryAdmission();
+        if (shouldResumeNormal) {
+          setTimeout(() => scheduleSecondaryMediaQueue(libraryId), 0);
+        }
+      }
+    }
+  };
+  const runOne = async (): Promise<void> => {
+    if (queueController.signal.aborted) {
+      finish();
+      return;
+    }
+    const urgent = urgentSecondaryMediaQueues.has(libraryId);
+    if (mediaResourceGuard.isCoolingDown()) {
+      scheduleMediaResourceRetry(libraryId);
+      // The normal resource retry will re-admit this durable job after the
+      // cooldown. Do not keep an urgent marker alive and spin an empty pump
+      // while the process-wide guard is deliberately refusing native work.
+      if (urgent) {
+        clearUrgentSecondaryAdmission();
+        resumeNormalAfterUrgentDrain = true;
+      }
+      finish();
+      return;
+    }
+    const waitMs = urgent
+      ? 0
+      : (secondaryMediaIdleUntil.get(libraryId) ?? 0) - Date.now();
+    if (waitMs > 0) {
+      setTimeout(() => void runOne(), waitMs);
+      return;
+    }
+    try {
+      const urgentAssetIds = urgentSecondaryMediaAssetIds.get(libraryId);
+      let admittedRawMetadata = 0;
+      if (RAW_METADATA_EXHAUSTION_ENABLED && !rawMetadataBackfillAdmissionGate.hasState(libraryId)) {
+        try {
+          const persistedAdmission: RawMetadataBackfillAdmissionState | null =
+            libraryService.getRawMetadataBackfillAdmissionState(libraryId);
+          if (persistedAdmission) {
+            rawMetadataBackfillAdmissionGate.restore(libraryId, {
+              exhaustedToken: persistedAdmission.exhausted ? persistedAdmission.token : null,
+            });
+          }
+        } catch {
+          // The service call below retains its lenient fallback for old/partial
+          // libraries; a missing durable state must not stop the pump.
+        }
+      }
+      // Serpent-288cd9：RAW backfill 的 catalog token 只使用 browse 序号。它覆盖
+      // 新增资产、revision 与忽略规则变化，但不被 jobs/artifacts 后台写入噪声重置；
+      // 到期 failed RAW retry 在 exhausted gate 之前走独立的有界 requeue 路径。
+      // 取不到 token（老库缺表等）时退化为纯节流。
+      const rawMetadataBackfillToken = RAW_METADATA_EXHAUSTION_ENABLED
+        ? (() => {
+          try {
+            return String(libraryService.getBrowseChangeSequence(libraryId));
+          } catch {
+            return null;
+          }
+        })()
+        : null;
+      const attemptedRawMetadataBackfill = !urgent
+        && rawMetadataBackfillAdmissionGate.shouldAttempt(libraryId, rawMetadataBackfillToken);
+      if (attemptedRawMetadataBackfill) {
+        // A startup scene only admits one bounded RAW batch. Keep admitting
+        // the next batch here after the current secondary queue drains so a
+        // 50k-camera library eventually reaches every Inspector record. The
+        // full-catalog probe is throttled; explicit-asset admission remains
+        // immediate in enqueueThumbnailJobs.
+        try {
+          const rawMetadataAdmission = await traceActivity(
+            `raw-metadata-enqueue:${libraryId}`,
+            async () => libraryService.enqueueRawImageMetadataBackfill(
+              libraryId,
+              RAW_METADATA_BACKFILL_BATCH_SIZE,
+            ),
+          );
+          admittedRawMetadata = rawMetadataAdmission.admitted;
+          rawMetadataBackfillAdmissionGate.noteResult(
+            libraryId,
+            rawMetadataBackfillToken,
+            rawMetadataAdmission,
+          );
+          // Serpent-288cd9：候选探测的准入结果必须可观测，否则「扫完之后不再重扫」
+          // 只能靠代码阅读而不是证据。
+          if (WORKER_CMD_LOG) {
+            console.error(JSON.stringify({
+              timestamp: new Date().toISOString(),
+              scope: 'raw-metadata.admission',
+              admitted: rawMetadataAdmission.admitted,
+              probed: rawMetadataAdmission.probed,
+              budgetCapped: rawMetadataAdmission.budgetCapped,
+              exhaustedSkips: rawMetadataBackfillAdmissionGate.stats().exhaustedSkips,
+            }));
+          }
+        } catch (error) {
+          // 探测失败不能让 secondary pump 停摆：按节流重试，且不标记扫完。
+          rawMetadataBackfillAdmissionGate.noteResult(
+            libraryId,
+            rawMetadataBackfillToken,
+            { admitted: 0, probed: 0, budgetCapped: true },
+          );
+          throw error;
+        }
+      }
+      const fairnessTurn = (secondaryMediaFairnessTurns.get(libraryId) ?? 0) + 1;
+      secondaryMediaFairnessTurns.set(libraryId, fairnessTurn);
+      // Palette/proxy jobs can be numerous and have a higher historical
+      // priority. Every fourth normal turn explicitly services metadata so
+      // RAW Inspector work cannot be starved while keeping the ordinary
+      // secondary ordering for the other three turns.
+      const preferRawMetadata = !urgent && fairnessTurn % 4 === 0;
+      const runSecondaryJobs = (
+        jobKinds: typeof SECONDARY_MEDIA_JOB_KINDS | readonly ['extract_metadata'],
+      ) =>
+        traceActivity(
+          `secondary-media:${libraryId}`,
+          () => libraryService.processThumbnailQueue(libraryId, {
+            maxJobs: SECONDARY_MEDIA_BATCH_SIZE,
+            jobKinds,
+            ...(urgentAssetIds && urgentAssetIds.size > 0
+              ? { assetIds: [...urgentAssetIds] }
+              : {}),
+            signal: queueController.signal,
+            onDerivedReady: (event) => {
+              parentPort?.postMessage({
+                type: 'asset.derived.ready',
+                libraryId,
+                assetId: event.assetId,
+                kind: event.kind,
+              });
+              if (event.width && event.height) {
+                parentPort?.postMessage({
+                  type: 'asset.dimensions.ready',
+                  libraryId,
+                  assetId: event.assetId,
+                  width: event.width,
+                  height: event.height,
+                  ...(event.revisionId === undefined
+                    ? {}
+                    : { revisionId: event.revisionId }),
+                  ...(event.previewKind === undefined
+                    ? {}
+                    : { previewKind: event.previewKind }),
+                  ...(event.previewRevisionId === undefined
+                    ? {}
+                    : { previewRevisionId: event.previewRevisionId }),
+                  ...(event.durationMs === undefined ? {} : { durationMs: event.durationMs }),
+                });
+              }
+            },
+          }),
+        );
+      let processed = await runSecondaryJobs(
+        preferRawMetadata ? ['extract_metadata'] : SECONDARY_MEDIA_JOB_KINDS,
+      );
+      if (processed === 0 && preferRawMetadata && !queueController.signal.aborted) {
+        // No metadata was ready for this fairness turn; let palette/proxy
+        // work make progress instead of treating the empty lane as drained.
+        processed = await runSecondaryJobs(SECONDARY_MEDIA_JOB_KINDS);
+      }
+      if (mediaResourceGuard.isCoolingDown()) {
+        scheduleMediaResourceRetry(libraryId);
+        if (urgent) {
+          clearUrgentSecondaryAdmission();
+          resumeNormalAfterUrgentDrain = true;
+        }
+        finish();
+        return;
+      }
+      if (processed > 0 && !queueController.signal.aborted) {
+        // A full wave means the secondary queue still holds work, so pace the
+        // backlog with a short yield instead of the idle cadence; a short wave
+        // means it is draining and the 50 ms gap costs nothing.
+        const backlogged = !urgent && processed >= SECONDARY_MEDIA_BATCH_SIZE;
+        setTimeout(
+          () => void runOne(),
+          backlogged ? SECONDARY_MEDIA_BACKLOG_YIELD_MS : SECONDARY_MEDIA_IDLE_TURN_MS,
+        );
+        return;
+      }
+      if (!urgent && !queueController.signal.aborted) {
+        // Retry admission is deliberately an idle-lane probe. While a
+        // secondary backlog is draining, avoid repeating the multi-predicate
+        // retry candidate query on every turn; once no work is claimable, the
+        // same bounded path requeues due RAW failures even when the catalog
+        // admission gate is exhausted.
+        let retryDelay = libraryService.rawImageMetadataRetryDelayMs(libraryId);
+        if (retryDelay !== null && retryDelay <= 0) {
+          admittedRawMetadata += await traceActivity(
+            `raw-metadata-retry:${libraryId}`,
+            async () => libraryService.requeueRawImageMetadataBackfillRetries(
+              libraryId,
+              RAW_METADATA_BACKFILL_BATCH_SIZE,
+            ),
+          );
+          retryDelay = libraryService.rawImageMetadataRetryDelayMs(libraryId);
+        }
+        if (retryDelay !== null) scheduleSecondaryMediaRetry(libraryId, retryDelay);
+        if (
+          retryDelay === null
+          && !attemptedRawMetadataBackfill
+          && !rawMetadataBackfillAdmissionGate.shouldAttempt(libraryId, rawMetadataBackfillToken)
+        ) {
+          const backfillDelay = rawMetadataBackfillAdmissionGate.remainingDelayMs(libraryId);
+          if (backfillDelay > 0) {
+            setTimeout(() => void runOne(), backfillDelay);
+            return;
+          }
+        }
+        // `admittedRawMetadata` is intentionally read here: if a new batch
+        // was admitted but no job was claimable, keep the pump alive for one
+        // more turn so a race with a terminal artifact cannot strand it.
+        if (admittedRawMetadata > 0) {
+          setTimeout(() => void runOne(), 50);
+          return;
+        }
+      }
+      if (urgent) {
+        // `assetIds` scopes the claim to the explicit fallback set. A zero
+        // result therefore means that set is drained; keeping the urgent bit
+        // would reschedule an empty queue forever.
+        clearUrgentSecondaryAdmission();
+        resumeNormalAfterUrgentDrain = true;
+      }
+    } catch (error) {
+      if (!queueController.signal.aborted) {
+        libraryService.reportDiagnostic('secondary-media-schedule.process', error, { libraryId });
+        if (urgent) {
+          clearUrgentSecondaryAdmission();
+          resumeNormalAfterUrgentDrain = true;
+        }
+      }
+    }
+    finish();
+  };
+  setTimeout(() => void runOne(), options.urgent ? 0 : 1_000);
+}
+
+export type ThumbnailScheduleScene = 'startup' | 'refresh' | 'visible' | 'linked' | 'restore' | 'mutation' | 'cover';
+
+/**
+ * Serpent-x9xu redesign: scenes that fire on every browse/search response are
+ * "light" — they boost priorities without running the expensive auto-repair /
+ * stale-artifact scans, which belong to the explicit refresh wave. Keeps the
+ * per-page scheduling cheap enough that appending a page never stalls the
+ * Worker behind repair sweeps.
+ */
+export function scheduleThumbnailScene(
+  libraryId: string,
+  scene: ThumbnailScheduleScene,
+  assetIds?: string[],
+  maxIdsOverride?: number,
+  options: { light?: boolean; preemptVisible?: boolean } = {},
+): void {
+  const configs: Record<ThumbnailScheduleScene, { limit?: number; priority: number; maxIds?: number; processMaxJobs?: number }> = {
+    // Serpent-4bdd26 回归修正：processMaxJobs 1→2。用户报告 Windows 上缩略图
+    // 生成巨慢——单任务在飞让 startup 波在慢盘/杀毒环境下串行拖到数十秒。
+    // 可见波抢占的主要手段是 interruptThumbnailJobsOutsideViewport（只中断
+    // running），双任务在飞的可浪费上限是可接受的。
+    startup: { limit: 50, priority: 100, processMaxJobs: 2 },
+    refresh: { limit: 50, priority: 150 },
+    // Serpent-azf6: the CURRENT VIEW must outrank the import flood — browsing
+    // a freshly imported library otherwise waits behind hundreds of priority-300
+    // mutation jobs. visible is the highest tier so the user always sees the
+    // assets in front of them appear first; the import wave fills in behind.
+    // Serpent-x9xu / Serpent-87pd: the visible wave covers the current
+    // browse/search window (BROWSE_PAGE_SIZE = 100), not a stale larger
+    // page. Unbrowsed assets are never included (callers pass only the
+    // returned page ids), so visible slots stay reserved for what the
+    // user is actually looking at.
+    visible: {
+      limit: THUMBNAIL_VISIBLE_PAGE_SIZE,
+      priority: THUMBNAIL_VISIBLE_PRIORITY,
+      maxIds: THUMBNAIL_VISIBLE_PAGE_SIZE,
+    },
+    linked: { limit: 50, priority: 250, maxIds: 50 },
+    restore: { priority: 250, maxIds: 500 },
+    mutation: { priority: 300, maxIds: 500 },
+    // Serpent-d0nv: folder-card covers are direct assets of child folders,
+    // outside the current view's visible wave — generate them before the
+    // assets below the fold. maxIds defaults to 3 per child folder; the
+    // folder.browse-entries handler passes its exact child count × 3.
+    cover: { limit: 100, priority: 400, maxIds: 300 },
+  };
+  const config = configs[scene];
+  const maxIds = maxIdsOverride ?? config.maxIds ?? 500;
+  if (scene === 'cover' && assetIds && assetIds.length > 0) {
+    thumbnailCompletionFanout.addImmediateAssetIds(
+      libraryId,
+      assetIds.slice(0, maxIds),
+    );
+  }
+  try {
+    scheduleThumbnailQueue(libraryId, {
+      ...(assetIds ? { assetIds: assetIds.slice(0, maxIds) } : {}),
+      ...(config.limit === undefined ? {} : { limit: config.limit }),
+      priority: config.priority,
+      ...(config.processMaxJobs === undefined ? {} : { processMaxJobs: config.processMaxJobs }),
+      repairFailed: !options.light,
+      // Serpent-5xbg: every browse/refresh wave re-opens retryable failed
+      // artifacts (throttled) — generation failures are healed in the
+      // background whenever the asset surfaces, no periodic scan needed.
+      retryFailed: true,
+      ...(options.light ? { skipStaleRepair: true } : {}),
+      ...(options.preemptVisible === undefined ? {} : { preemptVisible: options.preemptVisible }),
+    });
+  } catch {
+    // scheduleThumbnailQueue already wrote the complete diagnostic. Automatic
+    // media work must never turn a successful import/list/relink into failure.
+  }
+}
+
+export function thumbnailFailureReason(errorCode: string): string {
+  switch (errorCode) {
+    case 'MEDIA_RESOURCE_EXHAUSTED': return '系统内存压力过高，缩略图任务已延迟重试；请稍后再试。';
+    case 'FFMPEG_REQUIRED': return '无法生成视频缩略图（媒体组件不可用）。请重新安装或修复 Keel 后重试。';
+    case 'OIIO_REQUIRED': return '缺少 OpenImageIO，无法解码此图片。请安装图像组件后重试。';
+    case 'SHARP_UNAVAILABLE': return '图片解码组件不可用。请重新安装或更新 Keel 后重试。';
+    case 'SOURCE_NOT_FOUND': return '源文件不存在或当前不可访问。请恢复文件后重试。';
+    default: return '缩略图生成失败，文件可能损坏或格式不受支持。请检查源文件后重试。';
+  }
+}
+
+export function errorForLog(error: unknown, depth = 0): unknown {
+  if (depth > 5) return { truncated: true };
+  if (!(error instanceof Error)) return { value: String(error) };
+  return {
+    name: error.name,
+    message: error.message,
+    code: 'code' in error && typeof error.code === 'string' ? error.code : undefined,
+    reason: 'reason' in error && typeof error.reason === 'string' ? error.reason : undefined,
+    stack: error.stack,
+    cause: error.cause === undefined ? undefined : errorForLog(error.cause, depth + 1),
+  };
+}
+
+export function publishAiProgress(
+  libraryId: string,
+  changedJob?: NonNullable<AiProgressEvent['changedJobs']>[number],
+): void {
+  try {
+    const status = libraryService.getAiJobStatus(libraryId);
+    aiProgressThrottler.publish({
+      type: 'ai.progress',
+      libraryId,
+      queued: status.queued,
+      running: status.running,
+      succeeded: status.succeeded,
+      failed: status.failed,
+      ...(changedJob ? { changedJobs: [changedJob] } : {}),
+    });
+  } catch (error) {
+    if (!(error instanceof LibraryServiceError && error.code === 'LIBRARY_NOT_OPEN')) throw error;
+  }
+}
