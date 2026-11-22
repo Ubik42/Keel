@@ -4,8 +4,7 @@ import {
   useRef,
   useState,
   type RefObject,
-  type SyntheticEvent,
-} from "react";
+  type SyntheticEvent, useImperativeHandle } from "react";
 
 import {
   nextTrailParticleId,
@@ -181,19 +180,14 @@ export function AudioPlayerControls({
     setTrailParticles([]);
   }, [duration]);
 
-  useEffect(() => {
-    const slot = playbackHandleRef;
-    if (!slot) return;
-    slot.current = {
+  // Exposes play controls to the viewer's keyboard shortcuts; React clears
+  // the handle on unmount.
+  useImperativeHandle(playbackHandleRef, () => ({
       stepRate: () => undefined,
       seekBy(direction, unit) {
         seekByConfiguredJump(direction, unit);
       },
-    };
-    return () => {
-      slot.current = null;
-    };
-  }, [playbackHandleRef, seekByConfiguredJump]);
+  }), [seekByConfiguredJump]);
 
   useEffect(() => {
     if (keyboardShortcutsDisabled) return;

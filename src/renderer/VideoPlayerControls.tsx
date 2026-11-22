@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type RefObject, type SyntheticEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type RefObject, type SyntheticEvent, useImperativeHandle } from "react";
 
 import { Icon } from "./Icons";
 import { iconActionAttrs } from "./icon-action-attrs";
@@ -426,10 +426,9 @@ export function VideoPlayerControls({
     return () => seekSessionRef.current?.cancel();
   }, [src]);
 
-  useEffect(() => {
-    const slot = playbackHandleRef;
-    if (!slot) return;
-    slot.current = {
+  // Exposes play controls to the viewer's keyboard shortcuts; React clears
+  // the handle on unmount.
+  useImperativeHandle(playbackHandleRef, () => ({
       stepRate(direction) {
         applyPlaybackRate(stepVideoPlaybackRate(playbackRateRef.current, direction));
       },
@@ -454,11 +453,7 @@ export function VideoPlayerControls({
         seekSessionRef.current?.commit(next);
         setCurrentTime(next);
       },
-    };
-    return () => {
-      slot.current = null;
-    };
-  }, [applyPlaybackRate, playbackHandleRef]);
+  }), [applyPlaybackRate]);
 
   useEffect(() => {
     const track = trackRef.current;

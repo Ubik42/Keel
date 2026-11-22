@@ -29,10 +29,14 @@ export function ViewerVolumeControls({
   const trackRef = useRef<HTMLDivElement>(null);
   const volumeRef = useRef(volume);
   const echoedVolumeRef = useRef(volume);
+  // Adopt a new volume from the parent during render, so a local edit in
+  // progress (kept in volumeRef) is replaced before the next event reads it.
+  /* eslint-disable react-hooks/refs -- intentional render-time sync of a latest-value ref */
   if (volume !== echoedVolumeRef.current) {
     volumeRef.current = volume;
     echoedVolumeRef.current = volume;
   }
+  /* eslint-enable react-hooks/refs */
   const scrubbingPointerId = useRef<number | null>(null);
   const [scrubRatio, setScrubRatio] = useState<number | null>(null);
   const [adjusting, setAdjusting] = useState(false);

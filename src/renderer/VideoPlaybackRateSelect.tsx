@@ -44,10 +44,14 @@ export function VideoPlaybackRateSelect({
   const hostRef = useRef<HTMLDivElement>(null);
   const valueRef = useRef(value);
   const echoedValueRef = useRef(value);
+  // Adopt a new value from the parent during render, so a local edit in
+  // progress (kept in valueRef) is replaced before the next event reads it.
+  /* eslint-disable react-hooks/refs -- intentional render-time sync of a latest-value ref */
   if (value !== echoedValueRef.current) {
     valueRef.current = value;
     echoedValueRef.current = value;
   }
+  /* eslint-enable react-hooks/refs */
   const triggerRef = useRef<HTMLButtonElement>(null);
   const listId = useId();
   const rateLabel = t("preview.playbackRateOption", { rate: value });

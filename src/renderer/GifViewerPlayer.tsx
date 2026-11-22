@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
+import { useCallback, useEffect, useRef, useState, type RefObject, useImperativeHandle } from "react";
 
 import type { KeelShellApi } from "../shared/external-url";
 import type { ViewerVideoShortcutAction } from "../shared/viewer-video-shortcuts";
@@ -322,10 +322,9 @@ function GifAnimatedStage({
     setPlaybackRate(next);
   }, []);
 
-  useEffect(() => {
-    const slot = playbackHandleRef;
-    if (!slot) return;
-    slot.current = {
+  // Exposes play controls to the viewer's keyboard shortcuts; React clears
+  // the handle on unmount.
+  useImperativeHandle(playbackHandleRef, () => ({
       stepRate(direction) {
         applyPlaybackRate(stepVideoPlaybackRate(playbackRateRef.current, direction));
       },
@@ -343,11 +342,7 @@ function GifAnimatedStage({
         );
         seekToMs(nextSeconds * 1000);
       },
-    };
-    return () => {
-      slot.current = null;
-    };
-  }, [applyPlaybackRate, playbackHandleRef, seekToMs]);
+  }), [applyPlaybackRate, seekToMs]);
 
   useEffect(() => {
     framesRef.current = session?.frames ?? [];
