@@ -662,6 +662,7 @@ import {
   type GlobalZoomAction,
   shouldIgnoreGlobalZoomShortcut,
 } from "./global-zoom-shortcuts";
+import { useRelinkOperations } from "./app/use-relink-operations";
 
 const IS_MAC_PLATFORM = isMacPlatform(navigator.userAgent);
 // Windows-style shell: Windows and Linux (see usesWindowsStyleShell).
@@ -10140,138 +10141,7 @@ function AppInner() {
       setUiState("ready");
     }
   }
-
-  // --- Relink operations ---
-
-  async function relinkMissingAsset(assetId = selectedAssetId) {
-    if (!api || !library || !assetId) return;
-    setUiState("loading");
-    try {
-      const result = await api.relinkAsset({
-        libraryId: library.libraryId,
-        assetId,
-      });
-      if (!result.ok) {
-        if (result.error.code === "CANCELLED") return;
-        throw new LibraryOperationError(result.error);
-      }
-      setAssets((current) =>
-        mergeAssetSummaries(current, [result.value.asset]),
-      );
-      setNotice(t("toast.relinkSuccess"));
-      await reloadCurrentContent();
-
-      const preview = await api.relinkBatchPreviewAtRoot({
-        libraryId: library.libraryId,
-        newRootPath: result.value.batchFollowUpRoot,
-        keepMetadata: batchRelinkKeepMetadata,
-      });
-      if (!preview.ok) {
-        if (preview.error.code === "CANCELLED") return;
-        throw new LibraryOperationError(preview.error);
-      }
-      if (preview.value.matchedCount > 0) {
-        setBatchRelinkPreview({
-          preview: preview.value,
-          priorRestoredCount: 1,
-          priorRestoredExamples: [
-            {
-              relativeFilePath: formatRelinkExamplePath(
-                result.value.asset.relativeFilePath,
-              ),
-              matched: true,
-            },
-          ],
-        });
-      }
-    } catch (caught) {
-      setError(toMessage(caught, t("toast.relinkFailed"), locale));
-    } finally {
-      setUiState("ready");
-    }
-  }
-
-  async function startBatchRelink() {
-    if (!api || !library) return;
-    setUiState("loading");
-    try {
-      const result = await api.relinkBatchPreview({
-        libraryId: library.libraryId,
-        keepMetadata: batchRelinkKeepMetadata,
-      });
-      if (!result.ok) {
-        if (result.error.code === "CANCELLED") return;
-        throw new LibraryOperationError(result.error);
-      }
-      setBatchRelinkPreview({
-        preview: result.value,
-        priorRestoredCount: 0,
-        priorRestoredExamples: [],
-      });
-    } catch (caught) {
-      setError(toMessage(caught, t("toast.batchRelinkPreviewFailed"), locale));
-    } finally {
-      setUiState("ready");
-    }
-  }
-
-  async function applyBatchRelink() {
-    if (!api || !library || !batchRelinkPreview) return;
-    const startedAt = Date.now();
-    setUiState("loading");
-    try {
-      const result = await api.relinkBatchApply({
-        libraryId: library.libraryId,
-        previewId: batchRelinkPreview.preview.previewId,
-        keepMetadata: batchRelinkKeepMetadata,
-      });
-      if (!result.ok) throw new LibraryOperationError(result.error);
-      const priorRestoredCount = batchRelinkPreview.priorRestoredCount;
-      setBatchRelinkPreview(null);
-      setAssets((current) =>
-        mergeAssetSummaries(current, result.value.assets),
-      );
-      const refresh = await api.refreshAssets({
-        libraryId: library.libraryId,
-      });
-      if (refresh.ok) {
-        setAssets((current) =>
-          mergeAssetSummaries(current, refresh.value.assets),
-        );
-      }
-      await reloadCurrentContent();
-      setNotice(
-        t("toast.batchRelinkDone", {
-          restored: result.value.restoredCount + priorRestoredCount,
-          missing: result.value.unchangedMissingCount,
-        }),
-      );
-      playTaskCompletionSound(startedAt);
-    } catch (caught) {
-      playTaskCompletionSound(startedAt);
-      setBatchRelinkPreview(null);
-      setError(toMessage(caught, t("toast.batchRelinkFailed"), locale));
-    } finally {
-      setUiState("ready");
-    }
-  }
-
-  const cancelBatchRelink = useCallback(async () => {
-    if (!api || !library || !batchRelinkPreview) return;
-    const previewId = batchRelinkPreview.preview.previewId;
-    setBatchRelinkPreview(null);
-    try {
-      const result = await api.cancelRelinkBatch({
-        libraryId: library.libraryId,
-        previewId,
-      });
-      if (!result.ok && result.error.code !== "CANCELLED") {
-        throw new LibraryOperationError(result.error);
-      }
-    } catch (caught) {
-      setError(toMessage(caught, t("toast.cancelBatchRelinkFailed"), locale));
-    }
-  }, [api, batchRelinkPreview, library, locale, setError, t, setBatchRelinkPreview]);
+  const { cancelBatchRelink, startBatchRelink, applyBatchRelink, relinkMissingAsset } = useRelinkOperations({ selectedAssetId, api, library, setUiState, setAssets, setNotice, t, reloadCurrentContent, batchRelinkKeepMetadata, setBatchRelinkPreview, setError, locale, batchRelinkPreview });
 
   // --- Export / Import operations ---
 
