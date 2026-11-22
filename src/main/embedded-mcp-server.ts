@@ -20,7 +20,7 @@ import type {
   AutomationExecutionJournal,
   AutomationLibraryContextChangedEvent,
 } from './automation-execution-journal';
-import { createKeelMcpServer, type KeelMcpSessionEvent } from '../mcp/create-keel-mcp-server';
+import { createKeelMcpServer, type KeelMcpSessionEvent, type KeelMcpHostTool } from '../mcp/create-keel-mcp-server';
 import type { KeelMcpPluginToolBridge } from '../mcp/call-tool';
 import {
   MCP_ENDPOINT_PATH,
@@ -71,6 +71,8 @@ export interface EmbeddedMcpServerOptions {
   workerClient: EmbeddedMcpWorkerClient;
   logger: EmbeddedMcpLogger;
   getPluginTools: () => KeelMcpPluginToolBridge | undefined;
+  /** Host tools such as the rule tools (PR). */
+  getHostTools?: () => readonly KeelMcpHostTool[];
   permissionPolicyStore?: McpPermissionPolicyStore;
   permissionBroker?: AutomationPermissionBroker;
   initializeTimeoutMs?: number;
@@ -283,6 +285,7 @@ export class EmbeddedMcpServer {
   readonly #workerClient: EmbeddedMcpWorkerClient;
   readonly #logger: EmbeddedMcpLogger;
   readonly #getPluginTools: () => KeelMcpPluginToolBridge | undefined;
+  readonly #getHostTools: (() => readonly KeelMcpHostTool[]) | undefined;
   readonly #onCommandCompleted: EmbeddedMcpServerOptions['onCommandCompleted'];
   readonly #permissionPolicyStore?: McpPermissionPolicyStore;
   readonly #permissionBroker?: AutomationPermissionBroker;
@@ -310,6 +313,7 @@ export class EmbeddedMcpServer {
     this.#workerClient = options.workerClient;
     this.#logger = options.logger;
     this.#getPluginTools = options.getPluginTools;
+    this.#getHostTools = options.getHostTools;
     this.#onCommandCompleted = options.onCommandCompleted;
     this.#permissionPolicyStore = options.permissionPolicyStore;
     this.#permissionBroker = options.permissionBroker;
@@ -767,6 +771,7 @@ export class EmbeddedMcpServer {
         };
       },
       getPluginTools: (): KeelMcpPluginToolBridge | undefined => this.#getPluginTools(),
+      getHostTools: (): readonly KeelMcpHostTool[] => this.#getHostTools?.() ?? [],
       getLibraryChangeSequence: (libraryId: string): number | undefined => {
         return this.#libraryChangeSequences.get(libraryId);
       },

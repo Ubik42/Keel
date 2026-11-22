@@ -16,7 +16,21 @@ export type KeelMcpSessionEvent =
   | { type: 'tools-changed' }
   | { type: 'library-changed'; libraryId: string; changeSequence: number };
 
+/**
+ * A tool the desktop host implements directly instead of through a Registry
+ * command (PR: rule tools). Write tools are listed only when the credential
+ * may write.
+ */
+export interface KeelMcpHostTool {
+  name: string;
+  description: string;
+  inputSchema: Record<string, unknown>;
+  readOnly: boolean;
+  call(args: Record<string, unknown>): Promise<unknown>;
+}
+
 export interface KeelMcpSessionBackend {
+  getHostTools?(): readonly KeelMcpHostTool[];
   getExecutionContext(): AutomationExecutionContext | undefined;
   getToolExposure(): KeelMcpToolExposure;
   getPluginTools(): KeelMcpPluginToolBridge | undefined;
@@ -93,9 +107,15 @@ export function createKeelMcpServer(options: KeelMcpServerOptions): Server {
     return listed;
   };
 
+  const hostTools = (): readonly KeelMcpHostTool[] => {
+    const writeEnabled = mcpExposureAllowsWrite(currentExposure());
+    return (backend.getHostTools?.() ?? []).filter((tool) => tool.readOnly || writeEnabled);
+  };
+
   server.setRequestHandler(ListToolsRequestSchema, async () => {
     const listed = listKeelMcpTools(currentExposure());
     const pluginDefinitions = pluginTools();
+    const hostDefinitions = hostTools();
     const names = new Set(listed.tools.map((tool) => tool.name));
     for (const tool of pluginDefinitions) {
       if (names.has(tool.name)) throw new Error(`Duplicate MCP tool name: ${tool.name}`);
@@ -114,6 +134,12 @@ export function createKeelMcpServer(options: KeelMcpServerOptions): Server {
           description: tool.description,
           inputSchema: tool.inputSchema,
           annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
+        })),
+        ...hostDefinitions.filter((tool) => !names.has(tool.name)).map((tool) => ({
+          name: tool.name,
+          description: tool.description,
+          inputSchema: tool.inputSchema,
+          annotations: { readOnlyHint: tool.readOnly, destructiveHint: false, openWorldHint: false },
         })),
       ],
     };
@@ -140,6 +166,15 @@ export function createKeelMcpServer(options: KeelMcpServerOptions): Server {
         }
       };
     await reportProgress?.(0, 1, 'Keel is running the tool.');
+    const hostTool = hostTools().find((tool) => tool.name === request.params.name);
+    if (hostTool) {
+      try {
+        const value = await hostTool.call((request.params.arguments ?? {}) as Record<string, unknown>);
+        return toolResultText({ ok: true, toolName: hostTool.name, result: value });
+      } catch (error) {
+        return { ...toolResultText({ ok: false, code: 'HOST_TOOL_FAILED', message: error instanceof Error ? error.message : String(error) }), isError: true };
+      }
+    }
     const result = await callKeelMcpTool({
       toolName: request.params.name,
       arguments: request.params.arguments ?? {},

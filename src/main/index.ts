@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { copyLegacyUserData } from "./legacy-user-data";
 import { MCP_START_FLAG } from "./mcp-stdio-launcher";
 import { RuleRunner } from "./rule-runner";
+import { createRuleMcpTools } from "./rule-mcp-tools";
 import { ruleAiPrompt, ruleIpcRequestSchema, type RuleIpcResult } from "../shared/rules";
 import { spawn } from "node:child_process";
 import { openWithSettingsFilePath, readOpenWithSettings, writeOpenWithSettings } from "./open-with-settings-store";
@@ -898,6 +899,7 @@ let scriptRuntimeSupervisor: ScriptRuntimeSupervisor | undefined;
 /** PR: runs rule scripts (docs/进度.md 3.5). */
 let ruleRunner: RuleRunner | undefined;
 const ruleTriggerSequence = new Map<string, number>();
+const ruleMcpTools = createRuleMcpTools({ ruleRunner: () => ruleRunner, workerClient: () => workerClient });
 const ruleLibraryChangeTimers = new Map<string, ReturnType<typeof setTimeout>>();
 const ruleScheduleLastRun = new Map<string, number>();
 let pluginRuntimeSupervisor: PluginRuntimeSupervisor | undefined;
@@ -5903,6 +5905,7 @@ async function startApplication(): Promise<void> {
       workerClient,
       logger,
       getPluginTools: () => pluginMcpToolProvider,
+      getHostTools: () => ruleMcpTools,
       permissionPolicyStore: mcpPermissionPolicyStore,
       permissionBroker: mcpPermissionBroker,
       // Serpent-fmbr: MCP operations speak through the SAME human-facing toasts
