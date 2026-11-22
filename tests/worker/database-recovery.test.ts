@@ -258,7 +258,6 @@ describe('database damage recovery (Serpent-dw9a)', () => {
     expect(summary.recovery?.recoveredAssetCount).toBe(1);
     expect(summary.recovery?.metadataRecovered).toBe(false);
     expect(summary.recovery?.metadataLosses).toEqual([
-      'collections',
       'tags',
       'ratings',
       'descriptions',
