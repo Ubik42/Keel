@@ -648,6 +648,13 @@ export function AppView({ setPluginUiDialogOpen, pluginManagerApi, libraryLoadin
     () => libraryId && hasApi ? <RulesSidebar key={libraryId} libraryId={libraryId} systemBusy={backgroundJobsActive} {...rulesHandlers} /> : undefined,
     [libraryId, hasApi, backgroundJobsActive, rulesHandlers],
   );
+  const folderInspectorEntries = folderInspector?.entries;
+  const folderInspectorByteSize = folderInspector?.byteSize ?? null;
+  const folderInspectorView = useMemo(
+    () => folderInspectorEntries ? { entries: folderInspectorEntries, appearance: folderInspectorAppearance, byteSize: folderInspectorByteSize } : null,
+    [folderInspectorEntries, folderInspectorAppearance, folderInspectorByteSize],
+  );
+  const inspectorAiContent = aiContent?.assetId === selectedAsset?.assetId ? aiContent : null;
   return (
 <>
 <HoverTipHost />
@@ -996,17 +1003,11 @@ export function AppView({ setPluginUiDialogOpen, pluginManagerApi, libraryLoadin
       </section>
       <InspectorPanelActionsProvider value={inspectorPanelActions}>
       <InspectorPanel
-        aiContent={
-          aiContent?.assetId === selectedAsset?.assetId ? aiContent : null
-        }
+        aiContent={inspectorAiContent}
         api={api}
         automaticPaletteRatios={automaticPaletteRatios}
         displayedPalette={displayedPalette}
-        folderInspector={folderInspector ? {
-          entries: folderInspector.entries,
-          appearance: folderInspectorAppearance,
-          byteSize: folderInspector.byteSize,
-        } : null}
+        folderInspector={folderInspectorView}
         selectedAsset={selectedAsset}
         selectedAssets={selectedAssets}
         multiEdit={multiEdit}
