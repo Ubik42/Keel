@@ -70,15 +70,25 @@ export interface UseBrowseStateDeps {
 }
 
 /** Extracted from AppInner (P4); the statements run in the same order as before. */
+/** How long a settled close keeps fencing its late `library.closed` event. */
+const LIBRARY_CLOSE_EVENT_GRACE_MS = 10_000;
+
 export function useBrowseState({ pendingLibraryCloseFencesRef, setTrashBrowseTombstoneId, api, setAssets, setBrowseLayout, setVirtualBrowseLayout, setSearchTotal, setSearchOffset, setSearchSnippets, setError, t, browseLayout, virtualBrowseLayout, library, selectedAssetIds, setNotice, syncBrowseFilterMembershipRef, ensureLibraryView, isCurrentLibraryView, retiredImportIdsRef, shellApi, beginWorkspaceNavigation, captureWorkspaceTabContext, restoreWorkspaceTabSession, restoreAllAssetsWorkspaceTab, sortField, sortOrder, setNavHistoryUi, searchValue, lastValidFolderSearchQueryRef, folders, linkedFolders, setFindSimilarSource }: UseBrowseStateDeps) {
   const clearLibraryClosePending = useCallback(
     (libraryId: string, generation: number) => {
-      const pending = pendingLibraryCloseFencesRef.current.get(libraryId);
-      if (!pending) return;
-      pending.delete(generation);
-      if (pending.size === 0) {
-        pendingLibraryCloseFencesRef.current.delete(libraryId);
-      }
+      // Main publishes `library.closed` on the lifecycle channel, which can
+      // arrive after the close request itself has resolved — even after the
+      // user switched back to that library. Keep the fence a while longer so
+      // that late event is still recognised as stale and does not close the
+      // reopened library.
+      window.setTimeout(() => {
+        const pending = pendingLibraryCloseFencesRef.current.get(libraryId);
+        if (!pending) return;
+        pending.delete(generation);
+        if (pending.size === 0) {
+          pendingLibraryCloseFencesRef.current.delete(libraryId);
+        }
+      }, LIBRARY_CLOSE_EVENT_GRACE_MS);
     },
     [pendingLibraryCloseFencesRef],
   );

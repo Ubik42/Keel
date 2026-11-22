@@ -38,7 +38,16 @@ export function useCoreState() {
 
   // Library / folder / assets (existing)
   const [library, setLibrary] = useSessionField("library");
-  renderedLibrary.current = library;
+  // Open/switch/close write renderedLibrary eagerly, then commit the same
+  // value with setLibrary. Sync from render only when the committed state
+  // changes: a render that still carries the previous library (queued before
+  // setLibrary landed) must not move the ref back, or the old library's
+  // close event is taken for a close of the current one.
+  const committedLibraryRef = useRef<typeof library | undefined>(undefined);
+  if (committedLibraryRef.current !== library) {
+    committedLibraryRef.current = library;
+    renderedLibrary.current = library;
+  }
   const nativeDragReadyIds = useNativeDragReadyIds(rawLibraryApi, library?.libraryId);
   const setRecentLibraries = sessionFields.setterFor("recentLibraries");
   const [folders, setFolders] = useNavigationField("folders");
