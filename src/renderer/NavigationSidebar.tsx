@@ -1,3 +1,9 @@
+import { useBrowseField } from "./stores/browse-store";
+import { dialogsFields } from "./stores/dialogs-store";
+import { useNavigationField } from "./stores/navigation-store";
+import { useQueryField } from "./stores/query-store";
+import { useSelectionField } from "./stores/selection-store";
+import { useSessionField } from "./stores/session-store";
 import {
   useCallback,
   useEffect,
@@ -22,10 +28,8 @@ import { useT } from "./i18n";
 import { isImeKeyboardEvent, shouldHoldDismissForIme } from "./workbench/overlay/ime-safe-dismiss";
 import type {
   LinkedFolderSummary,
-  ManagedFolderSummary,
 } from "../shared/asset-types";
 import type { ContextMenuDescriptor } from "./workbench/menu/context-menu";
-import type { RendererLibrarySummary } from "../shared/protocol/responses";
 import {
   parseManagedAssetDrag,
   resolveDragDropMode,
@@ -655,18 +659,8 @@ export type FolderTreeExpandActions = {
 export interface NavigationSidebarProps {
   tagTree?: ReactNode;
   automaticTasks?: ReactNode;
-  // --- Library connection ---
-  library: RendererLibrarySummary | null;
 
-  // --- Navigation state ---
-  assetScope: string;
-  showTrash: boolean;
-  showTagManagement: boolean;
-  activePluginSidebarViewId?: string | null;
   pluginSidebarViews?: readonly { id: string; title: string }[];
-  activeTagId: string | null;
-  showIgnoredItems: boolean;
-  showMissingLinkedFiles?: boolean;
   onToggleShowIgnoredItems: () => void;
   revealTarget?: {
     kind: "folder";
@@ -674,10 +668,6 @@ export interface NavigationSidebarProps {
     requestId: number;
   } | null;
 
-  // --- Data ---
-  allAssetCount: number;
-  /** Assets stored directly under the library root (distinct from all assets). */
-  rootAssetCount: number;
   /**
    * Set while a discovery filter is active. Counts render as filtered/total.
    * Missing folder ids count as zero matches.
@@ -687,9 +677,6 @@ export interface NavigationSidebarProps {
     root: number;
     byFolderId: ReadonlyMap<string, number>;
   } | null;
-  trashedAssetCount: number;
-  folders: ManagedFolderSummary[];
-  linkedFolders: LinkedFolderSummary[];
 
   // --- Navigation callbacks ---
   onChooseAllAssets: () => void;
@@ -735,8 +722,6 @@ export interface NavigationSidebarProps {
     folderIds: string[],
     options?: { blockingUi?: boolean },
   ) => void;
-  /** Canvas/sidebar folder selection for folder drag (Serpent-nno6). */
-  selectedFolderIds: readonly string[];
   /**
    * Serpent-d7acfa：Ctrl/⌘+点击侧栏文件夹行时切换它是否加入多选（不导航）。
    */
@@ -753,11 +738,6 @@ export interface NavigationSidebarProps {
   onLinkedFolderHintHover?: () => void;
   onLinkedFolderHintHoverEnd?: () => void;
   onRelinkFolder: (folderId: string) => void;
-  onConvertLinkedDialog: (dialog: {
-    folderId: string;
-    name: string;
-    targetFolderId: string;
-  }) => void;
 
   // --- Folder creation entry (sidebar 「+」; opens the inline edit row) ---
   onAddFolder: () => void;
@@ -811,23 +791,10 @@ function isFolderMultiSelectClick(event: {
 export function NavigationSidebar(props: NavigationSidebarProps) {
   const t = useT();
   const {
-    library,
-    assetScope,
-    showTrash,
-    showTagManagement,
-    activePluginSidebarViewId = null,
     pluginSidebarViews = [],
-    activeTagId,
-    showIgnoredItems,
-    showMissingLinkedFiles = true,
     onToggleShowIgnoredItems,
     revealTarget = null,
-    allAssetCount,
-    rootAssetCount,
     filteredFolderCounts = null,
-    trashedAssetCount,
-    folders,
-    linkedFolders,
     onChooseAllAssets,
     onEnterTrash,
     onTrashContextMenu,
@@ -844,7 +811,6 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
     isInternalAssetDrag,
     onAssetsDroppedOnFolder,
     onFoldersDroppedOnFolder,
-    selectedFolderIds,
     onToggleFolderSelection,
     onAssetsDroppedOnTrash,
     onFoldersDroppedOnTrash,
@@ -854,7 +820,6 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
     onLinkedFolderHintHover,
     onLinkedFolderHintHoverEnd,
     onRelinkFolder,
-    onConvertLinkedDialog,
     onAddFolder,
     inlineFolderEdit,
     onInlineFolderEditChange,
@@ -864,6 +829,21 @@ export function NavigationSidebar(props: NavigationSidebarProps) {
     onImportDroppedFiles,
     onCopyManagedToLinked,
   } = props;
+  const [library] = useSessionField("library");
+  const [assetScope] = useNavigationField("assetScope");
+  const [showTrash] = useNavigationField("showTrash");
+  const [showTagManagement] = useNavigationField("showTagManagement");
+  const [activePluginSidebarViewId] = useNavigationField("activePluginSidebarViewId");
+  const [activeTagId] = useNavigationField("activeTagId");
+  const [showIgnoredItems] = useQueryField("showIgnoredItems");
+  const [showMissingLinkedFiles] = useQueryField("showMissingLinkedFiles");
+  const [allAssetCount] = useBrowseField("allAssetCount");
+  const [rootAssetCount] = useBrowseField("rootAssetCount");
+  const [trashedAssetCount] = useBrowseField("trashedAssetCount");
+  const [folders] = useNavigationField("folders");
+  const [linkedFolders] = useNavigationField("linkedFolders");
+  const [selectedFolderIds] = useSelectionField("selectedFolderIds");
+  const onConvertLinkedDialog = dialogsFields.setterFor("convertLinkedDialog");
 
   const browseNavFlags = {
     assetScope,

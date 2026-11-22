@@ -11,6 +11,11 @@ import {
 } from "../../src/renderer/NavigationSidebar";
 import { MANAGED_FOLDERS_DRAG_TYPE } from "../../src/renderer/workbench/tree/folder-drag-drop";
 import { LocaleProvider } from "../../src/renderer/i18n";
+import { browseFields } from "../../src/renderer/stores/browse-store";
+import { navigationFields, type NavigationState } from "../../src/renderer/stores/navigation-store";
+import { queryFields } from "../../src/renderer/stores/query-store";
+import { selectionFields } from "../../src/renderer/stores/selection-store";
+import { sessionFields, type SessionState } from "../../src/renderer/stores/session-store";
 import { NAV_TREE_PREF_KEY } from "../../src/renderer/nav-tree-preferences";
 
 function createDragTransfer(
@@ -81,9 +86,58 @@ function dispatchDropEvent(
   return event;
 }
 
+/** Props that NavigationSidebar now reads from stores (P3). */
+type NavigationStoreProps = {
+  library?: SessionState["library"];
+  assetScope?: NavigationState["assetScope"];
+  showTrash?: boolean;
+  showTagManagement?: boolean;
+  activePluginSidebarViewId?: string | null;
+  activeTagId?: string | null;
+  showIgnoredItems?: boolean;
+  showMissingLinkedFiles?: boolean;
+  allAssetCount?: number;
+  rootAssetCount?: number;
+  trashedAssetCount?: number;
+  folders?: NavigationState["folders"];
+  linkedFolders?: NavigationState["linkedFolders"];
+  selectedFolderIds?: string[];
+  onConvertLinkedDialog?: unknown;
+};
+type NavigationOverrides = Partial<NavigationSidebarProps> & NavigationStoreProps;
+
+const STORE_PROPS: Record<keyof NavigationStoreProps, (value: never) => void> = {
+  library: sessionFields.setterFor("library"),
+  assetScope: navigationFields.setterFor("assetScope"),
+  showTrash: navigationFields.setterFor("showTrash"),
+  showTagManagement: navigationFields.setterFor("showTagManagement"),
+  activePluginSidebarViewId: navigationFields.setterFor("activePluginSidebarViewId"),
+  activeTagId: navigationFields.setterFor("activeTagId"),
+  showIgnoredItems: queryFields.setterFor("showIgnoredItems"),
+  showMissingLinkedFiles: queryFields.setterFor("showMissingLinkedFiles"),
+  allAssetCount: browseFields.setterFor("allAssetCount"),
+  rootAssetCount: browseFields.setterFor("rootAssetCount"),
+  trashedAssetCount: browseFields.setterFor("trashedAssetCount"),
+  folders: navigationFields.setterFor("folders"),
+  linkedFolders: navigationFields.setterFor("linkedFolders"),
+  selectedFolderIds: selectionFields.setterFor("selectedFolderIds"),
+  onConvertLinkedDialog: () => undefined,
+};
+
 function createNavigationProps(
-  overrides: Partial<NavigationSidebarProps> = {},
+  overrides: NavigationOverrides = {},
 ): NavigationSidebarProps {
+  const merged: Record<string, unknown> = { ...navigationDefaults(), ...overrides };
+  for (const [key, set] of Object.entries(STORE_PROPS)) {
+    if (key in merged) {
+      set(merged[key] as never);
+      delete merged[key];
+    }
+  }
+  return merged as unknown as NavigationSidebarProps;
+}
+
+function navigationDefaults(): NavigationOverrides {
   const noop = vi.fn();
   return {
     library: {
@@ -125,7 +179,6 @@ function createNavigationProps(
     onOpenContextMenu: noop,
     onImportDroppedFiles: noop,
     onCopyManagedToLinked: noop,
-    ...overrides,
   };
 }
 
@@ -505,7 +558,7 @@ describe("NavigationSidebar folder-section blank area", () => {
   };
 
   async function renderSidebar(
-    overrides: Partial<NavigationSidebarProps> = {},
+    overrides: NavigationOverrides = {},
   ): Promise<HTMLElement> {
     const props = createNavigationProps({
       folders: [parentFolder, childFolder, siblingFolder],

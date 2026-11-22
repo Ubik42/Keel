@@ -1,10 +1,10 @@
+import { useBrowseField } from "./stores/browse-store";
+import { useNavigationField } from "./stores/navigation-store";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import type { KeelLibraryApi } from "../shared/library-api";
 import type {
-  TagSummary,
   LinkedFolderSummary,
   AssetSummary,
-  ManagedFolderSummary,
 } from "../shared/asset-types";
 import { assetParentFolderCoverTarget } from "../shared/folder-cover-target";
 
@@ -333,9 +333,6 @@ interface AssetContextMenuProps {
   pluginViewerState?: Partial<PluginContributionContext["viewer"]>;
   pluginApi?: KeelPluginManagerApi;
   pluginContributionRefreshKey?: string | null;
-  tags: TagSummary[];
-  linkedFolders: LinkedFolderSummary[];
-  managedFolders: ManagedFolderSummary[];
   assets: AssetSummary[];
   /** Current browse-scope IDs so select-all is not treated as "out of scope". */
   menuSkipScope?: MenuSkipScopeOptions;
@@ -375,7 +372,6 @@ interface AssetContextMenuProps {
   onChooseFolderCover: (folderIds: readonly string[]) => void;
   onChooseFolderCoverFromLibrary: (folderIds: readonly string[]) => void;
   onClearFolderCover: (folderIds: readonly string[]) => void;
-  customFolderCoverIds: ReadonlySet<string>;
   /** Single image asset: set its parent folder cover to this asset. */
   onUseAssetAsFolderCover: (assetId: string, folderId: string) => void;
   onBatchAssignTag: (tagId: string, assetIds: string[]) => void;
@@ -426,7 +422,6 @@ interface AssetContextMenuProps {
   pasteTargetFolderId: string | null | undefined;
   onRenameAssetFile: (assetId: string) => void;
   onAssignTag: (assetId: string, tagId: string) => void;
-  trashedAssetCount: number;
   /** Folder tombstones in trash (Serpent-b3kf / empty-trash enablement). */
   trashedFolderCount: number;
   onRestoreTrashedFolder: (tombstoneId: string, name: string) => void;
@@ -442,9 +437,6 @@ interface AssetContextMenuProps {
 export function AssetContextMenu(props: AssetContextMenuProps) {
   const { locale, t } = useLocale();
   const {
-    tags,
-    linkedFolders,
-    managedFolders,
     assets,
     menuSkipScope,
     onCreateSubfolder,
@@ -467,7 +459,6 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
     onChooseFolderCover,
     onChooseFolderCoverFromLibrary,
     onClearFolderCover,
-    customFolderCoverIds,
     onBatchAssignTag,
     onBatchRemoveTag,
     onMoveToFolder,
@@ -499,6 +490,11 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
     onRenameAssetFile,
     onAssignTag,
   } = props;
+  const [tags] = useNavigationField("tags");
+  const [linkedFolders] = useNavigationField("linkedFolders");
+  const [managedFolders] = useNavigationField("folders");
+  const [customFolderCoverIds] = useBrowseField("folderCustomCoverIds");
+  const [trashedAssetCount] = useBrowseField("trashedAssetCount");
 
   const { active: activeContextMenu } = useContextMenu();
   const [tagPicker, setTagPicker] = useState<TagPickerState | null>(null);
@@ -785,11 +781,11 @@ export function AssetContextMenu(props: AssetContextMenuProps) {
             <ContextMenuItem
               danger
               disabled={
-                props.trashedAssetCount === 0 &&
+                trashedAssetCount === 0 &&
                 props.trashedFolderCount === 0
               }
               disabledReason={
-                props.trashedAssetCount === 0 &&
+                trashedAssetCount === 0 &&
                 props.trashedFolderCount === 0
                   ? t("empty.trashTitle")
                   : undefined

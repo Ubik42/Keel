@@ -13319,21 +13319,13 @@ function AppInner() {
         ) : null}
       </header>
       <NavigationSidebar
-        library={library}
         tagTree={library ? <TagTreeSidebar key={library.libraryId} libraryId={library.libraryId} tags={tags} activeTagId={activeTagId}
           pinnedTagId={pinnedTagId} onPin={(id) => void togglePinnedTag(id)}
           onChoose={(id) => void chooseTag(id)} onCreate={handleCreateTagInManagement} onRename={handleRenameTagInManagement}
           onAppearance={(id, appearance) => handleRenameTagInManagement(id, tags.find((tag) => tag.tagId === id)?.name ?? "", appearance)}
           onMove={moveTagInTree} onDelete={handleDeleteTagsInManagement} onAssign={assignAssetsToTreeTag} getAssetDragIds={getManagedAssetDragIds} isInternalAssetDrag={isInternalAssetDrag} onResolveManagedAssetDrop={resolveManagedAssetDrop} /> : undefined}
         automaticTasks={library && api ? <AutomaticTasksSidebar key={library.libraryId} api={api} libraryId={library.libraryId} systemBusy={backgroundJobsActive} onCreate={()=>{setAutomaticTaskEditorId(null);setAutomaticTasksOpen(true);}} onEdit={id=>{setAutomaticTaskEditorId(id);setAutomaticTasksOpen(true);}} onOpenRuns={openMediaJobs} onOpenScripts={()=>setScriptSandboxPreviewOpen(true)} /> : undefined}
-        assetScope={assetScope}
-        showTrash={showTrash}
-        showTagManagement={showTagManagement}
-        activePluginSidebarViewId={activePluginSidebarViewId}
         pluginSidebarViews={pluginSidebarViews}
-        activeTagId={activeTagId}
-        showIgnoredItems={showIgnoredItems}
-        showMissingLinkedFiles={showMissingLinkedFiles}
         revealTarget={workspaceTabRevealTarget}
         onToggleShowIgnoredItems={() => {
           const next = !showIgnoredItems;
@@ -13346,12 +13338,7 @@ function AppInner() {
             });
           }
         }}
-        allAssetCount={allAssetCount}
-        rootAssetCount={rootAssetCount}
         filteredFolderCounts={showTrash ? null : filteredFolderCounts}
-        trashedAssetCount={trashedAssetCount}
-        folders={folders}
-        linkedFolders={linkedFolders}
         onChooseAllAssets={() => void chooseFolder("all")}
         onEnterTrash={() => void enterTrash()}
         onTrashContextMenu={(event) => {
@@ -13395,7 +13382,6 @@ function AppInner() {
           handleAssetsDroppedOnFolder(folderId, assetIds, mode)
         }
         onFoldersDroppedOnFolder={handleFoldersDroppedOnFolder}
-        selectedFolderIds={selectedFolderIds}
         onToggleFolderSelection={(folderId) => {
           // Serpent-d7acfa：侧栏 Ctrl/⌘+点击切换多选，与画布文件夹卡片共用状态。
           // 正在浏览的文件夹是「隐式选中」的：第一次 Ctrl+点击应得到 {当前, 点击}。
@@ -13423,7 +13409,6 @@ function AppInner() {
         onLinkedFolderHintHover={beginLinkedFolderHintHover}
         onLinkedFolderHintHoverEnd={endLinkedFolderHintHover}
         onRelinkFolder={(folderId) => void relinkFolder(folderId)}
-        onConvertLinkedDialog={setConvertLinkedDialog}
         onAddFolder={() => {
           // Serpent-b8a853: while the user has never used linked folders,
           // adding an ordinary folder pulses the 导入链接文件夹 entry.
@@ -15553,9 +15538,6 @@ function AppInner() {
         pluginViewerState={pluginViewerState}
         pluginApi={(window as RendererWindow).keel?.plugins}
         pluginContributionRefreshKey={pluginContributionRefreshKey}
-        tags={tags}
-        linkedFolders={linkedFolders}
-        managedFolders={folders}
         assets={visibleAssets}
         menuSkipScope={menuSkipScope}
         onCloseWorkspaceTab={(tabId) => void closeWorkspaceTab(tabId)}
@@ -15656,7 +15638,6 @@ function AppInner() {
         onChooseFolderCover={chooseFolderCover}
         onChooseFolderCoverFromLibrary={openFolderCoverLibraryPicker}
         onClearFolderCover={clearFolderCover}
-        customFolderCoverIds={folderCustomCoverIds}
         onUseAssetAsFolderCover={useAssetAsFolderCover}
         onBatchAssignTag={(tagId, assetIds) => {
           void batchAssignTagToSelection(tagId, assetIds);
@@ -15747,7 +15728,6 @@ function AppInner() {
         pasteTargetFolderId={browsePasteDestination}
         onRenameAssetFile={(assetId) => { openAssetRename(assetId); }}
         onAssignTag={(assetId, tagId) => { void assignAssetToTag(assetId, tagId); }}
-        trashedAssetCount={trashedAssetCount}
         trashedFolderCount={trashedFolders.length}
         onRestoreTrashedFolder={(tombstoneId, name) => {
           void restoreTrashedManagedFolder(tombstoneId, name);
