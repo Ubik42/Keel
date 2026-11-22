@@ -26,6 +26,7 @@ test('creates a library, then inspects, imports, and restores it through Desktop
     env: {
       ...process.env,
       KEEL_E2E: '1',
+      KEEL_E2E_SHOW_TEXT: '1',
       KEEL_E2E_AUTOMATION_CONFIRM: '1',
       KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
       KEEL_E2E_RESTORE_RECENT: '1',
@@ -56,7 +57,7 @@ test('creates a library, then inspects, imports, and restores it through Desktop
       const inspected = await serpent.library.inspect();
       const imported = await serpent.files.import({
         sourceKind: 'files',
-        sourcePaths: ['${source}'],
+        sourcePaths: [${JSON.stringify(source)}],
       });
       return { inspected, imported };
     `);
@@ -101,6 +102,7 @@ test('cancels a planned import before retrying it successfully', async () => {
     env: {
       ...process.env,
       KEEL_E2E: '1',
+      KEEL_E2E_SHOW_TEXT: '1',
       KEEL_E2E_AUTOMATION_CONFIRM: '1',
       KEEL_E2E_AUTOMATION_CANCEL_ONCE: '1',
       KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
@@ -119,7 +121,7 @@ test('cancels a planned import before retrying it successfully', async () => {
     const sourceCode = `
       return await serpent.files.import({
         sourceKind: 'files',
-        sourcePaths: ['${source}'],
+        sourcePaths: [${JSON.stringify(source)}],
       });
     `;
 
