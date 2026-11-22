@@ -1,3 +1,5 @@
+import { useSessionField } from "./stores/session-store";
+import { useTransfersField } from "./stores/transfers-store";
 import {
   useEffect,
   useId,
@@ -78,8 +80,6 @@ export type LibrarySwitcherProps = {
   /** Irreversible delete of the currently open library root (Serpent-9i8). */
   onDeleteLibraryFromDisk?: () => void;
   onOpenLibrarySettings?: () => void;
-  /** Recent libraries excluding the open one; the section hides when empty. */
-  recentLibraries?: RecentLibraryMenuEntry[];
   onOpenRecent?: (path: string) => void;
   /** Soft-forget a recent entry without opening it. */
   onForgetRecent?: (path: string) => void;
@@ -96,8 +96,6 @@ export type LibrarySwitcherProps = {
    * the pointer). The sidebar placement keeps the in-place menu.
    */
   portaled?: boolean;
-  /** 同步连接状态（Serpent-ae7257 后续）：link / link-off 图标提示。 */
-  syncStatus?: "none" | "disabled" | "enabled";
   busy?: boolean;
   /** @deprecated Asset-level imports now live in the File menu. */
   importMenuCopy?: ImportMenuCopy;
@@ -121,17 +119,17 @@ export function LibrarySwitcher({
   onRemoveLibrary,
   onDeleteLibraryFromDisk,
   onOpenLibrarySettings,
-  recentLibraries = [],
   onOpenRecent,
   onForgetRecent,
   onMenuOpen,
   libraryOpen = false,
   portaled = false,
-  syncStatus = "none",
   busy = false,
   onImportLibrary,
   onExportLibrary,
 }: LibrarySwitcherProps) {
+  const [syncStatus] = useTransfersField("syncBindingStatus");
+  const [recentLibraries] = useSessionField("recentLibraries");
   const { t } = useLocale();
   const [open, setOpen] = useState(false);
   const [keyboardNav, setKeyboardNav] = useState(false);

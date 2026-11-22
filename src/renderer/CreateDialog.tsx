@@ -1,8 +1,9 @@
+import { useDialogField } from "./stores/dialogs-store";
+import { useSessionField } from "./stores/session-store";
 import { type FormEvent } from "react";
 import { Icon } from "./Icons";
 import { iconActionAttrs } from "./icon-action-attrs";
 import { useT } from "./i18n";
-import type { RecentLibraryMenuEntry } from "./LibrarySwitcher";
 import { DialogShell } from "./workbench/ui/patterns";
 
 export type CreateLibraryPhase = "start" | "form" | "eagle" | "billfish";
@@ -18,10 +19,6 @@ export interface CreateDialogProps {
   phase: CreateLibraryPhase;
   value: string;
   onValueChange: (val: string) => void;
-  storageLayout?: 'root' | 'assets';
-  useExistingFolder?: boolean;
-  onUseExistingFolderChange?: (value: boolean) => void;
-  onStorageLayoutChange?: (layout: 'root' | 'assets') => void;
   onSubmit: () => void;
   onCancel: () => void;
   /** Switch from start CTAs into the name form. */
@@ -36,7 +33,6 @@ export interface CreateDialogProps {
   onOpenRecent: (path: string) => void;
   /** Serpent-kqgy: remove a library from the recent list (not from disk). */
   onForgetRecent?: (path: string) => void;
-  recentLibraries?: RecentLibraryMenuEntry[];
   busy?: boolean;
   /**
    * When true (no library open), hide dismiss controls so the surface stays
@@ -57,10 +53,6 @@ export function CreateDialog({
   phase,
   value,
   onValueChange,
-  storageLayout = 'root',
-  useExistingFolder = false,
-  onUseExistingFolderChange,
-  onStorageLayoutChange,
   onSubmit,
   onCancel,
   onBeginCreate,
@@ -69,10 +61,12 @@ export function CreateDialog({
   onImportLibrary,
   onOpenRecent,
   onForgetRecent,
-  recentLibraries = [],
   busy = false,
   required = false,
 }: CreateDialogProps) {
+  const [storageLayout, onStorageLayoutChange] = useDialogField("createStorageLayout");
+  const [useExistingFolder, onUseExistingFolderChange] = useDialogField("useExistingCreateFolder");
+  const [recentLibraries] = useSessionField("recentLibraries");
   const t = useT();
   if (!open) return null;
 

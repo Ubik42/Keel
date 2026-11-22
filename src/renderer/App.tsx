@@ -850,7 +850,7 @@ function AppInner() {
   // Library / folder / assets (existing)
   const [library, setLibrary] = useSessionField("library");
   const nativeDragReadyIds = useNativeDragReadyIds(rawLibraryApi, library?.libraryId);
-  const [recentLibraries, setRecentLibraries] = useSessionField("recentLibraries");
+  const setRecentLibraries = sessionFields.setterFor("recentLibraries");
   const [folders, setFolders] = useNavigationField("folders");
   const [linkedFolders, setLinkedFolders] = useNavigationField("linkedFolders");
   const [linkedRulesEditor, setLinkedRulesEditor] = useState<{
@@ -13047,7 +13047,6 @@ function AppInner() {
             busy={busy}
             disabled={!api}
             portaled
-            syncStatus={syncBindingStatus}
             importMenuCopy={importMenuCopy}
             libraryName={library?.displayName ?? null}
             libraryOpen={Boolean(library)}
@@ -13077,7 +13076,6 @@ function AppInner() {
             }}
             onOpenRecent={(path) => void openRecentLibrary(path)}
             onForgetRecent={(path) => void forgetRecentLibrary(path)}
-            recentLibraries={recentLibraries}
           />
         </div>
         <div className="toolbar-cluster toolbar-workspace-cluster">
@@ -15294,10 +15292,6 @@ function AppInner() {
         busy={busy}
         open={dialog === "library"}
         phase={createLibraryPhase}
-        storageLayout={createStorageLayout}
-        onStorageLayoutChange={setCreateStorageLayout}
-        useExistingFolder={useExistingCreateFolder}
-        onUseExistingFolderChange={setUseExistingCreateFolder}
         required={!library}
         value={dialogValue}
         onValueChange={setDialogValue}
@@ -15363,7 +15357,6 @@ function AppInner() {
         onForgetRecent={(path) => {
           void forgetRecentLibrary(path);
         }}
-        recentLibraries={recentLibraries}
       />
       {exportDialogOpen && (
         <ExportDialog
