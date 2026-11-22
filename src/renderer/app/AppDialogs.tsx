@@ -28,7 +28,7 @@ import { AiConfigDialog } from "../AiConfigDialog";
 import { AiConnectionFailureDialog } from "../AiConnectionFailureDialog";
 import { AppLogDialog } from "../AppLogDialog";
 import { AppSettingsDialog } from "../AppSettingsDialog";
-import { AutomaticTasksDialog } from "../AutomaticTasksDialog";
+import { RuleDetailDialog } from "../RuleDetailDialog";
 import { ConvertLinkedDialog } from "../ConvertLinkedDialog";
 import { CreateDialog, type CreateLibraryPhase } from "../CreateDialog";
 import { CriticalConfirmationDialog } from "../CriticalConfirmationDialog";
@@ -183,7 +183,6 @@ export function AppDialogs({ updateImageSequenceFps, createSelectedImageSequence
   const [appLogOpen, setAppLogOpen] = useDialogField("appLogOpen");
   const [libraryRecoveryDialogOpen, setLibraryRecoveryDialogOpen] = useSessionField("libraryRecoveryDialogOpen");
   const [automaticTasksOpen, setAutomaticTasksOpen] = useDialogField("automaticTasksOpen");
-  const [tags, setTags] = useNavigationField("tags");
   const [scriptSandboxPreviewOpen, setScriptSandboxPreviewOpen] = useDialogField("scriptSandboxPreviewOpen");
   const [aboutOpen, setAboutOpen] = useDialogField("aboutOpen");
   const [openSourceLicensesOpen, setOpenSourceLicensesOpen] = useDialogField("openSourceLicensesOpen");
@@ -658,7 +657,7 @@ export function AppDialogs({ updateImageSequenceFps, createSelectedImageSequence
           recovery={library.recovery}
         />
       )}
-      {library && api && <AutomaticTasksDialog key={library.libraryId} api={api} libraryId={library.libraryId} initialTaskId={automaticTaskEditorId} open={automaticTasksOpen} currentQueryJson={JSON.stringify(currentQueryDefinition())} tags={tags} folders={folders} onClose={() => setAutomaticTasksOpen(false)} onOpenScripts={() => {setAutomaticTasksOpen(false);setScriptSandboxPreviewOpen(true);}} onChanged={async()=>{const r=await api.listTags({libraryId:library.libraryId});if(r.ok)setTags(r.value);}} />}
+      {library && <RuleDetailDialog key={library.libraryId} libraryId={library.libraryId} ruleId={automaticTaskEditorId ?? null} open={automaticTasksOpen} onClose={() => setAutomaticTasksOpen(false)} onOpenScripts={() => {setAutomaticTasksOpen(false);setScriptSandboxPreviewOpen(true);}} />}
       <ScriptSandboxPreviewDialog
         automation={(window as RendererWindow).keel?.automation}
         libraryId={library?.libraryId ?? null}

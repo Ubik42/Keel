@@ -816,3 +816,18 @@
 .tag-tree-inline-edit > svg, .tag-tree-inline-edit > button { flex-shrink: 0; }
 
 .tag-tree-pin.is-pinned svg { fill: currentColor; }
+
+/* PR: rule detail (trigger history). */
+.rule-detail-facts { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; margin: 0 0 12px; }
+.rule-detail-facts dt { color: var(--text-secondary); }
+.rule-detail-facts dd { margin: 0; overflow-wrap: anywhere; }
+.rule-detail-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.rule-detail-heading { margin: 12px 0 6px; font-size: inherit; }
+.rule-run-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.rule-run { border: 1px solid var(--divider-soft); border-radius: 6px; }
+.rule-run.is-failed { border-color: color-mix(in srgb, var(--danger, #d14343) 45%, transparent); }
+.rule-run-summary { display: flex; justify-content: space-between; gap: 12px; width: 100%; padding: 6px 8px; background: none; border: 0; color: inherit; text-align: left; cursor: pointer; }
+.rule-run.is-dry-run .rule-run-summary { color: var(--text-secondary); }
+.rule-run-detail { padding: 0 8px 8px; }
+.rule-run-changes { margin: 4px 0; padding-left: 18px; }
+.rule-run-output { max-height: 160px; overflow: auto; margin: 4px 0; padding: 6px; border-radius: 4px; background: color-mix(in srgb, currentColor 6%, transparent); white-space: pre-wrap; font-size: 12px; }

@@ -53,7 +53,7 @@ import type { BrowsePasteDestination } from "../browse-paste-target";
 import { type SortDefinition } from "../../shared/asset-types";
 import { LIBRARY_ROOT_FOLDER_ID } from "../../shared/library-root-folder";
 import { setAssetDragPreviewCopyMode } from "../asset-drag-preview";
-import { AutomaticTasksSidebar } from "../AutomaticTasksSidebar";
+import { RulesSidebar } from "../RulesSidebar";
 import { BlockingProgressOverlay } from "../BlockingProgressOverlay";
 import { ContentDuplicateDialog } from "../ContentDuplicateDialog";
 import { DeleteProgressOverlay } from "../DeleteProgressOverlay";
@@ -770,7 +770,7 @@ export function AppView({ setPluginUiDialogOpen, pluginManagerApi, libraryLoadin
           onChoose={(id) => void chooseTag(id)} onCreate={handleCreateTagInManagement} onRename={handleRenameTagInManagement}
           onAppearance={(id, appearance) => handleRenameTagInManagement(id, tags.find((tag) => tag.tagId === id)?.name ?? "", appearance)}
           onMove={moveTagInTree} onDelete={handleDeleteTagsInManagement} onAssign={assignAssetsToTreeTag} getAssetDragIds={getManagedAssetDragIds} isInternalAssetDrag={isInternalAssetDrag} onResolveManagedAssetDrop={resolveManagedAssetDrop} /> : undefined}
-        automaticTasks={library && api ? <AutomaticTasksSidebar key={library.libraryId} api={api} libraryId={library.libraryId} systemBusy={backgroundJobsActive} onCreate={()=>{setAutomaticTaskEditorId(null);setAutomaticTasksOpen(true);}} onEdit={id=>{setAutomaticTaskEditorId(id);setAutomaticTasksOpen(true);}} onOpenRuns={openMediaJobs} onOpenScripts={()=>setScriptSandboxPreviewOpen(true)} /> : undefined}
+        automaticTasks={library && api ? <RulesSidebar key={library.libraryId} libraryId={library.libraryId} systemBusy={backgroundJobsActive} onOpenRule={id=>{setAutomaticTaskEditorId(id);setAutomaticTasksOpen(true);}} onOpenRuns={openMediaJobs} onOpenScripts={()=>setScriptSandboxPreviewOpen(true)} /> : undefined}
         pluginSidebarViews={pluginSidebarViews}
         revealTarget={workspaceTabRevealTarget}
         filteredFolderCounts={showTrash ? null : filteredFolderCounts}
