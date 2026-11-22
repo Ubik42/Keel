@@ -5,6 +5,7 @@ import { useQueryField } from "./stores/query-store";
 import { useSelectionField } from "./stores/selection-store";
 import { useSessionField } from "./stores/session-store";
 import { memo, useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type MutableRefObject, type ReactNode, type KeyboardEvent as ReactKeyboardEvent, createContext, useContext } from "react";
+import { TreeDisclosure } from "./workbench/tree/tree-view";
 import { Icon, type IconName } from "./Icons";
 import { AppearanceGlyph } from "./AppearanceGlyph";
 import type { EntityAppearance } from "../shared/entity-appearance";
@@ -1504,22 +1505,14 @@ export const NavigationSidebar = memo(function NavigationSidebar(props: Navigati
             depth={entry.depth}
             disclosure={
               hasChildren ? (
-                <button
-                  aria-expanded={expanded}
-                  aria-label={
-                    expanded
-                      ? t("nav.collapseFolder", { name: entry.name })
-                      : t("nav.expandFolder", { name: entry.name })
-                  }
-                  className={`nav-disclosure${expanded ? " is-expanded" : ""}`}
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    toggleFolderCollapsed(entry.folderId);
-                  }}
-                  type="button"
-                >
-                  <Icon name="chevron-right" size={12} />
-                </button>
+                <TreeDisclosure
+                  className="nav-disclosure"
+                  expanded={expanded}
+                  label={expanded
+                    ? t("nav.collapseFolder", { name: entry.name })
+                    : t("nav.expandFolder", { name: entry.name })}
+                  onToggle={() => toggleFolderCollapsed(entry.folderId)}
+                />
               ) : undefined
             }
             icon="folder"
@@ -1626,22 +1619,14 @@ export const NavigationSidebar = memo(function NavigationSidebar(props: Navigati
           depth={entry.depth}
           disclosure={
             hasChildren ? (
-              <button
-                aria-expanded={expanded}
-                aria-label={
-                  expanded
+              <TreeDisclosure
+                  className="nav-disclosure"
+                  expanded={expanded}
+                  label={expanded
                     ? t("nav.collapseFolder", { name: entry.name })
-                    : t("nav.expandFolder", { name: entry.name })
-                }
-                className={`nav-disclosure${expanded ? " is-expanded" : ""}`}
-                onClick={(event) => {
-                  event.stopPropagation();
-                  toggleFolderCollapsed(entry.folderId);
-                }}
-                type="button"
-              >
-                <Icon name="chevron-right" size={12} />
-              </button>
+                    : t("nav.expandFolder", { name: entry.name })}
+                  onToggle={() => toggleFolderCollapsed(entry.folderId)}
+                />
             ) : undefined
           }
           icon={hasCustomLinkedGlyph ? "folder" : linkedAffordance.icon}
