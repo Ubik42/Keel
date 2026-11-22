@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import { readdirSync } from "node:fs";
 
 import { describe, expect, it } from "vitest";
 
@@ -19,6 +20,13 @@ import {
  * the viewer-close path already restored, and a second restore about a second
  * later fights the user's next scroll.
  */
+/** App.tsx plus the app/ modules P4 moved its code into. */
+function rendererShellSource(): string {
+  const dir = path.join(process.cwd(), "src/renderer/app");
+  return [path.join(process.cwd(), "src/renderer/App.tsx"), ...readdirSync(dir).map((f) => path.join(dir, f))]
+    .map((f) => readFileSync(f, "utf8")).join("\n");
+}
+
 describe("silent browse reload viewport (VIEWER-001)", () => {
   const liveElement = {
     scrollTop: 4922,
@@ -54,10 +62,7 @@ describe("silent browse reload viewport (VIEWER-001)", () => {
   });
 
   it("wires silent runSearch to skip navigation restore", () => {
-    const source = readFileSync(
-      path.join(process.cwd(), "src/renderer/App.tsx"),
-      "utf8",
-    );
+    const source = rendererShellSource();
     const start = source.indexOf("async function runSearch");
     const end = source.indexOf("useEffect(() => {", start);
     expect(start).toBeGreaterThan(0);
@@ -68,10 +73,7 @@ describe("silent browse reload viewport (VIEWER-001)", () => {
   });
 
   it("gates executeSearchDefinition restore behind submit, not silent debounce", () => {
-    const source = readFileSync(
-      path.join(process.cwd(), "src/renderer/App.tsx"),
-      "utf8",
-    );
+    const source = rendererShellSource();
     const start = source.indexOf("async function executeSearchDefinition");
     const end = source.indexOf("async function runSearch", start);
     const body = source.slice(start, end);

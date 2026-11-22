@@ -1,4 +1,3 @@
-import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 import { RADIUS_LEVEL_SCALE } from "../../src/renderer/radius-preferences";
