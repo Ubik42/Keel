@@ -325,7 +325,7 @@ import { inspectorFields, useInspectorField } from "./stores/inspector-store";
 import { selectionFields, useSelectionField } from "./stores/selection-store";
 import { browseFields, useBrowseField } from "./stores/browse-store";
 import { useQueryField } from "./stores/query-store";
-import { useNavigationField, type AssetScope } from "./stores/navigation-store";
+import { navigationFields, useNavigationField, type AssetScope } from "./stores/navigation-store";
 import { sessionFields, useSessionField } from "./stores/session-store";
 import {
   imageSequenceImportFlags,
@@ -1185,7 +1185,7 @@ function AppInner() {
 
   // REQ-FOLDER-009: folder browse/search recurse only when explicitly enabled.
   const [folderRecursive, setFolderRecursive] = useNavigationField("folderRecursive");
-  const folderRecursiveRef = useRef(folderRecursive);
+  const folderRecursiveRef = navigationFields.ref("folderRecursive");
   const [folderRecursivePrefs, setFolderRecursivePrefs] = useNavigationField("folderRecursivePrefs");
   const [showFolderCardsWhenRecursive, setShowFolderCardsWhenRecursive] = useNavigationField("showFolderCardsWhenRecursive");
   // Serpent-b8a853: one-time feature hints for hidden UI affordances share a

@@ -11,6 +11,11 @@ export interface FieldStore<S extends object> {
   useField: <K extends keyof S>(key: K) => [S[K], Dispatch<SetStateAction<S[K]>>];
   setterFor: <K extends keyof S>(key: K) => Dispatch<SetStateAction<S[K]>>;
   get: <K extends keyof S>(key: K) => S[K];
+  /**
+   * A ref-shaped view of one field for code that still takes a ref: reading
+   * `current` reads the store, writing it calls the setter.
+   */
+  ref: <K extends keyof S>(key: K) => { current: S[K] };
   /** Restore the initial values of the given fields (all when omitted). */
   reset: (keys?: readonly (keyof S)[]) => void;
 }
@@ -21,6 +26,7 @@ export function createFieldStore<S extends object>(initial: () => S): FieldStore
   let bound: UseBoundStore<StoreApi<S>> | undefined;
   const getStore = () => (bound ??= create<S>()(() => initial()));
   const setters = new Map<keyof S, Dispatch<SetStateAction<unknown>>>();
+  const refs = new Map<keyof S, { current: unknown }>();
   function setterFor<K extends keyof S>(key: K): Dispatch<SetStateAction<S[K]>> {
     let setter = setters.get(key);
     if (!setter) {
@@ -43,6 +49,22 @@ export function createFieldStore<S extends object>(initial: () => S): FieldStore
     setterFor,
     useField: (key) => [getStore()((state) => state[key]), setterFor(key)],
     get: (key) => getStore().getState()[key],
+    ref: <K extends keyof S>(key: K) => {
+      let view = refs.get(key);
+      if (!view) {
+        const set = setterFor(key);
+        view = {
+          get current() {
+            return getStore().getState()[key];
+          },
+          set current(value) {
+            set(value as S[K]);
+          },
+        };
+        refs.set(key, view);
+      }
+      return view as { current: S[K] };
+    },
     reset: (keys) => {
       const fresh = initial();
       const patch: Partial<S> = {};
