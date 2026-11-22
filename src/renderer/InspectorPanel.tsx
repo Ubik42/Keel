@@ -1,3 +1,9 @@
+import { useAiField } from "./stores/ai-store";
+import { useBrowseField } from "./stores/browse-store";
+import { useInspectorField } from "./stores/inspector-store";
+import { useNavigationField } from "./stores/navigation-store";
+import { usePrefsStore } from "./stores/prefs-store";
+import { useSessionField } from "./stores/session-store";
 import { appearanceColorVar } from './AppearanceGlyph';
 import {
   useState,
@@ -165,28 +171,13 @@ export interface InspectorPanelProps {
   selectedAsset: AssetSummary | undefined;
   /** Full multi-selection in canvas order; primary is still `selectedAsset`. */
   selectedAssets?: AssetSummary[];
-  library: RendererLibrarySummary | null;
   api?: KeelLibraryApi | null;
-  allAssetCount: number;
   folderCount: number;
   loadMetadata: () => void;
   // Metadata editor state
-  assetMetadata: AssetMetadataResult | null;
-  versionConflict: boolean;
-  editDescription: string;
-  editRating: number;
-  editFavorite: boolean;
-  editSourceUrl: string;
-  editAuthor: string;
   displayedPalette: string[];
   automaticPaletteRatios: Map<string, number>;
   aiContent: AiContent | null;
-  /** True while an AI analyze request is in flight for the library. */
-  aiAnalyzing?: boolean;
-  /** Description field currently shows AI-layer text (human layer empty). */
-  descriptionIsAi?: boolean;
-  /** Serpent-t8sw: when false, hide AI corner badges (data retained). */
-  showAiBadges?: boolean;
   // Metadata editor handlers
   handleMetadataDescriptionSave: () => void;
   handleMetadataDescriptionInput: (
@@ -199,7 +190,6 @@ export interface InspectorPanelProps {
   handleAuthorSave: () => void;
   handleAuthorInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
   // Tag chip props (REQ-TAG-003)
-  allTags: TagSummary[];
   onAssignTagToAsset?: (tagId: string) => void;
   onRemoveTagFromAsset?: (tagId: string) => void | Promise<void>;
   onFilterTag?: (tagId: string) => void;
@@ -215,8 +205,6 @@ export interface InspectorPanelProps {
   pluginApi?: KeelPluginManagerApi;
   libraryId?: string;
   pluginContributionRefreshKey?: string | null;
-  /** Re-read progressive extracted metadata after a secondary job commits. */
-  extractedMetadataRefreshKey?: number;
   /** Canvas folder selection, or the folder currently open when nothing is selected. */
   folderInspector?: {
     entries: FolderBrowseEntry[];
@@ -633,24 +621,12 @@ export function InspectorPanel(props: InspectorPanelProps) {
   const {
     selectedAsset,
     selectedAssets = [],
-    library,
     api = null,
-    allAssetCount,
     folderCount,
     loadMetadata,
-    assetMetadata: rawAssetMetadata,
-    versionConflict,
-    editDescription,
-    editRating,
-    editFavorite,
-    editSourceUrl,
-    editAuthor,
     displayedPalette,
     automaticPaletteRatios,
     aiContent,
-    aiAnalyzing = false,
-    descriptionIsAi = false,
-    showAiBadges = true,
     handleMetadataDescriptionSave,
     handleMetadataDescriptionInput,
     handleRatingClick,
@@ -659,7 +635,6 @@ export function InspectorPanel(props: InspectorPanelProps) {
     handleSourceUrlInput,
     handleAuthorSave,
     handleAuthorInput,
-    allTags,
     onAssignTagToAsset,
     onRemoveTagFromAsset,
     onFilterTag,
@@ -673,8 +648,21 @@ export function InspectorPanel(props: InspectorPanelProps) {
     libraryId,
     pluginContributionRefreshKey = null,
     folderInspector = null,
-    extractedMetadataRefreshKey = 0,
   } = props;
+  const [library] = useSessionField("library");
+  const [allAssetCount] = useBrowseField("allAssetCount");
+  const [allTags] = useNavigationField("tags");
+  const [rawAssetMetadata] = useInspectorField("assetMetadata");
+  const [versionConflict] = useInspectorField("versionConflict");
+  const [editDescription] = useInspectorField("editDescription");
+  const [editRating] = useInspectorField("editRating");
+  const [editFavorite] = useInspectorField("editFavorite");
+  const [editSourceUrl] = useInspectorField("editSourceUrl");
+  const [editAuthor] = useInspectorField("editAuthor");
+  const [descriptionIsAi] = useInspectorField("descriptionIsAi");
+  const [extractedMetadataRefreshKey] = useInspectorField("extractedMetadataRefreshKey");
+  const [aiAnalyzing] = useAiField("aiAnalyzing");
+  const showAiBadges = usePrefsStore((state) => state.aiUi.showAiBadges);
 
   const { locale, t } = useLocale();
   const { enabled: inspectorCardFeelEnabled } = useInspectorCardFeel();

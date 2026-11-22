@@ -14840,20 +14840,9 @@ function AppInner() {
         aiContent={
           aiContent?.assetId === selectedAsset?.assetId ? aiContent : null
         }
-        aiAnalyzing={aiAnalyzing}
-        descriptionIsAi={descriptionIsAi}
-        showAiBadges={aiUiPrefs.showAiBadges}
-        allAssetCount={allAssetCount}
-        allTags={tags}
         api={api}
-        assetMetadata={assetMetadata}
         automaticPaletteRatios={automaticPaletteRatios}
         displayedPalette={displayedPalette}
-        editDescription={editDescription}
-        editFavorite={editFavorite}
-        editRating={editRating}
-        editSourceUrl={editSourceUrl}
-        editAuthor={editAuthor}
         folderCount={folders.length}
         folderInspector={folderInspector ? {
           entries: folderInspector.entries,
@@ -14868,7 +14857,6 @@ function AppInner() {
         handleSourceUrlSave={handleSourceUrlSave}
         handleAuthorInput={handleAuthorInput}
         handleAuthorSave={handleAuthorSave}
-        library={library}
         loadMetadata={loadMetadata}
         onAssignTagToAsset={(tagId) => void handleInspectorAssignTag(tagId)}
         onCreateAndAssignTag={(tagName) => void handleInspectorCreateAndAssignTag(tagName)}
@@ -14887,11 +14875,9 @@ function AppInner() {
         selectedAsset={selectedAsset}
         selectedAssets={selectedAssets}
         multiEdit={multiEdit}
-        versionConflict={versionConflict}
         pluginApi={(window as RendererWindow).keel?.plugins}
         libraryId={library?.libraryId}
         pluginContributionRefreshKey={pluginContributionRefreshKey}
-        extractedMetadataRefreshKey={extractedMetadataRefreshKey}
       />
       <ImageSequenceDialog
         count={
