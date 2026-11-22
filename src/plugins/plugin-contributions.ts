@@ -93,6 +93,8 @@ const pluginContributionRegistrationSchema = z.strictObject({
   dialogHeight: z.number().int().min(200).max(1_200).optional(),
   accelerator: z.string().min(1).max(64).optional(),
   uiDescriptor: pluginUiDescriptorSchema.optional(),
+  /** Inspector sections: show only for these file extensions. */
+  extensions: z.array(z.string().min(1).max(32)).max(64).optional(),
 });
 export type PluginContributionRegistration = z.infer<typeof pluginContributionRegistrationSchema>;
 
@@ -325,6 +327,8 @@ export function registerManifestContributions(
       title: item.title ?? commandTitle,
       commandId: item.command,
       commandTitle,
+      ...(item.after === undefined ? {} : { after: item.after }),
+      ...(item.extensions === undefined ? {} : { extensions: item.extensions }),
     });
     registered += 1;
   }
@@ -623,6 +627,8 @@ export type PluginInspectorSectionContribution = {
   when?: string;
   enablement?: string;
   checked?: string;
+  after?: string;
+  extensions?: string[];
 };
 
 export function listInspectorSectionContributions(
@@ -649,6 +655,8 @@ export function listInspectorSectionContributions(
         ? {} : { enablement: effectiveCondition(registry, contribution, 'enablement') }),
       ...(effectiveCondition(registry, contribution, 'checked') === undefined
         ? {} : { checked: effectiveCondition(registry, contribution, 'checked') }),
+      ...(contribution.after === undefined ? {} : { after: contribution.after }),
+      ...(contribution.extensions === undefined ? {} : { extensions: contribution.extensions }),
     }))
     .sort((left, right) => left.id.localeCompare(right.id));
 }

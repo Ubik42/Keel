@@ -967,6 +967,8 @@ export class PluginActivationCoordinator {
           ...(contribution.when === undefined ? {} : { when: contribution.when }),
           ...(contribution.enablement === undefined ? {} : { enablement: contribution.enablement }),
           ...(contribution.checked === undefined ? {} : { checked: contribution.checked }),
+          ...(contribution.after === undefined ? {} : { after: contribution.after }),
+          ...(contribution.extensions === undefined ? {} : { extensions: contribution.extensions }),
           target: 'inspector.sections' as const,
         }));
     }

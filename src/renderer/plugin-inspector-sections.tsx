@@ -7,6 +7,11 @@ import {
   runPluginMenuCommand,
 } from "./plugin-menu-contributions";
 import { sortPluginSurfaceContributions } from "./plugin-surface-ordering";
+import {
+  DEFAULT_PLUGIN_INSPECTOR_PLACEMENT,
+  INSPECTOR_SECTION_IDS,
+  type InspectorSectionId,
+} from "../shared/inspector-sections";
 
 export type PluginInspectorSectionDescriptor = {
   id: string;
@@ -19,6 +24,10 @@ export type PluginInspectorSectionDescriptor = {
   when?: string;
   enablement?: string;
   checked?: boolean;
+  /** Built-in section this one follows. */
+  placement: InspectorSectionId;
+  /** Shown only when every selected file has one of these extensions. */
+  extensions?: readonly string[];
 };
 
 export function buildPluginInspectorSectionDescriptors(
@@ -33,6 +42,8 @@ export function buildPluginInspectorSectionDescriptors(
     when?: string;
     enablement?: string;
     checked?: string;
+    after?: string;
+    extensions?: readonly string[];
   }[],
   context?: PluginContributionContext,
 ): PluginInspectorSectionDescriptor[] {
@@ -51,6 +62,10 @@ export function buildPluginInspectorSectionDescriptors(
         ...(contribution.enablement === undefined ? {} : { enablement: contribution.enablement }),
         ...(conditions.checked === undefined ? {} : { checked: conditions.checked }),
         disabled: conditions.disabled,
+        placement: (INSPECTOR_SECTION_IDS as readonly string[]).includes(contribution.after ?? "")
+          ? contribution.after as InspectorSectionId
+          : DEFAULT_PLUGIN_INSPECTOR_PLACEMENT,
+        ...(contribution.extensions === undefined ? {} : { extensions: contribution.extensions }),
       }];
     });
 }
@@ -95,33 +110,42 @@ export function usePluginInspectorSectionContributions(
   return shouldLoad ? items : [];
 }
 
-export function PluginInspectorSections({
+function extensionOf(name: string): string {
+  const dot = name.lastIndexOf(".");
+  return dot > 0 ? name.slice(dot + 1).toLowerCase() : "";
+}
+
+/** Sections whose extension filter matches every selected file. */
+export function pluginInspectorSectionsFor(
+  items: readonly PluginInspectorSectionDescriptor[],
+  placement: InspectorSectionId,
+  selectedNames: readonly string[],
+): PluginInspectorSectionDescriptor[] {
+  return items.filter((item) => item.placement === placement && (
+    item.extensions === undefined
+    || (selectedNames.length > 0 && selectedNames.every((name) => item.extensions!.includes(extensionOf(name))))
+  ));
+}
+
+/** The plugin sections placed after one built-in Inspector section. */
+export function PluginInspectorSectionList({
+  items,
   pluginApi,
   libraryId,
   selectedAssetIds,
   selectedAssets,
   disabled = false,
-  refreshKey,
   context,
 }: {
+  items: readonly PluginInspectorSectionDescriptor[];
   pluginApi: KeelPluginManagerApi | undefined;
   libraryId: string | undefined;
   selectedAssetIds: readonly string[];
   selectedAssets?: readonly PluginInvocationAssetSource[];
   disabled?: boolean;
-  refreshKey: string | null;
   context?: PluginContributionContext;
 }): ReactNode {
-  const items = usePluginInspectorSectionContributions(
-    pluginApi,
-    libraryId,
-    pluginApi !== undefined && libraryId !== undefined && !disabled && selectedAssetIds.length > 0,
-    refreshKey,
-    context,
-  );
-
   if (items.length === 0) return null;
-
   return (
     <>
       {items.map((item) => (

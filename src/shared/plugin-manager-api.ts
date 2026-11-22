@@ -466,6 +466,8 @@ export const pluginManagerInspectorSectionContributionSchema = z.strictObject({
   when: pluginContextExpressionSchema.optional(),
   enablement: pluginContextExpressionSchema.optional(),
   checked: pluginContextExpressionSchema.optional(),
+  after: z.string().min(1).max(64).optional(),
+  extensions: z.array(z.string().min(1).max(32)).max(64).optional(),
   target: z.literal('inspector.sections'),
 });
 export type PluginManagerInspectorSectionContribution = z.infer<typeof pluginManagerInspectorSectionContributionSchema>;

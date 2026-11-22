@@ -65,7 +65,8 @@ import {
 } from "./asset-card-hover-preview";
 import { useAssetCardHoverPreview } from "./use-asset-card-hover-preview";
 import { buildInspectorSummaryMetadata } from "./inspector-progressive-summary";
-import { PluginInspectorSections } from "./plugin-inspector-sections";
+import { PluginInspectorSectionList, pluginInspectorSectionsFor, usePluginInspectorSectionContributions } from "./plugin-inspector-sections";
+import { InspectorSectionList } from "./inspector-section-list";
 import { PluginInspectorViews } from "./plugin-inspector-views";
 import { createPluginMenuContributionContext } from "./plugin-contribution-context";
 import { splitFilenameForDisplay } from "./filename-display";
@@ -1164,6 +1165,17 @@ export const InspectorPanel = memo(function InspectorPanel(props: InspectorPanel
     }
     return selectedAsset ? [selectedAsset.assetId] : [];
   }, [selectedAsset, selectedAssets]);
+  const inspectorSelectedNames = useMemo(
+    () => (selectedAssets.length > 0 ? selectedAssets : selectedAsset ? [selectedAsset] : []).map((asset) => asset.displayName),
+    [selectedAsset, selectedAssets],
+  );
+  const pluginSectionItems = usePluginInspectorSectionContributions(
+    pluginApi,
+    libraryId ?? library?.libraryId,
+    pluginApi !== undefined && (libraryId ?? library?.libraryId) !== undefined && inspectorSelectedAssetIds.length > 0,
+    pluginContributionRefreshKey ?? null,
+    pluginContributionContext,
+  );
 
   return (
     <PaneSurface
@@ -1173,6 +1185,21 @@ export const InspectorPanel = memo(function InspectorPanel(props: InspectorPanel
       {inspectorCardFeelEnabled ? <InspectorCardFeelMotion /> : null}
       {selectedAsset ? (
         <div className="inspector-content">
+          <InspectorSectionList
+            resetKey={selectedAsset.assetId}
+            renderPluginSections={(placement) => (
+              <PluginInspectorSectionList
+                context={pluginContributionContext}
+                items={pluginInspectorSectionsFor(pluginSectionItems, placement, inspectorSelectedNames)}
+                libraryId={libraryId ?? library?.libraryId}
+                pluginApi={pluginApi}
+                selectedAssetIds={inspectorSelectedAssetIds}
+                selectedAssets={selectedAssets.length > 0 ? selectedAssets : [selectedAsset]}
+              />
+            )}
+            entries={[
+              { id: "hero", node: (
+            <>
           <InspectorHero
             api={api}
             asset={selectedAsset}
@@ -1188,6 +1215,10 @@ export const InspectorPanel = memo(function InspectorPanel(props: InspectorPanel
             }
             selectionCount={selectionCount}
           />
+            </>
+              ) },
+              { id: "status", node: (
+            <>
           {!isMultiEdit &&
             selectionCount < 2 &&
             (selectedAsset.deletedAt || isCorruptAsset(selectedAsset)) && (
@@ -1205,7 +1236,10 @@ export const InspectorPanel = memo(function InspectorPanel(props: InspectorPanel
               </span>
             </div>
           )}
-
+            </>
+              ) },
+              { id: "tags", node: (
+            <>
           {/* Tag chips (REQ-TAG-003) */}
           <section className="inspector-section inspector-tags-section">
             <div className="inspector-tags-header">
@@ -1366,26 +1400,18 @@ export const InspectorPanel = memo(function InspectorPanel(props: InspectorPanel
             </div>
           </ContextMenuProvider>
           </section>
-
-          <PluginInspectorSections
-            libraryId={libraryId ?? library?.libraryId}
-            pluginApi={pluginApi}
-            refreshKey={pluginContributionRefreshKey}
-            selectedAssetIds={inspectorSelectedAssetIds}
-            selectedAssets={
-              selectedAssets.length > 0
-                ? selectedAssets
-                : selectedAsset === undefined ? [] : [selectedAsset]
-            }
-            context={pluginContributionContext}
-          />
-
+            </>
+              ), trailing: (
+            <>
           <PluginInspectorViews
             libraryId={libraryId ?? library?.libraryId}
             pluginApi={pluginApi}
             refreshKey={pluginContributionRefreshKey}
           />
-
+            </>
+              ) },
+              { id: "metadata", node: (
+            <>
           {/* --- Asset metadata editor (compact) --- */}
           {displayMetadata || isMultiEdit ? (
             <>
@@ -1708,14 +1734,20 @@ export const InspectorPanel = memo(function InspectorPanel(props: InspectorPanel
           ) : (
             <div className="inspector-metadata-placeholder" aria-hidden="true" />
           )}
-
+            </>
+              ) },
+              { id: "ai-status", node: (
+            <>
           {aiAnalyzing && (
             <div className="inspector-ai-analyzing" role="status">
               <span className="activity-pulse" />
               {t("toast.aiAnalyzeStarted")}
             </div>
           )}
-
+            </>
+              ) },
+              { id: "technical", node: (
+            <>
           {(technicalInfoParts.length > 0
             || embeddedMetadataRows.length > 0
             || rawTechnicalMetadataRows.length > 0
@@ -1775,7 +1807,10 @@ export const InspectorPanel = memo(function InspectorPanel(props: InspectorPanel
               ))}
             </div>
           )}
-
+            </>
+              ) },
+            ]}
+          />
         </div>
       ) : folderInspector && library && libraryId ? (
         <FolderInspectorBody

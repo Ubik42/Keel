@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { INSPECTOR_SECTION_IDS } from '../shared/inspector-sections';
 
 import { isValidPluginAccelerator } from '../shared/plugin-accelerator';
 import { pluginUiDescriptorSchema, type PluginUiDescriptor } from '../shared/plugin-ui-descriptor';
@@ -360,6 +361,10 @@ const contributionInspectorSectionSchema = z.strictObject({
   id: pluginLocalIdSchema,
   command: pluginLocalIdSchema,
   title: z.string().min(1).max(160).optional(),
+  /** Built-in section to follow (default: tags). */
+  after: z.enum(INSPECTOR_SECTION_IDS).optional(),
+  /** Show only when every selected file has one of these extensions (no dot). */
+  extensions: z.array(z.string().min(1).max(32).regex(/^[a-z0-9][a-z0-9_.-]*$/u)).min(1).max(64).optional(),
 });
 const contributionViewerActionSchema = z.strictObject({
   id: pluginLocalIdSchema,

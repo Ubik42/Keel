@@ -24,6 +24,7 @@ test("does not display the metadata concurrency token as a file version", async 
     env: {
       ...process.env,
       KEEL_E2E: "1",
+      KEEL_E2E_SHOW_TEXT: "1",
       KEEL_E2E_CREATE_PARENT_PATH: temporaryRoot,
       KEEL_E2E_IMPORT_FILES: sourcePath,
       KEEL_E2E_OPEN_LIBRARY_PATH: libraryPath,
