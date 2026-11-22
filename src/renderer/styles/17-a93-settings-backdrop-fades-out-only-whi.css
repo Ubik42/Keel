@@ -417,35 +417,6 @@
   opacity: 0.45;
 }
 
-.shortcut-recorder {
-  display: grid;
-  grid-column: 1 / -1;
-  grid-template-columns: minmax(0, 1fr) auto auto;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 10px;
-  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--divider));
-  border-radius: calc(8px * var(--ui-radius-scale, 1));
-  background: color-mix(in srgb, var(--raised) 82%, transparent);
-}
-
-.shortcut-recorder-copy {
-  display: flex;
-  min-width: 0;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 3px 8px;
-  order: 1;
-}
-
-.shortcut-recorder-preview {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  order: 2;
-}
-
 .shortcut-keycap.is-preview {
   min-width: 68px;
   height: 27px;
@@ -463,28 +434,6 @@
   color: var(--tertiary);
   font-family: inherit;
   font-size: calc(10.5px * var(--ui-font-scale));
-}
-
-.shortcut-recorder:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
-  outline-offset: 1px;
-}
-
-.shortcut-recorder-prompt {
-  color: var(--text);
-  font-size: calc(12px * var(--ui-font-scale));
-  font-weight: 560;
-}
-
-.shortcut-recorder-help {
-  color: var(--tertiary);
-  font-size: calc(10.5px * var(--ui-font-scale));
-}
-
-.shortcut-recorder-error {
-  margin: 0;
-  color: var(--danger);
-  font-size: calc(11px * var(--ui-font-scale));
 }
 
 .shortcut-row-feedback {
@@ -511,18 +460,6 @@
   margin: 0;
   color: var(--text);
   font-size: calc(11.5px * var(--ui-font-scale));
-}
-
-.shortcut-conflict-actions,
-.shortcut-recorder-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.shortcut-recorder-actions {
-  justify-content: flex-end;
-  order: 3;
 }
 
 .shortcut-conflict {
@@ -618,20 +555,6 @@
   .shortcut-settings-row {
     grid-template-columns: minmax(0, 1fr) auto auto;
   }
-
-  .shortcut-recorder {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-
-  .shortcut-recorder-preview {
-    grid-column: 1 / -1;
-    justify-content: flex-start;
-  }
-
-  .shortcut-recorder-actions {
-    grid-column: 1 / -1;
-    justify-content: flex-start;
-  }
 }
 
 /* Settings fields and buttons use the shortcut search/filter stroke. */
@@ -664,7 +587,6 @@
 .app-settings-dialog .secondary-button,
 .app-settings-dialog .ui-button:not(.ui-button--primary):not(.ui-button--danger),
 .app-shell[data-shell-layout="islands"] .app-settings-dialog .secondary-button,
-.app-shell[data-shell-layout="islands"] .app-settings-dialog .ghost-button,
 .app-shell[data-shell-layout="islands"] .app-settings-dialog .ui-button:not(.ui-button--primary):not(.ui-button--danger) {
   height: 28px;
   min-height: 28px;
@@ -732,7 +654,6 @@
 .tag-tree-heading { display: flex; align-items: center; padding: 0 5px 8px; }
 .tag-tree-heading strong { font-size: 12px; font-weight: 650; }
 .tag-tree-total { font-size: 11px; opacity: .55; }
-.tag-tree-search { width: 100%; min-width: 0; height: 29px; margin-bottom: 7px; font-size: 12px; }
 .tag-tree-row { position: relative; display: flex; align-items: center; border-radius: calc(6px * var(--ui-radius-scale, 1)); }
 .tag-tree-guide { position: absolute; top: 0; bottom: 0; border-left: 1.5px solid currentColor; opacity: .3; pointer-events: none; }
 .tag-tree-pin { display: grid; place-items: center; flex: 0 0 24px; min-height: 28px; margin-left: 3px; padding: 2px; border: 1px solid transparent; border-radius: calc(5px * var(--ui-radius-scale, 1)); background: transparent; color: inherit; font-size: 11px; cursor: pointer; opacity: .65; }
@@ -765,14 +686,6 @@
 .dimension-filter-more-section > summary { padding: 10px 0; font-weight: 600; cursor: pointer; }
 
 .automatic-tasks-dialog { width: min(780px, calc(100vw - 48px)); max-height: calc(100vh - 64px); overflow: auto; }
-.automatic-task-toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
-.automatic-task-card, .automatic-task-conditions { padding: 14px; margin: 12px 0; border: 1px solid var(--ui-border-subtle); border-radius: calc(10px * var(--ui-radius-scale, 1)); }
-.automatic-task-card > div:first-child { display: flex; justify-content: space-between; gap: 12px; }
-.automatic-task-card p, .automatic-task-conditions p { font-size: 13px; line-height: 1.6; margin: 8px 0; }
-.automatic-task-editor { display: grid; gap: 12px; padding-top: 12px; }
-.automatic-task-editor .field { display: grid; gap: 6px; }
-.automatic-task-tags { display: flex; gap: 10px 16px; flex-wrap: wrap; max-height: 180px; overflow: auto; }
-.automatic-task-tags label { display: flex; align-items: center; gap: 5px; }
 
 .automatic-tasks-sidebar { position: relative; margin: 10px 8px 16px; padding-top: 10px; border-top: 1px solid var(--ui-border-subtle); }
 .automatic-tasks-heading { display:flex;align-items:center;gap:5px;padding:0 5px 8px;font-size:12px; }

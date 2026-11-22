@@ -147,14 +147,12 @@
     0 0 0 10px color-mix(in srgb, var(--accent) 10%, transparent);
 }
 
-.empty-library h1,
-.empty-copy h1 {
+.empty-library h1 {
   font-weight: 650;
   letter-spacing: -0.03em;
 }
 
-.empty-library p,
-.empty-copy > p {
+.empty-library p {
   color: var(--secondary);
 }
 

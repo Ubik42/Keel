@@ -109,15 +109,6 @@
 }
 
 /* ── a90: custom theme editor ─────────────────────────────────────────── */
-.app-settings-custom-theme-header {
-  display: grid;
-  gap: 6px;
-  margin-bottom: var(--ui-space-3);
-}
-
-.app-settings-custom-theme-name {
-  max-width: 320px;
-}
 
 .app-settings-custom-theme-meta {
   color: var(--ui-content-tertiary);

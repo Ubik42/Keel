@@ -52,8 +52,7 @@
   background: color-mix(in srgb, var(--ui-content-primary) 82%, var(--ui-content-inverse));
   color: var(--ui-content-inverse);
 }
-.app-shell[data-shell-layout="islands"] .secondary-button,
-.app-shell[data-shell-layout="islands"] .ghost-button {
+.app-shell[data-shell-layout="islands"] .secondary-button {
   background: transparent;
   color: var(--ui-content-primary);
   border: var(--island-hairline-w) solid var(--island-border);

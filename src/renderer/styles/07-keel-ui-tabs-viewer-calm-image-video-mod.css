@@ -73,8 +73,6 @@
 
 .preview-video-controls,
 .preview-zoom-controls,
-.preview-speed-control,
-.preview-fullscreen-chip,
 .preview-exr-plane-selector,
 .preview-plugin-actions,
 .model-viewer-toolbar,
@@ -99,27 +97,6 @@
   bottom: 16px;
   gap: 8px;
   padding: 6px 12px;
-}
-
-.preview-speed-control {
-  right: 16px;
-  bottom: 56px;
-  gap: 8px;
-  padding: 6px 10px;
-  color: var(--secondary);
-  font-size: calc(11px * var(--ui-font-scale));
-}
-
-.preview-fullscreen-chip {
-  right: 16px;
-  bottom: 16px;
-  padding: 6px 10px;
-  color: var(--secondary);
-}
-
-.preview-fullscreen-chip:hover {
-  background: color-mix(in srgb, var(--raised) 96%, var(--hover));
-  color: var(--text);
 }
 
 .preview-exr-plane-selector {

@@ -18,9 +18,6 @@
   background: color-mix(in srgb, var(--ui-content-primary) 88%, var(--ui-content-inverse));
   color: var(--ui-content-inverse);
 }
-.app-shell[data-shell-layout="islands"] .empty-library .ghost-button,
-.app-shell[data-shell-layout="islands"] .empty-state .ghost-button,
-.app-shell[data-shell-layout="islands"] .dialog-actions .ghost-button,
 .app-shell[data-shell-layout="islands"] .dialog-actions .secondary-button {
   background: transparent;
   color: var(--ui-content-primary);
@@ -101,8 +98,7 @@
 }
 /* Root drop highlight uses the same corner as the islands row (6px), not
    the 8px surface token the base list rule carries. */
-.app-shell[data-shell-layout="islands"] .nav-folder-list.is-root-drop-target,
-.app-shell[data-shell-layout="islands"] .nav-collection-list.is-root-drop-target {
+.app-shell[data-shell-layout="islands"] .nav-folder-list.is-root-drop-target {
   border-radius: calc(6px * var(--ui-radius-scale, 1));
 }
 .app-shell[data-shell-layout="islands"] .nav-tree-row {

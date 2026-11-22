@@ -203,10 +203,8 @@
 /* 2) Create-library: smaller radii — not 999px capsules */
 .app-shell[data-shell-layout="islands"] .create-dialog .primary-button,
 .app-shell[data-shell-layout="islands"] .create-dialog .secondary-button,
-.app-shell[data-shell-layout="islands"] .create-dialog .ghost-button,
 .app-shell[data-shell-layout="islands"] .create-library-dialog .primary-button,
 .app-shell[data-shell-layout="islands"] .create-library-dialog .secondary-button,
-.app-shell[data-shell-layout="islands"] .create-library-dialog .ghost-button,
 .app-shell[data-shell-layout="islands"] .create-dialog .dialog-actions .primary-button,
 .app-shell[data-shell-layout="islands"] .create-dialog .dialog-actions .secondary-button,
 .app-shell[data-shell-layout="islands"] .create-dialog .empty-actions .primary-button,

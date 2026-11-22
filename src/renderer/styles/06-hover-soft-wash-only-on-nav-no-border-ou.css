@@ -223,7 +223,6 @@
 .window-edge-resize-ne { top: 0; right: 0; }
 .window-edge-resize-sw { bottom: 0; left: 0; }
 .window-edge-resize-se { bottom: 0; right: 0; }
-html.keel-window-square.keel-window-maximized .window-edge-resize-layer,
 html.keel-window-square .window-edge-resize-layer.is-disabled {
   display: none;
 }

@@ -101,8 +101,7 @@
 }
 
 /* Rating stars: mute only inactive glyphs; active/hover keep full accent. */
-.app-shell[data-shell-layout="islands"] .inspector-rating .rating-star:not([data-active]):not(:hover) .icon,
-.app-shell[data-shell-layout="islands"] .rating-control .rating-star:not([data-active]):not(:hover) .icon {
+.app-shell[data-shell-layout="islands"] .inspector-rating .rating-star:not([data-active]):not(:hover) .icon {
   color: color-mix(in srgb, var(--ui-content-tertiary) 70%, transparent);
   opacity: 0.85;
 }
@@ -208,7 +207,6 @@
   box-shadow: none;
 }
 .app-shell[data-shell-layout="islands"] .empty-orbit,
-.app-shell[data-shell-layout="islands"] .inspector-empty-frame,
 .app-shell[data-shell-layout="islands"] .inspector-empty > .icon,
 .app-shell[data-shell-layout="islands"] .inspector-empty > svg {
   background: var(--island-surface-soft);

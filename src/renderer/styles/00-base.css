@@ -306,7 +306,6 @@ summary:focus-visible {
 .scope-crumb-button,
 .tiny-action,
 .filter-preset-chip,
-.pane-reveal,
 .dialog-close,
 .filter-tag-options button {
   transition:
@@ -674,48 +673,6 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   background: var(--accent-soft);
   color: var(--accent-soft-fg);
 }
-.discovery-filter-panel {
-  position: absolute;
-  z-index: var(--ui-layer-popover);
-  top: calc(100% + 8px);
-  right: 0;
-  display: grid;
-  width: 380px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  padding: 14px;
-  border: 1px solid var(--divider);
-  /* Keep tall filter sets inside the window: the panel scrolls internally
-     instead of clipping the sort row at the viewport bottom (Wave-3 audit
-     finding F4, evidenced in 09-filter-panel.png). */
-  max-height: calc(100vh - 140px);
-  overflow-y: auto;
-  border-radius: calc(10px * var(--ui-radius-scale, 1));
-  background: var(--raised-2);
-  box-shadow: var(--shadow-panel);
-}
-.discovery-filter-panel label {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: 4px;
-  color: var(--tertiary);
-  font-size: calc(10px * var(--ui-font-scale));
-  letter-spacing: 0.04em;
-}
-.discovery-filter-panel label > span {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  color: var(--tertiary);
-  font-size: calc(10px * var(--ui-font-scale));
-  letter-spacing: 0.01em;
-}
-.discovery-filter-panel .text-field {
-  width: 100%;
-  height: var(--shell-control-height);
-  font-size: calc(11px * var(--ui-font-scale));
-}
 
 /* REQ-FILTER-001: Eagle-style dimension filter bar */
 .dimension-filter-bar {
@@ -1029,7 +986,6 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 .secondary-button,
 .inline-error button,
 .nav-row,
-.pane-reveal,
 .scope-history-button,
 .scope-crumb-button,
 .workspace-include-subfolders,
@@ -2037,34 +1993,6 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   min-width: 4ch;
 }
 
-.dimension-folder-option {
-  display: block;
-  width: 100%;
-  padding: 7px 8px;
-  border: 0;
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
-  background: transparent;
-  color: var(--text);
-  font-size: calc(12px * var(--ui-font-scale));
-  text-align: left;
-  cursor: pointer;
-}
-
-.dimension-folder-option:hover {
-  background: var(--hover);
-}
-
-.dimension-folder-option.is-active {
-  background: var(--accent-soft);
-  color: var(--accent-soft-fg);
-}
-
-.dimension-folder-empty {
-  margin: 0;
-  color: var(--secondary);
-  font-size: calc(12px * var(--ui-font-scale));
-}
-
 .search-control {
   font-size: calc(12px * var(--ui-font-scale));
   line-height: 1.2;
@@ -2144,8 +2072,7 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
    Same accent-tinted language as .nav-row.is-drop-target and the same corner
    radius as the rows (--ui-radius-surface), with an inset ring so the list never
    changes size mid-drag. */
-.nav-folder-list.is-root-drop-target,
-.nav-collection-list.is-root-drop-target {
+.nav-folder-list.is-root-drop-target {
   border-radius: var(--ui-radius-surface);
   background: color-mix(in srgb, var(--accent) 12%, transparent);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 40%, transparent);
@@ -2640,17 +2567,6 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
 }
 
 /* REQ-FILTER-009/010: dimension preset chips beside the custom range inputs. */
-.filter-preset-group + .filter-preset-group {
-  margin-top: 8px;
-}
-
-.filter-preset-group-label {
-  display: block;
-  margin: 2px 0 4px;
-  font-size: calc(11px * var(--ui-font-scale));
-  font-weight: var(--ui-font-weight-medium);
-  color: var(--text-secondary);
-}
 
 /* FILTER-001 / Serpent-yc9n: category checkboxes + aligned chip rows. */
 .format-filter-popover {
@@ -3113,13 +3029,6 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   color: var(--ui-content-primary);
 }
 
-.plugin-job-activity-header {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  min-width: 0;
-}
-
 .plugin-job-activity-title {
   display: flex;
   align-items: center;
@@ -3161,37 +3070,6 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   white-space: nowrap;
 }
 
-.plugin-job-activity-progress-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.plugin-job-activity-progress-summary {
-  flex: 0 0 auto;
-  color: var(--text);
-  font-size: calc(11px * var(--ui-font-scale));
-  font-variant-numeric: tabular-nums;
-  font-weight: 620;
-  line-height: 1;
-}
-
-.plugin-job-activity-track {
-  flex: 1 1 auto;
-  min-width: 0;
-  height: 5px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--text) 10%, transparent);
-}
-
-.plugin-job-activity-fill {
-  height: 100%;
-  border-radius: inherit;
-  background: var(--plugin-job-status-color);
-  transition: width 250ms ease;
-}
-
 .plugin-job-activity-error {
   overflow: hidden;
   color: var(--danger);
@@ -3229,30 +3107,6 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   background: var(--hover);
 }
 
-.plugin-job-activity-dismiss {
-  display: inline-flex;
-  flex: 0 0 auto;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  padding: 0;
-  border: 1px solid transparent;
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
-  background: transparent;
-  color: var(--tertiary);
-  cursor: pointer;
-  font-size: calc(18px * var(--ui-font-scale));
-  line-height: 1;
-}
-
-.plugin-job-activity-dismiss:hover,
-.plugin-job-activity-dismiss:focus-visible {
-  border-color: var(--divider);
-  background: var(--hover);
-  color: var(--text);
-}
-
 @keyframes plugin-job-status-pulse {
   0%,
   100% {
@@ -3281,22 +3135,12 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
     justify-self: stretch;
   }
 
-  .plugin-job-activity-header {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 8px;
-  }
-
   .plugin-job-activity-actions {
     align-self: flex-end;
   }
 
   .plugin-job-activity-title {
     width: 100%;
-  }
-
-  .plugin-job-activity-progress-row {
-    gap: 10px;
   }
 }
 
@@ -3458,14 +3302,6 @@ body.platform-darwin .app-shell.left-collapsed .toolbar-workspace-cluster {
   border-radius: 50%;
   background: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-soft);
-}
-
-.tool-group-utility {
-  display: flex;
-  flex: 0 0 auto;
-  align-items: center;
-  gap: 0;
-  order: 1;
 }
 .workspace-tools::-webkit-scrollbar {
   display: none;
@@ -3714,15 +3550,6 @@ input[type="range"] {
   text-align: center;
 }
 
-.empty-copy {
-  align-self: center;
-  padding: 34px 38px;
-}
-
-.empty-copy .empty-actions {
-  justify-content: center;
-}
-
 .micro-label {
   color: var(--accent);
   font-family: "IBM Plex Mono", monospace;
@@ -3731,7 +3558,6 @@ input[type="range"] {
   letter-spacing: 0.13em;
 }
 
-.empty-copy h1,
 .library-state h1 {
   margin: 9px 0 11px;
   color: var(--text);
@@ -3740,7 +3566,6 @@ input[type="range"] {
   letter-spacing: -0.025em;
 }
 
-.empty-copy > p,
 .state-note {
   max-width: 440px;
   margin: 0;
@@ -3757,16 +3582,6 @@ input[type="range"] {
   margin-top: 25px;
 }
 
-.empty-recent {
-  box-sizing: border-box;
-  width: min(100%, 420px);
-  margin: 28px auto 0;
-  padding-top: 18px;
-  border-top: 1px solid var(--divider);
-  text-align: left;
-}
-
-.empty-recent-label,
 .create-dialog-existing-label {
   margin-bottom: 8px;
   color: var(--secondary);
@@ -3775,7 +3590,6 @@ input[type="range"] {
   letter-spacing: 0.02em;
 }
 
-.empty-recent-list,
 .create-dialog-recent-list {
   display: flex;
   flex-direction: column;
@@ -3788,7 +3602,6 @@ input[type="range"] {
   overflow-y: auto;
 }
 
-.empty-recent-row,
 .create-dialog-recent-row {
   display: flex;
   align-items: stretch;
@@ -3797,7 +3610,6 @@ input[type="range"] {
 
 /* Serpent-kipk: recent rows are plain list items — no card chrome. The
    Serpent-kqgy follow-up puts the forget x INSIDE the full-width row button. */
-.empty-recent-open,
 .create-dialog-recent-open {
   display: flex;
   width: 100%;
@@ -3838,19 +3650,15 @@ input[type="range"] {
   color: var(--text);
 }
 
-.empty-recent-open:hover:not(:disabled),
 .create-dialog-recent-open:hover:not(:disabled) {
   background: var(--hover);
 }
 
-.empty-recent-open:disabled,
-.create-dialog-recent-open:disabled,
-.empty-recent-forget:disabled {
+.create-dialog-recent-open:disabled {
   cursor: not-allowed;
   opacity: 0.55;
 }
 
-.empty-recent-name,
 .create-dialog-recent-name {
   overflow: hidden;
   max-width: 100%;
@@ -3860,7 +3668,6 @@ input[type="range"] {
   white-space: nowrap;
 }
 
-.empty-recent-path,
 .create-dialog-recent-path {
   overflow: hidden;
   max-width: 100%;
@@ -3869,24 +3676,6 @@ input[type="range"] {
   font-size: calc(10px * var(--ui-font-scale));
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.empty-recent-forget {
-  display: inline-flex;
-  flex: 0 0 auto;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  border: 1px solid transparent;
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
-  background: transparent;
-  color: var(--secondary);
-  cursor: pointer;
-}
-
-.empty-recent-forget:hover:not(:disabled) {
-  background: var(--canvas);
-  color: var(--text);
 }
 
 .create-dialog-existing {
@@ -3976,55 +3765,6 @@ input[type="range"] {
   cursor: pointer;
 }
 
-.loading-state {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  gap: 17px;
-  color: var(--text);
-}
-
-.loading-state strong {
-  font-size: calc(13px * var(--ui-font-scale));
-  font-weight: 560;
-}
-
-.loading-state p {
-  margin: 3px 0 0;
-  color: var(--tertiary);
-  font-size: calc(11px * var(--ui-font-scale));
-}
-
-.loading-mark {
-  display: flex;
-  width: 42px;
-  height: 42px;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 3px;
-  padding: 10px;
-  border: 1px solid var(--divider);
-  border-radius: calc(4px * var(--ui-radius-scale, 1));
-  background: var(--pane);
-}
-
-.loading-mark span {
-  width: 3px;
-  height: 8px;
-  background: var(--accent);
-  animation: loading-bars 900ms ease-in-out infinite;
-}
-
-.loading-mark span:nth-child(2) {
-  height: 16px;
-  animation-delay: 120ms;
-}
-.loading-mark span:nth-child(3) {
-  height: 11px;
-  animation-delay: 240ms;
-}
-
 @keyframes loading-bars {
   50% {
     opacity: 0.35;
@@ -4054,20 +3794,8 @@ input[type="range"] {
   font-size: calc(18px * var(--ui-font-scale));
 }
 
-.path-text,
-.path-block,
 .mono {
   font-family: "IBM Plex Mono", monospace;
-}
-
-.path-text {
-  overflow: hidden;
-  max-width: 450px;
-  margin: 0 0 17px;
-  color: var(--tertiary);
-  font-size: calc(10px * var(--ui-font-scale));
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .library-actions {
@@ -4147,42 +3875,12 @@ input[type="range"] {
   color: var(--text);
 }
 
-.inspector-raw-metadata {
-  min-width: 0;
-}
-
 .inspector-section {
   margin-top: 16px;
 }
 
 .inspector-metadata-placeholder {
   min-height: 280px;
-}
-
-.path-block {
-  overflow-wrap: anywhere;
-  margin: 0;
-  padding: 9px;
-  border: 1px solid var(--divider-soft);
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
-  background: var(--pane);
-  color: var(--secondary);
-  font-size: calc(10px * var(--ui-font-scale));
-  line-height: 1.55;
-}
-
-.compact-id {
-  display: block !important;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.inspector-hint p {
-  margin: 0;
-  color: var(--tertiary);
-  font-size: calc(11px * var(--ui-font-scale));
-  line-height: 1.6;
 }
 
 .inspector-empty {
@@ -4196,17 +3894,6 @@ input[type="range"] {
   text-align: center;
 }
 
-.inspector-empty-frame {
-  display: grid;
-  width: 52px;
-  height: 62px;
-  margin-bottom: 14px;
-  place-items: center;
-  border: 1px dashed var(--divider);
-  border-radius: calc(4px * var(--ui-radius-scale, 1));
-  color: var(--tertiary);
-}
-
 .inspector-empty strong {
   font-size: calc(12px * var(--ui-font-scale));
   font-weight: 560;
@@ -4217,29 +3904,6 @@ input[type="range"] {
   margin: 7px 0 0;
   font-size: calc(11px * var(--ui-font-scale));
   line-height: 1.6;
-}
-
-.pane-reveal {
-  position: fixed;
-  z-index: var(--ui-layer-shell);
-  bottom: 10px;
-  display: grid;
-  width: var(--shell-control-height);
-  height: var(--shell-control-height);
-  padding: 0;
-  place-items: center;
-  border: 1px solid var(--divider);
-  border-radius: calc(6px * var(--ui-radius-scale, 1));
-  background: var(--raised);
-  color: var(--secondary);
-  cursor: pointer;
-}
-
-.pane-reveal-left {
-  left: 10px;
-}
-.pane-reveal-right {
-  right: 10px;
 }
 
 .dialog-backdrop {
