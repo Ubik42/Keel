@@ -1,4 +1,5 @@
 // @vitest-environment happy-dom
+import { selectionFields } from '../../src/renderer/stores/selection-store';
 import { act, createElement, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { expect, it, vi } from 'vitest';
@@ -13,6 +14,7 @@ it('writes a mixed author to the whole selection only after user input', async (
   const root = createRoot(host);
   const save = vi.fn(async () => {});
   let handlers: ReturnType<typeof useInspectorFieldHandlers>;
+  selectionFields.setterFor('selectedAssetId')('one');
   function Harness() {
     const [editAuthor, setEditAuthor] = useState('');
     handlers = useInspectorFieldHandlers({
@@ -50,10 +52,9 @@ it('persists the new author to both real multi-edit cache entries and clears bot
     const [editAuthor, setEditAuthor] = useState('');
     const metadataByAssetRef = useRef(cache);
     const metadataConflictAssetIdsRef = useRef(new Set<string>());
-    const selectedAssetIdRef = useRef<string | undefined>('one');
     const multi = useInspectorMultiEdit({
       api, library: { libraryId: 'library', displayPath: 'fixture', displayName: 'Fixture' },
-      selectedAssetIds: ['one', 'two'], selectedAssetIdRef, metadataByAssetRef,
+      selectedAssetIds: ['one', 'two'], metadataByAssetRef,
       metadataConflictAssetIdsRef, setEditAuthor, setEditDescription: vi.fn(), setEditRating: vi.fn(),
       setEditFavorite: vi.fn(), setEditSourceUrl: vi.fn(), setAssetMetadata: vi.fn(),
       setAssets: vi.fn(), setTrashedAssets: vi.fn(), setNotice: vi.fn(), setError: vi.fn(),

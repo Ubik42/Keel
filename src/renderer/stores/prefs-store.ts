@@ -40,7 +40,7 @@ function resolve<T>(action: SetStateAction<T>, previous: T): T {
   return typeof action === 'function' ? (action as (value: T) => T)(previous) : action;
 }
 
-export const usePrefsStore = create<PrefsState>()((set, get) => {
+const createPrefsStore = () => create<PrefsState>()((set, get) => {
   function updater<K extends 'canvas' | 'aiUi' | 'imageSequence' | 'viewerChrome'>(
     key: K,
     save: (value: PrefsState[K]) => void,
@@ -74,3 +74,12 @@ export const usePrefsStore = create<PrefsState>()((set, get) => {
     },
   };
 });
+
+// Created on first use, for the same reason as createFieldStore.
+let prefsStore: ReturnType<typeof createPrefsStore> | undefined;
+export function getPrefsStore(): ReturnType<typeof createPrefsStore> {
+  return (prefsStore ??= createPrefsStore());
+}
+export function usePrefsStore<T>(selector: (state: PrefsState) => T): T {
+  return getPrefsStore()(selector);
+}

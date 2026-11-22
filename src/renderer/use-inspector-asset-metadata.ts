@@ -5,6 +5,8 @@
  * Multi-select editing stays in useInspectorMultiEdit; both share the App-owned
  * metadata cache / conflict set refs.
  */
+import { selectionFields } from './stores/selection-store';
+import { inspectorFields } from './stores/inspector-store';
 
 import {
   useCallback,
@@ -35,8 +37,6 @@ export type UseInspectorAssetMetadataParams = {
   api: KeelLibraryApi | null;
   library: RendererLibrarySummary | null;
   selectedAssetId: string | undefined;
-  selectedAssetIdRef: MutableRefObject<string | undefined>;
-  selectedAssetIdsRef: MutableRefObject<readonly string[]>;
   metadataByAssetRef: MutableRefObject<Map<string, AssetMetadataResult>>;
   metadataConflictAssetIdsRef: MutableRefObject<Set<string>>;
   assetMetadata: AssetMetadataResult | null;
@@ -48,7 +48,6 @@ export type UseInspectorAssetMetadataParams = {
   setEditSourceUrl: Dispatch<SetStateAction<string>>;
   setEditAuthor: Dispatch<SetStateAction<string>>;
   setDescriptionIsAi: Dispatch<SetStateAction<boolean>>;
-  aiContentRef: MutableRefObject<InspectorAiContent | null>;
   setAiContent: Dispatch<SetStateAction<InspectorAiContent | null>>;
   setAssets: Dispatch<SetStateAction<AssetSummary[]>>;
   setTrashedAssets: Dispatch<SetStateAction<AssetSummary[]>>;
@@ -83,8 +82,6 @@ export function useInspectorAssetMetadata({
   api,
   library,
   selectedAssetId,
-  selectedAssetIdRef,
-  selectedAssetIdsRef,
   metadataByAssetRef,
   metadataConflictAssetIdsRef,
   assetMetadata,
@@ -96,7 +93,6 @@ export function useInspectorAssetMetadata({
   setEditSourceUrl,
   setEditAuthor,
   setDescriptionIsAi,
-  aiContentRef,
   setAiContent,
   setAssets,
   setTrashedAssets,
@@ -112,13 +108,13 @@ export function useInspectorAssetMetadata({
     (targetAssetId: string, metadata: AssetMetadataResult) => {
       metadataByAssetRef.current.set(targetAssetId, metadata);
       metadataConflictAssetIdsRef.current.delete(targetAssetId);
-      if (selectedAssetIdRef.current !== targetAssetId) return;
+      if (selectionFields.get("selectedAssetId") !== targetAssetId) return;
       setAssetMetadata(metadata);
       // Multi-select edit fields are owned by the multi-edit effect (REQ-SELECT-004).
-      if (selectedAssetIdsRef.current.length >= 2) return;
+      if (selectionFields.get("selectedAssetIds").length >= 2) return;
       const ai =
-        aiContentRef.current?.assetId === targetAssetId
-          ? aiContentRef.current
+        inspectorFields.get("aiContent")?.assetId === targetAssetId
+          ? inspectorFields.get("aiContent")
           : null;
       const description = resolveInspectorDescription(
         metadata.description,
@@ -132,11 +128,8 @@ export function useInspectorAssetMetadata({
       setEditAuthor(metadata.author ?? "");
     },
     [
-      aiContentRef,
       metadataByAssetRef,
       metadataConflictAssetIdsRef,
-      selectedAssetIdRef,
-      selectedAssetIdsRef,
       setAssetMetadata,
       setDescriptionIsAi,
       setEditAuthor,
@@ -183,7 +176,7 @@ export function useInspectorAssetMetadata({
           libraryId: library.libraryId,
           assetId,
         });
-        if (selectedAssetIdRef.current !== assetId) return;
+        if (selectionFields.get("selectedAssetId") !== assetId) return;
         if (!result.ok) {
           setAiContent(null);
           return;
@@ -195,7 +188,7 @@ export function useInspectorAssetMetadata({
           rating != null;
         if (!hasContent) {
           setAiContent(null);
-          if (selectedAssetIdsRef.current.length < 2) {
+          if (selectionFields.get("selectedAssetIds").length < 2) {
             const human =
               metadataByAssetRef.current.get(assetId)?.description ?? "";
             const resolved = resolveInspectorDescription(human, undefined);
@@ -212,7 +205,7 @@ export function useInspectorAssetMetadata({
           ...(modelVersion ? { modelVersion } : {}),
         };
         setAiContent(next);
-        if (selectedAssetIdsRef.current.length < 2) {
+        if (selectionFields.get("selectedAssetIds").length < 2) {
           const human =
             metadataByAssetRef.current.get(assetId)?.description ?? "";
           const resolved = resolveInspectorDescription(
@@ -223,15 +216,13 @@ export function useInspectorAssetMetadata({
           setDescriptionIsAi(resolved.fromAi);
         }
       } catch {
-        if (selectedAssetIdRef.current === assetId) setAiContent(null);
+        if (selectionFields.get("selectedAssetId") === assetId) setAiContent(null);
       }
     },
     [
       api,
       library,
       metadataByAssetRef,
-      selectedAssetIdRef,
-      selectedAssetIdsRef,
       setAiContent,
       setDescriptionIsAi,
       setEditDescription,
@@ -323,7 +314,7 @@ export function useInspectorAssetMetadata({
           if (!result.ok) {
             if (result.error.code === "VERSION_CONFLICT") {
               metadataConflictAssetIdsRef.current.add(targetAssetId);
-              if (selectedAssetIdRef.current === targetAssetId) {
+              if (selectionFields.get("selectedAssetId") === targetAssetId) {
                 setVersionConflict(true);
               }
               setNotice(t("toast.metadataVersionConflict"));
@@ -349,7 +340,7 @@ export function useInspectorAssetMetadata({
             fields,
             result.value,
           );
-          if (selectedAssetIdRef.current === targetAssetId) {
+          if (selectionFields.get("selectedAssetId") === targetAssetId) {
             setAssetMetadata(result.value);
           }
           setNotice(t("toast.metadataSaved"), result.value.historyEntryId);
@@ -368,7 +359,6 @@ export function useInspectorAssetMetadata({
       metadataByAssetRef,
       metadataConflictAssetIdsRef,
       selectedAssetId,
-      selectedAssetIdRef,
       setAssetMetadata,
       setAssets,
       setError,

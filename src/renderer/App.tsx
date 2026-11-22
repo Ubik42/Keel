@@ -317,14 +317,14 @@ import { useDialogField } from "./stores/dialogs-store";
 import { useAiField } from "./stores/ai-store";
 import { useEmbeddingField } from "./stores/embedding-store";
 import { useJobsField } from "./stores/jobs-store";
-import { useTransfersField } from "./stores/transfers-store";
+import { transfersFields, useTransfersField } from "./stores/transfers-store";
 import { usePreviewField } from "./stores/preview-store";
 import { useInspectorField } from "./stores/inspector-store";
-import { useSelectionField } from "./stores/selection-store";
-import { useBrowseField } from "./stores/browse-store";
+import { selectionFields, useSelectionField } from "./stores/selection-store";
+import { browseFields, useBrowseField } from "./stores/browse-store";
 import { useQueryField } from "./stores/query-store";
 import { useNavigationField, type AssetScope } from "./stores/navigation-store";
-import { useSessionField } from "./stores/session-store";
+import { sessionFields, useSessionField } from "./stores/session-store";
 import {
   imageSequenceImportFlags,
 } from "./image-sequence-preferences";
@@ -503,7 +503,7 @@ import {
   assetsRemainingAfterMembership,
   type BrowseMembershipChange,
 } from "./browse-filter-membership";
-import type { FolderNavigationCover, LibraryNavigationSummary } from "../shared/library-navigation";
+import type { LibraryNavigationSummary } from "../shared/library-navigation";
 import { LIBRARY_ROOT_FOLDER_ID, isLibraryRootFolderId } from "../shared/library-root-folder";
 import { DEFAULT_COLOR_SIMILARITY } from "../shared/color-filter-presets";
 import {
@@ -858,8 +858,6 @@ function AppInner() {
   // Library / folder / assets (existing)
   const [library, setLibrary] = useSessionField("library");
   const nativeDragReadyIds = useNativeDragReadyIds(rawLibraryApi, library?.libraryId);
-  const libraryRef = useRef<RendererLibrarySummary | null>(null);
-  libraryRef.current = library;
   const [recentLibraries, setRecentLibraries] = useSessionField("recentLibraries");
   const [folders, setFolders] = useNavigationField("folders");
   const [linkedFolders, setLinkedFolders] = useNavigationField("linkedFolders");
@@ -872,13 +870,9 @@ function AppInner() {
   const [assets, setAssets] = useBrowseField("assets");
   const [findSimilarSource, setFindSimilarSource] = useNavigationField("findSimilarSource");
   const findSimilarTokenRef = useRef(0);
-  const assetsRef = useRef<AssetSummary[]>([]);
   const syncBrowseFilterMembershipRef = useRef<
     (change: BrowseMembershipChange) => void
   >(() => undefined);
-  useEffect(() => {
-    assetsRef.current = assets;
-  }, [assets]);
   const [browseLayout, setBrowseLayout] = useBrowseField("browseLayout");
   const [virtualBrowseLayout, setVirtualBrowseLayout] = useBrowseField("virtualBrowseLayout");
   const [layoutThumbnailArtifacts, setLayoutThumbnailArtifacts] = useBrowseField("layoutThumbnailArtifacts");
@@ -888,7 +882,6 @@ function AppInner() {
   const [folderBrowseEntries, setFolderBrowseEntries] = useBrowseField("folderBrowseEntries");
   const [folderNavigationCovers, setFolderNavigationCovers] = useBrowseField("folderNavigationCovers");
   const [folderCustomCoverIds, setFolderCustomCoverIds] = useBrowseField("folderCustomCoverIds");
-  const folderNavigationCoversRef = useRef<readonly FolderNavigationCover[]>([]);
   const [folderCoverPicker, setFolderCoverPicker] = useState<{
     folderIds: string[];
     assetId: string;
@@ -1421,7 +1414,7 @@ function AppInner() {
       // awaits. Never let that callback reactivate its old identity after a
       // newer library has been published; only bootstrap an identity while
       // the renderer has no library ref yet.
-      if (libraryRef.current !== null) return null;
+      if (sessionFields.get("library") !== null) return null;
       const next = activateLibraryView(libraryId);
       return {
         libraryId,
@@ -1467,10 +1460,6 @@ function AppInner() {
   const [assetMetadata, setAssetMetadata] = useInspectorField("assetMetadata");
   const [extractedMetadataRefreshKey, setExtractedMetadataRefreshKey] = useInspectorField("extractedMetadataRefreshKey");
   const [versionConflict, setVersionConflict] = useInspectorField("versionConflict");
-  const selectedAssetIdRef = useRef(selectedAssetId);
-  useEffect(() => {
-    selectedAssetIdRef.current = selectedAssetId;
-  }, [selectedAssetId]);
   const metadataByAssetRef = useRef(new Map<string, AssetMetadataResult>());
   const metadataConflictAssetIdsRef = useRef(new Set<string>());
   // Pending edit values
@@ -1480,10 +1469,6 @@ function AppInner() {
   const [editSourceUrl, setEditSourceUrl] = useInspectorField("editSourceUrl");
   const [editAuthor, setEditAuthor] = useInspectorField("editAuthor");
   // REQ-SELECT-004: UE-style multi-select Inspector model (null when <2 selected).
-  const selectedAssetIdsRef = useRef(selectedAssetIds);
-  useEffect(() => {
-    selectedAssetIdsRef.current = selectedAssetIds;
-  }, [selectedAssetIds]);
 
   // Trash / Delete / Relink state
   const [showTrash, setShowTrash] = useNavigationField("showTrash");
@@ -1545,7 +1530,6 @@ function AppInner() {
     api: api ?? null,
     library,
     selectedAssetIds,
-    selectedAssetIdRef,
     metadataByAssetRef,
     metadataConflictAssetIdsRef,
     setEditDescription,
@@ -1618,12 +1602,8 @@ function AppInner() {
 
   // Export / Import state
   const [exportProgress, setExportProgress] = useTransfersField("exportProgress");
-  const exportProgressRef = useRef(exportProgress);
-  exportProgressRef.current = exportProgress;
   const exportStartedAtRef = useRef<number | null>(null);
   const [importProgress, setImportProgress] = useTransfersField("importProgress");
-  const importProgressRef = useRef(importProgress);
-  importProgressRef.current = importProgress;
   const importRpcDepthRef = useRef(0);
   const importOverlayDismissedRef = useRef(false);
   const activeImportIdRef = useRef<string | null>(null);
@@ -1640,7 +1620,7 @@ function AppInner() {
     if (importRpcDepthRef.current === 0) {
       addRetiredImportId(
         retiredImportIdsRef.current,
-        importProgressRef.current?.importId ?? activeImportIdRef.current,
+        transfersFields.get("importProgress")?.importId ?? activeImportIdRef.current,
       );
       activeImportIdRef.current = null;
       setImportProgress(null);
@@ -1657,7 +1637,7 @@ function AppInner() {
     [beginImportRpc, endImportRpc],
   );
   const dismissImportOverlay = useCallback(() => {
-    const importId = importProgressRef.current?.importId;
+    const importId = transfersFields.get("importProgress")?.importId;
     addRetiredImportId(retiredImportIdsRef.current, importId);
     importOverlayDismissedRef.current = true;
     setImportOverlayDismissed(true);
@@ -1705,8 +1685,6 @@ function AppInner() {
   const [gitignoreContent, setGitignoreContent] = useState("");
   /** 同步传输进度（手动/自动），供资源库设置同步页显示进度条与速度。 */
   const [syncProgress, setSyncProgress] = useTransfersField("syncProgress");
-  const syncProgressRef = useRef(syncProgress);
-  syncProgressRef.current = syncProgress;
   /** 当前库的同步绑定状态（库切换器 link/link-off 图标）。 */
   const [syncBindingStatus, setSyncBindingStatus] = useTransfersField("syncBindingStatus");
   /** 本次同步是否发生过实际传输（完成音、Inspector 重拉仍用；不再弹 toast）。 */
@@ -1909,16 +1887,16 @@ function AppInner() {
   async function confirmLibrarySwitch(keepDestinationChoice = false): Promise<boolean> {
     const activity = activeLibrarySwitchActivity({
       uiState: uiStateRef.current,
-      importProgress: importProgressRef.current,
-      exportProgress: exportProgressRef.current,
-      syncProgress: syncProgressRef.current,
+      importProgress: transfersFields.get("importProgress"),
+      exportProgress: transfersFields.get("exportProgress"),
+      syncProgress: transfersFields.get("syncProgress"),
       writeOperationInFlight: libraryWriteInFlightRef.current,
     });
-    const sourceLibraryId = libraryRef.current?.libraryId;
+    const sourceLibraryId = sessionFields.get("library")?.libraryId;
     const confirmed = activity === null || await requestConfirmation(
       t("shell.librarySwitchWarning"), false, { scopeBound: !keepDestinationChoice },
     );
-    return confirmed && (keepDestinationChoice || libraryRef.current?.libraryId === sourceLibraryId);
+    return confirmed && (keepDestinationChoice || sessionFields.get("library")?.libraryId === sourceLibraryId);
   }
 
   function openLibraryChooserFromError(): void {
@@ -2063,8 +2041,6 @@ function AppInner() {
   const aiAnalyzingRef = useRef(false);
   const [aiProgressBannerVisible, setAiProgressBannerVisible] = useAiField("aiProgressBannerVisible");
   const [aiContent, setAiContent] = useInspectorField("aiContent");
-  const aiContentRef = useRef(aiContent);
-  aiContentRef.current = aiContent;
   /** Description editor is showing AI-layer text (human description empty). */
   const [descriptionIsAi, setDescriptionIsAi] = useInspectorField("descriptionIsAi");
 
@@ -2077,8 +2053,6 @@ function AppInner() {
     api: api ?? null,
     library,
     selectedAssetId,
-    selectedAssetIdRef,
-    selectedAssetIdsRef,
     metadataByAssetRef,
     metadataConflictAssetIdsRef,
     assetMetadata,
@@ -2090,7 +2064,6 @@ function AppInner() {
     setEditSourceUrl,
     setEditAuthor,
     setDescriptionIsAi,
-    aiContentRef,
     setAiContent,
     setAssets,
     setTrashedAssets,
@@ -2535,7 +2508,6 @@ function AppInner() {
   const [pluginUiDialogOpen, setPluginUiDialogOpen] = useDialogField("pluginUiDialogOpen");
   const [thumbnailFailures, setThumbnailFailures] = useBrowseField("thumbnailFailures");
   const [mediaJobsOpen, setMediaJobsOpen] = useDialogField("mediaJobsOpen");
-  const mediaJobsOpenRef = useRef(false);
   const loadMediaJobsRef = useRef<(quiet?: boolean) => Promise<void>>(async () => undefined);
   const [mediaJobs, setMediaJobs] = useJobsField("mediaJobs");
   const [aiJobs, setAiJobs] = useJobsField("aiJobs");
@@ -2911,10 +2883,10 @@ function AppInner() {
         intersectingIds,
         focusedIds: [
           previewAssetRef.current?.assetId,
-          selectedAssetIdRef.current,
+          selectionFields.get("selectedAssetId"),
         ],
         orderedIds,
-        loadedIds: assetsRef.current.map((asset) => asset.assetId),
+        loadedIds: browseFields.get("assets").map((asset) => asset.assetId),
         scrollTop: canvas.scrollTop,
         previousScrollTop: viewportScrollTopRef.current,
         viewportHeight: canvas.clientHeight,
@@ -3660,9 +3632,6 @@ function AppInner() {
   // Serpent-d0nv: keep the cover-candidate asset set (from the last browse
   // entries response) visible to the thumbnail event subscriber so a ready
   // cover refreshes the folder-card row without a full reload.
-  useEffect(() => {
-    folderNavigationCoversRef.current = folderNavigationCovers;
-  }, [folderNavigationCovers]);
 
   useEffect(() => {
     folderCoverCandidateAssetIdsRef.current = collectFolderCoverCandidateAssetIds(
@@ -4434,7 +4403,6 @@ function AppInner() {
         setTags(summary.tags);
         setTrashedFolders(summary.trashedFolders);
         const covers = summary.folderCovers ?? [];
-        folderNavigationCoversRef.current = covers;
         setFolderNavigationCovers(covers);
         setFolderCustomCoverIds(new Set(covers.map((cover) => cover.folderId)));
       };
@@ -4758,7 +4726,8 @@ function AppInner() {
         workerRecoveryStateRef.current = 'ready';
         setWorkerRecoveryState('ready');
         if (event.failedLibraryIds.length > 0) setError(t('toast.workerRestoreFailed'));
-        if (libraryRef.current && event.libraryIds.includes(libraryRef.current.libraryId)) {
+        const currentLibrary = sessionFields.get("library");
+        if (currentLibrary && event.libraryIds.includes(currentLibrary.libraryId)) {
           void reloadCurrentContentRef.current().catch((caught) => {
             setError(toMessage(caught, t('toast.readAssetsFailed'), locale));
           });
@@ -4828,19 +4797,19 @@ function AppInner() {
           return;
         }
         const applyLibraryClosed = async () => {
-          if (libraryRef.current?.libraryId !== closedLibraryId) return;
+          if (sessionFields.get("library")?.libraryId !== closedLibraryId) return;
           setUiState("closing");
           try {
             await closeAssetPreview(false);
-            if (libraryRef.current?.libraryId !== closedLibraryId) return;
+            if (sessionFields.get("library")?.libraryId !== closedLibraryId) return;
             applyClosedLibraryUi();
             await refreshRecentLibraries(null);
           } catch (caught) {
-            if (libraryRef.current?.libraryId === closedLibraryId) {
+            if (sessionFields.get("library")?.libraryId === closedLibraryId) {
               setError(toMessage(caught, t("toast.closeFailed"), locale));
             }
           } finally {
-            if (libraryRef.current === null) setUiState("idle");
+            if (sessionFields.get("library") === null) setUiState("idle");
           }
         };
         // Main can close the active library on behalf of MCP. Keep the same
@@ -4853,14 +4822,14 @@ function AppInner() {
       const applyLibraryOpened = async () => {
         if (!shouldApplyLibraryLifecycleEvent({
           event,
-          currentLibraryId: libraryRef.current?.libraryId,
+          currentLibraryId: sessionFields.get("library")?.libraryId,
           scriptSandboxPreviewOpen,
         })) return;
         try {
           beginLibraryTransition();
           await closeAssetPreview(false);
           clearLibraryScopedView();
-          libraryRef.current = event.library;
+          setLibrary(event.library);
           activateLibraryView(event.library.libraryId);
           setLibrary(event.library);
           api.setActiveContext(event.library.libraryId);
@@ -4959,7 +4928,7 @@ function AppInner() {
             mediaType: AssetSummary["mediaType"];
           }> = [];
           for (const [assetId, size] of geometryPatches) {
-            const current = assetsRef.current.find((asset) => asset.assetId === assetId);
+            const current = browseFields.get("assets").find((asset) => asset.assetId === assetId);
             if (!current) continue;
             measured.push({
               assetId,
@@ -5025,9 +4994,9 @@ function AppInner() {
       });
     };
     const thumbnailSubscriptions = () => ({
-      loadedAssetIds: new Set(assetsRef.current.map((asset) => asset.assetId)),
+      loadedAssetIds: new Set(browseFields.get("assets").map((asset) => asset.assetId)),
       visibleAssetIds: visibleWindowAssetIdsRef.current,
-      selectedAssetId: selectedAssetIdRef.current ?? null,
+      selectedAssetId: selectionFields.get("selectedAssetId") ?? null,
       viewerAssetId: previewAssetRef.current?.assetId ?? null,
       folderCoverAssetIds: folderCoverCandidateAssetIdsRef.current,
     });
@@ -5036,7 +5005,7 @@ function AppInner() {
       const subscriptions = thumbnailSubscriptions();
       if (event.type === "asset.dimensions.ready") {
         if (!shouldProjectThumbnailCompletion(event.assetId, subscriptions)) return;
-        const currentAsset = assetsRef.current.find(
+        const currentAsset = browseFields.get("assets").find(
           (asset) => asset.assetId === event.assetId,
         );
         if (
@@ -5067,7 +5036,7 @@ function AppInner() {
         // here would turn one palette into a library-wide render storm.
         if (
           (event.kind === "extract_metadata" || event.kind === "extract_palette") &&
-          selectedAssetIdRef.current === event.assetId &&
+          selectionFields.get("selectedAssetId") === event.assetId &&
           library &&
           isEffectLibraryCurrent()
         ) {
@@ -5083,7 +5052,7 @@ function AppInner() {
             .then((result) => {
               if (
                 result.ok &&
-                selectedAssetIdRef.current === event.assetId &&
+                selectionFields.get("selectedAssetId") === event.assetId &&
                 isEffectLibraryCurrent()
               ) {
                 applyLoadedMetadata(event.assetId, result.value);
@@ -5137,12 +5106,11 @@ function AppInner() {
             scheduleFolderBrowseRefresh();
             if (effectLibraryId && cardEvent.artifactId) {
               const patched = patchFolderNavigationCoverArtifact(
-                folderNavigationCoversRef.current,
+                browseFields.get("folderNavigationCovers"),
                 cardEvent.assetId,
                 cardEvent.artifactId,
               );
               if (patched.changed) {
-                folderNavigationCoversRef.current = patched.covers;
                 setFolderNavigationCovers(patched.covers);
               }
             }
@@ -5216,7 +5184,7 @@ function AppInner() {
       jobStatusCoordinatorRef.current?.noteActivity("ai");
       // Refresh only — completion toast is owned by queue-drain (Serpent-4i18).
       void reloadCurrentContentRef.current();
-      if (selectedAssetIdRef.current === event.assetId) {
+      if (selectionFields.get("selectedAssetId") === event.assetId) {
         // Serpent-c9r3: refreshAfterAi refreshes the primary's metadata and
         // (for multi-selections) every selected asset's metadata, then
         // rebuilds the batch-edit Inspector model — without the rebuild the
@@ -5240,15 +5208,15 @@ function AppInner() {
       // tags + AI content so the Inspector drops the stale AI description /
       // badge / tags / rating immediately instead of waiting for a reselect.
       const affected = new Set(event.affectedAssetIds);
-      const selectedIds = selectedAssetIdsRef.current;
-      const primary = selectedAssetIdRef.current;
+      const selectedIds = selectionFields.get("selectedAssetIds");
+      const primary = selectionFields.get("selectedAssetId");
       const selectedAffected =
         (primary != null && affected.has(primary)) ||
         selectedIds.some((id) => affected.has(id));
       if (selectedAffected && primary) {
         void refreshAfterAiRef.current(primary).then(() => {
-          if (selectedAssetIdsRef.current.length >= 2) {
-            rebuildAndApplyMultiEditRef.current([...selectedAssetIdsRef.current]);
+          if (selectionFields.get("selectedAssetIds").length >= 2) {
+            rebuildAndApplyMultiEditRef.current([...selectionFields.get("selectedAssetIds")]);
           }
         });
       }
@@ -6031,12 +5999,10 @@ function AppInner() {
     }
   }
 
-  const recentLibrariesRef = useRef(recentLibraries);
-  recentLibrariesRef.current = recentLibraries;
   const openRecentLibrary = useCallback(
     async (libraryPath: string) => {
       if (!api) return;
-      const recent = recentLibrariesRef.current.find(
+      const recent = sessionFields.get("recentLibraries").find(
         (entry) => entry.path === libraryPath,
       );
       await runLibraryOpenPipeline(
@@ -6081,7 +6047,7 @@ function AppInner() {
       setUiState(busyState);
       setLibraryLoading({ name: loadingName ?? null });
       beginLibraryTransition();
-      const previousLibraryId = libraryRef.current?.libraryId;
+      const previousLibraryId = sessionFields.get("library")?.libraryId;
       const libraryApi = api;
       let opened = false;
       try {
@@ -6101,7 +6067,7 @@ function AppInner() {
         await closeAssetPreview(false);
         opened = true;
         clearLibraryScopedView();
-        libraryRef.current = result.value;
+        setLibrary(result.value);
         activateLibraryView(result.value.libraryId);
         setLibrary(result.value);
         api?.setActiveContext(result.value.libraryId);
@@ -7452,7 +7418,7 @@ function AppInner() {
       assetIds: string[],
       options?: { removedCount?: number; libraryId?: string },
     ): (() => void) => {
-      const operationLibraryId = options?.libraryId ?? libraryRef.current?.libraryId;
+      const operationLibraryId = options?.libraryId ?? sessionFields.get("library")?.libraryId;
       const removalGeneration = ++localAssetRemovalGenerationRef.current;
       let restored = false;
       const previousAssets = assets;
@@ -7475,7 +7441,7 @@ function AppInner() {
         deferredReconcileTimerRef.current = undefined;
         if (
           operationLibraryId !== undefined &&
-          libraryRef.current?.libraryId !== operationLibraryId
+          sessionFields.get("library")?.libraryId !== operationLibraryId
         ) return;
         // Keep the user's scroll position across the silent reconcile — a
         // replaced first page must not yank the canvas to the bottom.
@@ -7486,7 +7452,7 @@ function AppInner() {
           .finally(() => {
             if (
               operationLibraryId !== undefined &&
-              libraryRef.current?.libraryId !== operationLibraryId
+              sessionFields.get("library")?.libraryId !== operationLibraryId
             ) return;
             const nextCanvas = workspaceCanvasRef.current;
             if (nextCanvas && nextCanvas.scrollTop !== scrollTopBefore) {
@@ -7501,7 +7467,7 @@ function AppInner() {
         ) return;
         if (
           operationLibraryId !== undefined &&
-          libraryRef.current?.libraryId !== operationLibraryId
+          sessionFields.get("library")?.libraryId !== operationLibraryId
         ) return;
         restored = true;
         if (deferredReconcileTimerRef.current !== undefined) {
@@ -7652,7 +7618,7 @@ function AppInner() {
   }
 
   function scheduleFilteredBrowseReconcile(delayMs: number): void {
-    const operationLibraryId = libraryRef.current?.libraryId;
+    const operationLibraryId = sessionFields.get("library")?.libraryId;
     if (deferredReconcileTimerRef.current !== undefined) {
       window.clearTimeout(deferredReconcileTimerRef.current);
     }
@@ -7660,7 +7626,7 @@ function AppInner() {
       deferredReconcileTimerRef.current = undefined;
       if (
         operationLibraryId !== undefined
-        && libraryRef.current?.libraryId !== operationLibraryId
+        && sessionFields.get("library")?.libraryId !== operationLibraryId
       ) return;
       const canvas = workspaceCanvasRef.current;
       const scrollTopBefore = canvas?.scrollTop ?? 0;
@@ -7669,7 +7635,7 @@ function AppInner() {
         .finally(() => {
           if (
             operationLibraryId !== undefined
-            && libraryRef.current?.libraryId !== operationLibraryId
+            && sessionFields.get("library")?.libraryId !== operationLibraryId
           ) return;
           const nextCanvas = workspaceCanvasRef.current;
           if (nextCanvas && nextCanvas.scrollTop !== scrollTopBefore) {
@@ -7720,7 +7686,7 @@ function AppInner() {
       // execution settles so cards retain the current browse scope/selection
       // and Inspector reflects committed metadata without a reload per batch.
       await reloadCurrentContent();
-      const selected = selectedAssetIdRef.current;
+      const selected = selectionFields.get("selectedAssetId");
       if (selected) await refreshTagAndMetadataState(selected);
     } catch (caught) {
       setError(toMessage(caught, t("toast.diskChangedRefreshFailed"), locale));
@@ -7745,7 +7711,7 @@ function AppInner() {
     // mutation cannot reload a stale scope after a switch.
     reloadCurrentContent: () => reloadCurrentContentRef.current(),
     applyLocalAssetRemoval,
-    isCurrentLibrary: (libraryId) => libraryRef.current?.libraryId === libraryId,
+    isCurrentLibrary: (libraryId) => sessionFields.get("library")?.libraryId === libraryId,
     chooseTag,
     clearAssetSelection,
     activeTagId,
@@ -8310,7 +8276,7 @@ function AppInner() {
     setActivePluginSidebarViewId(null);
     if (!tagFilter.trim()) setActiveTagId(null);
     const pendingTabSelection = pendingWorkspaceTabSelectionRef.current;
-    const selectionNow = selectedAssetIdsRef.current;
+    const selectionNow = selectionFields.get("selectedAssetIds");
     const pageAssetIds = new Set(result.value.items.map((item) => item.assetId));
     // A browse response used to clear the selection unconditionally. Keep a
     // selection whose ids are all on the returned page so a click is not
@@ -8473,7 +8439,7 @@ function AppInner() {
 
   async function describeSimilarSource(assetId: string): Promise<FindSimilarSource | null> {
     if (!api || !library) return null;
-    const known = assetsRef.current.find((asset) => asset.assetId === assetId);
+    const known = browseFields.get("assets").find((asset) => asset.assetId === assetId);
     const listed = known
       ? null
       : await api.listAssets({
@@ -8510,7 +8476,7 @@ function AppInner() {
     if (!api || !library) return;
     const modelId = embeddingSelectionRef.current;
     if (!modelId) return;
-    let source = assetsRef.current.find((asset) => asset.assetId === assetId);
+    let source = browseFields.get("assets").find((asset) => asset.assetId === assetId);
     if (!source) {
       const listed = await api.listAssets({ libraryId: library.libraryId, recursive: true, assetIds: [assetId] });
       if (!listed.ok) return;
@@ -8791,8 +8757,8 @@ function AppInner() {
     // asset's metadata must be fresh before the model is rebuilt — the
     // primary alone was refreshed above (Serpent-c9r3 regression: batch AI
     // analysis completed but the Inspector stayed stale until a reselect).
-    if (selectedAssetIdsRef.current.length >= 2) {
-      const ids = [...new Set(selectedAssetIdsRef.current)];
+    if (selectionFields.get("selectedAssetIds").length >= 2) {
+      const ids = [...new Set(selectionFields.get("selectedAssetIds"))];
       for (const id of ids) {
         if (id === assetId) continue;
         try {
@@ -9298,7 +9264,7 @@ function AppInner() {
       const result = await api.refreshAssets({ libraryId: library.libraryId });
       if (!result.ok) throw new LibraryOperationError(result.error);
       await reloadCurrentContent();
-      const selected = selectedAssetIdRef.current;
+      const selected = selectionFields.get("selectedAssetId");
       if (selected) await refreshAfterAiRef.current(selected);
       setNotice(
         result.value.changedCount
@@ -9432,7 +9398,7 @@ function AppInner() {
       )
     )
       return;
-    if (libraryRef.current?.libraryId !== library.libraryId) return;
+    if (sessionFields.get("library")?.libraryId !== library.libraryId) return;
     const startedAt = Date.now();
     setUiState("importing");
     try {
@@ -9460,7 +9426,7 @@ function AppInner() {
     if (!api) return;
     if (libraryTransitionLock.hasTransitionPending() || !(await confirmLibrarySwitch())) return;
     await libraryTransitionLock(async () => {
-      const currentLibrary = libraryRef.current;
+      const currentLibrary = sessionFields.get("library");
       if (!currentLibrary) return;
       beginLibraryTransition();
       setUiState("closing");
@@ -9487,7 +9453,7 @@ function AppInner() {
     if (!api) return;
     if (libraryTransitionLock.hasTransitionPending() || !(await confirmLibrarySwitch())) return;
     await libraryTransitionLock(async () => {
-      const currentLibrary = libraryRef.current;
+      const currentLibrary = sessionFields.get("library");
       if (!currentLibrary) return;
       beginLibraryTransition();
       const removedName = currentLibrary.displayName;
@@ -9584,7 +9550,6 @@ function AppInner() {
     setThumbnailFailures(new Map());
     setOperationHistory(null);
     setFolderCoverPicker(null);
-    folderNavigationCoversRef.current = [];
     setFolderNavigationCovers([]);
     setFolderCustomCoverIds(new Set());
     setRestoreDialog(null);
@@ -9605,7 +9570,7 @@ function AppInner() {
       null,
     );
     clearLibraryScopedView();
-    libraryRef.current = null;
+    setLibrary(null);
     setLibrary(null);
     api?.setActiveContext(null);
   }
@@ -9619,7 +9584,7 @@ function AppInner() {
     if (!api) return;
     if (libraryTransitionLock.hasTransitionPending() || !(await confirmLibrarySwitch())) return;
     await libraryTransitionLock(async () => {
-      const currentLibrary = libraryRef.current;
+      const currentLibrary = sessionFields.get("library");
       if (!currentLibrary) return;
       beginLibraryTransition();
       const deletedName = currentLibrary.displayName;
@@ -10605,11 +10570,11 @@ function AppInner() {
         if (!summary) {
           throw new Error(t("toast.importFailed"));
         }
-        const previousLibraryId = libraryRef.current?.libraryId;
+        const previousLibraryId = sessionFields.get("library")?.libraryId;
         beginLibraryTransition();
         await closeAssetPreview(false);
         clearLibraryScopedView();
-        libraryRef.current = summary;
+        setLibrary(summary);
         activateLibraryView(summary.libraryId);
         setLibrary(summary);
         setLibraryLoading({ name: summary.displayName });
@@ -10752,7 +10717,7 @@ function AppInner() {
     if (!api || !library) return;
     const effectLibraryId = library.libraryId;
     const isEffectLibraryCurrent = () =>
-      libraryRef.current?.libraryId === effectLibraryId;
+      sessionFields.get("library")?.libraryId === effectLibraryId;
     let reloadTimer: number | undefined;
     let reloadInFlight = false;
     let reloadQueued = false;
@@ -10809,7 +10774,7 @@ function AppInner() {
       void refreshOperationHistory();
       // Serpent-yqrl: while a user import is applying, each committed asset
       // triggers a silent canvas refresh so cards appear one-by-one.
-      if (uiStateRef.current === "importing" || importProgressRef.current) {
+      if (uiStateRef.current === "importing" || transfersFields.get("importProgress")) {
         scheduleSilentReload();
         return;
       }
@@ -10828,14 +10793,14 @@ function AppInner() {
             if (!isEffectLibraryCurrent()) return;
             await reloadCurrentContentRef.current();
             if (!isEffectLibraryCurrent()) return;
-            const currentSelectedAssetId = selectedAssetIdRef.current;
+            const currentSelectedAssetId = selectionFields.get("selectedAssetId");
             if (currentSelectedAssetId) {
               const metadata = await api.getAssetMetadata({
                 libraryId: effectLibraryId,
                 assetId: currentSelectedAssetId,
               });
               if (isEffectLibraryCurrent() && metadata.ok &&
-                selectedAssetIdRef.current === currentSelectedAssetId) {
+                selectionFields.get("selectedAssetId") === currentSelectedAssetId) {
                 applyLoadedMetadata(currentSelectedAssetId, metadata.value);
               }
             }
@@ -10877,7 +10842,7 @@ function AppInner() {
       // Cross-process change-sequence bumps are not asset mutation counts.
       // Refresh silently without forging an asset.changed payload.
       const importing =
-        uiStateRef.current === "importing" || Boolean(importProgressRef.current);
+        uiStateRef.current === "importing" || Boolean(transfersFields.get("importProgress"));
       if (shouldRefreshContentForLibraryChange({
         networkStorage: library.networkStorage,
         importing,
@@ -10941,10 +10906,10 @@ function AppInner() {
             null,
             {
               rpcInFlight: importRpcDepthRef.current > 0,
-              current: importProgressRef.current,
+              current: transfersFields.get("importProgress"),
               retiredImportIds: retiredImportIdsRef.current,
               activeImportId: activeImportIdRef.current
-                ?? importProgressRef.current?.importId
+                ?? transfersFields.get("importProgress")?.importId
                 ?? null,
             },
           )
@@ -10976,7 +10941,7 @@ function AppInner() {
           }
           // 元数据回放可能不发 asset.changed，或选中项未变。F5 原先也不
           // 重拉 Inspector；同步结束后补拉当前选中项标签/描述。
-          const selected = selectedAssetIdRef.current;
+          const selected = selectionFields.get("selectedAssetId");
           if (selected && didNotify) {
             void refreshAfterAiRef.current(selected);
           }
@@ -11969,7 +11934,7 @@ function AppInner() {
     if (!librarySettingsOpen || !api || !library) return;
     const libraryId = library.libraryId;
     void api.getGitignore({ libraryId }).then((gitignoreResult) => {
-      if (libraryRef.current?.libraryId !== libraryId) return;
+      if (sessionFields.get("library")?.libraryId !== libraryId) return;
       if (gitignoreResult.ok) setGitignoreContent(gitignoreResult.value.content);
     });
   }, [librarySettingsOpen, api, library]);
@@ -12181,7 +12146,7 @@ function AppInner() {
     ) {
       return;
     }
-    if (libraryRef.current?.libraryId !== library.libraryId) return;
+    if (sessionFields.get("library")?.libraryId !== library.libraryId) return;
     try {
       const result = await api.clearAiContent({
         libraryId: library.libraryId,
@@ -12463,7 +12428,6 @@ function AppInner() {
     // refreshes; closing it drops browsing back to the slow fallback so the
     // canvas does not pay for status queries it never displays. The first list
     // page is loaded from the open handler, not from this effect.
-    mediaJobsOpenRef.current = mediaJobsOpen;
     jobStatusCoordinatorRef.current?.setPanelOpen(mediaJobsOpen);
     jobStatusCoordinatorRef.current?.setEventDrivenQueries(mediaJobsOpen);
   }, [mediaJobsOpen]);

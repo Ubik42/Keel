@@ -6,6 +6,7 @@
  * metadata cache + conflict set stay in App so single-asset save/load keep
  * using the same maps.
  */
+import { selectionFields } from './stores/selection-store';
 
 import {
   useCallback,
@@ -34,7 +35,6 @@ export type UseInspectorMultiEditParams = {
   api: KeelLibraryApi | null;
   library: RendererLibrarySummary | null;
   selectedAssetIds: readonly string[];
-  selectedAssetIdRef: MutableRefObject<string | undefined>;
   metadataByAssetRef: MutableRefObject<Map<string, AssetMetadataResult>>;
   metadataConflictAssetIdsRef: MutableRefObject<Set<string>>;
   setEditDescription: Dispatch<SetStateAction<string>>;
@@ -76,7 +76,6 @@ export function useInspectorMultiEdit({
   api,
   library,
   selectedAssetIds,
-  selectedAssetIdRef,
   metadataByAssetRef,
   metadataConflictAssetIdsRef,
   setEditDescription,
@@ -237,7 +236,7 @@ export function useInspectorMultiEdit({
               currentAssets.map(updateSummary),
             );
           }
-          if (selectedAssetIdRef.current === assetId) {
+          if (selectionFields.get("selectedAssetId") === assetId) {
             setAssetMetadata(result.value);
           }
         } catch (caught) {
@@ -265,7 +264,6 @@ export function useInspectorMultiEdit({
       metadataByAssetRef,
       metadataConflictAssetIdsRef,
       rebuildAndApplyMultiEdit,
-      selectedAssetIdRef,
       setAssetMetadata,
       setAssets,
       setError,
@@ -302,7 +300,7 @@ export function useInspectorMultiEdit({
             metadataByAssetRef.current.set(assetId, { ...cached, rating });
           }
         }
-        const primaryAssetId = selectedAssetIdRef.current;
+        const primaryAssetId = selectionFields.get("selectedAssetId");
         if (primaryAssetId && appliedIds.has(primaryAssetId)) {
           setAssetMetadata((current) =>
             current && current.assetId === primaryAssetId
@@ -335,7 +333,6 @@ export function useInspectorMultiEdit({
       locale,
       metadataByAssetRef,
       rebuildAndApplyMultiEdit,
-      selectedAssetIdRef,
       setAssetMetadata,
       setAssets,
       setError,

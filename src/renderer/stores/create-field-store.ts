@@ -16,34 +16,38 @@ export interface FieldStore<S extends object> {
 }
 
 export function createFieldStore<S extends object>(initial: () => S): FieldStore<S> {
-  const initialState = initial();
-  const store = create<S>()(() => ({ ...initialState }));
+  // Created on first use: initial values may read local storage, which a
+  // module imported outside the renderer (tests in Node) does not have.
+  let bound: UseBoundStore<StoreApi<S>> | undefined;
+  const getStore = () => (bound ??= create<S>()(() => initial()));
   const setters = new Map<keyof S, Dispatch<SetStateAction<unknown>>>();
   function setterFor<K extends keyof S>(key: K): Dispatch<SetStateAction<S[K]>> {
     let setter = setters.get(key);
     if (!setter) {
       setter = (action: SetStateAction<unknown>) => {
-        const previous = store.getState()[key];
+        const previous = getStore().getState()[key];
         const next = typeof action === 'function'
           ? (action as (value: S[K]) => S[K])(previous)
           : action as S[K];
         if (Object.is(next, previous)) return;
-        store.setState({ [key]: next } as unknown as Partial<S>);
+        getStore().setState({ [key]: next } as unknown as Partial<S>);
       };
       setters.set(key, setter);
     }
     return setter as Dispatch<SetStateAction<S[K]>>;
   }
   return {
-    store,
+    get store() {
+      return getStore();
+    },
     setterFor,
-    useField: (key) => [store((state) => state[key]), setterFor(key)],
-    get: (key) => store.getState()[key],
+    useField: (key) => [getStore()((state) => state[key]), setterFor(key)],
+    get: (key) => getStore().getState()[key],
     reset: (keys) => {
       const fresh = initial();
       const patch: Partial<S> = {};
       for (const key of keys ?? (Object.keys(fresh) as (keyof S)[])) patch[key] = fresh[key];
-      store.setState(patch);
+      getStore().setState(patch);
     },
   };
 }
