@@ -1,834 +1,309 @@
+import { usePrefsStore } from "./stores/prefs-store";
+import { sessionFields, useSessionField } from "./stores/session-store";
+import { LocalConfirmationHost, requestConfirmation, useLocalConfirmation } from "./local-confirmation";
+import { useShortcutRuntimeVersion } from "./workbench/shortcuts/shortcut-provider";
+import { translateForLocale, useLocale, useT } from "./i18n";
+import { type CSSProperties, type FormEvent, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useScrollbarActivity } from "./workbench/collection/use-scrollbar-activity";
+import { useNativeDragReadyIds } from "./use-native-drag-readiness";
+import { navigationFields, type AssetScope, useNavigationField } from "./stores/navigation-store";
+import { type AssetMetadataResult, type AssetSummary, type FilterClause, type LinkedFolderRule, type LinkedFolderSummary, type SearchScope, type SortDefinition, type TagSummary } from "../shared/asset-types";
+import { useDialogField } from "./stores/dialogs-store";
+import { browseFields, useBrowseField } from "./stores/browse-store";
+import { assetsRemainingAfterMembership, type BrowseMembershipChange } from "./browse-filter-membership";
+import { selectionFields, useSelectionField } from "./stores/selection-store";
+import { createLibraryTransitionLock } from "./library-transition-lock";
+import { createTrackedLibraryApi } from "./tracked-library-api";
+import { useToastNotifications } from "./useToastNotifications";
+import { CreateDialog, type CreateLibraryPhase } from "./CreateDialog";
+import { transfersFields, useTransfersField } from "./stores/transfers-store";
+import { isPostImportSequenceOfferId, postImportFrameGroupsForAction, postImportSequencePlanFromAssets, type PostImportSequencePlan } from "./post-import-image-sequences";
+import { importedSequenceFrameUrl, type SequencePreviewFrame, type SequencePreviewSource } from "./image-sequence-preview";
+import { type ImportConflictPlan, type ImportSourceFailurePlan, type RendererLibrarySummary } from "../shared/protocol/responses";
+import { loadImportConflictPreferences, rememberDuplicateDecision, rememberNameConflictDecision, type RememberedDuplicateDecision, type RememberedNameConflictDecision } from "./import-conflict-preferences";
+import { nextImportConflictPhaseAfterName, resolveImportConflictPresentation } from "./import-conflict-flow";
+import { usePanelResize } from "./workbench/shell/use-panel-resize";
+import { useWorkspaceField } from "./stores/workspace-store";
+import { LINKED_FOLDER_ADD_HINT_KEY, shouldShowLinkedFolderAddHint } from "./linked-folder-add-hint";
+import { hasFeatureHintBeenShown, isFeatureHintEnabled, saveFeatureHintPreferences, withFeatureHintShown } from "./feature-hint-preferences";
+import { FOLDER_BROWSE_CARD_PREFERENCES_CHANGED, loadFolderBrowseCardPreferences } from "./folder-browse-card-preferences";
+import { useQueryField } from "./stores/query-store";
+import { parseSearchExpressionDetailed, searchExpressionReasonKey, type parseSearchExpression } from "./search-expression";
+import { clearSearchHistory, filterSearchHistory, moveSearchHistoryIndex, readSearchHistory, readVisibleSearchHistoryCount, rememberSearchQuery, searchHistoryNavigationDirection } from "./search-history";
+import { recursiveSubfoldersHintKey, shouldFlashRecursiveSubfoldersHint } from "./recursive-subfolders-hint";
+import { ContextMenuProvider, useContextMenu } from "./workbench/menu/context-menu";
+import { createDefaultWorkspaceTabBrowseState, resolveWorkspaceTagExpression, type WorkspaceTabBrowseState, type WorkspaceTabSession, workspaceTabBrowseStateHasDiscoveryInput } from "./workspace-tabs";
+import { advanceLibraryViewSession, invalidateLibraryViewSession, isCurrentLibraryViewSession, type LibraryViewSession, type LibraryViewSessionToken } from "./library-view-session";
+import { inspectorFields, useInspectorField } from "./stores/inspector-store";
+import { BROWSE_PAGE_SIZE, fetchFirstRankedBrowsePage, registerBrowseSearchPage, useBrowsePagination } from "./use-browse-pagination";
+import { useInspectorMultiEdit } from "./use-inspector-multi-edit";
+import { isEditableTextTarget } from "../shared/edit-context-menu";
+import { addRetiredImportId, runImportRpc } from "./import-progress-session";
+import { usePluginsField } from "./stores/plugins-store";
+import { PluginSidebarViewPanel, isPluginSidebarViewsEnabled, usePluginSidebarViews } from "./plugin-sidebar-views";
+import { FOLDER_COVER_PICKER_PAGE_SIZE, folderCoverPickerAssetMatches, folderCoverPickerImageFilter, folderCoverPickerSearchQuery } from "./folder-cover-picker";
+import { LibraryOperationError, libraryOpenBlockingTitleKey, messageForPublicError, toMessage } from "./error-utils";
+import { browseEntryUnderPreview, type WorkspaceNavLocation, type WorkspaceNavViewport, workspaceNavLocationsEqual } from "./workbench/workspace/workspace-nav-history";
+import { NavigationSidebar, type FolderTreeExpandActions } from "./NavigationSidebar";
+import { useWorkspaceTabsController } from "./use-workspace-tabs";
+import { buildWorkspaceTabsSession, readWorkspaceTabsSession, writeWorkspaceTabsSession } from "./workspace-tabs-session";
+import { resolveSearchFolderResults } from "./search-folder-results";
+import { type ReadAppLogResult } from "../shared/app-log";
+import { activeLibrarySwitchActivity } from "./library-switch-safety";
+import { aiFields, useAiField } from "./stores/ai-store";
+import { DEFAULT_AI_API_FORMAT, DEFAULT_AI_MODELS, type AiApiFormat } from "../shared/ai-endpoints";
+import { DEFAULT_AI_ANALYSIS_SETTINGS, normalizeAiAnalysisSettings, toWireAiAnalysisSettings, type AiAnalysisSettingsWire } from "../shared/ai-analysis-settings";
+import { useInspectorAssetMetadata } from "./use-inspector-asset-metadata";
+import { cancellationAffectsAiBatch, collectRecentAiFailureCodes, computeAiBatchProgressForJobs, progressFromAiProgressEvent, type AiBatchProgressSnapshot, type AiProgressJobUpdate } from "./ai-analyze-progress";
+import { usePreviewField } from "./stores/preview-store";
+import { AssetPreviewModal, type AssetPreviewModalHandle } from "./AssetPreviewModal";
+import { useViewerChromeIdle } from "./use-viewer-chrome-idle";
+import { useSyncCardStatuses } from "./use-sync-card-status";
+import { useViewerVolume } from "./use-viewer-volume";
+import { enumerateDiscreteCardSizes, nearestDiscreteCardSize, nextDiscreteCardSizeFromWheelDelta, stepDiscreteCardSize } from "./card-size-stops";
+import { FOLDER_CARD_ROW_INLINE_PADDING_PX, browseCardLayoutWidthPx, elementContentBoxWidthPx, masonryAlignedFolderWidthPx } from "./folder-card-width";
+import { PREVIEW_SCROLL_HOLD_MS, canvasHasPreviewScrollHold, installBrowseScrollWriteSpy, logBrowseScrollWrite, setCanvasPreviewScrollHold, shouldApplyRestoredFocusScroll } from "./browse-scroll-debug";
+import { captureWorkspaceNavViewport, pendingWorkspaceViewportAction, resolveWorkspaceScrollTop, restoreWorkspaceNavViewport, shouldRestoreViewportAfterBrowseReload } from "./workbench/workspace/workspace-scroll-position";
+import { captureAnchor, pickNearestCard, rectLikeFromDomRect, type AnchorCard, type CanvasAnchor } from "./workbench/collection/canvas-scroll-anchor";
+import { captureReflowAnchorFromCards, retainReflowAnchor, scheduleAnchorRestore, type ScrollOffsetSnapshot } from "./canvas-reflow-restore";
+import { browseScopeForAsset, currentScopeShowsRevealAssets, pendingRevealFromAssets, sharedBrowseScopeForAssets, type PendingAssetReveal } from "./pending-asset-reveal";
+import { captureBrowseViewSnapshot, type BrowseViewSnapshot } from "./workbench/collection/view-restore";
+import { ASSET_DRAG_PREVIEW_HEIGHT, ASSET_DRAG_PREVIEW_WIDTH, dismissAssetDragPreview, setAssetDragPreviewCopyMode, showAssetDragPreview } from "./asset-drag-preview";
+import { useJobsField } from "./stores/jobs-store";
+import { useEmbeddingField } from "./stores/embedding-store";
+import { loadSemanticSearchPreferences, saveSemanticSearchPreferences, subscribeSemanticSearchPreferences, type SemanticSearchPageSize } from "./semantic-search-preferences";
+import { subscribeEmbeddingCatalog, subscribeEmbeddingInstallActivity } from "./embedding-catalog-events";
+import { resolveEffectiveEmbeddingSelection } from "../shared/embedding/library-binding";
+import { semanticBackgroundWorkActive, semanticToolbarReady } from "./semantic-work";
+import { countOtherLivePluginJobs, hasActivePluginJobs, selectPluginJobActivity } from "./plugin-job-activity";
+import { JobStatusCoordinator } from "./job-status-coordinator";
+import { useAiConnectionFailure } from "./use-ai-connection-failure";
+import { createPortal, flushSync } from "react-dom";
+import { permuteVirtualBrowseLayout, type VirtualBrowseLayout, virtualLayoutEntryForAsset, virtualLayoutPublishedId } from "./browse/virtual-browse-layout";
+import { assetSummaryFromLayoutEntry, browseRankFromPublishedId } from "./browse-window-slots";
+import { useInspectorFieldHandlers } from "./use-inspector-field-handlers";
+import { buildTrashBreadcrumbHops, filterTrashedAssetsAtTombstone, filterTrashedFoldersAtTombstone } from "./trash-browse";
+import { shuffleBrowseItems, shuffledIndexOrder } from "./client-shuffle";
+import { presentWorkspaceTab } from "./workspace-tab-presentation";
+import { collectIntersectingCanvasAssetIds, composeBrowseViewportPriorityBands, orderedIdsForViewportPriorityReport } from "./viewport-priority-report";
+import { isGeometryPlaceholder } from "./browse/use-virtual-browse-session";
+import { viewportPriorityReportKey } from "../shared/viewport-priority";
+import { readPublishedCanvasAssetLayout, readPublishedCanvasAssetLayoutIndex } from "./canvas-asset-layout";
+import { type PluginContributionContext } from "../plugins/plugin-context";
+import { buildPluginBrowseScope, buildPluginViewerState } from "./plugin-context-state";
+import { createPluginMenuContributionContext } from "./plugin-contribution-context";
+import { resolveBrowseEmptyState, resolveImportMenuCopy } from "./browse-empty-state";
+import { buildActiveFilterChips, type ClearableFilterId } from "./active-discovery-filters";
+import { useFilteredFolderCounts } from "./use-filtered-folder-counts";
+import { filteredFolderBrowseEntries } from "./filtered-folder-visibility";
+import { trashedFoldersToBrowseEntries } from "./trashed-folder-entries";
+import { ScopeBreadcrumbs, buildScopeBreadcrumbSegments } from "./ScopeBreadcrumbs";
+import { buildLinkedFolderBreadcrumbTrail, buildManagedFolderBreadcrumbTrail } from "./folder-breadcrumb-trail";
+import { resolveBrowseCanvasBodyLayout, resolveFolderBrowseParentId, shouldShowFolderBrowseCards } from "./folder-browse-canvas";
+import { assetCardKey, isCardHoverPreviewable, isCardSequencePlayable, resolveAssetCardCoverUrl } from "./asset-card-hover-preview";
+import { useAssetCardHoverPreview } from "./use-asset-card-hover-preview";
+import { computeMasonrySelectionAssetIds } from "./masonry-selection-order";
+import { buildMarqueeLayoutKey } from "./marquee-layout-key";
+import { useAssetSelection } from "./useAssetSelection";
+import { useFolderInspector } from "./folder-inspector";
+import { invertSelection } from "./workbench/selection/invert-selection";
+import { useSelectionKeyboard } from "./use-selection-keyboard";
+import { hasActiveModalDialog, useDialogFocusTrap } from "./workbench/overlay/use-dialog-focus-trap";
+import { automationCommandToast } from "./automation-command-toast";
+import { collectFolderCoverCandidateAssetIds } from "./folder-cover-refresh";
+import { browseScopeFromVirtualLayout, buildMultiAssetMenuSkipReport } from "./menu-skip-report";
+import { canDeleteAssetFromDiskWithShortcut } from "./browse-key-command";
+import { CARD_SIZE_MAX, CARD_SIZE_MIN, assetCaptionAlignClass, nextCanvasCaptionAlign, shouldShowGridDimensions } from "./canvas-preferences";
+import { saveBrowseSortPreferences } from "./browse-sort-preferences";
+import { GLOBAL_ZOOM_MENU_ACTION_EVENT, defaultKeyboardCardSize, dispatchGlobalZoomMenuAction, dispatchGlobalZoomMenuCommandIfAllowed, matchGlobalZoomShortcut, shouldIgnoreGlobalZoomShortcut, type GlobalZoomAction } from "./global-zoom-shortcuts";
+import { type ShortcutEventLike } from "../shared/shortcut-resolution";
+import { listenForMouseShortcutInputs, listenForShortcutInputs, matchesRuntimeShortcut } from "./workbench/shortcuts/shortcut-runtime";
+import { scheduleBrowseViewRestore } from "./browse-view-restore-scheduler";
+import { folderBrowseScope, folderSearchScope } from "./folder-browse-scope";
+import { type LibraryNavigationSummary } from "../shared/library-navigation";
+import { deferNavigationHydration } from "./browse/defer-navigation-hydration";
+import { missingNavigationSummaryIsFailure } from "./blocking-navigation-summary";
+import { assetSupportsThumbnail, isBenignThumbnailErrorCode } from "../shared/thumbnail-support";
+import { useBrowserSessionPersist, useBrowserSessionRestore, usePendingRestoredAssetFocus } from "./use-browser-session-restore";
+import { useExtensionActiveContext } from "./use-extension-active-context";
+import { usePendingAssetReveal } from "./use-pending-asset-reveal";
+import { useExtensionSaveReveal } from "./use-extension-save-reveal";
+import { shouldApplyLibraryLifecycleEvent, shouldDetachLibraryOnOpening } from "./library-lifecycle-sync";
+import { libraryTransferKindFromOperation } from "./library-transfer-progress";
+import { applyAssetThumbnailPatches, mergeAssetThumbnailPatch, type AssetThumbnailPatch } from "./asset-thumbnail-patches";
+import { expandThumbnailCardEvents, shouldProjectThumbnailCompletion } from "./thumbnail-completion-projection";
+import { patchFolderNavigationCoverArtifact } from "./folder-cover";
+import { type WorkspaceNavigationHistoryMode } from "./workbench/workspace/workspace-navigation-coordinator";
+import { type WorkspaceRenderSnapshot, type WorkspaceVirtualLayoutSnapshot } from "./workspace-render-snapshot-cache";
+import { DEFAULT_COLOR_SIMILARITY } from "../shared/color-filter-presets";
+import { browseStateForWorkspaceNavigation, historyReplayClosesPreview, workspaceNavigationKeepsLiveDiscovery } from "./workspace-discovery-navigation";
+import { LibrarySwitcher, buildRecentLibraryMenuEntries } from "./LibrarySwitcher";
+import { type AiJobStatus, type LibraryApiResult, type PluginJobStatus } from "../shared/library-api";
+import { isFolderRecursiveEnabled, saveFolderRecursivePreferences, withFolderRecursiveEnabled } from "./folder-recursive-preferences";
+import { type EntityAppearance, type EntityAppearance as TagAppearance, type EntityAppearanceTarget } from "../shared/entity-appearance";
+import { tagRenameError } from "./tag-rename-error";
+import { descendantTagIds } from "./tag-tree-model";
+import { tagBrowseDefinition } from "./tag-browse-definition";
+import { resolveInspectorTagTarget } from "./inspector-tag-target";
+import { compactFormatFilterTokens } from "../shared/text-media";
+import { buildTagFilterClauses, resolveTagFilterSets } from "./dimension-filter-selection";
+import { decrementScopeCount, removeAssetIdsLocally } from "./asset-local-refresh";
+import { resolveAssetSummariesForSelection } from "./image-sequence-selection";
+import { DEFAULT_IMAGE_SEQUENCE_FPS } from "../shared/image-sequence";
+import { useBatchActions } from "./useBatchActions";
+import { useFolderDeleteActions } from "./use-folder-delete-actions";
+import { useShellFileActions } from "./use-shell-file-actions";
 import { useOpenWithSettings } from "./use-open-with-settings";
 import { resolveOpenWithTarget } from "../shared/open-with";
-import { AutomaticTasksSidebar } from './AutomaticTasksSidebar';
-import { AutomaticTasksDialog } from './AutomaticTasksDialog';
-import { TAG_DRAG_TYPE } from './tag-drag-drop';
-import type { EntityAppearance as TagAppearance } from '../shared/entity-appearance';
-import { TagTreeSidebar } from "./TagTreeSidebar";
-import { descendantTagIds } from "./tag-tree-model";
-import { LocalConfirmationHost, useLocalConfirmation, requestConfirmation } from "./local-confirmation";
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-  type CSSProperties,
-  type FormEvent,
-  type ReactNode,
-} from "react";
-import { createPortal, flushSync } from "react-dom";
-
-import { Icon, type IconName } from "./Icons";
-import { isCurrentAiConnectionProbe } from "./ai-connection-probe-guard";
-import { iconActionAttrs } from "./icon-action-attrs";
-import { EditTextContextMenuHost } from "./workbench/menu/edit-text-context-menu";
-import { HoverTipHost } from "./workbench/overlay/hover-tip";
-import {
-  corruptAssetAffordance,
-  isCorruptAsset,
-  missingAssetAffordance,
-  shouldShowMissingAssetOverlay,
-} from "./availability-affordance";
-import {
-  writeShowMissingLinkedFiles,
-} from "./linked-missing-preference";
-import {
-  assetTypeBadgeLabel,
-  fileExtensionLabel,
-  formatSequenceDuration,
-  shouldShowAssetCardBadges,
-  shouldShowDurationBadge,
-  shouldShowExtensionBadge,
-  shouldShowTypeBadgeAlongsideExtension,
-} from "./asset-card-badges";
-import {
-  resolveAssetSourceBadgeLabel,
-  shouldShowAssetSourceBadge,
-} from "./asset-source-badge";
-import {
-  assetCardKey,
-  isCardHoverPreviewable,
-  isCardSequencePlayable,
-  resolveAssetCardCoverUrl,
-} from "./asset-card-hover-preview";
-import { shouldShowThumbnailFailureBadge } from "./thumbnail-failure-badge";
-import { viewportPriorityReportKey } from "../shared/viewport-priority";
-import {
-  collectIntersectingCanvasAssetIds,
-  composeBrowseViewportPriorityBands,
-  orderedIdsForViewportPriorityReport,
-} from "./viewport-priority-report";
-import {
-  assetSupportsThumbnail,
-  isBenignThumbnailErrorCode,
-} from "../shared/thumbnail-support";
-import { AssetCardMedia } from "./AssetCardMedia";
-import { FindSimilarBanner } from "./FindSimilarBanner";
-import { useAssetCardHoverPreview } from "./use-asset-card-hover-preview";
-import { SyncCardStatusBadge } from "./SyncCardStatusBadge";
-import { useSyncCardStatuses } from "./use-sync-card-status";
-import { resolveSearchSnippetCaption } from "./search-snippet-caption";
-import { parseSearchExpressionDetailed, searchExpressionReasonKey, splitSearchHighlights } from "./search-expression";
-import type { parseSearchExpression } from "./search-expression";
-import { ConvertLinkedDialog } from "./ConvertLinkedDialog";
-import { LinkedRulesDialog } from "./LinkedRulesDialog";
-import { TagManagementWorkspace } from "./TagManagementWorkspace";
-import { useFolderDeleteActions } from "./use-folder-delete-actions";
-import { canDeleteAssetFromDiskWithShortcut } from "./browse-key-command";
-import { filteredFolderBrowseEntries } from "./filtered-folder-visibility";
-import { useFilteredFolderCounts } from "./use-filtered-folder-counts";
+import { resolveBrowsePasteDestination } from "./browse-paste-target";
 import { useFolderOrganizeActions } from "./use-folder-organize-actions";
+import { useAssetDragDropHandlers } from "./use-asset-drag-drop-handlers";
+import { useFolderDragDropHandlers } from "./use-folder-drag-drop-handlers";
+import { useExternalImportHandlers } from "./use-external-import-handlers";
+import { splitAssetFileName, useAssetRename } from "./useAssetRename";
+import { useInlineFolderEdit } from "./use-inline-folder-edit";
+import { linkedDirectoryName, linkedRevealFolderId, parseLinkedVirtualFolderId } from "../shared/linked-folder-tree";
 import { useFolderCommandShortcuts } from "./use-folder-command-shortcuts";
-import { SearchHistoryPopover } from "./SearchHistoryPopover";
-import {
-  clearSearchHistory,
-  filterSearchHistory,
-  moveSearchHistoryIndex,
-  readSearchHistory,
-  readVisibleSearchHistoryCount,
-  rememberSearchQuery,
-  searchHistoryNavigationDirection,
-} from "./search-history";
-import { useWindowsBrowseShortcutBridge } from "./use-windows-browse-shortcut-bridge";
-import { useShortcutRuntimeVersion } from "./workbench/shortcuts/shortcut-provider";
-import {
-  listenForMouseShortcutInputs,
-  listenForShortcutInputs,
-  matchesRuntimeShortcut,
-} from "./workbench/shortcuts/shortcut-runtime";
-import type { ShortcutEventLike } from "../shared/shortcut-resolution";
-import { ExportDialog } from "./ExportDialog";
-import { ImportDialog } from "./ImportDialog";
-import { ImportLibraryChooserDialog, OpenLibraryChooserDialog } from "./ImportLibraryChooserDialog";
-import {
-  NavigationSidebar,
-  type FolderTreeExpandActions,
-} from "./NavigationSidebar";
-import { LibrarySwitcher, buildRecentLibraryMenuEntries } from "./LibrarySwitcher";
-import {
-  LibraryLoadingOverlay,
-} from "./LibraryLoadingOverlay";
-import { ImportProgressOverlay } from "./ImportProgressOverlay";
-import { DeleteProgressOverlay } from "./DeleteProgressOverlay";
-import { BlockingProgressOverlay } from "./BlockingProgressOverlay";
-import {
-  isBlockingImportOverlayVisible,
-  shouldApplyImportProgressEvent,
-} from "./import-progress-copy";
-import { addRetiredImportId, runImportRpc } from "./import-progress-session";
-import { isActiveDeleteProgress, isDeleteProgressCancelable } from "./delete-progress-copy";
-import { activeLibrarySwitchActivity } from "./library-switch-safety";
-import { createLibraryTransitionLock } from "./library-transition-lock";
-import {
-  advanceLibraryViewSession,
-  invalidateLibraryViewSession,
-  isCurrentLibraryViewSession,
-  type LibraryViewSession,
-  type LibraryViewSessionToken,
-} from "./library-view-session";
-import { createTrackedLibraryApi } from "./tracked-library-api";
-import { useNativeDragReadyIds } from "./use-native-drag-readiness";
-import { MainMenu } from "./MainMenu";
-import {
-  buildMainMenuSections,
-  collectMainMenuCommandStates,
-  KEEL_VERSION,
-  type MainMenuItem,
-} from "./main-menu-items";
-import { CanvasToolbarControls } from "./CanvasToolbarControls";
-import { ScopeHistoryButtons } from "./ScopeHistoryButtons";
-import { WorkspaceTabs } from "./WorkspaceTabs";
-import {
-  ScopeBreadcrumbs,
-  buildScopeBreadcrumbSegments,
-} from "./ScopeBreadcrumbs";
-import {
-  buildLinkedFolderBreadcrumbTrail,
-  buildManagedFolderBreadcrumbTrail,
-} from "./folder-breadcrumb-trail";
-import { folderBrowseScope, folderSearchScope } from "./folder-browse-scope";
-import { toggleFolderMultiSelection } from "./folder-selection-toggle";
-import {
-  linkedDirectoryName,
-  linkedRevealFolderId,
-  parseLinkedVirtualFolderId,
-} from "../shared/linked-folder-tree";
-import {
-  resolveBrowseCanvasBodyLayout,
-  resolveFolderBrowseParentId,
-  shouldShowFolderBrowseCards,
-} from "./folder-browse-canvas";
-import { useFolderInspector } from "./folder-inspector";
-import { collectFolderCoverCandidateAssetIds } from "./folder-cover-refresh";
-import { patchFolderNavigationCoverArtifact } from "./folder-cover";
-import {
-  FOLDER_COVER_PICKER_PAGE_SIZE,
-  folderCoverPickerAssetMatches,
-  folderCoverPickerImageFilter,
-  folderCoverPickerSearchQuery,
-} from "./folder-cover-picker";
-import {
-  decrementScopeCount,
-  removeAssetIdsLocally,
-} from "./asset-local-refresh";
-import { FolderCard } from "./FolderCard";
-import {
-  isFolderRecursiveEnabled,
-  saveFolderRecursivePreferences,
-  withFolderRecursiveEnabled,
-} from "./folder-recursive-preferences";
-import {
-  FOLDER_BROWSE_CARD_PREFERENCES_CHANGED,
-  loadFolderBrowseCardPreferences,
-} from "./folder-browse-card-preferences";
-import {
-  hasFeatureHintBeenShown,
-  isFeatureHintEnabled,
-  saveFeatureHintPreferences,
-  withFeatureHintShown,
-} from "./feature-hint-preferences";
-import {
-  recursiveSubfoldersHintKey,
-  shouldFlashRecursiveSubfoldersHint,
-} from "./recursive-subfolders-hint";
-import {
-  LINKED_FOLDER_ADD_HINT_KEY,
-  shouldShowLinkedFolderAddHint,
-} from "./linked-folder-add-hint";
-import { resolveSearchFolderResults } from "./search-folder-results";
-import { useT, useLocale, translateForLocale, type AppLocale } from "./i18n";
-import type { AiApiFormat } from "../shared/ai-endpoints";
-import { DEFAULT_AI_API_FORMAT, DEFAULT_AI_MODELS } from "../shared/ai-endpoints";
-import type { KeelMcpSettingsApi } from "../shared/mcp";
-import { isEditableTextTarget } from "../shared/edit-context-menu";
-import type { SearchQuery } from "../shared/asset-types";
-import {
-  browseStateForWorkspaceNavigation,
-  historyReplayClosesPreview,
-  workspaceNavigationKeepsLiveDiscovery,
-} from "./workspace-discovery-navigation";
-import {
-  browseEntryUnderPreview,
-  type WorkspaceNavLocation,
-  type WorkspaceNavViewport,
-  workspaceNavLocationsEqual,
-} from "./workbench/workspace/workspace-nav-history";
-import type {
-  WorkspaceNavigationHistoryMode,
-  WorkspaceNavigationToken,
-} from "./workbench/workspace/workspace-navigation-coordinator";
-import type {
-  WorkspaceRenderSnapshot,
-  WorkspaceVirtualLayoutSnapshot,
-} from "./workspace-render-snapshot-cache";
-import {
-  createDefaultWorkspaceTabBrowseState,
-  resolveWorkspaceTagExpression,
-  workspaceTabBrowseStateHasDiscoveryInput,
-  type WorkspaceTabBrowseState,
-  type WorkspaceTabSession,
-} from "./workspace-tabs";
-import {
-  buildWorkspaceTabsSession,
-  readWorkspaceTabsSession,
-  writeWorkspaceTabsSession,
-} from "./workspace-tabs-session";
-import { useWorkspaceTabsController } from "./use-workspace-tabs";
-import { presentWorkspaceTab } from "./workspace-tab-presentation";
-import {
-  captureWorkspaceNavViewport,
-  pendingWorkspaceViewportAction,
-  resolveWorkspaceScrollTop,
-  restoreWorkspaceNavViewport,
-  shouldRestoreViewportAfterBrowseReload,
-} from "./workbench/workspace/workspace-scroll-position";
-import { mergeAssetSummaries } from "./merge-asset-summaries";
-import {
-  RelinkPreview,
-  formatRelinkExamplePath,
-} from "./RelinkPreview";
-import { MoveDialog } from "./MoveDialog";
-import { RestoreDialog } from "./RestoreDialog";
-import { ImageSequenceDialog } from "./ImageSequenceDialog";
-import { ImageSequenceImportDialog } from "./ImageSequenceImportDialog";
-import { DEFAULT_IMAGE_SEQUENCE_FPS } from "../shared/image-sequence";
+import { canFindSimilarForAsset, resolveFindSimilar, type FindSimilarSource } from "./find-similar";
+import { mergeKeywordAndSemanticRanks, semanticBrowseRegistration } from "./semantic-browse";
+import { semanticSearchNotice } from "./semantic-index-copy";
+import { isEmbeddingServiceSelectionId } from "../shared/embedding/http-service";
+import { LOCAL_SEMANTIC_ENCODE_MODALITIES, embeddingInputModalitiesForAdapter, embeddingServiceTextOnly } from "../shared/embedding/modalities";
+import { isSemanticSearchModelId } from "../shared/embedding/profile";
+import { imageSequenceImportFlags } from "./image-sequence-preferences";
 import { applyImportPrepareResult } from "./apply-import-prepare-result";
-import { ImportSourceFailureDialog } from "./ImportSourceFailureDialog";
-import {
-  canBeginImportDecisionSubmit,
-  shouldSuppressImportContinueError,
-} from "./import-conflict-submit";
+import { importSummaryMessage } from "./import-summary";
+import { playTaskCompletionSound } from "./task-completion-sound";
+import { canBeginImportDecisionSubmit, shouldSuppressImportContinueError } from "./import-conflict-submit";
+import { resetLibraryScope } from "./stores/actions/reset-library-scope";
+import { isUserCancellation, userCancellationNoticeKey } from "./user-cancellation";
+import { shouldOpenTrashRestoreDialog, silentTrashRestoreRequest, type TrashRestoreRequest } from "./trash-restore-flow";
+import { appendSemanticCleanupNotice } from "./semantic-cleanup-notice";
+import { isBrowseScopeAffectedByFolderTrash } from "./folder-trash-scope";
+import { useRelinkOperations } from "./app/use-relink-operations";
+import { shouldRefreshContentForLibraryChange } from "./library-change-refresh";
+import { formatBytes } from "./format-file-meta";
+import { isBlockingImportOverlayVisible, shouldApplyImportProgressEvent } from "./import-progress-copy";
+import { isActiveDeleteProgress, isDeleteProgressCancelable } from "./delete-progress-copy";
+import { resolveDialogEscapeAction, type DialogEscapeSnapshot } from "./workbench/overlay/dialog-escape-stack";
+import { useDialogEscapeDismiss } from "./use-dialog-escape-dismiss";
+import { useCriticalConfirmationPrompt } from "./use-critical-confirmation-prompt";
+import { useWindowsBrowseShortcutBridge } from "./use-windows-browse-shortcut-bridge";
+import { useWorkspaceTabShortcuts } from "./use-workspace-tab-shortcuts";
+import { useBrowseCommandKeyboard } from "./use-browse-command-keyboard";
+import { usePluginShortcutKeyboard } from "./plugin-shortcut-contributions";
+import { usePluginInputCaptureFanIn } from "./use-plugin-input-capture-fanin";
+import { usePluginInputCaptureModalSeam } from "./use-plugin-input-capture-modal-seam";
+import { useWorkspaceMouseNavigation } from "./use-workspace-mouse-navigation";
+import { isImeKeyboardEvent } from "./workbench/overlay/ime-safe-dismiss";
+import { isCurrentAiConnectionProbe } from "./ai-connection-probe-guard";
+import { AI_CONNECTION_HEARTBEAT_MS, aiAnalyzeConnectionReady, aiAnalyzeShowsDisconnectGlyph, shouldRunAiConnectionHeartbeat } from "./ai-connection-heartbeat";
+import { MEDIA_JOB_LIST_PAGE_SIZE } from "../shared/media-jobs";
+import { appendMediaJobListPage, applyMediaJobSummary, replaceMediaJobListPage, type MediaJobSummaryCounts } from "./media-job-status-state";
+import { summarizeAiFailureCodes } from "./ai-job-error-message";
+import { KEEL_VERSION, buildMainMenuSections, collectMainMenuCommandStates, type MainMenuItem } from "./main-menu-items";
+import { writeShowMissingLinkedFiles } from "./linked-missing-preference";
+import { FolderCard } from "./FolderCard";
+import { MANAGED_FOLDERS_DRAG_TYPE, resolveDraggedFolderIds } from "./workbench/tree/folder-drag-drop";
+import { resolveBrowseContextMenuIntent } from "./browse-selection-menu";
+import { HoverTipHost } from "./workbench/overlay/hover-tip";
+import { PluginUiDialogHost } from "./plugin-ui-dialog-host";
+import { EditTextContextMenuHost } from "./workbench/menu/edit-text-context-menu";
+import { LibraryLoadingOverlay } from "./LibraryLoadingOverlay";
+import { ImportProgressOverlay } from "./ImportProgressOverlay";
+import { ImageSequenceImportDialog } from "./ImageSequenceImportDialog";
 import { NameConflictDialog } from "./NameConflictDialog";
 import { ContentDuplicateDialog } from "./ContentDuplicateDialog";
-import {
-  loadImportConflictPreferences,
-  rememberDuplicateDecision,
-  rememberNameConflictDecision,
-  type RememberedDuplicateDecision,
-  type RememberedNameConflictDecision,
-} from "./import-conflict-preferences";
-import {
-  nextImportConflictPhaseAfterName,
-  resolveImportConflictPresentation,
-} from "./import-conflict-flow";
-import {
-  CreateDialog,
-  type CreateLibraryPhase,
-} from "./CreateDialog";
+import { ImportSourceFailureDialog } from "./ImportSourceFailureDialog";
+import { DeleteProgressOverlay } from "./DeleteProgressOverlay";
+import { BlockingProgressOverlay } from "./BlockingProgressOverlay";
+import { ScopeHistoryButtons } from "./ScopeHistoryButtons";
+import { MainMenu } from "./MainMenu";
+import { AppSettingsEntry } from "./AppSettingsEntry";
+import { WorkspaceTabs } from "./WorkspaceTabs";
+import { Icon } from "./Icons";
+import { SearchHistoryPopover } from "./SearchHistoryPopover";
+import { WindowsWindowControls } from "./workbench/shell/WindowsWindowControls";
+import { WindowEdgeResizeHandles } from "./workbench/shell/WindowEdgeResizeHandles";
+import { TagTreeSidebar } from "./TagTreeSidebar";
+import { AutomaticTasksSidebar } from "./AutomaticTasksSidebar";
+import { LIBRARY_ROOT_FOLDER_ID, isLibraryRootFolderId } from "../shared/library-root-folder";
+import { toggleFolderMultiSelection } from "./folder-selection-toggle";
+import { iconActionAttrs } from "./icon-action-attrs";
+import { CanvasToolbarControls } from "./CanvasToolbarControls";
+import { PluginToolbarButtons } from "./plugin-toolbar-contributions";
+import { PluginWorkspaceViews } from "./plugin-workspace-views";
+import { DimensionFilterBar } from "./DimensionFilterBar";
+import { PluginJobActivityBanner } from "./PluginJobActivityBanner";
+import { Notice } from "./workbench/ui/patterns";
+import { WorkspaceNoticeBanner } from "./WorkspaceNoticeBanner";
+import { FindSimilarBanner } from "./FindSimilarBanner";
+import { TagManagementWorkspace } from "./TagManagementWorkspace";
+import { assetGridLayoutStyle } from "./workbench/collection/asset-grid-layout";
+import { assetTypeBadgeLabel, fileExtensionLabel, formatSequenceDuration, shouldShowAssetCardBadges, shouldShowDurationBadge, shouldShowExtensionBadge, shouldShowTypeBadgeAlongsideExtension } from "./asset-card-badges";
+import { corruptAssetAffordance, isCorruptAsset, missingAssetAffordance, shouldShowMissingAssetOverlay } from "./availability-affordance";
+import { resolveAssetSourceBadgeLabel, shouldShowAssetSourceBadge } from "./asset-source-badge";
+import { trashedFromLabel } from "./trashed-from-label";
+import { resolveSearchSnippetCaption } from "./search-snippet-caption";
+import { shouldShowThumbnailFailureBadge } from "./thumbnail-failure-badge";
+import { MANAGED_ASSETS_DRAG_TYPE, resolveDragDropMode, resolveDraggedAssetIds } from "./asset-drag-drop";
+import { resolveMasonryTabTarget } from "./workbench/collection/masonry-focus-order";
+import { TAG_DRAG_TYPE } from "./tag-drag-drop";
+import { TextAssetPreviewTile } from "./TextAssetPreviewTile";
+import { AssetCardMedia } from "./AssetCardMedia";
+import { SyncCardStatusBadge } from "./SyncCardStatusBadge";
+import { MasonryColumns } from "./masonry-columns";
+import { BrowseLayoutPreview } from "./BrowseLayoutPreview";
+import { JustifiedAssetRows } from "./justified-asset-rows";
+import { InspectorPanel } from "./InspectorPanel";
+import { ImageSequenceDialog } from "./ImageSequenceDialog";
+import { LinkedRulesDialog } from "./LinkedRulesDialog";
+import { ConvertLinkedDialog } from "./ConvertLinkedDialog";
+import { RestoreDialog } from "./RestoreDialog";
+import { MoveDialog } from "./MoveDialog";
 import { FolderCoverPickerDialog } from "./FolderCoverPickerDialog";
-import {
-  AiConfigDialog,
-} from "./AiConfigDialog";
-import {
-  cancellationAffectsAiBatch,
-  collectRecentAiFailureCodes,
-  computeAiBatchProgressForJobs,
-  progressFromAiProgressEvent,
-  type AiBatchProgressSnapshot,
-  type AiProgressJobUpdate,
-} from "./ai-analyze-progress";
-import { summarizeAiFailureCodes } from "./ai-job-error-message";
-import {
-  DEFAULT_AI_ANALYSIS_SETTINGS,
-  normalizeAiAnalysisSettings,
-  toWireAiAnalysisSettings,
-  type AiAnalysisSettingsWire,
-} from "../shared/ai-analysis-settings";
 import { AppSettingsDialog } from "./AppSettingsDialog";
+import { AiConfigDialog } from "./AiConfigDialog";
 import { LibrarySettingsDialog } from "./LibrarySettingsDialog";
 import { OpenSyncLibraryDialog } from "./OpenSyncLibraryDialog";
 import { AppLogDialog } from "./AppLogDialog";
 import { LibraryRecoveryDialog } from "./LibraryRecoveryDialog";
+import { AutomaticTasksDialog } from "./AutomaticTasksDialog";
 import { ScriptSandboxPreviewDialog } from "./ScriptSandboxPreviewDialog";
-import {
-  shouldApplyLibraryLifecycleEvent,
-  shouldDetachLibraryOnOpening,
-} from "./library-lifecycle-sync";
-import { shouldRefreshContentForLibraryChange } from "./library-change-refresh";
 import { AboutDialog } from "./AboutDialog";
 import { OpenSourceLicensesDialog } from "./OpenSourceLicensesDialog";
-import { playTaskCompletionSound } from "./task-completion-sound";
-import { AppSettingsEntry } from "./AppSettingsEntry";
-import { usePrefsStore } from "./stores/prefs-store";
-import { useDialogField } from "./stores/dialogs-store";
-import { resetLibraryScope } from "./stores/actions/reset-library-scope";
-import { useWorkspaceField } from "./stores/workspace-store";
-import { usePluginsField } from "./stores/plugins-store";
-import { aiFields, useAiField } from "./stores/ai-store";
-import { useEmbeddingField } from "./stores/embedding-store";
-import { useJobsField } from "./stores/jobs-store";
-import { transfersFields, useTransfersField } from "./stores/transfers-store";
-import { usePreviewField } from "./stores/preview-store";
-import { inspectorFields, useInspectorField } from "./stores/inspector-store";
-import { selectionFields, useSelectionField } from "./stores/selection-store";
-import { browseFields, useBrowseField } from "./stores/browse-store";
-import { useQueryField } from "./stores/query-store";
-import { navigationFields, useNavigationField, type AssetScope } from "./stores/navigation-store";
-import { sessionFields, useSessionField } from "./stores/session-store";
-import {
-  imageSequenceImportFlags,
-} from "./image-sequence-preferences";
-import {
-  isPostImportSequenceOfferId,
-  postImportFrameGroupsForAction,
-  postImportSequencePlanFromAssets,
-  type PostImportSequencePlan,
-} from "./post-import-image-sequences";
-import { resolveAssetSummariesForSelection } from "./image-sequence-selection";
-import { MediaJobsDialog } from "./MediaJobsDialog";
-import { PluginJobActivityBanner } from "./PluginJobActivityBanner";
+import { ExportDialog } from "./ExportDialog";
+import { ImportLibraryChooserDialog, OpenLibraryChooserDialog } from "./ImportLibraryChooserDialog";
+import { ImportDialog } from "./ImportDialog";
+import { RelinkPreview } from "./RelinkPreview";
 import { AiConnectionFailureDialog } from "./AiConnectionFailureDialog";
 import { FatalAlertDialog } from "./FatalAlertDialog";
 import { CriticalConfirmationDialog } from "./CriticalConfirmationDialog";
-import { useCriticalConfirmationPrompt } from "./use-critical-confirmation-prompt";
-import { useAiConnectionFailure } from "./use-ai-connection-failure";
-import {
-  countOtherLivePluginJobs,
-  hasActivePluginJobs,
-  selectPluginJobActivity,
-} from "./plugin-job-activity";
-import { JobStatusCoordinator } from "./job-status-coordinator";
-import {
-  appendMediaJobListPage,
-  applyMediaJobSummary,
-  replaceMediaJobListPage,
-  type MediaJobSummaryCounts,
-} from "./media-job-status-state";
-import { MEDIA_JOB_LIST_PAGE_SIZE } from "../shared/media-jobs";
-import { useScrollbarActivity } from "./workbench/collection/use-scrollbar-activity";
-import { splitFilenameForDisplay } from "./filename-display";
-
-import {
-  ContextMenuProvider,
-  useContextMenu,
-} from "./workbench/menu/context-menu";
-import { resolveBrowseContextMenuIntent } from "./browse-selection-menu";
-import { buildMultiAssetMenuSkipReport, browseScopeFromVirtualLayout } from "./menu-skip-report";
-import { useAssetSelection } from "./useAssetSelection";
-import { buildMarqueeLayoutKey } from "./marquee-layout-key";
-import {
-  readPublishedCanvasAssetLayout,
-  readPublishedCanvasAssetLayoutIndex,
-} from "./canvas-asset-layout";
-import { useSelectionKeyboard } from "./use-selection-keyboard";
-import { useBrowseCommandKeyboard } from "./use-browse-command-keyboard";
-import { useWorkspaceTabShortcuts } from "./use-workspace-tab-shortcuts";
-import { resolveBrowsePasteDestination } from "./browse-paste-target";
-import { useWorkspaceMouseNavigation } from "./use-workspace-mouse-navigation";
-import {
-  shouldOpenTrashRestoreDialog,
-  silentTrashRestoreRequest,
-  type TrashRestoreRequest,
-} from "./trash-restore-flow";
-import { isBrowseScopeAffectedByFolderTrash } from "./folder-trash-scope";
-import {
-  useBrowserSessionPersist,
-  useBrowserSessionRestore,
-  usePendingRestoredAssetFocus,
-} from "./use-browser-session-restore";
-import { useExtensionActiveContext } from "./use-extension-active-context";
-import { useExtensionSaveReveal } from "./use-extension-save-reveal";
-import { usePendingAssetReveal } from "./use-pending-asset-reveal";
-import { missingNavigationSummaryIsFailure } from "./blocking-navigation-summary";
-import {
-  browseScopeForAsset,
-  currentScopeShowsRevealAssets,
-  pendingRevealFromAssets,
-  sharedBrowseScopeForAssets,
-  type PendingAssetReveal,
-} from "./pending-asset-reveal";
-import { resolveInspectorTagTarget } from "./inspector-tag-target";
-import { useBatchActions } from "./useBatchActions";
-import { useShellFileActions } from "./use-shell-file-actions";
-import { useInspectorMultiEdit } from "./use-inspector-multi-edit";
-import { useInspectorAssetMetadata } from "./use-inspector-asset-metadata";
-import { useInspectorFieldHandlers } from "./use-inspector-field-handlers";
-import { useAssetDragDropHandlers } from "./use-asset-drag-drop-handlers";
-import { useDialogEscapeDismiss } from "./use-dialog-escape-dismiss";
-import { isImeKeyboardEvent } from "./workbench/overlay/ime-safe-dismiss";
-import { PluginToolbarButtons } from "./plugin-toolbar-contributions";
-import { usePluginShortcutKeyboard } from "./plugin-shortcut-contributions";
-import { usePluginInputCaptureFanIn } from "./use-plugin-input-capture-fanin";
-import { usePluginInputCaptureModalSeam } from "./use-plugin-input-capture-modal-seam";
-import {
-  isPluginSidebarViewsEnabled,
-  PluginSidebarViewPanel,
-  usePluginSidebarViews,
-} from "./plugin-sidebar-views";
-import { PluginUiDialogHost } from "./plugin-ui-dialog-host";
-import { PluginWorkspaceViews } from "./plugin-workspace-views";
-import { useExternalImportHandlers } from "./use-external-import-handlers";
-import { useFolderDragDropHandlers } from "./use-folder-drag-drop-handlers";
-import { WorkspaceNoticeBanner } from "./WorkspaceNoticeBanner";
-import {
-  MANAGED_FOLDERS_DRAG_TYPE,
-  resolveDraggedFolderIds,
-} from "./workbench/tree/folder-drag-drop";
-import { importSummaryMessage } from "./import-summary";
-import { automationCommandToast } from "./automation-command-toast";
-import {
-  resolveDialogEscapeAction,
-  type DialogEscapeSnapshot,
-} from "./workbench/overlay/dialog-escape-stack";
-import { splitAssetFileName, useAssetRename } from "./useAssetRename";
-import { useInlineFolderEdit } from "./use-inline-folder-edit";
-import { usePanelResize } from "./workbench/shell/use-panel-resize";
-import { useToastNotifications } from "./useToastNotifications";
-import { Notice } from "./workbench/ui/patterns";
-import {
-  AI_CONNECTION_HEARTBEAT_MS,
-  aiAnalyzeConnectionReady,
-  aiAnalyzeShowsDisconnectGlyph,
-  shouldRunAiConnectionHeartbeat,
-} from "./ai-connection-heartbeat";
-import {
-  MANAGED_ASSETS_DRAG_TYPE,
-  resolveDragDropMode,
-  resolveDraggedAssetIds,
-} from "./asset-drag-drop";
-import {
-  ASSET_DRAG_PREVIEW_HEIGHT,
-  ASSET_DRAG_PREVIEW_WIDTH,
-  dismissAssetDragPreview,
-  setAssetDragPreviewCopyMode,
-  showAssetDragPreview,
-} from "./asset-drag-preview";
-import { DimensionFilterBar } from "./DimensionFilterBar";
-import { buildTagFilterClauses, resolveTagFilterSets } from "./dimension-filter-selection";
-import {
-  buildActiveFilterChips,
-  type ClearableFilterId,
-} from "./active-discovery-filters";
-import { resolveBrowseEmptyState, resolveImportMenuCopy } from "./browse-empty-state";
-import { trashedFromLabel } from "./trashed-from-label";
-import {
-  buildTrashBreadcrumbHops,
-  filterTrashedAssetsAtTombstone,
-  filterTrashedFoldersAtTombstone,
-} from "./trash-browse";
-import { invertSelection } from "./workbench/selection/invert-selection";
-import { trashedFoldersToBrowseEntries } from "./trashed-folder-entries";
-import { computeMasonrySelectionAssetIds } from "./masonry-selection-order";
-import { resolveMasonryTabTarget } from "./workbench/collection/masonry-focus-order";
-import { shuffleBrowseItems, shuffledIndexOrder } from "./client-shuffle";
-import {
-  toMessage,
-  messageForPublicError,
-  LibraryOperationError,
-  libraryOpenBlockingTitleKey,
-} from "./error-utils";
-import {
-  isUserCancellation,
-  userCancellationNoticeKey,
-} from "./user-cancellation";
-import {
-  importedSequenceFrameUrl,
-  type SequencePreviewFrame,
-  type SequencePreviewSource,
-} from "./image-sequence-preview";
-
-import type { EntityAppearance, EntityAppearanceTarget } from "../shared/entity-appearance";
-import type {
-  AiSearchPlan,
-  AssetSummary,
-  AssetMetadataResult,
-  FilterClause,
-  LinkedFolderRule,
-  LinkedFolderSummary,
-  SearchScope,
-  SortDefinition,
-  TagSummary,
-} from "../shared/asset-types";
-import {
-  assetsRemainingAfterMembership,
-  type BrowseMembershipChange,
-} from "./browse-filter-membership";
-import type { LibraryNavigationSummary } from "../shared/library-navigation";
-import { LIBRARY_ROOT_FOLDER_ID, isLibraryRootFolderId } from "../shared/library-root-folder";
-import { DEFAULT_COLOR_SIMILARITY } from "../shared/color-filter-presets";
-import {
-  loadSemanticSearchPreferences,
-  saveSemanticSearchPreferences,
-  subscribeSemanticSearchPreferences,
-  type SemanticSearchPageSize,
-} from "./semantic-search-preferences";
-import { semanticSearchNotice } from "./semantic-index-copy";
-import { appendSemanticCleanupNotice } from "./semantic-cleanup-notice";
-import { mergeKeywordAndSemanticRanks, semanticBrowseRegistration } from "./semantic-browse";
-import { isEmbeddingServiceSelectionId } from "../shared/embedding/http-service";
-import {
-  embeddingInputModalitiesForAdapter,
-  embeddingServiceTextOnly,
-  LOCAL_SEMANTIC_ENCODE_MODALITIES,
-} from "../shared/embedding/modalities";
-import {
-  semanticBackgroundWorkActive,
-  semanticToolbarReady,
-} from "./semantic-work";
-import { resolveEffectiveEmbeddingSelection } from "../shared/embedding/library-binding";
-import { subscribeEmbeddingCatalog, subscribeEmbeddingInstallActivity } from "./embedding-catalog-events";
-import {
-  resolveFindSimilar,
-  canFindSimilarForAsset,
-  type FindSimilarSource,
-} from "./find-similar";
-import { isSemanticSearchModelId } from "../shared/embedding/profile";
-import { compactFormatFilterTokens } from "../shared/text-media";
-import type {
-  KeelLibraryApi,
-  LibraryApiResult,
-  AiJobStatus,
-  PluginJobStatus,
-} from "../shared/library-api";
-import type { KeelShellApi } from "../shared/external-url";
-import type { KeelAutomationScriptApi } from '../shared/automation-script-api';
-import type { KeelPluginManagerApi } from '../shared/plugin-manager-api';
-import type { PluginContributionContext } from "../plugins/plugin-context";
-import type { ReadAppLogResult } from "../shared/app-log";
-import type {
-  ImportConflictPlan,
-  ImportSourceFailurePlan,
-  RendererLibrarySummary,
-} from "../shared/protocol/responses";
-import { AssetPreviewModal, type AssetPreviewModalHandle } from "./AssetPreviewModal";
-import { TextAssetPreviewTile } from "./TextAssetPreviewTile";
-import { WindowEdgeResizeHandles } from "./workbench/shell/WindowEdgeResizeHandles";
-import { WindowsWindowControls } from "./workbench/shell/WindowsWindowControls";
-import { useViewerChromeIdle } from "./use-viewer-chrome-idle";
-import { useViewerVolume } from "./use-viewer-volume";
-import { hasActiveModalDialog, useDialogFocusTrap } from "./workbench/overlay/use-dialog-focus-trap";
+import { MediaJobsDialog } from "./MediaJobsDialog";
 import { AssetContextMenu } from "./AssetContextMenu";
+import type {
+  QueryFilterSnapshot,
+  RendererWindow,
+  SearchDefinition,
+  WorkspaceNavigationRequest} from "./app/app-shared";
 import {
-  buildPluginBrowseScope,
-  buildPluginViewerState,
-} from "./plugin-context-state";
-import { createPluginMenuContributionContext } from "./plugin-contribution-context";
-import { InspectorPanel } from "./InspectorPanel";
-import {
-  assetCaptionAlignClass,
-  nextCanvasCaptionAlign,
-  CARD_SIZE_MAX,
-  CARD_SIZE_MIN,
-  shouldShowGridDimensions,
-} from "./canvas-preferences";
-import {
-  saveBrowseSortPreferences,
-} from "./browse-sort-preferences";
-import {
-  FOLDER_CARD_ROW_INLINE_PADDING_PX,
-  browseCardLayoutWidthPx,
-  elementContentBoxWidthPx,
-  masonryAlignedFolderWidthPx,
-} from "./folder-card-width";
-import { BrowseLayoutPreview } from "./BrowseLayoutPreview";
-import { assetSummaryFromLayoutEntry, browseRankFromPublishedId } from "./browse-window-slots";
-import { isGeometryPlaceholder } from "./browse/use-virtual-browse-session";
-import { deferNavigationHydration } from "./browse/defer-navigation-hydration";
-import {
-  permuteVirtualBrowseLayout,
-  virtualLayoutEntryForAsset,
-  virtualLayoutPublishedId,
-  type VirtualBrowseLayout,
-} from "./browse/virtual-browse-layout";
-import { formatBytes, formatShortDate } from "./format-file-meta";
-import {
-  libraryTransferKindFromOperation,
-} from "./library-transfer-progress";
-import {
-  BROWSE_PAGE_SIZE,
-  fetchFirstRankedBrowsePage,
-  registerBrowseSearchPage,
-  useBrowsePagination,
-} from "./use-browse-pagination";
-import {
-  enumerateDiscreteCardSizes,
-  nearestDiscreteCardSize,
-  nextDiscreteCardSizeFromWheelDelta,
-  stepDiscreteCardSize,
-} from "./card-size-stops";
-import { assetGridLayoutStyle } from "./workbench/collection/asset-grid-layout";
-import { JustifiedAssetRows } from "./justified-asset-rows";
-import { MasonryColumns } from "./masonry-columns";
-import {
-  applyAssetThumbnailPatches,
-  mergeAssetThumbnailPatch,
-  type AssetThumbnailPatch,
-} from "./asset-thumbnail-patches";
-import {
-  expandThumbnailCardEvents,
-  shouldProjectThumbnailCompletion,
-} from "./thumbnail-completion-projection";
-import {
-  captureAnchor,
-  pickNearestCard,
-  rectLikeFromDomRect,
-  type AnchorCard,
-  type CanvasAnchor,
-} from "./workbench/collection/canvas-scroll-anchor";
-import {
-  captureReflowAnchorFromCards,
-  retainReflowAnchor,
-  scheduleAnchorRestore,
-  type ScrollOffsetSnapshot,
-} from "./canvas-reflow-restore";
-import {
-  captureBrowseViewSnapshot,
-  type BrowseViewSnapshot,
-} from "./workbench/collection/view-restore";
-import { tagRenameError } from "./tag-rename-error";
-import { tagBrowseDefinition } from "./tag-browse-definition";
-import { scheduleBrowseViewRestore } from "./browse-view-restore-scheduler";
-import {
-  canvasHasPreviewScrollHold,
-  installBrowseScrollWriteSpy,
-  logBrowseScrollWrite,
-  PREVIEW_SCROLL_HOLD_MS,
-  setCanvasPreviewScrollHold,
-  shouldApplyRestoredFocusScroll,
-} from "./browse-scroll-debug";
-import {
-  isMacPlatform,
-  type CommandPlatform,
-} from "./workbench/menu/command-types";
-import { usesWindowsStyleShell } from "./renderer-platform";
-import {
-  defaultKeyboardCardSize,
-  dispatchGlobalZoomMenuAction,
-  dispatchGlobalZoomMenuCommandIfAllowed,
-  GLOBAL_ZOOM_MENU_ACTION_EVENT,
-  matchGlobalZoomShortcut,
-  type GlobalZoomAction,
-  shouldIgnoreGlobalZoomShortcut,
-} from "./global-zoom-shortcuts";
-import { useRelinkOperations } from "./app/use-relink-operations";
+  IS_MAC_PLATFORM,
+  IS_WINDOWS_PLATFORM,
+  LIBRARY_LOADING_DISPLAY_DELAY_MS,
+  NETWORK_LIBRARY_RELOAD_INTERVAL_MS,
+  SHORTCUT_PLATFORM,
+  ToolButton,
+  formatDate,
+  formatDuration,
+  highlightSnippet,
+  parseNumericRange,
+  renderMiddleEllipsisFilename,
+  useDelayedVisibility,
+} from "./app/app-shared";
 
-const IS_MAC_PLATFORM = isMacPlatform(navigator.userAgent);
-// Windows-style shell: Windows and Linux (see usesWindowsStyleShell).
-const IS_WINDOWS_PLATFORM = usesWindowsStyleShell(navigator.userAgent);
 
-const SHORTCUT_PLATFORM: CommandPlatform = IS_MAC_PLATFORM ? "mac" : "windows";
-/**
- * Minimum spacing between full browse reloads triggered by a remote library's
- * change sequence.
- *
- * Serpent-yti0 established that `revision_artifacts` / `jobs` writes bump the
- * shared change sequence, and that a full `searchAssets` per bump freezes the
- * canvas. Non-network libraries were fixed by ignoring those bumps; network
- * libraries still re-read, because another computer's asset changes genuinely
- * only arrive that way. This interval is that cross-instance visibility delay.
- */
-const NETWORK_LIBRARY_RELOAD_INTERVAL_MS = 750;
-
-type RendererWindow = Window & {
-  keel?: {
-    library?: KeelLibraryApi;
-    shell?: KeelShellApi;
-    automation?: KeelAutomationScriptApi;
-    plugins?: KeelPluginManagerApi;
-    mcp?: KeelMcpSettingsApi;
-    e2e?: {
-      useNativeAssetDrag?: boolean;
-      getRequestCount: (type: string) => number;
-    };
-  };
-};
-
-const LIBRARY_LOADING_DISPLAY_DELAY_MS = 3_000;
-
-function useDelayedVisibility(active: boolean, delayMs: number): boolean {
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    if (!active) {
-      // Clear the previous activation so a later slow open gets its own
-      // three-second grace period instead of reusing stale visibility.
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- reset is the falling-edge cleanup for this timer state
-      setVisible(false);
-      return;
-    }
-
-    const timer = window.setTimeout(() => setVisible(true), delayMs);
-    return () => window.clearTimeout(timer);
-  }, [active, delayMs]);
-
-  return visible;
-}
-
-type QueryNumericRangeState = {
-  min: string;
-  max: string;
-  exclude: boolean;
-};
-type QueryFilterSnapshot = {
-  pinnedTagId?: string | null;
-  formatFilter: string;
-  excludeFormatFilter: boolean;
-  tagFilter: string;
-  tagFilterExpression?: string;
-  tagFilterMode?: "selection" | "expression";
-  tagFilterLastValidExpression?: string;
-  excludeTagFilter: boolean;
-  excludedTagFilter: string;
-  includeAiTagFilter: boolean;
-  tagFilterMatch: "any" | "all";
-  ratingFilter: string;
-  excludeRatingFilter: boolean;
-  includeAiRatingFilter: boolean;
-  favoriteFilter: "any" | "yes" | "no";
-  sourceUrlFilter: "any" | "yes" | "no";
-  availabilityFilter: "any" | "available" | "missing";
-  excludeAvailabilityFilter: boolean;
-  widthRange: QueryNumericRangeState;
-  heightRange: QueryNumericRangeState;
-  aspectRatioRange: QueryNumericRangeState;
-  aspectRatioRanges: Array<{ min: string; max: string }>;
-  longEdgeRange: QueryNumericRangeState;
-  durationRange: QueryNumericRangeState;
-};
-// REQ-FOLDER-007 removed the "folder" kind: folder create/rename now happens
-// inline in the directory tree (use-inline-folder-edit), not in a dialog.
-type WorkspaceNavigationRequest = Readonly<{
-  token?: WorkspaceNavigationToken;
-  historyMode: WorkspaceNavigationHistoryMode;
-  isCurrent: () => boolean;
-  deferReveal?: boolean;
-  browseState?: WorkspaceTabBrowseState;
-  browseStateTabId?: string;
-}>;
-function renderFilenameHighlights(value: string, searchValue: string, keyPrefix: string): ReactNode {
-  const segments = splitSearchHighlights(value, searchValue, "filename");
-  // Keep the ordinary, non-search path as a text node. Wrapping every
-  // segment in an inline span prevents text-overflow from producing the
-  // intended middle ellipsis inside the flex prefix.
-  if (segments.length === 1 && !segments[0]!.matched) {
-    return segments[0]!.text;
-  }
-  return segments.map((segment, index) =>
-    segment.matched ? (
-      <mark className="search-text-highlight" key={`${keyPrefix}-match-${index}`}>
-        {segment.text}
-      </mark>
-    ) : (
-      <span key={`${keyPrefix}-text-${index}`}>{segment.text}</span>
-    ),
-  );
-}
-
-function renderMiddleEllipsisFilename(name: string, searchValue: string): ReactNode {
-  const parts = splitFilenameForDisplay(name);
-  return (
-    <>
-      <span className="asset-filename-prefix">
-        {renderFilenameHighlights(parts.prefix, searchValue, "filename-prefix")}
-      </span>
-      {parts.tail ? (
-        <span className="asset-filename-tail">
-          {renderFilenameHighlights(parts.tail, searchValue, "filename-tail")}
-        </span>
-      ) : null}
-      {parts.extension ? (
-        <span className="asset-filename-extension">
-          {renderFilenameHighlights(parts.extension, searchValue, "filename-extension")}
-        </span>
-      ) : null}
-    </>
-  );
-}
-
-type SearchDefinition = {
-  search?: SearchQuery;
-  filters?: FilterClause[];
-  sort?: SortDefinition;
-};
-
-function ToolButton({
-  label,
-  icon,
-  onClick,
-  pressed,
-  disabled,
-}: {
-  label: string;
-  icon: IconName;
-  onClick?: () => void;
-  pressed?: boolean;
-  disabled?: boolean;
-}) {
-  return (
-    <button
-      aria-pressed={pressed}
-      className="tool-button"
-      disabled={disabled}
-      onClick={onClick}
-      type="button"
-      {...iconActionAttrs(label)}
-    >
-      <Icon name={icon} />
-    </button>
-  );
-}
+// A view of the navigation store; stable across renders.
+const folderRecursiveRef = navigationFields.ref("folderRecursive");
 
 function AppInner() {
   const setCanvasPrefs = usePrefsStore((state) => state.setCanvas);
@@ -1186,7 +661,6 @@ function AppInner() {
 
   // REQ-FOLDER-009: folder browse/search recurse only when explicitly enabled.
   const [folderRecursive, setFolderRecursive] = useNavigationField("folderRecursive");
-  const folderRecursiveRef = navigationFields.ref("folderRecursive");
   const [folderRecursivePrefs, setFolderRecursivePrefs] = useNavigationField("folderRecursivePrefs");
   const [showFolderCardsWhenRecursive, setShowFolderCardsWhenRecursive] = useNavigationField("showFolderCardsWhenRecursive");
   // Serpent-b8a853: one-time feature hints for hidden UI affordances share a
@@ -15615,84 +15089,4 @@ export function App() {
       <AppInner />
     </ContextMenuProvider>
   );
-}
-
-export function aiSearchPlanToDefinition(plan: AiSearchPlan): SearchDefinition {
-  const positiveTerms = [...new Set([...plan.keywords, ...plan.synonyms])];
-  const clauses: SearchQuery["clauses"] = [];
-  if (positiveTerms.length > 0)
-    clauses.push({ field: null, values: positiveTerms, exclude: false });
-  // LibraryService executes exclude-only clauses through a parameterized
-  // NOT-IN subquery, so a model exclusion is never silently discarded.
-  if (plan.exclusions.length > 0) {
-    clauses.push({
-      field: null,
-      values: [...new Set(plan.exclusions)],
-      exclude: true,
-    });
-  }
-  return {
-    ...(clauses.length > 0 ? { search: { clauses } } : {}),
-    ...(plan.filters.length > 0 ? { filters: plan.filters } : {}),
-    ...(plan.sort ? { sort: plan.sort } : {}),
-  };
-}
-function formatDate(value: string, locale: AppLocale, unknownLabel: string) {
-  return formatShortDate(value, locale, unknownLabel);
-}
-export function formatDuration(durationMs: number): string {
-  const totalSeconds = Math.max(0, Math.floor(durationMs / 1_000));
-  const hours = Math.floor(totalSeconds / 3_600);
-  const minutes = Math.floor((totalSeconds % 3_600) / 60);
-  const seconds = totalSeconds % 60;
-  return hours > 0
-    ? `${hours}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`
-    : `${minutes}:${String(seconds).padStart(2, "0")}`;
-}
-
-export function parseNumericRange(
-  minInput: string,
-  maxInput: string,
-  scale = 1,
-  integer = true,
-): { min?: number; max?: number } | null {
-  const minValue =
-    minInput.trim() === "" ? undefined : Number(minInput) * scale;
-  const maxValue =
-    maxInput.trim() === "" ? undefined : Number(maxInput) * scale;
-  if (minValue === undefined && maxValue === undefined) return null;
-  if (
-    (minValue !== undefined && (!Number.isFinite(minValue) || minValue < 0)) ||
-    (maxValue !== undefined && (!Number.isFinite(maxValue) || maxValue < 0)) ||
-    (minValue !== undefined && maxValue !== undefined && minValue > maxValue)
-  ) {
-    return null;
-  }
-  return {
-    ...(minValue !== undefined
-      ? { min: integer ? Math.round(minValue) : minValue }
-      : {}),
-    ...(maxValue !== undefined
-      ? { max: integer ? Math.round(maxValue) : maxValue }
-      : {}),
-  };
-}
-function highlightSnippet(value: string): ReactNode {
-  const segments = value.split(/(<\/?b>)/i);
-  let highlighted = false;
-  return segments.map((segment, index) => {
-    if (/^<b>$/i.test(segment)) {
-      highlighted = true;
-      return null;
-    }
-    if (/^<\/b>$/i.test(segment)) {
-      highlighted = false;
-      return null;
-    }
-    return highlighted ? (
-      <mark key={index}>{segment}</mark>
-    ) : (
-      <span key={index}>{segment}</span>
-    );
-  });
 }

@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   planAiSearch,
 } from '../../src/main/ai-search-planner';
-import { aiSearchPlanToDefinition } from '../../src/renderer/App';
+import { aiSearchPlanToDefinition } from '../../src/renderer/app/app-shared';
 import { parseRendererRequest } from '../../src/shared/protocol/requests';
 import { parseRendererResult } from '../../src/shared/protocol/responses';
 

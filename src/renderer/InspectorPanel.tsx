@@ -24,7 +24,7 @@ import { InspectorCardFeelMotion } from "./inspector-card-feel-motion";
 import { useInspectorCardFeel } from "./InspectorCardFeelProvider";
 import { IconActionButton } from "./icon-action-button";
 import { iconActionAttrs } from "./icon-action-attrs";
-import { formatDuration } from "./App";
+import { formatDuration } from "./app/app-shared";
 import { resolveInspectorPreviewSrc } from "./inspector-preview";
 import { resolveAutoGrowHeight } from "./inspector-description-autogrow";
 import {
