@@ -825,8 +825,13 @@ export async function runAutomaticTasks(this: LibraryService, libraryId: string,
   }
   this.runningAutomaticTasks.add(libraryId);
   try {
+    const convertedToRule = hasTable(openLibrary.connection, "legacy_group_migrations")
+      ? openLibrary.connection.prepare("SELECT 1 FROM legacy_group_migrations WHERE kind='task-rule' AND legacy_id=?")
+      : null;
     for (const task of this.listAutomaticTasks(libraryId)) {
       if (taskId && task.taskId !== taskId) continue;
+      // PR: a task converted into a rule runs as that rule only.
+      if (convertedToRule?.get(task.taskId)) continue;
       if (!force && (!task.enabled || task.trigger !== "library-change"))
         continue;
       const db = openLibrary.connection;

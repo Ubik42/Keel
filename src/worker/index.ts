@@ -2680,6 +2680,13 @@ async function handleRequestWithoutWriteLease(request: WorkerRequest): Promise<W
       }
       return result;
     }
+    case 'rule.list':return {ok:true,type:'rule.list.result',result:libraryService.listRules(request.command.libraryId)};
+    case 'rule.save':return {ok:true,type:'rule.list.result',result:libraryService.saveRule(request.command)};
+    case 'rule.delete':return {ok:true,type:'rule.list.result',result:libraryService.deleteRule(request.command)};
+    case 'rule.set-enabled':return {ok:true,type:'rule.list.result',result:libraryService.setRuleEnabled(request.command)};
+    case 'rule.layout.set':return {ok:true,type:'rule.list.result',result:libraryService.setRuleLayout(request.command)};
+    case 'rule.runs.list':return {ok:true,type:'rule.runs.result',runs:libraryService.listRuleRuns(request.command)};
+    case 'rule.run.record':libraryService.recordRuleRun(request.command);return {ok:true,type:'rule.run.recorded'};
     case 'automatic-task.layout.get':return {ok:true,type:'automatic-task.layout',layout:libraryService.getAutomaticTaskLayout(request.command.libraryId)};
     case 'automatic-task.layout.set':return {ok:true,type:'automatic-task.layout',layout:libraryService.setAutomaticTaskLayout(request.command)};
     case 'automatic-task.list':return {ok:true,type:'automatic-task.result',tasks:libraryService.listAutomaticTasks(request.command.libraryId)};

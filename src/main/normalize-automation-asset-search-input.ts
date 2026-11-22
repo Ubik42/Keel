@@ -10,11 +10,24 @@ import { parseSearchExpressionDetailed } from '../shared/search-expression';
 export function normalizeAutomationAssetSearchInput(rawInput: unknown): unknown | undefined {
   const search = automationScriptAssetSearchInputSchema.safeParse(rawInput);
   if (!search.success) return undefined;
-  if (search.data.query === null) return { ...search.data, query: null };
-  const parsed = parseSearchExpressionDetailed(search.data.query);
+  const { definition, scope, query: text, ...page } = search.data;
+  const scopePart = scope ? { scope: { kind: 'folder' as const, folderId: scope.folderId, recursive: scope.recursive } } : {};
+  if (definition) {
+    // A structured query; a text query, when also given, is not combined with it.
+    return {
+      ...page,
+      query: definition.search ?? null,
+      ...(definition.filters ? { filters: definition.filters } : {}),
+      ...(definition.sort ? { sort: definition.sort } : {}),
+      ...scopePart,
+    };
+  }
+  if (text === null || text === undefined) return { ...page, query: null, ...scopePart };
+  const parsed = parseSearchExpressionDetailed(text);
   if (!parsed.ok) return undefined;
   return {
-    ...search.data,
+    ...page,
     query: { clauses: [], expression: parsed.expression },
+    ...scopePart,
   };
 }

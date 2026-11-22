@@ -624,6 +624,8 @@ import * as tagMethods from "./library/tag-methods";
 import * as billfishEagleMethods from "./integrations/billfish-eagle-methods";
 import * as aiMethods from "./integrations/ai-methods";
 import * as exportMethods from "./library/export-methods";
+import * as ruleMethods from "./library/rule-methods";
+import { RULES_SQL } from "../shared/rules";
 
 interface RunResult {
   changes: number;
@@ -3530,6 +3532,7 @@ export const MIGRATIONS = [
   { version: 63, sql: AUTOMATIC_TASKS_SQL, checksum: createHash('sha256').update(AUTOMATIC_TASKS_SQL).digest('hex') },
   { version: 64, sql: AUTOMATIC_TASK_LAYOUT_SQL, checksum: createHash('sha256').update(AUTOMATIC_TASK_LAYOUT_SQL).digest('hex') },
   { version: 65, sql: ASSET_COMPANIONS_SQL, checksum: createHash('sha256').update(ASSET_COMPANIONS_SQL).digest('hex') },
+  { version: 66, sql: RULES_SQL, checksum: createHash('sha256').update(RULES_SQL).digest('hex') },
 ] as const;
 export const SUPPORTED_SCHEMA_VERSION = MIGRATIONS.at(-1)!.version;
 
@@ -6617,7 +6620,7 @@ export function closeIgnoringFailure(connection: DatabaseConnection | undefined)
 
 // PL: methods live in domain modules; see installLibraryServiceMethods below.
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging -- PL: the class holds state, the interface lists the methods installed below.
-export interface LibraryService extends linkedMethods.LinkedMethods, coreMethods.CoreMethods, assetMethods.AssetMethods, mediaMethods.MediaMethods, syncMethods.SyncMethods, scanMethods.ScanMethods, trashMethods.TrashMethods, sessionMethods.SessionMethods, historyMethods.HistoryMethods, folderMethods.FolderMethods, importMethods.ImportMethods, queryMethods.QueryMethods, tagMethods.TagMethods, billfishEagleMethods.BillfishEagleMethods, aiMethods.AiMethods, exportMethods.ExportMethods {}
+export interface LibraryService extends ruleMethods.RuleMethods, linkedMethods.LinkedMethods, coreMethods.CoreMethods, assetMethods.AssetMethods, mediaMethods.MediaMethods, syncMethods.SyncMethods, scanMethods.ScanMethods, trashMethods.TrashMethods, sessionMethods.SessionMethods, historyMethods.HistoryMethods, folderMethods.FolderMethods, importMethods.ImportMethods, queryMethods.QueryMethods, tagMethods.TagMethods, billfishEagleMethods.BillfishEagleMethods, aiMethods.AiMethods, exportMethods.ExportMethods {}
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging -- see the interface above.
 export class LibraryService {
@@ -6912,5 +6915,5 @@ function installLibraryServiceMethods(target: object, ...modules: object[]): voi
     }
   }
 }
-installLibraryServiceMethods(LibraryService.prototype, linkedMethods, coreMethods, assetMethods, mediaMethods, syncMethods, scanMethods, trashMethods, sessionMethods, historyMethods, folderMethods, importMethods, queryMethods, tagMethods, billfishEagleMethods, aiMethods, exportMethods);
+installLibraryServiceMethods(LibraryService.prototype, ruleMethods, linkedMethods, coreMethods, assetMethods, mediaMethods, syncMethods, scanMethods, trashMethods, sessionMethods, historyMethods, folderMethods, importMethods, queryMethods, tagMethods, billfishEagleMethods, aiMethods, exportMethods);
 

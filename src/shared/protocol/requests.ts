@@ -1,4 +1,5 @@
 import { automaticTaskConfigSchema, automaticTaskLayoutSchema } from '../automatic-tasks';
+import { ruleLayoutSchema, ruleManifestSchema, ruleRunSchema } from '../rules';
 import { z } from 'zod';
 
 import {
@@ -1913,6 +1914,14 @@ export const workerCommandSchema = z.discriminatedUnion('type', [
     folderId: identifierSchema,
     targetFolderId: optionalIdentifierSchema,
   }),
+  // PR: rules (docs/进度.md 3.5).
+  z.strictObject({ type: z.literal('rule.list'), libraryId: identifierSchema }),
+  z.strictObject({ type: z.literal('rule.save'), libraryId: identifierSchema, manifest: ruleManifestSchema, source: z.string().max(256 * 1024), enabled: z.boolean().optional() }),
+  z.strictObject({ type: z.literal('rule.delete'), libraryId: identifierSchema, ruleId: z.string().uuid() }),
+  z.strictObject({ type: z.literal('rule.set-enabled'), libraryId: identifierSchema, ruleId: z.string().uuid(), enabled: z.boolean() }),
+  z.strictObject({ type: z.literal('rule.layout.set'), libraryId: identifierSchema, layout: ruleLayoutSchema }),
+  z.strictObject({ type: z.literal('rule.runs.list'), libraryId: identifierSchema, ruleId: z.string().uuid(), limit: z.number().int().positive().max(200).optional() }),
+  z.strictObject({ type: z.literal('rule.run.record'), libraryId: identifierSchema, run: ruleRunSchema }),
   z.strictObject({type:z.literal('automatic-task.layout.get'),libraryId:identifierSchema}),
   z.strictObject({type:z.literal('automatic-task.layout.set'),libraryId:identifierSchema,layout:automaticTaskLayoutSchema}),
   z.strictObject({

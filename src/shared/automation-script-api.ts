@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { smartCollectionQueryDefinitionSchema } from './asset-types';
+
 import { publicErrorSchema } from './protocol/errors';
 import {
   automationScriptHostErrorSchema,
@@ -11,7 +13,11 @@ export const automationScriptSourceSchema = z.string().min(1).max(64 * 1024);
 
 /** Text syntax is parsed in Main with the same grammar as the desktop toolbar. */
 export const automationScriptAssetSearchInputSchema = z.strictObject({
-  query: z.string().max(4_096).nullable(),
+  query: z.string().max(4_096).nullable().optional(),
+  /** PR: a saved structured query (search + filters + sort), e.g. from a converted automatic task. */
+  definition: smartCollectionQueryDefinitionSchema.optional(),
+  /** PR: limit the search to a managed folder; rules pass `rule.scope`. */
+  scope: z.strictObject({ folderId: z.string().min(1).nullable(), recursive: z.boolean() }).nullable().optional(),
   limit: z.number().int().positive().max(200).optional(),
   offset: z.number().int().nonnegative().optional(),
 });
