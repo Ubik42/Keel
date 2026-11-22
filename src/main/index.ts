@@ -33,7 +33,7 @@ import {
   nativeImage,
   utilityProcess,
 } from "electron";
-import type { MessageBoxOptions, NativeImage } from "electron";
+import type { NativeImage } from "electron";
 
 import {
   installApplicationMenu,
@@ -42,14 +42,10 @@ import {
   setApplicationMenuCommandLabel,
 } from "./application-menu";
 import { applyDevAppIcon, appIconImage } from "./app-icon";
-import { mcpFullAccessConfirmationCopy } from "./mcp-full-access-confirmation-copy";
-import { ArtifactPathCache } from "./artifact-path-cache";
-import { SourcePathCache, type SourcePathResolution } from "./source-path-cache";
+import { type SourcePathResolution } from "./source-path-cache";
 import {
-  NativeAssetDragCache,
   startNativeAssetDrag,
 } from "./native-asset-drag";
-import { NativeAssetDragPrimeScheduler } from "./native-asset-drag-prime";
 import {
   clearViewerVideoShortcutCapture,
   isViewerVideoShortcutContentsActive,
@@ -67,14 +63,6 @@ import {
 } from "./viewer-video-shortcut-menu";
 import { matchBrowseKeyboardShortcut } from "../shared/browse-keyboard-shortcuts";
 import { artifactProtocolMimeForExtension } from "../shared/media-formats";
-import {
-  selectImportSources as selectImportSourcesDialog,
-  selectLibraryDirectory,
-  selectOpenFile,
-  selectSavePath,
-  selectPluginPackage,
-  type NativeDialogHost,
-} from "./native-dialogs";
 import { executeLibraryMainCommand } from "./commands/library";
 import { tryHandleLibraryOwnedRequest, tryBuildOpenRecentCommand } from "./library-request/library";
 import {
@@ -91,10 +79,6 @@ import {
   type SyncBindingRecord,
 } from "./library-request/sync";
 import { tryHandleAiOwnedRequest } from "./library-request/ai";
-import {
-  captureAiConnectionSnapshot,
-  legacyAiConnectionProfile,
-} from "./ai-profile-store";
 import { tryHandleEmbeddingModelRequest } from "./library-request/embedding-models";
 import { EmbeddingTestIndex } from "./embedding-test-index";
 import { EmbeddingHttpIndex } from "./embedding-http-index";
@@ -188,7 +172,6 @@ import {
 import {
   ASSET_CHANGE_CHANNEL,
   ASSET_NATIVE_DRAG_CHANNEL,
-  ASSET_NATIVE_DRAG_READINESS_CHANNEL,
   ASSET_NATIVE_DRAG_PRIME_CHANNEL,
   EXTENSION_SAVE_COMPLETED_CHANNEL,
   THUMBNAIL_CHANNEL,
@@ -258,7 +241,6 @@ import {
 import { AutomationLibraryWorkerAdapter } from './automation-worker-adapter';
 import {
   createDesktopAutomationFilePlanApprovalHandler,
-  type DesktopAutomationFilePlanSummary,
 } from './automation-file-plan-approval';
 import {
   AutomationExecutionJournal,
@@ -274,10 +256,6 @@ import { McpPermissionPolicyStore } from './mcp-permission-policy-store';
 import { McpOperationChallengeStore } from './mcp-operation-challenge';
 import { CriticalConfirmationWindowManager } from './critical-confirmation-window';
 import { RendererCriticalConfirmationBroker } from './critical-confirmation-prompt';
-import {
-  criticalConfirmationInitialFocusForOperation,
-  criticalDiskDeleteConfirmLabel,
-} from '../shared/critical-confirmation';
 import {
   mcpSettingsRequestSchema,
   mcpSettingsResponseSchema,
@@ -328,7 +306,6 @@ import type { AutomationExecutionContext } from '../automation/command-gateway';
 import {
   AUTOMATION_API_VERSION,
   type AutomationCommandId,
-  type AutomationSource,
 } from '../automation/command-registry';
 import {
   attachLinuxRoundedCorners,
@@ -409,16 +386,6 @@ import {
 } from "./pending-cleanup-store";
 import { resolvePendingImportFrame } from "./pending-import-frame";
 import { createFontSamplePage, resolveFontSampleRequest } from "./font-sample-page";
-import { AiQueueScheduler } from "./ai-queue-scheduler";
-import {
-  toWireAiAnalysisSettings,
-} from "../shared/ai-analysis-settings";
-import {
-  AI_ANALYSIS_QUEUE_BATCH_SIZE,
-} from "../shared/ai-concurrency";
-import {
-  DEFAULT_AI_RELIABILITY_SETTINGS,
-} from "../shared/ai-reliability";
 import { createArtifactResponse } from "./artifact-response";
 import { PreviewCache } from "./preview-cache";
 import {
@@ -594,174 +561,6 @@ const manualSyncRuns = new Map<string, {
   directoryName?: string;
   savedBindingDuringRun: boolean;
 }>();
-type ArtifactPathBatchWaiter = {
-  artifactId: string;
-  generation: number;
-  resolve: (absolutePath: string) => void;
-  reject: (error: Error) => void;
-};
-const artifactPathBatches = new Map<string, ArtifactPathBatchWaiter[]>();
-const artifactPathCache = new ArtifactPathCache(4_096);
-
-function clearArtifactPathCache(libraryId?: string): void {
-  if (libraryId === undefined) {
-    artifactPathCache.clear();
-    return;
-  }
-  artifactPathCache.clearLibrary(libraryId);
-}
-
-function evictArtifactPathCache(libraryId: string): void {
-  // An async path batch may have started before this asset change. Fence its
-  // completion as well as evicting existing entries, or stale paths reappear.
-  artifactPathCache.clearLibrary(libraryId);
-}
-
-function cancelArtifactPathBatches(libraryId: string): void {
-  const prefix = `${libraryId}\u0000`;
-  const error = new Error('Library closed before artifact path resolution completed.');
-  for (const [key, waiters] of artifactPathBatches) {
-    if (!key.startsWith(prefix)) continue;
-    artifactPathBatches.delete(key);
-    for (const waiter of waiters) waiter.reject(error);
-  }
-}
-
-function resolveArtifactPathBatched(
-  libraryId: string,
-  artifactId: string,
-  usage: "preview" | "proxy",
-): Promise<string> {
-  const generation = artifactPathCache.generation(libraryId);
-  const cached = artifactPathCache.get(libraryId, artifactId, usage, generation);
-  if (cached !== undefined) {
-    // A lookup hit is also a use: keep hot viewport artifacts at the MRU end
-    // of the bounded cache instead of evicting them after unrelated pages.
-    return Promise.resolve(cached);
-  }
-  // Keep requests from different library generations in separate batches. A
-  // reopen can happen while the 2ms coalescing window is still pending.
-  const key = `${libraryId}\u0000${usage}\u0000${generation}`;
-  return new Promise<string>((resolve, reject) => {
-    const batch = artifactPathBatches.get(key) ?? [];
-    batch.push({ artifactId, generation, resolve, reject });
-    artifactPathBatches.set(key, batch);
-    if (batch.length > 1) return;
-    setTimeout(() => {
-      const pending = artifactPathBatches.get(key) ?? [];
-      artifactPathBatches.delete(key);
-      const client = state.workerClient;
-      if (!client) {
-        const error = new Error("Library Worker is unavailable.");
-        for (const waiter of pending) waiter.reject(error);
-        return;
-      }
-      void (async () => {
-        for (let index = 0; index < pending.length; index += 500) {
-          const chunk = pending.slice(index, index + 500);
-          const requestGeneration = chunk[0]?.generation ?? generation;
-          try {
-            const result = await client.request({
-              type: "media.get-artifact-paths",
-              libraryId,
-              artifactIds: chunk.map((waiter) => waiter.artifactId),
-              usage,
-            });
-            if (!result.ok || result.type !== "media.artifact-paths") {
-              throw new Error("Artifact path batch lookup failed.");
-            }
-            const paths = new Map(
-              result.entries.map((entry) => [entry.artifactId, entry.absolutePath]),
-            );
-            for (const waiter of chunk) {
-              const absolutePath = paths.get(waiter.artifactId);
-              if (
-                absolutePath &&
-                artifactPathCache.generation(libraryId) === requestGeneration
-              ) {
-                artifactPathCache.set(
-                  libraryId,
-                  waiter.artifactId,
-                  usage,
-                  absolutePath,
-                  requestGeneration,
-                );
-                waiter.resolve(absolutePath);
-              } else if (absolutePath) {
-                waiter.reject(new Error("Artifact path resolution became stale."));
-              } else {
-                artifactPathCache.invalidateArtifact(libraryId, waiter.artifactId, usage);
-                waiter.reject(new Error("Artifact was absent from path batch."));
-              }
-            }
-          } catch (error) {
-            const failure = error instanceof Error ? error : new Error(String(error));
-            for (const waiter of chunk) waiter.reject(failure);
-          }
-        }
-      })();
-    }, 2);
-  });
-}
-const nativeAssetDragCache = new NativeAssetDragCache();
-const lastVisibleDragAssetIds = new Map<string, string[]>();
-/**
- * Serpent-8ee170: every media completion enqueues here instead of issuing its
- * own Worker request, so a 2,000-job wave cannot become 2,000 background
- * requests competing with the queue that produced them.
- */
-const nativeAssetDragPrimer = new NativeAssetDragPrimeScheduler({
-  fetchEntries: async (libraryId, assetIds) => {
-    if (!state.workerClient) return null;
-    try {
-      const result = await state.workerClient.request({
-        type: "media.get-asset-drag-infos",
-        libraryId,
-        assetIds: [...assetIds],
-      });
-      return result.ok && result.type === "media.asset-drag-infos" ? result.entries : null;
-    } catch (error) {
-      state.logger?.info("main.native-asset-drag-cache", "Could not preheat native drag entries.", {
-        libraryId,
-        assetCount: assetIds.length,
-        error: error instanceof Error ? error.message : String(error),
-      });
-      return null;
-    }
-  },
-  applyEntries: (libraryId, entries, mode) => {
-    if (mode === "replace") {
-      nativeAssetDragCache.replace(libraryId, entries as Parameters<NativeAssetDragCache["replace"]>[1]);
-    } else {
-      nativeAssetDragCache.upsert(libraryId, entries as Parameters<NativeAssetDragCache["upsert"]>[1]);
-    }
-    const dragWindow = state.mainWindow;
-    if (dragWindow && !dragWindow.isDestroyed()) {
-      if (mode === "replace") {
-        dragWindow.webContents.send(ASSET_NATIVE_DRAG_READINESS_CHANNEL, {
-          type: "clear", libraryId,
-        });
-      }
-      dragWindow.webContents.send(ASSET_NATIVE_DRAG_READINESS_CHANNEL, {
-        type: "ready", libraryId,
-        assetIds: (entries as Parameters<NativeAssetDragCache["upsert"]>[1])
-          .map((entry) => entry.assetId),
-      });
-    }
-  },
-});
-
-function clearNativeAssetDragCache(libraryId: string): void {
-  lastVisibleDragAssetIds.delete(libraryId);
-  nativeAssetDragCache.clear(libraryId);
-  nativeAssetDragPrimer.invalidate(libraryId);
-  const dragWindow = state.mainWindow;
-  if (dragWindow && !dragWindow.isDestroyed()) {
-    dragWindow.webContents.send(ASSET_NATIVE_DRAG_READINESS_CHANNEL, {
-      type: "clear", libraryId,
-    });
-  }
-}
 function initializePreviewCache(): void {
   if (process.env.KEEL_PREVIEW_CACHE_DISABLED === "1") return;
   // E2E suites manipulate artifact files and rows directly; a mirror would
@@ -781,11 +580,7 @@ function initializePreviewCache(): void {
   void state.previewCache.evictToBudget();
 }
 const VIEWER_TIMING_LOG = process.env.KEEL_VIEWER_TIMING_LOG === "1";
-const ruleTriggerSequence = new Map<string, number>();
 const ruleMcpTools = createRuleMcpTools({ ruleRunner: () => state.ruleRunner, workerClient: () => state.workerClient });
-const ruleLibraryChangeTimers = new Map<string, ReturnType<typeof setTimeout>>();
-const ruleContinuousTimers = new Map<string, ReturnType<typeof setTimeout>>();
-const ruleScheduleLastRun = new Map<string, number>();
 const pluginAutomationContexts = new Map<string, AutomationExecutionContext>();
 
 function buildPluginInputCaptureSessionsPayload(): PluginInputCaptureSessionsPayload {
@@ -938,12 +733,6 @@ function refreshApplicationMenuRecentLibraries(): void {
     shortcutBindings: readShortcutBindingsSnapshot(),
   });
 }
-const aiQueueScheduler = new AiQueueScheduler(processAiQueueBatch, {
-  batchSize: AI_ANALYSIS_QUEUE_BATCH_SIZE,
-  baseRetryDelayMs: DEFAULT_AI_RELIABILITY_SETTINGS.retryBaseDelayMs,
-  maxRetryDelayMs: DEFAULT_AI_RELIABILITY_SETTINGS.retryMaxDelayMs,
-  retryJitterRatio: DEFAULT_AI_RELIABILITY_SETTINGS.retryJitterRatio,
-});
 
 // Maps BrowserWindow.id to the active library/folder context for extension save.
 const focusedContexts = new Map<
@@ -953,11 +742,15 @@ const focusedContexts = new Map<
 
 // Keeps selected roots in Main. Renderer receives only an opaque, one-shot token.
 const pendingRelinkPreviews = new RelinkPreviewStore();
-const sourcePathCache = new SourcePathCache();
 import type { ActiveLibraryOpenCancellation } from "./main-state";
-import { activateAiConnectionProfile, deleteAiConnectionProfile, deleteEmbeddingServiceKey, embeddingServiceKeyPath, getDecryptedApiKey, getDecryptedProfileApiKey, hasCompletedAiProfileMigration, loadAiConfig, readEmbeddingBindings, readEmbeddingModels, readEmbeddingServiceKey, readEmbeddingServices, readSyncBindings, readSyncServers, resolveSyncServerCredentials, saveAiConfig, saveAiConnectionProfile, writeEmbeddingBindings, writeEmbeddingModels, writeEmbeddingServiceKey, writeEmbeddingServices, writeSyncBindings, writeSyncServers } from './ai-settings-files';
+import { activateAiConnectionProfile, deleteAiConnectionProfile, deleteEmbeddingServiceKey, embeddingServiceKeyPath, getDecryptedApiKey, getDecryptedProfileApiKey, loadAiConfig, readEmbeddingBindings, readEmbeddingModels, readEmbeddingServiceKey, readEmbeddingServices, readSyncBindings, readSyncServers, resolveSyncServerCredentials, saveAiConfig, saveAiConnectionProfile, writeEmbeddingBindings, writeEmbeddingModels, writeEmbeddingServiceKey, writeEmbeddingServices, writeSyncBindings, writeSyncServers } from './ai-settings-files';
 import { cleanupAllExternalSources, cleanupExternalSource, fallbackDirectoryForLibraryId, materializeSelectedExternalLibrary, pendingImportSources, recentLibraryPath, rememberExternalSource, sweepOrphanExternalLibraryStagingOnStartup } from './external-library-staging';
 import { exportShortcutBindingsFile, importShortcutBindingsFile, nativeMenuRecentLibraries, readShortcutBindingsSnapshot, readStartupPreferencesSnapshot, startupPreferencesPath, storeShortcutBindings, storeStartupPreferences } from './app-preference-files';
+import { artifactPathCache, cancelArtifactPathBatches, clearArtifactPathCache, clearNativeAssetDragCache, evictArtifactPathCache, lastVisibleDragAssetIds, nativeAssetDragCache, nativeAssetDragPrimer, resolveArtifactPathBatched, sourcePathCache } from './asset-path-caches';
+import { confirmCriticalRendererRequest, confirmDesktopAutomationFilePlan, confirmDesktopAutomationWrite, confirmEnableAllMcpPermissions, confirmRuleRun, criticalRendererRequest } from './desktop-confirmations';
+import { runScheduledRules, scheduleLibraryChangeRules } from './rule-triggers';
+import { aiQueueScheduler, enqueueAutoAnalyzeAfterImport, processAiQueue } from './ai-queue';
+import { createNativeDialogHost, selectAutomationScriptToOpen, selectAutomationScriptToSave, selectDirectory, selectImportSources, selectPluginPackageForInstall } from './main-dialogs';
 
 // Pending import libraryId (importId -> libraryId), for auto-analyze after import.
 const pendingImportLibraries = new Map<string, string>();
@@ -1914,103 +1707,6 @@ function publishAiCleared(event: AiContentClearedEvent): void {
   );
 }
 
-/**
- * PR: run the enabled rules of one trigger. Changes made by those rules do
- * not trigger "library-change" rules again: events up to the change sequence
- * seen after the batch are ignored.
- */
-async function runRulesFor(libraryId: string, kind: 'after-import' | 'library-change' | 'schedule' | 'continuous'): Promise<void> {
-  if (!state.ruleRunner || !state.workerClient) return;
-  try {
-    const runs = kind === 'continuous'
-      ? await state.ruleRunner.runContinuous(libraryId)
-      : await state.ruleRunner.runTriggered(libraryId, kind);
-    if (runs.length === 0) return;
-    const sequence = await state.workerClient.request({ type: 'library.change-sequence', libraryId });
-    if (sequence.ok && 'changeSequence' in sequence && typeof sequence.changeSequence === 'number') {
-      ruleTriggerSequence.set(libraryId, sequence.changeSequence);
-    }
-  } catch (error) {
-    state.logger?.error('rule.trigger-failed', error, { libraryId, kind });
-  }
-}
-
-function scheduleLibraryChangeRules(event: LibraryChangedEvent): void {
-  if ((ruleTriggerSequence.get(event.libraryId) ?? -1) >= event.changeSequence) return;
-  const pending = ruleLibraryChangeTimers.get(event.libraryId);
-  if (pending) clearTimeout(pending);
-  ruleLibraryChangeTimers.set(event.libraryId, setTimeout(() => {
-    ruleLibraryChangeTimers.delete(event.libraryId);
-    void runRulesFor(event.libraryId, 'library-change');
-  }, 2_000));
-  // Continuous rules keep up sooner: 1 second after the changes settle.
-  const continuous = ruleContinuousTimers.get(event.libraryId);
-  if (continuous) clearTimeout(continuous);
-  ruleContinuousTimers.set(event.libraryId, setTimeout(() => {
-    ruleContinuousTimers.delete(event.libraryId);
-    void runRulesFor(event.libraryId, 'continuous');
-  }, 1_000));
-}
-
-/** Once a minute: run "schedule" rules whose interval has passed. */
-async function runScheduledRules(): Promise<void> {
-  if (!state.ruleRunner || !state.pluginActivationCoordinator) return;
-  for (const libraryId of state.pluginActivationCoordinator.trackedOpenLibraryIds()) {
-    const list = await state.ruleRunner.listRules(libraryId).catch(() => undefined);
-    const due = list?.rules.some((rule) => {
-      if (!rule.enabled || rule.manifest.trigger.kind !== 'schedule') return false;
-      const last = ruleScheduleLastRun.get(rule.manifest.id) ?? (rule.lastRun ? Date.parse(rule.lastRun.startedAt) : 0);
-      return Date.now() - last >= rule.manifest.trigger.everyMinutes * 60_000;
-    });
-    if (!due || !list) continue;
-    // A schedule batch runs every due rule once, in priority order.
-    for (const rule of list.rules) {
-      if (rule.enabled && rule.manifest.trigger.kind === 'schedule') ruleScheduleLastRun.set(rule.manifest.id, Date.now());
-    }
-    await runRulesFor(libraryId, 'schedule');
-  }
-}
-
-async function enqueueAutoAnalyzeAfterImport(
-  libraryId: string,
-  importedAssetIds: string[],
-  folderId?: string,
-): Promise<void> {
-  if (importedAssetIds.length > 0 || folderId) void runRulesFor(libraryId, 'after-import');
-  try {
-    const config = loadAiConfig();
-    if (!config.autoAnalyzeEnabled || !config.hasKey || !config.apiFormat) return;
-    if ((importedAssetIds.length === 0 && !folderId) || !state.workerClient) return;
-
-    const result = await state.workerClient.request({
-      type: "ai.enqueue-analysis",
-      libraryId,
-      ...(importedAssetIds.length > 0 ? { assetIds: importedAssetIds } : {}),
-      ...(folderId ? { folderId } : {}),
-    });
-    if (result.ok && result.type === "ai.jobs.enqueued") {
-      state.logger?.info(
-        "auto-analyze",
-        `Enqueued ${result.enqueued} AI analysis jobs after import.`,
-      );
-      await processAiQueue(libraryId);
-    }
-  } catch (error) {
-    state.logger?.error("auto-analyze", error);
-    // Non-blocking: import succeeded regardless of AI enqueue failure.
-  }
-}
-
-async function processAiQueue(libraryId: string): Promise<void> {
-  try {
-    const config = loadAiConfig();
-    aiQueueScheduler.setRetryPolicy(config.reliabilitySettings);
-    await aiQueueScheduler.trigger(libraryId);
-  } catch (error) {
-    state.logger?.error("ai.queue.config", error, { libraryId });
-  }
-}
-
 /** Shared post-open hook for dialog opens and startup recent-library restore. */
 function pluginThumbnailExtensionsFor(libraryId: string): string[] {
   const extensions = new Set<string>();
@@ -2076,141 +1772,6 @@ async function notifyLibraryOpenedSideEffects(input: {
   state.pluginJobScheduler?.tick(input.libraryId);
   await syncPluginThumbnailExtensions();
   state.workerClient?.publishShowMissingLinkedFiles(state.showMissingLinkedFiles);
-}
-
-async function processAiQueueBatch(
-  libraryId: string,
-  maxJobs: number,
-): Promise<{ processed: number; requeued: number }> {
-  let config: ReturnType<typeof loadAiConfig>;
-  try {
-    config = loadAiConfig();
-  } catch (error) {
-    state.logger?.error("ai.queue.config", error, { libraryId });
-    return { processed: 0, requeued: 0 };
-  }
-  const activeProfile = config.profiles.find(
-    (profile) => profile.id === config.activeProfileId,
-  );
-  const legacyFallbackAvailable = !activeProfile
-    && !hasCompletedAiProfileMigration()
-    && Boolean(config.apiFormat);
-  if (!config.hasKey || !state.workerClient || (!activeProfile && !legacyFallbackAvailable)) {
-    return { processed: 0, requeued: 0 };
-  }
-  try {
-    const profile = activeProfile ?? legacyAiConnectionProfile({
-      apiFormat: config.apiFormat,
-      model: config.model,
-      baseUrl: config.baseUrl,
-    });
-    const apiKey = activeProfile
-      ? getDecryptedProfileApiKey(activeProfile.id)
-      : getDecryptedApiKey();
-    const connection = captureAiConnectionSnapshot(profile, apiKey);
-    // Keep each Worker admission bounded. A 32-job batch with 16 external
-    // waits used to be one long scheduler request; slice it into short
-    // continuations so claim/commit ownership is reacquired between waves.
-    const sliceSize = Math.max(1, Math.min(config.concurrencyLimit, 8));
-    let processed = 0;
-    let requeued = 0;
-    while (processed < maxJobs) {
-      const requested = Math.min(sliceSize, maxJobs - processed);
-      const result = await state.workerClient.request({
-        type: "ai.process-queue",
-        libraryId,
-        apiFormat: connection.apiFormat,
-        model: connection.model,
-        apiKey: connection.apiKey,
-        ...(connection.baseUrl.trim() ? { baseUrl: connection.baseUrl.trim() } : {}),
-        enabledFields: {
-          description: config.descriptionEnabled,
-          tags: config.tagEnabled,
-          rating: config.ratingEnabled,
-        },
-        analysisSettings: toWireAiAnalysisSettings(config.analysisSettings),
-        languages: config.languages,
-        concurrencyLimit: config.concurrencyLimit,
-        maxAnalysisImageEdgePx: config.maxAnalysisImageEdgePx,
-        requestTimeoutMs: config.reliabilitySettings.requestTimeoutMs,
-        maxAttempts: config.reliabilitySettings.maxAttempts,
-        maxJobs: requested,
-      });
-      if (!result.ok) {
-        state.logger?.error(
-          "ai.queue.process",
-          new Error(`Worker rejected AI queue batch: ${result.error.code}`),
-        );
-        break;
-      }
-      if (result.type !== "ai.jobs.processed") {
-        state.logger?.error(
-          "ai.queue.process",
-          new Error(`Unexpected AI queue result: ${result.type}`),
-        );
-        break;
-      }
-      processed += result.processed;
-      requeued += result.requeued;
-      if (result.requeued > 0 || result.processed < requested) break;
-      await new Promise<void>((resolve) => setImmediate(resolve));
-    }
-    return { processed, requeued };
-  } catch (error) {
-    state.logger?.error("ai.queue.process", error);
-    return { processed: 0, requeued: 0 };
-  }
-}
-
-function createNativeDialogHost(): NativeDialogHost {
-  return {
-    getLocale: () => state.appLocale,
-    getMainWindow: () => state.mainWindow ?? null,
-    isE2e: () => !app.isPackaged && process.env.KEEL_E2E === "1",
-  };
-}
-
-async function selectAutomationScriptToOpen(): Promise<string | undefined> {
-  return selectOpenFile(
-    createNativeDialogHost(),
-    'openAutomationScript',
-    process.env.KEEL_E2E_OPEN_AUTOMATION_SCRIPT,
-    [{ name: 'Keel scripts', extensions: ['keel.js', 'keel.ts', 'serpent.js', 'serpent.ts'] }],
-  );
-}
-
-async function selectAutomationScriptToSave(): Promise<string | undefined> {
-  return selectSavePath(
-    createNativeDialogHost(),
-    'saveAutomationScript',
-    process.env.KEEL_E2E_SAVE_AUTOMATION_SCRIPT,
-    {
-      defaultPath: 'Untitled.keel.ts',
-      filters: [{ name: 'Keel scripts', extensions: ['keel.js', 'keel.ts'] }],
-    },
-  );
-}
-
-async function selectImportSources(
-  sourceKind: "files" | "folder",
-): Promise<string[] | undefined> {
-  return selectImportSourcesDialog(createNativeDialogHost(), sourceKind);
-}
-
-async function selectDirectory(
-  dialogId: "createLibrary" | "openLibrary",
-): Promise<string | undefined> {
-  return selectLibraryDirectory(createNativeDialogHost(), dialogId);
-}
-
-async function selectPluginPackageForInstall(
-  sourceKind: "zip" | "folder",
-): Promise<string | undefined> {
-  return selectPluginPackage(
-    createNativeDialogHost(),
-    sourceKind,
-    process.env.KEEL_E2E_PLUGIN_PACKAGE,
-  );
 }
 
 /** Serpent-xffq：每台设备的稳定同步身份（userData 持久化，非敏感）。 */
@@ -3185,304 +2746,6 @@ async function handleLibraryRequest(
       }
     }
   }
-}
-
-/** PR: first run of a new or edited rule. */
-async function confirmRuleRun(rule: { name: string; purpose: string; permissions: readonly string[] }): Promise<boolean> {
-  if (!state.mainWindow || state.mainWindow.isDestroyed()) return false;
-  if (!app.isPackaged && process.env.KEEL_E2E === '1' && process.env.KEEL_E2E_AUTOMATION_CONFIRM === '1') return true;
-  const response = await dialog.showMessageBox(state.mainWindow, {
-    type: 'warning',
-    buttons: ['取消', '运行规则'],
-    defaultId: 1,
-    cancelId: 0,
-    title: '运行规则',
-    message: `运行规则“${rule.name}”？`,
-    detail: [
-      rule.purpose || '这条规则没有写用途。',
-      '',
-      `它可以使用：${rule.permissions.join('、') || '无'}。`,
-      '确认后，这一版规则会按它的触发方式自动运行；规则文件改动后需要再确认一次。每次运行都记录在规则的触发历史中，改动可以撤销。',
-    ].join('\n'),
-  });
-  ensureRendererKeyboardFocus(state.mainWindow, { reattachHwnd: true, reason: 'rule.confirm' });
-  return response.response === 1;
-}
-
-async function confirmDesktopAutomationWrite(): Promise<boolean> {
-  if (!state.mainWindow || state.mainWindow.isDestroyed()) return false;
-  // Native modal dialogs are not controllable through Playwright. Restrict
-  // this deterministic test seam to an unpackaged, isolated E2E process; it
-  // can never be enabled by a shipped build or normal `npm start` session.
-  if (!app.isPackaged
-    && process.env.KEEL_E2E === '1'
-    && process.env.KEEL_E2E_AUTOMATION_CONFIRM === '1') {
-    return true;
-  }
-  const response = await dialog.showMessageBox(state.mainWindow, {
-    type: 'warning',
-    buttons: ['取消', '运行脚本'],
-    defaultId: 1,
-    cancelId: 0,
-    title: '运行自动化脚本',
-    message: '此脚本可以读取资产、标签与合集，修改评分与元数据，创建标签或空文件夹，整理合集，入队 AI 分析，复制文件路径，以及重命名或移入回收站。',
-    detail: '脚本只会获得受限自动化能力；新建资源库和批量导入仍需单独的本机计划确认，不会获得网络下载、磁盘直读、数据库或永久删除权限。每次运行都会记录到应用日志。',
-  });
-  ensureRendererKeyboardFocus(state.mainWindow, {
-    reattachHwnd: true,
-    reason: "native-dialog.message-box",
-  });
-  return response.response === 1;
-}
-
-async function confirmDesktopAutomationFilePlan(
-  plan: DesktopAutomationFilePlanSummary,
-  context?: {
-    source: AutomationSource;
-    executionId: string;
-    clientName?: string;
-    libraryDisplayName?: string;
-  },
-): Promise<boolean> {
-  // See confirmDesktopAutomationWrite: this is an isolated, unpackaged E2E
-  // seam only. Production builds always display the fresh plan confirmation.
-  if (!app.isPackaged
-    && process.env.KEEL_E2E === '1'
-    && process.env.KEEL_E2E_AUTOMATION_CANCEL_ONCE === '1') {
-    state.e2eAutomationFilePlanConfirmationCount += 1;
-    if (state.e2eAutomationFilePlanConfirmationCount === 1) return false;
-  }
-  if (!app.isPackaged
-    && process.env.KEEL_E2E === '1'
-    && process.env.KEEL_E2E_AUTOMATION_CONFIRM === '1') {
-    return true;
-  }
-  const action = plan.operation === 'trash'
-    ? '移入回收站'
-    : plan.operation === 'replace-content'
-      ? '原地替换文件内容'
-    : plan.operation === 'move'
-      ? '移动到文件夹'
-      : plan.operation === 'rename-file' || plan.operation === 'rename-files'
-        ? '重命名文件'
-        : plan.operation === 'import'
-          ? '导入文件'
-          : plan.operation === 'create'
-            ? '创建资源库'
-            : '恢复回原始位置';
-  const dialogOptions: MessageBoxOptions = {
-    type: 'warning',
-    buttons: ['取消', `确认${action}`],
-    defaultId: 1,
-    cancelId: 0,
-    title: '确认文件操作',
-    message: context?.source === 'mcp'
-      ? `${context.clientName ?? 'MCP 客户端'} 请求${action} ${plan.executableCount} 项资产${context.libraryDisplayName ? `（资源库“${context.libraryDisplayName}”）` : ''}。`
-      : `准备${action} ${plan.executableCount} 项资产。`,
-    detail: [
-      ...(context?.source === 'mcp'
-        ? ['这是 MCP 客户端发起的文件操作；请确认目标和数量后再执行。']
-        : []),
-      `本次选中 ${plan.targetCount} 项；${plan.blockedCount} 项因当前状态或冲突不会处理。`,
-      ...(plan.conflictCount !== undefined && plan.conflictCount > 0
-        ? [`其中 ${plan.conflictCount} 项检测到目标冲突。`]
-        : []),
-      plan.undoSupported
-        ? '移入回收站后可在回收站中恢复。'
-        : plan.operation === 'replace-content'
-          ? '原文件字节将被覆盖，且无法通过回收站撤销。'
-        : '执行前会再次确认这些资产没有变化。',
-      ...(plan.hookWarnings !== undefined && plan.hookWarnings.length > 0
-        ? [`插件提示：${plan.hookWarnings.join('；')}`]
-        : []),
-    ].join('\n'),
-  };
-  const response = state.mainWindow && !state.mainWindow.isDestroyed()
-    ? await dialog.showMessageBox(state.mainWindow, dialogOptions)
-    : await dialog.showMessageBox(dialogOptions);
-  ensureRendererKeyboardFocus(state.mainWindow, {
-    reattachHwnd: true,
-    reason: "native-dialog.message-box",
-  });
-  return response.response === 1;
-}
-
-function askCriticalConfirmation(
-  input: Parameters<RendererCriticalConfirmationBroker['request']>[0],
-): Promise<boolean> {
-  const broker = state.criticalConfirmationBroker;
-  if (broker === undefined) return Promise.resolve(false);
-  return broker.request(input);
-}
-
-async function confirmCriticalLibraryDeletion(libraryId: string): Promise<boolean> {
-  const client = state.workerClient;
-  if (client === undefined) return false;
-  const listed = await client.request({ type: 'library.list' });
-  if (!listed.ok || listed.type !== 'library.list') return false;
-  const library = listed.libraries.find((candidate) => candidate.libraryId === libraryId);
-  if (library === undefined) return false;
-  const english = state.appLocale === 'en';
-  return askCriticalConfirmation({
-    title: english ? 'Confirm critical operation' : '确认危险操作',
-    heading: english ? 'Delete this library from disk?' : '从磁盘删除这个资源库？',
-    message: english
-      ? `The library “${library.displayName}” and its Serpent-managed directory will be permanently deleted.`
-      : `资源库“${library.displayName}”及其 Keel 管理的目录将被永久删除。`,
-    detail: english
-      ? 'This cannot be undone. Linked-folder source directories are not included.'
-      : '此操作无法撤销。关联文件夹的源目录不会被删除。',
-    cancelLabel: english ? 'Cancel' : '取消',
-    confirmLabel: english ? 'Delete from disk' : '从磁盘删除',
-    initialFocus: 'cancel',
-  });
-}
-
-async function confirmEnableAllMcpPermissions(label: string): Promise<boolean> {
-  const copy = mcpFullAccessConfirmationCopy(
-    label,
-    state.appLocale === 'en' ? 'en' : 'zh-CN',
-  );
-  return askCriticalConfirmation({
-    ...copy,
-    cancelLabel: state.appLocale === 'en' ? 'Cancel' : '取消',
-    initialFocus: 'cancel',
-  });
-}
-
-function criticalRendererRequest(request: RendererRequest): boolean {
-  return request.type === 'library.delete-from-disk.request'
-    || request.type === 'folder.delete-from-disk.request'
-    || request.type === 'asset.delete-from-disk.request'
-    || request.type === 'asset.delete-permanent.request'
-    || request.type === 'trash.purge.request'
-    || (request.type === 'linked-folder.delete-subtree.request' && request.deleteFromDisk);
-}
-
-type CriticalRendererOperation =
-  | 'folder'
-  | 'linked-folder'
-  | 'linked-asset'
-  | 'asset-permanent'
-  | 'trash-purge'
-  | 'asset';
-
-/**
- * Linked assets are deleted permanently from their source folder (the file never
- * enters the application trash, and the previous implementation's trip through
- * the OS recycle bin is gone), so the confirmation must name that operation
- * instead of the generic "delete these assets" copy.  The renderer supplies
- * `locationKind` as a copy hint only; Main still has no database access.
- */
-function criticalRendererOperation(request: RendererRequest): CriticalRendererOperation {
-  switch (request.type) {
-    case 'folder.delete-from-disk.request':
-      return 'folder';
-    case 'linked-folder.delete-subtree.request':
-      return 'linked-folder';
-    case 'asset.delete-permanent.request':
-      return 'asset-permanent';
-    case 'trash.purge.request':
-      return 'trash-purge';
-    case 'asset.delete-from-disk.request':
-      return request.locationKind === 'linked' ? 'linked-asset' : 'asset';
-    default:
-      return 'asset';
-  }
-}
-
-function criticalRendererCopy(
-  operation: CriticalRendererOperation,
-  count: number,
-  english: boolean,
-): { heading: string; message: string; detail: string } {
-  switch (operation) {
-    case 'folder':
-      return {
-        heading: english ? 'Delete this folder from disk?' : '从磁盘删除这个文件夹？',
-        message: english
-          ? 'The selected folder and its managed assets will be permanently deleted.'
-          : '选定文件夹及其中的托管资产将被永久删除。',
-        detail: english
-          ? 'This cannot be undone and the files will not go to the application trash.'
-          : '此操作无法撤销，文件不会进入应用回收站。',
-      };
-    case 'linked-folder':
-      return {
-        heading: english ? 'Delete linked-folder files from disk?' : '从磁盘删除链接文件夹内容？',
-        message: english
-          ? 'The selected linked-folder source files will be permanently deleted.'
-          : '选定链接文件夹中的源文件将被永久删除。',
-        detail: english
-          ? 'This cannot be undone and the files will not go to the application trash.'
-          : '此操作无法撤销，文件不会进入应用回收站。',
-      };
-    case 'linked-asset':
-      return {
-        heading: english ? 'Delete these linked assets from disk?' : '从磁盘删除这些链接资产的源文件？',
-        message: english
-          ? `The source files of ${count} selected linked asset(s) will be permanently deleted, and their library link records with them.`
-          : `选定 ${count} 个链接资产的源文件将被永久删除，库内的链接记录也会一并移除。`,
-        detail: english
-          ? 'This cannot be undone; the source files are deleted from the linked folder and do not go to the recycle bin.'
-          : '此操作无法撤销：链接文件夹中的源文件会被直接删除，不会进入系统回收站。',
-      };
-    case 'asset-permanent':
-      return {
-        heading: english ? 'Permanently delete these trash assets?' : '永久删除这些回收站资产？',
-        message: english
-          ? `${count} selected trash asset(s) will be permanently deleted.`
-          : `选定的 ${count} 项回收站资产将被永久删除。`,
-        detail: english
-          ? 'This cannot be undone and the files will not go to the application trash.'
-          : '此操作无法撤销，文件不会进入应用回收站。',
-      };
-    case 'trash-purge':
-      return {
-        heading: english ? 'Empty the Keel trash permanently?' : '永久清空 Keel 回收站？',
-        message: english
-          ? 'All assets currently in the Keel trash will be permanently deleted.'
-          : 'Keel 回收站中的全部资产将被永久删除。',
-        detail: english
-          ? 'This cannot be undone and the files will not go to the application trash.'
-          : '此操作无法撤销，文件不会进入应用回收站。',
-      };
-    case 'asset':
-      return {
-        heading: english ? 'Delete these assets from disk?' : '从磁盘删除这些资产？',
-        message: english
-          ? `${count} selected asset(s) will be permanently deleted.`
-          : `选定的 ${count} 项资产将被永久删除。`,
-        detail: english
-          ? 'This cannot be undone and the files will not go to the application trash.'
-          : '此操作无法撤销，文件不会进入应用回收站。',
-      };
-  }
-}
-
-async function confirmCriticalRendererRequest(request: RendererRequest): Promise<boolean> {
-  if (request.type === 'library.delete-from-disk.request') {
-    return confirmCriticalLibraryDeletion(request.libraryId);
-  }
-  const english = state.appLocale === 'en';
-  const count = request.type === 'asset.delete-from-disk.request'
-    || request.type === 'asset.delete-permanent.request'
-    ? request.assetIds.length
-    : 0;
-  const operation = criticalRendererOperation(request);
-  const { heading, message, detail } = criticalRendererCopy(operation, count, english);
-  const forceDelete = criticalConfirmationInitialFocusForOperation(operation) === 'confirm';
-  return askCriticalConfirmation({
-    title: english ? 'Confirm critical operation' : '确认危险操作',
-    heading,
-    message,
-    detail,
-    cancelLabel: english ? 'Cancel' : '取消',
-    confirmLabel: forceDelete
-      ? criticalDiskDeleteConfirmLabel(english)
-      : (english ? 'Delete permanently' : '永久删除'),
-    initialFocus: criticalConfirmationInitialFocusForOperation(operation),
-  });
 }
 
 async function executeMcpLibraryContextCommand(input: {
