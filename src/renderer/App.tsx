@@ -313,6 +313,7 @@ import { playTaskCompletionSound } from "./task-completion-sound";
 import { AppSettingsEntry } from "./AppSettingsEntry";
 import { usePrefsStore } from "./stores/prefs-store";
 import { useDialogField } from "./stores/dialogs-store";
+import { resetLibraryScope } from "./stores/actions/reset-library-scope";
 import { useWorkspaceField } from "./stores/workspace-store";
 import { usePluginsField } from "./stores/plugins-store";
 import { useAiField } from "./stores/ai-store";
@@ -9492,55 +9493,14 @@ function AppInner() {
       deferredReconcileTimerRef.current = undefined;
     }
     managedImportTargetFolderIdRef.current = undefined;
-    setPluginJobs(null);
-    setHiddenPluginJobActivityId(null);
-    setFolders([]);
-    setLinkedFolders([]);
-    setAssets([]);
-    setFindSimilarSource(null);
-    setBrowseLayout([]);
-    setVirtualBrowseLayout(null);
-    setLayoutThumbnailArtifacts({ libraryId: "", ids: new Map() });
-    setFolderBrowseEntries([]);
-    setTrashedFolders([]);
-    setTrashBrowseTombstoneId(null);
-    setAllAssetCount(0);
-    setRootAssetCount(0);
-    setAssetScope("all");
-    setShowTrash(false);
-    setShowTagManagement(false);
-    setActivePluginSidebarViewId(null);
-    setTrashedAssets([]);
-    setTrashedAssetCount(0);
-    setTags([]);
-    setActiveTagId(null);
-    setSelectedFolderIds([]);
-    setSelectedAssetId(undefined);
-    setSelectedAssetIds([]);
+    resetLibraryScope();
     setAssetSelectionAnchor(null);
     if (hoveredAssetIdRef.current) {
       clearHoveredAssetId(hoveredAssetIdRef.current);
     }
-    setAssetMetadata(null);
-    setVersionConflict(false);
-    setDescriptionIsAi(false);
-    setAiContent(null);
     metadataByAssetRef.current.clear();
     metadataConflictAssetIdsRef.current.clear();
-    setSearchTotal(null);
-    setSearchOffset(0);
-    setSearchSnippets(new Map());
-    setThumbnailFailures(new Map());
-    setOperationHistory(null);
     setFolderCoverPicker(null);
-    setFolderNavigationCovers([]);
-    setFolderCustomCoverIds(new Set());
-    setRestoreDialog(null);
-    setMoveDialog(null);
-    setImageSequenceDialog(null);
-    setImageSequenceImportOffer(null);
-    setImageSequenceImportError(null);
-    setBatchRelinkPreview(null);
     resetBrowsePagination();
     workspaceHistoryReplayEpochRef.current += 1;
     resetWorkspaceTabs();
@@ -9553,7 +9513,6 @@ function AppInner() {
       null,
     );
     clearLibraryScopedView();
-    setLibrary(null);
     setLibrary(null);
     api?.setActiveContext(null);
   }
