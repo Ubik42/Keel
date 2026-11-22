@@ -1,4 +1,4 @@
-import type { Dispatch, SetStateAction } from 'react';
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { create, type StoreApi, type UseBoundStore } from 'zustand';
 
 /**
@@ -47,7 +47,23 @@ export function createFieldStore<S extends object>(initial: () => S): FieldStore
       return getStore();
     },
     setterFor,
-    useField: (key) => [getStore()((state) => state[key]), setterFor(key)],
+    useField: function useField<K extends keyof S>(key: K): [S[K], Dispatch<SetStateAction<S[K]>>] {
+      // Mirror the field in React state instead of useSyncExternalStore: a
+      // store change then reaches React as an ordinary state update, batched
+      // and prioritized like the useState it replaced. A sync-lane re-render
+      // per setter call reorders renders and effects inside async flows
+      // (library restore after a restart showed an empty browse).
+      const store = getStore();
+      const [value, setValue] = useState<S[K]>(() => store.getState()[key]);
+      useEffect(() => {
+        const current = store.getState()[key];
+        setValue(() => current);
+        return store.subscribe((state, previous) => {
+          if (!Object.is(state[key], previous[key])) setValue(() => state[key]);
+        });
+      }, [store, key]);
+      return [value, setterFor(key)];
+    },
     get: (key) => getStore().getState()[key],
     ref: <K extends keyof S>(key: K) => {
       let view = refs.get(key);
