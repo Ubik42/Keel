@@ -78,6 +78,17 @@ return { tagged: page.items.length };
 - \`rule.history\`：最近的运行记录（时间、触发原因、处理文件数、改动、日志、错误位置）。
 - \`rule.enable\` / \`rule.disable\`：打开或关闭。
 
+MCP 工具名为 \`keel_rule_validate\`、\`keel_rule_dry_run\` 等。命令行连接正在运行的 Keel（未运行时在后台启动），需要在设置 → MCP 中启用：
+
+\`\`\`
+Keel.exe --rule list
+Keel.exe --rule validate <规则 id 或规则目录>
+Keel.exe --rule dry-run <规则 id> [--library <资源库名称>] [--json]
+Keel.exe --rule run | history | enable | disable <规则 id>
+\`\`\`
+
+Keel.exe 是图形程序，直接在终端运行时看不到输出；通过管道读取（例如 \`Keel.exe --rule list | Out-String\`）。退出码：0 成功，1 规则失败或检查不通过，2 参数错误。
+
 ## 示例
 
 见 \`examples/\`。

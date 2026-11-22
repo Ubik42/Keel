@@ -21,7 +21,7 @@ export const MCP_LAUNCHER_CREDENTIAL_LABEL = 'Keel stdio launcher';
 const STARTUP_TIMEOUT_MS = 60_000;
 const POLL_INTERVAL_MS = 500;
 
-type LauncherConnection = { endpoint: string; token: string };
+export type LauncherConnection = { endpoint: string; token: string };
 
 function readConnection(userDataPath: string): LauncherConnection | undefined {
   try {
@@ -45,12 +45,15 @@ async function endpointAnswers(connection: LauncherConnection): Promise<boolean>
 }
 
 function startDesktop(executablePath: string): void {
-  const child = spawn(executablePath, [MCP_START_FLAG], { detached: true, stdio: 'ignore', env: process.env });
+  // An unpackaged Electron (`electron <app> --mcp`) needs the app directory
+  // again, or it would open Electron's default app.
+  const appDirectory = process.defaultApp && process.argv[1] && !process.argv[1].startsWith('-') ? [process.argv[1]] : [];
+  const child = spawn(executablePath, [...appDirectory, MCP_START_FLAG], { detached: true, stdio: 'ignore', env: process.env });
   child.on('error', () => undefined);
   child.unref();
 }
 
-async function waitForDesktop(userDataPath: string, executablePath: string): Promise<LauncherConnection> {
+export async function waitForDesktop(userDataPath: string, executablePath: string): Promise<LauncherConnection> {
   const initial = readConnection(userDataPath);
   if (initial && await endpointAnswers(initial)) return initial;
   startDesktop(executablePath);
