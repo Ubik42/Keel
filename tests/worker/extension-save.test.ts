@@ -6,7 +6,7 @@ import { randomUUID } from 'node:crypto';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { LibraryService } from '../../src/worker/library-service';
-import type { PinnedHttpTransport } from '../../src/worker/integrations/secure-http-download';
+import type { PinnedHttpTransport } from '../../src/worker/library/secure-http-download';
 
 const temporaryRoots: string[] = [];
 
