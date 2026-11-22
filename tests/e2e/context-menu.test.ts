@@ -532,7 +532,7 @@ test("pointer hover stays subtle in the context menu", async () => {
     await expect(assetCard).toBeVisible({ timeout: 15_000 });
     await assetCard.click({ button: "right" });
 
-    const menu = window.getByRole("menu");
+    const menu = window.getByRole("menu").first();
     const items = menu.locator(
       '[role="menuitem"]:not([aria-disabled="true"])',
     );

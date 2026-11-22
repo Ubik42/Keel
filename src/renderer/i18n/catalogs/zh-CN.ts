@@ -167,7 +167,6 @@ export const zhCN = {
     mainMenuOpenSource: "开源组件与许可",
     mainMenuRevealLog: "查看日志",
     mainMenuVersion: "当前版本 {version}",
-    mainMenuCheckUpdate: "检查更新",
     windowControls: "窗口控制",
     windowMinimize: "最小化",
     windowMaximize: "最大化",

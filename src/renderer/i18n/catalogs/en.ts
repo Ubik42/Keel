@@ -179,7 +179,6 @@ export const en = {
     mainMenuOpenSource: "Open-source components & licenses",
     mainMenuRevealLog: "View log",
     mainMenuVersion: "Version {version}",
-    mainMenuCheckUpdate: "Check for updates",
     windowControls: "Window controls",
     windowMinimize: "Minimize",
     windowMaximize: "Maximize",
