@@ -1,3 +1,4 @@
+import { OpenWithSettingsCard } from "./OpenWithSettingsCard";
 import { loadInterfaceScale, saveInterfaceScale } from './interface-scale';
 import { isImeKeyboardEvent } from "./ime-safe-dismiss";
 import { useState, type ReactNode } from "react";
@@ -412,6 +413,7 @@ export function AssetsSettingsPage({
           </span>
         )}
       </SettingsCard>
+      <OpenWithSettingsCard />
     </>
   );
 }

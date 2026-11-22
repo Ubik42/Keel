@@ -13798,6 +13798,48 @@ select.ai-config-input.ai-config-languages {
   position: relative;
 }
 
+.open-with-settings-section {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.open-with-settings-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.open-with-settings-list li,
+.open-with-settings-add {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.open-with-settings-name {
+  flex: 0 0 auto;
+  font-weight: var(--ui-font-weight-medium);
+}
+
+.open-with-settings-path {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.open-with-settings-list select,
+.open-with-settings-add input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .inspector-companion-list {
   display: grid;
   gap: 4px;

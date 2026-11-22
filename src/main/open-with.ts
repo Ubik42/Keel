@@ -9,7 +9,7 @@
  * Cancelled pickers are a quiet no-op (ok), not an error toast.
  */
 
-import { execFile as execFileCallback } from "node:child_process";
+import { execFile as execFileCallback, type spawn } from "node:child_process";
 import { promisify } from "node:util";
 
 import type { BrowserWindow, OpenDialogOptions } from "electron";
@@ -146,7 +146,7 @@ async function openWithOnWindows(
 export function openPathWithProgram(
   targetPath: string,
   executablePath: string,
-  spawnProcess: typeof import("node:child_process").spawn,
+  spawnProcess: typeof spawn,
 ): OpenWithOutcome {
   if (!targetPath || !executablePath) return "failed";
   try {
