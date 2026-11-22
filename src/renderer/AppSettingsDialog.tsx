@@ -1,3 +1,5 @@
+import { useDialogField } from "./stores/dialogs-store";
+import { useQueryField } from "./stores/query-store";
 import { type ReactNode, useMemo, useState } from "react";
 
 import { AppSettingsNavigation } from "./AppSettingsNavigation";
@@ -33,10 +35,7 @@ import type { KeelMcpSettingsApi } from "../shared/mcp";
 import { DialogShell } from "./workbench/ui/patterns";
 
 export interface AppSettingsDialogProps {
-  open: boolean;
-  activeCategory: AppSettingsCategoryId;
   onClose: () => void;
-  onActiveCategoryChange: (category: AppSettingsCategoryId) => void;
   canvasPrefs: CanvasPreferences;
   onSetViewMode: (mode: CanvasPreferences["viewMode"]) => void;
   onSetCaptionAlign: (align: CanvasCaptionAlign) => void;
@@ -64,7 +63,6 @@ export interface AppSettingsDialogProps {
   embeddingServicesApi?: EmbeddingCatalogApi;
   showCardSyncStatus: boolean;
   onShowCardSyncStatusChange: (checked: boolean) => void;
-  showMissingLinkedFiles: boolean;
   onToggleShowMissingLinkedFiles: () => void;
   navArrowsOnApproach: boolean;
   onToggleNavArrowsOnApproach: () => void;
@@ -78,10 +76,7 @@ export interface AppSettingsDialogProps {
  * state (panel widths, tree expansion) into another configuration screen.
  */
 export function AppSettingsDialog({
-  open,
-  activeCategory,
   onClose,
-  onActiveCategoryChange,
   canvasPrefs,
   onSetViewMode,
   onSetCaptionAlign,
@@ -109,13 +104,15 @@ export function AppSettingsDialog({
   syncServerCallbacks,
   showCardSyncStatus,
   onShowCardSyncStatusChange,
-  showMissingLinkedFiles,
   onToggleShowMissingLinkedFiles,
   navArrowsOnApproach,
   onToggleNavArrowsOnApproach,
   videoTransportOnApproach,
   onToggleVideoTransportOnApproach,
 }: AppSettingsDialogProps): ReactNode {
+  const [activeCategory, onActiveCategoryChange] = useDialogField("appSettingsCategory");
+  const [showMissingLinkedFiles] = useQueryField("showMissingLinkedFiles");
+  const [open] = useDialogField("appSettingsOpen");
   const t = useT();
   const [pluginSettingsPluginId, setPluginSettingsPluginId] = useState<string | null>(null);
   const [pluginSettingsRefreshKey, setPluginSettingsRefreshKey] = useState(0);

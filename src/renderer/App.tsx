@@ -316,7 +316,7 @@ import { useDialogField } from "./stores/dialogs-store";
 import { resetLibraryScope } from "./stores/actions/reset-library-scope";
 import { useWorkspaceField } from "./stores/workspace-store";
 import { usePluginsField } from "./stores/plugins-store";
-import { useAiField } from "./stores/ai-store";
+import { aiFields, useAiField } from "./stores/ai-store";
 import { useEmbeddingField } from "./stores/embedding-store";
 import { useJobsField } from "./stores/jobs-store";
 import { transfersFields, useTransfersField } from "./stores/transfers-store";
@@ -1962,8 +1962,8 @@ function AppInner() {
   const [aiAutoAnalyzeEnabled, setAiAutoAnalyzeEnabled] = useAiField("aiAutoAnalyzeEnabled");
   const [aiDisclaimerAccepted, setAiDisclaimerAccepted] = useAiField("aiDisclaimerAccepted");
   const [aiConnectionState, setAiConnectionState] = useAiField("aiConnectionState");
-  const [aiDraftConnectionState, setAiDraftConnectionState] = useAiField("aiDraftConnectionState");
-  const [aiDraftConnectionReason, setAiDraftConnectionReason] = useAiField("aiDraftConnectionReason");
+  const setAiDraftConnectionState = aiFields.setterFor("aiDraftConnectionState");
+  const setAiDraftConnectionReason = aiFields.setterFor("aiDraftConnectionReason");
   const [aiSaveVerifying, setAiSaveVerifying] = useAiField("aiSaveVerifying");
   const aiAutoConnectAttemptedRef = useRef(false);
   /** Fingerprint of credentials last proven by a successful probe. */
@@ -14948,54 +14948,18 @@ function AppInner() {
         onCancel={() => setFolderCoverPicker(null)}
       />
       <AppSettingsDialog
-        activeCategory={appSettingsCategory}
         aiConfigPanel={
           <AiConfigDialog
             open={appSettingsOpen && appSettingsCategory === "ai"}
             variant="embedded"
-            apiKey={aiApiKey}
-            profiles={aiProfiles}
-            activeProfileId={aiActiveProfileId}
-            profileDraftId={aiProfileDraftId}
-            profileName={aiProfileName}
-            apiFormat={aiApiFormat}
-            model={aiModel}
-            baseUrl={aiBaseUrl}
-            languages={aiLanguages}
-            concurrencyLimit={aiConcurrencyLimit}
-            maxAnalysisImageEdgePx={aiMaxAnalysisImageEdgePx}
-            hasKey={aiDraftHasKey}
-            descriptionEnabled={aiDescriptionEnabled}
-            tagsEnabled={aiTagsEnabled}
-            ratingEnabled={aiRatingEnabled}
-            forceExistingTags={aiForceExistingTags}
-            analysisSettings={aiAnalysisSettings}
-            disclaimerAccepted={aiDisclaimerAccepted}
-            autoAnalyzeEnabled={aiAutoAnalyzeEnabled}
-            connectionState={aiDraftConnectionState}
-            connectionReason={aiDraftConnectionReason}
-            onApiKeyChange={setAiApiKey}
-            onProfileNameChange={setAiProfileName}
             onNewProfile={beginNewAiProfile}
             onSelectProfile={selectAiProfile}
             onActivateProfile={(id) => void activateAiProfile(id)}
             onDeleteProfile={(id) => void removeAiProfile(id)}
             onClearCredential={() => void clearAiProfileCredential()}
-            onApiFormatChange={setAiApiFormat}
-            onModelChange={setAiModel}
-            onBaseUrlChange={setAiBaseUrl}
-            onLanguagesChange={setAiLanguages}
             onConcurrencyLimitChange={commitAiConcurrencyLimit}
             onMaxAnalysisImageEdgePxChange={commitAiMaxAnalysisImageEdgePx}
-            onDescriptionEnabledChange={setAiDescriptionEnabled}
-            onTagsEnabledChange={setAiTagsEnabled}
-            onRatingEnabledChange={setAiRatingEnabled}
-            onForceExistingTagsChange={setAiForceExistingTags}
-            onAnalysisSettingsChange={setAiAnalysisSettings}
             onCommitAnalysisSettingsPatch={commitAiAnalysisSettingsPatch}
-            onDisclaimerAcceptedChange={setAiDisclaimerAccepted}
-            onAutoAnalyzeEnabledChange={setAiAutoAnalyzeEnabled}
-            saveVerifying={aiSaveVerifying}
             onClose={() => {
               if (aiSaveVerifying) return;
               setAiApiKey("");
@@ -15039,10 +15003,8 @@ function AppInner() {
             videoTransportOnApproach: !current.videoTransportOnApproach,
           }));
         }}
-        showMissingLinkedFiles={showMissingLinkedFiles}
         videoTransportOnApproach={viewerChromePrefs.videoTransportOnApproach}
         canvasPrefs={canvasPrefs}
-        onActiveCategoryChange={setAppSettingsCategory}
         onClose={() => {
           setAppSettingsOpen(false);
           setAppSettingsCategory("general");
@@ -15094,7 +15056,6 @@ function AppInner() {
         pluginContributionRefreshKey={pluginContributionRefreshKey}
         libraryId={library?.libraryId}
         mcpApi={(window as RendererWindow).keel?.mcp}
-        open={appSettingsOpen}
         showCardSyncStatus={canvasPrefs.fields.badgeSync}
         onShowCardSyncStatusChange={(checked) => {
           setCanvasPrefs((current) => ({

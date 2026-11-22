@@ -1,3 +1,4 @@
+import { useAiField } from "./stores/ai-store";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createShellPortal } from "./workbench/ui/ShellStyleScope";
 
@@ -40,60 +41,17 @@ export interface AiConfigDialogProps {
   open: boolean;
   /** Renders inside the settings center instead of a modal dialog. */
   variant?: "dialog" | "embedded";
-  apiKey: string;
-  profiles: Array<{
-    id: string;
-    name: string;
-    apiFormat: AiApiFormat;
-    model: string;
-    baseUrl: string;
-    hasCredential: boolean;
-  }>;
-  activeProfileId: string | null;
-  profileDraftId: string | null;
-  profileName: string;
-  apiFormat: AiApiFormat;
-  model: string;
-  baseUrl: string;
-  languages: AiLanguageId[];
-  concurrencyLimit: number;
-  maxAnalysisImageEdgePx: number;
-  hasKey: boolean;
-  descriptionEnabled: boolean;
-  tagsEnabled: boolean;
-  ratingEnabled: boolean;
-  forceExistingTags: boolean;
-  analysisSettings: AiAnalysisSettingsWire;
-  disclaimerAccepted: boolean;
-  autoAnalyzeEnabled: boolean;
-  connectionState: AiConnectionState;
-  connectionReason?: string;
-  /** Shown while save is waiting on a connection probe. */
-  saveVerifying?: boolean;
-  onApiKeyChange: (value: string) => void;
-  onProfileNameChange: (value: string) => void;
   onNewProfile: () => void;
   onSelectProfile: (id: string) => void;
   onActivateProfile: (id: string) => void;
   onDeleteProfile: (id: string) => void;
   onClearCredential: () => void;
-  onApiFormatChange: (value: AiApiFormat) => void;
-  onModelChange: (value: string) => void;
-  onBaseUrlChange: (value: string) => void;
-  onLanguagesChange: (value: AiLanguageId[]) => void;
   onConcurrencyLimitChange: (value: number) => void;
   onMaxAnalysisImageEdgePxChange: (value: number) => void;
-  onDescriptionEnabledChange: (value: boolean) => void;
-  onTagsEnabledChange: (value: boolean) => void;
-  onRatingEnabledChange: (value: boolean) => void;
-  onForceExistingTagsChange: (value: boolean) => void;
-  onAnalysisSettingsChange: (value: AiAnalysisSettingsWire) => void;
   /** Blur-commit for advanced numeric fields: updates state and persists. */
   onCommitAnalysisSettingsPatch?: (
     patch: Partial<AiAnalysisSettingsWire>,
   ) => void;
-  onDisclaimerAcceptedChange: (value: boolean) => void;
-  onAutoAnalyzeEnabledChange: (value: boolean) => void;
   onClose: () => void;
   onSave: () => void;
   onTestConnection: () => Promise<{
@@ -118,54 +76,41 @@ const OUTPUT_STYLE_LABEL_KEY: Record<
 export function AiConfigDialog({
   open,
   variant = "dialog",
-  apiKey,
-  profiles,
-  activeProfileId,
-  profileDraftId,
-  profileName,
-  apiFormat,
-  model,
-  baseUrl,
-  languages,
-  concurrencyLimit,
-  maxAnalysisImageEdgePx,
-  hasKey,
-  descriptionEnabled,
-  tagsEnabled,
-  ratingEnabled,
-  forceExistingTags,
-  analysisSettings,
-  disclaimerAccepted,
-  autoAnalyzeEnabled,
-  connectionState,
-  connectionReason,
-  saveVerifying = false,
-  onApiKeyChange,
-  onProfileNameChange,
   onNewProfile,
   onSelectProfile,
   onActivateProfile,
   onDeleteProfile,
   onClearCredential,
-  onApiFormatChange,
-  onModelChange,
-  onBaseUrlChange,
-  onLanguagesChange,
   onConcurrencyLimitChange,
   onMaxAnalysisImageEdgePxChange,
-  onDescriptionEnabledChange,
-  onTagsEnabledChange,
-  onRatingEnabledChange,
-  onForceExistingTagsChange,
-  onAnalysisSettingsChange,
   onCommitAnalysisSettingsPatch,
-  onDisclaimerAcceptedChange,
-  onAutoAnalyzeEnabledChange,
   onClose,
   onSave,
   onTestConnection,
   onFetchModels,
 }: AiConfigDialogProps) {
+  const [apiKey, onApiKeyChange] = useAiField("aiApiKey");
+  const [profiles] = useAiField("aiProfiles");
+  const [activeProfileId] = useAiField("aiActiveProfileId");
+  const [profileDraftId] = useAiField("aiProfileDraftId");
+  const [profileName, onProfileNameChange] = useAiField("aiProfileName");
+  const [apiFormat, onApiFormatChange] = useAiField("aiApiFormat");
+  const [model, onModelChange] = useAiField("aiModel");
+  const [baseUrl, onBaseUrlChange] = useAiField("aiBaseUrl");
+  const [languages, onLanguagesChange] = useAiField("aiLanguages");
+  const [concurrencyLimit] = useAiField("aiConcurrencyLimit");
+  const [maxAnalysisImageEdgePx] = useAiField("aiMaxAnalysisImageEdgePx");
+  const [hasKey] = useAiField("aiDraftHasKey");
+  const [descriptionEnabled, onDescriptionEnabledChange] = useAiField("aiDescriptionEnabled");
+  const [tagsEnabled, onTagsEnabledChange] = useAiField("aiTagsEnabled");
+  const [ratingEnabled, onRatingEnabledChange] = useAiField("aiRatingEnabled");
+  const [forceExistingTags, onForceExistingTagsChange] = useAiField("aiForceExistingTags");
+  const [analysisSettings, onAnalysisSettingsChange] = useAiField("aiAnalysisSettings");
+  const [disclaimerAccepted, onDisclaimerAcceptedChange] = useAiField("aiDisclaimerAccepted");
+  const [autoAnalyzeEnabled, onAutoAnalyzeEnabledChange] = useAiField("aiAutoAnalyzeEnabled");
+  const [connectionState] = useAiField("aiDraftConnectionState");
+  const [connectionReason] = useAiField("aiDraftConnectionReason");
+  const [saveVerifying] = useAiField("aiSaveVerifying");
   const t = useT();
   const [modelOptionsState, setModelOptions] = useState<{
     fetchKey: string;
