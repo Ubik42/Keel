@@ -1,5 +1,5 @@
 import { automaticTaskConfigSchema, automaticTaskLayoutSchema } from '../automatic-tasks';
-import { ruleLayoutSchema, ruleManifestSchema, ruleRunSchema } from '../rules';
+import { ruleChangeCursorSchema, ruleLayoutSchema, ruleManifestSchema, ruleRunSchema, ruleScopeSchema } from '../rules';
 import { z } from 'zod';
 
 import {
@@ -1928,6 +1928,7 @@ export const workerCommandSchema = z.discriminatedUnion('type', [
   z.strictObject({ type: z.literal('rule.layout.set'), libraryId: identifierSchema, layout: ruleLayoutSchema }),
   z.strictObject({ type: z.literal('rule.runs.list'), libraryId: identifierSchema, ruleId: z.string().uuid(), limit: z.number().int().positive().max(200).optional() }),
   z.strictObject({ type: z.literal('rule.run.record'), libraryId: identifierSchema, run: ruleRunSchema }),
+  z.strictObject({ type: z.literal('rule.changed-assets'), libraryId: identifierSchema, after: ruleChangeCursorSchema, scope: ruleScopeSchema }),
   z.strictObject({type:z.literal('automatic-task.layout.get'),libraryId:identifierSchema}),
   z.strictObject({type:z.literal('automatic-task.layout.set'),libraryId:identifierSchema,layout:automaticTaskLayoutSchema}),
   z.strictObject({

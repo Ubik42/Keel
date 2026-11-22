@@ -51,13 +51,14 @@ return { tagged: page.items.length };
 | \`after-import\` | 每次导入完成后 |
 | \`library-change\` | 资源库发生任何变化后（导入、编辑、磁盘上的文件变化） |
 | \`schedule\` | 资源库打开期间每 \`everyMinutes\` 分钟一次（最少 5） |
+| \`continuous\` | 持续运行：资源库打开期间，文件新增或改动约 1 秒后运行；\`rule.changedAssetIds\` 是这一批文件（每批最多 2000 个，更多时分几次运行）。启用后只处理之后的变化，已有文件需手动运行一次 |
 
 同一时机触发多条规则时，按规则列表的顺序（分组顺序，再组内顺序）依次运行；后运行的规则能看到前面规则的结果。
 
 ## 运行环境
 
 - 全局 \`keel\`：领域 API，签名见 \`keel-rule-api.d.ts\`。每次调用都经过与界面操作相同的校验、记录和撤销。
-- 全局 \`rule\`：\`{ id, trigger, scope, dryRun }\`。\`rule.scope\` 可直接传给 \`keel.assets.search\` 的 \`scope\`。
+- 全局 \`rule\`：\`{ id, trigger, scope, dryRun, changedAssetIds? }\`。\`rule.scope\` 可直接传给 \`keel.assets.search\` 的 \`scope\`。\`changedAssetIds\` 只在持续运行时提供，可传给 \`keel.assets.list({ assetIds })\`。
 - \`console.log / info / warn / error\`：写入这次运行的日志。
 - 没有 \`import\`、\`require\`、Node 内置模块、文件系统、网络或 \`globalThis\`。
 
@@ -117,9 +118,11 @@ interface KeelSearchInput {
 
 declare const rule: {
   readonly id: string;
-  readonly trigger: "manual" | "after-import" | "library-change" | "schedule" | "dry-run";
+  readonly trigger: "manual" | "after-import" | "library-change" | "schedule" | "continuous" | "dry-run";
   readonly scope: KeelRuleScope;
   readonly dryRun: boolean;
+  /** Continuous runs only: the files added or changed in this batch. */
+  readonly changedAssetIds?: readonly string[];
 };
 
 declare const keel: {
@@ -188,11 +191,30 @@ console.log(\`rated \${candidates.length} images\`);
 return { rated: candidates.length };
 `;
 
+const exampleContinuous = `// examples/favorite-new-gifs.ts
+// manifest: trigger continuous; permissions asset.list, asset.metadata.get, asset.metadata.set
+// Marks new or changed GIF files as favorites, batch by batch.
+const ids = rule.changedAssetIds ?? [];
+let marked = 0;
+for (let offset = 0; offset < ids.length; offset += 200) {
+  const page = await keel.assets.list({ assetIds: ids.slice(offset, offset + 200), limit: 200 });
+  for (const asset of page.items) {
+    if (asset.favorite || !asset.name.toLowerCase().endsWith(".gif")) continue;
+    const metadata = await keel.assets.getMetadata(asset.id);
+    await keel.assets.setMetadata({ assetId: asset.id, expectedVersion: metadata.entityVersion, favorite: true });
+    marked += 1;
+  }
+}
+console.log(\`marked \${marked} of \${ids.length} changed files\`);
+return { marked };
+`;
+
 export const RULE_DOCS = {
   agents,
   declarations,
   examples: {
     "tag-by-extension.ts": exampleTagByExtension,
     "rate-large-images.ts": exampleRateLarge,
+    "favorite-new-gifs.ts": exampleContinuous,
   } as Record<string, string>,
 };

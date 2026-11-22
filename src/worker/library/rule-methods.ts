@@ -10,11 +10,14 @@ import {
   RULE_DEFAULT_SCRIPT,
   RULE_MANIFEST_FILE,
   RULE_RUNS_KEPT,
+  RULE_CHANGED_ASSETS_BATCH,
   RULES_DIRECTORY,
   ruleLayoutSchema,
   ruleManifestSchema,
   ruleRunSchema,
+  type RuleChangeCursor,
   type RuleLayout,
+  type RuleScope,
   type RuleListResult,
   type RuleManifest,
   type RuleProblem,
@@ -36,6 +39,7 @@ export interface RuleMethods {
   recordRuleRun(...args: Parameters<typeof recordRuleRun>): ReturnType<typeof recordRuleRun>;
   listRuleRuns(...args: Parameters<typeof listRuleRuns>): ReturnType<typeof listRuleRuns>;
   rulesDirectoryFor(...args: Parameters<typeof rulesDirectoryFor>): ReturnType<typeof rulesDirectoryFor>;
+  listRuleChangedAssets(...args: Parameters<typeof listRuleChangedAssets>): ReturnType<typeof listRuleChangedAssets>;
 }
 
 export function rulesDirectoryFor(this: LibraryService, openLibrary: OpenLibrary): string {
@@ -287,4 +291,43 @@ export function listRuleRuns(this: LibraryService, input: { libraryId: string; r
       const run = ruleRunSchema.safeParse(JSON.parse(row.run_json));
       return run.success ? [run.data] : [];
     });
+}
+
+/**
+ * Files added or changed after `after`, oldest first, for a continuous rule
+ * (at most RULE_CHANGED_ASSETS_BATCH). Trashed files are left out; a folder
+ * scope keeps the files of that managed folder (and its subfolders).
+ */
+export function listRuleChangedAssets(this: LibraryService, input: {
+  libraryId: string;
+  after: RuleChangeCursor;
+  scope: RuleScope;
+}): { assetIds: string[]; cursor: RuleChangeCursor | null } {
+  const openLibrary = this.requireOpenLibrary(input.libraryId);
+  const params: unknown[] = [input.after.updatedAt, input.after.assetId];
+  let scopeSql = "";
+  if (input.scope.folderId !== null) {
+    scopeSql = input.scope.recursive
+      ? `AND managed_folder_id IN (
+          WITH RECURSIVE descendants(folder_id) AS (
+            SELECT folder_id FROM managed_folders WHERE folder_id = ?
+            UNION ALL
+            SELECT child.folder_id FROM managed_folders child
+              JOIN descendants parent ON child.parent_folder_id = parent.folder_id
+          )
+          SELECT folder_id FROM descendants)`
+      : "AND managed_folder_id = ?";
+    params.push(input.scope.folderId);
+  }
+  params.push(RULE_CHANGED_ASSETS_BATCH);
+  const rows = openLibrary.connection.prepare(
+    `SELECT asset_id, updated_at FROM assets
+      WHERE (updated_at, asset_id) > (?, ?) AND deleted_at IS NULL ${scopeSql}
+      ORDER BY updated_at, asset_id LIMIT ?`,
+  ).all(...params) as Array<{ asset_id: string; updated_at: string }>;
+  const last = rows.at(-1);
+  return {
+    assetIds: rows.map((row) => row.asset_id),
+    cursor: last ? { updatedAt: last.updated_at, assetId: last.asset_id } : null,
+  };
 }

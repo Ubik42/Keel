@@ -124,4 +124,37 @@ describe('rules', () => {
     result = service.listRules(library.libraryId);
     expect(result.rules).toEqual([]);
   });
+
+  it('lists changed files for continuous rules after a cursor, oldest first and within the scope', () => {
+    const parent = mkdtempSync(path.join(tmpdir(), 'keel-rules-'));
+    roots.push(parent);
+    const service = new LibraryService();
+    services.push(service);
+    const library = service.createLibrary({ storageLayout: 'assets', displayName: 'Rules', selectedParentPath: parent });
+    const outer = service.createManagedFolder({ libraryId: library.libraryId, name: 'Outer' });
+    const inner = service.createManagedFolder({ libraryId: library.libraryId, name: 'Inner', parentFolderId: outer.folderId });
+    const other = service.createManagedFolder({ libraryId: library.libraryId, name: 'Other' });
+    const db = service.requireOpenLibrary(library.libraryId).connection;
+    const insert = (assetId: string, folderId: string, updatedAt: string, deleted = false) => db.prepare(
+      `INSERT INTO assets (asset_id, location_kind, managed_folder_id, relative_file_path, path_identity, availability, created_at, updated_at, deleted_at)
+       VALUES (?, 'managed', ?, ?, ?, 'available', ?, ?, ?)`,
+    ).run(assetId, folderId, `${folderId}/${assetId}.png`, `${folderId}/${assetId}.png`, updatedAt, updatedAt, deleted ? updatedAt : null);
+    insert('a1', outer.folderId, '2026-01-01T00:00:01.000Z');
+    insert('a2', inner.folderId, '2026-01-01T00:00:02.000Z');
+    insert('a3', inner.folderId, '2026-01-01T00:00:02.000Z');
+    insert('a4', other.folderId, '2026-01-01T00:00:03.000Z');
+    insert('a5', outer.folderId, '2026-01-01T00:00:04.000Z', true);
+    const all = { folderId: null, recursive: true };
+    const first = service.listRuleChangedAssets({ libraryId: library.libraryId, after: { updatedAt: '2026-01-01T00:00:01.000Z', assetId: '' }, scope: all });
+    expect(first.assetIds).toEqual(['a1', 'a2', 'a3', 'a4']);
+    // Same timestamp: the asset id breaks the tie, so a2 is not listed again.
+    const resumed = service.listRuleChangedAssets({ libraryId: library.libraryId, after: { updatedAt: '2026-01-01T00:00:02.000Z', assetId: 'a2' }, scope: all });
+    expect(resumed.assetIds).toEqual(['a3', 'a4']);
+    expect(resumed.cursor).toEqual({ updatedAt: '2026-01-01T00:00:03.000Z', assetId: 'a4' });
+    const start = { updatedAt: '', assetId: '' };
+    expect(service.listRuleChangedAssets({ libraryId: library.libraryId, after: start, scope: { folderId: outer.folderId, recursive: true } }).assetIds).toEqual(['a1', 'a2', 'a3']);
+    expect(service.listRuleChangedAssets({ libraryId: library.libraryId, after: start, scope: { folderId: outer.folderId, recursive: false } }).assetIds).toEqual(['a1']);
+    expect(service.listRuleChangedAssets({ libraryId: library.libraryId, after: { updatedAt: '2026-01-01T00:00:03.000Z', assetId: 'a4' }, scope: all }))
+      .toEqual({ assetIds: [], cursor: null });
+  });
 });

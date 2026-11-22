@@ -1,5 +1,5 @@
 import { automaticTaskSchema, automaticTaskLayoutSchema } from '../automatic-tasks';
-import { ruleListResultSchema, ruleRunSchema } from '../rules';
+import { ruleChangeCursorSchema, ruleListResultSchema, ruleRunSchema } from '../rules';
 import { z } from 'zod';
 
 import { EMBEDDING_HTTP_ADAPTERS } from '../embedding/http-service';
@@ -1043,6 +1043,7 @@ const assetOperationSuccessSchemas = [
   z.strictObject({ ok: z.literal(true), type: z.literal('rule.list.result'), result: ruleListResultSchema }),
   z.strictObject({ ok: z.literal(true), type: z.literal('rule.runs.result'), runs: z.array(ruleRunSchema) }),
   z.strictObject({ ok: z.literal(true), type: z.literal('rule.run.recorded') }),
+  z.strictObject({ ok: z.literal(true), type: z.literal('rule.changed-assets.result'), assetIds: z.array(z.string()), cursor: ruleChangeCursorSchema.nullable() }),
   z.strictObject({ ok: z.literal(true), type: z.literal('automatic-task.result'), tasks: z.array(automaticTaskSchema) }),
   z.strictObject({
     ok: z.literal(true),

@@ -33,5 +33,6 @@ export const RULE_TRIGGER_LABELS: Record<string, string> = {
   "after-import": "导入后",
   "library-change": "资源库变化后",
   schedule: "定时",
+  continuous: "持续运行",
   "dry-run": "试运行",
 };

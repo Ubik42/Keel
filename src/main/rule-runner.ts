@@ -10,7 +10,9 @@ import {
 } from '../shared/automation-host-command-error';
 import { createPublicError } from '../shared/protocol/errors';
 import {
+  RULE_CHANGED_ASSETS_BATCH,
   rulesInPriorityOrder,
+  type RuleChangeCursor,
   type RuleListResult,
   type RuleRun,
   type RuleSummary,
@@ -46,6 +48,10 @@ export interface RuleRunRequest {
 }
 
 const MAX_OUTPUT_LINES = 200;
+/** Batches one continuous trigger may run per rule before yielding. */
+const MAX_CONTINUOUS_BATCHES = 25;
+/** A continuous rule without an earlier run starts this far back. */
+const CONTINUOUS_START_LOOKBACK_MS = 10_000;
 
 /** Error line in the rule's own file (the runner adds one line in front). */
 function scriptLine(stack: string | undefined): number | undefined {
@@ -71,6 +77,8 @@ export class RuleRunner {
   readonly #options: RuleRunnerOptions;
   /** One queue per library: triggered rules run one after another. */
   readonly #queues = new Map<string, Promise<unknown>>();
+  /** Continuous rules: where the next batch starts, per library and rule. */
+  readonly #cursors = new Map<string, RuleChangeCursor>();
 
   constructor(options: RuleRunnerOptions) {
     this.#options = options;
@@ -95,6 +103,45 @@ export class RuleRunner {
     });
   }
 
+  /**
+   * Run every enabled continuous rule on the files changed since its
+   * cursor, in priority order and in batches. The cursor moves on after
+   * each batch, also when the run fails, so one bad file does not block
+   * the rule; the failure is in the rule's history.
+   */
+  runContinuous(libraryId: string): Promise<RuleRun[]> {
+    return this.#enqueue(libraryId, async () => {
+      const list = await this.listRules(libraryId);
+      if (!list) return [];
+      const runs: RuleRun[] = [];
+      for (const rule of rulesInPriorityOrder(list)) {
+        if (!rule.enabled || rule.manifest.trigger.kind !== 'continuous') continue;
+        const key = `${libraryId}:${rule.manifest.id}`;
+        let cursor = this.#cursors.get(key) ?? await this.#initialCursor(libraryId, rule.manifest.id);
+        for (let batch = 0; batch < MAX_CONTINUOUS_BATCHES; batch += 1) {
+          const changed = await this.#options.workerClient()?.request({
+            type: 'rule.changed-assets', libraryId, after: cursor, scope: rule.manifest.scope,
+          });
+          if (!changed?.ok || changed.type !== 'rule.changed-assets.result' || !changed.cursor) break;
+          cursor = changed.cursor;
+          this.#cursors.set(key, cursor);
+          runs.push(await this.#runRule(libraryId, rule, 'continuous', false, { changedAssetIds: changed.assetIds, changeCursor: cursor }));
+          if (changed.assetIds.length < RULE_CHANGED_ASSETS_BATCH) break;
+        }
+        this.#cursors.set(key, cursor);
+      }
+      return runs;
+    });
+  }
+
+  /** Resume after the last continuous batch; a new rule starts from now. */
+  async #initialCursor(libraryId: string, ruleId: string): Promise<RuleChangeCursor> {
+    const response = await this.#options.workerClient()?.request({ type: 'rule.runs.list', libraryId, ruleId, limit: 200 });
+    const runs = response?.ok && response.type === 'rule.runs.result' ? response.runs : [];
+    const previous = runs.find((run) => run.changeCursor)?.changeCursor;
+    return previous ?? { updatedAt: new Date(Date.now() - CONTINUOUS_START_LOOKBACK_MS).toISOString(), assetId: '' };
+  }
+
   /** Run one rule now (manual, MCP, dry-run), regardless of its switch. */
   run(request: RuleRunRequest): Promise<RuleRun | undefined> {
     return this.#enqueue(request.libraryId, async () => {
@@ -115,7 +162,13 @@ export class RuleRunner {
     return next;
   }
 
-  async #runRule(libraryId: string, rule: RuleSummary, reason: RuleRunReason, interactive: boolean): Promise<RuleRun> {
+  async #runRule(
+    libraryId: string,
+    rule: RuleSummary,
+    reason: RuleRunReason,
+    interactive: boolean,
+    batch?: { changedAssetIds: string[]; changeCursor: RuleChangeCursor },
+  ): Promise<RuleRun> {
     const dryRun = reason === 'dry-run';
     const startedAt = new Date().toISOString();
     const output: string[] = [];
@@ -137,6 +190,7 @@ export class RuleRunner {
         output: output.slice(0, MAX_OUTPUT_LINES),
         error,
         historyEntryId,
+        ...(batch ? { changeCursor: batch.changeCursor } : {}),
       };
       try {
         await this.#options.workerClient()?.request({ type: 'rule.run.record', libraryId, run });
@@ -161,7 +215,13 @@ export class RuleRunner {
       .flatMap((d) => d!.requiredCapabilities))];
 
     // The rule context is one line in front of the script.
-    const context = { id: rule.manifest.id, trigger: reason, scope: rule.manifest.scope, dryRun };
+    const context = {
+      id: rule.manifest.id,
+      trigger: reason,
+      scope: rule.manifest.scope,
+      dryRun,
+      ...(batch ? { changedAssetIds: batch.changedAssetIds } : {}),
+    };
     const source = `const rule = Object.freeze(${JSON.stringify(context)});\n${rule.source}`;
     // The grant is keyed by manifest + script, not by this run's context, so
     // one confirmation covers every trigger until the rule is edited.

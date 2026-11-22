@@ -901,6 +901,7 @@ let ruleRunner: RuleRunner | undefined;
 const ruleTriggerSequence = new Map<string, number>();
 const ruleMcpTools = createRuleMcpTools({ ruleRunner: () => ruleRunner, workerClient: () => workerClient });
 const ruleLibraryChangeTimers = new Map<string, ReturnType<typeof setTimeout>>();
+const ruleContinuousTimers = new Map<string, ReturnType<typeof setTimeout>>();
 const ruleScheduleLastRun = new Map<string, number>();
 let pluginRuntimeSupervisor: PluginRuntimeSupervisor | undefined;
 let pluginTrustedRuntimeSupervisor: PluginTrustedRuntimeSupervisor | undefined;
@@ -2958,10 +2959,12 @@ function publishAiCleared(event: AiContentClearedEvent): void {
  * not trigger "library-change" rules again: events up to the change sequence
  * seen after the batch are ignored.
  */
-async function runRulesFor(libraryId: string, kind: 'after-import' | 'library-change' | 'schedule'): Promise<void> {
+async function runRulesFor(libraryId: string, kind: 'after-import' | 'library-change' | 'schedule' | 'continuous'): Promise<void> {
   if (!ruleRunner || !workerClient) return;
   try {
-    const runs = await ruleRunner.runTriggered(libraryId, kind);
+    const runs = kind === 'continuous'
+      ? await ruleRunner.runContinuous(libraryId)
+      : await ruleRunner.runTriggered(libraryId, kind);
     if (runs.length === 0) return;
     const sequence = await workerClient.request({ type: 'library.change-sequence', libraryId });
     if (sequence.ok && 'changeSequence' in sequence && typeof sequence.changeSequence === 'number') {
@@ -2980,6 +2983,13 @@ function scheduleLibraryChangeRules(event: LibraryChangedEvent): void {
     ruleLibraryChangeTimers.delete(event.libraryId);
     void runRulesFor(event.libraryId, 'library-change');
   }, 2_000));
+  // Continuous rules keep up sooner: 1 second after the changes settle.
+  const continuous = ruleContinuousTimers.get(event.libraryId);
+  if (continuous) clearTimeout(continuous);
+  ruleContinuousTimers.set(event.libraryId, setTimeout(() => {
+    ruleContinuousTimers.delete(event.libraryId);
+    void runRulesFor(event.libraryId, 'continuous');
+  }, 1_000));
 }
 
 /** Once a minute: run "schedule" rules whose interval has passed. */

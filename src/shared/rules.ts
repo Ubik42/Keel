@@ -21,6 +21,12 @@ export const ruleTriggerSchema = z.discriminatedUnion("kind", [
   z.strictObject({ kind: z.literal("library-change") }),
   /** Every N minutes while the library is open. */
   z.strictObject({ kind: z.literal("schedule"), everyMinutes: z.number().int().min(5).max(7 * 24 * 60) }),
+  /**
+   * Keeps up with the library while it is open: shortly after files are
+   * added or changed, the rule runs on them; `rule.changedAssetIds` lists
+   * the files of this batch (at most 2000; a larger batch runs several times).
+   */
+  z.strictObject({ kind: z.literal("continuous") }),
 ]);
 export type RuleTrigger = z.infer<typeof ruleTriggerSchema>;
 
@@ -48,7 +54,15 @@ export const ruleManifestSchema = z.strictObject({
 export type RuleManifest = z.infer<typeof ruleManifestSchema>;
 
 export const ruleRunStatusSchema = z.enum(["succeeded", "failed", "cancelled"]);
-export const ruleRunTriggerSchema = z.enum(["manual", "after-import", "library-change", "schedule", "dry-run"]);
+export const ruleRunTriggerSchema = z.enum(["manual", "after-import", "library-change", "schedule", "continuous", "dry-run"]);
+
+/** Position after the last file a continuous rule has seen. */
+export const ruleChangeCursorSchema = z.strictObject({
+  updatedAt: z.string(),
+  assetId: z.string(),
+});
+export type RuleChangeCursor = z.infer<typeof ruleChangeCursorSchema>;
+export const RULE_CHANGED_ASSETS_BATCH = 2000;
 
 export const ruleRunChangeSchema = z.strictObject({
   commandId: z.string(),
@@ -74,6 +88,8 @@ export const ruleRunSchema = z.strictObject({
     line: z.number().int().positive().optional(),
   }).nullable(),
   historyEntryId: z.string().nullable(),
+  /** Continuous runs: the cursor after this batch, where the next batch starts. */
+  changeCursor: ruleChangeCursorSchema.optional(),
 });
 export type RuleRun = z.infer<typeof ruleRunSchema>;
 
