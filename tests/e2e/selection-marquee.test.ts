@@ -4,7 +4,7 @@ import path from "node:path";
 
 import { _electron as electron, expect, test } from "@playwright/test";
 
-import { resolveElectronExecutablePath } from "./electron-test-helpers";
+import { resolveElectronExecutablePath, showAllFormats } from "./electron-test-helpers";
 
 test.describe.configure({ timeout: 120_000 });
 
@@ -98,6 +98,7 @@ async function createAndImport(
     .locator(".empty-actions")
     .getByRole("button", { name: "导入文件", exact: true });
   await expect(importButton).toBeEnabled({ timeout: 30_000 });
+  await showAllFormats(window);
   await importButton.click();
   await expect(window.locator(".asset-card")).toHaveCount(expectedCardCount, {
     timeout: 30_000,
@@ -820,12 +821,12 @@ test("Esc clears selection", async () => {
     // The right-click handler selects the card before opening context menu
     // Verify the context menu appears (implies selection was set)
     await expect(
-      window.getByRole("menuitem", { name: "打开" }),
+      window.getByRole("menuitem", { name: "用默认应用打开", exact: true }),
     ).toBeVisible();
     // Close with Escape
     await window.keyboard.press("Escape");
     await expect(
-      window.getByRole("menuitem", { name: "打开" }),
+      window.getByRole("menuitem", { name: "用默认应用打开", exact: true }),
     ).toHaveCount(0, { timeout: 3000 });
   } finally {
     await application.close();
@@ -1176,13 +1177,13 @@ test("context-menu Escape dismisses menu then second Escape clears selection", a
     // Right-click opens context menu (selects the card)
     await cards.nth(0).click({ button: "right" });
     await expect(
-      window.getByRole("menuitem", { name: "打开" }),
+      window.getByRole("menuitem", { name: "用默认应用打开", exact: true }),
     ).toBeVisible();
 
     // First Escape: closes the context menu, selection MUST be preserved
     await window.keyboard.press("Escape");
     await expect(
-      window.getByRole("menuitem", { name: "打开" }),
+      window.getByRole("menuitem", { name: "用默认应用打开", exact: true }),
     ).toHaveCount(0, { timeout: 3000 });
     await expect.poll(() => selectedCount(window)).toBe(1);
 

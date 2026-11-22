@@ -197,6 +197,9 @@ const playwrightPath = require.resolve('@playwright/test/cli');
 // for the Playwright child and every Electron process it launches.
 const playwrightEnv = { ...process.env };
 delete playwrightEnv.ELECTRON_RUN_AS_NODE;
+// Open E2E windows on a secondary display when one exists, so a run does not
+// cover the primary screen. KEEL_E2E_ISOLATED=0 restores the old placement.
+if (playwrightEnv.KEEL_E2E_ISOLATED === undefined) playwrightEnv.KEEL_E2E_ISOLATED = '1';
 const child = spawn(process.execPath, [playwrightPath, 'test', ...process.argv.slice(2)], {
   cwd: projectRoot,
   env: playwrightEnv,

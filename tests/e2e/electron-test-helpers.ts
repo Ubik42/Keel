@@ -314,3 +314,14 @@ export async function chooseStandardOption(
   const value = typeof option === 'string' ? option : option.value ?? '';
   await menu.locator(`[data-value="${value}"]`).click();
 }
+
+/**
+ * Text formats are hidden by default (bdc4ce02). Fixtures that import text
+ * files clear the default format filter first so their cards are visible.
+ */
+export async function showAllFormats(window: Page): Promise<void> {
+  const clear = window.getByRole('button', { name: '全部清除', exact: true });
+  await clear.waitFor({ state: 'visible', timeout: 15_000 });
+  await clear.click();
+  await clear.waitFor({ state: 'hidden', timeout: 5_000 }).catch(() => undefined);
+}
