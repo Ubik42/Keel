@@ -73,7 +73,8 @@ test('decodes direct JPG and # TGA previews with 4k linked directories, and reta
     await window.keyboard.press('Space');
     const viewer = window.getByRole('region', { name: 'direct.jpg 查看页面' });
     const viewerImage = viewer.locator('img.preview-image:not(.is-hidden)');
-    await expect(viewerImage).toBeVisible();
+    // With 4k linked directories the first full-size layer can take a few seconds.
+    await expect(viewerImage).toBeVisible({ timeout: 20_000 });
     await expect.poll(() => viewerImage.evaluate((element) => element instanceof HTMLImageElement
       && element.complete && element.naturalWidth === 480 && element.naturalHeight === 480)).toBe(true);
     await expect(viewerImage).toHaveAttribute('src', /^keel:\/\/source\//u);

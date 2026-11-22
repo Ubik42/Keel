@@ -353,3 +353,12 @@
   content: none;
 }
 
+
+/* The edge nav zones span the full viewer height and become clickable when the
+   pointer comes near; keep the text viewer's top bar (save, close) above them
+   so a click on 关闭 does not land on 下一项. The PDF toolbar sits there too. */
+.preview-text-topbar,
+.pdf-viewer-toolbar {
+  position: relative;
+  z-index: 3;
+}
