@@ -131,7 +131,7 @@ export function ensureRendererKeyboardFocus(
 ): boolean {
   if (!window || window.isDestroyed()) return false;
   // Background E2E window: focus the page only; never activate the OS window.
-  if (isE2eBackgroundWindow(process.env, app.isPackaged)) {
+  if (isE2eBackgroundWindow(process.env, app?.isPackaged ?? true)) {
     window.webContents.focus();
     return true;
   }

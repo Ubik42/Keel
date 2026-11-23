@@ -178,7 +178,7 @@ export async function createMainWindow(): Promise<void> {
     minHeight: 680,
     show: false,
     // Background E2E (isE2eBackgroundWindow): no taskbar button either.
-    ...(isE2eBackgroundWindow(process.env, app.isPackaged) ? { skipTaskbar: true } : {}),
+    ...(isE2eBackgroundWindow(process.env, app?.isPackaged ?? true) ? { skipTaskbar: true } : {}),
     backgroundColor: "#111417",
     ...(devIcon ? { icon: devIcon } : {}),
     ...(process.platform === "darwin"
@@ -201,7 +201,7 @@ export async function createMainWindow(): Promise<void> {
       // The opt-in performance harness needs frames while remaining hidden.
       ...(process.env.KEEL_E2E === "1" && process.env.KEEL_E2E_PERF_OFFSCREEN === "1"
         ? { offscreen: true, backgroundThrottling: false }
-        : isE2eBackgroundWindow(process.env, app.isPackaged)
+        : isE2eBackgroundWindow(process.env, app?.isPackaged ?? true)
           ? { backgroundThrottling: false }
           : {}),
     },
@@ -220,7 +220,7 @@ export async function createMainWindow(): Promise<void> {
     // hidden so a second launch cannot flash a window.
     const e2eShowInactive = process.env.KEEL_E2E === "1"
       && process.env.KEEL_E2E_SHOW_INACTIVE === "1";
-    const e2eBackground = isE2eBackgroundWindow(process.env, app.isPackaged);
+    const e2eBackground = isE2eBackgroundWindow(process.env, app?.isPackaged ?? true);
     if (shouldShowMainWindowOnReady({
       applicationQuitting: state.applicationQuitting,
       e2eHideWindow: process.env.KEEL_E2E === "1"
@@ -391,7 +391,7 @@ export async function createMainWindow(): Promise<void> {
 
   // A background E2E window counts as focused whatever the OS says (see
   // isE2eBackgroundWindow); the page runs with focus emulation.
-  const backgroundE2e = isE2eBackgroundWindow(process.env, app.isPackaged);
+  const backgroundE2e = isE2eBackgroundWindow(process.env, app?.isPackaged ?? true);
   if (backgroundE2e) {
     // Invisible and click-through: the window stays on a display (so media and
     // painting behave as on screen) but the user neither sees nor hits it.

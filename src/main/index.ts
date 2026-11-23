@@ -123,7 +123,7 @@ if (
 
 // Background E2E windows are transparent and may sit under other windows;
 // keep Chromium painting them (see isE2eBackgroundWindow).
-if (isE2eBackgroundWindow(process.env, app.isPackaged)) {
+if (isE2eBackgroundWindow(process.env, app?.isPackaged ?? true)) {
   app.commandLine.appendSwitch("disable-features", "CalculateNativeWinOcclusion");
 }
 
