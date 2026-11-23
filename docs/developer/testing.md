@@ -27,6 +27,7 @@ npm run verify:mainline      # 发布门禁组合（test + perf + e2e）
 - **打包门禁**：`prepackage`/`premake` 校验媒体组件与 ufbx；`verify:package` 校验产物
 - **E2E 隔离**：packaged E2E 用临时 `KEEL_E2E_USER_DATA_PATH`，不碰真实配置；对话框用 mock（注意匹配双语标题）
 - **测试环境**：`KEEL_E2E=1` 开启隔离模式（隔离 userData、E2E 对话框路径等）
+- **后台窗口**：`scripts/run-e2e.mjs` 默认设置 `KEEL_E2E_ISOLATED=1`，开发构建的 E2E 窗口不激活显示、完全透明、鼠标穿透、不进任务栏，页面开启 Chromium 焦点模拟（`document.hasFocus()` 为真），应用也不再抢前台；运行 E2E 时可以照常使用电脑。需要亲眼看窗口时设 `KEEL_E2E_ISOLATED=0`。窗口不能移到所有显示器之外，否则 Chromium 会把视频视为不可见而暂停播放
 
 ## 新增测试指引
 

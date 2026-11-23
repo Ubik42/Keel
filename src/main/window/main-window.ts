@@ -5,7 +5,7 @@ import { focusKeelWindow, focusedContexts } from '../ingestion/extension-save';
 import { MCP_START_FLAG } from '../mcp/mcp-stdio-launcher';
 import { shouldHandleSecondaryLaunch, shouldShowMainWindowOnReady } from '../../shared/startup-preferences';
 import { screen, BrowserWindow, app, dialog } from 'electron';
-import { pickIsolatedWindowPlacement } from './e2e-isolated-window';
+import { isE2eBackgroundWindow, pickIsolatedWindowPlacement } from './e2e-isolated-window';
 import { logRendererConsoleMessage, logRendererProcessGone, logRendererUnresponsive, logRendererResponsive } from './renderer-diagnostics';
 import { appIconImage } from '../app/app-icon';
 import { shouldUseLinuxRoundedCorners, linuxRoundedWindowOptions, attachLinuxRoundedCorners } from './linux-window-corners';
@@ -177,6 +177,8 @@ export async function createMainWindow(): Promise<void> {
     minWidth: 1040,
     minHeight: 680,
     show: false,
+    // Background E2E (isE2eBackgroundWindow): no taskbar button either.
+    ...(isE2eBackgroundWindow(process.env, app.isPackaged) ? { skipTaskbar: true } : {}),
     backgroundColor: "#111417",
     ...(devIcon ? { icon: devIcon } : {}),
     ...(process.platform === "darwin"
@@ -199,7 +201,9 @@ export async function createMainWindow(): Promise<void> {
       // The opt-in performance harness needs frames while remaining hidden.
       ...(process.env.KEEL_E2E === "1" && process.env.KEEL_E2E_PERF_OFFSCREEN === "1"
         ? { offscreen: true, backgroundThrottling: false }
-        : {}),
+        : isE2eBackgroundWindow(process.env, app.isPackaged)
+          ? { backgroundThrottling: false }
+          : {}),
     },
   });
 
@@ -216,6 +220,7 @@ export async function createMainWindow(): Promise<void> {
     // hidden so a second launch cannot flash a window.
     const e2eShowInactive = process.env.KEEL_E2E === "1"
       && process.env.KEEL_E2E_SHOW_INACTIVE === "1";
+    const e2eBackground = isE2eBackgroundWindow(process.env, app.isPackaged);
     if (shouldShowMainWindowOnReady({
       applicationQuitting: state.applicationQuitting,
       e2eHideWindow: process.env.KEEL_E2E === "1"
@@ -227,7 +232,7 @@ export async function createMainWindow(): Promise<void> {
         // Started by the MCP launcher: keep the window out of the way.
         window.showInactive();
         window.minimize();
-      } else if (e2eShowInactive) window.showInactive();
+      } else if (e2eShowInactive || e2eBackground) window.showInactive();
       else window.show();
     }
   };
@@ -384,17 +389,41 @@ export async function createMainWindow(): Promise<void> {
     sendToLiveWebContents(window.webContents, SHELL_SWIPE_CHANNEL, direction);
   });
 
+  // A background E2E window counts as focused whatever the OS says (see
+  // isE2eBackgroundWindow); the page runs with focus emulation.
+  const backgroundE2e = isE2eBackgroundWindow(process.env, app.isPackaged);
+  if (backgroundE2e) {
+    // Invisible and click-through: the window stays on a display (so media and
+    // painting behave as on screen) but the user neither sees nor hits it.
+    window.setOpacity(0);
+    window.setIgnoreMouseEvents(true);
+    const emulateFocus = () => {
+      try {
+        if (window.isDestroyed()) return;
+        if (!window.webContents.debugger.isAttached()) window.webContents.debugger.attach("1.3");
+        void window.webContents.debugger
+          .sendCommand("Emulation.setFocusEmulationEnabled", { enabled: true })
+          .catch((error: unknown) => state.logger?.error("e2e.focus-emulation", error));
+      } catch (error) {
+        state.logger?.error("e2e.focus-emulation", error);
+      }
+    };
+    emulateFocus();
+    window.webContents.on("did-navigate", emulateFocus);
+  }
+  const windowFocused = () => backgroundE2e || window.isFocused();
   const publishWindowFocus = () => {
     if (window.isDestroyed()) return;
-    if (window.isFocused()) {
+    if (windowFocused()) {
       state.lastExtensionTargetWindowId = window.id;
     }
     sendToLiveWebContents(window.webContents, WINDOW_FOCUS_CHANNEL, {
-      focused: window.isFocused(),
+      focused: windowFocused(),
     });
   };
   window.on("focus", publishWindowFocus);
   window.on("blur", () => {
+    if (backgroundE2e) return;
     state.pluginInputCaptureBroker?.releaseForWindowBlur();
     publishWindowFocus();
   });

@@ -59,3 +59,19 @@ export function pickIsolatedWindowPlacement(
 
   return { displayId: secondary.id, x, y, width, height };
 }
+
+/**
+ * `KEEL_E2E_ISOLATED=1` in an unpackaged E2E run keeps the test window in the
+ * background: it is shown without activation, fully transparent and
+ * click-through, without a taskbar button, never pulls the foreground, and
+ * the page runs with Chromium focus emulation so `document.hasFocus()`,
+ * focus/blur and keyboard routing behave as if it were the active window.
+ * The user can keep working on the primary display while E2E runs.
+ */
+export function isE2eBackgroundWindow(
+  env: Readonly<Record<string, string | undefined>>,
+  packaged: boolean,
+): boolean {
+  return !packaged && env.KEEL_E2E === "1" && env.KEEL_E2E_ISOLATED === "1";
+}
+

@@ -21,6 +21,7 @@ import {
   installApplicationMenu,
 } from "./window/application-menu";
 import { applyDevAppIcon, appIconImage } from "./app/app-icon";
+import { isE2eBackgroundWindow } from "./window/e2e-isolated-window";
 import {
   startNativeAssetDrag,
 } from "./shell/native-asset-drag";
@@ -118,6 +119,12 @@ if (
 ) {
   app.commandLine.appendSwitch("enable-unsafe-swiftshader");
   app.commandLine.appendSwitch("use-angle", "swiftshader");
+}
+
+// Background E2E windows are transparent and may sit under other windows;
+// keep Chromium painting them (see isE2eBackgroundWindow).
+if (isE2eBackgroundWindow(process.env, app.isPackaged)) {
+  app.commandLine.appendSwitch("disable-features", "CalculateNativeWinOcclusion");
 }
 
 // A local fork may keep a stable profile separate from the installed release.

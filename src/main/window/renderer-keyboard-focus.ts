@@ -11,6 +11,7 @@
 
 import { app } from "electron";
 
+import { isE2eBackgroundWindow } from "./e2e-isolated-window";
 import { stealWindowsForeground } from "./windows-foreground";
 
 export type RendererKeyboardFocusLogger = {
@@ -129,6 +130,11 @@ export function ensureRendererKeyboardFocus(
   },
 ): boolean {
   if (!window || window.isDestroyed()) return false;
+  // Background E2E window: focus the page only; never activate the OS window.
+  if (isE2eBackgroundWindow(process.env, app.isPackaged)) {
+    window.webContents.focus();
+    return true;
+  }
   if (window.isMinimized()) window.restore();
   const platform = options?.platform ?? process.platform;
   const reattachHwnd = options?.reattachHwnd === true && platform === "win32";
