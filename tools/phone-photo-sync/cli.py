@@ -8,7 +8,7 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-from core import Archive, MEDIA, is_cache, meta_dir
+from core import Archive, MEDIA, is_cache, is_excluded, meta_dir
 
 
 PROJECT = Path(__file__).resolve().parents[2]
@@ -40,6 +40,9 @@ def keel_importer(root, meta, tag):
 
 
 def scan(phone, config, errors):
+    exclude = config.get('exclude', [])
+    def skip(path):
+        return is_cache(path) or is_excluded(path, exclude)
     def visit(oid, prefix):
         try:
             ids = phone.children(oid)
@@ -51,9 +54,9 @@ def scan(phone, config, errors):
                 entry = phone.info(oid)
                 entry['path'] = prefix + '/' + entry['name']
                 if entry['folder']:
-                    if not is_cache(entry['path']):
+                    if not skip(entry['path']):
                         yield from visit(oid, entry['path'])
-                elif Path(entry['name']).suffix.lower() in MEDIA and not is_cache(entry['path']):
+                elif Path(entry['name']).suffix.lower() in MEDIA and entry['bytes'] != 0 and not skip(entry['path']):
                     yield entry
             except Exception as exc:
                 errors.append({'parent':prefix,'error':str(exc)})

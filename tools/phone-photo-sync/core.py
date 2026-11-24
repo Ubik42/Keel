@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import csv
+import fnmatch
 import hashlib
 import json
 import os
@@ -29,6 +30,13 @@ def meta_dir(root: Path) -> Path:
 
 def is_cache(path: str) -> bool:
     return any(p.lower() in CACHE or p.lower().startswith('.gs_fs') for p in path.split('/'))
+
+
+def is_excluded(path: str, patterns) -> bool:
+    """Config `exclude`: fnmatch patterns for app-generated images; a folder pattern covers its contents."""
+    lowered = path.lower()
+    return any(fnmatch.fnmatchcase(lowered, pattern.lower()) or lowered.startswith(pattern.lower().rstrip('/') + '/')
+               for pattern in patterns)
 
 
 def digest(path: Path) -> str:
