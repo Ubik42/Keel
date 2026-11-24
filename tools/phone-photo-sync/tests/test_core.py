@@ -23,20 +23,37 @@ class SyncTests(unittest.TestCase):
     def download(self,item,target):
         self.reads+=1;target.write_bytes(self.payload[item['path']])
         return {'sha256':digest(target),'bytes':target.stat().st_size}
+    def importer(self,items,tag_refs):
+        # Stand-in for Keel: file each staged item under its phone file name.
+        self.tagged=tag_refs
+        imported={}
+        for item in items:
+            target=self.root/'imported'/Path(item['file']).name
+            if target.exists():target=target.with_name(item['hash'][:8]+target.name)
+            target.parent.mkdir(exist_ok=True);Path(item['file']).replace(target)
+            imported[item['hash']]={'path':str(target)}
+        return {'imported':imported,'errors':{}}
     def run_sync(self,items):
-        return self.archive.update(items,self.download,report=lambda _:None)
+        return self.archive.update(items,self.download,self.importer,report=lambda _:None)
     def test_new_and_no_change_reuses_baseline(self):
         item=self.entry('DCIM/a.jpg',b'photo')
         self.assertEqual(self.run_sync([item])['newContent'],1)
         self.assertEqual(self.run_sync([item])['unchanged'],1)
         self.assertEqual(self.reads,1)
-    def test_root_layout_keeps_device_name_only_in_management_records(self):
-        self.config['device_folder']=''
-        self.config['display_name']='phone'
+    def test_records_stay_in_metadata(self):
         self.run_sync([self.entry('DCIM/a.jpg',b'photo')])
-        self.assertTrue((self.root/'DCIM/a.jpg').is_file())
-        self.assertTrue((self.root/'_管理/同步记录/phone/手机照片路径对应表.csv').is_file())
-        self.assertFalse((self.root/'phone').exists())
+        self.assertTrue((self.root/'.keel/phone-sync/手机照片路径对应表.csv').is_file())
+        self.assertFalse((self.root/'_管理').exists())
+    def test_reused_library_content_is_tagged(self):
+        self.run_sync([self.entry('DCIM/a.jpg',b'photo')])
+        self.run_sync([self.entry('Pictures/copy.jpg',b'photo')])
+        self.assertEqual(len(self.tagged),1)
+    def test_rejected_import_keeps_source_unrecorded(self):
+        item=self.entry('DCIM/a.jpg',b'photo')
+        result=self.archive.update([item],self.download,lambda items,refs:{'imported':{},'errors':{}},report=lambda _:None)
+        self.assertEqual(len(result['errors']),1)
+        self.assertEqual(self.archive.db.execute('select count(*) from sources').fetchone()[0],0)
+        self.assertFalse((self.root/'.keel/phone-sync/staging/import').exists())
     def test_duplicate_and_renamed_phone_file_keep_one_content(self):
         a=self.entry('DCIM/a.jpg',b'photo');b=self.entry('Pictures/b.jpg',b'photo')
         result=self.run_sync([a,b])
@@ -61,7 +78,7 @@ class SyncTests(unittest.TestCase):
     def test_failure_does_not_advance_source_state(self):
         item=self.entry('DCIM/a.jpg',b'photo')
         def fail(item,target):raise OSError('disconnected')
-        result=self.archive.update([item],fail,report=lambda _:None)
+        result=self.archive.update([item],fail,self.importer,report=lambda _:None)
         self.assertEqual(len(result['errors']),1)
         self.assertEqual(self.archive.db.execute('select count(*) from sources').fetchone()[0],0)
         self.assertEqual(self.run_sync([item])['newContent'],1)

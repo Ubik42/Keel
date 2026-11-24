@@ -24,8 +24,8 @@ if (!existsSync(output) || previousBuildKey !== buildKey || process.argv.include
   } });
   writeFileSync(buildKeyPath, buildKey);
 }
-const root = process.argv.slice(2).find(arg => arg !== '--build');
-if (!root) process.exit(0);
-const child = spawnSync(require('electron'), [output,root], { cwd: project, env: { ...process.env, ELECTRON_RUN_AS_NODE:'1' }, stdio:'inherit', windowsHide:true });
+const args = process.argv.slice(2).filter(arg => arg !== '--build');
+if (!args.length) process.exit(0);
+const child = spawnSync(require('electron'), [output,...args],{ cwd: project, env: { ...process.env, ELECTRON_RUN_AS_NODE:'1' }, stdio:'inherit', windowsHide:true });
 if (child.error) throw child.error;
 process.exit(child.status ?? 1);

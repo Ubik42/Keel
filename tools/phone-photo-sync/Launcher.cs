@@ -14,7 +14,7 @@ internal static class PhonePhotoSyncLauncher {
  }
  static int Main(string[] args) {
   Console.OutputEncoding=new UTF8Encoding(false);
-  Console.Title="更新手机照片 · Serpent";
+  Console.Title="更新手机照片 · Keel";
   bool pause=!args.Contains("--no-pause");int code=1;
   try {
    string folder=Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);

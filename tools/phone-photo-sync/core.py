@@ -5,6 +5,7 @@ import csv
 import hashlib
 import json
 import os
+import shutil
 import re
 import sqlite3
 import time
@@ -159,13 +160,24 @@ class Archive:
                     self.remember(value, path)
         self.db.commit()
 
-    def update(self, entries, download, *, verify=False, dry_run=False, report=print):
+    def update(self, entries, download, importer, *, verify=False, dry_run=False, report=print):
+        """Read new phone content; `importer(items, tag_refs)` files it into the library.
+
+        importer returns {'imported': {hash: {'path': absolute}}, 'errors': {hash: message}}.
+        Sources of new content are recorded only after the library accepted it.
+        """
         run = time.strftime('%Y%m%d-%H%M%S') + '-' + uuid.uuid4().hex[:12]
         stats = {'scanned':0,'unchanged':0,'newContent':0,'reusedContent':0,'downloadedBytes':0,'errors':[], 'run':run}
         staging = self.meta / 'staging'
         staging.mkdir(exist_ok=True)
         if staging.is_symlink() or not staging.resolve().is_relative_to(self.meta):
             raise ValueError('暂存目录越过同步状态边界。')
+        inbox = staging / 'import'
+        if inbox.exists():
+            shutil.rmtree(inbox)  # Unimported leftovers are re-read from the phone.
+        pending = {}  # hash -> item for the importer
+        waiting = {}  # hash -> phone sources recorded after import
+        tag_refs = set()
         for entry in entries:
             path, size, stamp = entry['path'], entry['bytes'], entry.get('stamp')
             stats['scanned'] += 1
@@ -199,32 +211,32 @@ class Archive:
                 if kept is not None:
                     temporary.unlink()
                     stats['reusedContent'] += 1
+                    if self.location(kept)[0] == 'library':
+                        tag_refs.add(str(kept))
+                    self.db.execute('INSERT OR REPLACE INTO sources VALUES (?,?,?,?,?,0)', (path,size,stamp,value,run))
+                    self.db.commit()
+                elif value in pending:
+                    temporary.unlink()
+                    stats['reusedContent'] += 1
+                    waiting[value].append((path,size,stamp))
                 else:
-                    device_folder = self.config.get('device_folder', '')
-                    relative = (safe_relative(device_folder) if device_folder else Path()) / safe_relative(path)
-                    target = self.root / relative
-                    if not target.resolve().is_relative_to(self.root):
-                        raise ValueError('目标路径超出资源库')
-                    if target.exists():
-                        # Keep edited local files and old versions intact.
-                        target = target.with_name(target.stem + '_' + value[:12] + target.suffix)
-                    if target.exists():
-                        if digest(target) != value:
-                            raise OSError('目标文件冲突')
-                        temporary.unlink()
-                    else:
-                        target.parent.mkdir(parents=True, exist_ok=True)
-                        temporary.rename(target)
-                    self.remember(value, target)
-                    stats['newContent'] += 1
-                self.db.execute('INSERT OR REPLACE INTO sources VALUES (?,?,?,?,?,0)', (path,size,stamp,value,run))
-                self.db.commit()
+                    target = inbox / value / safe_relative(path.rsplit('/', 1)[-1])
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    temporary.rename(target)
+                    pending[value] = {'hash':value,'file':str(target),'phonePath':path,'stamp':stamp}
+                    waiting[value] = [(path,size,stamp)]
             except Exception as exc:
                 stats['errors'].append({'path':path,'error':str(exc)})
                 report('未完成：' + path + ' — ' + str(exc))
             if stats['scanned'] % 100 == 0:
-                report(f"已检查 {stats['scanned']} 项，新增 {stats['newContent']}，复用 {stats['reusedContent']}，未完成 {len(stats['errors'])}")
+                report(f"已检查 {stats['scanned']} 项，待导入 {len(pending)}，复用 {stats['reusedContent']}，未完成 {len(stats['errors'])}")
         if not dry_run:
+            self.db.commit()
+            if pending or tag_refs:
+                report(f'正在导入资源库：新内容 {len(pending)} 项，补加标签 {len(tag_refs)} 项')
+                self.apply_import(importer(list(pending.values()), sorted(tag_refs)), waiting, run, stats, report)
+            if inbox.exists():
+                shutil.rmtree(inbox)
             self.db.execute('UPDATE sources SET seeded=0 WHERE seeded=1')
             self.db.execute('INSERT INTO runs VALUES (?,?,?,?)', (run,run,time.strftime('%Y-%m-%dT%H:%M:%S'),json.dumps(stats,ensure_ascii=False)))
             self.db.commit()
@@ -233,10 +245,26 @@ class Archive:
         self.stats = stats
         return stats
 
+    def apply_import(self, result, waiting, run, stats, report=print):
+        for value, sources in waiting.items():
+            placed = result.get('imported', {}).get(value)
+            if placed is None:
+                message = result.get('errors', {}).get(value, '资源库未返回导入结果')
+                for path, _, _ in sources:
+                    stats['errors'].append({'path':path,'error':message})
+                report('未导入：' + sources[0][0] + ' — ' + message)
+                continue
+            self.remember(value, Path(placed['path']))
+            if placed.get('duplicate'):
+                stats['reusedContent'] += 1
+            else:
+                stats['newContent'] += 1
+            for path, size, stamp in sources:
+                self.db.execute('INSERT OR REPLACE INTO sources VALUES (?,?,?,?,?,0)', (path,size,stamp,value,run))
+        self.db.commit()
+
     def export(self):
-        records = self.root / '_管理' / '同步记录' / safe_relative(self.config.get('display_name') or self.config.get('device_folder') or '手机')
-        records.mkdir(parents=True, exist_ok=True)
-        with (records / '手机照片路径对应表.csv').open('w',encoding='utf-8-sig',newline='') as output:
+        with (self.meta / '手机照片路径对应表.csv').open('w',encoding='utf-8-sig',newline='') as output:
             writer = csv.writer(output)
             writer.writerow(['手机原路径','电脑唯一文件','字节数','SHA-256'])
             for row in self.db.execute('SELECT * FROM sources ORDER BY path'):
