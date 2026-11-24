@@ -71,11 +71,11 @@ test('native multi-image drops add a tag and reverse tag drops affect only the t
     await expect.poll(() => metadata(secondId!)).toEqual(['批量']);
     await panel.getByRole('treeitem', { name: '单张', exact: true }).dragTo(cards.nth(0));
     await expect.poll(() => metadata(firstId!)).toEqual(['单张', '批量']);
-    const pin = panel.getByRole('button', { name: '固定标签过滤：批量', exact: true });
-    await expect(pin).toHaveText('');
-    await expect(pin.locator('svg')).toBeVisible();
-    await pin.click();
-    await expect(panel.getByRole('button', { name: '取消固定标签过滤：批量', exact: true })).toHaveAttribute('aria-pressed', 'true');
+    const include = panel.getByRole('button', { name: '过滤加入此标签：批量', exact: true });
+    await expect(include).toHaveText('');
+    await expect(include.locator('svg')).toBeVisible();
+    await include.click();
+    await expect(include).toHaveAttribute('aria-pressed', 'true');
     await page.screenshot({ path: 'work/two-way-tag-drag.png' });
   } finally { await app.close(); removePathWithSyncRetry(root); }
 });

@@ -15,13 +15,14 @@ import { Button } from '../workbench/ui/primitives';
 import { AppearanceGlyph, appearanceColorVar } from '../appearance/AppearanceGlyph';
 import { randomTagAppearance } from '../../shared/tag-appearance';
 import type { EntityAppearance } from '../../shared/entity-appearance';
+import { useQueryField } from '../stores/query-store';
+import { effectiveTagTreeState, tagTreeStatesFor, withTagTreeState, type TagTreeState } from './tag-tree-states';
+import { updateTagTreePrefs } from './tag-tree-state-store';
 type Draft = { tagId?: string; parentTagId: string | null; value: string };
 export interface TagTreeSidebarProps {
   libraryId: string;
   tags: readonly TagSummary[];
   activeTagId: string | null;
-  pinnedTagId: string | null;
-  onPin: (tagId: string) => void;
   onChoose: (tagId: string) => void;
   onCreate: (name: string, parentTagId?: string | null) => Promise<boolean>;
   onRename: (tagId: string, name: string) => Promise<boolean>;
@@ -50,6 +51,14 @@ export function TagTreeSidebar(props: TagTreeSidebarProps) {
   const rows = useMemo(() => tagTreeRows(props.tags, query, collapsed), [props.tags, query, collapsed]);
   useEffect(() => { try { localStorage.setItem(storageKey, JSON.stringify([...collapsed])); } catch { /* Storage may be unavailable. */ } }, [collapsed, storageKey]);
   const byId = useMemo(() => new Map(props.tags.map((tag) => [tag.tagId, tag])), [props.tags]);
+  const parentById = useMemo(() => new Map(props.tags.map((tag) => [tag.tagId, tag.parentTagId ?? null])), [props.tags]);
+  const [tagTreePrefs] = useQueryField('tagTreePrefs');
+  const tagStates = tagTreeStatesFor(tagTreePrefs, props.libraryId);
+  function setTagState(tagId: string, state: TagTreeState) {
+    // A second click on the tag's own state clears it.
+    const next = tagStates[tagId] === state ? null : state;
+    updateTagTreePrefs((prefs) => withTagTreeState(prefs, props.libraryId, tagId, next));
+  }
 
   function toggle(id: string) {
     setCollapsed((previous) => { const next = new Set(previous); if (next.has(id)) next.delete(id); else next.add(id); return next; });
@@ -123,7 +132,7 @@ export function TagTreeSidebar(props: TagTreeSidebarProps) {
         <button className={`nav-row${props.activeTagId === tag.tagId ? ' is-active' : ''}`} role="treeitem" aria-level={depth + 1} aria-selected={props.activeTagId === tag.tagId} aria-expanded={hasChildren ? expanded : undefined} aria-label={tag.name} title={t('tagTree.rowHelp', { name: tag.name })} data-tag-id={tag.tagId} type="button" draggable={!saving} disabled={saving} onDragStart={(event) => { event.dataTransfer.setData(TAG_DRAG_TYPE, tag.tagId); event.dataTransfer.effectAllowed = 'copyMove'; setDraggedId(tag.tagId); }} onDragEnd={() => { setDraggedId(null); setDropTarget(null); }} onClick={() => props.onChoose(tag.tagId)} onKeyDown={(event) => { if (handleTreeItemKey(event, { hasChildren, expanded, onToggle: () => toggle(tag.tagId) })) return; if (event.key === 'F2') { event.preventDefault(); setDraft({ tagId: tag.tagId, parentTagId: tag.parentTagId ?? null, value: tag.name }); } }} onContextMenu={(event) => { event.preventDefault(); event.stopPropagation(); setMenu({ id: tag.tagId, x: event.clientX, y: event.clientY }); }}>
           <AppearanceGlyph appearance={tag.appearance} fallback="tag" size={16} /><span className="nav-row-label" style={{ color: appearanceColorVar(tag.appearance?.colorId) }}>{tag.name}</span><span className="nav-count" aria-hidden="true">{tag.subtreeAssetCount ?? tag.assetCount}</span>
         </button>
-        <button type="button" className={`tag-tree-pin${props.pinnedTagId === tag.tagId ? ' is-pinned' : ''}`} aria-label={`${t(props.pinnedTagId === tag.tagId ? 'tagTree.unpin' : 'tagTree.pin')}：${tag.name}`} aria-pressed={props.pinnedTagId === tag.tagId} title={t(props.pinnedTagId === tag.tagId ? 'tagTree.unpinHelp' : 'tagTree.pinHelp')} onClick={() => props.onPin(tag.tagId)}><Icon name="pin" size={14} /></button>
+        <TagStateButtons name={tag.name} effective={effectiveTagTreeState(tag.tagId, tagStates, parentById)} onSet={(state) => setTagState(tag.tagId, state)} />
       </div>}{draft && !draft.tagId && draft.parentTagId === tag.tagId && renderDraft(depth + 1)}</Fragment>)}
       {draft && !draft.tagId && !draft.parentTagId && renderDraft(0)}
     </TreeList>
@@ -139,6 +148,28 @@ export function TagTreeSidebar(props: TagTreeSidebarProps) {
       <ContextMenuSection><ContextMenuItem danger icon={<Icon name="trash" size={14} />} label={t('tagTree.delete')} onAction={() => { setMenu(null); setConfirmDelete(menuTag.tagId); }} /></ContextMenuSection>
     </ContextMenu></ContextMenuBackdrop>}
   </section>;
+}
+
+/**
+ * Include / exclude buttons of one tag row. An inherited state (from an
+ * ancestor) shows in a lighter style; the tag's own state shows solid.
+ */
+function TagStateButtons({ name, effective, onSet }: {
+  name: string;
+  effective: { state: TagTreeState; inherited: boolean } | null;
+  onSet: (state: TagTreeState) => void;
+}) {
+  const t = useT();
+  return <span className="tag-tree-state" role="group" aria-label={t('tagTree.stateGroup', { name })}>
+    {(['include', 'exclude'] as const).map((state) => {
+      const shown = effective?.state === state;
+      const own = shown && !effective.inherited;
+      const className = `tag-tree-state-btn is-${state}${shown ? (own ? ' is-set' : ' is-inherited') : ''}`;
+      const help = t(state === 'include' ? 'tagTree.includeHelp' : 'tagTree.excludeHelp');
+      const status = shown && !own ? ` · ${t('tagTree.stateInherited')}` : '';
+      return <button key={state} type="button" className={className} aria-pressed={own} aria-label={`${t(state === 'include' ? 'tagTree.include' : 'tagTree.exclude')}：${name}`} title={`${help}${status}`} onClick={() => onSet(state)}><Icon name={state === 'include' ? 'plus' : 'minus'} size={13} /></button>;
+    })}
+  </span>;
 }
 
 /**

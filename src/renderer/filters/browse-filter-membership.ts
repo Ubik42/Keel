@@ -105,6 +105,8 @@ function categoricalEffect(
       return change.hasSourceUrl === !filter.exclude ? "stay" : "drop";
     case "tag":
       return tagEffect(filter, change);
+    case "tag_states":
+      return change.kind === "tags" ? "reload" : "unrelated";
     default:
       return "unrelated";
   }

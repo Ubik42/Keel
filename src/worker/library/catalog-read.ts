@@ -293,6 +293,44 @@ const PIXEL_MEDIA_EXTENSION_LIKES = PIXEL_MEDIA_EXTENSIONS
   .map(() => 'LOWER(a.relative_file_path) LIKE ?')
   .join(' OR ');
 
+/**
+ * Tag tree filter. Each tag's effective state is its own explicit state, or
+ * else the nearest ancestor's. An asset passes when it has at least one
+ * effectively included tag (only if any include exists) and no effectively
+ * excluded tag.
+ */
+export function buildTagStatesWhere(
+  states: ReadonlyArray<{ tagId: string; state: 'include' | 'exclude' }>,
+  options: { includeAi: boolean; hasTagHierarchy: boolean },
+): { sql: string; params: unknown[] } {
+  if (states.length === 0) return { sql: '', params: [] };
+  const values = states.map(() => '(?, ?)').join(', ');
+  const explicitParams = states.flatMap((entry) => [entry.tagId, entry.state]);
+  const effectiveTags = options.hasTagHierarchy
+    ? `WITH RECURSIVE explicit(tag_id, state) AS (VALUES ${values}),
+         effective(tag_id, state) AS (
+           SELECT tag_id, state FROM explicit
+           UNION ALL
+           SELECT h.tag_id, e.state FROM tag_hierarchy h
+             JOIN effective e ON h.parent_tag_id = e.tag_id
+             WHERE h.tag_id NOT IN (SELECT tag_id FROM explicit)
+         ) SELECT tag_id FROM effective WHERE state = ?`
+    : `WITH explicit(tag_id, state) AS (VALUES ${values}) SELECT tag_id FROM explicit WHERE state = ?`;
+  const parts: string[] = [];
+  const params: unknown[] = [];
+  for (const state of ['include', 'exclude'] as const) {
+    if (!states.some((entry) => entry.state === state)) continue;
+    const human = `SELECT hat.asset_id FROM human_asset_tags hat WHERE hat.tag_id IN (${effectiveTags})`;
+    const tagged = options.includeAi
+      ? `${human} UNION SELECT aat.asset_id FROM ai_asset_tags aat WHERE aat.tag_id IN (${effectiveTags})`
+      : human;
+    parts.push(`a.asset_id ${state === 'include' ? 'IN' : 'NOT IN'} (${tagged})`);
+    params.push(...explicitParams, state);
+    if (options.includeAi) params.push(...explicitParams, state);
+  }
+  return { sql: `(${parts.join(' AND ')})`, params };
+}
+
 export function buildCatalogFilterWhere(
   filters: FilterClause[],
   options: { hasAiContent: boolean; hasAiAssetTags: boolean; hasTagHierarchy?: boolean } = {
@@ -304,6 +342,17 @@ export function buildCatalogFilterWhere(
   const params: unknown[] = [];
 
   for (const filter of filters) {
+    if (filter.field === 'tag_states') {
+      const built = buildTagStatesWhere(filter.states, {
+        includeAi: filter.includeAi !== false && options.hasAiAssetTags,
+        hasTagHierarchy: options.hasTagHierarchy === true,
+      });
+      if (built.sql) {
+        conditions.push(built.sql);
+        params.push(...built.params);
+      }
+      continue;
+    }
     if (filter.field === 'tag_expression') {
       const built = buildCatalogExpressionWhere(filter.expression.root, {
         includeAiTags: filter.includeAi !== false && options.hasAiAssetTags,
@@ -732,6 +781,11 @@ export function buildCatalogSortOrder(input: {
                palette_meta.dominant_lightness ${direction},
                a.asset_id ASC`
           : defaultNameSort,
+        params: [],
+      };
+      // Untagged assets first in ascending order, then by human tag count.
+      case 'tag_count': return {
+        sql: `(SELECT COUNT(*) FROM human_asset_tags hat WHERE hat.asset_id = a.asset_id) ${direction}, a.relative_file_path ASC, a.asset_id ASC`,
         params: [],
       };
       default: return { sql: defaultNameSort, params: [] };

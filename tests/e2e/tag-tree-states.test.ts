@@ -6,7 +6,7 @@ import type { KeelLibraryApi } from '../../src/shared/library-api';
 import { resolveElectronExecutablePath } from './electron-test-helpers';
 import { removePathWithSyncRetry } from '../../src/worker/library/windows-fs-retry';
 
-test('tag browsing clears on folder navigation while pinned tags remain scoped', async () => {
+test('tag browsing clears on folder navigation; tag tree states filter across folders and save as presets', async () => {
   test.setTimeout(90000);
   const root = mkdtempSync(path.join(tmpdir(), 'serpent-tag-pin-'));
   const directory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
@@ -60,13 +60,34 @@ test('tag browsing clears on folder navigation while pinned tags remain scoped',
     await folderRow.click();
     await expect(grid.getByText('普通.svg',{exact:true}).first()).toBeVisible();
     await expect(parent).toHaveAttribute('aria-selected','false');
-    await panel.getByRole('button',{name:'固定标签过滤：父标签',exact:true}).click();
-    await expect(panel.getByRole('button',{name:'取消固定标签过滤：父标签',exact:true})).toHaveAttribute('aria-pressed','true');
+    // Include on the parent: the child inherits it without its own state.
+    const includeParent=panel.getByRole('button',{name:'过滤加入此标签：父标签',exact:true});
+    const includeChild=panel.getByRole('button',{name:'过滤加入此标签：子标签',exact:true});
+    const excludeChild=panel.getByRole('button',{name:'过滤排除此标签：子标签',exact:true});
+    await includeParent.click();
+    await expect(includeParent).toHaveAttribute('aria-pressed','true');
+    await expect(includeChild).toHaveAttribute('aria-pressed','false');
+    await expect(includeChild).toHaveClass(/is-inherited/);
     await folderRow.click();
     await expect(grid.getByText('带标签.svg',{exact:true}).first()).toBeVisible();
     await expect(grid.getByText('普通.svg',{exact:true})).toHaveCount(0);
-    await window.screenshot({path:test.info().outputPath('pinned-tag-folder.png')});
-    await panel.getByRole('button',{name:'取消固定标签过滤：父标签',exact:true}).click();
+    // The child's own state overrides the inherited one.
+    await excludeChild.click();
+    await expect(excludeChild).toHaveAttribute('aria-pressed','true');
+    await expect(grid.getByText('带标签.svg',{exact:true})).toHaveCount(0);
+    await excludeChild.click();
+    await expect(grid.getByText('带标签.svg',{exact:true}).first()).toBeVisible();
+    await window.screenshot({path:test.info().outputPath('tag-tree-states.png')});
+    // Save the tree as a preset, clear it, then switch back to the preset.
+    await window.getByRole('button',{name:'标签预设',exact:true}).focus();
+    const presets=window.getByRole('dialog',{name:'标签预设',exact:true});
+    await presets.getByRole('textbox',{name:'预设名称',exact:true}).fill('只看父标签');
+    await presets.getByRole('button',{name:'保存当前标签树为预设',exact:true}).click();
+    await presets.getByRole('button',{name:'清除标签树状态',exact:true}).click();
+    await expect(includeParent).toHaveAttribute('aria-pressed','false');
     await expect(grid.getByText('普通.svg',{exact:true}).first()).toBeVisible();
+    await presets.getByRole('button',{name:'只看父标签',exact:true}).click();
+    await expect(includeParent).toHaveAttribute('aria-pressed','true');
+    await expect(grid.getByText('普通.svg',{exact:true})).toHaveCount(0);
   } finally {await app.close();removePathWithSyncRetry(root);}
 });

@@ -27,8 +27,6 @@ export interface MoreFilterPanelProps {
   aspectRatioRange: QueryState["aspectRatioRange"];
   setAspectRatioRange: Dispatch<SetStateAction<QueryState["aspectRatioRange"]>>;
   setAspectRatioRanges: Dispatch<SetStateAction<QueryState["aspectRatioRanges"]>>;
-  setFavoriteFilter: Dispatch<SetStateAction<QueryState["favoriteFilter"]>>;
-  favoriteFilter: QueryState["favoriteFilter"];
   setSourceUrlFilter: Dispatch<SetStateAction<QueryState["sourceUrlFilter"]>>;
   sourceUrlFilter: QueryState["sourceUrlFilter"];
   setAvailabilityFilter: Dispatch<SetStateAction<QueryState["availabilityFilter"]>>;
@@ -47,7 +45,7 @@ export interface MoreFilterPanelProps {
 }
 
 /** Extracted from DimensionFilterBar (P4); renders the same elements. */
-export function MoreFilterPanel({ openDimension, moreDimRef, t, colorFilter, colorFilterPrefs, colorSimilarity, controlsDisabled, excludeColorFilter, onColorFilterPrefsChange, setColorFilter, setColorSimilarity, setExcludeColorFilter, applyShapePreset, shapeSelectedRanges, aspectRatioRange, setAspectRatioRange, setAspectRatioRanges, setFavoriteFilter, favoriteFilter, setSourceUrlFilter, sourceUrlFilter, setAvailabilityFilter, availabilityFilter, excludeAvailabilityFilter, disabled, setExcludeAvailabilityFilter, longEdgeRange, setLongEdgeRange, widthRange, setWidthRange, heightRange, setHeightRange, durationRange, setDurationRange }: MoreFilterPanelProps) {
+export function MoreFilterPanel({ openDimension, moreDimRef, t, colorFilter, colorFilterPrefs, colorSimilarity, controlsDisabled, excludeColorFilter, onColorFilterPrefsChange, setColorFilter, setColorSimilarity, setExcludeColorFilter, applyShapePreset, shapeSelectedRanges, aspectRatioRange, setAspectRatioRange, setAspectRatioRanges, setSourceUrlFilter, sourceUrlFilter, setAvailabilityFilter, availabilityFilter, excludeAvailabilityFilter, disabled, setExcludeAvailabilityFilter, longEdgeRange, setLongEdgeRange, widthRange, setWidthRange, heightRange, setHeightRange, durationRange, setDurationRange }: MoreFilterPanelProps) {
   return (
 <>
 {openDimension === "more" && (
@@ -114,23 +112,6 @@ export function MoreFilterPanel({ openDimension, moreDimRef, t, colorFilter, col
               <p className="dimension-filter-hint">{t("filter.shiftMultiSelectHint")}</p>
 
               </details>
-              <label>
-                {t("filter.favoriteField")}
-                <Select
-                  aria-label={t("filter.favorite")}
-                  className="text-field"
-                  disabled={controlsDisabled}
-                  onValueChange={(value) =>
-                    setFavoriteFilter(value as typeof favoriteFilter)
-                  }
-                  options={[
-                    { value: "any", label: t("common.none") },
-                    { value: "yes", label: t("filter.favoriteOnly") },
-                    { value: "no", label: t("filter.notFavorite") },
-                  ]}
-                  value={favoriteFilter}
-                />
-              </label>
               <label>
                 {t("filter.sourceUrlField")}
                 <Select

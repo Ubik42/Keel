@@ -19,7 +19,6 @@ import sharp from "sharp";
 import {
   importFilesThroughBridge,
   resolveElectronExecutablePath,
-  useTagPicker,
 } from "./electron-test-helpers";
 
 test.describe.configure({ timeout: 120_000 });
@@ -1012,54 +1011,15 @@ test("maintains consistent preferences, accessible names, zoom behavior, and avo
       .click();
     await expect(window.locator(".workspace-notice")).toContainText("标签已添加");
 
-    // Enter the tag-filtered view through the retained 标签过滤 entry and
-    // verify presentation consistency
-    await window.getByRole("button", { name: "标签", exact: true }).click();
-    await useTagPicker(window);
-    await window.getByRole("textbox", { name: "标签过滤", exact: true }).fill("偏好测试标签");
-    await window.getByRole("option", { name: /偏好测试标签/ }).click();
-    await expect(
-      window
-        .locator(".dimension-filter-popover.is-tag-filter")
-        .locator(".filter-tag-chip.is-selected"),
-    ).toContainText("偏好测试标签");
+    // Enter the tag-filtered view through the tag tree's include button and
+    // verify presentation consistency.
+    const includeTag = window.getByRole("button", { name: "过滤加入此标签：偏好测试标签", exact: true });
+    await includeTag.click();
+    await expect(includeTag).toHaveAttribute("aria-pressed", "true");
     await assertToggleStates("true", "false", "false", "true");
     await assertHiddenFieldPresentation(true);
-
-    // Return to 所有资产
-    await window.getByRole("button", { name: "所有资产", exact: true }).click();
-    await assertHiddenFieldPresentation(true);
-
-    // REQ-FILTER-020: the default picker keeps recently
-    // filtered tags visible while exposing the complete tag collection in a
-    // separate scroll region. The two footer rows must stay visible at the
-    // bottom of the popover.
-    await window.getByRole("button", { name: "标签", exact: true }).click();
-    const tagPopover = window.locator(
-      ".dimension-filter-popover.is-tag-filter",
-    );
-    await expect(tagPopover).toBeVisible();
-    await expect(tagPopover.getByText("最近筛选", { exact: true })).toBeVisible();
-    await expect(tagPopover.getByText("所有标签", { exact: true })).toBeVisible();
-    await expect(tagPopover.getByText("常用标签", { exact: true })).toHaveCount(0);
-    const allTagScroll = tagPopover.locator(".filter-tag-all-scroll");
-    await expect(allTagScroll).toBeVisible();
-    const scrollMetrics = await allTagScroll.evaluate((element) => ({
-      clientHeight: element.clientHeight,
-      overflowY: getComputedStyle(element).overflowY,
-      scrollHeight: element.scrollHeight,
-    }));
-    expect(scrollMetrics.overflowY).toBe("auto");
-    expect(scrollMetrics.scrollHeight).toBeGreaterThan(scrollMetrics.clientHeight);
-    await allTagScroll.evaluate((element) => {
-      element.scrollTop = element.scrollHeight;
-      element.dispatchEvent(new Event("scroll", { bubbles: true }));
-    });
-    await expect(tagPopover.getByText("AI", { exact: true })).toBeVisible();
-    await expect(
-      tagPopover.getByText("左键表示选择，右键表示排除。按住 Shift 可多选。", { exact: true }),
-    ).toBeVisible();
-    await window.keyboard.press("Escape");
+    await includeTag.click();
+    await expect(includeTag).toHaveAttribute("aria-pressed", "false");
 
     // Return to 所有资产
     await window.getByRole("button", { name: "所有资产", exact: true }).click();

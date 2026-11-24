@@ -13,6 +13,8 @@ import { parseSearchExpressionDetailed } from "../../search/search-expression";
 import { sessionFields } from "../../stores/session-store";
 import { transfersFields } from "../../stores/transfers-store";
 import { descendantTagIds } from "../../tags/tag-tree-model";
+import { tagTreeStatesClause, tagTreeStatesFor } from "../../tags/tag-tree-states";
+import { queryFields } from "../../stores/query-store";
 import { playTaskCompletionSound } from "../../jobs/task-completion-sound";
 import { browseEntryUnderPreview, workspaceNavLocationsEqual } from "../../workbench/workspace/workspace-nav-history";
 import { captureWorkspaceNavViewport, resolveWorkspaceScrollTop } from "../../workbench/workspace/workspace-scroll-position";
@@ -510,6 +512,12 @@ export function useAppController() {
       overrides.tagFilterMatch ?? filtersState.tagFilterMatch,
       filtersState.includeAiTagFilter,
     ));
+    const tagStatesClause = tagTreeStatesClause(
+      tagTreeStatesFor(queryFields.get("tagTreePrefs"), library?.libraryId),
+      tags,
+      filtersState.includeAiTagFilter,
+    );
+    if (tagStatesClause) filters.push(tagStatesClause);
     if (ratings.length > 0)
       filters.push({
         field: "rating",

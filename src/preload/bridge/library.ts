@@ -1208,7 +1208,7 @@ export const library: KeelLibraryApi = Object.freeze({
     return { ok: true, value: { updatedCount: result.updatedCount, skipped: result.skipped, ...(result.historyEntryId ? { historyEntryId: result.historyEntryId } : {}) } };
   },
 
-  async searchAssets({ libraryId, query, filters, scope, sort, scopeMode, idsOnly, layoutOnly, limit, offset, showIgnored }: { libraryId: string; query?: SearchQuery | null; filters?: FilterClause[]; scope?: SearchScope; sort?: { field: 'name' | 'modified_at' | 'created_at' | 'byte_size' | 'long_edge' | 'duration' | 'rating' | 'color' | 'author'; order: 'asc' | 'desc' }; scopeMode?: boolean; idsOnly?: boolean; layoutOnly?: boolean; limit?: number; offset?: number; showIgnored?: boolean }) {
+  async searchAssets({ libraryId, query, filters, scope, sort, scopeMode, idsOnly, layoutOnly, limit, offset, showIgnored }: { libraryId: string; query?: SearchQuery | null; filters?: FilterClause[]; scope?: SearchScope; sort?: { field: 'name' | 'modified_at' | 'created_at' | 'byte_size' | 'long_edge' | 'duration' | 'rating' | 'color' | 'author' | 'tag_count'; order: 'asc' | 'desc' }; scopeMode?: boolean; idsOnly?: boolean; layoutOnly?: boolean; limit?: number; offset?: number; showIgnored?: boolean }) {
     const parsedQuery = searchQuerySchema.safeParse(query ?? null);
     if (!parsedQuery.success) {
       return { ok: false as const, error: createPublicError('INVALID_SEARCH_QUERY') };
@@ -1219,7 +1219,7 @@ export const library: KeelLibraryApi = Object.freeze({
     return { ok: true as const, value: { items: result.items, total: result.total, offset: result.offset, snippets: result.snippets, ...(result.assetIds ? { assetIds: result.assetIds } : {}), ...(result.layout ? { layout: result.layout } : {}) } };
   },
 
-  async openBrowseSession({ libraryId, query, filters, scope, sort, limit, showIgnored }: { libraryId: string; query: SearchQuery | null; filters?: FilterClause[]; scope?: SearchScope; sort?: { field: 'name' | 'modified_at' | 'created_at' | 'byte_size' | 'long_edge' | 'duration' | 'rating' | 'color' | 'author'; order: 'asc' | 'desc' }; limit?: number; showIgnored?: boolean }) {
+  async openBrowseSession({ libraryId, query, filters, scope, sort, limit, showIgnored }: { libraryId: string; query: SearchQuery | null; filters?: FilterClause[]; scope?: SearchScope; sort?: { field: 'name' | 'modified_at' | 'created_at' | 'byte_size' | 'long_edge' | 'duration' | 'rating' | 'color' | 'author' | 'tag_count'; order: 'asc' | 'desc' }; limit?: number; showIgnored?: boolean }) {
     const navigationId = createNavigationId();
     const navigationStartedAtEpochMs = Date.now();
     const delayedBrowse = e2eBrowseSessionDelay;

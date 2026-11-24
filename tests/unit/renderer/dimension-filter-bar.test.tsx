@@ -135,7 +135,7 @@ describe("DimensionFilterBar hover opening", () => {
     });
 
     const tagButton = [...container.querySelectorAll<HTMLButtonElement>("button")]
-      .find((button) => button.textContent?.includes("Tags"));
+      .find((button) => button.textContent?.includes("Tag presets"));
     expect(tagButton).toBeDefined();
 
     await act(async () => {
@@ -169,7 +169,7 @@ describe("DimensionFilterBar hover opening", () => {
       );
     });
     const freshTagButton = [...container.querySelectorAll<HTMLButtonElement>("button")]
-      .find((button) => button.textContent?.includes("Tags"));
+      .find((button) => button.textContent?.includes("Tag presets"));
     await act(async () => {
       freshTagButton?.focus();
     });
@@ -193,7 +193,7 @@ describe("DimensionFilterBar hover opening", () => {
     });
 
     const tagButton = [...container.querySelectorAll<HTMLButtonElement>("button")]
-      .find((button) => button.textContent?.includes("Tags"));
+      .find((button) => button.textContent?.includes("Tag presets"));
     expect(tagButton).toBeDefined();
     const outside = document.createElement("div");
 
@@ -242,7 +242,7 @@ describe("DimensionFilterBar hover opening", () => {
       );
     });
 
-    const labelled = ["Tags", "Rating", "Favorites only", "More"];
+    const labelled = ["Tag presets", "Rating", "Favorites only", "More"];
     const glyphs = labelled.map((label) => {
       const button = [...container!.querySelectorAll<HTMLButtonElement>("button")]
         .find((candidate) => candidate.textContent?.includes(label));

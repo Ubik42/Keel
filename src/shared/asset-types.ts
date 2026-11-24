@@ -517,6 +517,7 @@ export const sortDefinitionSchema = z.strictObject({
     'rating',
     'color',
     'author',
+    'tag_count',
   ]),
   order: z.enum(['asc', 'desc']),
 });
@@ -620,6 +621,20 @@ export const filterClauseSchema = z.union([
       };
       visit(filter.expression.root);
     }),
+  /**
+   * Tag tree filter: explicit include/exclude states. A tag without an
+   * explicit state takes the nearest ancestor's state; the Worker resolves
+   * this through tag_hierarchy when it runs the query.
+   */
+  z.strictObject({
+    field: z.literal('tag_states'),
+    exclude: z.literal(false),
+    states: z.array(z.strictObject({
+      tagId: z.string().min(1).max(256),
+      state: z.enum(['include', 'exclude']),
+    })).max(10_000),
+    includeAi: z.boolean().optional(),
+  }),
   numericFilterClauseSchema,
 ]);
 

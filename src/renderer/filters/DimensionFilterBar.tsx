@@ -1,5 +1,8 @@
 import { useNavigationField } from "../stores/navigation-store";
 import { useQueryField } from "../stores/query-store";
+import { useSessionField } from "../stores/session-store";
+import { liveTagTreeStates, tagTreePresetsFor, tagTreeStatesFor, withTagTreeStates, type TagTreeStates } from "../tags/tag-tree-states";
+import { updateTagTreePrefs } from "../tags/tag-tree-state-store";
 import { memo, useEffect, useRef, useState, createContext, useContext } from "react";
 
 import { Icon, type IconName } from "../common/Icons";
@@ -10,19 +13,12 @@ import {
 import {
   applyDimensionSelectionClick,
   formatGroupSelectionState,
-  resolveTagFilterSets,
 } from "./dimension-filter-selection";
 import {
   OTHER_FORMAT_EXTENSIONS,
   FORMAT_TEXT_TOKEN,
 } from "./format-filter-presets";
 import { DimensionEnableToggle } from "./dimension-enable-toggle";
-import {
-  loadTagFilterRecency,
-  saveTagFilterRecency,
-  withTagFilterUsed,
-  type TagFilterRecency,
-} from "../tags/tag-filter-recency";
 import {
   buildActiveFilterChips,
   type ClearableFilterId,
@@ -41,7 +37,7 @@ import {
 import { MoreFilterPanel } from "./panels/MoreFilterPanel";
 import { FormatFilterPanel } from "./panels/FormatFilterPanel";
 import { RatingFilterPanel } from "./panels/RatingFilterPanel";
-import { TagFilterPanel } from "./panels/TagFilterPanel";
+import { TagPresetPanel } from "./panels/TagPresetPanel";
 
 export type DimensionId =
   | "color"
@@ -129,7 +125,7 @@ export const DimensionFilterBar = memo(function DimensionFilterBar(props: Dimens
     snapshot,
     shuffleActive = false,
   } = props;
-  const { setTagFilterExpression, onTagNamesChange, setSortField, setSortOrder, onShuffle, onClearFilter } = useDimensionFilterBarActions();
+  const { setSortField, setSortOrder, onShuffle, onClearFilter } = useDimensionFilterBarActions();
   const [availabilityFilter, setAvailabilityFilter] = useQueryField("availabilityFilter");
   const [aspectRatioRange, setAspectRatioRange] = useQueryField("aspectRatioRange");
   const [aspectRatioRanges, setAspectRatioRanges] = useQueryField("aspectRatioRanges");
@@ -141,25 +137,22 @@ export const DimensionFilterBar = memo(function DimensionFilterBar(props: Dimens
   const [excludeColorFilter, setExcludeColorFilter] = useQueryField("excludeColorFilter");
   const [excludeFormatFilter, setExcludeFormatFilter] = useQueryField("excludeFormatFilter");
   const [excludeRatingFilter, setExcludeRatingFilter] = useQueryField("excludeRatingFilter");
-  const [excludeTagFilter, setExcludeTagFilter] = useQueryField("excludeTagFilter");
-  const [excludedTagFilter, setExcludedTagFilter] = useQueryField("excludedTagFilter");
   const [includeAiRating, setIncludeAiRating] = useQueryField("includeAiRatingFilter");
-  const [includeAiTag, setIncludeAiTag] = useQueryField("includeAiTagFilter");
   const [favoriteFilter, setFavoriteFilter] = useQueryField("favoriteFilter");
   const [formatFilter, setFormatFilter] = useQueryField("formatFilter");
   const [heightRange, setHeightRange] = useQueryField("heightRange");
   const [longEdgeRange, setLongEdgeRange] = useQueryField("longEdgeRange");
   const [ratingFilter, setRatingFilter] = useQueryField("ratingFilter");
   const [sourceUrlFilter, setSourceUrlFilter] = useQueryField("sourceUrlFilter");
-  const [tagFilterExpression] = useQueryField("tagFilterExpression");
-  const [tagFilterLastValidExpression] = useQueryField("tagFilterLastValidExpression");
-  const [tagFilterMode, setTagFilterMode] = useQueryField("tagFilterMode");
-  const [tagFilterMatch, setTagFilterMatch] = useQueryField("tagFilterMatch");
   const [widthRange, setWidthRange] = useQueryField("widthRange");
   const [sortField] = useQueryField("sortField");
   const [sortOrder] = useQueryField("sortOrder");
-  const [tagFilter] = useQueryField("tagFilter");
   const [tags] = useNavigationField("tags");
+  const [library] = useSessionField("library");
+  const [tagTreePrefs] = useQueryField("tagTreePrefs");
+  const libraryId = library?.libraryId ?? null;
+  const tagTreeStates = liveTagTreeStates(tagTreeStatesFor(tagTreePrefs, libraryId), tags);
+  const tagPresets = tagTreePresetsFor(tagTreePrefs, libraryId);
 
   const [openDimension, setOpenDimension] = useState<DimensionId | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -167,13 +160,6 @@ export const DimensionFilterBar = memo(function DimensionFilterBar(props: Dimens
   const ratingDimRef = useRef<HTMLDivElement>(null);
   const formatDimRef = useRef<HTMLDivElement>(null);
   const moreDimRef = useRef<HTMLDivElement>(null);
-
-  // REQ-FILTER-020: remembers tag names recently applied through this
-  // picker so its default (empty-query) view can surface a "recent" section
-  // alongside the complete tag set. See tag-filter-recency.ts.
-  const [tagRecency, setTagRecency] = useState<TagFilterRecency>(() =>
-    loadTagFilterRecency(),
-  );
 
   useEffect(() => {
     if (!openDimension) return;
@@ -343,9 +329,7 @@ export const DimensionFilterBar = memo(function DimensionFilterBar(props: Dimens
   // dimension button clears its live filter value (remembering it) when
   // active, or restores the remembered value when inactive; see
   // dimension-enable-toggle.ts.
-  const tagsToggleRef = useRef(
-    new DimensionEnableToggle<{ includes: string[]; excludes: string[]; expression: string }>(),
-  );
+  const tagsToggleRef = useRef(new DimensionEnableToggle<TagTreeStates>());
   const ratingToggleRef = useRef(
     new DimensionEnableToggle<{ ratingFilter: string; exclude: boolean }>(),
   );
@@ -358,13 +342,7 @@ export const DimensionFilterBar = memo(function DimensionFilterBar(props: Dimens
     unknownFormatLabel: t("filter.formatUnrecognized"),
   });
   const controlsDisabled = Boolean(disabled || interactionsLocked);
-  const tagSets = resolveTagFilterSets({
-    tagFilter,
-    excludeTagFilter,
-    excludedTagFilter,
-  });
-  const includedTagNames = tagSets.includes;
-  const excludedTagNames = tagSets.excludes;
+  const tagStateValues = Object.values(tagTreeStates);
   const selectedRatings = new Set(
     ratingFilter
       .split(",")
@@ -382,9 +360,7 @@ export const DimensionFilterBar = memo(function DimensionFilterBar(props: Dimens
   };
 
   const selectedColors = new Set(parseColorFilterValues(colorFilter));
-  const tagActive = tagFilterMode === "expression"
-    ? Boolean(tagFilterExpression.trim())
-    : includedTagNames.length > 0 || excludedTagNames.length > 0;
+  const tagActive = tagStateValues.length > 0;
   const colorActive = selectedColors.size > 0;
   const shapeActive =
     aspectRatioRanges.length > 0 ||
@@ -423,7 +399,6 @@ export const DimensionFilterBar = memo(function DimensionFilterBar(props: Dimens
   );
   const moreActive =
     colorActive || shapeActive ||
-    favoriteFilter !== "any" ||
     sourceUrlFilter !== "any" ||
     availabilityFilter !== "any" ||
     longEdgeRange.min !== "" ||
@@ -438,47 +413,10 @@ export const DimensionFilterBar = memo(function DimensionFilterBar(props: Dimens
   // REQ-FILTER-021: click toggles a dimension's filter on/off, remembering
   // the cleared value so a second click restores it (hover, wired via the
   // pointer/focus effect above, opens the settings popover instead).
-  // REQ-FILTER-020: record newly-added tag names into the recency store
-  // before forwarding to the caller's onTagNamesChange. Only additions are
-  // recorded — removing a tag from the selection should not affect its
-  // recency (it may still be worth surfacing again next time).
-  const handleTagSelectionChange = (next: { includes: string[]; excludes: string[] }) => {
-    const previous = new Set(
-      [...includedTagNames, ...excludedTagNames].map((name) => name.toLocaleLowerCase()),
-    );
-    const added = [...next.includes, ...next.excludes].filter(
-      (name) => !previous.has(name.toLocaleLowerCase()),
-    );
-    if (added.length > 0) {
-      setTagRecency((current) => {
-        const recency = added.reduce(
-          (acc, name) => withTagFilterUsed(acc, name),
-          current,
-        );
-        saveTagFilterRecency(recency);
-        return recency;
-      });
-    }
-    setExcludeTagFilter(false);
-    onTagNamesChange(next.includes);
-    setExcludedTagFilter(next.excludes.join(", "));
-  };
-
   const handleTagsDimensionClick = () => {
-    tagsToggleRef.current.toggle(
-      tagActive,
-      { includes: includedTagNames, excludes: excludedTagNames, expression: tagFilterExpression },
-      { includes: [], excludes: [], expression: "" },
-      (value) => {
-        if (tagFilterMode === "expression") {
-          setTagFilterExpression?.(value.expression);
-        } else {
-          setExcludeTagFilter(false);
-          onTagNamesChange(value.includes);
-          setExcludedTagFilter(value.excludes.join(", "));
-        }
-      },
-    );
+    if (!libraryId) return;
+    tagsToggleRef.current.toggle(tagActive, tagTreeStates, {}, (value) =>
+      updateTagTreePrefs((prefs) => withTagTreeStates(prefs, libraryId, value)));
   };
 
   const handleRatingDimensionClick = () => {
@@ -516,30 +454,19 @@ export const DimensionFilterBar = memo(function DimensionFilterBar(props: Dimens
           <DimensionButton
             active={tagActive}
             disabled={controlsDisabled}
-            excluding={excludedTagNames.length > 0 && includedTagNames.length === 0}
+            excluding={tagActive && !tagStateValues.includes("include")}
             icon="tag"
-            label={t("filter.dimTags")}
+            label={t("filter.tagPresets")}
             onClick={handleTagsDimensionClick}
             open={openDimension === "tags"}
           />
-          <TagFilterPanel
+          <TagPresetPanel
             openDimension={openDimension}
-            tagsDimRef={tagsDimRef}
+            anchorRef={tagsDimRef}
+            libraryId={libraryId}
+            states={tagTreeStates}
+            presets={tagPresets}
             controlsDisabled={controlsDisabled}
-            excludedTagNames={excludedTagNames}
-            includedTagNames={includedTagNames}
-            tagFilterExpression={tagFilterExpression}
-            tagFilterLastValidExpression={tagFilterLastValidExpression}
-            setTagFilterExpression={setTagFilterExpression}
-            tagFilterMode={tagFilterMode}
-            setTagFilterMode={setTagFilterMode}
-            tagFilterMatch={tagFilterMatch}
-            setTagFilterMatch={setTagFilterMatch}
-            handleTagSelectionChange={handleTagSelectionChange}
-            tagRecency={tagRecency}
-            tags={tags}
-            includeAiTag={includeAiTag}
-            setIncludeAiTag={setIncludeAiTag}
             t={t}
           />
         </div>
@@ -631,8 +558,6 @@ export const DimensionFilterBar = memo(function DimensionFilterBar(props: Dimens
             aspectRatioRange={aspectRatioRange}
             setAspectRatioRange={setAspectRatioRange}
             setAspectRatioRanges={setAspectRatioRanges}
-            setFavoriteFilter={setFavoriteFilter}
-            favoriteFilter={favoriteFilter}
             setSourceUrlFilter={setSourceUrlFilter}
             sourceUrlFilter={sourceUrlFilter}
             setAvailabilityFilter={setAvailabilityFilter}

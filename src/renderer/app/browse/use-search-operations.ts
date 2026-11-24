@@ -19,7 +19,8 @@ import { loadSemanticSearchPreferences, type SemanticSearchPageSize } from "../.
 import { browseFields, type BrowseState } from "../../stores/browse-store";
 import { type DialogsState } from "../../stores/dialogs-store";
 import { type AssetScope, type NavigationState } from "../../stores/navigation-store";
-import { type QueryState } from "../../stores/query-store";
+import { type QueryState, useQueryField } from "../../stores/query-store";
+import { tagTreeStatesFor } from "../../tags/tag-tree-states";
 import { selectionFields } from "../../stores/selection-store";
 import { sessionFields, type SessionState } from "../../stores/session-store";
 import { fetchFirstRankedBrowsePage } from "../../browse/use-browse-pagination";
@@ -394,6 +395,8 @@ export function useSearchOperations({ api, library, previewAssetRef, previewRest
     }
   }
 
+  const [tagTreePrefs] = useQueryField("tagTreePrefs");
+  const tagTreeStates = tagTreeStatesFor(tagTreePrefs, library?.libraryId);
   useEffect(() => {
     const searchIsInvalid = Boolean(searchValue.trim()) && !parseSearchExpressionDetailed(searchValue).ok;
     const tagExpressionIsInvalid = tagFilterMode === "expression"
@@ -423,6 +426,7 @@ export function useSearchOperations({ api, library, previewAssetRef, previewRest
       durationRange.max ||
       longEdgeRange.min ||
       longEdgeRange.max ||
+      Object.keys(tagTreeStates).length > 0 ||
       sortField !== "name" ||
       sortOrder !== "asc",
     );
@@ -494,6 +498,7 @@ export function useSearchOperations({ api, library, previewAssetRef, previewRest
     aspectRatioRanges,
     durationRange,
     longEdgeRange,
+    tagTreeStates,
     sortField,
     sortOrder,
   ]);

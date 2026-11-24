@@ -88,7 +88,8 @@ export function useWorkspaceSnapshotRestore({ cancelWorkspaceViewportRestoreRef,
   }
 
   function applyWorkspaceTabBrowseState(state: WorkspaceTabBrowseState) {
-    setPinnedTagId(state.filters.pinnedTagId ?? null);
+    // Tag pins were replaced by tag tree states; old snapshots restore unpinned.
+    setPinnedTagId(null);
     setSearchValue(state.searchValue);
     setFormatFilter(state.filters.formatFilter);
     setExcludeFormatFilter(state.filters.excludeFormatFilter);

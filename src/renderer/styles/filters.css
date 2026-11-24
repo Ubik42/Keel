@@ -1199,9 +1199,105 @@
 
 /* FILTER-001: category checkboxes + aligned chip rows. */
 
-.format-filter-popover {
-  width: min(480px, 90vw);
-  gap: 12px;
+/* Format groups sit side by side so every choice is visible at once. */
+.dimension-filter-popover.format-filter-popover {
+  display: grid;
+  width: min(940px, 94vw);
+  max-height: min(640px, calc(100vh - 120px));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  align-items: start;
+  gap: 14px 18px;
+}
+
+.dimension-filter-popover.format-filter-popover > :not(.format-filter-group) {
+  grid-column: 1 / -1;
+}
+
+.format-filter-popover .format-filter-group .filter-presets {
+  padding-left: 0;
+}
+
+.dimension-filter-popover.tag-preset-popover {
+  width: min(320px, 80vw);
+}
+
+.tag-preset-current {
+  margin: 0;
+  font-size: var(--ui-font-size-12);
+  color: var(--ui-content-secondary);
+}
+
+.tag-preset-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tag-preset-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tag-preset-apply {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border: 1px solid transparent;
+  border-radius: var(--ui-radius-6);
+  background: transparent;
+  color: inherit;
+  font-size: var(--ui-font-size-12);
+  text-align: left;
+  cursor: pointer;
+}
+
+.tag-preset-apply span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tag-preset-apply:hover:not(:disabled) {
+  background: color-mix(in srgb, currentColor 8%, transparent);
+}
+
+.tag-preset-apply.is-active {
+  border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+  color: var(--accent);
+}
+
+.tag-preset-save {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tag-preset-save .text-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.tag-preset-clear {
+  align-self: flex-start;
+  padding: 4px 8px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: var(--ui-radius-6);
+  background: transparent;
+  color: var(--ui-content-secondary);
+  font-size: var(--ui-font-size-12);
+  cursor: pointer;
+}
+
+.tag-preset-clear:disabled {
+  opacity: .5;
+  cursor: default;
 }
 
 .format-filter-group {

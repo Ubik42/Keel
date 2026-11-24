@@ -184,7 +184,7 @@ async function captureSurfaces(app: ElectronApplication, window: Page, theme: Th
   await window.keyboard.press("Escape");
   await clearSelection(window);
 
-  const tagFilter = window.locator(".dimension-filter-bar").getByRole("button", { name: "标签", exact: true });
+  const tagFilter = window.locator(".dimension-filter-bar").getByRole("button", { name: "标签预设", exact: true });
   await tagFilter.click();
   await window.waitForTimeout(300);
   await snap(window, `${prefix}-05-filter-popover`);

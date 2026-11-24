@@ -4,6 +4,7 @@ import { type SortDefinition } from '../../shared/asset-types';
 import { loadBrowseSortPreferences } from '../browse/browse-sort-preferences';
 import { loadColorFilterPreferences } from '../filters/color-filter-preferences';
 import { readShowMissingLinkedFiles } from '../folders/linked-missing-preference';
+import { loadTagTreePrefs, type TagTreePrefs } from '../tags/tag-tree-states';
 
 export interface QueryState {
   searchValue: string;
@@ -44,6 +45,8 @@ export interface QueryState {
   shuffleSeed: number | null;
   showIgnoredItems: boolean;
   showMissingLinkedFiles: boolean;
+  /** Tag tree include/exclude states and presets, per library. */
+  tagTreePrefs: TagTreePrefs;
   // @fields
 }
 
@@ -103,6 +106,7 @@ export const queryFields = createFieldStore<QueryState>(() => ({
     shuffleSeed: null,
     showIgnoredItems: false,
     showMissingLinkedFiles: readShowMissingLinkedFiles(globalThis.localStorage),
+    tagTreePrefs: loadTagTreePrefs(),
     // @initial
 }));
 

@@ -62,7 +62,7 @@ export function resolveWorkspaceTagExpression(
 export interface WorkspaceTabBrowseState {
   searchValue: string;
   filters: WorkspaceTabBrowseFilters;
-  sortField: "name" | "modified_at" | "created_at" | "byte_size" | "long_edge" | "duration" | "rating" | "color" | "author";
+  sortField: "name" | "modified_at" | "created_at" | "byte_size" | "long_edge" | "duration" | "rating" | "color" | "author" | "tag_count";
   sortOrder: "asc" | "desc";
   shuffleSeed: number | null;
   folderRecursive: boolean;
