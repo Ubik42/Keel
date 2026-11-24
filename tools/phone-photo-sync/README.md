@@ -13,7 +13,7 @@
 | 手机位置 | 标签 |
 | --- | --- |
 | `DCIM/Camera` 的 IMG/VID | 相机拍摄 |
-| `DCIM/MyAlbums/<相册>` | 手机相册 › <相册>相册 |
+| `DCIM/MyAlbums/<相册>` | 附加 手机相册 › <相册>相册；主来源按文件名判断（IMG/VID 为相机拍摄，Screenshot 为截图，mmexport 为微信保存等） |
 | `Pictures/Screenshots` | 手机截图 › <App>截图（文件名末尾是应用包名的 MD5，未识别的为“其他截图”） |
 | `Pictures/WeiXin`、`Pictures/QQ`、小红书存到 `DCIM` 根目录的图、拖放保存等 | 应用保存 › <App>保存 |
 | `Download` | 手机下载 |

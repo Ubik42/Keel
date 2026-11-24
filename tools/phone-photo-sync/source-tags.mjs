@@ -105,23 +105,41 @@ export const KIND = {
   download: '手机下载',
 };
 
+function screenshotTag(name) {
+  const hash = /_([0-9a-f]{32})\.\w+$/i.exec(name)?.[1]?.toLowerCase();
+  const app = hash ? APP_BY_HASH.get(hash) : undefined;
+  return { kind: KIND.screenshot, detail: `${app ?? '其他'}截图` };
+}
+
+/** Source of a file in a gallery album, from its file name alone. */
+function sourceByFileName(name) {
+  if (/^screenshot_/i.test(name)) return screenshotTag(name);
+  if (/^(img|vid)\d{8}/i.test(name)) return { kind: KIND.camera, detail: null };
+  if (/^(mmexport|weixin image)/i.test(name)) return { kind: KIND.saved, detail: '微信保存' };
+  if (/^(camera_xhs|xhs_)/i.test(name)) return { kind: KIND.saved, detail: '小红书保存' };
+  if (/^facebook_/i.test(name)) return { kind: KIND.saved, detail: 'Facebook保存' };
+  return { kind: KIND.saved, detail: '其他应用保存' };
+}
+
 /**
- * Returns the two tag levels for a phone path: { kind, detail }. detail is
- * null when the kind tag alone describes the file.
+ * All source tags of a phone path, the main source first: [{ kind, detail }].
+ * detail is null when the kind tag alone describes the file. A gallery album
+ * (DCIM/MyAlbums) is an extra tag; the main source comes from the file name.
  */
 export function phoneSourceTags(phonePath) {
+  const parts = phonePath.split('/');
+  if (phonePath.toLowerCase().startsWith('dcim/myalbums/') && parts.length > 3) {
+    return [sourceByFileName(parts.at(-1)), { kind: KIND.album, detail: `${parts[2]}相册` }];
+  }
+  return [mainSource(phonePath)];
+}
+
+function mainSource(phonePath) {
   const lower = phonePath.toLowerCase();
   const name = path.posix.basename(phonePath);
   const parts = phonePath.split('/');
 
-  if (lower.startsWith('pictures/screenshots/')) {
-    const hash = /_([0-9a-f]{32})\.\w+$/i.exec(name)?.[1]?.toLowerCase();
-    const app = hash ? APP_BY_HASH.get(hash) : undefined;
-    return { kind: KIND.screenshot, detail: `${app ?? '其他'}截图` };
-  }
-  if (lower.startsWith('dcim/myalbums/') && parts.length > 3) {
-    return { kind: KIND.album, detail: `${parts[2]}相册` };
-  }
+  if (lower.startsWith('pictures/screenshots/')) return screenshotTag(name);
   const dragDrop = /^download\/\.oplusdraganddrop\/([^/]+)\//i.exec(phonePath);
   if (dragDrop) return { kind: KIND.saved, detail: `${APP_NAMES[dragDrop[1]] ?? '其他应用'}保存` };
   const appData = /^android\/(?:data|media)\/([^/]+)\//i.exec(phonePath);
@@ -161,10 +179,11 @@ export async function applyPhoneSourceTags(keel, libraryId, rootTagName, entries
   const rootId = await ensure(rootTagName, null);
   const groups = new Map();
   for (const { assetId, phonePath } of entries) {
-    const { kind, detail } = phoneSourceTags(phonePath);
-    const target = detail ?? kind;
-    if (!groups.has(target)) groups.set(target, { kind, detail, ids: new Set() });
-    groups.get(target).ids.add(assetId);
+    for (const { kind, detail } of phoneSourceTags(phonePath)) {
+      const target = detail ?? kind;
+      if (!groups.has(target)) groups.set(target, { kind, detail, ids: new Set() });
+      groups.get(target).ids.add(assetId);
+    }
   }
   const counts = {};
   for (const [name, group] of groups) {

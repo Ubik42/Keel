@@ -59,9 +59,10 @@ try {
   if (dryRun) {
     const counts = {};
     for (const { phonePath } of entries) {
-      const { kind, detail } = phoneSourceTags(phonePath);
-      const name = detail ?? kind;
-      counts[name] = (counts[name] ?? 0) + 1;
+      for (const { kind, detail } of phoneSourceTags(phonePath)) {
+        const name = detail ?? kind;
+        counts[name] = (counts[name] ?? 0) + 1;
+      }
     }
     process.stdout.write(`${JSON.stringify(counts, null, 1)}\n`);
   } else {
