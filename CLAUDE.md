@@ -31,3 +31,4 @@
 
 - 图片拖到标签支持正式版 Windows 原生 Files 拖动：仅在内部拖动会话中解析库内资产；外部文件不得误认成当前选择。标签源使用 copyMove，同时支持树内移动与向图片添加标签；反向落点仅作用于该图片。固定按钮使用图钉及 aria-pressed。
 - 样式只引用 workbench/ui/tokens.css 的 token：字号 `--ui-font-size-<px>`、圆角 `--ui-radius-<px>`、黑白透明 `--ui-black-aN`/`--ui-white-aN`；主题差异写成按主题取值的 token，不写 `[data-theme] .组件` 覆盖。`npm run lint` 含 Stylelint（`lint:css`）。
+- 本机 API（docs/manual/mcp/local-api.md）：MCP 工具经命名管道/Unix 域套接字提供，随 MCP 服务启停，复用同一会话层、启动器凭据和网关。客户端 tools/keel-api/keel-api.mjs 零依赖；批量操作优先用它写脚本，不逐条调用 MCP 工具。

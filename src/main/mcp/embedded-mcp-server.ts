@@ -1,9 +1,12 @@
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { createServer, type IncomingMessage, type ServerResponse, type Server as HttpServer } from 'node:http';
+import { createServer as createNetServer, type Server as NetServer, type Socket } from 'node:net';
+import { rmSync } from 'node:fs';
 
 import type { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 
 import {
   AUTOMATION_API_VERSION,
@@ -38,6 +41,7 @@ import { buildMcpAgentConnectionText, buildMcpClientConfigText } from '../../sha
 import type { McpPermissionPolicyStore } from './mcp-permission-policy-store';
 import type { McpPermissionBroker } from './mcp-permission-broker';
 import { McpSettingsStore } from './mcp-settings-store';
+import { localApiPipePath, readLocalApiHandshake } from './local-api-pipe';
 
 const MAX_HTTP_BODY_BYTES = 1 * 1024 * 1024;
 const MAX_SESSIONS = 64;
@@ -115,7 +119,10 @@ type EmbeddedSession = {
   clientName?: string;
   executionId: string;
   server: Server;
-  transport: StreamableHTTPServerTransport;
+  /** `pipe` sessions come from the local API and close with their socket. */
+  transport:
+    | { kind: 'http'; value: StreamableHTTPServerTransport }
+    | { kind: 'pipe'; value: StdioServerTransport; socket: Socket };
   closing: boolean;
   idleTimer?: ReturnType<typeof setTimeout>;
 };
@@ -302,6 +309,8 @@ export class EmbeddedMcpServer {
   #runtime: McpRuntimeState = { status: 'stopped' };
   readonly #userDataPath: string | undefined;
   #httpServer: HttpServer | undefined;
+  #pipeServer: NetServer | undefined;
+  #localApiPipe: string | undefined;
   #startPromise: Promise<McpSettingsSnapshot> | undefined;
 
   public constructor(options: EmbeddedMcpServerOptions) {
@@ -465,6 +474,7 @@ export class EmbeddedMcpServer {
     const server = this.#httpServer;
     this.#httpServer = undefined;
     try {
+      await this.#stopLocalApi();
       if (server !== undefined) await closeHttpServer(server);
       this.#runtime = { status: 'stopped' };
       return this.#publish();
@@ -642,6 +652,7 @@ export class EmbeddedMcpServer {
       port,
       address: '127.0.0.1',
     });
+    await this.#startLocalApi();
     this.#writeLauncherConnection(`http://127.0.0.1:${port}${MCP_ENDPOINT_PATH}`);
     return this.#publish();
   }
@@ -653,7 +664,7 @@ export class EmbeddedMcpServer {
       const token = this.#credentials.launcherToken(MCP_LAUNCHER_CREDENTIAL_LABEL);
       writeUserOnlyFile(
         path.join(this.#userDataPath, MCP_LAUNCHER_CONNECTION_FILE_NAME),
-        `${JSON.stringify({ endpoint, token }, null, 2)}\n`,
+        `${JSON.stringify({ endpoint, token, ...(this.#localApiPipe === undefined ? {} : { pipe: this.#localApiPipe }) }, null, 2)}\n`,
       );
     } catch (error) {
       this.#logger.error('mcp.server.launcher-connection', error);
@@ -705,7 +716,7 @@ export class EmbeddedMcpServer {
       });
       return;
     }
-    if (session !== undefined && session.credentialId !== credential.credentialId) {
+    if (session !== undefined && (session.credentialId !== credential.credentialId || session.transport.kind !== 'http')) {
       writeJson(response, 401, { code: 'MCP_CLIENT_UNAUTHORIZED', error: 'The MCP session credential is invalid.' });
       return;
     }
@@ -722,12 +733,13 @@ export class EmbeddedMcpServer {
       };
       request.once('aborted', closeOnDisconnect);
       response.once('close', closeOnDisconnect);
+      const httpTransport = session.transport.value as StreamableHTTPServerTransport;
       try {
         if (request.method === 'POST') {
           const body = await readBody(request);
-          await session.transport.handleRequest(request, response, body);
+          await httpTransport.handleRequest(request, response, body);
         } else {
-          await session.transport.handleRequest(request, response);
+          await httpTransport.handleRequest(request, response);
         }
         if (request.method === 'DELETE') await this.#closeSession(session.sessionId);
       } finally {
@@ -752,60 +764,13 @@ export class EmbeddedMcpServer {
     const transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: () => generatedSessionId,
     });
-    const grantedCapabilities = [...DEFAULT_MCP_READ_CAPABILITIES];
-    const execution = this.#journal.create({
-      source: 'mcp',
-      libraryId: null,
-      clientCredentialId: credential.credentialId,
-      ...(clientName === undefined ? {} : { clientName }),
-      declaredCapabilities: DEFAULT_MCP_CAPABILITIES,
-      initialGrantedCapabilities: grantedCapabilities,
-    });
-    this.#journal.start(execution.executionId);
-    const backend = {
-      getExecutionContext: (): AutomationExecutionContext | undefined => this.#journal.resolve(execution.executionId),
-      getToolExposure: () => {
-        return {
-          accessMode: this.#permissionPolicyStore?.getMode(credential.credentialId) ?? 'auto',
-          hostCapabilities: ['desktop-ui'] as const,
-        };
-      },
-      getPluginTools: (): KeelMcpPluginToolBridge | undefined => this.#getPluginTools(),
-      getHostTools: (): readonly KeelMcpHostTool[] => this.#getHostTools?.() ?? [],
-      getLibraryChangeSequence: (libraryId: string): number | undefined => {
-        return this.#libraryChangeSequences.get(libraryId);
-      },
-      subscribe: (listener: (event: KeelMcpSessionEvent) => void) => {
-        const onContext = (): void => listener({ type: 'context-changed' });
-        const unsubscribe = this.#journal.onContextChanged(onContext);
-        return unsubscribe;
-      },
-    };
-    const mcpServer = createKeelMcpServer({
-      backend,
-      gateway: this.#gateway,
-      serverName: 'keel',
-      serverVersion: String(AUTOMATION_API_VERSION),
-      ...(this.#onCommandCompleted === undefined ? {} : { onCommandCompleted: this.#onCommandCompleted }),
-    });
-    const currentSession: EmbeddedSession = {
+    const { session: currentSession, server: mcpServer } = this.#createSession({
       sessionId: generatedSessionId,
       credentialId: credential.credentialId,
       ...(clientName === undefined ? {} : { clientName }),
-      executionId: execution.executionId,
-      server: mcpServer,
-      transport,
-      closing: false,
-    };
-    transport.onclose = () => {
-      void this.#closeSession(generatedSessionId);
-    };
-    transport.onerror = (error) => {
-      this.#logger.error('mcp.session.transport', error, { sessionId: generatedSessionId });
-    };
-    this.#sessions.set(generatedSessionId, currentSession);
+      transport: { kind: 'http', value: transport },
+    });
     this.#touchSession(currentSession);
-    this.#publish();
     const closeOnInitialDisconnect = (): void => {
       if (!response.writableFinished) void this.#closeSession(generatedSessionId);
     };
@@ -831,6 +796,141 @@ export class EmbeddedMcpServer {
       response.removeListener('close', closeOnInitialDisconnect);
       if (!currentSession.closing) this.#touchSession(currentSession);
     }
+  }
+
+  #createSession(input: {
+    sessionId: string;
+    credentialId: string;
+    clientName?: string;
+    transport: EmbeddedSession['transport'];
+  }): { session: EmbeddedSession; server: Server } {
+    const { sessionId, credentialId, clientName } = input;
+    const grantedCapabilities = [...DEFAULT_MCP_READ_CAPABILITIES];
+    const execution = this.#journal.create({
+      source: 'mcp',
+      libraryId: null,
+      clientCredentialId: credentialId,
+      ...(clientName === undefined ? {} : { clientName }),
+      declaredCapabilities: DEFAULT_MCP_CAPABILITIES,
+      initialGrantedCapabilities: grantedCapabilities,
+    });
+    this.#journal.start(execution.executionId);
+    const backend = {
+      getExecutionContext: (): AutomationExecutionContext | undefined => this.#journal.resolve(execution.executionId),
+      getToolExposure: () => {
+        return {
+          accessMode: this.#permissionPolicyStore?.getMode(credentialId) ?? 'auto',
+          hostCapabilities: ['desktop-ui'] as const,
+        };
+      },
+      getPluginTools: (): KeelMcpPluginToolBridge | undefined => this.#getPluginTools(),
+      getHostTools: (): readonly KeelMcpHostTool[] => this.#getHostTools?.() ?? [],
+      getLibraryChangeSequence: (libraryId: string): number | undefined => {
+        return this.#libraryChangeSequences.get(libraryId);
+      },
+      subscribe: (listener: (event: KeelMcpSessionEvent) => void) => {
+        const onContext = (): void => listener({ type: 'context-changed' });
+        const unsubscribe = this.#journal.onContextChanged(onContext);
+        return unsubscribe;
+      },
+    };
+    const mcpServer = createKeelMcpServer({
+      backend,
+      gateway: this.#gateway,
+      serverName: 'keel',
+      serverVersion: String(AUTOMATION_API_VERSION),
+      ...(this.#onCommandCompleted === undefined ? {} : { onCommandCompleted: this.#onCommandCompleted }),
+    });
+    const session: EmbeddedSession = {
+      sessionId,
+      credentialId,
+      ...(clientName === undefined ? {} : { clientName }),
+      executionId: execution.executionId,
+      server: mcpServer,
+      transport: input.transport,
+      closing: false,
+    };
+    input.transport.value.onclose = () => {
+      void this.#closeSession(sessionId);
+    };
+    input.transport.value.onerror = (error) => {
+      this.#logger.error('mcp.session.transport', error, { sessionId });
+    };
+    this.#sessions.set(sessionId, session);
+    this.#publish();
+    return { session, server: mcpServer };
+  }
+
+  /** Local API: the same tools over a named pipe, with the launcher credential. */
+  async #startLocalApi(): Promise<void> {
+    if (this.#userDataPath === undefined || this.#pipeServer !== undefined) return;
+    const pipePath = localApiPipePath(this.#userDataPath);
+    if (process.platform !== 'win32') rmSync(pipePath, { force: true });
+    const server = createNetServer((socket) => {
+      void this.#acceptLocalApiSocket(socket).catch((error: unknown) => {
+        this.#logger.error('local-api.connection', error);
+        socket.destroy();
+      });
+    });
+    try {
+      await new Promise<void>((resolve, reject) => {
+        server.once('error', reject);
+        server.listen(pipePath, () => {
+          server.off('error', reject);
+          resolve();
+        });
+      });
+    } catch (error) {
+      // The HTTP endpoint keeps working; only the pipe is unavailable.
+      this.#logger.error('local-api.start', error);
+      return;
+    }
+    server.on('error', (error) => this.#logger.error('local-api.runtime', error));
+    this.#pipeServer = server;
+    this.#localApiPipe = pipePath;
+    this.#logger.info('local-api.started', 'Local API pipe started.');
+  }
+
+  async #stopLocalApi(): Promise<void> {
+    const server = this.#pipeServer;
+    this.#pipeServer = undefined;
+    this.#localApiPipe = undefined;
+    if (server === undefined) return;
+    await new Promise<void>((resolve) => server.close(() => resolve()));
+  }
+
+  async #acceptLocalApiSocket(socket: Socket): Promise<void> {
+    const reply = (body: unknown): void => {
+      socket.write(`${JSON.stringify(body)}\n`);
+    };
+    if (this.#sessions.size >= MAX_SESSIONS) {
+      reply({ ok: false, code: 'MCP_SERVER_TOO_MANY_SESSIONS' });
+      socket.end();
+      return;
+    }
+    const token = await readLocalApiHandshake(socket);
+    const credential = this.#credentials.authenticate(token);
+    if (credential === undefined) {
+      reply({ ok: false, code: 'MCP_CLIENT_UNAUTHORIZED' });
+      socket.end();
+      return;
+    }
+    const transport = new StdioServerTransport(socket, socket);
+    const { session, server } = this.#createSession({
+      sessionId: randomUUID(),
+      credentialId: credential.credentialId,
+      clientName: 'local-api',
+      transport: { kind: 'pipe', value: transport, socket },
+    });
+    const close = (): void => {
+      void this.#closeSession(session.sessionId);
+    };
+    socket.on('close', close);
+    socket.on('error', close);
+    // Handshake answer first, then MCP JSON-RPC lines both ways.
+    reply({ ok: true });
+    await server.connect(transport);
+    socket.resume();
   }
 
   #touchSession(session: EmbeddedSession): void {
@@ -871,6 +971,7 @@ export class EmbeddedMcpServer {
     } catch (error) {
       this.#logger.error('mcp.session.close', error, { sessionId });
     }
+    if (session.transport.kind === 'pipe') session.transport.socket.destroy();
     this.#publish();
   }
 

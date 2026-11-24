@@ -35,6 +35,6 @@
   - [Serpent-Plugin-MediaConverter](https://github.com/dolag233/Serpent-Plugin-MediaConverter)——媒体转码与压缩扩展，演示多规格媒体计划、后台 Job 队列任务生命周期与全平台包分发（`any`）
   - [Serpent-Plugin-ImageUpscaler](https://github.com/dolag233/Serpent-Plugin-ImageUpscaler)——非受限模式（`unrestricted`），演示外部 AI 推理二进制文件管理、跨平台独立 ZIP 分流打包发布（`darwin-arm64` / `win32-x64`）与分块内容回写
 - [脚本开发指南](../manual/scripts/development.md) + [API 参考](../manual/scripts/api-reference.md)
-- [MCP 开发指南](../manual/mcp/development.md) + [API 参考](../manual/mcp/api-reference.md)
+- [MCP 开发指南](../manual/mcp/development.md) + [API 参考](../manual/mcp/api-reference.md) + [本机 API（脚本批量调用）](../manual/mcp/local-api.md)
 
 最终用户使用插件的方法见[插件使用](../user-guide/plugins.md)，浏览器扩展见[浏览器扩展](../user-guide/browser-extension.md)，自动化脚本和 MCP 见[自动化功能](../user-guide/automation.md)。
