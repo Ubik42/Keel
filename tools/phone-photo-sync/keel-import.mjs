@@ -12,6 +12,7 @@ import { createRequire } from 'node:module';
 import path from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 import { connectKeel } from '../keel-api/keel-api.mjs';
+import { applyPhoneSourceTags } from './source-tags.mjs';
 
 const PROJECT = path.resolve(import.meta.dirname, '..', '..');
 const exifr = createRequire(path.join(PROJECT, 'package.json'))('exifr');
@@ -147,6 +148,7 @@ try {
   }
 
   const toTag = new Set();
+  const sources = [];
   let done = 0;
   for (const [folder, items] of groups) {
     let targetFolderId;
@@ -166,6 +168,7 @@ try {
           const asset = byName.get(path.basename(item.file).toLowerCase());
           if (!asset) { outcome.errors[item.hash] = 'Keel 未返回该文件的导入结果'; continue; }
           toTag.add(asset.assetId);
+          sources.push({ assetId: asset.assetId, phonePath: item.phonePath });
           outcome.imported[item.hash] = { path: path.join(root, ...asset.relativeFilePath.split('/')), folder };
         }
       } catch (error) {
@@ -197,6 +200,8 @@ try {
     }
   }
   outcome.tagged = ids.length;
+  // 来自手机 › 相机拍摄 / 手机截图 › 微信截图 / 应用保存 › … (source-tags.mjs).
+  if (sources.length) outcome.sourceTags = await applyPhoneSourceTags(keel, libraryId, tagName, sources);
 } finally {
   writeFileSync(resultPath, JSON.stringify(outcome, null, 2));
   await keel.close();

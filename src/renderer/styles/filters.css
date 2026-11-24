@@ -1204,17 +1204,27 @@
   gap: 12px;
 }
 
-/* Common formats shown directly in the filter row. */
+/* Common formats: their own line under the filter buttons and sort. */
 .dimension-format-quick {
   display: flex;
   flex-wrap: wrap;
+  flex-basis: 100%;
+  order: 1;
   align-items: center;
   gap: 3px;
-  margin: 0 4px 0 2px;
+  margin: 2px 0 0;
 }
 
 .dimension-format-quick .filter-preset-chip {
   min-height: 26px;
+}
+
+.dimension-format-quick .filter-preset-chip.is-group {
+  font-weight: var(--ui-font-weight-medium);
+}
+
+.dimension-format-quick .filter-preset-chip.is-first-extension {
+  margin-left: 8px;
 }
 
 .dimension-filter-popover.tag-preset-popover {

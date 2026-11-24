@@ -13,14 +13,18 @@ import {
 import {
   applyDimensionSelectionClick,
   formatGroupSelectionState,
-  formatTokensHas,
-  toggleFormatToken,
+  toggleFormatGroup,
 } from "./dimension-filter-selection";
 
-/** Common formats shown directly in the filter row; the rest stay in the 格式 panel. */
-const QUICK_FORMAT_TOKENS = ["jpg", "png", "gif", "webp", "psd", "mp4", "mov", "pdf"] as const;
+/** Common extensions shown directly in the filter row; the rest stay in the 格式 panel. */
+const QUICK_FORMAT_TOKENS = [
+  "jpg", "png", "gif", "webp", "svg", "psd", "exr", "dng",
+  "mp4", "mov", "mkv", "webm", "mp3", "wav", "flac",
+  "pdf", "glb", "fbx", "obj", "ttf",
+] as const;
 import {
   OTHER_FORMAT_EXTENSIONS,
+  FORMAT_FILTER_GROUPS,
   FORMAT_TEXT_TOKEN,
 } from "./format-filter-presets";
 import { DimensionEnableToggle } from "./dimension-enable-toggle";
@@ -451,8 +455,12 @@ export const DimensionFilterBar = memo(function DimensionFilterBar(props: Dimens
 
   // A quick format chip selects formats to show. It leaves exclude mode (the
   // default hides text); clearing the last chip restores the default.
-  const applyQuickFormat = (ext: string, shiftKey: boolean) => {
-    const next = toggleFormatToken(excludeFormatFilter ? "" : formatFilter, ext, shiftKey);
+  // A click shows only these formats (a second click removes them); Shift
+  // adds or removes them from the current selection.
+  const applyQuickFormat = (tokens: readonly string[], shiftKey: boolean) => {
+    const current = excludeFormatFilter ? "" : formatFilter;
+    const selected = formatGroupSelectionState(current, tokens) === "all";
+    const next = shiftKey || selected ? toggleFormatGroup(current, tokens) : tokens.join(", ");
     if (next) {
       setExcludeFormatFilter(false);
       setFormatFilter(next);
@@ -552,19 +560,24 @@ export const DimensionFilterBar = memo(function DimensionFilterBar(props: Dimens
         </div>
 
         <div className="dimension-format-quick" role="group" aria-label={t("filter.formatQuick")}>
-          {QUICK_FORMAT_TOKENS.map((ext) => {
-            const active = !excludeFormatFilter && formatTokensHas(formatFilter, ext);
+          {[
+            ...FORMAT_FILTER_GROUPS.map((group) => ({ key: group.labelKey, label: t(group.labelKey), tokens: group.extensions, group: true })),
+            { key: FORMAT_TEXT_TOKEN, label: t("filter.formatText"), tokens: [FORMAT_TEXT_TOKEN], group: true },
+            ...QUICK_FORMAT_TOKENS.map((ext) => ({ key: ext, label: ext, tokens: [ext], group: false })),
+          ].map((chip, index, chips) => {
+            const active = !excludeFormatFilter && formatGroupSelectionState(formatFilter, chip.tokens) === "all";
+            const firstExtension = !chip.group && chips[index - 1]?.group;
             return (
               <button
                 aria-pressed={active}
-                className={`filter-preset-chip${active ? " is-active" : ""}`}
+                className={`filter-preset-chip${chip.group ? " is-group" : ""}${firstExtension ? " is-first-extension" : ""}${active ? " is-active" : ""}`}
                 data-hover-tip={t("filter.shiftMultiSelectHint")}
                 disabled={controlsDisabled}
-                key={ext}
-                onClick={(event) => applyQuickFormat(ext, event.shiftKey)}
+                key={chip.key}
+                onClick={(event) => applyQuickFormat(chip.tokens, event.shiftKey)}
                 type="button"
               >
-                {ext}
+                {chip.label}
               </button>
             );
           })}

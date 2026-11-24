@@ -90,6 +90,8 @@ test('tag browsing clears on folder navigation; tag tree states filter across fo
     await expect(includeParent).toHaveAttribute('aria-pressed','true');
     await expect(grid.getByText('普通.svg',{exact:true})).toHaveCount(0);
     await presets.getByRole('button',{name:'清除标签树状态',exact:true}).click();
+    await window.keyboard.press('Escape');
+    await expect(presets).toHaveCount(0);
     // Common formats sit directly in the filter row.
     const png=window.locator('.dimension-format-quick').getByRole('button',{name:'png',exact:true});
     await png.click();
@@ -97,6 +99,17 @@ test('tag browsing clears on folder navigation; tag tree states filter across fo
     await expect(grid.getByText('普通.svg',{exact:true})).toHaveCount(0);
     await png.click();
     await expect(grid.getByText('普通.svg',{exact:true}).first()).toBeVisible();
+    const video=window.locator('.dimension-format-quick').getByRole('button',{name:'视频',exact:true});
+    await video.click();
+    await expect(video).toHaveAttribute('aria-pressed','true');
+    await expect(grid.getByText('普通.svg',{exact:true})).toHaveCount(0);
+    const image=window.locator('.dimension-format-quick').getByRole('button',{name:'图像',exact:true});
+    await image.click();
+    await expect(image).toHaveAttribute('aria-pressed','true');
+    await expect(video).toHaveAttribute('aria-pressed','false');
+    await expect(grid.getByText('普通.svg',{exact:true}).first()).toBeVisible();
+    await window.screenshot({path:test.info().outputPath('format-quick.png')});
+    await image.click();
     // Tag order sort: by the asset's earliest tag in the tree; untagged last.
     const order=await window.evaluate(async()=>{
       const api=(globalThis as typeof globalThis & {keel:{library:KeelLibraryApi}}).keel.library;
