@@ -4,6 +4,7 @@ import { type LinkedFolderSummary, type ManagedFolderSummary, type TagSummary, t
 import { type FindSimilarSource } from '../ai/find-similar';
 import { loadFolderBrowseCardPreferences } from '../browse/folder-browse-card-preferences';
 import { loadFolderRecursivePreferences } from '../folders/folder-recursive-preferences';
+import { loadTagDescendantsPreferences } from '../tags/tag-descendants-preferences';
 
 export type AssetScope = "all" | "root" | string;
 
@@ -17,6 +18,7 @@ export interface NavigationState {
   folderRecursive: boolean;
   folderRecursivePrefs: ReturnType<typeof loadFolderRecursivePreferences>;
   showFolderCardsWhenRecursive: boolean;
+  tagDescendantsPrefs: ReturnType<typeof loadTagDescendantsPreferences>;
   showTrash: boolean;
   showTagManagement: boolean;
   activePluginSidebarViewId: string | null;
@@ -37,6 +39,7 @@ export const navigationFields = createFieldStore<NavigationState>(() => ({
     folderRecursive: false,
     folderRecursivePrefs: loadFolderRecursivePreferences(),
     showFolderCardsWhenRecursive: loadFolderBrowseCardPreferences().showWhenRecursive,
+    tagDescendantsPrefs: loadTagDescendantsPreferences(),
     showTrash: false,
     showTagManagement: false,
     activePluginSidebarViewId: null,

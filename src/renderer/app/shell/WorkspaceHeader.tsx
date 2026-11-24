@@ -22,6 +22,7 @@ import { toMessage } from "../../common/error-utils";
 import { saveFeatureHintPreferences, withFeatureHintShown } from "../../common/feature-hint-preferences";
 import { folderSearchScope } from "../../browse/folder-browse-scope";
 import { saveFolderRecursivePreferences, withFolderRecursiveEnabled } from "../../folders/folder-recursive-preferences";
+import { isTagDescendantsIncluded } from "../../tags/tag-descendants-preferences";
 import { iconActionAttrs } from "../../common/icon-action-attrs";
 import { Icon } from "../../common/Icons";
 import { PluginToolbarButtons } from "../../plugins/plugin-toolbar-contributions";
@@ -34,6 +35,7 @@ import { SHORTCUT_PLATFORM, folderRecursiveRef, type QueryFilterSnapshot, type R
 export interface WorkspaceHeaderProps {
   showPluginSidebarView: boolean;
   recursiveHintActive: boolean;
+  toggleTagDescendants: () => Promise<void>;
   includeSubfoldersHoverTimerRef: RefObject<NodeJS.Timeout | null>;
   recursiveHintKey: string | null;
   closeAssetPreview: (restoreBrowsePosition?: boolean, updateHistory?: boolean) => Promise<void>;
@@ -66,7 +68,7 @@ export interface WorkspaceHeaderProps {
 }
 
 /** Extracted from AppInner's returned tree (P4); renders the same elements. */
-export function WorkspaceHeader({ showPluginSidebarView, recursiveHintActive, includeSubfoldersHoverTimerRef, recursiveHintKey, closeAssetPreview, currentQueryDefinition, loadContent, setError, t, locale, workspaceTitle, chooseFolder, enterTrashAt, scopeBreadcrumbSegments, workspaceBrowseCount, busy, emptyTrash, visibleAssets, startBatchRelink, refreshAssets, setCanvasPrefs, canvasPrefs, assetCardSize, cardSizeStops, resizeAssetCards, pluginContributionRefreshKey, selectedVisibleAssets, pluginSurfaceContext, dialogFocusTrapActive, clearDiscoveryFilter, setPinnedTagId}: WorkspaceHeaderProps) {
+export function WorkspaceHeader({ showPluginSidebarView, recursiveHintActive, toggleTagDescendants, includeSubfoldersHoverTimerRef, recursiveHintKey, closeAssetPreview, currentQueryDefinition, loadContent, setError, t, locale, workspaceTitle, chooseFolder, enterTrashAt, scopeBreadcrumbSegments, workspaceBrowseCount, busy, emptyTrash, visibleAssets, startBatchRelink, refreshAssets, setCanvasPrefs, canvasPrefs, assetCardSize, cardSizeStops, resizeAssetCards, pluginContributionRefreshKey, selectedVisibleAssets, pluginSurfaceContext, dialogFocusTrapActive, clearDiscoveryFilter, setPinnedTagId}: WorkspaceHeaderProps) {
   const [previewAsset] = usePreviewField("previewAsset");
   const [previewRestoring] = usePreviewField("previewRestoring");
   const [library] = useSessionField("library");
@@ -78,6 +80,9 @@ export function WorkspaceHeader({ showPluginSidebarView, recursiveHintActive, in
   const [featureHintPrefs, setFeatureHintPrefs] = useNavigationField("featureHintPrefs");
   const [folderRecursivePrefs, setFolderRecursivePrefs] = useNavigationField("folderRecursivePrefs");
   const [tags] = useNavigationField("tags");
+  const [tagDescendantsPrefs] = useNavigationField("tagDescendantsPrefs");
+  const activeTagHasChildren =
+    activeTagId !== null && tags.some((tag) => tag.parentTagId === activeTagId);
   const setAppSettingsCategory = dialogsFields.setterFor("appSettingsCategory");
   const setAppSettingsOpen = dialogsFields.setterFor("appSettingsOpen");
   const [selectedAssetIds] = useSelectionField("selectedAssetIds");
@@ -261,6 +266,28 @@ export function WorkspaceHeader({ showPluginSidebarView, recursiveHintActive, in
                   {...iconActionAttrs(t("nav.includeChildFolders"))}
                 >
                   <Icon name="folders" size={14} />
+                </button>
+              )}
+            {library &&
+              !showTrash &&
+              !showTagManagement &&
+              !showPluginSidebarView &&
+              activeTagId &&
+              activeTagHasChildren && (
+                <button
+                  aria-pressed={isTagDescendantsIncluded(
+                    tagDescendantsPrefs,
+                    library.libraryId,
+                    activeTagId,
+                  )}
+                  className="workspace-include-subfolders"
+                  onClick={() => {
+                    void toggleTagDescendants();
+                  }}
+                  type="button"
+                  {...iconActionAttrs(t("nav.includeChildTags"))}
+                >
+                  <Icon name="tags" size={14} />
                 </button>
               )}
             {showTagManagement || showPluginSidebarView ? (

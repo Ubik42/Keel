@@ -61,6 +61,13 @@ test('tag tree creates children, filters descendants, assigns assets and moves t
     await parent.click();
     await expect(window.locator('.asset-grid').getByText('npc.svg', { exact: true }).first()).toBeVisible();
     await expect(window.locator('.asset-grid').getByText('scene.svg', { exact: true })).toHaveCount(0);
+    const includeChildTags = window.getByRole('button', { name: '包含子标签', exact: true });
+    await expect(includeChildTags).toHaveAttribute('aria-pressed', 'true');
+    await includeChildTags.click();
+    await expect(includeChildTags).toHaveAttribute('aria-pressed', 'false');
+    await expect(window.locator('.asset-grid').getByText('npc.svg', { exact: true })).toHaveCount(0);
+    await includeChildTags.click();
+    await expect(window.locator('.asset-grid').getByText('npc.svg', { exact: true }).first()).toBeVisible();
     await window.screenshot({ path: test.info().outputPath('tag-tree-linked-assets.png') });
     const childId = await child.getAttribute('data-tag-id');
     const scene = tree.getByRole('treeitem', { name: '场景', exact: true });

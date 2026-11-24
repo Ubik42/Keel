@@ -16,6 +16,8 @@ import { type SelectionState } from "../../stores/selection-store";
 import { type SessionState } from "../../stores/session-store";
 import { tagBrowseDefinition } from "../../tags/tag-browse-definition";
 import { descendantTagIds } from "../../tags/tag-tree-model";
+import { isTagDescendantsIncluded, saveTagDescendantsPreferences, withTagDescendantsIncluded } from "../../tags/tag-descendants-preferences";
+import { navigationFields } from "../../stores/navigation-store";
 import { BROWSE_PAGE_SIZE, registerBrowseSearchPage } from "../../browse/use-browse-pagination";
 import { type WorkspaceNavLocation, type WorkspaceNavViewport } from "../../workbench/workspace/workspace-nav-history";
 import { type WorkspaceNavigationHistoryMode } from "../../workbench/workspace/workspace-navigation-coordinator";
@@ -177,7 +179,9 @@ export function useTagOperations({ api, library, beginWorkspaceNavigationRequest
     await closeAssetPreview(false);
     if (!request.isCurrent() || !isCurrentLibraryView(viewSession)) return;
     try {
-      const includeDescendants = descendantTagIds(tagCatalog, tagId).length > 1;
+      const includeDescendants =
+        descendantTagIds(tagCatalog, tagId).length > 1 &&
+        isTagDescendantsIncluded(navigationFields.get("tagDescendantsPrefs"), targetLibraryId, tagId);
       const tagExpression = JSON.stringify(tag.name);
       const definition: SearchDefinition = request.browseState
         ? queryDefinitionForWorkspaceBrowseState(request.browseState)
@@ -245,6 +249,21 @@ export function useTagOperations({ api, library, beginWorkspaceNavigationRequest
         setUiState("ready");
       }
     }
+  }
+
+  /** Switches the active tag between "with child tags" and "this tag only". */
+  async function toggleTagDescendants() {
+    if (!library || !activeTagId) return;
+    const prefs = navigationFields.get("tagDescendantsPrefs");
+    const next = withTagDescendantsIncluded(
+      prefs,
+      library.libraryId,
+      activeTagId,
+      !isTagDescendantsIncluded(prefs, library.libraryId, activeTagId),
+    );
+    navigationFields.setterFor("tagDescendantsPrefs")(next);
+    saveTagDescendantsPreferences(next);
+    await chooseTag(activeTagId, createWorkspaceNavigationRequest(undefined, "none"));
   }
 
   async function togglePinnedTag(tagId: string) {
@@ -341,5 +360,5 @@ export function useTagOperations({ api, library, beginWorkspaceNavigationRequest
       setError(toMessage(caught, t("toast.createTagFailed"), locale));
     }
   }
-  return { chooseTag, assignAssetToTag, handleRemoveTagFromAsset, handleCreateAndAssignTag, togglePinnedTag, handleSearchTagsFromManagement };
+  return { chooseTag, toggleTagDescendants, assignAssetToTag, handleRemoveTagFromAsset, handleCreateAndAssignTag, togglePinnedTag, handleSearchTagsFromManagement };
 }

@@ -210,6 +210,7 @@ export const zhCN = {
     addSection: "添加{title}",
     secondaryAction: "次要操作{title}",
     includeChildFolders: "包含子文件夹",
+    includeChildTags: "包含子标签",
     emptyFolders: "尚无文件夹",
     emptyManagedOrLinked: "尚无托管或链接文件夹",
     collapseFolder: "折叠 {name}",

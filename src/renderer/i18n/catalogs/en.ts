@@ -222,6 +222,7 @@ export const en = {
     addSection: "Add {title}",
     secondaryAction: "Secondary action {title}",
     includeChildFolders: "Include subfolders",
+    includeChildTags: "Include child tags",
     emptyFolders: "No folders yet",
     emptyManagedOrLinked: "No managed or linked folders yet",
     collapseFolder: "Collapse {name}",

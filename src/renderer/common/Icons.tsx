@@ -68,6 +68,7 @@ export type IconName =
   | "star"
   | "stop"
   | "tag"
+  | "tags"
   | "copy"
   | "trash"
   | "upload"
@@ -458,6 +459,13 @@ const iconPaths: Record<IconName, ReactNode> = {
     />
   ),
   tag: <path d="M4 5h7l9 9-6 6-9-9zM8 8h.01" />,
+  tags: (
+    <>
+      <path d="M7 3h6l8 8-5.5 5.5-8.5-8.5z" />
+      <path d="M3 7v4.5l8.5 8.5" />
+      <path d="M10.5 6.5h.01" />
+    </>
+  ),
   trash: (
     <>
       <path d="M3 6h18" />
