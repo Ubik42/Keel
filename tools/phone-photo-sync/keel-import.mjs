@@ -103,22 +103,24 @@ try {
     for (const name of relative.split('/')) {
       current = current ? `${current}/${name}` : name;
       if (!folders.has(current)) {
-        const create = () => keel.call('keel_folder_create', { libraryId, name, parentFolderId: parent });
-        try {
-          folders.set(current, (await create()).id);
-        } catch (error) {
-          if (error?.code === 'FOLDER_ALREADY_EXISTS') {
-            // An empty directory on disk is not a Keel folder; let Keel create it properly.
-            const directory = path.join(root, ...current.split('/'));
-            if (!existsSync(directory) || readdirSync(directory).length) throw error;
-            rmdirSync(directory);
-            folders.set(current, (await create()).id);
-          } else {
+        const create = async () => {
+          try {
+            folders.set(current, (await keel.call('keel_folder_create', { libraryId, name, parentFolderId: parent })).id);
+          } catch (error) {
             // Builds before the folder.create result fix report AUTOMATION_RESULT_INVALID after creating it.
             if (error?.code !== 'AUTOMATION_RESULT_INVALID') throw error;
             for (const folder of await pages(keel, 'keel_folder_list')) folders.set(folder.relativePath, folder.folderId);
             if (!folders.has(current)) throw error;
           }
+        };
+        try {
+          await create();
+        } catch (error) {
+          // An empty directory on disk is not a Keel folder; let Keel create it properly.
+          const directory = path.join(root, ...current.split('/'));
+          if (error?.code !== 'FOLDER_ALREADY_EXISTS' || !existsSync(directory) || readdirSync(directory).length) throw error;
+          rmdirSync(directory);
+          await create();
         }
       }
       parent = folders.get(current);
