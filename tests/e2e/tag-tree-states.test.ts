@@ -89,5 +89,25 @@ test('tag browsing clears on folder navigation; tag tree states filter across fo
     await presets.getByRole('button',{name:'只看父标签',exact:true}).click();
     await expect(includeParent).toHaveAttribute('aria-pressed','true');
     await expect(grid.getByText('普通.svg',{exact:true})).toHaveCount(0);
+    await presets.getByRole('button',{name:'清除标签树状态',exact:true}).click();
+    // Common formats sit directly in the filter row.
+    const png=window.locator('.dimension-format-quick').getByRole('button',{name:'png',exact:true});
+    await png.click();
+    await expect(png).toHaveAttribute('aria-pressed','true');
+    await expect(grid.getByText('普通.svg',{exact:true})).toHaveCount(0);
+    await png.click();
+    await expect(grid.getByText('普通.svg',{exact:true}).first()).toBeVisible();
+    // Tag order sort: by the asset's earliest tag in the tree; untagged last.
+    const order=await window.evaluate(async()=>{
+      const api=(globalThis as typeof globalThis & {keel:{library:KeelLibraryApi}}).keel.library;
+      const open=await api.listOpen();if(!open.ok)throw Error('No library');
+      const libraryId=open.value[0]!.libraryId;
+      const tags=await api.listTags({libraryId});if(!tags.ok)throw Error('No tags');
+      const tagOrder=['父标签','子标签'].map(name=>tags.value.find(tag=>tag.name===name)!.tagId);
+      const names=async(order:'asc'|'desc')=>{const r=await api.searchAssets({libraryId,query:null,scope:{kind:'folder',folderId:null,recursive:true},sort:{field:'tag_order',order,tagOrder}});if(!r.ok)throw Error(r.error.message);return r.value.items.map(a=>a.displayName);};
+      return {asc:await names('asc'),desc:await names('desc')};
+    });
+    expect(order.asc).toEqual(['带标签.svg','普通.svg']);
+    expect(order.desc).toEqual(['带标签.svg','普通.svg']);
   } finally {await app.close();removePathWithSyncRetry(root);}
 });

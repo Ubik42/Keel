@@ -12,7 +12,7 @@ import { requestConfirmation } from "../../common/local-confirmation";
 import { parseSearchExpressionDetailed } from "../../search/search-expression";
 import { sessionFields } from "../../stores/session-store";
 import { transfersFields } from "../../stores/transfers-store";
-import { descendantTagIds } from "../../tags/tag-tree-model";
+import { descendantTagIds, tagTreeRows } from "../../tags/tag-tree-model";
 import { tagTreeStatesClause, tagTreeStatesFor } from "../../tags/tag-tree-states";
 import { queryFields } from "../../stores/query-store";
 import { playTaskCompletionSound } from "../../jobs/task-completion-sound";
@@ -610,10 +610,9 @@ export function useAppController() {
           }
         : {}),
       ...(filters.length > 0 ? { filters } : {}),
-      sort: {
-        field: overrides.sortField ?? sortField,
-        order: overrides.sortOrder ?? sortOrder,
-      },
+      sort: (overrides.sortField ?? sortField) === "tag_order"
+        ? { field: "tag_order", order: overrides.sortOrder ?? sortOrder, tagOrder: tagTreeRows(tags, "", new Set()).map((row) => row.tag.tagId) }
+        : { field: overrides.sortField ?? sortField, order: overrides.sortOrder ?? sortOrder },
     };
   }
   const { queryDefinitionForWorkspaceBrowseState, queryDefinitionForNavigationRequest, resetDiscoveryIfNavigationReplacesLive, applySearchResult, reloadCurrentContent, deferredReconcileTimerRef, applyLocalAssetRemoval, currentSearchScope } = useContentQueries({ currentQueryDefinition, captureWorkspaceTabBrowseState, sortField, sortOrder, clearDiscoveryControls, setSearchTotal, setSearchOffset, setSearchSnippets, assetScope, folderRecursive, library, showTrash, setFilteredFolderCountRefreshToken, loadContent, activeTagId, tags, localAssetRemovalGenerationRef, assets, trashedAssets, searchTotal, allAssetCount, setAssets, setTrashedAssets, setAllAssetCount, removeLocallyFromBrowse, workspaceCanvasRef, reloadCurrentContentRef });

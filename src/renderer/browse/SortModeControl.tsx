@@ -36,7 +36,7 @@ export const SECONDARY_SORT_FIELDS: SortFieldOption[] = [
   "rating",
   "color",
   "author",
-  "tag_count",
+  "tag_order",
 ];
 
 export const DEFAULT_SORT_FIELD: SortFieldOption = "name";
@@ -81,8 +81,8 @@ function labelForSortField(
       return t("filter.sortColor");
     case "author":
       return t("filter.sortAuthor");
-    case "tag_count":
-      return t("filter.sortTagCount");
+    case "tag_order":
+      return t("filter.sortTagOrder");
   }
 }
 

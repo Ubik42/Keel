@@ -13,7 +13,12 @@ import {
 import {
   applyDimensionSelectionClick,
   formatGroupSelectionState,
+  formatTokensHas,
+  toggleFormatToken,
 } from "./dimension-filter-selection";
+
+/** Common formats shown directly in the filter row; the rest stay in the 格式 panel. */
+const QUICK_FORMAT_TOKENS = ["jpg", "png", "gif", "webp", "psd", "mp4", "mov", "pdf"] as const;
 import {
   OTHER_FORMAT_EXTENSIONS,
   FORMAT_TEXT_TOKEN,
@@ -38,6 +43,7 @@ import { MoreFilterPanel } from "./panels/MoreFilterPanel";
 import { FormatFilterPanel } from "./panels/FormatFilterPanel";
 import { RatingFilterPanel } from "./panels/RatingFilterPanel";
 import { TagPresetPanel } from "./panels/TagPresetPanel";
+import { defaultFormatFilter } from "./default-format-filter";
 
 export type DimensionId =
   | "color"
@@ -443,6 +449,20 @@ export const DimensionFilterBar = memo(function DimensionFilterBar(props: Dimens
     );
   };
 
+  // A quick format chip selects formats to show. It leaves exclude mode (the
+  // default hides text); clearing the last chip restores the default.
+  const applyQuickFormat = (ext: string, shiftKey: boolean) => {
+    const next = toggleFormatToken(excludeFormatFilter ? "" : formatFilter, ext, shiftKey);
+    if (next) {
+      setExcludeFormatFilter(false);
+      setFormatFilter(next);
+      return;
+    }
+    const fallback = defaultFormatFilter();
+    setFormatFilter(fallback.formatFilter);
+    setExcludeFormatFilter(fallback.excludeFormatFilter);
+  };
+
   const handleMoreDimensionClick = () => {
     setOpenDimension("more");
   };
@@ -529,6 +549,25 @@ export const DimensionFilterBar = memo(function DimensionFilterBar(props: Dimens
             disabled={disabled}
             setExcludeFormatFilter={setExcludeFormatFilter}
           />
+        </div>
+
+        <div className="dimension-format-quick" role="group" aria-label={t("filter.formatQuick")}>
+          {QUICK_FORMAT_TOKENS.map((ext) => {
+            const active = !excludeFormatFilter && formatTokensHas(formatFilter, ext);
+            return (
+              <button
+                aria-pressed={active}
+                className={`filter-preset-chip${active ? " is-active" : ""}`}
+                data-hover-tip={t("filter.shiftMultiSelectHint")}
+                disabled={controlsDisabled}
+                key={ext}
+                onClick={(event) => applyQuickFormat(ext, event.shiftKey)}
+                type="button"
+              >
+                {ext}
+              </button>
+            );
+          })}
         </div>
 
         <div className="dimension-filter-dim" data-dimension="more" ref={moreDimRef}>

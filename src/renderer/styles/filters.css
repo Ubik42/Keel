@@ -1199,22 +1199,22 @@
 
 /* FILTER-001: category checkboxes + aligned chip rows. */
 
-/* Format groups sit side by side so every choice is visible at once. */
-.dimension-filter-popover.format-filter-popover {
-  display: grid;
-  width: min(940px, 94vw);
-  max-height: min(640px, calc(100vh - 120px));
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  align-items: start;
-  gap: 14px 18px;
+.format-filter-popover {
+  width: min(480px, 90vw);
+  gap: 12px;
 }
 
-.dimension-filter-popover.format-filter-popover > :not(.format-filter-group) {
-  grid-column: 1 / -1;
+/* Common formats shown directly in the filter row. */
+.dimension-format-quick {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 3px;
+  margin: 0 4px 0 2px;
 }
 
-.format-filter-popover .format-filter-group .filter-presets {
-  padding-left: 0;
+.dimension-format-quick .filter-preset-chip {
+  min-height: 26px;
 }
 
 .dimension-filter-popover.tag-preset-popover {

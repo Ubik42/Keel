@@ -783,11 +783,20 @@ export function buildCatalogSortOrder(input: {
           : defaultNameSort,
         params: [],
       };
-      // Untagged assets first in ascending order, then by human tag count.
-      case 'tag_count': return {
-        sql: `(SELECT COUNT(*) FROM human_asset_tags hat WHERE hat.asset_id = a.asset_id) ${direction}, a.relative_file_path ASC, a.asset_id ASC`,
-        params: [],
-      };
+      // The asset's earliest tag in tag tree order; untagged assets last.
+      case 'tag_order': {
+        const order = input.sort.tagOrder ?? [];
+        if (order.length === 0) return { sql: defaultNameSort, params: [] };
+        const rank = `(WITH tag_rank(tag_id, rank) AS (VALUES ${order.map(() => '(?, ?)').join(', ')})
+          SELECT MIN(tag_rank.rank) FROM human_asset_tags hat
+            JOIN tag_rank ON tag_rank.tag_id = hat.tag_id
+            WHERE hat.asset_id = a.asset_id)`;
+        const params = order.flatMap((tagId, index) => [tagId, index]);
+        return {
+          sql: `${rank} IS NULL ASC, ${rank} ${direction}, a.relative_file_path ASC, a.asset_id ASC`,
+          params: [...params, ...params],
+        };
+      }
       default: return { sql: defaultNameSort, params: [] };
     }
   }

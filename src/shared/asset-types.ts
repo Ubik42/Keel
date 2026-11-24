@@ -517,9 +517,14 @@ export const sortDefinitionSchema = z.strictObject({
     'rating',
     'color',
     'author',
-    'tag_count',
+    'tag_order',
   ]),
   order: z.enum(['asc', 'desc']),
+  /**
+   * tag_order only: tag IDs in tag tree order. An asset sorts by the
+   * earliest of its tags in this list; untagged assets come last.
+   */
+  tagOrder: z.array(z.string().min(1).max(256)).max(10_000).optional(),
 });
 
 export type SortDefinition = z.infer<typeof sortDefinitionSchema>;
