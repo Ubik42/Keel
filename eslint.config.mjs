@@ -23,7 +23,6 @@ export default tseslint.config(
       // Generated bundles and the Python runtime of the phone sync tool
       // (git-ignored in tools/phone-photo-sync/.gitignore).
       'tools/phone-photo-sync/runtime/**',
-      'tools/phone-photo-sync/catalog.cjs',
       'tools/phone-photo-sync/catalog-*.js',
       'tools/phone-photo-sync/pdf-*.js',
       // Emscripten-generated glue (acquired by scripts/build-ufbx-wasm.mjs).
@@ -32,7 +31,7 @@ export default tseslint.config(
   },
   js.configs.recommended,
   {
-    files: ['scripts/**/*.mjs'],
+    files: ['scripts/**/*.mjs', 'tools/**/*.mjs'],
     languageOptions: {
       globals: globals.node,
     },

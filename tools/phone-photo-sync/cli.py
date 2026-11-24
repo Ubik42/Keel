@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sqlite3
 import subprocess
 import sys
 import time
@@ -13,36 +14,23 @@ from core import Archive, MEDIA, is_cache, meta_dir
 PROJECT = Path(__file__).resolve().parents[2]
 
 
-def keel_running():
-    """Keel windows (packaged or dev Electron from this project) holding a library open."""
-    script = ("Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessName -eq 'Keel' -or "
-              "($_.ProcessName -eq 'electron' -and $_.Path -like '" + str(PROJECT) + "*') } | Measure-Object | "
-              "Select-Object -ExpandProperty Count")
-    probe = subprocess.run(['powershell', '-NoProfile', '-Command', script], capture_output=True, text=True, check=False)
-    return probe.stdout.strip() not in {'', '0'}
-
-
-def wait_for_keel_closed(report=print, limit=1800):
-    # Isolated trial libraries are never open in Keel.
-    if os.environ.get('KEEL_PHONE_SYNC_IGNORE_RUNNING') == '1' or not keel_running():
-        return
-    report('Keel 正在运行。请关闭 Keel 窗口，导入会在关闭后自动继续。')
-    deadline = time.monotonic() + limit
-    while keel_running():
-        if time.monotonic() > deadline:
-            raise RuntimeError('等待关闭 Keel 超时；照片已暂存的部分下次会重新读取。')
-        time.sleep(2)
+def library_id(root):
+    db = sqlite3.connect(f"file:{(meta_dir(root) / 'library.db').as_posix()}?mode=ro", uri=True)
+    try:
+        return db.execute('SELECT library_id FROM library').fetchone()[0]
+    finally:
+        db.close()
 
 
 def keel_importer(root, meta, tag):
+    """Import through the running Keel's local API (tools/keel-api)."""
     def run(items, tag_refs):
-        wait_for_keel_closed()
         manifest = meta / 'import-manifest.json'
         result_path = meta / 'import-result.json'
-        manifest.write_text(json.dumps({'tag':tag,'items':items,'tagRefs':tag_refs},ensure_ascii=False),encoding='utf-8')
+        manifest.write_text(json.dumps({'libraryId':library_id(root),'root':str(root),'tag':tag,'items':items,'tagRefs':tag_refs},ensure_ascii=False),encoding='utf-8')
         if result_path.exists():
             result_path.unlink()
-        command = ['node', str(PROJECT/'scripts'/'run-phone-catalog.mjs'), str(root), str(manifest), str(result_path)]
+        command = ['node', str(Path(__file__).resolve().parent/'keel-import.mjs'), str(manifest), str(result_path)]
         completed = subprocess.run(command, cwd=PROJECT, check=False)
         if not result_path.exists():
             message = f'Keel 导入未完成（退出码 {completed.returncode}）'

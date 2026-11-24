@@ -32,6 +32,7 @@ import {
   workerResultSchema,
   type WorkerResult,
 } from '../shared/protocol/responses';
+import { mutationReceiptSchema } from '../shared/performance-contract';
 import { pluginWidgetNodeSchema } from '../shared/plugin-widget-ir';
 
 /**
@@ -1106,6 +1107,7 @@ const folderCreateWorkerResultSchema = z.strictObject({
   type: z.literal('folder.created'),
   folder: managedFolderSummarySchema,
   historyEntryId: nonBlankString.optional(),
+  mutationReceipt: mutationReceiptSchema.optional(),
 });
 
 const folderRenamedWorkerResultSchema = z.strictObject({
