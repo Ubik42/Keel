@@ -11,7 +11,8 @@
 
 ## 流程
 
-1. `wpd_backend.py` 只读扫描手机的 DCIM、Pictures、Movies、Download、Android/media 及配置中列出的目录；缩略图、应用缓存和游戏素材按用途排除。
+1. `wpd_backend.py` 只读扫描配置 `scan_roots` 中的目录（当前为 DCIM、Pictures、Movies、Download）；缩略图、应用缓存和 0 字节文件跳过。配置 `exclude` 列出应用自动生成的图片（路径模式，目录模式包含其内容）：系统拖放临时图 `Download/.OplusDragAndDrop`、系统背景图 `Download/.content_portal`、B 站分享海报 `Pictures/Bilibili/bili_poster-*`、抖音评论图 `Pictures/douyin/comment`、QQ 音乐占位 `Movies/qqmusic`。发现新的应用生成目录时加入 `exclude`。
+   手机根目录的 `SOA/`（与 `D:\Pictures\SOA` 结构一致）、`Documents/CloudObsidian`（Obsidian 仓库）不在扫描范围内。
 2. `core.py` 按手机路径、大小和修改时间跳过已导入文件，只读取新增或改动的文件，以 SHA-256 判断内容。资源库已有的相同内容不再复制，只补加标签。
 3. 新内容暂存在 `.keel/phone-sync/staging/import`，再由 `keel-import.mjs` 通过本机 API（`tools/keel-api`，命名管道）调用正在运行的 Keel 导入，与界面导入使用同一网关，写入资源库历史：
    - 拍摄年月依次取 EXIF 拍摄时间、文件名中的日期或毫秒时间戳、手机修改时间；都没有时放入 `_未知时间`。
@@ -30,6 +31,8 @@
 - `cli.py --library <库路径> --dry-run`：预览变化。
 - `cli.py --library <库路径> --verify`：重新读取手机内容作完整核验。
 - `migrate.py --source <旧手机同步库> --target <目标库>`：一次性把独立手机同步库迁入目标库，并带走手机路径索引（2026-11-23 已用于迁移 `D:\Pictures\手机同步`）。`--limit N` 用于试跑。
+
+手机端整理（移动、删除）使用 ADB：`%LOCALAPPDATA%\Android\platform-tools\adb.exe`，手机常开 USB 调试并已授权本机。日常同步只用 MTP 只读读取。Git Bash 中调用 adb 时设置 `MSYS_NO_PATHCONV=1`，否则 `/sdcard`、`/data/local/tmp` 会被改写成 Windows 路径。
 
 更新工具依赖本机 Python 3.14、Node.js、项目的 exifr 依赖和 comtypes 1.5.0。本机运行时保存在本目录 `runtime`。
 
