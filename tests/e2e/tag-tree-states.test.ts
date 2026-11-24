@@ -110,6 +110,19 @@ test('tag browsing clears on folder navigation; tag tree states filter across fo
     await expect(grid.getByText('普通.svg',{exact:true}).first()).toBeVisible();
     await window.screenshot({path:test.info().outputPath('format-quick.png')});
     await image.click();
+    // Edit which formats the filter row lists.
+    const quick=window.locator('.dimension-format-quick');
+    await window.locator('.dimension-filter-bar').getByRole('button',{name:'格式',exact:true}).focus();
+    const formatPanel=window.locator('[data-dimension-filter-popover][data-dimension="format"]');
+    await formatPanel.getByRole('button',{name:'编辑外部显示',exact:true}).click();
+    await formatPanel.getByRole('button',{name:'不在过滤行显示：mp4',exact:true}).click();
+    await formatPanel.getByRole('button',{name:'显示在过滤行：bmp',exact:true}).click();
+    await formatPanel.getByRole('button',{name:'显示在过滤行：杂项',exact:true}).click();
+    await window.screenshot({path:test.info().outputPath('format-quick-edit.png')});
+    await window.keyboard.press('Escape');
+    await expect(quick.getByRole('button',{name:'mp4',exact:true})).toHaveCount(0);
+    await expect(quick.getByRole('button',{name:'bmp',exact:true})).toBeVisible();
+    await expect(quick.getByRole('button',{name:'杂项',exact:true})).toBeVisible();
     // Tag order sort: by the asset's earliest tag in the tree; untagged last.
     const order=await window.evaluate(async()=>{
       const api=(globalThis as typeof globalThis & {keel:{library:KeelLibraryApi}}).keel.library;

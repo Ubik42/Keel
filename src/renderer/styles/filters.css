@@ -1219,6 +1219,76 @@
   min-height: 26px;
 }
 
+.format-filter-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.format-filter-head .text-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.format-quick-edit {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border: 1px solid var(--ui-border-divider);
+  border-radius: var(--ui-radius-6);
+  background: transparent;
+  color: var(--ui-content-secondary);
+  font-size: var(--ui-font-size-12);
+  cursor: pointer;
+}
+
+.format-quick-edit.is-active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.format-filter-group-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.format-quick-pin {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--ui-radius-5);
+  background: transparent;
+  color: var(--ui-content-tertiary);
+  cursor: pointer;
+}
+
+.format-quick-pin.is-listed,
+.filter-preset-chip.is-quick-edit.is-listed {
+  border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+  color: var(--accent);
+}
+
+.filter-preset-chip.is-quick-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.filter-preset-chip.is-quick-edit .icon {
+  opacity: .35;
+}
+
+.filter-preset-chip.is-quick-edit.is-listed .icon {
+  opacity: 1;
+}
+
 .dimension-format-quick .filter-preset-chip.is-group {
   font-weight: var(--ui-font-weight-medium);
 }
