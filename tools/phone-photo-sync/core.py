@@ -134,6 +134,10 @@ class Archive:
         except (OSError, KeyError, ValueError):
             return None
 
+    def known(self, value: str) -> bool:
+        """Content that was in the library at some point."""
+        return self.db.execute('SELECT 1 FROM objects WHERE hash=?', (value,)).fetchone() is not None
+
     def seed(self, content_index: Path, source_maps: list[Path]):
         if self.db.execute('SELECT COUNT(*) FROM sources').fetchone()[0]:
             return
@@ -168,14 +172,16 @@ class Archive:
                     self.remember(value, path)
         self.db.commit()
 
-    def update(self, entries, download, importer, *, verify=False, dry_run=False, report=print):
+    def update(self, entries, download, importer, *, verify=False, dry_run=False, reimport_deleted=False, report=print):
         """Read new phone content; `importer(items, tag_refs)` files it into the library.
 
         importer returns {'imported': {hash: {'path': absolute}}, 'errors': {hash: message}}.
         Sources of new content are recorded only after the library accepted it.
+        Content that was in the library and is gone now (deleted in Keel) is
+        not imported again unless reimport_deleted is set.
         """
         run = time.strftime('%Y%m%d-%H%M%S') + '-' + uuid.uuid4().hex[:12]
-        stats = {'scanned':0,'unchanged':0,'newContent':0,'reusedContent':0,'downloadedBytes':0,'errors':[], 'run':run}
+        stats = {'scanned':0,'unchanged':0,'newContent':0,'reusedContent':0,'deleted':0,'downloadedBytes':0,'errors':[], 'run':run}
         staging = self.meta / 'staging'
         staging.mkdir(exist_ok=True)
         if staging.is_symlink() or not staging.resolve().is_relative_to(self.meta):
@@ -194,8 +200,14 @@ class Archive:
                     raise ValueError('手机未返回可用文件大小')
                 old = self.db.execute('SELECT * FROM sources WHERE path=?', (path,)).fetchone()
                 kept = self.canonical(old['hash']) if old else None
-                same = old and old['size'] == size and kept is not None and (
+                source_unchanged = old and old['size'] == size and (
                     (stamp is not None and old['stamp'] == stamp) or bool(old['seeded']))
+                same = source_unchanged and kept is not None
+                if source_unchanged and kept is None and not verify and not reimport_deleted and self.known(old['hash']):
+                    stats['deleted'] += 1
+                    if not dry_run:
+                        self.db.execute('UPDATE sources SET stamp=?,seen=?,seeded=0 WHERE path=?', (stamp,run,path))
+                    continue
                 if same and not verify:
                     stats['unchanged'] += 1
                     if not dry_run:
@@ -216,7 +228,12 @@ class Archive:
                     raise OSError('复制后的文件大小或校验值不一致')
                 stats['downloadedBytes'] += size
                 kept = self.canonical(value)
-                if kept is not None:
+                if kept is None and not reimport_deleted and self.known(value):
+                    temporary.unlink()
+                    stats['deleted'] += 1
+                    self.db.execute('INSERT OR REPLACE INTO sources VALUES (?,?,?,?,?,0)', (path,size,stamp,value,run))
+                    self.db.commit()
+                elif kept is not None:
                     temporary.unlink()
                     stats['reusedContent'] += 1
                     if self.location(kept)[0] == 'library':

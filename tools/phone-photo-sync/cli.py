@@ -80,6 +80,7 @@ def main():
     parser.add_argument('--library', required=True, type=Path)
     parser.add_argument('--dry-run', action='store_true', help='检查变化，不复制照片')
     parser.add_argument('--verify', action='store_true', help='重新读取手机文件并核验内容')
+    parser.add_argument('--reimport-deleted', action='store_true', help='重新导入曾在资源库中、后来被删除的照片')
     args = parser.parse_args()
     root = args.library.resolve()
     settings = meta_dir(root) / 'phone-sync' / 'config.json'
@@ -103,12 +104,12 @@ def main():
         result = archive.update(scan(phone, config, errors),
                                 lambda item, target: phone.download(item['id'], target, item['bytes']),
                                 keel_importer(root, archive.meta, config.get('tag', '来自手机')),
-                                verify=args.verify, dry_run=args.dry_run)
+                                verify=args.verify, dry_run=args.dry_run, reimport_deleted=args.reimport_deleted)
         result['enumerationErrors'] = errors
         result['seconds'] = round(time.monotonic() - started, 1)
         phone.close()
         phone = None
-        print(f"完成检查 {result['scanned']} 项：未变化 {result['unchanged']}，新增内容 {result['newContent']}，复用已有内容 {result['reusedContent']}。",flush=True)
+        print(f"完成检查 {result['scanned']} 项：未变化 {result['unchanged']}，新增内容 {result['newContent']}，复用已有内容 {result['reusedContent']}，已在库中删除而跳过 {result['deleted']}。",flush=True)
         print(f"读取 {result['downloadedBytes']/2**20:.1f} MiB，用时 {result['seconds']:.1f} 秒。",flush=True)
         failures = len(result['errors']) + len(errors)
         if failures:

@@ -71,10 +71,21 @@ class SyncTests(unittest.TestCase):
         source=next(self.root.rglob('*.jpg'));target=self.root/'organized.jpg';source.rename(target)
         self.archive.refresh_local_index()
         self.assertEqual(self.run_sync([item])['unchanged'],1);self.assertEqual(self.reads,1)
-    def test_missing_local_original_is_restored(self):
+    def test_deleted_local_original_is_not_imported_again(self):
         item=self.entry('DCIM/a.jpg',b'photo');self.run_sync([item])
         next(self.root.rglob('*.jpg')).unlink()
-        self.assertEqual(self.run_sync([item])['newContent'],1)
+        result=self.run_sync([item])
+        self.assertEqual((result['deleted'],result['newContent']),(1,0))
+        self.assertEqual(self.reads,1)
+        # The same content under another phone path is skipped too.
+        result=self.run_sync([item,self.entry('Pictures/copy.jpg',b'photo')])
+        self.assertEqual((result['deleted'],result['newContent']),(2,0))
+        self.assertEqual(list(self.root.rglob('*.jpg')),[])
+    def test_deleted_original_can_be_reimported_on_request(self):
+        item=self.entry('DCIM/a.jpg',b'photo');self.run_sync([item])
+        next(self.root.rglob('*.jpg')).unlink()
+        result=self.archive.update([item],self.download,self.importer,reimport_deleted=True,report=lambda _:None)
+        self.assertEqual(result['newContent'],1)
     def test_failure_does_not_advance_source_state(self):
         item=self.entry('DCIM/a.jpg',b'photo')
         def fail(item,target):raise OSError('disconnected')
