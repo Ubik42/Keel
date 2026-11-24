@@ -103,9 +103,13 @@ export function shouldUseFramelessTitleBar(
   return platform === "win32" || platform === "linux";
 }
 
-/** Windows' custom close caption hides the window and leaves the app in the tray. */
+/**
+ * Windows' custom close caption quits by default; with "close to tray" on it
+ * hides the window and leaves the app in the notification area.
+ */
 export function shouldHideWindowOnClose(
   platform: NodeJS.Platform,
+  closeToTray: boolean,
 ): boolean {
-  return platform === "win32";
+  return platform === "win32" && closeToTray;
 }

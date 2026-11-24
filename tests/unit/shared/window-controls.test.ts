@@ -68,8 +68,9 @@ describe("window-controls protocol", () => {
   });
 
   it("hides the Windows window for the tray instead of quitting", () => {
-    expect(shouldHideWindowOnClose("win32")).toBe(true);
-    expect(shouldHideWindowOnClose("darwin")).toBe(false);
-    expect(shouldHideWindowOnClose("linux")).toBe(false);
+    expect(shouldHideWindowOnClose("win32", false)).toBe(false);
+    expect(shouldHideWindowOnClose("win32", true)).toBe(true);
+    expect(shouldHideWindowOnClose("darwin", true)).toBe(false);
+    expect(shouldHideWindowOnClose("linux", true)).toBe(false);
   });
 });

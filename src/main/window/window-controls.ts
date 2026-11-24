@@ -1,4 +1,6 @@
-import { BrowserWindow, ipcMain, screen, type WebContents } from "electron";
+import { app, BrowserWindow, ipcMain, screen, type WebContents } from "electron";
+
+import { readStartupPreferences, startupPreferencesFilePath } from "../preferences/startup-preferences-store";
 
 import {
   WINDOW_CONTROL_CHANNEL,
@@ -68,10 +70,10 @@ function applyWindowControl(
       break;
     case "close":
       // Do not read isMaximized() after close — the window may already be destroyed.
-      // On Windows the renderer owns the caption buttons. Closing the visible
-      // window hides it and leaves the process alive behind the notification-area
-      // tray icon; the tray menu owns the explicit quit action.
-      if (shouldHideWindowOnClose(process.platform)) window.hide();
+      // On Windows the renderer owns the caption buttons. Closing quits unless the
+      // user chose "close to tray"; then the window hides and the tray menu
+      // owns the explicit quit action.
+      if (shouldHideWindowOnClose(process.platform, readStartupPreferences(startupPreferencesFilePath(app.getPath("userData"))).closeToTray)) window.hide();
       else window.close();
       return { ok: true, maximized: false };
     case "get-state":

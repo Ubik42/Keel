@@ -5,16 +5,21 @@ export const STARTUP_PREFERENCES_VERSION = 1 as const;
 export type StartupPreferences = {
   readonly version: typeof STARTUP_PREFERENCES_VERSION;
   readonly openAtLogin: boolean;
+  /** Windows: closing the window hides it in the notification area instead of quitting. */
+  readonly closeToTray: boolean;
 };
 
 export const DEFAULT_STARTUP_PREFERENCES: StartupPreferences = {
   version: STARTUP_PREFERENCES_VERSION,
   openAtLogin: false,
+  closeToTray: false,
 };
 
 const startupPreferencesSchema = z.object({
   version: z.literal(STARTUP_PREFERENCES_VERSION),
   openAtLogin: z.boolean(),
+  // Files written before this option existed quit on close.
+  closeToTray: z.boolean().default(false),
 });
 
 export type StartupPreferencesSnapshot = {
@@ -25,6 +30,8 @@ export type StartupPreferencesSnapshot = {
   readonly approvalRequired: boolean;
   /** The OS rejected or does not currently have the requested login item. */
   readonly registrationFailed?: boolean;
+  /** Present on Windows only, where closing can hide to the tray. */
+  readonly closeToTray?: boolean;
 };
 
 export const DEFAULT_STARTUP_PREFERENCES_SNAPSHOT: StartupPreferencesSnapshot = {
@@ -38,6 +45,7 @@ const startupPreferencesSnapshotSchema = z.object({
   supported: z.boolean(),
   approvalRequired: z.boolean(),
   registrationFailed: z.boolean().optional(),
+  closeToTray: z.boolean().optional(),
 });
 
 export type LoginItemRegistration = {

@@ -1703,6 +1703,8 @@ export const en = {
     taskCompletionSoundHint: "Play a quiet sound only after imports, exports, or other eligible operations actually run longer than one minute.",
     featureHints: "Feature hints",
     featureHintsHint: "Show one-time hints that point out hidden ways to use the interface, such as expanding a folder's subfolders. Turning this off hides all hints.",
+    closeToTray: "Close to tray",
+    closeToTrayHint: "When on, closing the window hides Keel in the notification area and it keeps running; quit from the tray menu. When off, closing the window quits Keel.",
     openAtLogin: "Launch at login",
     openAtLoginHint: "Open the installed Keel after signing in to this computer.",
     openAtLoginUnsupported: "This system does not provide launch at login.",

@@ -8,7 +8,8 @@ import {
 type StartupApi = {
   get(): Promise<StartupPreferencesSnapshot>;
   set(input: {
-    openAtLogin: boolean;
+    openAtLogin?: boolean;
+    closeToTray?: boolean;
   }): Promise<StartupPreferencesSnapshot>;
 };
 
@@ -20,6 +21,7 @@ export function useStartupPreferences(): {
   available: boolean;
   snapshot: StartupPreferencesSnapshot;
   setOpenAtLogin: (openAtLogin: boolean) => void;
+  setCloseToTray: (closeToTray: boolean) => void;
 } {
   const available = startupApi() !== undefined;
   const [snapshot, setSnapshot] = useState<StartupPreferencesSnapshot>(
@@ -48,6 +50,14 @@ export function useStartupPreferences(): {
       setSnapshot((current) => ({ ...current, openAtLogin }));
       if (api === undefined) return;
       void api.set({ openAtLogin }).then(setSnapshot).catch(() => {
+        void api.get().then(setSnapshot);
+      });
+    },
+    setCloseToTray: (closeToTray) => {
+      const api = startupApi();
+      setSnapshot((current) => ({ ...current, closeToTray }));
+      if (api === undefined) return;
+      void api.set({ closeToTray }).then(setSnapshot).catch(() => {
         void api.get().then(setSnapshot);
       });
     },

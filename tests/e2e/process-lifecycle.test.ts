@@ -1,5 +1,5 @@
 import { spawn } from 'node:child_process';
-import { mkdirSync, mkdtempSync, rmSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -133,11 +133,44 @@ test('closing the last macOS window keeps the application process alive', async 
   }
 });
 
-test('Windows custom close hides the window and keeps the tray process alive', async () => {
+test('Windows custom close quits by default', async () => {
   test.skip(process.platform !== 'win32', 'This lifecycle rule is Windows-specific.');
   const executablePath = resolveElectronExecutablePath();
   const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
   const { temporaryRoot, profilePath } = createIsolatedProfile();
+  const env = { ...environment(), KEEL_E2E: '1', KEEL_E2E_USER_DATA_PATH: profilePath };
+  const application = await electron.launch({
+    executablePath,
+    args: [applicationDirectory],
+    cwd: applicationDirectory,
+    env,
+  });
+  const childProcess = application.process();
+
+  try {
+    const window = await application.firstWindow();
+    const exited = once(childProcess, 'exit');
+    await window.locator('.windows-caption-button-close').dispatchEvent('click');
+    await exited;
+    expect(childProcess.exitCode).not.toBeNull();
+  } finally {
+    if (childProcess.exitCode === null) {
+      await application.evaluate(({ app }) => app.quit());
+      await once(childProcess, 'exit');
+    }
+    await rm(temporaryRoot, { force: true, recursive: true, maxRetries: 20, retryDelay: 250 });
+  }
+});
+
+test('Windows custom close hides the window when close-to-tray is on', async () => {
+  test.skip(process.platform !== 'win32', 'This lifecycle rule is Windows-specific.');
+  const executablePath = resolveElectronExecutablePath();
+  const applicationDirectory = process.env.KEEL_E2E_APP_DIRECTORY ?? process.cwd();
+  const { temporaryRoot, profilePath } = createIsolatedProfile();
+  writeFileSync(
+    path.join(profilePath, 'startup-preferences.json'),
+    JSON.stringify({ version: 1, openAtLogin: false, closeToTray: true }),
+  );
   const env = { ...environment(), KEEL_E2E: '1', KEEL_E2E_USER_DATA_PATH: profilePath };
   const application = await electron.launch({
     executablePath,

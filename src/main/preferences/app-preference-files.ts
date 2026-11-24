@@ -229,24 +229,33 @@ export function getOSLoginItemState(): {
 
 export function readStartupPreferencesSnapshot(): StartupPreferencesSnapshot {
   const preferences = readStartupPreferences(startupPreferencesPath());
-  return createStartupPreferencesSnapshot({
+  return withCloseToTray(preferences, createStartupPreferencesSnapshot({
     platform: process.platform,
     packaged: app.isPackaged,
     e2e: process.env.KEEL_E2E === "1",
     preferences,
     getLoginItemState: getOSLoginItemState,
     onReadError: (error) => state.logger?.error("startup.login-item", error),
-  });
+  }));
+}
+
+function withCloseToTray(
+  preferences: StartupPreferences,
+  snapshot: StartupPreferencesSnapshot,
+): StartupPreferencesSnapshot {
+  return process.platform === "win32" ? { ...snapshot, closeToTray: preferences.closeToTray } : snapshot;
 }
 
 export function storeStartupPreferences(input: unknown): StartupPreferencesSnapshot {
   const current = readStartupPreferences(startupPreferencesPath());
   const record = typeof input === "object" && input !== null ? input as {
     openAtLogin?: unknown;
+    closeToTray?: unknown;
   } : {};
   const preferences: StartupPreferences = {
     version: 1,
     openAtLogin: typeof record.openAtLogin === "boolean" ? record.openAtLogin : current.openAtLogin,
+    closeToTray: typeof record.closeToTray === "boolean" ? record.closeToTray : current.closeToTray,
   };
   const snapshot = applyStartupLoginItem({
     platform: process.platform,
@@ -262,8 +271,11 @@ export function storeStartupPreferences(input: unknown): StartupPreferencesSnaps
     },
     getLoginItemState: getOSLoginItemState,
   });
-  if (!snapshot.registrationFailed) {
-    writeStartupPreferences(startupPreferencesPath(), preferences);
-  }
-  return snapshot;
+  // A failed login-item registration keeps the old login setting; the close
+  // behaviour does not depend on the OS and is always stored.
+  writeStartupPreferences(
+    startupPreferencesPath(),
+    snapshot.registrationFailed ? { ...preferences, openAtLogin: current.openAtLogin } : preferences,
+  );
+  return withCloseToTray(preferences, snapshot);
 }

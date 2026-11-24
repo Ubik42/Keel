@@ -33,14 +33,16 @@ describe('startup preferences', () => {
     tempDirectories.push(root);
     const filePath = startupPreferencesFilePath(root);
     expect(readStartupPreferences(filePath)).toEqual(DEFAULT_STARTUP_PREFERENCES);
-    writeStartupPreferences(filePath, { version: 1, openAtLogin: true });
+    writeStartupPreferences(filePath, { version: 1, openAtLogin: true, closeToTray: false });
     expect(JSON.parse(await readFile(filePath, 'utf8'))).toEqual({
       version: 1,
       openAtLogin: true,
+      closeToTray: false,
     });
     expect(readStartupPreferences(filePath)).toEqual({
       version: 1,
       openAtLogin: true,
+      closeToTray: false,
     });
     expect(parseStartupPreferences({ version: 2, openAtLogin: true })).toEqual(DEFAULT_STARTUP_PREFERENCES);
   });
@@ -54,14 +56,16 @@ describe('startup preferences', () => {
       openAtLogin: true,
       silentLaunch: true,
     })}\n`);
+    // A file from before the close-to-tray option quits on close.
     expect(readStartupPreferences(filePath)).toEqual({
       version: 1,
       openAtLogin: true,
+      closeToTray: false,
     });
   });
 
   it('registers login items only for packaged macOS and Windows apps', () => {
-    const preferences = { version: 1 as const, openAtLogin: true };
+    const preferences = { version: 1 as const, openAtLogin: true, closeToTray: false };
     expect(loginItemRegistration({
       platform: 'darwin',
       packaged: true,
@@ -114,7 +118,7 @@ describe('startup preferences', () => {
       platform: 'darwin',
       packaged: true,
       e2e: false,
-      preferences: { version: 1, openAtLogin: true },
+      preferences: { version: 1, openAtLogin: true, closeToTray: false },
       setLoginItemSettings: (settings) => {
         calls.push(settings);
       },

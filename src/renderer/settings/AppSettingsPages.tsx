@@ -179,6 +179,16 @@ export function GeneralSettingsPage({
               <span>{t("settings.openAtLoginUnsupported")}</span>
             </div>
           )}
+          {startup.snapshot.closeToTray !== undefined ? (
+            <SettingsToggleRow
+              checked={startup.snapshot.closeToTray}
+              hint={t("settings.closeToTrayHint")}
+              label={t("settings.closeToTray")}
+              onChange={() => {
+                startup.setCloseToTray(!startup.snapshot.closeToTray);
+              }}
+            />
+          ) : null}
         </SettingsCard>
       ) : null}
       <SettingsCard>

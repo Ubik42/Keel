@@ -29,9 +29,9 @@ function menuLabels(locale: AppLocale): { show: string; quit: string } {
 }
 
 /**
- * Windows-only notification-area integration. Closing the custom caption hides
- * the window, while this menu provides the discoverable way to show it again or
- * explicitly quit the process. Portable Electron apps support Tray just like
+ * Windows-only notification-area integration. With "close to tray" on, closing
+ * the custom caption hides the window, and this menu shows it again or
+ * explicitly quits the process. By default closing quits. Portable Electron apps support Tray just like
  * installed apps; no installer registration is required.
  */
 export function createWindowsTray(

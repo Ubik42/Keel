@@ -13,7 +13,8 @@ import {
 export type KeelStartupApi = {
   get(): Promise<StartupPreferencesSnapshot>;
   set(input: {
-    openAtLogin: boolean;
+    openAtLogin?: boolean;
+    closeToTray?: boolean;
   }): Promise<StartupPreferencesSnapshot>;
 };
 
@@ -27,7 +28,8 @@ export const startup: KeelStartupApi = Object.freeze({
   },
   async set(input) {
     return readSnapshot(await ipcRenderer.invoke(STARTUP_PREFERENCES_SET_CHANNEL, {
-      openAtLogin: input.openAtLogin,
+      ...(typeof input.openAtLogin === 'boolean' ? { openAtLogin: input.openAtLogin } : {}),
+      ...(typeof input.closeToTray === 'boolean' ? { closeToTray: input.closeToTray } : {}),
     }));
   },
 });
